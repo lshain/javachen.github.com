@@ -2,10 +2,8 @@
 layout: post
 title: OpenStack架构预览
 categories:
-- Cloud
+- cloud computing
 tags:
-- EC2
-- nova
 - OpenStack
 published: true
 comments: true
@@ -31,7 +29,7 @@ OpenStack当前包括三个子项目，三个项目相会独立，可以单独�
 4. 允许操作人员配置和操作云基础设施。<!--more--></p>
 
 <p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
-<p style="text-align: center;"><a href="http://www.javachen.com/wp-content/uploads/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://www.javachen.com/wp-content/uploads/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
 在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
 表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
 逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
@@ -43,7 +41,7 @@ OpenStack 中有两个守护进程：<br />
 接收和调解API调用的WSGI应用程序 （nova-api，glance-api等等）。<br />
 进行编排任务的工人守护进程（nova-compute， nova-network,，nova-schedule）。<br />
 OpenStack中还包含两个组件：消息队列服务和数据库。这两个组件方便异步编排复杂的任务通过消息传递和信息共享。
-<p style="text-align: center;"><a href="http://www.javachen.com/wp-content/uploads/2011/07/OpenStack-Compute-Logical-Architecture.png"><img class="size-medium wp-image-2124 aligncenter" title="OpenStack Compute Logical Architecture" src="http://www.javachen.com/wp-content/uploads/2011/07/OpenStack-Compute-Logical-Architecture-300x220.png" alt="" width="300" height="220" /></a></p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture.png"><img class="size-medium wp-image-2124 aligncenter" title="OpenStack Compute Logical Architecture" src="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture-300x220.png" alt="" width="300" height="220" /></a></p>
 这个复杂的，但不是太翔实的图表可以概括为三句话：<br />
  终端用户通过nova-api 接口与Openstack 计算交互。<br />
  OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
@@ -68,15 +66,15 @@ OpenStack中还包含两个组件：消息队列服务和数据库。这两个�
 <h2>Nova Conceptual Mapping</h2>
 <p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
 上面的功能模块对应上面模型的映射：
-<p style="text-align: center;"><a href="http://www.javachen.com/wp-content/uploads/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://www.javachen.com/wp-content/uploads/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p>
 
 <p><h2>Service Architecture</h2>
 管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
-<p style="text-align: center;"><a href="http://www.javachen.com/wp-content/uploads/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://www.javachen.com/wp-content/uploads/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
 
 <p><h2>部署</h2>
 部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
-<p style="text-align: center;"><a href="http://www.javachen.com/wp-content/uploads/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://www.javachen.com/wp-content/uploads/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
 OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
 <h2>镜像管理</h2>
 <p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />

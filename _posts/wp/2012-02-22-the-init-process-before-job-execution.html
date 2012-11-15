@@ -2,7 +2,7 @@
 layout: post
 title: Kettle运行作业之前的初始化过程
 categories:
-- Kettle
+- Pentaho
 tags:
 - Kettle
 - Pentaho
@@ -11,7 +11,7 @@ comments: true
 ---
 <p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
 
-<p>之前用英文写了一篇文章《<a href="http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
+<p>之前用英文写了一篇文章《<a href="http://blog.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
 
 <p>在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。</p>
 
