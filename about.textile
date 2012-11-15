@@ -35,11 +35,11 @@ h2. 关于blog.javachen.com
 
 * 以技术的实用性为导向，结合实例讲解各个系统、功能的实现过程
 
-* 以资源共享的方式分享给广大的BS架构的开发人员以提高个人水平
+* 以资源共享的方式分享给广大的开发人员以提高个人水平
 
 h2. 联系我
 
-* MSN、Email：javachen.june[@]gmail.com
+* Email：javachen.june[@]gmail.com
 * Weibo: <a href='http://weibo.com/chenzhijun'>@JavaChen</a>
 * Blog: <a href='http://blog.javachen.com'>http://blog.javachen.com</a>
 
