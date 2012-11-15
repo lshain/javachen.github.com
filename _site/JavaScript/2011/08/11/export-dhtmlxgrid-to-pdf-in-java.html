@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
+
+    <title>Export DhtmlxGrid to PDF in Java - JavaChen</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>11 Aug 2011</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></h1>
+  <div class='body'><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
+当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+
+<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。<br />
+需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+
+<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf-300x166.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" /></a>
+</div>
+<!--more-->
+点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
+<pre lang="java">
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document dom = null;
+try {
+     dom = db.parse(new InputSource(new StringReader(xml)));
+}catch(SAXException se) {
+     se.printStackTrace();
+}catch(IOException ioe) { 
+     ioe.printStackTrace();
+}
+root = dom.getDocumentElement();</pre></p>
+
+<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。<br />
+为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
+<pre lang="java">
+public class PDFXMLParser {
+	Element root;
+	PDFColumn[][] columns;
+	PDFRow[] rows;
+	double[] widths;
+	private Boolean header = false;
+	private Boolean footer = false;
+	private String profile = "gray";
+	private double[] orientation = null;</pre></p>
+
+<p>	public void setXML(String xml) {<br />
+		SAXReader saxReader = new SAXReader();</p>
+
+<p>		Document document = null;<br />
+		try {<br />
+			document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));<br />
+		} catch (DocumentException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+		root = document.getRootElement();</p>
+
+<p>		if ((root.attributeValue("header") != null)<br />
+				&amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {<br />
+			header = true;<br />
+		}<br />
+		String footer_string = root.attributeValue("footer");<br />
+		if ((footer_string != null)<br />
+				&amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {<br />
+			footer = true;<br />
+		}<br />
+		String profile_string = root.attributeValue("profile");<br />
+		if (profile_string != null) {<br />
+			profile = profile_string;<br />
+		}</p>
+
+<p>		String orientation_string = root.attributeValue("orientation");<br />
+		if (orientation_string != null) {<br />
+			if (orientation_string.equalsIgnoreCase("landscape")) {<br />
+				orientation = A4.LANDSCAPE;<br />
+			} else {<br />
+				orientation = A4.PORTRAIT;<br />
+			}<br />
+		} else {<br />
+			orientation = Letter.PORTRAIT;<br />
+		}<br />
+	}</p>
+
+<p>	public PDFColumn[][] getColumnsInfo() {<br />
+		PDFColumn[] colLine = null;<br />
+		List n1 = root.element("head").elements("columns");<br />
+		if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {<br />
+			columns = new PDFColumn[n1.size()][];<br />
+			for (int i = 0; i &lt; n1.size(); i++) {<br />
+				Element cols = (Element) n1.get(i);<br />
+				List n2 = cols.elements("column");<br />
+				if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {<br />
+					colLine = new PDFColumn[n2.size()];<br />
+					for (int j = 0; j &lt; n2.size(); j++) {<br />
+						Element col_xml = (Element) n2.get(j);<br />
+						PDFColumn col = new PDFColumn();<br />
+						col.parse(col_xml);<br />
+						colLine[j] = col;<br />
+					}<br />
+				}<br />
+				columns[i] = colLine;<br />
+			}<br />
+		}<br />
+		createWidthsArray();<br />
+		optimizeColumns();<br />
+		return columns;<br />
+	}<br />
+        public PDFRow[] getGridContent() {<br />
+		List nodes = root.elements("row");<br />
+		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
+			rows = new PDFRow[nodes.size()];<br />
+			for (int i = 0; i &lt; nodes.size(); i++) {<br />
+				rows[i] = new PDFRow();<br />
+				rows[i].parse((Element) nodes.get(i));<br />
+			}<br />
+		}<br />
+		return rows;</p>
+
+<p>	}</p>
+
+<p>       *****<br />
+}</p>
+
+<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
+<pre lang="java">
+public class PDFRow {</pre></p>
+
+<p>	private String[] cells;</p>
+
+<p>	public void parse(Element parent) {<br />
+		List nodes = ((Element) parent).elements("cell");<br />
+		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
+			cells = new String[nodes.size()];<br />
+			for (int i = 0; i &lt; nodes.size(); i++) {<br />
+				cells[i] = ((Element) nodes.get(i)).getTextTrim();<br />
+			}<br />
+		}<br />
+	}</p>
+
+<p>	public String[] getCells() {<br />
+		return cells;<br />
+	}<br />
+}</p>
+
+<p>public class PDFColumn {</p>
+
+<p>	public void parse(Element parent) {<br />
+		colName = parent.getText();<br />
+		String width_string = parent.attributeValue("width");<br />
+		if (width_string!=null&&width_string.length() > 0) {<br />
+			width = Integer.parseInt(width_string);<br />
+		}<br />
+		type = parent.attributeValue("type");<br />
+		align = parent.attributeValue("align");<br />
+		String colspan_string = parent.attributeValue("colspan");<br />
+		if (colspan_string!=null&&colspan_string.length() > 0) {<br />
+			colspan = Integer.parseInt(colspan_string);<br />
+		}<br />
+		String rowspan_string = parent.attributeValue("rowspan");<br />
+		if (rowspan_string!=null&&rowspan_string.length() > 0) {<br />
+			rowspan= Integer.parseInt(rowspan_string);<br />
+		}<br />
+	}<br />
+}
+</p>
+
+<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf-300x134.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" /></a>
+</div></p>
+
+<p><h2>结论：</h2>
+<div class="note">
+1.导出pdf和导出Excel代码差不多，这里不做说明。<br />
+2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。<br />
+3.导出的pdf为多页显示，每页有表头<br />
+4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。
+</div></p>
+
+<p></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>
