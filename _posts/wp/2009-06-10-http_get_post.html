@@ -1,0 +1,21 @@
+---
+layout: post
+title: Http之Get/Post请求区别
+categories:
+- JSP
+tags:
+- html
+- http
+- JSP
+published: true
+comments: true
+---
+<p><span style="font-size: 10pt;">HTTP<span style="font-family: 宋体;">定义了与服务器交互的不同方法，最基本的方法是</span> GET <span style="font-family: 宋体;">和</span> POST.</span>
+<p style="text-indent: 21pt;"><span style="font-size: 10pt;">HTTP-GET和 HTTP-POST是使用HTTP的标准协议动词，用于编码和传送变量名/变量值对参数，并且使用相关的请求语义。每个HTTP-GET和HTTP- POST都由一系列HTTP请求头组成，这些请求头定义了客户端从服务器请求了什么，而响应则是由一系列HTTP应答头和应答数据组成，如果请求成功则返 回应答。<br />
+HTTP-GET以使用MIME类型application/x-www-form-urlencoded的urlencoded文本的格式传递参 数。Urlencoding是一种字符编码，保证被传送的参数由遵循规范的文本组成，例如一个空格的编码是"%20"。附加参数还能被认为是一个查询字符 串。<br />
+与HTTP-GET类似，HTTP-POST参数也是被URL编码的。然而，变量名/变量值不作为URL的一部分被传送，而是放在实际的HTTP请求消息内部被传送。</span>
+</p><p style="text-indent: 21pt;"><span style="font-size: 10pt;"><!--more--> （1）get是<span style="color: #ff00ff;">从服务器上</span><span style="color: #ff00ff;">获取</span>数据，post是<span style="color: #ff00ff;">向服务器传送</span>数据。</span></p>
+<p style="margin-left: 51pt; text-indent: -30pt;"><span style="font-size: 10pt;"><span style="color: black;">（2）</span><span style="color: black; font-family: 宋体;">在客户端，</span><span style="color: black; font-family: Tahoma;">Get</span><span style="color: black; font-family: 宋体;">方式在通过</span><span style="color: black; font-family: Tahoma;">URL</span><span style="color: black; font-family: 宋体;">提交数据，数据</span><span style="font-family: 宋体;">在</span><span style="color: #ff00ff;">URL<span style="font-family: 宋体;">中</span></span><span style="font-family: 宋体;">可以看到；</span>POST<span style="font-family: 宋体;">方式，数据放置在</span><span style="color: #ff00ff;">HTML HEADER<span style="font-family: 宋体;">内</span></span><span style="font-family: 宋体;">提交。</span></span></p>
+<p style="margin-left: 51pt; text-indent: -30pt;"><span style="font-family: 宋体;"><span style="font-size: 10pt;">（3） 对于get方式，服务器端用<span style="color: #ff00ff;">Request.QueryString</span>获取变量的值，对于post方式，服务器端用<span style="color: #ff00ff;">Request.Form</span>获取提交的数据。</span></span></p>
+<p style="margin-left: 51pt; text-indent: -30pt;"><span style="font-size: 10pt;"><span style="color: black;">（4）<span style="font-family: 'Times New Roman'; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;"> </span></span>GET<span style="font-family: 宋体;">方式提交的数据最多<span style="color: #ff00ff;"><span style="font-family: 宋体;">只能有</span>1024<span style="font-family: 宋体;">字节</span></span></span><span style="font-family: 宋体;">，而</span>POST<span style="font-family: 宋体;">则<span style="color: #ff00ff;">没有此限制</span>。</span></span></p>
+<p style="margin-left: 51pt; text-indent: -30pt;"><span style="font-size: 10pt;"><span style="color: black;">（5）<span style="font-family: 'Times New Roman'; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-size-adjust: none; font-stretch: normal;"> </span></span><span style="font-family: 宋体;">安全性问题。正如在（</span><span style="font-family: ˎ̥;">1</span><span style="font-family: 宋体;">）中提到，使用</span><span style="font-family: ˎ̥;"> Get </span><span style="font-family: 宋体;">的时候，参数会<span style="color: #ff00ff;">显示在地址栏上</span>，而</span><span style="font-family: ˎ̥;"> Post </span><span style="font-family: 宋体;"><span style="color: #ff00ff;"><span style="font-family: 宋体;">不会</span></span>。所以，如果这些数据是中文数据而且是非敏感数据，那么使用</span><span style="font-family: ˎ̥;"> get</span><span style="font-family: 宋体;">；如果用户输入的数据不是中文字符而且包含敏感数据，那么还是使用</span><span style="font-family: ˎ̥;"> post</span><span style="font-family: 宋体;">为好。</span></span></p></p>

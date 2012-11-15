@@ -1,0 +1,87 @@
+---
+layout: post
+title: javascript的DOM函数方法
+categories:
+- JavaScript
+tags:
+- DOM
+- JavaScript
+published: true
+comments: true
+---
+<p>1、创建节点<br />
+createElement()<br />
+var node = document.createElement(“div”);<br />
+没什么可说的，创建一个元素节点，但注意，这个节点不会被自动添加到文档（document）里。</p>
+
+<p>2、创建文本节点<br />
+createTextNode()<br />
+var value = document.createTextNode(“text”);<br />
+创建一个文本节点，常用来往元素节点里添加内容，也不会自动添加到文档里。<br />
+很多人知道innerHTML，不知道这个方法，这个添加的是静态文本，如果插入的内容不带HTML格式，用createTextNode比innerHTML安全，而innerText又有浏览器不兼容的问题，因此用createTextNode很好使。</p>
+
+<p>3、插入节点到最后<br />
+appendChild()<br />
+node.appendChild(value);<br />
+将节点插入到最后，上面两个创建的节点不会自动添加到文档里，所以就要使appendChild来插入了。<br />
+如果是新的节点是插入到最后，而如果是已经存在的节点则是移动到最后，这点很多人注意不到，理解了这点，再和下面的方法结合，可以方便的移动操作节点。
+<!--more-->
+4、插入节点到目标节点的前面<br />
+insertBefore()<br />
+var node = document.createElement(“div”);<br />
+var _p = document.createElement(“p”);<br />
+var _span = document.createElement(“span”);<br />
+node.appendChild(_p);<br />
+node.insertBefore(_span, _p);<br />
+&lt;span&gt;节点在&lt;p&gt;节点前面插入，其中第二个参数是可选，如果第二个参数不写，将默认添加到文档的最后，相当于appendChild。<br />
+同样，appendChild和insertBefore，如果是已存在节点，他们都会自动先删除原节点，然后移动到你指定的地方。<br />
+将节点移动到最前面的技巧：<br />
+if (node.parentNode.firstChild) node.parentNode.insertBefore(node, node.parentNode.firstChild);<br />
+else node.parentNode.appendChild(node);</p>
+
+<p>5、复制节点<br />
+cloneNode(boolean)<br />
+node.cloneNode(true);<br />
+node.cloneNode(false);<br />
+复制上面的div节点，参数true，复制整个节点和里面的内容；false，只复制节点不要里面的内容，复制后的新节点，也不会被自动插入到文档，需要用到3和4的方法去插入。</p>
+
+<p>6、删除节点<br />
+removeChild()<br />
+node.removeChild(_p);<br />
+把上面的&lt;p&gt;节点从&lt;div&gt;里删除。不过一般情况下，不知道要删除的节点的父节点是什么，因此一般这么使：node.parentNode.removeChild(node);</p>
+
+<p>7、替换节点<br />
+repalceChild(newNode, oldNode)<br />
+node.repalceChild(_p, _span);<br />
+把上面的&lt;span&gt;节点替换成&lt;p&gt;节点，注意无论是&lt;span&gt;还是&lt;p&gt;，都必须是&lt;div&gt;的子节点，或是一个新的节点。</p>
+
+<p>8、设置节点属性<br />
+setAttribute()<br />
+node.setAttribute("title","abc");<br />
+不解释了，很容易明白。就说一句，用这个方法设置节点属性兼容好，但class属性不能这么设置。</p>
+
+<p>9、获取节点属性<br />
+getAttribute()<br />
+node.getAttribute("title");<br />
+同8，获取节点属性。</p>
+
+<p>10、判断元素是否有子节点<br />
+hasChildNodes<br />
+node.hasChildNodes;<br />
+返回boolean类型，因此将新节点插入到最前面的技巧：<br />
+var node = document.createElement(“div”);<br />
+var newNode = document.createElement(“p”);<br />
+if (node.hasChildNodes) node.insertBefore(newNode, node.firstChild);<br />
+else node.appendChild(node);</p>
+
+<p>最后是DOM的属性：</p>
+
+<p>nodeName - 节点的名字；<br />
+nodeType - 返回一个整数，代表这个节点的类型，1-元素节点，2-属性节点，3-文本节点；<br />
+nodeValue - 返回一个字符串，这个节点的值；<br />
+childNodes - 返回一个数组，数组由元素节点的子节点构成；<br />
+firstChild - 返回第一个子节点；<br />
+lastChild - 返回最后一个子节点；<br />
+nextSibling - 返回目标节点的下一个兄弟节点，如果目标节点后面没有同属于一个父节点的节点，返回null；<br />
+previousSibling - 返回目标节点的前一个兄弟节点，如果目标节点前面没有同属于一个父节点的节点，返回null；<br />
+parentNode - 返回的节点永远是一个元素节点，因为只有元素节点才有可能有子节点，document节点将返回null</p>

@@ -1,0 +1,27 @@
+---
+layout: nil
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>JavaChen</title>
+ <link href="blog.javachen.com/atom.xml" rel="self"/>
+ <link href="blog.javachen.com/"/>
+ <updated>{{ site.time | date_to_xmlschema }}</updated>
+ <id>http://www.kafeitu.me/</id>
+ <author>
+   <name>javachen</name>
+   <email>june.chan@foxmail.com</email>
+ </author>
+ 
+ {% for post in site.posts limit:15 %}
+ <entry>
+   <title>{{ post.title }}</title>
+   <link href="http://blog.javachen.com{{ post.url }}"/>
+   <updated>{{ post.date | date_to_xmlschema }}</updated>
+   <id>http://blog.javachen.com{{ post.id }}</id>
+   <content type="html">{{ post.content | xml_escape }}<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com{{post.url}}'>{{post.title}}</a></content>
+ </entry>
+ {% endfor %}
+ 
+</feed>

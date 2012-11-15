@@ -1,0 +1,24 @@
+---
+layout: post
+title: commons-logging
+categories:
+- OpenSource
+tags:
+- Log4j
+- Open Sources
+published: true
+comments: true
+---
+<p>commons-logging是为"所有的Java日志实现"提供一个统一的接口,它自身的日志功能平常弱,而log4j功能非常强大全面,所以两者配合使用.<br />
+commons-logging工作原理:<br />
+1. 首先在classpath下寻找自己的配置文件commons-logging.properties,如果找到,则使用其中定义的Log实现类<br />
+2. 如果找不到commons-logging.properties文件,则在查找是否已定义系统环境变量org.apache.commons.logging.Log,找到则使用其定义的Log实现类<br />
+3. 查看classpath中是否有Log4j的包,如果发现,则自动使用Log4j作为日志实现类<br />
+4. 使用JDK自身的日志实现类(JDK1.4以后才有日志实现类)<br />
+5. 使用commons-logging自己提供的一个简单的日志实现类SimpleLog
+<!--more-->
+(以上顺序不保证完全准确,请参考官方文档)<br />
+commons-logging总是能找到一个日志实现类,并且尽可能找到一个"最合适"的日志实现类.<br />
+1、可以不需要配置文件<br />
+2、自动判断有没有Log4j包,有则自动使用之<br />
+3、最悲观的情况下也总能保证提供一个日志实现(SimpleLog) </p>

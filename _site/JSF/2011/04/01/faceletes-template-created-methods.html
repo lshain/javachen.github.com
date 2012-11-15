@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Faceletes模板构建方法</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>01 Apr 2011</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JSF/2011/04/01/faceletes-template-created-methods.html'>Faceletes模板构建方法</a></h1>
+  <div class='body'><p>Faceletes模板构建方法，这是在公司编写《java培训手册》时候找到的一点资料，这篇文章写得比较好，对新手还是有点帮助，故把其贴出来，和大家分享！
+<h3>基本介绍</h3>
+模板可以让你快速的建立相同页面布局而内部不同的网页，将通用的，不常变化的部分抽取出来放到模板页中，之后由子页面继承模板页面，子页面既具有模板页面的相同特征，可以简化系统的维护难度，降低维护成本。
+<h3>XHTML模板</h3>
+xhtml模板技术是一种动态的模板框架，模板中定义整体风格和占位符，在具体的页面实现中实现占位符的内容即可</p>
+
+<p>（1）使用&lt;ui:insert name="title"/&gt;实现占位符，其中name为占位符的唯一名称，在模板xhtml中</p>
+
+<p>（2）使用&lt;ui:define name="title"&gt;RichFaces Components&lt;/ui:define&gt;实现占位符的内容，写在具体的页面xhtml中<!--more-->
+<h3>标准模板创建示例</h3>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;</p>
+
+<p>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</p>
+
+<p>&lt;!--  xhtml模板头，并登记标签库 --&gt;</p>
+
+<p>&lt;html xmlns="http://www.w3.org/1999/xhtml"</p>
+
+<p>xmlns:ui="http://java.sun.com/jsf/facelets"</p>
+
+<p>xmlns:h="http://java.sun.com/jsf/html"</p>
+
+<p>xmlns:f="http://java.sun.com/jsf/core"</p>
+
+<p>xmlns:a4j="http://richfaces.org/a4j"</p>
+
+<p>xmlns:rich="http://richfaces.org/rich"&gt;</p>
+
+<p>&lt;head&gt;</p>
+
+<p>&lt;!--  定义文档类型 --&gt;</p>
+
+<p>&lt;meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8"/&gt;</p>
+
+<p>&lt;title&gt;</p>
+
+<p>&lt;!--  定义一个标题占位符  --&gt;</p>
+
+<p>&lt;ui:insert name="title"/&gt;</p>
+
+<p>&lt;/title&gt;</p>
+
+<p>&lt;link el="STYLESHEET" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/common.css"/&gt;</p>
+
+<p>&lt;!— 动态加入一个组件  --&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/dynamic-css.xhtml" /&gt;</p>
+
+<p>&lt;/head&gt;</p>
+
+<p>&lt;body&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/header.xhtml" /&gt;</p>
+
+<p>&lt;table class="left_menu" cellpadding="0" cellspacing="0" border="0"&gt;</p>
+
+<p>&lt;tbody&gt;</p>
+
+<p>&lt;tr&gt;</p>
+
+<p>&lt;td&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/references.xhtml" /&gt;</p>
+
+<p>&lt;div class="menu_separator"&gt;</p>
+
+<p>&amp;nbsp;</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/components-navigation.xhtml" /&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;/tr&gt;</p>
+
+<p>&lt;/tbody&gt;</p>
+
+<p>&lt;/table&gt;</p>
+
+<p>&nbsp;</p>
+
+<p>&lt;h:graphicImage value="#{componentNavigator.currentComponent.captionImage}"</p>
+
+<p>rendered="#{componentNavigator.hasCurrentComponent}" height="40" alt="" border="0" styleClass="component_name"/&gt;</p>
+
+<p>&lt;table cellpadding="0" cellspacing="0" border="0" class="content_container" width="100%"&gt;</p>
+
+<p>&lt;tbody&gt;</p>
+
+<p>&lt;tr&gt;</p>
+
+<p>&lt;td&gt;</p>
+
+<p>&lt;div class="content_container_left_brick"&gt;&lt;/div&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;td width="100%" class="content_container_pdddings"&gt;</p>
+
+<p>&lt;!-- tabpanel begin --&gt;</p>
+
+<p>&lt;ui:insert name="body"&gt;Body&lt;/ui:insert&gt;</p>
+
+<p>&lt;!-- tabpanel end --&gt;</p>
+
+<p>&lt;rich:spacer style="height:10px;" /&gt;</p>
+
+<p>&lt;rich:separator style="height:1px" /&gt;</p>
+
+<p>&lt;div style="float:right;" class="footer-text"&gt;#{environment.version}&lt;/div&gt;</p>
+
+<p>&lt;div style="float:none"&gt;</p>
+
+<p>&lt;a href="http://jboss.com/index.html?module=bb&amp;amp;op=viewtopic&amp;amp;t=104575"</p>
+
+<p>style="color:#000; display:block" &gt;RichFaces. Most Important Links&lt;/a&gt;</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;/tr&gt;</p>
+
+<p>&lt;/tbody&gt;</p>
+
+<p>&lt;/table&gt;</p>
+
+<p>&lt;/body&gt;</p>
+
+<p>&lt;/html&gt;</p>
+
+<p>&nbsp;
+<h3>模板页的构成</h3>
+main.xhtml为主模板页，它可以为四个可变区域，</p>
+
+<p>一个是&lt;ui:insert name="title"&gt;&lt;/ui:insert&gt;用来定义页面的标题</p>
+
+<p>一个是&lt;ui:include src="/templates/include/header.xhtml" /&gt;用来包含页眉</p>
+
+<p>一个是&lt;ui:insert name="body"&gt;&lt;/ui:insert&gt;用来包含具体呈现页面内容</p>
+
+<p>一个是&lt;ui:include src="/templates/include/footer.xhtml" /&gt;用来包含页脚</p>
+
+<p>其中header.xhtml 、footer.xhtml为所有公共的使用，其中 header.xhtml页面中设置具体导航菜单中的页面显示</p>
+
+<p>&lt;li id="home"&gt;</p>
+
+<p>&lt;a href="${facesContext.externalContext.requestContextPath}/index.jspx"&gt;&lt;/a&gt;</p>
+
+<p>&lt;/li&gt;
+<h3>模板页的继承</h3>
+要想在菜单中增加一个页面就继承main.xhtml</p>
+
+<p>指定集成的模块页为 <strong>/templates/main.xhtml</strong></p>
+
+<p>&lt;ui:composition <strong>template="/templates/main.xhtml"</strong></p>
+
+<p>xmlns="http://www.w3.org/1999/xhtml"</p>
+
+<p>xmlns:ui="http://java.sun.com/jsf/facelets"</p>
+
+<p>xmlns:h="http://java.sun.com/jsf/html"</p>
+
+<p>xmlns:f="http://java.sun.com/jsf/core"</p>
+
+<p>xmlns:a4j="http://richfaces.org/a4j"</p>
+
+<p>xmlns:rich="http://richfaces.org/rich"</p>
+
+<p>xmlns:s="http://jboss.com/products/seam/taglib"&gt;</p>
+
+<p>&lt;ui:param name="bodyClass" value="czdt"&gt;&lt;/ui:param&gt;</p>
+
+<p><strong>&lt;ui:define name="title"&gt;-</strong><strong>此部分是子页自定义的部分</strong><strong>&lt;/ui:define&gt;</strong></p>
+
+<p>&lt;/ui:composition&gt;</p>
+
+<p>&nbsp;
+<h3>具体页面应用</h3>
+1 修改页面的标题</p>
+
+<p>找到对应页面的模板页在&lt;ui:define name="title"&gt;-管理&lt;/ui:define&gt;</p>
+
+<p>2 添加菜单项</p>
+
+<p>直接在header.xhtml里增加菜单</p>
+
+<p>3 修改页脚</p>
+
+<p>直接在footer.xhtml里编辑</p>
+
+<p>4 标题相同，相同菜单下的不同呈现页</p>
+
+<p>在设置好对应页面标题好，可以用该页面再做为模板，让其他页面再进行继承。然后根据不同的页面在中&lt;ui:define name="body"&gt;加具体内容&lt;/ui:define&gt;。</p>
+
+<p>5 其他样式扩展。</p>
+
+<p>你可以在继承了模板页面，定义自己的样式和页面结构</p>
+
+<p>&nbsp;</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JSF/2011/04/01/faceletes-template-created-methods.html'>Faceletes模板构建方法</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

@@ -1,0 +1,174 @@
+---
+layout: post
+title: Jsp EL语法
+categories:
+- JSP
+tags:
+- JSP
+published: true
+comments: true
+---
+<p>例：<br />
+${sessionScope.user.sex}<br />
+所有EL都是以 ${ 为起始、以} 为结尾的。<br />
+上述EL范例的意思是：从Session取得用户的性别。如果使用之前JSP代码的写法如下：<br />
+&lt;%<br />
+User user = (User)session.getAttribute("user");<br />
+String sex = user.getSex( );<br />
+%&gt;</p>
+
+<p>两者相比较之下，可以发现EL的语法比传统JSP代码更为方便、简洁。<br />
+EL提供 . 和 [ ] 两种运算符来存取数据，[ ]可以访问集合或者是数组的元素、Bean的属性。<br />
+下列两者所代表的意思是一样的，但是需要保证要取得对象的那个的属性有相应的setXxx()和getXxx()方法才行。</p>
+
+<p><!--more--> 例：<br />
+${sessionScope.user.sex}<br />
+等于 ${sessionScope.user["sex"]}<br />
+. 和 [ ] 也可以同时混合使用，如下：<br />
+${sessionScope.shoppingCart[0].price}<br />
+返回结果为shoppingCart中第一项物品的价格。<br />
+在EL中，字符串既可以使用"abc"，可以使用'abc'。</p>
+
+<p><span style="color: #0000ff;">EL运算符</span>
+EL的算术运算符和Java中的运算符的大致相同，优先级也相同。<br />
+注意：'+' 运算符不会连接字符串了，他只用于加法运算。<br />
+EL关系运算符有以下六个运算符<br />
+关系运算符      说 明                范 例             结果<br />
+= = 或 eq   |    等于   |${ 5 = = 5 } 或 ${ 5 eq 5 } | true<br />
+!= 或 ne    |   不等于 |${ 5 != 5 } 或 ${ 5 ne 5 } | false<br />
+&lt; 或 lt     |   小于    |${ 3 &lt; 5 }或 ${ 3 lt 5 }    | true<br />
+&gt; 或 gt     |   大于    |${ 3 &gt; 5 }或 ${ 3 gt 5 }    | false<br />
+&lt;= 或 le    | 小于等于 |${ 3 &lt;= 5 }或 ${ 3 le 5 }   | true<br />
+&gt;= 或 ge    | 大于等于 |${ 3 &gt;= 5 }或 ${ 3 ge 5 }   | false<br />
+empty运算符<br />
+Empty运算符主要用来判断值是否为null或空的，例如：<br />
+${ empty param.name }<br />
+接下来说明Empty运算符的规则：<br />
+{empty} A<br />
+如果A为null时，返回true<br />
+如果A不存在时，返回true<br />
+如果A为空字符串时，返回true<br />
+如果A为空数组时，返回true<br />
+如果A为空的Map时，返回true<br />
+如果A为空的Collection时，返回true<br />
+否则，返回false<br />
+注意：<br />
+在使用EL关系运算符时，不能够写成：<br />
+${param.password1} = = ${param.password2}<br />
+或者<br />
+${ ${param.password1 } = = ${ param.password2 } }<br />
+而应写成<br />
+${ param.password1 = = param.password2 }<br />
+使用EL从表单中取得数据<br />
+与输入有关的隐含对象有两个：param和paramValues，它们是EL中比较特别的隐含对象。<br />
+一般而言，我们在取得用户的请求参数时，可以利用下列方法：<br />
+request.getParameter(String name)<br />
+request.getParameterValues(String name)<br />
+在EL中则可以使用param和paramValues两者来取得数据。<br />
+${param.name}<br />
+${paramValues.name}可以取得所有同名参数的值<br />
+${paramValues.hobbies[0]}可以通过指定下标来访问特定的参数的值<br />
+这里param的功能和request.getParameter(String name)相同，<br />
+而paramValues和request.getParameterValues(String name)相同。<br />
+如果用户填了一个form，form名称有为username的文本框，则我们就可以使<br />
+用${param.username}来取得用户填入文本框的值。</p>
+
+<p><span style="color: #0000ff;">EL函数</span>
+EL中使用函数要写一个要使用到方法的类，然后在配置xxx.tld文件，然后在JSP中使用时和JSP的自定义标签相似。<br />
+xxx.tld中的配置<br />
+&lt;function&gt;<br />
+&lt;name&gt;reverse&lt;/name&gt;&lt;!--函数名--&gt;<br />
+&lt;function-class&gt;jsp2.examples.el.Functions&lt;/function-class&gt;&lt;!--函数所在的类--&gt;<br />
+&lt;function-signature&gt;java.lang.String reverse( java.lang.String )&lt;/function-signature&gt;<br />
+&lt;!--函数原型，也就是函数的返回值类型，函数名，参数表，注意一定要写类型的全名--&gt;<br />
+&lt;/function&gt;</p>
+
+<p><span style="color: #0000ff;">使用EL函数的写法</span>
+${sn:upper('abc')}<br />
+注意：在定义EL函数时，都必须为公开静态(public static)</p>
+
+<p><span style="color: #0000ff;">EL的隐含对象</span>
+EL也可以使用内置对象中设置的属性，需要使用特定的EL内置对象<br />
+属性范围     |    在EL中的对象<br />
+Page         |     pageScope<br />
+Request      |     requestScope<br />
+Session      |     sessionScope<br />
+Application |     applicationScope</p>
+
+<p><span style="color: #0000ff;">EL中使用内置对象的属性</span>
+${requestScope.user}<br />
+等价于<br />
+&lt;%request.getAttribute("user")%&gt;<br />
+如果不写出特定的范围 ，那就会在不同的范围间进行搜索了<br />
+例：{user}（user是在request范围 request.setAttribute("user",user)）<br />
+也就等于<br />
+${requestScope.user}<br />
+&lt;%request.getAttribute("user")%&gt;</p>
+
+<p><span style="color: #0000ff;">EL的隐含对象</span>
+对象                        类 型                  说 明<br />
+PageContext      | javax.servlet.ServletContext |表示此JSP的PageContext<br />
+-----------------------------------------------------------------------------------<br />
+PageScope        | java.util.Map   |取得Page范围的属性名称所对应的值<br />
+-------------------------------------------------------------------------------------<br />
+RequestScope     |  java.util.Map         |取得Request范围的属性名称所对应的值<br />
+-------------------------------------------------------------------------------------<br />
+sessionScope     |  java.util.Map         |取得Session范围的属性名称所对应的值<br />
+-------------------------------------------------------------------------------------<br />
+applicationScope |  java.util.Map         |取得Application范围的属称所对应的值<br />
+-------------------------------------------------------------------------------------<br />
+param           |  java.util.Map  |如同ServletRequest.getParameter(String name)返回String类型的值<br />
+----------------------------------------------------------------------------------------<br />
+paramValues   | java.util.Map |如同ServletRequest.getParameterValues   | (String name)。返回String []类型的值<br />
+-----------------------------------------------------------------------------------------<br />
+header           |  java.util.Map   |如同ServletRequest.getHeader(String name)  返回String类型的值<br />
+------------------------------------------------------------------------------------------<br />
+headerValues     |    java.util.Map  |如同ServletRequest.getHeaders(String name) 。返回String []类型的值<br />
+------------------------------------------------------------------------------------------<br />
+cookie   |     java.util.Map         |如同HttpServletRequest.getCookies( )<br />
+------------------------------------------------------------------------------------------<br />
+initParam   | java.util.Map |如同ServletContext.getInitParameter(String name)。返回String类型的值<br />
+-------------------------------------------------------------------------------------------</p>
+
+<p><span style="color: #0000ff;">cookie对象</span>
+所谓的cookie是一个小小的文本文件，它是以key、value的方式将Session Tracking的内容记录在这个文本文件内，<br />
+这个文本文件通常存在于浏览器的暂存区内。JSTL并没有提供设定cookie的动作，<br />
+因为这个动作通常都是后端开发者必须去做的事情，而不是交给前端的开发者。如果我们在cookie中设定一个名<br />
+称为userCountry的值，那么可以使用${cookie.userCountry}来取得它。<br />
+header和headerValues（请求报头对象）<br />
+header储存用户浏览器和服务端用来沟通的数据，当用户要求服务端的网页时，会送出一个记载要求信息的标头文件，<br />
+例如：用户浏览器的版本、用户计算机所设定的区域等其他相关数据。如果要取得用户浏览器的版本，<br />
+即${header["User-Agent"]}。另外在很少机会下，有可能同一标头名称拥有不同的值，此时必须改为使用headerValues来取得这些值。<br />
+注意：因为User-Agent中包含“-”这个特殊字符，所以必须使用“[]”，而不能写成${header.User-Agent}。</p>
+
+<p><span style="color: #0000ff;">initParam</span>
+就像其他属性一样，我们可以自行设定web应用的环境参数(Context)，当我们想取得这些参数时，<br />
+可以使用initParam隐含对象去取得它，例如：当我们在web.xml中设定如下：<br />
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;<br />
+&lt;web-app xmlns="http://java.sun.com/xml/ns/j2ee"<br />
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br />
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"<br />
+version="2.4"&gt;<br />
+&lt;context-param&gt;<br />
+&lt;param-name&gt;userid&lt;/param-name&gt;<br />
+&lt;param-value&gt;mike&lt;/param-value&gt;<br />
+&lt;/context-param&gt;<br />
+&lt;/web-app&gt;<br />
+那么我们就可以直接使用 ${initParam.userid}来取得名称为userid，其值为mike的参数。<br />
+下面是之前的做法：String userid = (String)application.getInitParameter("userid");</p>
+
+<p><span style="color: #0000ff;">pageContext对象</span>
+我们可以使用 ${pageContext}来取得其他有关用户要求或页面的详细信息。下面列出了几个比较常用的部分。<br />
+Expression                                说 明<br />
+${pageContext.request}                  |取得请求对象<br />
+${pageContext.session}                  |取得session对象<br />
+${pageContext.request.queryString}      |取得请求的参数字符串<br />
+${pageContext.request.requestURL}       |取得请求的URL，但不包括请求之参数字符串<br />
+${pageContext.request.contextPath}      |服务的web application的名称<br />
+${pageContext.request.method}           |取得HTTP的方法(GET、POST)<br />
+${pageContext.request.protocol}         |取得使用的协议(HTTP/1.1、HTTP/1.0)<br />
+${pageContext.request.remoteUser}       |取得用户名称<br />
+${pageContext.request.remoteAddr }      |取得用户的IP地址<br />
+${pageContext.session.new}              |判断session是否为新的，所谓新的session，表示刚由server产生而client尚未使用<br />
+${pageContext.session.id}               |取得session的ID<br />
+${pageContext.servletContext.serverInfo}|取得主机端的服务信息</p>

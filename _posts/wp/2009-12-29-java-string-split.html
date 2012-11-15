@@ -1,0 +1,132 @@
+---
+layout: post
+title: Java中的字符串截取
+categories:
+- Java Core
+tags:
+- Java Core
+- String
+published: true
+comments: true
+---
+<p>编写一个截取字符串的函数，输入为一个字符串和字节数，输出为按字节截取的字符串。 但是要保证汉字不被截半个，如“我ABC”4，应该截为“我AB”，输入“我ABC汉DEF”，6，应该输出为“我ABC”而不是“我ABC+汉的半个”。</p>
+
+<p>这是我面试时候遇到的问题，刚开始的时候，思维就陷入了定势：用String的getBytes（）方法将字符串转化为byte数组，然后在遍历数组，每次遍历的时候要判断当前字符是字母还是汉字，面试的时候想着用正则判断汉字，却忘了正则表达式是怎样的。结果思路对了，就差不知道判断中文的正则怎样写了！ :arrow:</p>
+
+<p>现在，想了想怎样实现上门的要求。找到实现的方法如下：</p>
+
+<p><!--more--></p>
+
+<p>package stringTest;</p>
+
+<p>import java.io.UnsupportedEncodingException;</p>
+
+<p>public class SplitString {<br />
+/**<br />
+* 按字节截取字符串<br />
+*
+* @param orignal<br />
+*            原始字符串<br />
+* @param count<br />
+*            截取位数<br />
+* @return 截取后的字符串<br />
+* @throws UnsupportedEncodingException<br />
+*             使用了JAVA不支持的编码格式<br />
+*/<br />
+public String substring(String orignal, int count)<br />
+throws UnsupportedEncodingException {<br />
+// 原始字符不为null，也不是空字符串<br />
+if (orignal != null &amp;&amp; !"".equals(orignal)) {<br />
+// 将原始字符串转换为GBK编码格式<br />
+orignal = new String(orignal.getBytes(), "GBK");<br />
+// 要截取的字节数大于0，且小于原始字符串的字节数<br />
+if (count &gt; 0 &amp;&amp; count &lt; orignal.getBytes("GBK").length) {<br />
+StringBuffer buff = new StringBuffer();<br />
+char c;<br />
+for (int i = 0; i &lt; count; i++) {<br />
+// charAt(int index)也是按照字符来分解字符串的<br />
+c = orignal.charAt(i);<br />
+buff.append(c);<br />
+if (isChineseChar(c)) {<br />
+// 遇到中文汉字，截取字节总数减1<br />
+--count;<br />
+}
+}<br />
+return buff.toString();<br />
+}
+}<br />
+return orignal;<br />
+}</p>
+
+<p>/**<br />
+* 判断是否是一个中文汉字<br />
+*
+* @param c<br />
+*            字符<br />
+* @return true表示是中文汉字，false表示是英文字母<br />
+* @throws UnsupportedEncodingException<br />
+*             使用了JAVA不支持的编码格式<br />
+*/<br />
+public boolean isChineseChar(char c) throws UnsupportedEncodingException {<br />
+// 如果字节数大于1，是汉字<br />
+// 以这种方式区别英文字母和中文汉字并不是十分严谨，但在这个题目中，这样判断已经足够了<br />
+return String.valueOf(c).getBytes("GBK").length &gt; 1;<br />
+}</p>
+
+<p>public static void main(String[] args) {<br />
+String st = "test中dd文dsaf中男大3443n中国43中国人0ewldfls=103";<br />
+SplitString ss = new SplitString();</p>
+
+<p>try {<br />
+System.out.println("使用重写的subString截取："+ss.substring(st, 5));<br />
+} catch (UnsupportedEncodingException e) {<br />
+e.printStackTrace();<br />
+}
+}<br />
+}
+这里区别英文字母和中文汉字并不是十分严谨，使用的方法是：</p>
+
+<p>return String.valueOf(c).getBytes("GBK").length &gt; 1;</p>
+
+<p>当然，还有其他的办法可以判别。这只u是解决办法之一，后来看了看String的其他方法，发现还有一种更简单的解决办法：</p>
+
+<p>package stringTest;</p>
+
+<p>import java.io.UnsupportedEncodingException;</p>
+
+<p>public class SplitString {<br />
+String SplitStr;<br />
+int SplitByte;<br />
+public SplitString(String str, int bytes) {<br />
+SplitStr = str;<br />
+SplitByte = bytes;<br />
+System.out.println("The String is:'" + SplitStr + "';SplitBytes="<br />
++ SplitByte + ";The String length:" + SplitStr.length());<br />
+}
+public void SplitIt() {<br />
+int loopCount;</p>
+
+<p>loopCount = (SplitStr.length() % SplitByte == 0)<br />
+? (SplitStr.length() / SplitByte)<br />
+: (SplitStr.length() / SplitByte + 1);<br />
+System.out.println("Will Split into " + loopCount);<br />
+for (int i = 1; i &lt;= loopCount; i++) {<br />
+if (i == loopCount) {</p>
+
+<p>System.out.println(SplitStr.substring((i - 1) * SplitByte,<br />
+SplitStr.length()));<br />
+} else {</p>
+
+<p>System.out.println(SplitStr.substring((i - 1) * SplitByte,<br />
+(i * SplitByte)));<br />
+}
+}<br />
+}</p>
+
+<p>public static void main(String[] args) {<br />
+String st = "test中dd文dsaf中男大3443n中国43中国人0ewldfls=103";<br />
+SplitString ss = new SplitString(st, 4);<br />
+ss.SplitIt();<br />
+}
+}<br />
+这种方法使用的是String的subString方法，好处是不用关注当前的字符是字母还是汉字了。</p>

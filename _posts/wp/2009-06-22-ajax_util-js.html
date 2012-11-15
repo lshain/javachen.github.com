@@ -1,0 +1,134 @@
+---
+layout: post
+title: Ajax 中的utils.js工具
+categories:
+- DWR
+tags:
+- DWR
+- JavaScript
+published: true
+comments: true
+---
+<p><pre lang="javascript" line="1">
+function createXhr(){
+	if(window.ActiveXObject){
+		return new ActiveXObject("Microsoft.XMLHTTP");
+	}else if(window.XMLHttpRequest){
+		return new XMLHttpRequest();
+	}else{
+		throw new Error("Does not ajax programming");
+	}
+}</pre></p>
+
+<p>function $(id){<br />
+	return byId(id);<br />
+}</p>
+
+<p>function byId(id){<br />
+	return document.getElementById(id);<br />
+}
+<!--more--></p>
+
+<p>function getSelectValue(id){<br />
+	var select = byId(id);<br />
+	var options = select.getElementsByTagName("option");<br />
+	for(var i = 0; i < options.length; i++){<br />
+		var option = options[i];<br />
+		if(option.selected){<br />
+			return option.value;<br />
+		}<br />
+	}<br />
+}</p>
+
+<p>function getSelectValues(id){<br />
+	var values = [];<br />
+	var select = byId(id);<br />
+	var options = select.getElementsByTagName("option");<br />
+	var j = 0;<br />
+	for(var i = 0; i < options.length; i++){<br />
+		var option = options[i];<br />
+		if(option.selected){<br />
+			values[j] = option.value;<br />
+			j++;<br />
+		}<br />
+	}<br />
+	return values;<br />
+}</p>
+
+<p>function getEavById(id, el){<br />
+	if(el) return el.getElementById(id).value;<br />
+	return byId(id).value;<br />
+}</p>
+
+<p>function getEtvById(id, el){<br />
+	if(el) return el.getElementById(id).firstChild.nodeValue;<br />
+	return byId(id).firstChild.nodeValue;<br />
+}</p>
+
+<p>function getEavByName(name, el){<br />
+	if(el) return el.getElementsByTagName(name)[0].value;<br />
+	return document.getElementsByTagName(name)[0].value;<br />
+}</p>
+
+<p>function getEtvByName(name, el){<br />
+	if(el) return el.getElementsByTagName(name)[0].firstChild.nodeValue;<br />
+	return document.getElementsByTagName(name)[0].firstChild.nodeValue;<br />
+}</p>
+
+<p>//object from form<br />
+function obj4form(formId){<br />
+	var form = $(formId);<br />
+	if(!form) return null;<br />
+	var inputs = form.getElementsByTagName("input");<br />
+	if(!inputs) return null;</p>
+
+<p>	var ret = {};<br />
+	for(var i = 0; i < inputs.length; i++){<br />
+		var input = inputs[i];<br />
+		if(input.name){<br />
+			if(input.value){<br />
+				ret[input.name] = input.value;<br />
+			}else{<br />
+				ret[input.name] = null;<br />
+			}<br />
+		}else if(input.id){<br />
+			if(input.value){<br />
+				ret[input.id] = input.value;<br />
+			}else{<br />
+				ret[input.id] = null;<br />
+			}<br />
+		}<br />
+	}</p>
+
+<p>	return ret;<br />
+}</p>
+
+<p>//query string from form<br />
+function qs4form(formId){<br />
+	var qs = "";<br />
+	var form = $(formId);<br />
+	if(!form) return qs;<br />
+	var inputs = form.getElementsByTagName("input");</p>
+
+<p>	if(inputs){<br />
+		var len = inputs.length;<br />
+		for(var i = 0; i < len; i++){<br />
+			var input = inputs[i];<br />
+			if(input.name){<br />
+				if(qs &#038;& i >0 &#038;& i < len - 1)<br />
+					qs += "&#038;";<br />
+				qs += input.name + "=" + escape(input.value);<br />
+			} else if(input.id){<br />
+				if(qs &#038;& i >0 &#038;& i < len - 1)<br />
+					qs += "&#038;";<br />
+				qs += input.id + "=" + escape(input.value);<br />
+			}else{<br />
+				continue;<br />
+			}<br />
+		}<br />
+	}<br />
+	return qs;<br />
+}
+
+
+</p>

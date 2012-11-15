@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>JavaScript prototype学习笔记</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>28 Dec 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JavaScript/2009/12/28/javascript-prototype-notebook.html'>JavaScript prototype学习笔记</a></h1>
+  <div class='body'><p><span style="color: #0000ff;">prototype源自法语，软件界的标准翻译为“原型”，代表事物的初始形态，也含有模型和样板的意义。学习了Java的面向对象思想，关于prototype的一些语法就很容易理解了，如属性、方法、继承、多态</span>
+JavaScript的所有function类型的对象都有一个prototype属性。这个prototype属性本身又是一个object类型的对象，因此我们也可以给这个prototype对象添加任意的属性和方法。既然prototype是对象的“原型”，那么由该函数构造出来的对象应该都会具有这个“原型”的特性。事实上，在构造函数的prototype上定义的所有属性和方法，都是可以通过其构造的对象直接访问和调用的。也可以这么说，prototype提供了一群同类对象共享属性和方法的机制。</p>
+
+<p><!--more--></p>
+
+<p>//---------------------------------------------------------<br />
+// 理解原型、构造、继承的示例<br />
+//---------------------------------------------------------<br />
+function MyObject() {<br />
+this.v1 = 'abc';<br />
+}</p>
+
+<p>function MyObject2() {<br />
+this.v2 = 'def';<br />
+}
+MyObject2.prototype = new MyObject();</p>
+
+<p>var obj1 = new MyObject();<br />
+var obj2 = new MyObject2();</p>
+
+<p>alert(obj1.v1 + " " + obj2.v2 + " " + obj2.v1);</p>
+
+<p><span style="color: #ff00ff;">由alert可知道MyObject2具有了MyObject对象的属性</span></p>
+
+<p><strong><span style="color: #0000ff;">1). new()关键字的形式化代码</span></strong>
+我们先来看“obj1 = new MyObject()”这行代码中的这个new关键字。<br />
+new关键字用于产生一个实例，但这个实例应当是从一个“原型的模板”复制过来的。这个用来作模板的原型对象，就是用“构造器<br />
+函数的prototype属性”所指向的那个对象。对于JavaScript“内置对象的构造器”来说，它指向内部的一个原型。</p>
+
+<p>每一个函数，无论它是否用作构造器，都会有一个独一无二的原型对象。缺省时JavaScript用它构造出一个“空的初始对象实例(不是null)”。然而如果你给函数的这个prototype赋一个新的对象，那么构造过程将用这个新对象作为“模板”。</p>
+
+<p>为了清楚地解释这个过程，我用代码形式化地描述一下这个过程：<br />
+//---------------------------------------------------------<br />
+// new()关键字的形式化代码<br />
+//---------------------------------------------------------<br />
+function new(aFunction) { // 如果有参数args<br />
+var _this = aFunction.prototype.clone();  // 从prototype中复制一个对象<br />
+aFunction.call(_this);    // 调用构造函数完成初始化, (如果有,)传入args<br />
+return _this;             // 返回对象<br />
+}</p>
+
+<p>所以我们看到以下两点：<br />
+- 构造函数(aFunction)本身只是对传入的this实例做“初始化”处理，而不是构造一个对象实例。</p>
+
+<p>- 构造的过程实际发生在new()关键字/运算符的内部。而且，构造函数(aFunction)本身并不需要操作prototype，也不需要回传this。</p>
+
+<p><span style="color: #0000ff;"><strong>2). 由用户代码维护的原型(prototype)链</strong></span>
+接下来我们更深入的讨论原型链与构造过程的问题。这就是：<br />
+- 原型链是用户代码创建的，new()关键字并不协助维护原型链</p>
+
+<p>//---------------------------------------------------------<br />
+// JS中“原型链表”的关键代码<br />
+//---------------------------------------------------------<br />
+// 1. 构造器<br />
+function Animal() {};<br />
+function Mammal() {};<br />
+function Canine() {};<br />
+function Dog() {};</p>
+
+<p>// 2. 原型链表<br />
+Mammal.prototype = new Animal();<br />
+Canine.prototype = new Mammal();<br />
+Dog.prototype = new Canine();</p>
+
+<p>// 3. 示例函数<br />
+function isAnimal(obj) {<br />
+return obj instanceof Animal;<br />
+}</p>
+
+<p>var dog = new Dog();<br />
+document.writeln(isAnimal(dog));</p>
+
+<p>可以看到，在JS的用户代码中，“原型链表”的构建方法是一行代码：<br />
+"当前类的构造器函数".prototype = "直接父类的实例"</p>
+
+<p><span style="color: #0000ff;"><strong>3). 原型实例是如何被构造过程使用的</strong></span>
+父类的构造过程仅仅发生在为原型(prototype属性)赋值的那一行代码上。其后，无论有多少个new MyObject2()发生，<br />
+MyObject()这个构造器都不会被使用。——这也意味着：<br />
+- 构造过程中，原型模板是一次性生成的；对这个原型实例的使用是不断复    制，而并不再调用原型的构造器。</p>
+
+<p>我们先来看看下面的代码：
+<div>function Person(name)<br />
+{
+this.name = name;   //设置对象属性，每个对象各自一份属 性数据<br />
+};</div></p>
+
+<p>Person.prototype.SayHello = function()  //给Person函数的prototype添加SayHello方法。<br />
+{
+alert("Hello, I'm " + this.name);<br />
+}</p>
+
+<p>var BillGates = new Person("Bill Gates");   //创建BillGates对象<br />
+var SteveJobs = new Person("Steve Jobs");   //创建SteveJobs对象</p>
+
+<p>BillGates.SayHello();   //通过BillGates对象直接调用到SayHello方法<br />
+SteveJobs.SayHello();   //通过SteveJobs对象直接调用到SayHello方法</p>
+
+<p>alert(BillGates.SayHello == SteveJobs.SayHello); //因为两个对象是共享prototype的SayHello，所以显示：true</p>
+
+<p>
+程序运行的结果表明，<span style="color: #ff00ff;">构造函数的prototype上定义的方法确实可以通过对象直接调用到，而且代码是共享的</span>。显然，把方法设置到prototype的 写法显得优雅多了，尽管调用形式没有变，但逻辑上却体现了方法与类的关系，相对前面的写法，更容易理解和组织代码。</p>
+
+<p>在JavaScript中，prototype不但能让对象共享自己财富，而且prototype还有寻根问祖的天性，从而使得先辈们的遗产可以代代相 传。当从一个对象那里读取属性或调用方法时，如果该对象自身不存在这样的属性或方法，就会去自己关联的prototype对象那里寻找；如果 prototype没有，又会去prototype自己关联的前辈prototype那里寻找，直到找到或追溯过程结束为止。</p>
+
+<p>在JavaScript内部，对象的属性和方法追溯机制是通过所谓的prototype链来实现的。当用new操作符构造对象时，也会同时将构造函数的 prototype对象指派给新创建的对象，成为该对象内置的原型对象。对象内置的原型对象应该是对外不可见的，尽管有些浏览器(如Firefox)可以 让我们访问这个内置原型对象，但并不建议这样做。内置的原型对象本身也是对象，也有自己关联的原型对象，这样就形成了所谓的原型链。</p>
+
+<p>在原型链的最末端，就是Object构造函数prototype属性指向的那一个原型对象。这个原型对象是所有对象的最老祖先，这个老祖宗实现了诸如 toString等所有对象天生就该具有的方法。其他内置构造函数，如Function, Boolean, String,  Date和RegExp等的prototype都是从这个老祖宗传承下来的，但他们各自又定义了自身的属性和方法，从而他们的子孙就表现出各自宗族的那些 特征。</p>
+
+<p>这就是JavaScript特有的“原型继承”。
+<h2><strong><span style="color: #0000ff;">JavaScript中的继承</span></strong></h2>
+function Person(name){<br />
+this.name = name; //设置对象属性，每个对象各自一份属性数据<br />
+};<br />
+Person.prototype.SayHello = function() //给Person函数的prototype添加SayHello方法。<br />
+{
+alert("Hello, I'm " + this.name);<br />
+}
+var javachen = new Person("javachen"); //创建javachen对象<br />
+var website = new Person("website"); //创建website对象<br />
+javachen.SayHello(); //通过javachen对象直接调用到SayHello方法<br />
+website.SayHello(); //通过website对象直接调用到SayHello方法<br />
+alert(javachen.SayHello == website.SayHello); //因为两个对象是共享prototype的SayHello，所以显示：true</p>
+
+<p>对象可以掩盖原型对象的那些属性和方法，一个构造函数原型对象也可以掩盖上层构造函数原型对象既有的属性和方法。这种掩盖其实只是在对象自己身上创建了新的属性和方法，只不过这些属性和方法与原型对象的那些同名而已。JavaScript就是用这简单的掩盖机制实现了对象的“多态”性，与静态对象语言的虚函数和重载(override)概念不谋而合。</p>
+
+<p><strong><span style="color: #0000ff;">JavaScript有多种方式模拟继承. </span></strong>
+<span style="color: #0000ff;">1. 利用function:</span></p>
+
+<p>function superClass() {<br />
+this.bye = superBye;<br />
+this.hello = superHello;<br />
+}</p>
+
+<p>function subClass() {<br />
+this.inheritFrom = superClass;<br />
+this.inheritFrom();<br />
+this.bye = subBye;<br />
+}</p>
+
+<p>或者:</p>
+
+<p>function subClass() {<br />
+superClass.call(this);<br />
+}</p>
+
+<p>先定义subClass的inheritFrom方法, 再调用这个方法(方法名称并不重要), 或者直接使用FunctionObject 的call 方法将this做参数, 都可以模拟实现从superClass的继承. 注意调用superClass时的this指向. 这个方法就是在执行subClass的cunstructor function时, 先执行supperClass的cunstructor function.这个方法的缺点在于子类仅仅是在自己的构造函数中, 将this作为参数调用了父类的构造函数, 将构造函数赋予父类的所有域赋予子类. 所以, 任何父类在构造函数之外(通过prototype)定义的域, 子类都无法继承. 而且子类的构造函数一定要在定义自己的域之前调用父类的构造函数, 免得子类的定义被父类覆盖. 使用这种方法子类也尽量不要使用prototype来定义子类的域, 因为prototype的定义在子类new的之后就执行, 所以它一定会在调用父类构造函数前, 同样会有被父类的定义覆盖的危险.</p>
+
+<p><span style="color: #0000ff;">2. 利用prototype:</span></p>
+
+<p>function superClass() {<br />
+this.bye = superBye;<br />
+this.hello = superHello;<br />
+}</p>
+
+<p>function subClass() {<br />
+this.bye = subBye;<br />
+}
+subClass.prototype = new superClass();<br />
+subClass.prototype.constructor = superClass;</p>
+
+<p>这里将一个superClass的实例设置成subclass的原型:protytype, 由于new superClass实例一定会调用父类prototype定义的所有域, 所以这种方法避免了上一种方法的一个问题, 父类可以通过prototype来描述域. 可以实现从superClass的继承. 而这个方法也有缺点, 由于子类的peototype已经是父类的实例(Object实例), 不能再被实例化, 所以new子类实例的时候, 父类的所有非基本数据类型(见JavaScript数据类型)都将是reference copy而非数据copy. 简单说就是所有的父类域在子类中虽然存在, 但看起来就像Java中的static域一样在子类间share.被一个子类改变, 所有子类都会改变.</p>
+
+<p>注意这里的最后一句, 改变了子类prototype中的constructor属性. 它对子类使用没有影响, 仅仅是为了在调用instanceOf方法时它使得子类实例返回subClass.</p>
+
+<p><span style="color: #0000ff;">3. Parasitic Inheritance (寄生继承)</span>
+function superClass() {<br />
+this.bye = superBye;<br />
+this.hello = superHello;<br />
+}</p>
+
+<p>function subClass() {<br />
+this.base = new supperClass();<br />
+base.sayBye = subBye;<br />
+return base;<br />
+}</p>
+
+<p>这种继承其实是一种扩展, 因为在调用instanceOf时, 子类会返回父类名称, 它的好处在于在构造函数继承的基础上解放了父类, 父类可以使用prototype定义自己的域, 但是子类仍然不建议使用prototype,以免被父类覆盖. 为了可以使子类的instanceof返回正确类型, 我们可以再改进一下:</p>
+
+<p>function subClass() {<br />
+this.base = new supperClass();<br />
+for ( var key in this.base ) {<br />
+if ( !this[key] ) {<br />
+this[key] = this.base[key];<br />
+}
+}</p>
+
+<p>this.sayBye = subBye;<br />
+}</p>
+
+<p>将所有的父类域拷贝给子类一份, 不再返回父类, instanceof子类实例时就可以返回正确类型.</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2009/12/28/javascript-prototype-notebook.html'>JavaScript prototype学习笔记</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

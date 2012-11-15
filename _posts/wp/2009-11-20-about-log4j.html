@@ -1,0 +1,179 @@
+---
+layout: post
+title: Log4j
+categories:
+- OpenSource
+tags:
+- Log4j
+- Open Sources
+published: true
+comments: true
+---
+<p>Log4j是Apache的一个开放源代码项目，使用Log4j,我们可以很方便的来记录日志.<br />
+LOG4J的配置之简单使它遍及于越来越多的应用中了：Log4J配置文件实现了输出到控制台、文件、 回滚文件、发送日志邮件、输出到数据库日志表、自定义标签等全套功能。<br />
+使用log4j前需要定义配置文件,也可以不使用,而是在代码中配置log4j环境.但是使用配置文件使应用程序更加灵活。</p>
+
+<p>log4j配置文件有三个主要的组件:Logger,Appender和Layout,分别为日志类型,日志输出目的地,日志输出格式.</p>
+
+<p>跟proxool类似,log4j支持两种类型的配置文件,xml和properties
+<span style="color: #0000ff;">log4j.properties配置文件如下:(需要把log4j的配置文件放在src下)</span></p>
+
+<p>log4j.rootLogger = [level], appenderName, appenderName, ...    (level是错误级别,appenderName是输出目的地,可以定义多个)<br />
+level优先级分别为FATAL、ERROR、WARN、INFO、DEBUG 5个级别.通过定义的级别,你可以控制程序中的日志输出.比如在这里定义了ERROR级别,程序中只有FARAL、ERROR 级别的LOG会被输出.
+<!--more-->
+log4j.appender.appenderName = 输出目的地(这里的appenderName是在前面定义的,可任意起名)
+<span style="color: #0000ff;">Log4j提供的输出目的地有以下几种:</span>
+org.apache.log4j.ConsoleAppender(控制台)<br />
+org.apache.log4j.FileAppender(文件)<br />
+org.apache.log4j.DailyRollingFileAppender(每天产生一个日志文件)<br />
+org.apache.log4j.RollingFileAppender(文件到达指定大小时产生一个新文件)<br />
+org.apache.log4j.WriterAppender(将日志信息以流格式发送到任何地方)</p>
+
+<p>log4j.appender.mylog.File = dir<br />
+log4j.appender.mylog.MaxFileSize=fileSize<br />
+log4j.appender.mylog.MaxBackupIndex=num设置保存备份文件数量</p>
+
+<p>log4j.appender.appenderName.layout = 布局类型 (设置布局类型)</p>
+
+<p><span style="color: #0000ff;">Log4j提供的layout有以下4种：</span>
+org.apache.log4j.HTMLLayout(以HTML表格形式布局)<br />
+org.apache.log4j.SimpleLayout(包含日志信息的级别和信息字符串)<br />
+org.apache.log4j.TTCCLayout(包含日志产生的时间、线程、类别等等信息)<br />
+org.apache.log4j.PatternLayout(可以灵活地指定布局模式)</p>
+
+<p><span style="color: #0000ff;">如果使用PatternLayout布局就要指定的打印信息的具体格式ConversionPattern,</span>
+<span style="color: #0000ff;">打印参数如下:</span>
+%m 输出代码中指定的消息<br />
+%p 输出优先级,即DEBUG，INFO，WARN，ERROR，FATAL<br />
+%r 输出自应用启动到输出该log信息耗费的毫秒数<br />
+%c 输出所属的类目,通常就是所在类的全名<br />
+%t 输出产生该日志事件的线程名<br />
+%n 输出一个回车换行符,Windows为"rn"，Unix为"n"<br />
+%d 输出日志时间,比如:%d{yyyy MMM dd HH:mm:ss,SSS},输出:2007年5月17日 19:30:00,000<br />
+%l 输出日志事件的发生位置,包括类目名、发生的线程,以及在代码中的行数<br />
+[QC]是log信息的开头,可以为任意字符,一般为项目简称</p>
+
+<p><span style="color: #0000ff;">一个比较全面的配置文件：</span>
+<pre lang="xml" line="1">
+ ### direct log messages to stdout ###
+#*****************************************************************
+#Loggers组件在此系统中被分为五个级别：DEBUG、INFO、WARN、ERROR和FATAL。
+#这五个级别是有顺序的，DEBUG < INFO < WARN < ERROR < FATAL，
+#分别用来指定这条日志信息的重要程度,明白这一点很重要，
+#这里Log4j有一个规则：假设Loggers级别为P，如果在Loggers中发生了一个级别Q比P高，则可以启动，否则屏蔽掉。
+#假设你定义的级别是info，那么error和warn的日志可以显示而比他低的debug信息就不显示了。
+#info:日志级别,stdout:日志记录器的输出端appender
+log4j.rootLogger=error,toFile,stdout
+#*****************************************************************
+#将日志信息输出到控制台
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+#*****************************************************************
+#将日志信息输出到一个文件
+#org.apache.log4j.FileAppender
+#*****************************************************************
+#将日志信息输出到一个，并且每天输出到一个新的日志文件
+#org.apache.log4j.DailyRollingFileAppender
+#*****************************************************************
+#将日志信息输出到一个文件，通过指定文件的的尺寸,
+#当文件大小到达指定尺寸的时候会自动把文件改名，
+#如名为example.log的文件会改名为 example.log.1，
+#同时产生一个新的example.log文件。
+#如果新的文件再次达到指定尺寸，
+#又会自动把文件改名为 example.log.2，
+#同时产生一个example.log文件。
+#依此类推，直到example.log. MaxBackupIndex，
+#MaxBackupIndex的值可在配置文件中定义。
+log4j.appender.toFile=org.apache.log4j.RollingFileAppender
+#要输出到哪一个文件
+log4j.appender.toFile.File=F:\\log\\log4j.log
+#输出文件的最大长度
+log4j.appender.toFile.MaxFileSize=1000kb
+#备份文件数
+log4j.appender.toFile.MaxBackupIndex=3
+log4j.appender.toFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.toFile.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n
+#*****************************************************************
+#将日志信息以流格式发送到任意指定的地方。
+#org.apache.log4j.WriterAppender
+#*****************************************************************
+#通过JDBC把日志信息输出到数据库中
+#log4j.appender.toDB=org.apache.log4j.jdbc.JDBCAppender
+#log4j.appender.toDB = org.apache.log4j.jdbc.JDBCAppender
+#log4j.appender.toDB.BufferSize = 40
+#log4j.appender.toDB.Driver = com.microsoft.jdbc.sqlserver.SQLServerDriver
+#log4j.appender.toDB.URL = jdbc:microsoft:sqlserver://127.0.0.1:1433;DatabaseName=nepalon
+#log4j.appender.toDB.User = sa
+#log4j.appender.toDB.Password =
+#log4j.appender.toDB.layout = org.apache.log4j.PatternLayout
+#log4j.appender.toDB.layout.ConversionPattern = INSERT INTO log4j (createDate, thread, priority, category, message) values(getdate(), '%t', '%-5p', '%c', '%m')
+#*****************************************************************
+#定义与所选的输出目的地相关的参数，
+#定义格式为：log4j.appender.appenderName.optionName1 = value1
+log4j.appender.stdout.Target=System.out
+#输出格式（布局）layout,定义一个appender的布局模式的格式为log4j.appender.appenderName.layout = fully.qualified.name.of.layout.class
+#org.apache.log4j.PatternLayout可以灵活地指定布局模式
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+#以HTML表格形式布局
+#org.apache.log4j.HTMLLayout
+#包含日志信息的级别和信息字符串
+#org.apache.log4j.SimpleLayout
+#ConversionPattern参数的格式含义
+#%c 输出日志信息所属的类的全名
+#%d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy-MM-dd HH:mm:ss }，输出类似：2002-10-18- 22：10：28
+#%f 输出日志信息所属的类的类名
+#%l 输出日志事件的发生位置，即输出日志信息的语句处于它所在的类的第几行
+#%m 输出代码中指定的信息，如log(message)中的message
+#%n 输出一个回车换行符，Windows平台为“\r\n”，Unix平台为“\n”
+#%p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL。如果是调用debug()输出的，则为DEBUG，依此类推
+#%r 输出自应用启动到输出该日志信息所耗费的毫秒数
+#%t 输出产生该日志事件的线程名
+log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n
+#当前打印语句所使用的时间 [日志所在的线程] 打印的级别 当前日志所在的类的全名 日志信息
+#log4j.appender.A1.layout.ConversionPattern = %-4r [%t] %-5p %c %x - %m%n</pre></p>
+
+<p>log4j.logger.org.springframework.security=error<br />
+#log4j.logger.com.faceye.components.security=debug<br />
+#log4j.logger.org.acegisecurity=info, stdout<br />
+log4j.logger.com.faceye=debug, stdout<br />
+### direct messages to file hibernate.log ###<br />
+#log4j.appender.file=org.apache.log4j.FileAppender<br />
+#log4j.appender.file.File=hibernate.log<br />
+#log4j.appender.file.layout=org.apache.log4j.PatternLayout<br />
+#log4j.appender.file.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n</p>
+
+<p>### set log levels - for more verbose logging change 'info' to 'debug' ###</p>
+
+<p>log4j.logger.org.hibernate=error<br />
+#log4j.logger.org.hibernate=debug</p>
+
+<p>### log HQL query parser activity<br />
+#log4j.logger.org.hibernate.hql.ast.AST=debug</p>
+
+<p>### log just the SQL<br />
+#log4j.logger.org.hibernate.SQL=debug</p>
+
+<p>### log JDBC bind parameters ###<br />
+log4j.logger.org.hibernate.type=error<br />
+log4j.category=Console<br />
+#log4j.logger.org.hibernate.type=debug</p>
+
+<p>### log schema export/update ###<br />
+#log4j.logger.org.hibernate.tool.hbm2ddl=debug</p>
+
+<p>### log HQL parse trees<br />
+#log4j.logger.org.hibernate.hql=debug</p>
+
+<p>### log cache activity ###<br />
+#log4j.logger.org.hibernate.cache=debug</p>
+
+<p>### log transaction activity<br />
+#log4j.logger.org.hibernate.transaction=debug</p>
+
+<p>### log JDBC resource acquisition<br />
+#log4j.logger.org.hibernate.jdbc=debug</p>
+
+<p>### enable the following line if you want to track down connection ###<br />
+### leakages when using DriverManagerConnectionProvider ###<br />
+#log4j.logger.org.hibernate.connection.DriverManagerConnectionProvider=trace
+
+</p>

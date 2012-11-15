@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>用JDOM操作XML文件</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>09 Dec 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/OpenSource/2009/12/09/jdom-dealwith-xml.html'>用JDOM操作XML文件</a></h1>
+  <div class='body'><p>JDOM是一个开源项目，它基于树型结构，利用纯JAVA的技术对XML文档实现解析、生成、序列化以及多种操作。</p>
+
+<p><strong><span style="color: #333399;">Java + XML = JDOM ！</span></strong></p>
+
+<p>JDOM 直接为JAVA编程服务。它利用更为强有力的JAVA语言的诸多特性（方法重载、集合概念以及映射），把SAX和DOM的功能有效地结合起来。</p>
+
+<p>Jdom是用Java语言读、写、操作XML的新API函数。Jason Hunter 和 Brett McLaughlin公开发布了它的1.0版本。在直觉、简单和高效的前提下，这些API函数被最大限度的优化。在接下来的篇幅里将介绍怎么用Jdom去读写一个已经存在的XML文档。</p>
+
+<p><!--more--> 在使用设计上尽可能地隐藏原来使用XML过程中的复杂性。利用JDOM处理XML文档将是一件轻松、简单的事。<br />
+JDOM 在2000年的春天被Brett McLaughlin和Jason Hunter开发出来，以弥补DOM及SAX在实际应用当中的不足之处。<br />
+这些不足之处主要在于SAX没有文档修改、随机访问以及输出的功能，而对于DOM来说，JAVA程序员在使用时来用起来总觉得不太方便。</p>
+
+<p>DOM的缺点主要是来自于由于Dom是一个接口定义语言（IDL）,它的任务是在不同语言实现中的一个最低的通用标准，并不是为JAVA特别设计的。</p>
+
+<p><strong><span style="color: #333399;">jdom组件操作xml的基本步骤</span></strong></p>
+
+<p>1.创建xml文件：首先首先需要在内存中构建一颗空的dom树（空树）；然后再创建起各种子节点，填充到dom树中；最后将dom数转换成xml文件。</p>
+
+<p>a.通过dom解析器，构建空的dom树。<br />
+b.创建各种子节点，组装到dom树中<br />
+c.创建转换器工厂类。<br />
+d.构建转化器。<br />
+e.通过转换器将dom树转化成xml文件。</p>
+
+<p>2.解析xml文件：</p>
+
+<p>a.通过SAXBuilder，创建dom解析器<br />
+b.通过dom解析器将xml文件转换成dom数<br />
+c.先从dom数中取出所有的子元素节点<br />
+d.从根元素中取出所有的子元素节点。<br />
+e.从子元素节点中取出属性节点和文本节点，获取相关数据。</p>
+
+<p><span style="color: #000000;"><strong><span style="color: #333399;">JDOM 类说明</span></strong></span></p>
+
+<p>org.JDOM<br />
+这个包里的类是你解析xml文件后所要用到的所有数据类型。<br />
+Attribute<br />
+CDATA<br />
+Coment<br />
+DocType<br />
+Document<br />
+Element<br />
+EntityRef<br />
+Namespace<br />
+ProscessingInstruction<br />
+Text</p>
+
+<p>org.JDOM.transform<br />
+在涉及xslt格式转换时应使用下面的2个类<br />
+JDOMSource<br />
+JDOMResult</p>
+
+<p>org.JDOM.input<br />
+输入类，一般用于文档的创建工作<br />
+SAXBuilder<br />
+DOMBuilder<br />
+ResultSetBuilder</p>
+
+<p>org.JDOM.output<br />
+输出类，用于文档转换输出<br />
+XMLOutputter<br />
+SAXOutputter<br />
+DomOutputter<br />
+JTreeOutputter</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/OpenSource/2009/12/09/jdom-dealwith-xml.html'>用JDOM操作XML文件</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>JAVA中IO流的分类</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>16 May 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Java Core/2009/05/16/java_io.html'>JAVA中IO流的分类</a></h1>
+  <div class='body'><p>1. stream代表的是任何有能力产出数据的数据源，或是任何有能力接收数据的接收源。在Java的IO中，所有的stream（包括Input和Out stream）都包括两种类型：<br />
+1.1 以字节为导向的stream<br />
+以字节为导向的stream，表示以字节为单位从stream中读取或往stream中写入信息。以字节为导向的stream包括下面几种类型：<br />
+1&gt;. input　stream<br />
+1) ByteArrayInputStream：把内存中的一个缓冲区作为InputStream使用<br />
+2) StringBufferInputStream：把一个String对象作为InputStream<br />
+3) FileInputStream：把一个文件作为InputStream，实现对文件的读取操作<br />
+4) PipedInputStream：实现了pipe的概念，主要在线程中使用<br />
+5) SequenceInputStream：把多个InputStream合并为一个InputStream<!--more--></p>
+
+<p>2&gt;. Out　stream<br />
+1) ByteArrayOutputStream：把信息存入内存中的一个缓冲区中<br />
+2) FileOutputStream：把信息存入文件中<br />
+3) PipedOutputStream：实现了pipe的概念，主要在线程中使用<br />
+4) SequenceOutputStream：把多个OutStream合并为一个OutStream<br />
+=======================================================================<br />
+1.2 以Unicode字符为导向的stream<br />
+以Unicode字符为导向的stream，表示以Unicode字符为单位从stream中读取或往stream中写入信息。以Unicode字符为导向的stream包括下面几种类型：<br />
+1&gt;. Input　Stream<br />
+1) CharArrayReader：与ByteArrayInputStream对应<br />
+2) StringReader：与StringBufferInputStream对应<br />
+3) FileReader：与FileInputStream对应<br />
+4) PipedReader：与PipedInputStream对应</p>
+
+<p>2&gt;. Out　Stream<br />
+1) CharArrayWrite：与ByteArrayOutputStream对应<br />
+2) StringWrite：无与之对应的以字节为导向的stream<br />
+3) FileWrite：与FileOutputStream对应<br />
+4) PipedWrite：与PipedOutputStream对应<br />
+以字符为导向的stream基本上对有与之相对应的以字节为导向的stream。两个对应类实现的功能相同，字是在操作时的导向不同。如 CharArrayReader：和ByteArrayInputStream的作用都是把内存中的一个缓冲区作为InputStream使用，所不同的是前者每次从内存中读取一个字节的信息，而后者每次从内存中读取一个字符。<br />
+=======================================================================<br />
+1.3 两种不现导向的stream之间的转换<br />
+InputStreamReader和OutputStreamReader：把一个以字节为导向的stream转换成一个以字符为导向的stream。</p>
+
+<p>------------------------------------------------------------------------------<br />
+2. stream添加属性<br />
+2.1 “为stream添加属性”的作用<br />
+运用上面介绍的Java中操作IO的API，我们就可完成我们想完成的任何操作了。但通过FilterInputStream和FilterOutStream的子类，我们可以为stream添加属性。下面以一个例子来说明这种功能的作用。<br />
+如果我们要往一个文件中写入数据，我们可以这样操作：<br />
+FileOutStream fs = new FileOutStream(“test.txt”);<br />
+然后就可以通过产生的fs对象调用write()函数来往test.txt文件中写入数据了。但是，如果我们想实现“先把要写入文件的数据先缓存到内存中，再把缓存中的数据写入文件中”的功能时，上面的API就没有一个能满足我们的需求了。但是通过FilterInputStream和 FilterOutStream的子类，为FileOutStream添加我们所需要的功能。</p>
+
+<p>2.2 FilterInputStream的各种类型<br />
+2.2.1 用于封装以字节为导向的InputStream<br />
+1) DataInputStream：从stream中读取基本类型（int、char等）数据。<br />
+2) BufferedInputStream：使用缓冲区<br />
+3) LineNumberInputStream：会记录input stream内的行数，然后可以调用getLineNumber()和setLineNumber(int)<br />
+4) PushbackInputStream：很少用到，一般用于编译器开发</p>
+
+<p>2.2.2 用于封装以字符为导向的InputStream<br />
+1) 没有与DataInputStream对应的类。除非在要使用readLine()时改用BufferedReader，否则使用DataInputStream<br />
+2) BufferedReader：与BufferedInputStream对应<br />
+3) LineNumberReader：与LineNumberInputStream对应<br />
+4) PushBackReader：与PushbackInputStream对应</p>
+
+<p>2.3 FilterOutStream的各种类型<br />
+2.2.3 用于封装以字节为导向的OutputStream<br />
+1) DataIOutStream：往stream中输出基本类型（int、char等）数据。<br />
+2) BufferedOutStream：使用缓冲区<br />
+3) PrintStream：产生格式化输出</p>
+
+<p>2.2.4 用于封装以字符为导向的OutputStream<br />
+1) BufferedWrite：与对应<br />
+2) PrintWrite：与对应</p>
+
+<p>3. RandomAccessFile<br />
+1) 可通过RandomAccessFile对象完成对文件的读写操作<br />
+2) 在产生一个对象时，可指明要打开的文件的性质：r，只读；w，只写；rw可读写<br />
+3) 可以直接跳到文件中指定的位置<br />
+------------------------------------------------------------------------</p>
+
+<p>Java IO的一般使用原则：<br />
+一、按数据来源（去向）分类：<br />
+1、是文件： FileInputStream, FileOutputStream, FileReader, FileWriter<br />
+2、是byte[]：ByteArrayInputStream, ByteArrayOutputStream<br />
+3、是Char[]: CharArrayReader, CharArrayWriter<br />
+4、是String: StringBufferInputStream, StringReader, StringWriter<br />
+5、网络数据流：InputStream, OutputStream, Reader, Writer</p>
+
+<p>二、按是否格式化输出分：<br />
+1、要格式化输出：PrintStream, PrintWriter</p>
+
+<p>三、按是否要缓冲分：<br />
+1、要缓冲：BufferedInputStream, BufferedOutputStream, BufferedReader, BufferedWriter</p>
+
+<p>四、按数据格式分：<br />
+1、二进制格式（只要不能确定是纯文本的）: InputStream, OutputStream及其所有带Stream结束的子类<br />
+2、纯文本格式（含纯英文与汉字或其他编码方式）；Reader, Writer及其所有带Reader, Writer的子类</p>
+
+<p>五、按输入输出分：<br />
+1、输入：Reader, InputStream类型的子类<br />
+2、输出：Writer, OutputStream类型的子类</p>
+
+<p>六、特殊需要：<br />
+1、从Stream到Reader,Writer的转换类：InputStreamReader, OutputStreamWriter<br />
+2、对象输入输出：ObjectInputStream, ObjectOutputStream<br />
+3、进程间通信：PipeInputStream, PipeOutputStream, PipeReader, PipeWriter<br />
+4、合并输入：SequenceInputStream<br />
+5、更特殊的需要：PushbackInputStream, PushbackReader, LineNumberInputStream, LineNumberReader</p>
+
+<p>决定使用哪个类以及它的构造进程的一般准则如下（不考虑特殊需要）：<br />
+首先，考虑最原始的数据格式是什么： 原则四<br />
+第二，是输入还是输出：原则五<br />
+第三，是否需要转换流：原则六第1点<br />
+第四，数据来源（去向）是什么：原则一<br />
+第五，是否要缓冲：原则三 （特别注明：一定要注意的是readLine()是否有定义，有什么比read, write更特殊的输入或输出方法）<br />
+第六，是否要格式化输出：原则二<br />
+--------------------------------------------------------------------</p>
+
+<p>关于代码的解释（以区为单位）：<br />
+1区中，当读取文件时，先把文件内容读到缓存中，当调用in.readLine()时，再从缓存中以字符的方式读取数据（以下简称“缓存字节读取方式”）。<br />
+1b区中，由于想以缓存字节读取方式从标准IO（键盘）中读取数据，所以要先把标准IO（System.in）转换成字符导向的stream，再进行BufferedReader封装。<br />
+2区中，要以字符的形式从一个String对象中读取数据，所以要产生一个StringReader类型的stream。<br />
+4区中，对String对象s2读取数据时，先把对象中的数据存入缓存中，再从缓冲中进行读取；对TestIO.out文件进行操作时，先把格式化后的信息输出到缓存中，再把缓存中的信息输出到文件中。<br />
+5 区中，对Data.txt文件进行输出时，是先把基本类型的数据输出屋缓存中，再把缓存中的数据输出到文件中；对文件进行读取操作时，先把文件中的数据读取到缓存中，再从缓存中以基本类型的形式进行读取。注意in5.readDouble()这一行。因为写入第一个writeDouble()，所以为了正确显示。也要以基本类型的形式进行读取。<br />
+6区是通过RandomAccessFile类对文件进行操作。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Java Core/2009/05/16/java_io.html'>JAVA中IO流的分类</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

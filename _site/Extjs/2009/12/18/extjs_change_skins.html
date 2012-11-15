@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>extjs换肤</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>18 Dec 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Extjs/2009/12/18/extjs_change_skins.html'>extjs换肤</a></h1>
+  <div class='body'><p><strong>1.直接添加其他css文件换肤.</strong>
+皮肤文件:<a title="xtheme-olive.zip下载" href="http://files.cnblogs.com/qianxudetianxia/xtheme-olive.zip" target="_blank">xtheme-olive.zip下载</a>
+把皮肤文件解压,把css文件(如xtheme-olive.css)拷贝到extjs的resources目录下css文件夹里面:</p>
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/qianxudetianxia/2008-08-26_225947.gif" alt="" width="148" height="159" /></p>
+
+<p>解压皮肤文件,把里面的相应的 image文件夹下的目录(比如olive)拷贝到extjs的resources目录下images文件夹下</p>
+
+<p><!--more--></p>
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/qianxudetianxia/2008-08-26_230634.gif" alt="" width="164" height="161" /></p>
+
+<p>设置css文件如下:</p>
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/qianxudetianxia/2008-08-26_225811.gif" alt="" /></p>
+
+<p>其实就是在原有的基础上添加了个xtheme-olive.css文件。</p>
+
+<p>效果图:</p>
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/qianxudetianxia/2008-08-26_231315.gif" alt="" width="520" height="251" /></p>
+
+<p><strong>2.配合cookie实现网站换肤</strong></p>
+
+<p>我们的目标:
+<div><span style="color: #008000;">/*</span><span style="color: #008000;">
+用户可以选择自己的样式，当下次用户打开的网站(在cookie的有效期内)的时候，自动读取cookie，显示先前选择的爱好的样式！
+</span><span style="color: #008000;">*/</span></div>
+我们的原理:
+<div><span style="color: #008000;">//</span><span style="color: #008000;">关键点</span><span style="color: #008000;">
+</span><span style="color: #000000;">1</span><span style="color: #000000;">.document.getElementsByTagName(</span><span style="color: #000000;">"</span><span style="color: #000000;">link</span><span style="color: #000000;">"</span><span style="color: #000000;">)[</span><span style="color: #000000;">1</span><span style="color: #000000;">].href</span><span style="color: #008000;">//</span><span style="color: #008000;">获取或者设置第二个css文件的href值</span><span style="color: #008000;">
+</span><span style="color: #000000;">2</span><span style="color: #000000;">.</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> date</span><span style="color: #000000;">=</span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();</span><span style="color: #008000;">//</span><span style="color: #008000;">今天的日期</span><span style="color: #008000;">
+</span><span style="color: #000000;">date.setTime(date.getTime()</span><span style="color: #000000;">+</span><span style="color: #000000;">30</span><span style="color: #000000;">*</span><span style="color: #000000;">24</span><span style="color: #000000;">*</span><span style="color: #000000;">3066</span><span style="color: #000000;">*</span><span style="color: #000000;">1000</span><span style="color: #000000;">);</span><span style="color: #008000;">//</span><span style="color: #008000;">30天后的日期</span><span style="color: #008000;">
+</span><span style="color: #000000;">document.cookie</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">css=</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">name</span><span style="color: #000000;">+</span><span style="color: #000000;">"</span><span style="color: #000000;">;expires=</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">date.toGMTString();</span><span style="color: #008000;">//</span><span style="color: #008000;">设置30天后过期的cookies(名称为css)</span><span style="color: #008000;">
+</span><span style="color: #000000;">3</span><span style="color: #000000;">.</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> cookiesArr</span><span style="color: #000000;">=</span><span style="color: #000000;">document.cookie.split(</span><span style="color: #000000;">"</span><span style="color: #000000;">;</span><span style="color: #000000;">"</span><span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> css;
+</span><span style="color: #0000ff;">for</span><span style="color: #000000;">(</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> i</span><span style="color: #000000;">=</span><span style="color: #000000;">0</span><span style="color: #000000;">;i</span><span style="color: #000000;">&lt;</span><span style="color: #000000;">cookiesArr.length;i</span><span style="color: #000000;">++</span><span style="color: #000000;">)<br />
+{
+</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> arr</span><span style="color: #000000;">=</span><span style="color: #000000;">cookiesArr[i].split(</span><span style="color: #000000;">"</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">);
+</span><span style="color: #0000ff;">if</span><span style="color: #000000;">(arr[</span><span style="color: #000000;">0</span><span style="color: #000000;">]</span><span style="color: #000000;">==</span><span style="color: #000000;">"</span><span style="color: #000000;">css</span><span style="color: #000000;">"</span><span style="color: #000000;">)<br />
+{
+css</span><span style="color: #000000;">=</span><span style="color: #000000;">arr[</span><span style="color: #000000;">1</span><span style="color: #000000;">];
+</span><span style="color: #0000ff;">break</span><span style="color: #000000;">;<br />
+}
+}
+</span><span style="color: #008000;">//</span><span style="color: #008000;">这段代码是获取cookies中想要的名称为css的cookies，并保存在变量css中去</span><span style="color: #008000;">
+</span><span style="color: #000000;">4</span><span style="color: #000000;">.如果不设置expires的话，会在关闭浏览器后cookies失效。</span></div>
+html代码:
+<div><span style="color: #008000;">&lt;!--</span><span style="color: #008000;">切换标签</span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="javascript:void(0)"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="changecss('')"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">还原</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="javascript:void(0)"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="changecss('xtheme-olive.css')"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">绿色</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="javascript:void(0)"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="changecss('xtheme-gray.css')"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">灰色</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="javascript:void(0)"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="changecss('xtheme-purple.css')"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">purple</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span></div>
+关键js代码:
+<div><span style="color: #0000ff;">function</span><span style="color: #000000;"> changecss(name)<br />
+{
+</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> date</span><span style="color: #000000;">=</span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();<br />
+date.setTime(date.getTime()</span><span style="color: #000000;">+</span><span style="color: #000000;">30</span><span style="color: #000000;">*</span><span style="color: #000000;">24</span><span style="color: #000000;">*</span><span style="color: #000000;">3066</span><span style="color: #000000;">*</span><span style="color: #000000;">1000</span><span style="color: #000000;">);<br />
+document.getElementsByTagName(</span><span style="color: #000000;">"</span><span style="color: #000000;">link</span><span style="color: #000000;">"</span><span style="color: #000000;">)[</span><span style="color: #000000;">1</span><span style="color: #000000;">].href</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">ExtJs/resources/css/</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">name;<br />
+document.cookie</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">css=</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">name</span><span style="color: #000000;">+</span><span style="color: #000000;">"</span><span style="color: #000000;">;expires=</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">date.toGMTString();</span><span style="color: #008000;">//</span><span style="color: #008000;">设置cookies</span><span style="color: #008000;">
+</span><span style="color: #000000;">}</span>效果图(下次打开浏览器还是这样):</div></p>
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/qianxudetianxia/2008-08-26_234954.gif" alt="" width="527" height="269" /></p>
+
+<p><strong><span style="color: #0000ff;">其实，最简单的换肤函数用Extjs里的函数就可以实现：</span></strong></p>
+
+<p><code>Ext.util.CSS.swapStyleSheet("theme", "../../resources/css/xtheme-" + theme + ".css"); </code></p>
+
+<p>如果想增加一个换肤工具条，可以如下做：</p>
+
+<p>1、在html页面（每一个例子）的body中间加上以下代码（换肤工具条）</p>
+
+<p>&lt;div id="lib-bar" style="border-width:0 1px 1px; text-align:right; width:150px; position:absolute; right:0px;left:auto; top:2px; "&gt;&lt;div id="lib-bar-inner"&gt;<br />
+&lt;span&gt;Theme:&lt;/span&gt;<br />
+&lt;select id="exttheme"&gt;<br />
+&lt;option value="default"&gt;Ext Blue&lt;/option&gt;<br />
+&lt;option value="gray"&gt;Gray Theme&lt;/option&gt;<br />
+&lt;option value="black"&gt;Black Theme&lt;/option&gt;<br />
+&lt;option value="green"&gt;Green Theme&lt;/option&gt;<br />
+&lt;option value="calista"&gt;Calista Theme&lt;/option&gt;<br />
+&lt;option value="darkgray"&gt;Darkgray Theme&lt;/option&gt;<br />
+&lt;option value="indigo"&gt;Indigo Theme&lt;/option&gt;<br />
+&lt;option value="midnight"&gt;Midnight Theme&lt;/option&gt;<br />
+&lt;option value="olive"&gt;Olive Theme&lt;/option&gt;<br />
+&lt;option value="pink"&gt;Pink Theme&lt;/option&gt;<br />
+&lt;option value="purple"&gt;Purple Theme&lt;/option&gt;<br />
+&lt;option value="slate"&gt;Slate Theme&lt;/option&gt;<br />
+&lt;option value="slickness"&gt;Slickness Theme&lt;/option&gt;<br />
+&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;
+<pre style="display: none;">&lt;div id="lib-bar" style="border-width:0 1px 1px; text-align:right; width:150px; position:absolute; right:0px;left:auto; top:2px; "&gt;&lt;div id="lib-bar-inner"&gt;
+&lt;span&gt;Theme:&lt;/span&gt;
+&lt;select id="exttheme"&gt;
+&lt;option value="default"&gt;Ext Blue&lt;/option&gt;
+&lt;option value="gray"&gt;Gray Theme&lt;/option&gt;
+&lt;option value="black"&gt;Black Theme&lt;/option&gt;
+&lt;option value="green"&gt;Green Theme&lt;/option&gt;
+&lt;option value="calista"&gt;Calista Theme&lt;/option&gt;
+&lt;option value="darkgray"&gt;Darkgray Theme&lt;/option&gt;
+&lt;option value="indigo"&gt;Indigo Theme&lt;/option&gt;
+&lt;option value="midnight"&gt;Midnight Theme&lt;/option&gt;
+&lt;option value="olive"&gt;Olive Theme&lt;/option&gt;
+&lt;option value="pink"&gt;Pink Theme&lt;/option&gt;
+&lt;option value="purple"&gt;Purple Theme&lt;/option&gt;
+&lt;option value="slate"&gt;Slate Theme&lt;/option&gt;
+&lt;option value="slickness"&gt;Slickness Theme&lt;/option&gt;
+&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</pre>
+2、更改 ./examples/examples.js 文件中的 40行<br />
+将<code>Ext.getBody().addClass('x-'+theme);</code>
+改为：
+<code>Ext.util.CSS.swapStyleSheet("theme", "../../resources/css/xtheme-" + theme + ".css"); </code></p>
+
+<p><strong><span style="color: #0000ff;">通过ExtJs插件也可以实现换肤：</span></strong></p>
+
+<p>&lt;html&gt;<br />
+&lt;head&gt;<br />
+&lt;title&gt;定制个性化风格&lt;/title&gt;<br />
+&lt;link rel="stylesheet" type="text/css" href="resources/css/ext-all.css"&gt;<br />
+&lt;script type="text/javascript" src="js/adapter/ext/ext-base.js"&gt;&lt;/script&gt;<br />
+&lt;script type="text/javascript" src="js/ext-all.js"&gt;&lt;/script&gt;<br />
+&lt;script type="text/javascript" src="js/ext-lang-zh_CN.js"&gt;&lt;/script&gt;<br />
+&lt;script type="text/javascript"&gt;<br />
+//定义使用改变个性化定制的控件<br />
+//该控制实际上为一个可供选择样式表值的下拉框<br />
+//当改变下拉框的选择时则调用Ext.util.CSS.swapStyleSheet来替换其样式表路径<br />
+Ext.ux.ThemeChange = Ext.extend(Ext.form.ComboBox,{<br />
+editable : false,<br />
+displayField : 'theme',<br />
+valueField : 'css',<br />
+typeAhead : true,<br />
+mode : 'local',<br />
+value : '默认',<br />
+readonly : true,<br />
+triggerAction : 'all',<br />
+selectOnFocus : true,<br />
+initComponent : function(){<br />
+var themes = [<br />
+['默认', 'ext-all.css'],<br />
+['黑色', 'xtheme-black.css'],<br />
+['巧克力色', 'xtheme-chocolate.css'],<br />
+['深灰色', 'xtheme-darkgray.css'],<br />
+['浅灰色', 'xtheme-gray.css'],<br />
+['绿色', 'xtheme-green.css'],<br />
+['橄榄色', 'xtheme-olive.css'],<br />
+['椒盐色', 'xtheme-peppermint.css'],<br />
+['粉色', 'xtheme-pink.css'],<br />
+['紫色', 'xtheme-purple.css'],<br />
+['暗蓝色', 'xtheme-slate.css'],<br />
+['靛青色', 'xtheme-indigo.css'],<br />
+['深夜', 'xtheme-midnight.css'],<br />
+['银白色', 'xtheme-silverCherry.css']<br />
+];<br />
+this.store = new Ext.data.SimpleStore({<br />
+fields : ['theme', 'css'],<br />
+data : themes<br />
+});<br />
+},<br />
+initEvents : function(){<br />
+this.on('collapse', function(){<br />
+//实际改变风格样式的处理<br />
+Ext.util.CSS.swapStyleSheet('theme', 'resources/css/ext/'+ this.getValue());<br />
+});<br />
+}
+});<br />
+Ext.reg('xthemeChange', Ext.ux.ThemeChange);</p>
+
+<p>Ext.onReady(function(){<br />
+//实例化一个可以改变风格样式的组件<br />
+var pan = new Ext.Panel({<br />
+title:'定制个性化风格',<br />
+items:new Ext.ux.ThemeChange()<br />
+,
+height:200,<br />
+width:300<br />
+});<br />
+pan.render("hr_panel");<br />
+});<br />
+&lt;/script&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+&lt;table cellspacing="5" cellpadding="5"&gt;&lt;tr&gt;&lt;td&gt;&lt;div id="hr_panel"&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;<br />
+&lt;/body&gt;<br />
+&lt;/html&gt;
+<pre style="display: none;">&lt;div id="lib-bar" style="border-width:0 1px 1px; text-align:right; width:150px; position:absolute; right:0px;left:auto; top:2px; "&gt;&lt;div id="lib-bar-inner"&gt;
+&lt;span&gt;Theme:&lt;/span&gt;
+&lt;select id="exttheme"&gt;
+&lt;option value="default"&gt;Ext Blue&lt;/option&gt;
+&lt;option value="gray"&gt;Gray Theme&lt;/option&gt;
+&lt;option value="black"&gt;Black Theme&lt;/option&gt;
+&lt;option value="green"&gt;Green Theme&lt;/option&gt;
+&lt;option value="calista"&gt;Calista Theme&lt;/option&gt;
+&lt;option value="darkgray"&gt;Darkgray Theme&lt;/option&gt;
+&lt;option value="indigo"&gt;Indigo Theme&lt;/option&gt;
+&lt;option value="midnight"&gt;Midnight Theme&lt;/option&gt;
+&lt;option value="olive"&gt;Olive Theme&lt;/option&gt;
+&lt;option value="pink"&gt;Pink Theme&lt;/option&gt;
+&lt;option value="purple"&gt;Purple Theme&lt;/option&gt;
+&lt;option value="slate"&gt;Slate Theme&lt;/option&gt;
+&lt;option value="slickness"&gt;Slickness Theme&lt;/option&gt;
+&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;</pre>
+
+<span style="color: #0000ff;">var</span><span style="color: #000000;"> cookiesArr</span><span style="color: #000000;">=</span><span style="color: #000000;">document.cookie.split(</span><span style="color: #000000;">"</span><span style="color: #000000;">;</span><span style="color: #000000;">"</span><span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> css;
+</span><span style="color: #0000ff;">for</span><span style="color: #000000;">(</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> i</span><span style="color: #000000;">=</span><span style="color: #000000;">0</span><span style="color: #000000;">;i</span><span style="color: #000000;">&lt;</span><span style="color: #000000;">cookiesArr.length;i</span><span style="color: #000000;">++</span><span style="color: #000000;">)<br />
+{
+</span><span style="color: #0000ff;">var</span><span style="color: #000000;"> arr</span><span style="color: #000000;">=</span><span style="color: #000000;">cookiesArr[i].split(</span><span style="color: #000000;">"</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">);
+</span><span style="color: #0000ff;">if</span><span style="color: #000000;">(arr[</span><span style="color: #000000;">0</span><span style="color: #000000;">]</span><span style="color: #000000;">==</span><span style="color: #000000;">"</span><span style="color: #000000;">css</span><span style="color: #000000;">"</span><span style="color: #000000;">)<br />
+{
+css</span><span style="color: #000000;">=</span><span style="color: #000000;">arr[</span><span style="color: #000000;">1</span><span style="color: #000000;">];
+</span><span style="color: #0000ff;">break</span><span style="color: #000000;">;<br />
+}
+}<br />
+document.getElementsByTagName(</span><span style="color: #000000;">"</span><span style="color: #000000;">link</span><span style="color: #000000;">"</span><span style="color: #000000;">)[</span><span style="color: #000000;">1</span><span style="color: #000000;">].href</span><span style="color: #000000;">=</span><span style="color: #000000;">"</span><span style="color: #000000;">ExtJs/resources/css/</span><span style="color: #000000;">"</span><span style="color: #000000;">+</span><span style="color: #000000;">css;</span><span style="color: #008000;">//</span><span style="color: #008000;">读取并应用css</span></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Extjs/2009/12/18/extjs_change_skins.html'>extjs换肤</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>JSP基本指令</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>10 Jun 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JSP/2009/06/10/jsp_tags.html'>JSP基本指令</a></h1>
+  <div class='body'><p><span style="color: #0000ff;">1)指令元素(Directives)</span>
+例: &lt;%@dirrctivaName attrName="attrValue"%&gt;<br />
+&lt;%@page ..%&gt;页面指令<br />
+&lt;%@page import="..."%&gt; 引入包 例：&lt;%@page import="java.util.*,ent.*"%&gt;（可出现多次）<br />
+&lt;%@page pageEncoding="GBK"%&gt;设定页面显示的字符集<br />
+&lt;%@page contentType="text/html;charset=GBK"%&gt;设置输出流的编码方式和文件格式。
+<span style="color: #ff0000;">注意：</span>输出的字符集编码方式要和页面显示的字符集相同，一般定义输出流的编码方式，注意以上两个页面指<br />
+令在JSP中最好只出现一次。注意在请求中传送的参数的值是中文的话需要调用请求request的<br />
+setCharacterEncoding("..")方法设置相应的编码方式，只适用于post请求，<br />
+也可以通过Servlet的Filter来进行中文编码方式的处理。</p>
+
+<p><!--more-->&lt;%@page language="java"%&gt;指定JSP的脚本语言，现在只能写java<br />
+&lt;%@page extends=".."&gt; 指定翻译后代码类型的父类，最好不要使用这个指令<br />
+&lt;%@page session="true|false"%&gt;指定是否自动创建Session，最好不自己指定，使用默认值<br />
+&lt;%@page buffer=".." autoflush="true|false"%&gt;设置输出的缓存和是否自动刷新缓存，<br />
+一般情况下都使用默认值，缓存的默认值为8KB。<br />
+&lt;%@page isThreadSafe="true|false"%&gt;是否线程安全，默认为true，也就是线程安全，只使用默认值。<br />
+&lt;%@page info=".."%&gt;设置页面信息，一般不用<br />
+&lt;%@page errorPage=""%&gt;指定异常处理页面<br />
+&lt;%@page isErrorPage="true|false"%&gt;设定本页面就是异常后跳转的页面<br />
+&lt;%@page isELIgnored="true|false"%&gt;设定本页面是否忽略JSP2.0种EL表达式</p>
+
+<p>&lt;%@taglib ..%&gt; 标签库指令，用于引入自定义标签库<br />
+include指令:包含其他页面内容(静态包含) &lt;%@include file=""%&gt;(在翻译阶段包含进来)<br />
+相对路径;<br />
+根据当前页面路径和被包含页面的路径进行计算<br />
+绝对路径<br />
+以“／”开始，后跟页面的路径<br />
+taglib指令:导入标签库 &lt;%@taglib uri="" prefix=""%&gt;<br />
+导入标签的目的(作用):在jsp页面中消除java代码</p>
+
+<p><span style="color: #0000ff;">2)脚本元素(Scriplets):目的:嵌入java代码</span>
+a)声明(Declarations)<br />
+语法:&lt;%! .. %&gt;  作用:声明一些变量,方法内部类等等</p>
+
+<p>b)表达式(Expressions) ：使用表达式不加分号<br />
+语法:&lt;%= .. %&gt;  作用:输出数据到客户端</p>
+
+<p>c)脚本(Scripiets)  结束加分号<br />
+语法:&lt;% .. %&gt;  作用:在jsp 的_jspService方法中嵌入java代码
+<span style="color: #0000ff;">
+3)动作元素(Actions)---&gt;jsp自带的标签</span>
+语法:&lt;jsp:tagName attrName="attrValue"&gt;&lt;/jsp:tagName&gt;<br />
+a)include标签==&gt;封装了请求转发器的include方法的功能<br />
+&lt;jsp:include&gt;标签表示包含一个静态的或者动态的文件。<br />
+语法：<br />
+&lt;jsp:include page="path" flush="true" /&gt;<br />
+or<br />
+&lt;jsp:include page="path" flush="true"&gt;<br />
+&lt;jsp:param name="paramName" value="paramValue" /&gt;<br />
+&lt;/jsp:include&gt;<br />
+注：<br />
+1、page="path" 为相对路径，或者代表相对路径的表达式。<br />
+2、flush="true" 必须使用flush为true，它默认值是false。<br />
+3、&lt;jsp:param&gt;子句能让你传递一个或多个参数给动态文件，也可在一个页面中使用多个&lt;jsp:param&gt;来传递多个参数给动态文件。<br />
+b)forward标签==&gt;封装了请求转发器的forward方法的功能<br />
+&lt;jsp:forward&gt;标签表示重定向一个静态html/jsp的文件，或者是一个程序段。<br />
+语法：<br />
+&lt;jsp:forward page="path"} /&gt;<br />
+or<br />
+&lt;jsp:forward page="path"} &gt;<br />
+&lt;jsp:param name="paramName" value="paramValue" /&gt;……<br />
+&lt;/jsp:forward&gt;<br />
+注：<br />
+1、page="path" 为一个表达式，或者一个字符串。<br />
+2、&lt;jsp:param&gt; name 指定参数名，value指定参数值。参数被发送到一个动态文件，参数可以是一个或多个值，而这个文件却必须是动态文件。要传递多个参数，则可以在一个 JSP文件中使用多个&lt;jsp:param&gt;将多个参数发送到一个动态文件中。<br />
+c)useBean标签<br />
+&lt;jsp:useBean&gt;标签表示用来在JSP页面中创建一个BEAN实例并指定它的名字以及作用范围。<br />
+语法：<br />
+&lt;jsp:useBean id="name" scope="page | request | session | application" typeSpec /&gt;<br />
+其中typeSpec有以下几种可能的情况：<br />
+class="className" | class="className" type="typeName" | beanName="beanName" type="typeName" | type="typeName" |<br />
+注：你必须使用class或type，而不能同时使用class和beanName。beanName表示Bean的名字，其形式为“a.b.c”。</p>
+
+<p>d)SetPropety标签<br />
+&lt;jsp:useBean id="对象名" class="类全名"|type="类全名"（使用多态时使用）<br />
+beanName="类全名" scope="page|request|session|application"&gt;<br />
+jsp:useBean动作，可以通过这个动作来使用java代码，id就是变量名，clss和type<br />
+的区别在于，使用type是不会创建对象，而只是会先查找如果有该对象就会使用，如果没有就会抛出异常，<br />
+class在没有该对象存在时，则会创建新对象。scope是用来保存实例的空间范围，<br />
+page、request、session、application，由小到大，默认为page。<br />
+&lt;jsp:setProperty name="对象名" property="属性名" value="属性值"/&gt;<br />
+直接指定Bean属性的值，必须类型一致。<br />
+&lt;jsp:setProperty name="对象名" property="属性名" param="from表单中的响应的参数名"/&gt;<br />
+用表单中指定的参数来为Bean属性赋值，系统会自动作类型转换。<br />
+&lt;jsp:setProperty name="对象名" property="属性名"/&gt;<br />
+用表单中和Bean属性同名的标单项来给Bean属性赋值，这样写只会为指定的属性赋值<br />
+&lt;jsp:setProperty name="对象名" property="*"/&gt;<br />
+这种方式会自动用表单中的同名参数来为Bean的所有属性赋值<br />
+&lt;jsp:setProperty name="对象名" property="属性名" value="&lt;%= ...%&gt;"/&gt;<br />
+使用表达式来为Bean的属性进行赋值</p>
+
+<p>e)getPropety标签<br />
+&lt;jsp:getProperty name="对象名" property="属性名"&gt;<br />
+取得指定的属性，这个动作不常用，一般用表达式代替<br />
+我们可以通过设置属性名的方法名也就是setXxxx()来控制属性的赋值，用form表单的参数<br />
+为Bean的属性赋值时，系统会自动的调用与之同名属性的setXxxx()方法，尤其是日期类型，可以通过使用这一方法来处理。<br />
+f)Param标签<br />
+将参数设定到request对象中，一般都是作为其他标签的子标签。<br />
+语法：&lt;jsp:param name="" value=""/&gt;</p>
+
+<p>e） Plugin指令<br />
+&lt;jsp:plugin&gt;标签表示执行一个applet或Bean，有可能的话还要下载一个Java插件用于执行它。</p>
+
+<p>语法：<br />
+&lt;jsp:plugin<br />
+type="bean | applet"<br />
+code="classFileName"<br />
+codebase="classFileDirectoryName"<br />
+[ name="instanceName" ]<br />
+[ archive="URIToArchive, ..." ]<br />
+[ align="bottom | top | middle | left | right" ]<br />
+[ height="displayPixels" ]<br />
+[ width="displayPixels" ]<br />
+[ hspace="leftRightPixels" ]<br />
+[ vspace="topBottomPixels" ]<br />
+[ jreversion="JREVersionNumber | 1.1" ]<br />
+[ nspluginurl="URLToPlugin" ]<br />
+[ iepluginurl="URLToPlugin" ] &gt;<br />
+[ &lt;jsp:params&gt;<br />
+[ &lt;jsp:param name="parameterName" value="{parameterValue | &lt;%= expression %&gt;}" /&gt; ]+<br />
+&lt;/jsp:params&gt; ]<br />
+[ &lt;jsp:fallback&gt; text message for user &lt;/jsp:fallback&gt; ]<br />
+&lt;/jsp:plugin&gt;</p>
+
+<p>注：<br />
+&lt;jsp:plugin&gt;元素用于在浏览器中播放或显示一个对象（典型的就是applet和Bean),而这种显示需要在浏览器的java插件。<br />
+当Jsp文件被编译，送往浏览器时，&lt;jsp:plugin&gt;元素将会根据浏览器的版本替换成&lt;object&gt;或者&lt;embed&gt;元素。注意，&lt;object&gt;用于HTML 4.0 ，&lt;embed&gt;用于HTML 3.2。<br />
+一般来说，&lt;jsp:plugin&gt;元素会指定对象是Applet还是Bean,同样也会指定class的名字，还有位置，另外还会指定将从哪里下载这个Java插件。</p>
+
+<p><span style="color: #0000ff;">include指令和include动作元素的比较</span>
+1）include指令包含页面是在翻译的时候进行的，而include动作元素则在运行时进行<br />
+2）如果被包含的页面内容发生变化，那麽通过include指令进行包含的页面需要重新翻译，<br />
+而通过include动作元素进行包含的页面无需重新进行翻译</p>
+
+<p><span style="color: #999999;"><span style="color: #0000ff;">JSP隐含内置对象</span>
+名称         类型                                             注释和范围<br />
+request      javax.servlet.http.HttpServletRequest                request<br />
+response     javax.servlet.http.HttpServletResponse               response<br />
+page         javax.lang.Object                                    page<br />
+Exception    java.lang.Throwable                                  page<br />
+pageContext  javax.servlet.jsp.PageContext                        page<br />
+session      javax.servlet.http.HttpSession                       session<br />
+application  javax.servlet.ServletContext                         ServletContext<br />
+out          javax.servlet.jsp.JspWriter                          OutputStream<br />
+config       javax.servlet.ServletConfig                          ServletConfig</span></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JSP/2009/06/10/jsp_tags.html'>JSP基本指令</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

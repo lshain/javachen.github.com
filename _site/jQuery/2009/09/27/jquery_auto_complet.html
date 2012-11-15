@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>用jquery实现自动填充功能</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>27 Sep 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/jQuery/2009/09/27/jquery_auto_complet.html'>用jquery实现自动填充功能</a></h1>
+  <div class='body'><p>现在公司有一个项目需要实现一个功能 当点下拉框时动态加载后台数据。因为之前使用过jquery，所以很快想到使用jquery实现这一功能，但后来发现公司所做的项目界面全部是通过配置文件生成的，每一个文本域的CSS都不一样，在界面很难统一一个CSS样式去动态生成一个下来列表与原来的文本域宽度以及坐标相匹配，总之，使用这种方式html、css、javascript代码耦合度太高了，不适合于全局使用。当然通过javascript代码也能实现下拉列表的坐标定位，但是这样做又过于复杂，不可取。<br />
+用Jquery实现的自动填充代码如下，网上也有实现此功能的插件，可以用用。<!--more-->
+<pre lang="javascript" line="1">
+< !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>jQuery实现自动提示的文本框</title>
+<style>
+<!--<br>
+body{<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	font-size:12px; padding:0px; margin:5px;<br>
+}
+form{padding:0px; margin:0px;}<br>
+input{<br>
+	/* 用户输入框的样式 */<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	font-size:12px; border:1px solid #000000;<br>
+	width:200px; padding:1px; margin:0px;<br>
+}
+#popup{<br>
+	/* 提示框div块的样式 */<br>
+	position:absolute; width:202px;<br>
+	color:#004a7e; font-size:12px;<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	left:41px; top:25px;<br>
+}
+#popup.show{<br>
+	/* 显示提示框的边框 */	<br>
+	border:1px solid #004a7e;<br>
+}
+/* 提示框的样式风格 */<br>
+ul{<br>
+	list-style:none;<br>
+	margin:0px; padding:0px;<br>
+	color:#004a7e;<br>
+}
+li.mouseOver{<br>
+	background-color:#004a7e;<br>
+	color:#FFFFFF;<br>
+}
+-->
+</style>
+<script language="javascript" src="jquery.min.js"></script>
+<script language="javascript">
+var oInputField;	//考虑到很多函数中都要使用<br>
+var oPopDiv;		//因此采用全局变量的形式<br>
+var oColorsUl;<br>
+function initVars(){<br>
+	//初始化变量<br>
+	oInputField = $("#colors");<br>
+	oPopDiv = $("#popup");<br>
+	oColorsUl = $("#colors_ul");<br>
+}
+function clearColors(){<br>
+	//清除提示内容<br>
+	oColorsUl.empty();<br>
+	oPopDiv.removeClass("show");<br>
+}
+function setColors(the_colors){<br>
+	//显示提示框，传入的参数即为匹配出来的结果组成的数组<br>
+	clearColors();	//每输入一个字母就先清除原先的提示，再继续<br>
+	oPopDiv.addClass("show");<br>
+	for(var i=0;i<the_colors .length;i++)<br>
+		//将匹配的提示结果逐一显示给用户<br>
+		oColorsUl.append($("<li>"+the_colors[i]+""));<br>
+	oColorsUl.find("li").click(function(){<br>
+		oInputField.val($(this).text());<br>
+		clearColors();<br>
+	}).hover(<br>
+		function(){$(this).addClass("mouseOver");},<br>
+		function(){$(this).removeClass("mouseOver");}<br>
+	);<br>
+}
+function findColors(){<br>
+	initVars();		//初始化变量<br>
+	if(oInputField.val().length > 0){<br>
+		//获取异步数据<br>
+		$.get("14-10.aspx",{sColor:oInputField.val()},<br>
+			function(data){<br>
+				var aResult = new Array();<br>
+				if(data.length > 0){<br>
+					aResult = data.split(",");<br>
+					setColors(aResult);	//显示服务器结果<br>
+				}<br>
+				else<br>
+					clearColors();<br>
+		});<br>
+	}<br>
+	else<br>
+		clearColors();	//无输入时清除提示框（例如用户按del键）<br>
+}
+</the_colors></script>
+</head>
+<body>
+<form method="post" name="myForm1">
+Color: <input type="text" name="colors" id="colors" onkeyup="findColors();" />
+</form>
+<div id="popup">
+	<ul id="colors_ul"></ul>
+</div>
+</body>
+</html>
+</pre></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/jQuery/2009/09/27/jquery_auto_complet.html'>用jquery实现自动填充功能</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

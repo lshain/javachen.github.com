@@ -1,0 +1,247 @@
+---
+layout: post
+title: hibernate hql query and native sql query
+categories:
+- Hibernate
+tags:
+- Hibernate
+- Hql
+- Sql
+published: true
+comments: true
+---
+<p>这是一篇上班期间整理的文章，参考了相关文章，版权不归本人所有，特此说明，如有侵犯他人，请提出。</p>
+
+<p>Hibernate中有hql查询和原生sql查询，本文整理这两种查询的用法，不涉及游离查询、投影查询等等。</p>
+
+<p>本文需要解决的问题是：怎样将使用本地SQL查询出来的结果映射为值对象的问题？这里就Hibernate中提供的方法做个结论。前提，这里没有使用属性的延迟加载技术。<!--more--></p>
+
+<p>首先假设有下面一个实体（下面来自汽车租赁项目）：
+<blockquote>DicDriver.java<br />
+@Entity<br />
+@Table(name = "QCZL_DIC_DRIVER")<br />
+@Logable(system = BizBusiness.SWCONTRACT, name = "商务车队司机")<br />
+public class DicDriver extends AutoIncIntegerEntity {<br />
+private static final long serialVersionUID = 1L;</blockquote></p>
+
+<p>public DicDriver() {<br />
+super();<br />
+}</p>
+
+<p>@Column(name = "name")<br />
+private String name;</p>
+
+<p>@Column(name = "telephone")<br />
+private String telephone;<br />
+}</p>
+
+<p>DaoDriver.java<br />
+@CacheEntity<br />
+public class DaoDriver extends AbstractDao {<br />
+public DaoDriver() {<br />
+super();<br />
+}</p>
+
+<p>public DaoDriver(Session session) {<br />
+super(session);<br />
+}
+}
+<h3>普通查询</h3>
+如果查询全部记录的话，那么只要:<br />
+DaoDriver dao = new DaoDriver();<br />
+List lists = dao.getHibernateTemplate().loadAll(DicDriver.class);
+<h3>HQL查询</h3>
+如果只需要查询id,name,telephone三列记录呢？那么就要新增构造方法了(由于存在继承，id在父类，这里构造方法只有两个属性)<br />
+public DicDriver(String name, String telephone) {<br />
+super();<br />
+this.name = name;<br />
+this.telephone = telephone;<br />
+}</p>
+
+<p>然后呢，就可以通过HQL来进行查询。<br />
+List lists = dao.getHibernateTemplate().find(<br />
+"select new DicDriver(name,telephone) from DicDriver ");</p>
+
+<p>Sql语句中有个构造方法，查询结果的list中对象为DicDriver，但是仅仅其name,telephone有值，id 是为null的
+<h3><strong> 标量查询</strong></h3>
+这个方法通常可以满足需要了，只是如果，只需要查询id,name两列记录的话，还新增构造方法？这样做太复杂了，有个办法：<br />
+List lists = dao.getSession().createQuery(<br />
+"select id, name from DicDriver ").list();</p>
+
+<p>标量查询将返回一个Object数组(Object[])组成的List，数组每个元素都是表的一个字段值。Hibernate会使用ResultSetMetadata来判定返回的标量值的实际顺序和类型。</p>
+
+<p>这种查询可在select从句中指定类的属性，甚至可以调用SQL统计(aggregate)函数。 属性或统计结果被认定为"标量(Scalar)"的结果（而不是持久(persistent state)的实体），<br />
+eg：
+<blockquote>Iterator results = sess.createQuery(<br />
+"select cat.color, min(cat.birthdate), count(cat) from Cat cat " +<br />
+"group by cat.color")<br />
+.list()<br />
+.iterator();</blockquote></p>
+
+<p>while ( results.hasNext() ) {<br />
+Object[] row = results.next();<br />
+Color type = (Color) row[0];<br />
+Date oldest = (Date) row[1];<br />
+Integer count = (Integer) row[2];<br />
+.....<br />
+}
+<h3>HQL映射查询</h3>
+<strong> 1.映射到实体</strong>
+这个时候就需要采用sql查询了。
+<blockquote>List lists = dao.getSession().createSQLQuery(<br />
+"select id,name,telephone from QCZL_DIC_DRIVER ")<br />
+.addEntity(DicDriver.class).list();</blockquote>
+这种方式会将sql语句中的列映射到实体DicDriver中去，最后查出来的list集合中存放的是DicDriver对象。</p>
+
+<p>但是，这种方式需要把一个表的所有字段都select出来，不然会org.hibernate.exception.SQLGrammarException: could not execute query异常。</p>
+
+<p>但是，这个只适用于存在DicDriver实体的，如果Hibernate中没有进行DicDriver映射的呢，系统中只存在一个JavaBean。<br />
+// 这个查询指定了:SQL查询字符串,要返回的字段和类型.<br />
+List<!--?--> lists = dao.getSession().createSQLQuery(<br />
+"select id, name,telephone from QCZL_DIC_DRIVER ")<br />
+.addScalar("id", Hibernate.INTEGER).addScalar("name")<br />
+.setResultTransformer(				Transformers.aliasToBean(DicDriver.class)).list();<br />
+注意：这里指定了SQL查询字符串,要返回的字段和类型，查询结果的DicDriver对象中的telephone都为null
+<blockquote>for (Object obj : lists) {<br />
+DicDriver app = (DicDriver) obj;<br />
+// telephone is null<br />
+System.out.println(app.getId() + "----" + app.getName()<br />
++ "----" + app.getTelephone());<br />
+}</blockquote>
+这个办法就不依赖于构造方法了，只需要定义私有变量，设置getter/setter方法就行了。只是代码量有点大。</p>
+
+<p><strong>2.映射到Map</strong>
+不过如果更猛点的，根本就没有JavaBean对象可以填充怎么办，Hibernate可以将查出来的列组装到集合类中去。如Map。
+<blockquote>List<!--?--> lists = dao.getSession().createSQLQuery(<br />
+"select * from QCZL_DIC_DRIVER ").setResultTransformer(<br />
+Transformers.ALIAS_TO_ENTITY_MAP).list();</blockquote></p>
+
+<p>for (Object obj : lists) {<br />
+System.out.println(obj);<br />
+}
+结果：<br />
+Hibernate: select * from QCZL_DIC_DRIVER<br />
+{telephone=B, name=B, id=15}<br />
+{telephone=A, name=A, id=17}<br />
+{telephone=A1, name=A1, id=18}<br />
+{telephone=A2, name=A2, id=19}</p>
+
+<p><strong>3.映射到List</strong>
+除了这个Transformers还可以将列转化为List。
+<blockquote>List<!--?--> lists = dao.getSession().createSQLQuery(<br />
+"select * from QCZL_DIC_DRIVER ").setResultTransformer(<br />
+Transformers.TO_LIST).list();</blockquote></p>
+
+<p>for (Object obj : lists) {<br />
+System.out.println(obj);<br />
+}
+结果：<br />
+Hibernate: select * from QCZL_DIC_DRIVER<br />
+[15, B, B]<br />
+[17, A, A]<br />
+[18, A1, A1]<br />
+[19, A2, A2]</p>
+
+<p>到此，还可以通过继承Transformers将结果映射为其它对象。
+<h3>实体查询</h3>
+返回多个实体：
+<blockquote>String sql = "select {c.*}, {s.*} from QCZL_DIC_OILNUM c , QCZL_DIC_FUELOIL_TYPE s where s.id = c.FUELOILTYPE   ";<br />
+List<!--?--> lists = dao.getSession().createSQLQuery(sql).addEntity("c",<br />
+DicOilNum.class).addEntity("s", DicFuelOilType.class).list();<br />
+for (Object obj : lists) {<br />
+……<br />
+}</blockquote>
+特别注意：<br />
+1.	addEntity方法指定了当前返回实体的别名,而且在SQL语句里使用{c.*}这样的语句,  它的意思是向别名为c的这个对象注入所有属性值.<br />
+2.	这个查询会返回一个Object的List,每个Object包含两个对象一个DicOilNum,一个DicFuelOilType<br />
+3.	{}占位符里是对象的属性,而非列名.<br />
+4.	必须注入对象的每个属性值，你可以使用{c.*}，或者手工写全所有，但必须是所有属性。</p>
+
+<p>当然上面的查询也可以用hql查询：
+<blockquote>sql = "select new test.jspx.dao.ObjectWrapper(c,s)  from DicOilNum c , DicFuelOilType s where s.id = c.type  ";<br />
+lists = dao.getSession().createQuery(sql).list();<br />
+for (Object obj : lists) {<br />
+ObjectWrapper app = (ObjectWrapper) obj;<br />
+System.out.println(app.getC() + "-----" + app.getS());<br />
+}</blockquote>
+其中ObjectWrapper是一个封装类，注意最好带上包名：
+<blockquote>public class ObjectWrapper implements Serializable {<br />
+private DicOilNum c;<br />
+private DicFuelOilType s;</blockquote></p>
+
+<p>public ObjectWrapper() {<br />
+super();<br />
+}</p>
+
+<p>public ObjectWrapper(DicOilNum c, DicFuelOilType s) {<br />
+super();<br />
+this.c = c;<br />
+this.s = s;<br />
+}
+}
+<h3>命名查询</h3>
+可以在映射文档中定义查询的名字,然后就可以象调用一个命名的HQL查询一样直接调用命名SQL查询.在这种情况下,不需要调用addEntity()方法.eg：<br />
+1
+2<br />
+3     SELECT person.NAME AS {person.name},<br />
+4            person.AGE AS {person.age},<br />
+5            person.SEX AS {person.sex}<br />
+6     FROM PERSON person<br />
+7     WHERE person.NAME LIKE :namePattern<br />
+8</p>
+
+<p>更详细说明，请参考其他文档。<br />
+当然也可以用注解实现命名查询：
+<blockquote>DicOilNum.java</blockquote></p>
+
+<p>@Entity<br />
+@Table(name = "QCZL_DIC_OILNUM")<br />
+@Logable(system = BizBusiness.CAR, name = "车辆燃油编号")<br />
+@NamedQueries(value = {<br />
+@NamedQuery(name = "dicOilNum.findById", query = "select p from DicOilNum p where p.id in (:id)"),<br />
+@NamedQuery(name = "dicOilNum.findAll", query = "select p from DicOilNum p"),<br />
+@NamedQuery(name = "dicOilNum.delete", query = "delete from DicOilNum where id=:id") })<br />
+public class DicOilNum extends BCIntegerEntity {<br />
+private static final long serialVersionUID = 79577680758347181L;<br />
+@Column(name = "FUELOILTYPE")<br />
+Integer type;</p>
+
+<p>public Integer getType() {<br />
+return type;<br />
+}</p>
+
+<p>public void setType(Integer type) {<br />
+this.type = type;<br />
+}
+}
+查询方法：<br />
+List<!--?--> lists = dao.getSession()		.getNamedQuery("dicOilNum.findById").setParameterList("id",<br />
+new ArrayList().addExt(1).addExt(2)).list();<br />
+for (Object obj : lists) {<br />
+DicOilNum app = (DicOilNum) obj;<br />
+System.out.println(app.getId() + "----" + app.getName()<br />
++ "----");<br />
+}
+<h3>参数绑定</h3>
+接口Query提供了对命名参数(named parameters)、JDBC风格的问号(?)参数进行绑定的方法。 不同于JDBC，Hibernate对参数从0开始计数。 命名参数(named parameters)在查询字符串中是形如:name的标识符。<br />
+命名参数(named parameters)的优点是:<br />
+•	命名参数(named parameters)与其在查询串中出现的顺序无关<br />
+•	它们可在同一查询串中多次出现<br />
+•	它们本身是自我说明的
+<blockquote>//named parameter (preferred)<br />
+Query q = sess.createQuery("from DomesticCat cat where cat.name = :name");<br />
+q.setString("name", "Fritz");<br />
+Iterator cats = q.iterate();</blockquote></p>
+
+<p>//positional parameter<br />
+Query q = sess.createQuery("from DomesticCat cat where cat.name = ?");<br />
+q.setString(0, "Izi");<br />
+Iterator cats = q.iterate();</p>
+
+<p>//named parameter list<br />
+List names = new ArrayList();<br />
+names.add("Izi");<br />
+names.add("Fritz");<br />
+Query q = sess.createQuery("from DomesticCat cat where cat.name in (:namesList)");<br />
+q.setParameterList("namesList", names);<br />
+List cats = q.list();</p>

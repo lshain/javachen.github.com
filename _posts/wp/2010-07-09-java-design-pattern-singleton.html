@@ -1,0 +1,103 @@
+---
+layout: post
+title: Java设计模式之Singleton
+categories:
+- Java Core
+tags:
+- Model
+- Pattern
+- Singleton
+published: true
+comments: true
+---
+<p>Singleton模式主要作用是保证在Java应用程序中，一个类Class只有一个实例存在。 singleton能够被状态化也能被无状态化，通常是用在工具类里，实现单线程的操作。</p>
+
+<p>第一种：注册型的模式：
+<pre lang="java">
+public class RegSingleton {
+	static private HashMap m_registry = new HashMap();
+	static {
+		RegSingleton x = new RegSingleton();
+		m_registry.put(x.getClass().getName(), x);
+	}</pre></p>
+
+<p>	protected RegSingleton() {<br />
+	}</p>
+
+<p>	static public RegSingleton getInstance(String name) {<br />
+		if (name == null) {<br />
+			name = "RegSingleton";<br />
+		}<br />
+		if (m_registry.get(name) == null) {<br />
+			try {<br />
+				m_registry.put(name, Class.forName(name).newInstance());<br />
+			} catch (InstantiationException e) {<br />
+				e.printStackTrace();<br />
+			} catch (IllegalAccessException e) {<br />
+				e.printStackTrace();<br />
+			} catch (ClassNotFoundException e) {<br />
+				e.printStackTrace();<br />
+			}<br />
+		}<br />
+		return (RegSingleton) (m_registry.get(name));<br />
+	}<br />
+}
+</p>
+
+<p>第一种：饥渴型的模式：
+<pre lang="java">
+public class EagerSingleton {
+	private static final EagerSingleton m_instance = new EagerSingleton();</pre></p>
+
+<p>	private EagerSingleton() {<br />
+	}</p>
+
+<p>	public static EagerSingleton getInstance() {<br />
+		return m_instance;<br />
+	}<br />
+}</p>
+
+<p></p>
+
+<p>第一种：懒汉型的模式：
+<pre lang="java">
+public class LazySingleton {
+	private static LazySingleton m_instance = null;</pre></p>
+
+<p>	private LazySingleton() {<br />
+	}</p>
+
+<p>	public static LazySingleton getInstance() {<br />
+		if (m_instance == null) {<br />
+			synchronized (LazySingleton.class) {<br />
+				if (m_instance == null) {<br />
+					m_instance = new LazySingleton();<br />
+				}<br />
+			}<br />
+		}<br />
+		return m_instance;<br />
+	}<br />
+}
+
+第一种方式很少有人使用，因为其没有考虑到多线程并发的情况；第二种方式，在自己内部定义自己一个实例，并提供了一个供外部访问本class的静态方法；第三种方式不用每次都进行生成对象，只是第一次使用时生成实例，提高了效率！仔细看第三种方式，其采用了双重验证m_instance是否为空的方式，并且在方法内部对对象加了同步方法。这种方式看清来万无一失，其实还是有欠妥的地方，深究下去，这就涉及到到double-checked locking (DCL)的讨论。具体讨论，可以参照以下文档：
+<a href="http://www-106.ibm.com/developerworks/java/library/j-dcl.html?dwzone=java">Double-checked locking and the Singleton pattern</a>
+<a href="http://www.javaworld.com/javaworld/jw-01-2001/jw-0112-singleton-p3.html#resources">When is a singleton not a singleton?</a>
+从上面的文章，可以知道第三种方式并不能解决问题，在第三种方式的方法里设置临时变量也不能解决问题（因为虚拟机会进行优化操作），使用volatile 关键字也不是可靠的方法（因为不同虚拟机对其实现不一致），最可靠的的方法也是最初最容易想到和写出的方法也就是对方法加同步锁。虽然，对整个方法加同步锁，会耗很多资源，但是保证线程安全最可靠的方法了。<br />
+最可靠的方式：
+<pre lang="java">
+public class LazySingleton {
+	private static LazySingleton m_instance = null;</pre></p>
+
+<p>	private LazySingleton() {<br />
+	}</p>
+
+<p>	public synchronized static LazySingleton getInstance() {<br />
+		if (m_instance == null) {<br />
+			m_instance = new LazySingleton();<br />
+		}<br />
+		return m_instance;<br />
+	}<br />
+}
+</p>
+
+<p></p>

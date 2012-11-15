@@ -1,0 +1,60 @@
+---
+layout: post
+title: Java Generic Types
+categories:
+- Java Core
+tags:
+- Generic
+- Java Core
+published: true
+comments: true
+---
+<p>泛型（Generic Types）是java5.0 的新特性，是JAVA 的又一次革命。</p>
+
+<p>它的特点：<br />
+JVM 不变，JAVA 和 C++不断的融合， 5.0 里有许多和 C++  类似。留下的只是思想。 程序员的开发工作越来越简单。<br />
+泛型增强了java的类型安全，可以在编译期间对容器内的对象进行类型检查，在运行 期不必进行类型的转换。而在j2se5 之前必须在运行期动态进行容器内对象的检 查及转换，<span style="color: #ff0000;">泛型是编译时概念，运行时没有泛型</span>。<br />
+泛型减少含糊的容器，可以定义什么类型的数据放入容器。<!--more-->
+一个例子：<br />
+ArrayList aList = new ArrayList();<br />
+aList.add(new Integer(1));<br />
+// ...<br />
+Integer myInteger = aList.get(0);</p>
+
+<p>我们可以看到，在这个简单的例子中，我们在定义 aList 的时候指明了它是一个 直接受 Integer 类型的 ArrayList，当我们调用 aList.get(0)时，我们已经不再需要 先显式的将结果转换成 Integer，然后再赋值给 myInteger 了。而这一步在早先的 Java 版本中是必须的。也许你在想，在使用 Collection 时节约一些类型转换就是 Java 泛型的全部吗？远不止。单就这个例子而言，泛型至少还有一个更大的好处， 那就是使用了泛型的容器类变得更加健壮：早先，Collection 接口的 get()和 Iterator 接口的 next()方法都只能返回 Object 类型的结果，我们可以把这个结果强制转换 成任何 Object  的子类，而不会有任何编译期的错误，但这显然很可能带来严重 的运行期错误，因为在代码中确定从某个 Collection 中取出的是什么类型的对象 完全是调用者自己说了算，而调用者也许并不清楚放进 Collection 的对象具体是 什么类的；就算知道放进去的对象“应该”是什么类，也不能保证放到 Collection的对象就一定是那个类的实例。现在有了泛型，只要我们定义的时候指明该Collection 接受哪种类型的对象，编译器可以帮我们避免类似的问题溜到产品中。</p>
+
+<p><strong>声明及实例化泛型类：</strong>
+HashMap hm = new HashMap(); 编译类型的泛型和运行时类型的泛型一定要一致。没有多态。 不能使用原始类型<br />
+GenList nList = new GenList(); //编译错误<br />
+J2SE 5.0 目前不支持原始类型作为类型参数(type parameter)
+<strong>定义泛型接口：</strong>
+public interface GenInterface {<br />
+void func(T t);<br />
+}
+<strong>定义泛型类</strong>：<br />
+public class ArrayList { ... }<br />
+public class GenMap { ... }</p>
+
+<p><strong><span style="color: #ff00ff;">类的静态方法不能使用泛型，因为泛型类是在创建对象的时候产生的。</span></strong></p>
+
+<p><strong>泛型通配符</strong>
+List&lt;? extends Object&gt; 往下匹配<br />
+List&lt;? super Number&gt; 往下上匹配</p>
+
+<p><span style="color: #ff0000;"><strong>泛型的一些局限性</strong></span>
+<strong>不能实例化泛型</strong>
+T t = new T(); //error
+<strong>不能实例化泛型类型的数组</strong>
+T[] ts= new T[10];	//编译错误 不能实例化泛型参数数<br />
+Pair[] table = new Pair(10); // ERROR
+<strong>类的静态变量不能声明为类型参数类型</strong>
+public class GenClass {<br />
+private static T t;	//编译错误</p>
+
+<p>}
+<strong>泛型类不能继承自 Throwable 以及其子类</strong>
+public GenExpection extends Exception{}	//编译错误 不能用于基础类型 int 等<br />
+Pair //error
+<strong>不同泛型间不能相互赋值，没有多态</strong><strong>
+泛型类型不可以被“重载”；也就是说，和普通类型一样在一个作用域内，泛型类型必须被唯一地命名。
+</strong></p>

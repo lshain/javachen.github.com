@@ -1,0 +1,89 @@
+---
+layout: post
+title: How Velocity Works？
+categories:
+- OpenSource
+tags:
+- Open Sources
+- velocity
+published: true
+comments: true
+---
+<p>当在一个应用程序或是servlet中使用Velocity 的时候，通常有以下几个步骤：<br />
+1.初始化Velocity ，Velocity有两种实例，一个是单例（Singleton ）一个是每次运行时一个实例（separate runtime instance）。<br />
+2.创造一个上下文环境（Context ）对象。<br />
+3.往Context 里增加对象。<br />
+4.选择一个模板（template）。<br />
+5.将模板和对象一起输出。<!--more--></p>
+
+<p>在代码中使用单例模式，需要用到org.apache.velocity.app.Velocity这个类，通过这个类完成第一步的初始化工作和第四步的获取模板工作。下面是一个实例：
+<pre lang="java" line="1">
+package com.javachen.velocity;</pre></p>
+
+<p>import java.io.BufferedWriter;<br />
+import java.io.IOException;<br />
+import java.io.OutputStreamWriter;<br />
+import org.apache.velocity.Template;<br />
+import org.apache.velocity.VelocityContext;<br />
+import org.apache.velocity.app.Velocity;<br />
+import org.apache.velocity.exception.MethodInvocationException;<br />
+import org.apache.velocity.exception.ParseErrorException;<br />
+import org.apache.velocity.exception.ResourceNotFoundException;</p>
+
+<p>public class HelloVelocity {<br />
+	public static void main(String[] args)  {<br />
+		try {<br />
+                        Velocity.setProperty( Velocity.RUNTIME_LOG_LOGSYSTEM, this);<br />
+			Velocity.init();<br />
+			VelocityContext context = new VelocityContext();<br />
+			context.put("name", "javachen");<br />
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(<br />
+					System.out));<br />
+			Template template = Velocity.getTemplate("src/com/javachen/velocity/hello.vm");<br />
+			template.merge(context, writer);<br />
+			writer.flush();<br />
+			writer.close();<br />
+		} catch (ResourceNotFoundException e) {<br />
+			e.printStackTrace();<br />
+		} catch (ParseErrorException e) {<br />
+			e.printStackTrace();<br />
+		} catch (MethodInvocationException e) {<br />
+			e.printStackTrace();<br />
+		} catch (IOException e) {<br />
+			e.printStackTrace();<br />
+		} catch (Exception e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}<br />
+}
+
+hello.vm如下：<br />
+Hello, $name </p>
+
+<p>过程是这样的：初始化 – 获取context – context 输出对像给值 – 获取模板文件 – 写模板文件 – 关闭资源 .</p>
+
+<p>这只是Velocity的基本用法，现在通过一些工具jar包，可以封装这些操作，使Velocity的操作变得更加简单。</p>
+
+<p>上面是Velocity单例实例，还有一个Separate Instance（单个实例）实例，可以在同一个JVM中配置并使用多个Velocity实例。为了获得Separate Instance，必须使用org.apache.velocity.app.VelocityEngine这个类。代码类似如下：
+<pre lang="java" line="1">
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.Template;
+...
+/*
+ *  create a new instance of the engine
+ */
+VelocityEngine ve = new VelocityEngine();
+/*
+ *  configure the engine.  In this case, we are using
+ *  ourselves as a logger (see logging examples..)
+ */
+ve.setProperty(
+    VelocityEngine.RUNTIME_LOG_LOGSYSTEM, this);</pre></p>
+
+<p>/*<br />
+ *  initialize the engine<br />
+ */<br />
+ve.init();<br />
+...<br />
+Template t = ve.getTemplate("foo.vm");
+</p>

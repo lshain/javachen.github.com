@@ -1,0 +1,105 @@
+---
+layout: post
+title: java 读取图片的 Exif 数据
+categories:
+- Java Core
+tags:
+- Image
+- Java Core
+published: true
+comments: true
+---
+<p><span style="color: #0000ff;"><strong>首先了解什么是 EXIF</strong></span></p>
+
+<p>Exif是英文Exchangeable Image File(可交换图像文件)的缩写，最初由日本电子工业发展协会(JEIDA --Japan Electronic</p>
+
+<p>Industry Development Association) 制订，目前的最新版本是发表于2002年04月的2.21 版。<br />
+Exif 文件实际是JPEG文件的一种，遵从JPEG标准，只是在文件头信息中增加了有关拍摄信息的内容和索引图。所以你可以使用任何支持JPEG格式的图像工具软件观看或修改Exif文件，但，打开时可能看不到Exif信息，一旦修改，Exif信息可能丢失。简单来说，EXIF 信息就是由数码相机在拍摄过程中采集一系列的信息，然后把信息放置在我们熟知的 JPEG/TIFF 文件的头部，也就是说 EXIF 信息是镶嵌在 JPEG/TIFF 图像文件格式内的一组拍摄参数，主要包括摄影时的光圈、快门、ISO、时间等各种与当时摄影条件相关的讯息，相机品牌型号，色彩编码，拍摄时录制的声音以及全球定位系统（GPS）等信息。简单的说，它就好像是傻瓜相机的日期打印功能一样，只不过 EXIF 信息所记录的资讯更为详尽和完备。<!--more--></p>
+
+<p><span style="color: #0000ff;"><strong>Exif 文件包含的信息</strong></span></p>
+
+<p>Image Description 图像描述、来源. 指生成图像的工具<br />
+Artist作者 有些相机可以输入使用者的名字<br />
+Make 生产者 指产品生产厂家<br />
+Model 型号 指设备型号<br />
+Orientation方向 有的相机支持，有的不支持<br />
+XResolution/YResolution X/Y方向分辨率 本栏目已有专门条目解释此问题。<br />
+ResolutionUnit分辨率单位 一般为PPI<br />
+Software软件 显示固件Firmware版本<br />
+DateTime日期和时间<br />
+YCbCrPositioning 色相定位<br />
+ExifOffsetExif信息位置，定义Exif在信息在文件中的写入，有些软件不显示。<br />
+ExposureTime 曝光时间 即快门速度<br />
+FNumber光圈系数<br />
+ExposureProgram曝光程序 指程序式自动曝光的设置，各相机不同,可能是Sutter Priority（快门优先）、Aperture Priority（快门优先）等等。<br />
+ISO speed ratings感光度<br />
+ExifVersionExif版本<br />
+DateTimeOriginal创建时间<br />
+DateTimeDigitized数字化时间<br />
+ComponentsConfiguration图像构造（多指色彩组合方案）<br />
+CompressedBitsPerPixel(BPP)压缩时每像素色彩位 指压缩程度<br />
+ExposureBiasValue曝光补偿。<br />
+MaxApertureValue最大光圈<br />
+MeteringMode测光方式， 平均式测光、中央重点测光、点测光等。<br />
+Lightsource光源 指白平衡设置<br />
+Flash是否使用闪光灯。<br />
+FocalLength焦距，一般显示镜头物理焦距，有些软件可以定义一个系数，从而显示相当于35mm相机的焦距 MakerNote(User Comment)作者标记、说明、记录<br />
+FlashPixVersionFlashPix版本 （个别机型支持）<br />
+ColorSpace色域、色彩空间<br />
+ExifImageWidth(Pixel X Dimension)图像宽度 指横向像素数<br />
+ExifImageLength(Pixel Y Dimension)图像高度 指纵向像素数<br />
+Interoperability IFD通用性扩展项定义指针 和TIFF文件相关，具体含义不详<br />
+FileSource源文件 Compression压缩比。</p>
+
+<p><span style="color: #0000ff;"><strong>java 读取图片的 Exif 数据代码 </strong></span>
+<span style="color: #000000;">package</span> <span style="color: #000000;">image</span><span style="color: #000000;">.</span><span style="color: #ff0000;">read</span>;
+<span style="color: #000000;">import</span> <span style="color: #000000;">com.drew.metadata.*</span>;
+<span style="color: #000000;">import</span> <span style="color: #000000;">com.drew.metadata.exif.*</span>;
+<span style="color: #000000;">import</span> <span style="color: #000000;">com.drew.imaging.jpeg.JpegProcessingException</span>;
+<span style="color: #000000;">import</span> <span style="color: #000000;">java.io.*</span>;
+<span style="color: #000000;">import</span> <span style="color: #000000;">java.util.Iterator</span>;</p>
+
+<p><span style="color: #000080; font-weight: bold;">public</span> <span style="color: #000080; font-weight: bold;">class</span> <span style="color: #000000;">EXIFReader</span> <span style="color: #000000;">{</span></p>
+
+<p><span style="color: #000080; font-weight: bold;">public</span> <span style="color: #000080; font-weight: bold;">static</span> <span style="color: #000080; font-weight: bold;">void</span> <span style="color: #000000;">main</span>(<span style="color: #000000;">String</span> <span style="color: #000000;">args</span><span style="color: #000000;">[])</span> <span style="color: #000080; font-weight: bold;">throws</span> <span style="color: #000000;">FileNotFoundException</span> <span style="color: #000000;">{</span>
+<span style="color: #000000;">File</span> <span style="color: #000000;">f</span> <span style="color: #000000;">=</span> <span style="color: #000080; font-weight: bold;">new</span> <span style="color: #000000;">File</span>(<span style="color: #0000ff;">"c:\\b.jpg"</span>);
+<span style="color: #000080; font-weight: bold;">try</span> <span style="color: #000000;">{</span>
+<span style="color: #000000;">ExifReader</span> <span style="color: #000000;">er</span> <span style="color: #000000;">=</span> <span style="color: #000080; font-weight: bold;">new</span> <span style="color: #000000;">ExifReader</span>(<span style="color: #000000;">f</span>);
+<span style="color: #000000;">Metadata</span> <span style="color: #000000;">exif</span> <span style="color: #000000;">=</span> <span style="color: #000000;">er</span><span style="color: #000000;">.</span><span style="color: #ff0000;">extract</span>();
+<span style="color: #000000;">Iterator</span> <span style="color: #000000;">itr</span> <span style="color: #000000;">=</span> <span style="color: #000000;">exif</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getDirectoryIterator</span>();
+<span style="color: #000080; font-weight: bold;">while</span> (<span style="color: #000000;">itr</span><span style="color: #000000;">.</span><span style="color: #ff0000;">hasNext</span>()) <span style="color: #000000;">{</span>
+<span style="color: #000000;">Directory</span> <span style="color: #000000;">directory</span> <span style="color: #000000;">=</span> (<span style="color: #000000;">Directory</span>) <span style="color: #000000;">itr</span><span style="color: #000000;">.</span><span style="color: #ff0000;">next</span>();</p>
+
+<p><span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"EXIF版本："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_EXIF_VERSION</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"相机品牌："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_MAKE</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"相机型号："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_MODEL</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"光 圈 值："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_FNUMBER</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"快    門："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_EXPOSURE_TIME</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"感 光 度："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_ISO_EQUIVALENT</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"软    件："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_SOFTWARE</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"原始拍摄时间："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_DATETIME_ORIGINAL</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"数字化时间："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_DATETIME_DIGITIZED</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"方    向："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_ORIENTATION</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"图片宽度："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_EXIF_IMAGE_WIDTH</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"图片高度："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_EXIF_IMAGE_HEIGHT</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"水平分辨率："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_X_RESOLUTION</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"垂直分辨率："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_Y_RESOLUTION</span>));
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">out</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"垂直分辨率："</span><span style="color: #000000;">+</span> <span style="color: #000000;">directory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">getString</span>(<span style="color: #000000;">ExifDirectory</span><span style="color: #000000;">.</span><span style="color: #ff0000;">TAG_EXPOSURE_BIAS</span>));
+<span style="color: #000080; font-weight: bold;">break</span>;</p>
+
+<p><span style="color: #008800; font-style: italic;">// 获得全部metadata</span>
+<span style="color: #008800; font-style: italic;">/*</span>
+<span style="color: #008800; font-style: italic;">* Iterator tags = directory.getTagIterator(); while</span>
+<span style="color: #008800; font-style: italic;">* (tags.hasNext()) { Tag tag = (Tag) tags.next();</span>
+<span style="color: #008800; font-style: italic;">* System.out.println(tag); } if (directory.hasErrors()) {</span>
+<span style="color: #008800; font-style: italic;">* Iterator errors = directory.getErrors(); while</span>
+<span style="color: #008800; font-style: italic;">* (errors.hasNext()) { System.out.println("ERROR:   " +</span>
+<span style="color: #008800; font-style: italic;">* errors.next()); } }</span>
+<span style="color: #008800; font-style: italic;">*/</span>
+<span style="color: #000000;">}</span>
+<span style="color: #000000;">}</span> <span style="color: #000080; font-weight: bold;">catch</span> (<span style="color: #000000;">JpegProcessingException</span> <span style="color: #000000;">e</span>) <span style="color: #000000;">{</span>
+<span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #ff0000;">err</span><span style="color: #000000;">.</span><span style="color: #ff0000;">println</span>(<span style="color: #0000ff;">"not   jpeg   file"</span>);
+<span style="color: #000000;">}</span>
+<span style="color: #000000;">}</span></p>
+
+<p><span style="color: #000000;">}</span></p>

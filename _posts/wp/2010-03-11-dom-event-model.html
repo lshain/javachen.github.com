@@ -1,0 +1,112 @@
+---
+layout: post
+title: DOM 事件模型
+categories:
+- JavaScript
+tags:
+- DOM
+- event
+- Firefox
+- IE
+- JavaScript
+published: true
+comments: true
+---
+<p><span style="color: #0000ff;"><strong>DOM事件流</strong></span></p>
+
+<p>DOM(文档对象模型)结构是一个树型结构，当一个HTML元素产生一个事件时，该事件会在元素结点与根结点之间的路径传播，路径所经过的结点都会收到该事件，这个传播过程可称为DOM事件流。<!--more-->
+<span style="color: #0000ff;"><strong>主流浏览器的事件模型</strong></span></p>
+
+<p>直到DOM Level3中规定后，多数主流浏览器才陆陆续续支持DOM标准的事件处理模型 — 捕获型与冒泡型。<br />
+目前除IE浏览器外，其它主流的Firefox, Opera, Safari都支持标准的DOM事件处理模型。IE仍然使用自己的模型，即冒泡型，它模型的一部份被DOM采用，这点对于开发者来说也是有好处的，只使用 DOM标准，IE都共有的事件处理方式才能有效的跨浏览器。</p>
+
+<p>冒泡型事件(Bubbling):从DOM树型结构上理解，就是事件由叶子结点沿祖先结点一直向上传递直到根结点；从浏览器界面视图HTML元素排列层次上理解就是事件由具有从属关系的最确定的目标元素一直传递到最不确定的目标元素.<br />
+捕获型事件(Capturing):Netscape Navigator的实现，它与冒泡型刚好相反，由DOM树最顶层元素一直到最精确的元素.<br />
+DOM标准事件模型:因为两个不同的模型都有其优点和解释，DOM标准支持捕获型与冒泡型，可以说是它们两者的结合体。它可以在一个DOM元素上绑定多个事件处理器，并且在处理函数内部，this关键字仍然指向被绑定的DOM元素，另外处理函数参数列表的第一个位置传递事件event对象。<br />
+首先是捕获式传递事件，接着是冒泡式传递，所以，如果一个处理函数既注册了捕获型事件的监听，又注册冒泡型事件监听，那么在DOM事件模型中它就会被调用两次。</p>
+
+<p>在《精通JavaScript+Jquery》一书里讲到。<span style="color: #ff00ff;">IE里冒泡事件从DOM层次结构的最低端往上一级级升，甚至可以到html节点，但在Firefox里html事件出现在body事件之前。</span></p>
+
+<p><span style="color: #0000ff;"><strong>注册与移除事件监听器</strong></span>
+<strong>1.IE下注册多个事件监听器与移除监听器方法</strong>
+E浏览器中HTML元素有个attachEvent方法允许外界注册该元素多个事件监听器,例如  element.attachEvent('onclick', observer);
+<span style="color: #ff00ff;">*注意：在IE7中实测,注册多个事件时候，后加入的函数先被调用</span>
+要移除先前注册的事件的监听器,调用element的detachEvent方法即可，参数相同,例如 element.detachEvent('onclick', observer);</p>
+
+<p><strong>2.DOM标准下注册多个事件监听器与移除监听器方法</strong>
+实现DOM标准的浏览器与IE浏览器中注册元素事件监听器方式有所不同，它通过元素的addEventListener方法注册，该方法既支持注册冒泡型事件处理，又支持捕获型事件处理。<br />
+element.addEventListener('click', observer, useCapture);<br />
+addEventListener方法接受三个参数。第一个参数是事件名称，值得注意的是，这里事件名称与IE的不同，事件名称是没’on’开头的;第二个参数observer是回调处理函数;第三个参数注明该处理回调函数是在事件传递过程中的捕获阶段被调用还是冒泡阶段被调用，默认true为捕获阶段。
+<span style="color: #ff00ff;">*注意：在Firefox中实测,注册多个事件时候，先添加的监听事件先被调用。标准的DOM监听函数是严格按顺序执行的。</span>
+移除已注册的事件监听器调用element的 removeEventListener即可，参数不变.<br />
+element.removeEventListener('click', observer, useCapture);</p>
+
+<p><strong>3.直接在DOM节点上加事件</strong></p>
+
+<p><span style="color: #0000ff;"><strong>如何取消浏览器事件的传递与事件传递后浏览器的默认处理</strong></span>
+取消事件传递是指，停止捕获型事件或冒泡型事件的进一步传递。例如上图中的冒泡型事件传递中，在body处理停止事件传递后，位于上层的document的事件监听器就不再收到通知，不再被处理。<br />
+事件传递后的默认处理是指，通常浏览器在事件传递并处理完后会执行与该事件关联的默认动作（如果存在这样的动作）。</p>
+
+<p><strong>取消浏览器的事件传递:</strong>
+在IE下,通过设置event对象的cancelBubble为true即可。<br />
+function someHandle() {<br />
+window.event.cancelBubble = true;<br />
+}</p>
+
+<p>DOM标准通过调用event对象的stopPropagation() 方法即可。<br />
+function someHandle(event) {<br />
+event.stopPropagation();<br />
+}
+因些，跨浏览器的停止事件传递的方法是:<br />
+function someHandle(event) {<br />
+event = event || window.event;<br />
+if(event.stopPropagation)<br />
+event.stopPropagation();<br />
+else event.cancelBubble = true;<br />
+}</p>
+
+<p><strong>取消事件传递后的默认处理</strong>
+在IE下,通过设置event对象的returnValue为false即可。<br />
+function someHandle() {<br />
+window.event.returnValue = false;<br />
+}</p>
+
+<p>DOM标准通过调用event对象的preventDefault()方法即可。<br />
+function someHandle(event) {<br />
+event.preventDefault();<br />
+}
+因些，跨浏览器的取消事件传递后的默认处理方法是：<br />
+function someHandle(event) {<br />
+event = event || window.event;<br />
+if(event.preventDefault)<br />
+event.preventDefault();<br />
+else event.returnValue = false;<br />
+}</p>
+
+<p><span style="color: #0000ff;"><strong>事件对象</strong></span>
+在IE浏览器中事件对象是window对象的一个属性event，并且event对象只能在事件发生时候被访问，所有事件处理完后，该对象就消失了。而标准的DOM中规定event必须作为惟一的参数传给事件处理函数<br />
+故为了实现兼容性，通常采用上述的方法：<br />
+function someHandle(event) {<br />
+if(window.event)<br />
+event=window.event；<br />
+}
+<span style="color: #ff00ff;">值得说明的是</span>：</p>
+
+<p>在两种浏览器处理事件中，type属性是各种浏览器所兼容的，他表示获取的事件类型，返回字符串。<br />
+在检测Shift，Alt，Ctrl三个键时，两种浏览器事件使用的方法也是一样的。<br />
+在IE中，事件的对象包含在event的srcElement属性中，而在标准的DOM浏览器中，对象包含在target属性中。</p>
+
+<p><strong>为了处理两种浏览器兼容性，举例如下：</strong>
+function handle(oEvent){<br />
+if(window.event) oEvent = window.event;        //处理兼容性，获得事件对象<br />
+var oTarget;<br />
+if(oEvent.srcElement)                //处理兼容性，获取事件目标<br />
+oTarget = oEvent.srcElement;<br />
+else<br />
+oTarget = oEvent.target;<br />
+alert(oTarget.tagName);                //弹出目标的标记名称<br />
+}
+window.onload = function(){<br />
+var oImg = document.getElementsByTagName("img")[0];<br />
+oImg.onclick = handle;<br />
+}</p>

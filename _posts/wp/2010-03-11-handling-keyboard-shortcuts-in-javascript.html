@@ -1,0 +1,296 @@
+---
+layout: post
+title: Handling Keyboard Shortcuts in JavaScript
+categories:
+- JavaScript
+tags:
+- DOM
+- event
+- JavaScript
+- Keyboard
+published: true
+comments: true
+---
+<p>在web开发中，对页面的进行全局或部分页面进行键盘快捷键事件注册，能够有效的提高页面的用户体验。在ExtJs中的表格Form中就有回车提交的事件，实现方法可以参照我的另一篇文章：<a href="http://www.javachen.com/2009/10/ext_enter/">Ext监控回车按键</a>。<br />
+在网络上看到了一篇处理JavaScript键盘快捷键事件的文章：<a href="http://www.openjs.com/scripts/events/keyboard_shortcuts/">Handling Keyboard Shortcuts in JavaScript </a> ，其实现方法很简单，只是封装了一个shortcut的类，提供了注册快捷键的方法和删除快捷键事件的方法。<!--more-->
+其源代码如下，其中代码逻辑很容易看懂而且其中考虑了各种浏览器的兼容问题（可以参照我的上一篇文章：<a href="http://www.javachen.com/2010/03/dom-event-model/">DOM 事件模型</a>）。通过以下代码，可以熟悉如何处理各种浏览器事件处理的兼容性问题。
+<pre lang="javascript">/**
+ * http://www.openjs.com/scripts/events/keyboard_shortcuts/ Version : 2.01.B By
+ * Binny V A License : BSD
+ * Modified by www.javachen.com  javachen
+ */
+shortcut = {
+	'all_shortcuts' : {},// All the shortcuts are stored in this array
+	'add' : function(shortcut_combination, callback, opt) {
+		// Provide a set of default options
+		var default_options = {
+			'type' : 'keydown',//按键事件类型,IE中keypress不支持功能按键，所以应该用keydown/keyup事件来进行补充。
+			'propagate' : false,
+			'disable_in_input' : false,//是否在input,Textarea内有效
+			'target' : document,//事件作用对象,相当于事件的相应范围scope,该值可以为节点的ID
+			'keycode' : false
+		}
+		//处理配置项,如果为空就使用默认的
+		if (!opt)
+			opt = default_options;
+		else {
+			for (var dfo in default_options) {
+				if (typeof opt[dfo] == 'undefined')
+					opt[dfo] = default_options[dfo];
+			}
+		}</pre></p>
+
+<p>		//如果target为字符串,则通过该字符串取得该DOM对象<br />
+		var ele = opt.target;<br />
+		if (typeof opt.target == 'string')<br />
+			ele = document.getElementById(opt.target);</p>
+
+<p>		var ths = this;//保存当前的this引用<br />
+		//联合快捷键<br />
+		shortcut_combination = shortcut_combination.toLowerCase();</p>
+
+<p>		// The function to be called at keypress<br />
+		var func = function(e) {<br />
+			e = e || window.event;//处理浏览器对event的兼容性,只有IE浏览器的event=window.event</p>
+
+<p>			if (opt['disable_in_input']) { // Don't enable shortcut keys in<br />
+				// Input, Textarea fields<br />
+				var element;<br />
+				if (e.target)<br />
+					//针对IE浏览器<br />
+					element = e.target;<br />
+				else if (e.srcElement)<br />
+					//针对DOM标准浏览器<br />
+					element = e.srcElement;<br />
+				//如果当前节点为文本节点,则取其父节点<br />
+				if (element.nodeType == 3)<br />
+					element = element.parentNode;<br />
+				//如果当前节点标签名为INPUT或TEXTAREA,则当前函数不做处理<br />
+				if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA')<br />
+					return;<br />
+			}</p>
+
+<p>			// Find Which key is pressed<br />
+			if (e.keyCode)<br />
+			    //针对IE浏览器,e.keyCode返回按键对应的数值<br />
+				code = e.keyCode;<br />
+			else if (e.which)<br />
+			    //针对DOM标准浏览器,如Firefox,e.keyCode返回按键对应的数值<br />
+				code = e.which;<br />
+			//e.which将给出该键的索引值，把索引值转化成该键的字母或数字值的方法需要用到静态函数String.fromCharCode()<br />
+			var character = String.fromCharCode(code).toLowerCase();</p>
+
+<p>			if (code == 188)<br />
+				character = ",";<br />
+			if (code == 190)<br />
+				character = "."; </p>
+
+<p>			var keys = shortcut_combination.split("+");<br />
+			// Key Pressed - counts the number of valid keypresses - if it is<br />
+			// same as the number of keys, the shortcut function is invoked<br />
+			var kp = 0;</p>
+
+<p>			// Work around for stupid Shift key bug created by using lowercase -<br />
+			// as a result the shift+num combination was broken<br />
+			var shift_nums = {<br />
+				"`" : "~",<br />
+				"1" : "!",<br />
+				"2" : "@",<br />
+				"3" : "#",<br />
+				"4" : "$",<br />
+				"5" : "%",<br />
+				"6" : "^",<br />
+				"7" : "&amp;",<br />
+				"8" : "*",<br />
+				"9" : "(",<br />
+				"0" : ")",<br />
+				"-" : "_",<br />
+				"=" : "+",<br />
+				";" : ":",<br />
+				"'" : "\"",<br />
+				"," : "&lt;", 				<br />
+                                "." : "&gt;",<br />
+				"/" : "?",<br />
+				"\\" : "|"<br />
+			}<br />
+			// Special Keys - and their codes<br />
+			var special_keys = {<br />
+				'esc' : 27,<br />
+				'escape' : 27,<br />
+				'tab' : 9,<br />
+				'space' : 32,<br />
+				'return' : 13,<br />
+				'enter' : 13,<br />
+				'backspace' : 8,</p>
+
+<p>				'scrolllock' : 145,<br />
+				'scroll_lock' : 145,<br />
+				'scroll' : 145,<br />
+				'capslock' : 20,<br />
+				'caps_lock' : 20,<br />
+				'caps' : 20,<br />
+				'numlock' : 144,<br />
+				'num_lock' : 144,<br />
+				'num' : 144,</p>
+
+<p>				'pause' : 19,<br />
+				'break' : 19,</p>
+
+<p>				'insert' : 45,<br />
+				'home' : 36,<br />
+				'delete' : 46,<br />
+				'end' : 35,</p>
+
+<p>				'pageup' : 33,<br />
+				'page_up' : 33,<br />
+				'pu' : 33,</p>
+
+<p>				'pagedown' : 34,<br />
+				'page_down' : 34,<br />
+				'pd' : 34,</p>
+
+<p>				'left' : 37,<br />
+				'up' : 38,<br />
+				'right' : 39,<br />
+				'down' : 40,</p>
+
+<p>				'f1' : 112,<br />
+				'f2' : 113,<br />
+				'f3' : 114,<br />
+				'f4' : 115,<br />
+				'f5' : 116,<br />
+				'f6' : 117,<br />
+				'f7' : 118,<br />
+				'f8' : 119,<br />
+				'f9' : 120,<br />
+				'f10' : 121,<br />
+				'f11' : 122,<br />
+				'f12' : 123<br />
+			}</p>
+
+<p>			var modifiers = {<br />
+				shift : {<br />
+					wanted : false,<br />
+					pressed : false//是否被按<br />
+				},<br />
+				ctrl : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				},<br />
+				alt : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				},<br />
+				meta : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				} // Meta is Mac specific<br />
+			};</p>
+
+<p>			if (e.ctrlKey)<br />
+				modifiers.ctrl.pressed = true;<br />
+			if (e.shiftKey)<br />
+				modifiers.shift.pressed = true;<br />
+			if (e.altKey)<br />
+				modifiers.alt.pressed = true;<br />
+			if (e.metaKey)<br />
+				modifiers.meta.pressed = true;</p>
+
+<p>			for (var i = 0; k = keys[i], i < keys.length; i++) {<br />
+				// Modifiers<br />
+				if (k == 'ctrl' || k == 'control') {<br />
+					kp++;<br />
+					modifiers.ctrl.wanted = true;</p>
+
+<p>				} else if (k == 'shift') {<br />
+					kp++;<br />
+					modifiers.shift.wanted = true;</p>
+
+<p>				} else if (k == 'alt') {<br />
+					kp++;<br />
+					modifiers.alt.wanted = true;<br />
+				} else if (k == 'meta') {<br />
+					kp++;<br />
+					modifiers.meta.wanted = true;<br />
+				} else if (k.length > 1) { // If it is a special key<br />
+					if (special_keys[k] == code)<br />
+						kp++;</p>
+
+<p>				} else if (opt['keycode']) {<br />
+					if (opt['keycode'] == code)<br />
+						kp++;</p>
+
+<p>				} else { // The special keys did not match<br />
+					if (character == k)<br />
+						kp++;<br />
+					else {<br />
+						if (shift_nums[character] && e.shiftKey) { // Stupid<br />
+							// Shift key<br />
+							// bug<br />
+							// created<br />
+							// by using<br />
+							// lowercase<br />
+							character = shift_nums[character];<br />
+							if (character == k)<br />
+								kp++;<br />
+						}<br />
+					}<br />
+				}<br />
+			}<br />
+			if (kp == keys.length<br />
+					&amp;&amp; modifiers.ctrl.pressed == modifiers.ctrl.wanted<br />
+					&amp;&amp; modifiers.shift.pressed == modifiers.shift.wanted<br />
+					&amp;&amp; modifiers.alt.pressed == modifiers.alt.wanted<br />
+					&amp;&amp; modifiers.meta.pressed == modifiers.meta.wanted) {<br />
+				callback(e);</p>
+
+<p>				if (!opt['propagate']) { // Stop the event<br />
+					// e.cancelBubble is supported by IE - this will kill the<br />
+					// bubbling process.<br />
+					e.cancelBubble = true;<br />
+					e.returnValue = false;</p>
+
+<p>					// e.stopPropagation works in Firefox.<br />
+					if (e.stopPropagation) {<br />
+						e.stopPropagation();<br />
+						e.preventDefault();<br />
+					}<br />
+					return false;<br />
+				}<br />
+			}<br />
+		}<br />
+		this.all_shortcuts[shortcut_combination] = {<br />
+			'callback' : func,<br />
+			'target' : ele,<br />
+			'event' : opt['type']<br />
+		};<br />
+		// Attach the function with the event<br />
+		if (ele.addEventListener)<br />
+			ele.addEventListener(opt['type'], func, false);<br />
+		else if (ele.attachEvent)<br />
+			ele.attachEvent('on' + opt['type'], func);<br />
+		else<br />
+			ele['on' + opt['type']] = func;<br />
+	},</p>
+
+<p>	// Remove the shortcut - just specify the shortcut and I will remove the<br />
+	// binding<br />
+	'remove' : function(shortcut_combination) {<br />
+		shortcut_combination = shortcut_combination.toLowerCase();<br />
+		var binding = this.all_shortcuts[shortcut_combination];<br />
+		delete(this.all_shortcuts[shortcut_combination])<br />
+		if (!binding)<br />
+			return;<br />
+		var type = binding['event'];<br />
+		var ele = binding['target'];<br />
+		var callback = binding['callback'];</p>
+
+<p>		if (ele.detachEvent)<br />
+			ele.detachEvent('on' + type, callback);<br />
+		else if (ele.removeEventListener)<br />
+			ele.removeEventListener(type, callback, false);<br />
+		else<br />
+			ele['on' + type] = false;<br />
+	}<br />
+}
+</p>

@@ -1,0 +1,69 @@
+---
+layout: post
+title: 获取XMLHttpRequest的步骤
+categories:
+- DWR
+tags:
+- Ajax
+- DWR
+published: true
+comments: true
+---
+<p>step 1: trigger an event to call a javascript function<br />
+step 2. create XMLHttpRequest Object<br />
+step 3. open a web resource<br />
+step 4. register a callback on xhr<br />
+step 5. send request
+<!--more-->
+举例：
+<pre lang="html" line="1">
+< !DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>First Ajax Program Using XHR</title>
+<script type="text/javascript">
+	var xhr = null;<br>
+	function getData(){<br>
+		//step 2. create XMLHttpRequest Object<br>
+		xhr = createXhr();<br>
+		//step 3. open a web resource<br>
+		xhr.open("GET","data.txt");<br>
+		//step 4. register a callback on xhr<br>
+		xhr.onreadystatechange = display;<br>
+		//step 5. send request<br>
+		xhr.send(null);<br>
+	}<br>
+	
+	//handle response<br>
+	function display(){<br>
+		if(xhr.readyState == 4){<br>
+			if(xhr.status == 200){ //end in success<br>
+				document.getElementById("data").innerHTML <br>
+				   = xhr.responseText;<br>
+			}else{<br>
+				alert("Error: " + xhr.status + " " + xhr.statusText);<br>
+			}<br>
+		}else{<br>
+			document.getElementById("data").innerHTML <br>
+				   = "loading...";<br>
+		}<br>
+	}<br>
+	
+	function createXhr(){<br>
+		if(window.ActiveXObject){           //IE browser<br>
+			return new ActiveXObject("Microsoft.XMLHTTP");<br>
+		}else if(window.XMLHttpRequest){         //other browsers support ajax<br>
+			return new XMLHttpRequest();<br>
+		}else{                            //browsers don't support ajax<br>
+			throw new Error("Does not support ajax program");<br>
+		}<br>
+	}
+</script>
+</head>
+<!--step 1: trigger an event to call a javascript function -->
+<body onload="getData()">
+	<div id="data"></div>
+</body>
+</html>
+</pre></p>

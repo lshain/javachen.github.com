@@ -1,0 +1,125 @@
+---
+layout: post
+title: JavaScript 中的 call与apply
+categories:
+- JavaScript
+tags:
+- JavaScript
+published: true
+comments: true
+---
+<p><strong>call 方法</strong></p>
+
+<p>call 方法可以用来代替另一个对象调用一个方法。call  方法可将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对象。<br />
+如果没有提供 thisObj 参数，那么 Global  对象被用作 thisObj。</p>
+
+<p>obj1.method1.call(obj2,argument1,argument2)<br />
+如上，call的作用就是把obj1的方法放到obj2上使用，后面的argument1..这些做为参数传入．<!--more-->
+举一个具体的例子：
+<span style="color: #000000;"> f</span><span style="color: #000000;">unction add(a,b)<br />
+{
+alert(a+b);<br />
+}
+function sub(a,b)<br />
+{
+alert(a-b);<br />
+}
+add.call(sub,3,1); </span>
+这个例子中的意思就是用 add 来替换 sub，add.call(sub,3,1) == add(3,1) ，所以运行结果为：alert(4);  // 注意：js 中的函数其实是对象，函数名是对 Function 对象的引用。</p>
+
+<p>关于call，最简单的解释就是：把隐藏的第一个参数显示化。因为通常一个方法x的调用，会有一个额外的隐藏参数，就是x所属的对象，如果没有所属，则为 global（如window）对象，并在函数内可以用this关键字访问之。</p>
+
+<p><strong>用call来实现继承：</strong></p>
+
+<p>function Class1()<br />
+{
+this.showTxt = function(txt)<br />
+{
+alert(txt);<br />
+}
+}</p>
+
+<p>function Class2()<br />
+{
+Class1.call(this);<br />
+}</p>
+
+<p>var c2 = new Class2();<br />
+c2.showTxt("cc");<br />
+这样 Class2 就继承Class1了，Class1.call(this) 的 意思就是使用 Class1 对象代替this对象，那么  Class2 中不就有Class1 的所有属性和方法了吗，c2 对象就能够直接调用Class1  的方法以及属性了，执行结果就是：alert（“cc”）</p>
+
+<p>研究一下Ext的扩展插件机制就可以看到call方法的使用，下面是扩展Ext form的一个例子
+<pre lang="javascript">Ext.namespace('Ext.ux.form');
+Ext.ux.form.StaticTextField = Ext.extend(Ext.form.Field, {
+	//设置组件默认常见的HTML元素为div
+	defaultAutoCreate : {tag: "div"},
+	value : '',
+	onRender : function(ct, position){
+        // 让Ext.ux.form.StaticTextField的父类的onRender调用本类的onRender方法，也就是覆盖父类的onRender方法
+        Ext.ux.form.StaticTextField.superclass.onRender.call(this, ct, position);
+        //将需要显示的文本作为子元素插入到组件中
+        Ext.DomHelper.append(this.el, {
+        	tag : 'div',
+			style :'height:100%;width:100%;',
+        	html : this.value
+        });
+    },
+    isDirty : function() {
+    	//因为是静态文本所以不存在被改变的情况
+        return false;
+    },
+    isValid : function(){
+    	//因为是静态文本所以不需要进行验证
+        return true;
+    }
+});
+Ext.reg('xstatictextfield', Ext.ux.form.StaticTextField);
+</pre>
+让Ext.ux.form.StaticTextField的父类的onRender调用本类的onRender方法，也就是覆盖父类的onRender方法</p>
+
+<p><strong>apply方法</strong>
+apply([thisObj[,argArray]])<br />
+参数<br />
+thisObj  可选项。将被用作当前对象的对象。<br />
+argArray 可选项。将被传递给该函数的参数数组。<br />
+说明<br />
+如果 argArray 不是一个有效的数组或者不是 arguments 对象，那么将导致一个 TypeError。<br />
+如果没有提供 argArray 和 thisObj 任何一个参数，那么 Global 对象将被用作 thisObj， 并且无法被传递任何参数。</p>
+
+<p><strong>两者的区别：</strong>
+<span style="color: #ff00ff;">两者实现的功能是完全一样的，只是参数传递方式不一样，call是将各个参数以逗号（,）隔开，而apply是将所有参数组成一个数组进行传递</span>。</p>
+
+<p>apply方法实例：
+<pre lang="javascript">function foo(x, y) {
+	this.x = x;    //共有变量
+	var y = "Just a y"; //私有变量
+}</pre></p>
+
+<p>function bar(foo) {<br />
+	return function() {<br />
+		var temp = {};<br />
+		foo.apply(temp, arguments);<br />
+		alert("temp.foo:" + temp.foo + "\n" + "temp.x:" + temp.x + "\n"<br />
+				+ "temp.y:" + temp.y);// 注意看这一行的执行结果<br />
+	}<br />
+}</p>
+
+<p>var func = bar(foo);<br />
+func("In foo now", "y");
+
+试验结果表明：apply以后，temp对象就继承了foo类的<span style="color: #ff00ff;">公有变量</span>了。也就是说，这一句 foo.apply(temp, arguments);实际上就是把foo()函数当成temp对象的构造函数来调用了。一旦构造完毕，<span style="color: #ff00ff;">temp对象就具有了成员this.x,但是没有y成员</span>。</p>
+
+<p>使用apply方法，实际上是将arguments或传入的数组内的<span style="color: #ff00ff;">公有属性</span>复制到第一个参数内，即拷贝，参照上例，也就是说系统把foo类拥有的所有公有变量复制给了temp对象（这里是指Object,Function,Array和包装型对象“四类”对象）。</p>
+
+<p>同样看看Ext的apply代码,就能明白JavaScript中apply的实现方式了，也说明了为什么apply要求传入的是数组和arguments。
+<pre lang="javascript">Ext.apply = function(o, c, defaults){
+    // no "this" reference for friendly out of scope calls
+    if (defaults) Ext.apply(o, defaults);
+    if(o &amp;&amp; c &amp;&amp; typeof c == 'object'){
+        for(var p in c){
+            o[p] = c[p];
+        }
+    }
+    return o;
+};
+</pre></p>

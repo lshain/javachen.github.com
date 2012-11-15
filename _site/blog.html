@@ -1,0 +1,3188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Blog</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <!-- a href='http://feeds2.feedburner.com/gotgit' class='float-right'><img src='/images/subscribe.png' alt='Subscribe to XML Feed'/></a -->
+
+
+  
+  <div class='post'>
+    <span class='date'>03 Jun 2012</span>
+    <!-- JiaThis Button BEGIN -->
+<div id="ckepop" style="padding-top:.7em;"><span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  url:'http://blog.javachen.com/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html',
+  summary:'',
+  title:"使用Octopress将博客从wordpress迁移到GitHub上 - JavaChen",
+  ralateuid:{
+    "tsina":"chenzhijun"
+  },
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<a href='/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html#comments' title='分享文章、查看评论' style="margin-left: 1em;">Comments</a>
+    <h1><a href='/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html'>使用Octopress将博客从wordpress迁移到GitHub上</a></h1>
+    <div class='body'><h2>Step1 - 在本机安装Octopress</h2>
+
+<p>首先，必须先在本机安装配置<a href="http://git-scm.com/">Git</a>和<a href="https://rvm.beginrescueend.com/rvm/install/">Ruby</a>,Octopress需要Ruby版本至少为1.9.2。你可以使用<a href="http://rvm.beginrescueend.com/">RVM</a>或<a href="https://github.com/sstephenson/rbenv">rbenv</a>安装ruby，安装方法见Octopress官方文档：<a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></p>
+
+<p>我使用rvm安装：</p>
+
+<pre><code>rvm install 1.9.2 &amp;&amp; rvm use 1.9.2
+</code></pre>
+
+<p>安装完之后可以查看ruby版本：</p>
+
+<pre><code>ruby --version
+</code></pre>
+
+<p>结果为：</p>
+
+<pre><code>ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]
+</code></pre>
+
+<p>然后需要从github下载Octopress：</p>
+
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
+</code></pre>
+
+<p>因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：</p>
+
+<pre><code>git clone git@github.com:javachen/octopress.git
+</code></pre>
+
+<p>运行上面的代码后，你会看到：</p>
+
+<pre><code>Cloning into 'octopress'...
+remote: Counting objects: 6579, done.
+remote: Compressing objects: 100% (2361/2361), done.
+remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
+Receiving objects: 100% (6579/6579), 1.34 MiB | 35 KiB/s, done.
+Resolving deltas: 100% (3773/3773), done.
+</code></pre>
+
+<p>接下来进入octopress：</p>
+
+<pre><code>cd octopress
+</code></pre>
+
+<p>接下来安装依赖：</p>
+
+<pre><code>gem install bundler
+rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+bundle install
+</code></pre>
+
+<p>安装Octopress默认的主题：</p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>你也可以安装自定义的主题，blog为主题名称：</p>
+
+<pre><code>rake install['blog']
+</code></pre>
+
+<p>至此，Octopress所需的环境已经搭建成功。</p>
+
+<h2>Step2 - 连接GitHub Pages</h2>
+
+<p>首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为<code>你的帐号.github.com</code>，并且，部署的时候会占用你的master分支。</p>
+
+<p><em>Tips：</em>
+如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
+如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；</p>
+
+<pre><code>echo 'your-domain.com' &gt;&gt; source/CNAME
+</code></pre>
+
+<p>如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
+
+<p>完成上述准备工作后，运行：</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</p>
+
+<h2>Step3 - 配置你的博客</h2>
+
+<p>需要配置博客url、名称、作者、rss等信息。</p>
+
+<pre><code>url: http://javachen.github.com
+title: JavaChen on Java
+subtitle: Just some random thoughts about technology,Java and life.
+author: javachen
+simple_search: http://google.com/search
+description:
+
+date_format: "%Y年%m月%d日"
+
+subscribe_rss: /atom.xml
+subscribe_email:
+email:
+
+# 如果你使用的是一个子目录，如http://site.com/project，则设置为'root: /project'
+root: /
+# 文章标题格式
+permalink: /:year/:month/:day/:title/
+source: source
+destination: public
+plugins: plugins
+code_dir: downloads/code
+# 分类存放路径
+category_dir: categories
+markdown: rdiscount
+pygments: false # default python pygments have been replaced by pygments.rb
+</code></pre>
+
+<h2>Step4 - 部署</h2>
+
+<p>先把整个项目静态化，然后再部署到GitHub：</p>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<p>当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!</p>
+
+<p><em>Tips：</em>
+Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
+如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。</p>
+
+<h2>Step5 - 从Wordpress迁移到Octopress</h2>
+
+<h3>备份</h3>
+
+<h4>备份评论内容</h4>
+
+<p>Octopress由于是纯静态，所以没有办法存储用户评论了，我们可以使用DISQUS提供的“云评论”服务。首先安装DISQUS的WordPress插件，在插件设置中我们可以将现有的评论内容导入到DISQUS中。DISQUS处理导入数据的时间比较长，往往需要24小时甚至以上的时间。</p>
+
+<h4>备份文章内容</h4>
+
+<p>在WordPress后台我们可以将整站数据备份成一个.xml文件下载下来。同时，我原先文章中的图片都是直接在Wordpress后台上传的，所以要把服务器上<code>wp-content/uploads</code>下的所有文件备份下来。</p>
+
+<h3>迁移</h3>
+
+<h4>迁移文章</h4>
+
+<p>jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：</p>
+
+<pre><code>ruby -r "./utils/wordpressdotcom.rb" -e "Jekyll::WordpressDotCom.process"
+</code></pre>
+
+<p>于是转换好的文章都放进source目录了。</p>
+
+<h4>迁移URL</h4>
+
+<p>迁移URL，便是要保证以前的文章链接能够自动重定向到新的链接上。这样既能保证搜索引擎的索引不受影响，也是一项对读者负责任的行为是吧。不过这是一项挺麻烦的事情。</p>
+
+<p>幸好我当初建立WordPress的时候就留下了后路。原先网站的链接是这样的：</p>
+
+<pre><code>http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html
+http://XXXXXXXXX.com/page/xx/
+http://XXXXXXXXX.com/category/[category-name]/
+</code></pre>
+
+<p>这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：</p>
+
+<pre><code>permalink: /:year/:month/:title/
+category_dir: category
+pagination_dir:  # 留空
+</code></pre>
+
+<h4>迁移评论</h4>
+
+<p>既然做好了301，那么迁移评论就显得非常简单了。登录DISQUS后台，进入站点管理后台的“Migrate Threads”栏目，那里有一个“Redirect Crawler”的功能，便是自动跟随301重定向，将评论指向新的网址。点一下那个按钮就大功告成。</p>
+
+<h4>迁移图片</h4>
+
+<p>可以参考<a href="http://log4d.com/2012/05/image-host/">使用独立图床子域名</a></p>
+
+<h2>Step6 - 再次部署</h2>
+
+<pre><code>rake generate
+rake deploy
+</code></pre>
+
+<h2>参考文章</h2>
+
+<ol>
+<li><a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></li>
+<li><a href="http://octopress.org/docs/deploying/">http://octopress.org/docs/deploying/</a></li>
+<li><a href="http://mrzhang.me/blog/blog-equals-github-plus-octopress.html">http://mrzhang.me/blog/blog-equals-github-plus-octopress.html</a></li>
+<li><a href="http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/">http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/</a></li>
+<li><a href="http://log4d.com/2012/05/image-host/">http://log4d.com/2012/05/image-host/</a></li>
+</ol>
+
+</div>
+  </div>
+  
+
+  
+  <div class='post'>
+    <span class='date'>13 Apr 2012</span>
+    <!-- JiaThis Button BEGIN -->
+<div id="ckepop" style="padding-top:.7em;"><span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  url:'http://blog.javachen.com/Kettle/2012/04/13/kettle-dependency-management.html',
+  summary:'',
+  title:"Kettle dependency management - JavaChen",
+  ralateuid:{
+    "tsina":"chenzhijun"
+  },
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<a href='/Kettle/2012/04/13/kettle-dependency-management.html#comments' title='分享文章、查看评论' style="margin-left: 1em;">Comments</a>
+    <h1><a href='/Kettle/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></h1>
+    <div class='body'><p>pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.<br />
+使用ivy编译kettle的源代码却是非常容易的事情.</p>
+
+<p>该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>,文章标题没作修改.<br />
+编写此文,是为了记录编译kettle源码的方法和过程.</p>
+
+<p><strong>以下是对原文的一个简单翻译.</strong>
+将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.</p>
+
+<p>pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
+<!--more-->
+<strong>关于Ivy</strong>
+<a href="http://ant.apache.org/ivy/" target="_blank">Apache Ivy™</a>是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:<a href="http://ant.apache.org/ivy/features.html" target="_blank">enterprise features</a>, <a href="http://ant.apache.org/ivy/testimonials.html" target="_blank">what people say about it</a>, 以及 <a href="http://ant.apache.org/ivy/history/latest-milestone/index.html" target="_blank">how it can improve your build system</a></p>
+
+<p><strong>在kettle中使用ivyIDE</strong>
+首先,从svn上下载kettle的源代码:
+<pre>
+svn://source.pentaho.org/svnkettleroot/Kettle/trunk
+</pre>
+如果你想在Eclipse上使用<a href="http://ant.apache.org/ivy/ivyde/download.cgi" target="_blank">ivyde plugin</a>.<br />
+请参考相关文章安装该插件.</p>
+
+<p>如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.<br />
+1.执行<code>ant resolve</code>,这个命令将会创建一个叫做resolved-libs的文件夹.<br />
+2.使用下面命令更新classpath <br />
+  a.手动的添加这些jar文件到你的ide的classpath<br />
+  b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)<br />
+注意:kettle项目中的构建脚本会自动安装ivy插件.</p>
+
+<p><strong>构建Kettle</strong>
+你可以下载kettle源代码然后立即执行<code>ant distrib</code>命令<br />
+或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.</p>
+
+<p><strong>ivy中未完成的</strong>
+<strong>pentaho-database-</strong>这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
+<strong>swt-</strong>swt文件目前没有包括在ivy.xml文件中
+<strong>library configurations-</strong>每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
+<strong>checked-in plugins-</strong>当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.</p>
+
+<p><strong>参考文章</strong>
+<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>
+</p>
+</div>
+  </div>
+  
+
+  
+  <div class='post'>
+    <span class='date'>09 Apr 2012</span>
+    <!-- JiaThis Button BEGIN -->
+<div id="ckepop" style="padding-top:.7em;"><span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  url:'http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html',
+  summary:'',
+  title:"Getting Started Using the Cassandra CLI - JavaChen",
+  ralateuid:{
+    "tsina":"chenzhijun"
+  },
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html#comments' title='分享文章、查看评论' style="margin-left: 1em;">Comments</a>
+    <h1><a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></h1>
+    <div class='body'><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
+Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<p><h1>Starting the CLI</h1>
+使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
+如果你有一个但节点的集群，则使用以下命令：
+<pre> 
+$ cassandra-cli -host localhost -port 9160
+</pre>
+如果想连接多节点集群中的一个节点，可以使用以下命令:
+<pre>
+$ cassandra-cli -host 110.123.4.5 -port 9160
+</pre>
+或者，可以直接执行以下命令：
+<pre>
+$ cassandra-cli
+</pre>
+登录成功之后，可以看到：
+<pre>
+Welcome to cassandra CLI.
+Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+</pre>
+你必须指定连接一个节点：
+<pre>
+[default@unknown]connect localhost/9160;
+</pre>
+<!--more-->
+<h1>Creating a Keyspace</h1>
+<pre>
+[default@unknown] CREATE KEYSPACE demo;
+</pre>
+下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
+<pre>
+[default@unknown] CREATE KEYSPACE demo with 
+        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
+        and strategy_options = [{replication_factor:1}];
+</pre>
+你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<p><h1>Use a keyspace</h1>
+<pre>
+[default@unknown] USE demo;
+</pre></p>
+
+<p><h1>Creating a Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</pre>
+我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
+下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
+<pre>
+[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</pre></p>
+
+<p><h1>Creating a Counter Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+          default_validation_class=CounterColumnType 
+          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</pre>
+插入一行和计数列：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
+</pre>
+增加计数：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
+</pre></p>
+
+<p><h1>Inserting Rows and Columns</h1>
+以下命令以一个特点的行key值插入列到users中
+<pre>
+[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
+[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
+[default@demo] SET users['bobbyjo']['state']='TX';
+[default@demo] SET users['bobbyjo']['gender']='M';
+[default@demo] SET users['bobbyjo']['birth_year']='1975';
+</pre>
+更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
+获取数据： get users['bobbyjo'];<br />
+get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
+查询数据： get users where gender= 'M';<br />
+下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
+<pre>
+[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
+</pre></p>
+
+<p><h1>Reading Rows and Columns</h1>
+使用List命令查询记录，默认查询100条记录
+<pre>
+[default@demo] LIST users;
+</pre>
+Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：
+<pre>
+[default@demo] GET users[utf8('bobby')][utf8('full_name')];
+</pre>
+你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
+<pre>
+[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</pre></p>
+
+<p><h1>Setting an Expiring Column</h1>
+例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
+<pre>
+[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
+</pre>
+自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<p><h1>Indexing a Column</h1>
+给birth_year添加一个二级索引：
+<pre>
+[default@demo] UPDATE COLUMN FAMILY users 
+            WITH comparator = UTF8Type AND column_metadata = 
+            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</pre>
+由于该列被索引了，所以可以直接通过该列查询：
+<pre>
+[default@demo] GET users WHERE birth_date = 1969;
+</pre></p>
+
+<p><h1>Deleting Rows and Columns</h1>
+删除yomama索引的coupon_code列：
+<pre>
+[default@demo] DEL users ['yomama']['coupon_code'];
+[default@demo] GET users ['yomama'];
+</pre>
+或者删除整行：
+<pre>
+[default@demo] DEL users ['yomama'];
+</pre></p>
+
+<p><h1>Dropping Column Families and Keyspaces</h1>
+<pre>
+[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</pre></p>
+
+<p><h1>For help</h1>
+<pre>
+[default@unknown]help;
+</pre>
+查看某一个命令的详细说明：
+<pre>
+[default@unknown] help SET;
+</pre></p>
+
+<p><h1>To Quit</h1>
+<pre>
+[default@unknown]quit;
+</pre></p>
+
+<p><h1>To Execute Script</h1>
+<pre>
+bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</pre></p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
+2.<a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>
+</div>
+  </div>
+  
+
+  
+  <div class='post'>
+    <span class='date'>06 Apr 2012</span>
+    <!-- JiaThis Button BEGIN -->
+<div id="ckepop" style="padding-top:.7em;"><span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  url:'http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html',
+  summary:'',
+  title:"使用DataStax Community Edition安装Cassandra单节点 - JavaChen",
+  ralateuid:{
+    "tsina":"chenzhijun"
+  },
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<a href='/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html#comments' title='分享文章、查看评论' style="margin-left: 1em;">Comments</a>
+    <h1><a href='/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></h1>
+    <div class='body'><p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
+
+<p><h1>检查java环境</h1>
+Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
+<h3>1.检查是否安装java:</h3>
+<pre>
+# java -version
+</pre>
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+<h3>2.安装jdk</h3>
+下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:
+<pre>
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+</pre>
+<!--more-->
+2）解压执行RPM文件,例如:
+<pre>
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+</pre>
+这样JRE会安装在/usr/java/<br />
+3）配置Oracle JRE取代OpenJDK JRE<br />
+可以使用alternatives命令添加一个链接到Oracle JRE.
+<pre>
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+</pre>
+4）确认是否安装JRE
+<pre>
+$ java -version
+  java version "1.6.0_25"
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+</pre>
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
+<pre>
+$ sudo alternatives --config java
+There are 2 programs which provide 'java'.</pre></p>
+
+<p>Selection      Command<br />
+-----------------------------------------------<br />
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java<br />
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+</p>
+
+<p><h1>在Linux系统上安装DataStax Community二进制文件</h1>
+<h3>1.在用户目录创建一个目录,如datas</h3>
+<pre>
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+</pre>
+<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
+<pre>
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+</pre>
+<h3>3.解压</h3>
+<pre>
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+</pre>
+<h3>4.设置环境变量</h3>
+1)编辑 .bashrc 
+<pre>
+ vi $HOME/.bashrc
+</pre>
+2)添加以下代码
+<pre>
+export CASSANDRA_HOME=$HOME/datas/</pre><font color="red">dsc_package_name</font>
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager<br />
+export OPSC_HOME=$HOME/datas/<font color="red">opscenter_package_name</font>
+export PATH="$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin"
+
+注意替换<font color="red">dsc_package_name</font>和<font color="red">opscenter_package_name</font>
+3)保存退出<br />
+4)使该文件生效
+<pre>
+source $HOME/.bashrc
+</pre>
+<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
+<pre>
+$ mkdir $HOME/datas/cassandra-data
+</pre></p>
+
+<p><h1>配置并启动单节点</h1>
+<h3>1.编辑配置环境</h3>
+修改$CASSANDRA_HOME/conf/cassandra.yaml
+<pre>
+$ sed -i -e "s,initial_token:,initial_token: 0," \
+  $CASSANDRA_HOME/conf/cassandra.yaml</pre></p>
+
+<p>$ sed -i -e "s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,saved_caches_directory: /var/lib/cassandra/saved_caches, \<br />
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \<br />
+  $HOME/datastax/cassandra-data/commitlog," $CASSANDRA_HOME/conf/cassandra.yaml
+
+<h3>2.设置日志文件位置</h3> <br />
+修改：$CASSANDRA_HOME/conf/log4j-server.properties
+<pre>
+$ sed -i -e "s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log," \
+  $CASSANDRA_HOME/conf/log4j-server.properties
+</pre>
+<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
+<pre>
+$ sed -i -e "s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>," \
+  $DSCDEMO_HOME/bin/pricer
+</dsc_package_name></pre>
+<h3>4.后台启动Cassandra</h3>
+<pre>
+$ cassandra
+</pre>
+<h3>5.检查cassandra环是否在运行</h3>
+<pre>
+$ nodetool ring -h localhost
+</pre>
+<h3>6.运行Portfolio Demo示例程序</h3>
+1)进入Portfolio目录
+<pre>
+$ cd $DSCDEMO_HOME
+</pre>
+2)运行 ./bin/pricer工具生成数据
+<pre>
+./bin/pricer --help
+</pre>
+下面代码生成100天的历史数据
+<pre>
+./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+</pre>
+3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)
+<pre>
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &
+</pre>
+4)浏览程序 http://localhost:8983/portfolio</p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></p>
+</div>
+  </div>
+  
+
+  
+    
+    <h3>More Posts</h3>
+    <table class='post-list'>
+    
+    <tr>
+      <th><a href='/Java Core/2012/03/26/hash-and-hash-functions.html'>哈希表</a></th>
+      <td>26 Mar 2012</td>
+      <td><a href='/Java Core/2012/03/26/hash-and-hash-functions.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></th>
+      <td>23 Mar 2012</td>
+      <td><a href='/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></th>
+      <td>23 Feb 2012</td>
+      <td><a href='/Seam/2012/02/23/the-process-of-seam-initiation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></th>
+      <td>22 Feb 2012</td>
+      <td><a href='/Kettle/2012/02/22/the-init-process-before-job-execution.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></th>
+      <td>21 Feb 2012</td>
+      <td><a href='/Kettle/2012/02/21/the-execution-process-of-kettles-job.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></th>
+      <td>17 Feb 2012</td>
+      <td><a href='/Kettle/2012/02/17/step-error-handling-in-kettle.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2012/02/14/this-expression-of-jsf-el.html'>JSF中EL表达式之this扩展</a></th>
+      <td>14 Feb 2012</td>
+      <td><a href='/JSF/2012/02/14/this-expression-of-jsf-el.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2012/02/12/first-jboss-seam-tutorial.html'>翻译：First JBoss Seam tutorial</a></th>
+      <td>12 Feb 2012</td>
+      <td><a href='/Seam/2012/02/12/first-jboss-seam-tutorial.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2012/01/31/the-work-summary-of-year-2011.html'>2011年度年终总结</a></th>
+      <td>31 Jan 2012</td>
+      <td><a href='/Work/2012/01/31/the-work-summary-of-year-2011.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></th>
+      <td>31 Jan 2012</td>
+      <td><a href='/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html'>使用kettle数据迁移添加主键和索引</a></th>
+      <td>05 Jan 2012</td>
+      <td><a href='/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html'>kettle进行数据迁移遇到的问题</a></th>
+      <td>04 Jan 2012</td>
+      <td><a href='/Kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Pentaho/2011/12/07/mondrian-and-olap.html'>Mondrian and OLAP</a></th>
+      <td>07 Dec 2011</td>
+      <td><a href='/Pentaho/2011/12/07/mondrian-and-olap.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Web/2011/11/25/xml-user-interface-language-introuction.html'>XUL 用户界面语言介绍</a></th>
+      <td>25 Nov 2011</td>
+      <td><a href='/Web/2011/11/25/xml-user-interface-language-introuction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html'>在eclipse中构建Pentaho BI Server工程</a></th>
+      <td>28 Sep 2011</td>
+      <td><a href='/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Pentaho/2011/09/26/resolved-pentaho-problems-9-16.html'>Pentaho现场支持遇到问题及解决办法</a></th>
+      <td>26 Sep 2011</td>
+      <td><a href='/Pentaho/2011/09/26/resolved-pentaho-problems-9-16.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/08/20/install-eucalyptus-on-fedora-15.html'>在Fedora 15 上搭建Eucalyptus</a></th>
+      <td>20 Aug 2011</td>
+      <td><a href='/Cloud/2011/08/20/install-eucalyptus-on-fedora-15.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></th>
+      <td>11 Aug 2011</td>
+      <td><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2011/08/07/javascript-modelessdialog-and-modaldialog.html'>JavaScript模态窗口和非模态窗口</a></th>
+      <td>07 Aug 2011</td>
+      <td><a href='/JavaScript/2011/08/07/javascript-modelessdialog-and-modaldialog.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2011/07/31/custom-dhtmlxgrid-header-menu.html'>自定义dhtmlxGrid表头菜单</a></th>
+      <td>31 Jul 2011</td>
+      <td><a href='/JavaScript/2011/07/31/custom-dhtmlxgrid-header-menu.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column.html'>Drag an item to dhtmlxGrid and add a column</a></th>
+      <td>24 Jul 2011</td>
+      <td><a href='/JavaScript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2011/07/19/dhtmlxgrid-quick-start-guide.html'>DhtmlxGrid Quick Start Guide</a></th>
+      <td>19 Jul 2011</td>
+      <td><a href='/JavaScript/2011/07/19/dhtmlxgrid-quick-start-guide.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/07/07/some-resources-about-openstack.html'>网上收集的关于OpenStack的一些资源</a></th>
+      <td>07 Jul 2011</td>
+      <td><a href='/Cloud/2011/07/07/some-resources-about-openstack.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/07/07/openstack-architecture-overview.html'>OpenStack架构预览</a></th>
+      <td>07 Jul 2011</td>
+      <td><a href='/Cloud/2011/07/07/openstack-architecture-overview.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/07/06/opennebula-architecture.html'>OpenNebula的架构</a></th>
+      <td>06 Jul 2011</td>
+      <td><a href='/Cloud/2011/07/06/opennebula-architecture.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/06/29/install-opennebula-management-console-in-centos5-6.html'>Centos上安装 OpenNebula Management Console</a></th>
+      <td>29 Jun 2011</td>
+      <td><a href='/Cloud/2011/06/29/install-opennebula-management-console-in-centos5-6.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/06/26/opennebula-2-2-features.html'>OpenNebula 2.2的特性</a></th>
+      <td>26 Jun 2011</td>
+      <td><a href='/Cloud/2011/06/26/opennebula-2-2-features.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/06/22/the-technology-used-in-eucalyptus.html'>Eucalyptus使用的技术</a></th>
+      <td>22 Jun 2011</td>
+      <td><a href='/Cloud/2011/06/22/the-technology-used-in-eucalyptus.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/06/22/the-introduction-of-eucalyptus-ee%E2%80%98s-features-and-functions.html'>Eucalyptus EE的介绍及功能说明</a></th>
+      <td>22 Jun 2011</td>
+      <td><a href='/Cloud/2011/06/22/the-introduction-of-eucalyptus-ee%E2%80%98s-features-and-functions.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus.html'>接触云服务环境Eucalyptus</a></th>
+      <td>16 Jun 2011</td>
+      <td><a href='/Cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2011/06/07/java-concurrency-annotations.html'>Java Concurrency Annotations</a></th>
+      <td>07 Jun 2011</td>
+      <td><a href='/Java Core/2011/06/07/java-concurrency-annotations.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2011/06/05/jgroups-how-to-parse-a-configuration-file.html'>JGroups 如何读取配置文件</a></th>
+      <td>05 Jun 2011</td>
+      <td><a href='/OpenSource/2011/06/05/jgroups-how-to-parse-a-configuration-file.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2011/06/04/jgroups-introduction-and-configruation.html'>JGroups 介绍及配置说明</a></th>
+      <td>04 Jun 2011</td>
+      <td><a href='/OpenSource/2011/06/04/jgroups-introduction-and-configruation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2011/05/20/butterfly-container-introduction.html'>Butterfly Container Introduction</a></th>
+      <td>20 May 2011</td>
+      <td><a href='/OpenSource/2011/05/20/butterfly-container-introduction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2011/05/19/butterfly-scheduling-introduction.html'>Butterfly Scheduling Introduction</a></th>
+      <td>19 May 2011</td>
+      <td><a href='/OpenSource/2011/05/19/butterfly-scheduling-introduction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2011/04/29/seam-cos-exception-when-parsing-multipart-form-data.html'>Seam中cos多文件上传出现异常</a></th>
+      <td>29 Apr 2011</td>
+      <td><a href='/Seam/2011/04/29/seam-cos-exception-when-parsing-multipart-form-data.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2011/04/22/dimission-in-2011-4.html'>离职了</a></th>
+      <td>22 Apr 2011</td>
+      <td><a href='/Work/2011/04/22/dimission-in-2011-4.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2011/04/15/seam-logger-log-method.html'>Seam中的log日志记录方法</a></th>
+      <td>15 Apr 2011</td>
+      <td><a href='/Seam/2011/04/15/seam-logger-log-method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2011/04/01/faceletes-template-created-methods.html'>Faceletes模板构建方法</a></th>
+      <td>01 Apr 2011</td>
+      <td><a href='/JSF/2011/04/01/faceletes-template-created-methods.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2011/03/05/begin-dbunit-for-the-first-time.html'>DbUnit的初次使用</a></th>
+      <td>05 Mar 2011</td>
+      <td><a href='/Post/2011/03/05/begin-dbunit-for-the-first-time.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/Post/2011/03/02/read-some-codes.html'>该读一些源码</a></th>
+      <td>02 Mar 2011</td>
+      <td><a href='/OpenSource/Post/2011/03/02/read-some-codes.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2011/02/27/struts2-filterdispatcher-init-method.html'>struts2的FilterDispatcher初始化过程分析</a></th>
+      <td>27 Feb 2011</td>
+      <td><a href='/Struts/2011/02/27/struts2-filterdispatcher-init-method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2011/02/26/do-you-remember-your-ever-dreams.html'>还记得年少时的梦吗</a></th>
+      <td>26 Feb 2011</td>
+      <td><a href='/Post/2011/02/26/do-you-remember-your-ever-dreams.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2011/02/26/commons-lang-1-0%E4%B8%AD%E7%9A%84comparetobuilder.html'>commons-lang-1.0中的CompareToBuilder</a></th>
+      <td>26 Feb 2011</td>
+      <td><a href='/Java Core/2011/02/26/commons-lang-1-0%E4%B8%AD%E7%9A%84comparetobuilder.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2011/02/26/commons-lang-1-0-equalsbuilder-hashcodebuilder.html'>commons-lang-1.0中的EqualsBuilder和HashCodeBuilder</a></th>
+      <td>26 Feb 2011</td>
+      <td><a href='/Java Core/2011/02/26/commons-lang-1-0-equalsbuilder-hashcodebuilder.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2011/01/03/recall-my-past-2010.html'>盘点我的2010</a></th>
+      <td>03 Jan 2011</td>
+      <td><a href='/Post/2011/01/03/recall-my-past-2010.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2010/12/28/hibernate-hql-query-and-native-sql-query.html'>hibernate hql query and native sql query</a></th>
+      <td>28 Dec 2010</td>
+      <td><a href='/Hibernate/2010/12/28/hibernate-hql-query-and-native-sql-query.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2010/12/18/hua-bing-chong-ji.html'>画饼充饥</a></th>
+      <td>18 Dec 2010</td>
+      <td><a href='/Work/2010/12/18/hua-bing-chong-ji.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/12/07/apache-commons-lang-tostringstyle.html'>Apache Commons Lang ToStringStyle</a></th>
+      <td>07 Dec 2010</td>
+      <td><a href='/OpenSource/2010/12/07/apache-commons-lang-tostringstyle.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/12/04/some-tips-about-simple-api-for-xml.html'>SAX解析XML的一点介绍</a></th>
+      <td>04 Dec 2010</td>
+      <td><a href='/Java Core/2010/12/04/some-tips-about-simple-api-for-xml.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/12/04/java-classloader.html'>Java ClassLoader</a></th>
+      <td>04 Dec 2010</td>
+      <td><a href='/Java Core/2010/12/04/java-classloader.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/11/21/this-life-is-what-i-want.html'>这不是我想要的生活</a></th>
+      <td>21 Nov 2010</td>
+      <td><a href='/Post/2010/11/21/this-life-is-what-i-want.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/10/19/java-interface-randomaccess.html'>Java interface RandomAccess</a></th>
+      <td>19 Oct 2010</td>
+      <td><a href='/Java Core/2010/10/19/java-interface-randomaccess.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/10/17/a-youku-video-for-my-classmate-24-birthday.html'>给同学做的视频--祝24岁生日快乐</a></th>
+      <td>17 Oct 2010</td>
+      <td><a href='/Post/2010/10/17/a-youku-video-for-my-classmate-24-birthday.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/09/16/get-annotations-from-a-class.html'>获得一个类上的注解</a></th>
+      <td>16 Sep 2010</td>
+      <td><a href='/Java Core/2010/09/16/get-annotations-from-a-class.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/09/07/prototype-js-code-extend-object.html'>prototype.js 源码之扩展Object</a></th>
+      <td>07 Sep 2010</td>
+      <td><a href='/JavaScript/2010/09/07/prototype-js-code-extend-object.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/09/06/prototype-js-code-source-prototype.html'>prototype.js 源码之Prototype</a></th>
+      <td>06 Sep 2010</td>
+      <td><a href='/JavaScript/2010/09/06/prototype-js-code-source-prototype.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/jQuery/2010/08/25/study-jquery-source-code-again.html'>重拾jQuery</a></th>
+      <td>25 Aug 2010</td>
+      <td><a href='/jQuery/2010/08/25/study-jquery-source-code-again.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2010/08/20/some-thoughts-about-project.html'>关于项目的一些思考</a></th>
+      <td>20 Aug 2010</td>
+      <td><a href='/Work/2010/08/20/some-thoughts-about-project.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/08/18/how-to-let-jboss-start-up-automaticly.html'>如何设置jboss自动启动</a></th>
+      <td>18 Aug 2010</td>
+      <td><a href='/Post/2010/08/18/how-to-let-jboss-start-up-automaticly.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/08/16/up-in-the-air.html'>Up in the Air</a></th>
+      <td>16 Aug 2010</td>
+      <td><a href='/Post/2010/08/16/up-in-the-air.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2010/08/07/flying-with-tired-body.html'>疲倦地往前飞</a></th>
+      <td>07 Aug 2010</td>
+      <td><a href='/Work/2010/08/07/flying-with-tired-body.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/08/03/java-lang-reflect-array.html'>java.lang.reflect.Array</a></th>
+      <td>03 Aug 2010</td>
+      <td><a href='/Java Core/2010/08/03/java-lang-reflect-array.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/08/03/java-lang-equals-method.html'>Java中比较两个对象是否相等</a></th>
+      <td>03 Aug 2010</td>
+      <td><a href='/Java Core/2010/08/03/java-lang-equals-method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Work/2010/07/18/to-be-a-pmt-some-notices.html'>初为项目经理应该注意的地方</a></th>
+      <td>18 Jul 2010</td>
+      <td><a href='/Work/2010/07/18/to-be-a-pmt-some-notices.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/07/17/database-migrate-in-201007.html'>数据迁移的一些总结</a></th>
+      <td>17 Jul 2010</td>
+      <td><a href='/Post/2010/07/17/database-migrate-in-201007.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/07/09/java-design-pattern-singleton.html'>Java设计模式之Singleton</a></th>
+      <td>09 Jul 2010</td>
+      <td><a href='/Java Core/2010/07/09/java-design-pattern-singleton.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/07/08/dynamic-changes-in-the-java-class.html'>动态改变java的父类</a></th>
+      <td>08 Jul 2010</td>
+      <td><a href='/OpenSource/2010/07/08/dynamic-changes-in-the-java-class.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/07/04/further-and-further.html'>渐行渐远</a></th>
+      <td>04 Jul 2010</td>
+      <td><a href='/Post/2010/07/04/further-and-further.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/06/29/facelets-customize-components.html'>Facelets 自定义组件</a></th>
+      <td>29 Jun 2010</td>
+      <td><a href='/JSF/2010/06/29/facelets-customize-components.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/06/21/optimize-the-efficiency-of-java-code.html'>优化java代码效率</a></th>
+      <td>21 Jun 2010</td>
+      <td><a href='/Java Core/2010/06/21/optimize-the-efficiency-of-java-code.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/06/17/richfaces-cascade-select-items.html'>利用RichFaces实现级联下拉列表</a></th>
+      <td>17 Jun 2010</td>
+      <td><a href='/JSF/2010/06/17/richfaces-cascade-select-items.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/06/16/forget-the-flowers.html'>忘花辞</a></th>
+      <td>16 Jun 2010</td>
+      <td><a href='/Post/2010/06/16/forget-the-flowers.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2010/06/13/some-notices-about-hibernate-startup.html'>关于Hibernate启动时的配置需要注意的地方?(转)</a></th>
+      <td>13 Jun 2010</td>
+      <td><a href='/Hibernate/2010/06/13/some-notices-about-hibernate-startup.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2010/06/11/how-to-init-hibernate.html'>hibernate如何初始化</a></th>
+      <td>11 Jun 2010</td>
+      <td><a href='/Hibernate/2010/06/11/how-to-init-hibernate.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/06/06/jsf1-2-the-usage-of-valueexpression.html'>JSF1.2中 ValueExpression的用法</a></th>
+      <td>06 Jun 2010</td>
+      <td><a href='/JSF/2010/06/06/jsf1-2-the-usage-of-valueexpression.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/06/05/penitence.html'>忏悔</a></th>
+      <td>05 Jun 2010</td>
+      <td><a href='/Post/2010/06/05/penitence.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/30/richfaces-built-in-client-functions.html'>RichFaces 四种客户端函数</a></th>
+      <td>30 May 2010</td>
+      <td><a href='/JSF/2010/05/30/richfaces-built-in-client-functions.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2010/05/27/seam-managed-hibernate-session.html'>Seam管理hibernate会话</a></th>
+      <td>27 May 2010</td>
+      <td><a href='/Seam/2010/05/27/seam-managed-hibernate-session.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Seam/2010/05/26/jboss-seam-annotation.html'>Jboss Seam的注解</a></th>
+      <td>26 May 2010</td>
+      <td><a href='/Seam/2010/05/26/jboss-seam-annotation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/05/23/wro4j-web-resource-optimizer-for-java.html'>Web资源优化工具 wro4j</a></th>
+      <td>23 May 2010</td>
+      <td><a href='/OpenSource/2010/05/23/wro4j-web-resource-optimizer-for-java.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/05/08/what_am_i_doing_this_month.html'>这一个月我在做什么</a></th>
+      <td>08 May 2010</td>
+      <td><a href='/Post/2010/05/08/what_am_i_doing_this_month.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/05/07/myeclipse-8-5_jad_installer_method.html'>MyEclipse 反编译插件jad安装方法</a></th>
+      <td>07 May 2010</td>
+      <td><a href='/Java Core/2010/05/07/myeclipse-8-5_jad_installer_method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/richfaces-introduction.html'>RichFaces 简介</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/richfaces-introduction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/learn_jsf_basic_knowledges.html'>JSF入门</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/learn_jsf_basic_knowledges.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/jsf_internnationalization.html'>JSF国际化</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/jsf_internnationalization.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/jsf_action_event.html'>JSF动作事件</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/jsf_action_event.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/jsf-managed-beans.html'>JSF Managed Beans</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/jsf-managed-beans.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/05/01/jsf-converter.html'>JSF Converter</a></th>
+      <td>01 May 2010</td>
+      <td><a href='/JSF/2010/05/01/jsf-converter.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSF/2010/04/26/study_to_jsf.html'>开始学习JSF</a></th>
+      <td>26 Apr 2010</td>
+      <td><a href='/JSF/2010/04/26/study_to_jsf.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/04/25/back-to-wudaokou.html'>重回五道口</a></th>
+      <td>25 Apr 2010</td>
+      <td><a href='/Post/2010/04/25/back-to-wudaokou.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2010/04/21/struts-controller-components.html'>Struts控制器组件</a></th>
+      <td>21 Apr 2010</td>
+      <td><a href='/Struts/2010/04/21/struts-controller-components.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2010/04/21/hibernate-two-kinds-of-cache.html'>Hibernate的缓存机制</a></th>
+      <td>21 Apr 2010</td>
+      <td><a href='/Hibernate/2010/04/21/hibernate-two-kinds-of-cache.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/04/17/commons-digester-read-xml-to-javabean.html'>Commons-Digester read xml to JavaBean</a></th>
+      <td>17 Apr 2010</td>
+      <td><a href='/OpenSource/2010/04/17/commons-digester-read-xml-to-javabean.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/04/15/come-here-and-sleep-here.html'>既来之，则安之</a></th>
+      <td>15 Apr 2010</td>
+      <td><a href='/Post/2010/04/15/come-here-and-sleep-here.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/04/11/java-within-hypertext-markup-language.html'>Java within Hypertext Markup Language</a></th>
+      <td>11 Apr 2010</td>
+      <td><a href='/Java Core/2010/04/11/java-within-hypertext-markup-language.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2010/04/10/servlet_compare_forward_and_redirect.html'>Servlet中forward 与redirect区别</a></th>
+      <td>10 Apr 2010</td>
+      <td><a href='/JSP/2010/04/10/servlet_compare_forward_and_redirect.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/04/10/jfreechart-create_piechart.html'>JFreeChart 生成饼状图</a></th>
+      <td>10 Apr 2010</td>
+      <td><a href='/OpenSource/2010/04/10/jfreechart-create_piechart.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2010/04/07/servlet_life_cycle.html'>Servlet生命周期</a></th>
+      <td>07 Apr 2010</td>
+      <td><a href='/JSP/2010/04/07/servlet_life_cycle.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/04/07/java_checkedexception_and_runtimeexception.html'>Java中的两类异常</a></th>
+      <td>07 Apr 2010</td>
+      <td><a href='/Java Core/2010/04/07/java_checkedexception_and_runtimeexception.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2010/03/30/struts2-use-validator-famework-to-validate.html'>Struts2使用validator框架进行数据校验</a></th>
+      <td>30 Mar 2010</td>
+      <td><a href='/Struts/2010/03/30/struts2-use-validator-famework-to-validate.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2010/03/29/struts2-action-validate-method.html'>Struts2使用validate方法验证数据</a></th>
+      <td>29 Mar 2010</td>
+      <td><a href='/Struts/2010/03/29/struts2-action-validate-method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2010/03/26/struts-2-configuration-file.html'>Struts 2配置文件</a></th>
+      <td>26 Mar 2010</td>
+      <td><a href='/Struts/2010/03/26/struts-2-configuration-file.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/03/24/java-enumeration.html'>Java Enumeration</a></th>
+      <td>24 Mar 2010</td>
+      <td><a href='/Java Core/2010/03/24/java-enumeration.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/03/23/ibatis-in-practice.html'>Ibatis in Practice</a></th>
+      <td>23 Mar 2010</td>
+      <td><a href='/OpenSource/2010/03/23/ibatis-in-practice.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/03/18/begin-to-study-apache-ant.html'>初涉Ant</a></th>
+      <td>18 Mar 2010</td>
+      <td><a href='/OpenSource/2010/03/18/begin-to-study-apache-ant.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/03/17/how-velocity-works%EF%BC%9F.html'>How Velocity Works？</a></th>
+      <td>17 Mar 2010</td>
+      <td><a href='/OpenSource/2010/03/17/how-velocity-works%EF%BC%9F.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/03/15/json-rpc-java.html'>JSON-RPC-Java</a></th>
+      <td>15 Mar 2010</td>
+      <td><a href='/OpenSource/2010/03/15/json-rpc-java.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/03/14/create_project_with_maven.html'>使用maven建立基本开发结构</a></th>
+      <td>14 Mar 2010</td>
+      <td><a href='/OpenSource/2010/03/14/create_project_with_maven.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/03/11/javascript-web-print.html'>JavaScript 实现Web打印</a></th>
+      <td>11 Mar 2010</td>
+      <td><a href='/JavaScript/2010/03/11/javascript-web-print.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/03/11/handling-keyboard-shortcuts-in-javascript.html'>Handling Keyboard Shortcuts in JavaScript</a></th>
+      <td>11 Mar 2010</td>
+      <td><a href='/JavaScript/2010/03/11/handling-keyboard-shortcuts-in-javascript.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/03/11/dom-event-model.html'>DOM 事件模型</a></th>
+      <td>11 Mar 2010</td>
+      <td><a href='/JavaScript/2010/03/11/dom-event-model.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2010/03/05/ext-util-event.html'>Ext.util.Event</a></th>
+      <td>05 Mar 2010</td>
+      <td><a href='/Extjs/2010/03/05/ext-util-event.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/03/03/to-be-prepared.html'>该准备了</a></th>
+      <td>03 Mar 2010</td>
+      <td><a href='/Post/2010/03/03/to-be-prepared.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2010/03/03/hibernate-object-persistence.html'>Hibernate Object Persistence</a></th>
+      <td>03 Mar 2010</td>
+      <td><a href='/Hibernate/2010/03/03/hibernate-object-persistence.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/03/02/java-persistence-api.html'>Java Persistence API</a></th>
+      <td>02 Mar 2010</td>
+      <td><a href='/Java Core/2010/03/02/java-persistence-api.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/03/01/ie-warn-like-qq-zone.html'>模仿QQ空间的警告提示栏</a></th>
+      <td>01 Mar 2010</td>
+      <td><a href='/JavaScript/2010/03/01/ie-warn-like-qq-zone.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/03/01/get-page-title.html'>获取当前网页的名称</a></th>
+      <td>01 Mar 2010</td>
+      <td><a href='/JavaScript/2010/03/01/get-page-title.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/02/27/think-about-amateur-and-professional.html'>业余创意与专业创意</a></th>
+      <td>27 Feb 2010</td>
+      <td><a href='/Post/2010/02/27/think-about-amateur-and-professional.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/02/25/javascript-navigator-type-check.html'>JavaScript判断浏览器类型及版本</a></th>
+      <td>25 Feb 2010</td>
+      <td><a href='/JavaScript/2010/02/25/javascript-navigator-type-check.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2010/02/25/extjs-login-window.html'>用ExtJs制作登陆界面</a></th>
+      <td>25 Feb 2010</td>
+      <td><a href='/Extjs/2010/02/25/extjs-login-window.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/02/06/mood-fly-in-back-home.html'>回家的思绪在飞</a></th>
+      <td>06 Feb 2010</td>
+      <td><a href='/Post/2010/02/06/mood-fly-in-back-home.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/02/02/javascript-call-and-apply.html'>JavaScript 中的 call与apply</a></th>
+      <td>02 Feb 2010</td>
+      <td><a href='/JavaScript/2010/02/02/javascript-call-and-apply.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/02/02/javascript-basic-data-type.html'>JavaScript数据类型</a></th>
+      <td>02 Feb 2010</td>
+      <td><a href='/JavaScript/2010/02/02/javascript-basic-data-type.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/02/02/javascript-arguments-callee-caller.html'>JavaScript中的 arguments,callee,caller</a></th>
+      <td>02 Feb 2010</td>
+      <td><a href='/JavaScript/2010/02/02/javascript-arguments-callee-caller.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/02/01/happy-birthday-to-wjx.html'>生日快乐</a></th>
+      <td>01 Feb 2010</td>
+      <td><a href='/Post/2010/02/01/happy-birthday-to-wjx.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2010/02/01/ext-apply-and-ext-applyif.html'>Ext.apply 与 Ext.applyIf</a></th>
+      <td>01 Feb 2010</td>
+      <td><a href='/Extjs/2010/02/01/ext-apply-and-ext-applyif.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/01/30/review-for-classmates.html'>检讨</a></th>
+      <td>30 Jan 2010</td>
+      <td><a href='/Post/2010/01/30/review-for-classmates.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/01/29/java5-annotation.html'>Java5中的注释Annotation</a></th>
+      <td>29 Jan 2010</td>
+      <td><a href='/Java Core/2010/01/29/java5-annotation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/01/27/java-reflection.html'>Java 反射机制</a></th>
+      <td>27 Jan 2010</td>
+      <td><a href='/Java Core/2010/01/27/java-reflection.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/OpenSource/2010/01/26/what-is-mime%EF%BC%9F.html'>What is MIME？</a></th>
+      <td>26 Jan 2010</td>
+      <td><a href='/Java Core/OpenSource/2010/01/26/what-is-mime%EF%BC%9F.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/01/26/java-stringutil.html'>Java StringUtil</a></th>
+      <td>26 Jan 2010</td>
+      <td><a href='/Java Core/2010/01/26/java-stringutil.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/01/26/java-generic-types.html'>Java Generic Types</a></th>
+      <td>26 Jan 2010</td>
+      <td><a href='/Java Core/2010/01/26/java-generic-types.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/01/26/begin-to-study-xmappr-project.html'>Xmappr开源项目研读</a></th>
+      <td>26 Jan 2010</td>
+      <td><a href='/OpenSource/2010/01/26/begin-to-study-xmappr-project.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/01/22/what-is-kpi.html'>什么是KPI</a></th>
+      <td>22 Jan 2010</td>
+      <td><a href='/OpenSource/2010/01/22/what-is-kpi.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2010/01/22/poi-2-5-jar.html'>POI-2.5.jar</a></th>
+      <td>22 Jan 2010</td>
+      <td><a href='/OpenSource/2010/01/22/poi-2-5-jar.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/01/18/work-plan-of-2010.html'>2010年工作计划</a></th>
+      <td>18 Jan 2010</td>
+      <td><a href='/Post/2010/01/18/work-plan-of-2010.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2010/01/15/java-read-picture-exif-data.html'>java 读取图片的 Exif 数据</a></th>
+      <td>15 Jan 2010</td>
+      <td><a href='/Java Core/2010/01/15/java-read-picture-exif-data.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/CSS/HTML/2010/01/14/css-create-scroll-menu.html'>纯CSS实现的下拉滑动菜单</a></th>
+      <td>14 Jan 2010</td>
+      <td><a href='/CSS/HTML/2010/01/14/css-create-scroll-menu.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Spring/2010/01/12/spring-inversion-of-control.html'>Spring Inversion of Control</a></th>
+      <td>12 Jan 2010</td>
+      <td><a href='/Spring/2010/01/12/spring-inversion-of-control.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Spring/2010/01/12/spring-factory-create-bean-method.html'>spring 工厂方法创建bean</a></th>
+      <td>12 Jan 2010</td>
+      <td><a href='/Spring/2010/01/12/spring-factory-create-bean-method.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2010/01/10/ext-grid-row-change-background.html'>Ext grid改变行背景颜色</a></th>
+      <td>10 Jan 2010</td>
+      <td><a href='/Extjs/2010/01/10/ext-grid-row-change-background.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Spring/2010/01/06/spring-ioc-notebook.html'>Spring IOC学习笔记</a></th>
+      <td>06 Jan 2010</td>
+      <td><a href='/Spring/2010/01/06/spring-ioc-notebook.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/01/06/javascript-inner-function.html'>JavaScript中的闭包</a></th>
+      <td>06 Jan 2010</td>
+      <td><a href='/JavaScript/2010/01/06/javascript-inner-function.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2010/01/05/unobtrusive-javascript.html'>Unobtrusive Javascript</a></th>
+      <td>05 Jan 2010</td>
+      <td><a href='/JavaScript/2010/01/05/unobtrusive-javascript.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2010/01/04/2009-year-bref-summary.html'>2009小结</a></th>
+      <td>04 Jan 2010</td>
+      <td><a href='/Post/2010/01/04/2009-year-bref-summary.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/12/31/not-published-off-job-report.html'>还未发表的离职申请书</a></th>
+      <td>31 Dec 2009</td>
+      <td><a href='/Post/2009/12/31/not-published-off-job-report.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/12/30/java-date-operation-function.html'>java中关于时间日期操作的常用函数</a></th>
+      <td>30 Dec 2009</td>
+      <td><a href='/Java Core/2009/12/30/java-date-operation-function.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/12/29/java-string-split.html'>Java中的字符串截取</a></th>
+      <td>29 Dec 2009</td>
+      <td><a href='/Java Core/2009/12/29/java-string-split.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/12/28/javascript-prototype-notebook.html'>JavaScript prototype学习笔记</a></th>
+      <td>28 Dec 2009</td>
+      <td><a href='/JavaScript/2009/12/28/javascript-prototype-notebook.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/12/23/javascript-date-add.html'>JavaScript中的Date日期相加</a></th>
+      <td>23 Dec 2009</td>
+      <td><a href='/JavaScript/2009/12/23/javascript-date-add.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/12/21/one-tree-with-flowers.html'>一颗开花的树——席慕容</a></th>
+      <td>21 Dec 2009</td>
+      <td><a href='/Post/2009/12/21/one-tree-with-flowers.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/12/19/firebug-console.html'>Firebug中的console</a></th>
+      <td>19 Dec 2009</td>
+      <td><a href='/JavaScript/2009/12/19/firebug-console.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/12/19/dulala01-notebook.html'>《杜拉拉升职记》读书笔记</a></th>
+      <td>19 Dec 2009</td>
+      <td><a href='/Post/2009/12/19/dulala01-notebook.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/CSS/HTML/2009/12/19/css-important.html'>CSS !important</a></th>
+      <td>19 Dec 2009</td>
+      <td><a href='/CSS/HTML/2009/12/19/css-important.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/12/18/extjs_change_skins.html'>extjs换肤</a></th>
+      <td>18 Dec 2009</td>
+      <td><a href='/Extjs/2009/12/18/extjs_change_skins.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/12/18/change_my_habit.html'>改变自身的坏习惯</a></th>
+      <td>18 Dec 2009</td>
+      <td><a href='/Post/2009/12/18/change_my_habit.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/12/09/jdom-dealwith-xml.html'>用JDOM操作XML文件</a></th>
+      <td>09 Dec 2009</td>
+      <td><a href='/OpenSource/2009/12/09/jdom-dealwith-xml.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/12/09/begin-to-create-birt.html'>begin to create birt</a></th>
+      <td>09 Dec 2009</td>
+      <td><a href='/OpenSource/2009/12/09/begin-to-create-birt.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/12/08/ext-form-examples.html'>Ext form实例</a></th>
+      <td>08 Dec 2009</td>
+      <td><a href='/Extjs/2009/12/08/ext-form-examples.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2009/11/29/struts-2-0-action.html'>Struts 2.0中的Action</a></th>
+      <td>29 Nov 2009</td>
+      <td><a href='/Struts/2009/11/29/struts-2-0-action.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2009/11/27/struts2-struts-properties.html'>Struts2 struts.properties配置文件</a></th>
+      <td>27 Nov 2009</td>
+      <td><a href='/Struts/2009/11/27/struts2-struts-properties.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2009/11/27/begin-to-study-struts2.html'>Begin to study struts2</a></th>
+      <td>27 Nov 2009</td>
+      <td><a href='/Struts/2009/11/27/begin-to-study-struts2.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/11/23/ext-my-alert.html'>Ext自定义弹出窗口</a></th>
+      <td>23 Nov 2009</td>
+      <td><a href='/Extjs/2009/11/23/ext-my-alert.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/11/23/ext-api-core-ext-js.html'>Ext API--core/Ext.js</a></th>
+      <td>23 Nov 2009</td>
+      <td><a href='/Extjs/2009/11/23/ext-api-core-ext-js.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/11/23/ex-get-ext-fly.html'>Ex.get与Ext.fly</a></th>
+      <td>23 Nov 2009</td>
+      <td><a href='/Extjs/2009/11/23/ex-get-ext-fly.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/11/20/about-log4j.html'>Log4j</a></th>
+      <td>20 Nov 2009</td>
+      <td><a href='/OpenSource/2009/11/20/about-log4j.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/11/20/about-commons-logging.html'>commons-logging</a></th>
+      <td>20 Nov 2009</td>
+      <td><a href='/OpenSource/2009/11/20/about-commons-logging.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/11/18/what-is-velocity.html'>什么是Velocity？</a></th>
+      <td>18 Nov 2009</td>
+      <td><a href='/OpenSource/2009/11/18/what-is-velocity.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/jQuery/2009/11/18/jquery-xml-to-json-plugin.html'>jQuery XML to JSON Plugin</a></th>
+      <td>18 Nov 2009</td>
+      <td><a href='/jQuery/2009/11/18/jquery-xml-to-json-plugin.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/11/17/waitin_for_your_coming.html'>等待你的到来</a></th>
+      <td>17 Nov 2009</td>
+      <td><a href='/Post/2009/11/17/waitin_for_your_coming.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/11/07/javascript-blackbirdjs.html'>JS调试工具 BlackBirdjs</a></th>
+      <td>07 Nov 2009</td>
+      <td><a href='/JavaScript/2009/11/07/javascript-blackbirdjs.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/11/01/follow-my-heart.html'>follow my heart</a></th>
+      <td>01 Nov 2009</td>
+      <td><a href='/Post/2009/11/01/follow-my-heart.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/OpenSource/2009/10/30/dom4j_xpath_for_xml.html'>在Dom4j中使用xpath解析xml</a></th>
+      <td>30 Oct 2009</td>
+      <td><a href='/OpenSource/2009/10/30/dom4j_xpath_for_xml.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/10/29/jiagoushi.html'>架构师的修炼</a></th>
+      <td>29 Oct 2009</td>
+      <td><a href='/Java Core/2009/10/29/jiagoushi.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/10/27/myeclipse7-0_option.html'>优化 myeclipse7.5</a></th>
+      <td>27 Oct 2009</td>
+      <td><a href='/Java Core/2009/10/27/myeclipse7-0_option.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/10/27/excel_dragto_ext-grid.html'>从Excel表格拖放数据到Ext Grid中</a></th>
+      <td>27 Oct 2009</td>
+      <td><a href='/Extjs/2009/10/27/excel_dragto_ext-grid.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/10/23/javacript_youhua.html'>JavaScript的优化方法</a></th>
+      <td>23 Oct 2009</td>
+      <td><a href='/JavaScript/2009/10/23/javacript_youhua.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/10/22/ext_rows_columns.html'>Ext实现多行多列布局</a></th>
+      <td>22 Oct 2009</td>
+      <td><a href='/Extjs/2009/10/22/ext_rows_columns.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/10/22/ext_readxml_in_bjsasc_wuzi.html'>Ext读取xml文件生成动态表格和表单</a></th>
+      <td>22 Oct 2009</td>
+      <td><a href='/JavaScript/2009/10/22/ext_readxml_in_bjsasc_wuzi.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/10/22/ext_read_dynamicgri.html'>Ext 动态读取grid 列数</a></th>
+      <td>22 Oct 2009</td>
+      <td><a href='/Extjs/2009/10/22/ext_read_dynamicgri.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/10/22/ext_loadmask.html'>Ext自定义LoadMask</a></th>
+      <td>22 Oct 2009</td>
+      <td><a href='/Extjs/2009/10/22/ext_loadmask.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/10/22/ext_enter.html'>Ext监控回车按键</a></th>
+      <td>22 Oct 2009</td>
+      <td><a href='/Extjs/2009/10/22/ext_enter.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/10/16/workin200910.html'>工作一个月</a></th>
+      <td>16 Oct 2009</td>
+      <td><a href='/Post/2009/10/16/workin200910.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/10/07/finding_house_life.html'>房奴生活</a></th>
+      <td>07 Oct 2009</td>
+      <td><a href='/Post/2009/10/07/finding_house_life.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/jQuery/2009/09/27/jquery_auto_complet.html'>用jquery实现自动填充功能</a></th>
+      <td>27 Sep 2009</td>
+      <td><a href='/jQuery/2009/09/27/jquery_auto_complet.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/09/27/ext_grid_bindingto_form.html'>Ext实现grid和form动态绑定</a></th>
+      <td>27 Sep 2009</td>
+      <td><a href='/Extjs/2009/09/27/ext_grid_bindingto_form.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/09/27/bjsasc_first_week_200.html'>一周工作总结</a></th>
+      <td>27 Sep 2009</td>
+      <td><a href='/Post/2009/09/27/bjsasc_first_week_200.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Extjs/2009/09/22/ext-messagebox.html'>Ext.MessageBox</a></th>
+      <td>22 Sep 2009</td>
+      <td><a href='/Extjs/2009/09/22/ext-messagebox.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/09/16/javascript_compareto_java.html'>JavaScript和Java的区别</a></th>
+      <td>16 Sep 2009</td>
+      <td><a href='/Java Core/2009/09/16/javascript_compareto_java.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/09/16/java_collection.html'>Java中的集合类</a></th>
+      <td>16 Sep 2009</td>
+      <td><a href='/Java Core/2009/09/16/java_collection.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/09/16/interview_in_bjsasc.html'>面试神舟航天软件的一个上机考试题</a></th>
+      <td>16 Sep 2009</td>
+      <td><a href='/Java Core/2009/09/16/interview_in_bjsasc.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/09/16/23_patterns.html'>23中设计模式-------轻松的比喻语言</a></th>
+      <td>16 Sep 2009</td>
+      <td><a href='/Java Core/2009/09/16/23_patterns.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/08/08/happy_birthday_23.html'>生日快乐！</a></th>
+      <td>08 Aug 2009</td>
+      <td><a href='/Post/2009/08/08/happy_birthday_23.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/jQuery/2009/08/06/jquery_introduce.html'>jQuery入门简介</a></th>
+      <td>06 Aug 2009</td>
+      <td><a href='/jQuery/2009/08/06/jquery_introduce.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/jQuery/2009/08/06/jquery-skills.html'>jQuery常用技巧</a></th>
+      <td>06 Aug 2009</td>
+      <td><a href='/jQuery/2009/08/06/jquery-skills.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/08/02/javascript_validate_all.html'>JavaScript验证正则表达式大全</a></th>
+      <td>02 Aug 2009</td>
+      <td><a href='/JavaScript/2009/08/02/javascript_validate_all.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/08/02/javascript_no_rightke.html'>JavaScript屏蔽鼠标右键</a></th>
+      <td>02 Aug 2009</td>
+      <td><a href='/JavaScript/2009/08/02/javascript_no_rightke.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/08/02/javascript_no_key.html'>屏蔽鼠标右键、Ctrl+N、Shift+F10、F5刷新、退格键</a></th>
+      <td>02 Aug 2009</td>
+      <td><a href='/JavaScript/2009/08/02/javascript_no_key.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/08/02/javascript_isnan.html'>JavaScript中isNaN函数</a></th>
+      <td>02 Aug 2009</td>
+      <td><a href='/JavaScript/2009/08/02/javascript_isnan.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/08/02/javascript_email.html'>JavaScript验证Email</a></th>
+      <td>02 Aug 2009</td>
+      <td><a href='/JavaScript/2009/08/02/javascript_email.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/07/31/we-are-the-world.html'>We are The World</a></th>
+      <td>31 Jul 2009</td>
+      <td><a href='/Post/2009/07/31/we-are-the-world.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/07/18/life_in_beijin.html'>北漂之瑜</a></th>
+      <td>18 Jul 2009</td>
+      <td><a href='/Post/2009/07/18/life_in_beijin.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/07/01/say-goodbye-to-college.html'>say goodbye to college</a></th>
+      <td>01 Jul 2009</td>
+      <td><a href='/Post/2009/07/01/say-goodbye-to-college.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Spring/2009/06/23/spring_introduction.html'>Spring的介绍</a></th>
+      <td>23 Jun 2009</td>
+      <td><a href='/Spring/2009/06/23/spring_introduction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Spring/2009/06/23/spring-ioc-introduction.html'>Spring IOC的介绍</a></th>
+      <td>23 Jun 2009</td>
+      <td><a href='/Spring/2009/06/23/spring-ioc-introduction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/DWR/2009/06/22/get_xmlhttprequest_steps.html'>获取XMLHttpRequest的步骤</a></th>
+      <td>22 Jun 2009</td>
+      <td><a href='/DWR/2009/06/22/get_xmlhttprequest_steps.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/DWR/2009/06/22/first-ajax-example.html'>First Ajax Example</a></th>
+      <td>22 Jun 2009</td>
+      <td><a href='/DWR/2009/06/22/first-ajax-example.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/DWR/2009/06/22/ajax_util-js.html'>Ajax 中的utils.js工具</a></th>
+      <td>22 Jun 2009</td>
+      <td><a href='/DWR/2009/06/22/ajax_util-js.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/06/21/graduation_memory_photo.html'>毕业纪念册完结了</a></th>
+      <td>21 Jun 2009</td>
+      <td><a href='/Post/2009/06/21/graduation_memory_photo.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Struts/2009/06/20/struts2-0_taglib.html'>struts2.0标签库</a></th>
+      <td>20 Jun 2009</td>
+      <td><a href='/Struts/2009/06/20/struts2-0_taglib.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JavaScript/2009/06/20/javascript_dom_function.html'>javascript的DOM函数方法</a></th>
+      <td>20 Jun 2009</td>
+      <td><a href='/JavaScript/2009/06/20/javascript_dom_function.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/DWR/2009/06/20/dwr_util_addrows_function.html'>DWR 的 util.addRows() 函数的使用</a></th>
+      <td>20 Jun 2009</td>
+      <td><a href='/DWR/2009/06/20/dwr_util_addrows_function.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/DWR/2009/06/20/ajax_basic_information.html'>ajax入门指南</a></th>
+      <td>20 Jun 2009</td>
+      <td><a href='/DWR/2009/06/20/ajax_basic_information.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/06/19/graduation_photos.html'>毕业纪念册！</a></th>
+      <td>19 Jun 2009</td>
+      <td><a href='/Post/2009/06/19/graduation_photos.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/17/servlet_cookies.html'>servlet cookies介绍</a></th>
+      <td>17 Jun 2009</td>
+      <td><a href='/JSP/2009/06/17/servlet_cookies.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/10/jsp_tags.html'>JSP基本指令</a></th>
+      <td>10 Jun 2009</td>
+      <td><a href='/JSP/2009/06/10/jsp_tags.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/10/jsp_el.html'>Jsp EL语法</a></th>
+      <td>10 Jun 2009</td>
+      <td><a href='/JSP/2009/06/10/jsp_el.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/10/jsp_calendar.html'>JSP自定义日历标签</a></th>
+      <td>10 Jun 2009</td>
+      <td><a href='/JSP/2009/06/10/jsp_calendar.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/10/http_get_post.html'>Http之Get/Post请求区别</a></th>
+      <td>10 Jun 2009</td>
+      <td><a href='/JSP/2009/06/10/http_get_post.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/06/07/graduation.html'>别了，江大、“武大”、“北大”!</a></th>
+      <td>07 Jun 2009</td>
+      <td><a href='/Post/2009/06/07/graduation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/07/asp_jsp_compare.html'>ASP与JSP的比较</a></th>
+      <td>07 Jun 2009</td>
+      <td><a href='/JSP/2009/06/07/asp_jsp_compare.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/02/servlet_listener.html'>Servlet 事件及监听器</a></th>
+      <td>02 Jun 2009</td>
+      <td><a href='/JSP/2009/06/02/servlet_listener.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/06/01/servlet_filter.html'>Servlet Filter</a></th>
+      <td>01 Jun 2009</td>
+      <td><a href='/JSP/2009/06/01/servlet_filter.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/05/31/servlet_persistent.html'>Servlets中的持久状态</a></th>
+      <td>31 May 2009</td>
+      <td><a href='/JSP/2009/05/31/servlet_persistent.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/05/31/servlet_basic.html'>Servlet的基础概念</a></th>
+      <td>31 May 2009</td>
+      <td><a href='/JSP/2009/05/31/servlet_basic.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/31/many-to-many_example.html'>Hibernate many-to-many实例</a></th>
+      <td>31 May 2009</td>
+      <td><a href='/Hibernate/2009/05/31/many-to-many_example.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/26/college_graduation.html'>毕业了，决不会流着眼泪说分手！</a></th>
+      <td>26 May 2009</td>
+      <td><a href='/Post/2009/05/26/college_graduation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/JSP/2009/05/25/first_servlet_application.html'>First Servlet Application</a></th>
+      <td>25 May 2009</td>
+      <td><a href='/JSP/2009/05/25/first_servlet_application.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/22/hibernate_query_language.html'>Hibernate Query Language</a></th>
+      <td>22 May 2009</td>
+      <td><a href='/Hibernate/2009/05/22/hibernate_query_language.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/CSS/HTML/2009/05/21/page-tags.html'>Html页面结构</a></th>
+      <td>21 May 2009</td>
+      <td><a href='/CSS/HTML/2009/05/21/page-tags.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/20/hibernate_association_keys.html'>Hibernate 关联属性详解</a></th>
+      <td>20 May 2009</td>
+      <td><a href='/Hibernate/2009/05/20/hibernate_association_keys.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/19/hibernate_one-to-many-_association.html'>Hibernate one-to-many  association</a></th>
+      <td>19 May 2009</td>
+      <td><a href='/Hibernate/2009/05/19/hibernate_one-to-many-_association.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/19/hibernat_-one-to-one_association.html'>Hibernate one-to-one association</a></th>
+      <td>19 May 2009</td>
+      <td><a href='/Hibernate/2009/05/19/hibernat_-one-to-one_association.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/17/threadlocal_hibernate_session.html'>利于ThreadLocal管理Hibernate 中的Session</a></th>
+      <td>17 May 2009</td>
+      <td><a href='/Hibernate/2009/05/17/threadlocal_hibernate_session.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/17/modify_my_site.html'>网站修改记录</a></th>
+      <td>17 May 2009</td>
+      <td><a href='/Post/2009/05/17/modify_my_site.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Hibernate/2009/05/17/hibernate_operation_1.html'>Hibernate 开发步骤</a></th>
+      <td>17 May 2009</td>
+      <td><a href='/Hibernate/2009/05/17/hibernate_operation_1.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/why_hesitation.html'>为什么总是犹豫不绝？</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/why_hesitation.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/to_be_best.html'>To be best of best！</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/to_be_best.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/tired_life.html'>无聊的生活</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/tired_life.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/things_in_2008.html'>2008年记事</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/things_in_2008.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/talk_with_her.html'>新浪博客她给我的留言</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/talk_with_her.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/recall2008.html'>回忆2008</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/recall2008.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/prison_break_over.html'>Prison break is over!</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/prison_break_over.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/past_ten_years.html'>我的十周年回忆</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/past_ten_years.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/one_week.html'>一个星期了</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/one_week.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/one_month.html'>开学一个月</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/one_month.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/no_words.html'>无语</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/no_words.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/live-like-a-tree.html'>Live like a tree</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/live-like-a-tree.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/little_book.html'>书到用时方恨少</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/little_book.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/leave_school_onemonth.html'>离别学校</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/leave_school_onemonth.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/05/16/java_io.html'>JAVA中IO流的分类</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Java Core/2009/05/16/java_io.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Java Core/2009/05/16/java_colletion.html'>Java集合框架使用总结</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Java Core/2009/05/16/java_colletion.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/guanjie_31-2.html'>冠捷3+1总结</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/guanjie_31-2.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/guanjie_31.html'>冠捷3+1总结之终结版</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/guanjie_31.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/grow_with_time.html'>Grow with time</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/grow_with_time.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/good_future.html'>不差钱的前途</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/good_future.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/gaozhong_party.html'>高中同学聚会</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/gaozhong_party.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/exam-and-futureexam-and-future.html'>Exam and Future</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/exam-and-futureexam-and-future.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/dissatisfaction.html'>Dissatisfaction</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/dissatisfaction.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/college-plan.html'>College Plan</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/college-plan.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+  
+    
+    <tr>
+      <th><a href='/Post/2009/05/16/chuzhong_part.html'>初中同学聚会</a></th>
+      <td>16 May 2009</td>
+      <td><a href='/Post/2009/05/16/chuzhong_part.html#disqus_thread'>Comments</a></td>
+    </tr>
+  
+
+</table>
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

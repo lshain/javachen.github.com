@@ -1,0 +1,56 @@
+---
+layout: post
+title: DbUnit的初次使用
+categories:
+- Post
+tags:
+- DbUnit
+- JDBC
+- junit
+published: true
+comments: false
+---
+<p><strong>DbUnit是什么？</strong>
+来自【<a href="http://www.oschina.net/p/dbunit">OsChina</a>】的说明：
+<pre>DbUnit 使您可以容易地执行 JDBC 查询并获取它们的值。使用 DbUnit JDBC 包装器而不是纯粹的JDBC
+有几个理由：</pre></p>
+
+<p>    * 可以用 SQL 查询创建一个 Dataset ，并使用 DbUnit 的 assertion（断言）方法。<br />
+    * 可以用 SQL 查询创建一个 Dataset ，并将它保存为一个 FlatXmlDataSet 。<br />
+        可以在以后将它重新装载到数据库中。<br />
+    * 可以容易地从任何行中获取列的内容，无需进行迭代。
+上面的说明非常简单，如果你想查看更详细的说明，你可以在网上百度或是google一下或是去官网，鉴于网上的介绍他的文章多数都是一样的，我不想去把他们C and P过来。
+<!--more-->
+诚然DbUnit是做单元测试的，结合了junit，方便了使用者做单元测试，但这仅仅是针对junit做的封装，如果我想用testng做单元测试呢？再做一次封装？</p>
+
+<p>对DbUnit感兴趣，不是在于它方便了开发者做单元测试，而是对于其存取数据感兴趣，毕竟这个数据持久化的访问工具不用像hibernate那样需要将实体映射到数据库，这对不是很关心<strong><span style="color: #ff0000;">表字段的映射、表字段太多</span></strong>的系统来说很方便，在第一个公司就用过类似的数据库持久化框架，但是整体比较粗糙。</p>
+
+<p>既然我关心的是DbUnit的实现过程，就没有必要去关注junit，所以拿到DbUnit的源码之后，我就把其中关于ant和junit的代码都删去了，这样整个代码简单清晰不少。</p>
+
+<p>来看看DbUnit的使用方法吧：
+<span style="color: #0000ff;"><strong>第一步肯定是需要创建一个数据库的Connection连接了</strong></span>:
+<pre lang="java">Class.forName("oracle.jdbc.driver.OracleDriver");
+Connection conn = DriverManager.getConnection(
+   "jdbc:oracle:thin:@localhost:1521:orcl", "javachen","javachen");
+IDatabaseConnection connection=new OracleConnection(conn, "testSchema");</pre>
+显然，DbUnit对jdbc的Connection进行了一层封装即是IDatabaseConnection接口。</p>
+
+<p><strong><span style="color: #0000ff;">第二步，即是对数据库进行备份,DbUnit支持备份数据库为xml、csv、excel几种格式文件。</span></strong>
+<pre lang="java">
+QueryDataSet backupDataSet = new QueryDataSet(connection);
+backupDataSet.addTable("users");
+File file = File.createTempFile("users_backup", ".xml");// 备份文件
+FlatXmlDataSet.write(backupDataSet, new FileOutputStream(file));</pre></p>
+
+<p>file = File.createTempFile("users_backup", ".xls");<br />
+XlsDataSet.write(backupDataSet, new FileOutputStream(file));
+<strong><span style="color: #0000ff;">第三步，看下如何crud数据，以下为插入和查询数据.</span></strong>
+<pre lang="java">
+InputStream is = getClass().getResourceAsStream("/dbunitdemo-seed.xml");
+IDataSet dataSet = new FlatXmlDataSet(is);
+DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+Table data = connection.createQueryTable("users",
+	"SELECT * FROM users");</pre>
+IDataSet 是对数据集的一个封装，Table 是对数据库表的实体的一个封装，只是很可惜Table提供的对表实体的操作方法太少了，完全不能满足一些需求。</p>
+
+<p>DbUnit里使用了抽象工厂方法、组合、装饰方法，下一步就是深入的学习查看其代码架构以及实现。</p>

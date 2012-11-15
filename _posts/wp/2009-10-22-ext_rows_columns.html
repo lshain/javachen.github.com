@@ -1,0 +1,111 @@
+---
+layout: post
+title: Ext实现多行多列布局
+categories:
+- Extjs
+tags:
+- Extjs
+- form
+published: true
+comments: true
+---
+<p>Ext实现多行多列布局:<br />
+[caption id="attachment_552" align="aligncenter" width="300" caption="Ext实现多行多列"]<a href="http://www.javachen.com/wp-content/uploads/2009/10/02.png"><img src="http://www.javachen.com/wp-content/uploads/2009/10/02-300x49.png" alt="Ext实现多行多列" title="rows_columns" width="300" height="49" class="size-medium wp-image-552" /></a>[/caption]
+<!--more-->
+<pre lang="javascript" line="1">
+var form = new Ext.form.FormPanel({
+    frame : true,
+    height : 550,
+    labelAlign : 'left',
+    labelWidth : 110,
+    defaultType : 'textfield',
+    defaults : {
+        width : 110
+            allowBlank : false
+    },
+    items : {
+        layout : 'column',
+        height : 100,
+        items : [{
+            columnWidth : .33,
+            layout : 'form',
+            items : [{
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'first',
+                anchor : '90%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'company',
+                anchor : '90%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '有效期截止日期',
+                name : 'company',
+                anchor : '90%'
+            }]
+        }, {
+            columnWidth : .33,
+            layout : 'form',
+            items : [{
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'last',
+                anchor : '95%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'email',
+                vtype : 'email',
+                anchor : '95%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '航天标示码',
+                name : 'A',
+                anchor : '95%'
+            }]
+        }, {
+            columnWidth : .33,
+            layout : 'form',
+            items : [{
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'last',
+                anchor : '95%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '入库合格证号',
+                name : 'email',
+                vtype : 'email',
+                anchor : '95%'
+            }, {
+                xtype : 'textfield',
+                fieldLabel : '复验合格证工程型号',
+                name : 's',
+                anchor : '95%'
+            }]
+        }]
+    },
+    buttons : [{
+        text : '执行过滤条件',
+        handler : function() {
+            if (!form.getForm().isValid()) {
+                return;
+            };
+            store.baseParams = {
+                xmlFile : getQueryStringValue('xmlFile'),
+                condictions :  getCondictionValues()
+            };
+            store.reload();
+            form.getForm().reset();
+        }
+    }, {
+        text : '重置',
+        handler : function() {
+            form.getForm().reset();
+        }
+    }]
+});
+</pre>
+</p>

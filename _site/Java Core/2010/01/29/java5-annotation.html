@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Java5中的注释Annotation</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>29 Jan 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Java Core/2010/01/29/java5-annotation.html'>Java5中的注释Annotation</a></h1>
+  <div class='body'><p>注释是java5中的新特性，谈到注释，先的谈谈Java元数据（metadata）。元数据，就是“关于数据的数据”。Java元数据有3种基本类型，还有3个Java内置注释类型，另外还有4中元注释类型。你可能用过Javadoc的注释自动生成文档。这就是元数据功能的一种。总的来说，元数据可以用来创建文档，跟踪代码的依赖性，执行编译时格式检查，代替已有的配置文件（如Hibernate也提供了注释配置）。
+<!--more-->
+<strong><span style="color: #0000ff;">注释有3中基本类型</span></strong>
+a.标记注释      --没有变量，只有名称标识。例如 @annotation<br />
+b.单一值注释    --在标记注释的基础上提供一段数据。如 @annotation（“javachen”）<br />
+c.完整注释      --可以包括多个数据成员，每个数据成员由名称和值构成。@annotation(site="www.javachen.com",author="javachen")</p>
+
+<p><span style="color: #0000ff;"><strong>Java中提供3个内置注释类型</strong></span>
+a. Override ，只能用于方法（不能用于类，包声明或者其他构造）<br />
+作用：可以保证编译时候Override函数的声明正确性<br />
+用法：<br />
+@Override<br />
+public void fun(){..}</p>
+
+<p>b.Deprecated  同样只能作用与方法<br />
+作用：对不应再使用的方法进行注解<br />
+用法：@Deprecated public void fun{...}</p>
+
+<p>c.SupressWarnings 可以注释一段代码<br />
+作用：关闭特定的警告信息，例如你在使用泛型的时候未指定类型<br />
+用法： @SupressWarnings(value={"unchecked"})</p>
+
+<p>Java中还提供了四种元注释，专门负责注释其他的注释</p>
+
+<p>@Target   表示该注释可以用于什么地方。可用的ElementType参数包括：<br />
+CONSTRUCTOR : 构造器的声明<br />
+FIELD : 域声明（包括enum实例）<br />
+LOCAL_VARIABLE : 局部变量声明<br />
+METHOD : 方法声明<br />
+PACKAGE : 包声明<br />
+PARAMETER : 参数声明<br />
+TYPE : 类、接口 （包括注解类型) 或enum声明</p>
+
+<p>@Retention 表示需要在什么级别保存该注释信息。可选的RetentionPoicy参数包括：<br />
+SOURCE : 注释将被编译器丢掉<br />
+CLASS : 注释在class文件中可用，但会被VM丢弃<br />
+RUNTIME : VM将在运行时也保留注释，因此可以通过反射机制读取注释的信息。</p>
+
+<p>@Documented 将注释包含在JavaDoc中<br />
+@Inheried  允许子类继承父类中的注释。</p>
+
+<p><span style="color: #0000ff;"><strong>在Java中定义自己的注释</strong></span></p>
+
+<p>Java语言支持一种新的类型——注释类型（annotation type），跟普通类差不多，在类中以符号（ @ ）的形式注释其他 Java 代码，用@interface 申明自定义注释类型。
+<pre lang="java">package com.javachen.annotation;</pre></p>
+
+<p>import java.lang.annotation.Documented;<br />
+import java.lang.annotation.ElementType;<br />
+import java.lang.annotation.Inherited;<br />
+import java.lang.annotation.Retention;<br />
+import java.lang.annotation.RetentionPolicy;<br />
+import java.lang.annotation.Target;</p>
+
+<p>/**<br />
+ * 用户自定义标签,带有成员变量的MyTag<br />
+ */<br />
+@Documented //将注释包含在JavaDoc中<br />
+@Inherited //允许子类继承父类中的注释。<br />
+@Target(value = {ElementType.METHOD,ElementType.CONSTRUCTOR})//标注这个注释使用的范围<br />
+@Retention(value = RetentionPolicy.RUNTIME)//要想使用反射得到注释信息，这个注释必须使用<br />
+public @interface MyTag {<br />
+	String name()  default "javachen";//给自定义注释类的成员加上默认值<br />
+	int age()  default 24;<br />
+}
+
+<span style="color: #ff0000;">注意：在自定义注释中只有一个成员时，方法名应该为value</span>
+使用标签最终是为了帮助开发人员提取注释信息，然后根据不同需求做进一步处理，下面我们来看看如何获取注释信息。
+<pre lang="java">package com.javachen.annotation;</pre></p>
+
+<p>import java.lang.annotation.Annotation;</p>
+
+<p>public class TagTest {<br />
+	@MyTag(name = "MyTag", age = 1)<br />
+	public void test() {<br />
+	}</p>
+
+<p>	@Override //可以保证编译时候Override函数的声明正确性<br />
+	public String toString() {<br />
+		return super.toString();<br />
+	}</p>
+
+<p>	@Deprecated //对不应再使用的方法进行注解<br />
+	public String notToUse() {<br />
+		return super.toString();<br />
+	}</p>
+
+<p>	public static void main(String[] args) {<br />
+		TagTest tt = new TagTest();<br />
+		try {<br />
+			Annotation[] annotation = tt.getClass().getMethod("test")<br />
+					.getAnnotations();<br />
+			for (Annotation tag : annotation) {<br />
+				System.out.println("Tag is:" + tag);<br />
+				System.out.println("tag.name()" + ((MyTag) tag).name());<br />
+				System.out.println("tag.age()" + ((MyTag) (tag)).age());<br />
+			}<br />
+		} catch (NoSuchMethodException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}<br />
+}
+
+需要注意的一点是，在执行这段代码之前我们还有一点小工作要做，还需要给我们的自定义标签MyTag加上一个说明标签，@ Retention, 表明注释信息将可以在运行时刻通过反射机制得到。如果不加入这个标签，上面的代码将没有任何输出。</p>
+
+<p><strong><span style="color: #0000ff;">如何使用反射读取注释</span></strong></p>
+
+<p>在以前的JDK版本中，我们可以使用反射得到类的方法、方法的参数以及其它的类成员等信息。那么在J2SE5.0中同样也可以象方法一样得到注释的各种信息。<br />
+在使用反射之前必须使用import java.lang.reflect.* 来导入和反射相关的类。</p>
+
+<p>如果要得到某一个类或接口的注释信息，可以使用如下代码：<br />
+Annotation annotation = TestAnnotation.class.getAnnotation(MyAnnotation.class);</p>
+
+<p>如果要得到全部的注释信息可使用如下语句：<br />
+Annotation[] annotations = TestAnnotation.class.getAnnotations();<br />
+或
+Annotation[] annotations = TestAnnotation.class.getDeclaredAnnotations();</p>
+
+<p>getDeclaredAnnotations与getAnnotations类似，但它们不同的是getDeclaredAnnotations 得到的是当前成员所有的注释，不包括继承的。而getAnnotations得到的是包括继承的所有注释。</p>
+
+<p>如果要得到其它成员的注释，可先得到这个成员，然后再得到相应的注释。如得到myMethod的注释。<br />
+Method method = TestAnnotation.class.getMethod("myMethod", null);<br />
+Annotation annotation = method.getAnnotation(MyAnnotation.class);</p>
+
+<p>注：要想使用反射得到注释信息，这个注释必须使用<br />
+@Retention(value = RetentionPolicy.RUNTIME)进行注释。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Java Core/2010/01/29/java5-annotation.html'>Java5中的注释Annotation</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

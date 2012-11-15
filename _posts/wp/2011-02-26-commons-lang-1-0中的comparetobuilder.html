@@ -1,0 +1,135 @@
+---
+layout: post
+title: commons-lang-1.0中的CompareToBuilder
+categories:
+- Java Core
+tags:
+- CompareTo
+- Reflection
+published: true
+comments: true
+---
+<p>CompareToBuilder是对jdk中compareTo的一个扩展，提供了一个很好的compareTo()方法，来比较两个对象是否相等。<br />
+这个类通常与EqualsBuilder（对equals方法的扩展）和HashCodeBuilder（对hashcode的扩展）两个类配合使用。<br />
+用这个类比较两个对象是否相等的时候，static和transient成员变量会被忽略。<br />
+该类中有一个reflectionCompare方法，使用反射决定哪些属性需要被用于测试或是比较两个对象是否相等。对于对象的私有属性，需要用Field.setAccessible()方法修改属性的可见性。除非拥有合适的权限，否则在java的权限管理器下比较会失败。当然，使用反射会比直接比较两个对象是否相等要慢。
+<!--more-->
+该类的核心代码：
+<pre lang="java">
+public class CompareToBuilder {
+    
+    private int comparison;</pre></p>
+
+<p>    public CompareToBuilder() {<br />
+        super();<br />
+        comparison = 0;<br />
+    }</p>
+
+<p>   <br />
+    public static int reflectionCompare(Object lhs, Object rhs) {<br />
+        return reflectionCompare(lhs, rhs, false);<br />
+    }</p>
+
+<p>    public static int reflectionCompare(Object lhs, Object rhs, <br />
+            boolean testTransients) {<br />
+        //判断是否相等<br />
+        if (lhs == rhs) {<br />
+            return 0;<br />
+        }<br />
+        //是否有空指针<br />
+        if (lhs == null || rhs == null) {<br />
+            throw new NullPointerException();<br />
+        }<br />
+        //类型是否一致<br />
+        Class c1 = lhs.getClass();<br />
+        if (!c1.isInstance(rhs)) {<br />
+            throw new ClassCastException();<br />
+        }<br />
+        Field[] fields = c1.getDeclaredFields();<br />
+        //修改属性的可见性<br />
+        Field.setAccessible(fields, true);<br />
+        //内部创建一个CompareToBuilder对象，构成链式结构<br />
+        CompareToBuilder compareToBuilder = new CompareToBuilder();<br />
+        //只有当当前的两个属性相等时候（comparison == 0），才继续往下比较<br />
+        for (int i = 0; i < fields.length && compareToBuilder.comparison == 0; ++i) {<br />
+            Field f = fields[i];<br />
+            //是否是临时属性<br />
+            if (testTransients || !Modifier.isTransient(f.getModifiers())) {<br />
+            	//是否是静态属性<br />
+                if (!Modifier.isStatic(f.getModifiers())) {<br />
+                    try {<br />
+                        compareToBuilder.append(f.get(lhs), f.get(rhs));<br />
+                    } catch (IllegalAccessException e) {<br />
+                        //this can't happen. Would get a Security exception instead<br />
+                        //throw a runtime exception in case the impossible happens.<br />
+                        throw new InternalError("Unexpected IllegalAccessException");<br />
+                    }<br />
+                }<br />
+            }<br />
+        }<br />
+        return compareToBuilder.toComparison();<br />
+    }</p>
+
+<p>    public CompareToBuilder append(Object lhs, Object rhs) {<br />
+        if (comparison != 0) {<br />
+            return this;<br />
+        }<br />
+        if (lhs == rhs) {<br />
+            return this;<br />
+        }<br />
+        if (lhs == null || rhs == null) {<br />
+            throw new NullPointerException();<br />
+        }<br />
+        Class lhsClass = lhs.getClass();<br />
+        if (!lhsClass.isArray()) {<br />
+            //the simple case, not an array, just test the element <br />
+            comparison = ((Comparable) lhs).compareTo(rhs);<br />
+        } else {<br />
+            //'Switch' on type of array, to dispatch to the correct handler<br />
+            // This handles multi dimensional arrays<br />
+            if (lhs instanceof long[]) {<br />
+                append((long[]) lhs, (long[]) rhs);<br />
+            } else if (lhs instanceof int[]) {<br />
+                append((int[]) lhs, (int[]) rhs);<br />
+            } else if (lhs instanceof short[]) {<br />
+                append((short[]) lhs, (short[]) rhs);<br />
+            } else if (lhs instanceof char[]) {<br />
+                append((char[]) lhs, (char[]) rhs);<br />
+            } else if (lhs instanceof byte[]) {<br />
+                append((byte[]) lhs, (byte[]) rhs);<br />
+            } else if (lhs instanceof double[]) {<br />
+                append((double[]) lhs, (double[]) rhs);<br />
+            } else if (lhs instanceof float[]) {<br />
+                append((float[]) lhs, (float[]) rhs);<br />
+            } else if (lhs instanceof boolean[]) {<br />
+                append((boolean[]) lhs, (boolean[]) rhs);<br />
+            } else {<br />
+                // Not an array of primitives<br />
+                append((Object[]) lhs, (Object[]) rhs);<br />
+            }<br />
+        }<br />
+        return this;<br />
+    }<br />
+}
+
+该类的使用方法：<br />
+1.重写一个类的comapareTo方法,该类需要继承Comparable接口。这种方法是比较两个对象所有属性是否相等来判断两个对象是否相等：
+< <pre lang="java">
+public int comapareTo(Object o) {
+     MyClass rhs = (MyClass) o;
+     return new CompareToBuilder()
+                  .append(field1, rhs.field1)
+                  .append(field2, rhs.field2)
+                  .appendb(field3, rhs.field3)
+                  .toComparison();
+}
+</pre></p>
+
+<p>2.直接比较两个对象是否相等，需要用到CompareToBuilder的reflectionCompare反射方法，这种方法自动去判断两个对象的所有属性是否相等。
+<pre lang="java">
+ public int compareTo(Object o) {
+    return CompareToBuilder.reflectionCompare(this, obj);
+ }
+</pre></p>
+
+<p>最后需要注意的是compareTo的逻辑需要与equals和hashcode保持一致性。</p>

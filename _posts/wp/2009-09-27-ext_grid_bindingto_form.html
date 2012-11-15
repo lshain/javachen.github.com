@@ -1,0 +1,255 @@
+---
+layout: post
+title: Ext实现grid和form动态绑定
+categories:
+- Extjs
+tags:
+- Extjs
+- form
+- Grid
+published: true
+comments: true
+---
+<p>实现效果是：你单击某一行，右边Form表单就显示当前行的信息，你可以修改表单，再做保存。实现代码：
+<pre lang="javascript" line="1"><html>
+ listeners: {
+                    render: function(g) {
+                        g.getSelectionModel().selectRow(0);
+                    },
+                    delay: 10 // Allow rows to be rendered.
+  }
+</html></pre><!--more-->
+html页面全文：
+<pre lang="javascript" line="1"><html>
+     <head>  </head>
+        <title></title>  
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+          
+       <link rel="stylesheet" type="text/css" href="../extjs3.0/resources/css/ext-all.css" />  
+       <script type="text/javascript" src="../extjs3.0/adapter/ext/ext-base.js"></script>  
+       <script type="text/javascript" src="../extjs3.0/ext-all.js"></script>  
+	   <script type="text/javascript" src="../extjs3.0/build/local/ext-lang-zh_CN.js"></script>
+       <style type="text/css">
+        .ext-ie .x-form-check-wrap, .ext-gecko .x-form-check-wrap {<br>
+            padding-top: 3px;<br>
+        }<br>
+        fieldset legend {<br>
+            white-space: nowrap;<br>
+        }<br>
+    </style>
+            
+    <script type="text/javascript">
+	Ext.onReady(function(){<br>
+    Ext.QuickTips.init();<br>
+    Ext.form.Field.prototype.msgTarget = 'side';<br>
+    var bd = Ext.getBody();<br>
+    var myData = [<br>
+        ['3m Co',71.72,0.02,0.03,'9/1 12:00am'],<br>
+        ['Alcoa Inc',29.01,0.42,1.47,'9/1 12:00am'],<br>
+        ['Altria Group Inc',83.81,0.28,0.34,'9/1 12:00am'],<br>
+        ['American Express Company',52.55,0.01,0.02,'9/1 12:00am'],<br>
+        ['American International Group, Inc.',64.13,0.31,0.49,'9/1 12:00am'],<br>
+        ['AT&T Inc.',31.61,-0.48,-1.54,'9/1 12:00am'],<br>
+        ['Boeing Co.',75.43,0.53,0.71,'9/1 12:00am'],<br>
+        ['Caterpillar Inc.',67.27,0.92,1.39,'9/1 12:00am'],<br>
+        ['Citigroup, Inc.',49.37,0.02,0.04,'9/1 12:00am'],<br>
+        ['E.I. du Pont de Nemours and Company',40.48,0.51,1.28,'9/1 12:00am'],<br>
+        ['Exxon Mobil Corp',68.1,-0.43,-0.64,'9/1 12:00am'],<br>
+        ['General Electric Company',34.14,-0.08,-0.23,'9/1 12:00am'],<br>
+        ['General Motors Corporation',30.27,1.09,3.74,'9/1 12:00am'],<br>
+        ['Hewlett-Packard Co.',36.53,-0.03,-0.08,'9/1 12:00am'],<br>
+        ['Honeywell Intl Inc',38.77,0.05,0.13,'9/1 12:00am'],<br>
+        ['Intel Corporation',19.88,0.31,1.58,'9/1 12:00am'],<br>
+        ['International Business Machines',81.41,0.44,0.54,'9/1 12:00am'],<br>
+        ['Johnson & Johnson',64.72,0.06,0.09,'9/1 12:00am'],<br>
+        ['JP Morgan & Chase & Co',45.73,0.07,0.15,'9/1 12:00am'],<br>
+        ['McDonald\'s Corporation',36.76,0.86,2.40,'9/1 12:00am'],<br>
+        ['Merck & Co., Inc.',40.96,0.41,1.01,'9/1 12:00am'],<br>
+        ['Microsoft Corporation',25.84,0.14,0.54,'9/1 12:00am'],<br>
+        ['Pfizer Inc',27.96,0.4,1.45,'9/1 12:00am'],<br>
+        ['The Coca-Cola Company',45.07,0.26,0.58,'9/1 12:00am'],<br>
+        ['The Home Depot, Inc.',34.64,0.35,1.02,'9/1 12:00am'],<br>
+        ['The Procter & Gamble Company',61.91,0.01,0.02,'9/1 12:00am'],<br>
+        ['United Technologies Corporation',63.26,0.55,0.88,'9/1 12:00am'],<br>
+        ['Verizon Communications',35.57,0.39,1.11,'9/1 12:00am'],<br>
+        ['Wal-Mart Stores, Inc.',45.45,0.73,1.63,'9/1 12:00am']<br>
+    ];<br>
+    var ds = new Ext.data.Store({<br>
+        reader: new Ext.data.ArrayReader({}, [<br>
+            {name: 'company'},<br>
+            {name: 'price', type: 'float'},<br>
+            {name: 'change', type: 'float'},<br>
+            {name: 'pctChange', type: 'float'},<br>
+            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'},</p>
+
+<p>            {name: 'rating', type: 'int', convert: function(v, rec) {<br>
+                   if (rec[3] < 0) return 2;<br>
+                   if (rec[3] < 1) return 1;<br>
+                   return 0;<br>
+               }<br>
+            }<br>
+        ])<br>
+    });<br>
+    ds.loadData(myData);</p>
+
+<p>    // example of custom renderer function<br>
+    function italic(value){<br>
+        return '<i>' + value + '';<br>
+    }</p>
+
+<p>    function change(val){<br>
+        if(val > 0){<br>
+            return '<span style="color:green;">' + val + '</span>';<br>
+        }else if(val < 0){<br>
+            return '<span style="color:red;">' + val + '';<br>
+        }<br>
+        return val;<br>
+    }</p>
+
+<p>    function pctChange(val){<br>
+        if(val > 0){<br>
+            return '<span style="color:green;">' + val + '%</span>';<br>
+        }else if(val < 0){<br>
+            return '<span style="color:red;">' + val + '%';<br>
+        }<br>
+        return val;<br>
+    }<br>
+    <br>
+    // render rating as "A", "B" or "C" depending upon numeric value.<br>
+    function rating(v) {<br>
+        if (v == 0) return "A"<br>
+        if (v == 1) return "B"<br>
+        if (v == 2) return "C"<br>
+    }</p>
+
+<p>    var colModel = new Ext.grid.ColumnModel([<br>
+        {id:'company',header: "Company", width: 160, sortable: true, locked:false, dataIndex: 'company'},<br>
+        {header: "Price", width: 55, sortable: true, renderer: Ext.util.Format.usMoney, dataIndex: 'price'},<br>
+        {header: "Change", width: 55, sortable: true, renderer: change, dataIndex: 'change'},<br>
+        {header: "% Change", width: 65, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},<br>
+        {header: "Last Updated", width: 80, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'},<br>
+        {header: "Rating", width: 40, sortable: true, renderer: rating, dataIndex: 'rating'}<br>
+    ]);</p>
+
+<p>    bd.createChild({tag: 'h2', html: 'Using a Grid with a Form'});</p>
+
+<p>    var gridForm = new Ext.FormPanel({<br>
+        id: 'company-form',<br>
+        frame: true,<br>
+        labelAlign: 'left',<br>
+        title: 'Company data',<br>
+        bodyStyle:'padding:5px',<br>
+        width: 750,<br>
+        layout: 'column',    // Specifies that the items will now be arranged in columns<br>
+        items: [{<br>
+            columnWidth: 0.60,<br>
+            layout: 'fit',<br>
+            items: {<br>
+                xtype: 'grid',<br>
+                ds: ds,<br>
+                cm: colModel,<br>
+                sm: new Ext.grid.RowSelectionModel({<br>
+                    singleSelect: true,<br>
+                    listeners: {<br>
+                        rowselect: function(sm, row, rec) {<br>
+                            Ext.getCmp("company-form").getForm().loadRecord(rec);<br>
+                        }<br>
+                    }<br>
+                }),<br>
+                autoExpandColumn: 'company',<br>
+                height: 350,<br>
+                title:'Company Data',<br>
+                border: true,<br>
+                listeners: {<br>
+                    render: function(g) {<br>
+                        g.getSelectionModel().selectRow(0);<br>
+                    },<br>
+                    delay: 10 // Allow rows to be rendered.<br>
+                }<br>
+            }<br>
+        },{<br>
+            columnWidth: 0.4,<br>
+            xtype: 'fieldset',<br>
+            labelWidth: 90,<br>
+            title:'Company details',<br>
+            defaults: {width: 140, border:false},    // Default config options for child items<br>
+            defaultType: 'textfield',<br>
+            autoHeight: true,<br>
+            bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',<br>
+            border: false,<br>
+            style: {<br>
+                "margin-left": "10px", // when you add custom margin in IE 6...<br>
+                "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  // you have to adjust for it somewhere else<br>
+            },<br>
+            items: [{<br>
+                fieldLabel: 'Name',<br>
+                name: 'company'<br>
+            },{<br>
+                fieldLabel: 'Price',<br>
+                name: 'price'<br>
+            },{<br>
+                fieldLabel: '% Change',<br>
+                name: 'pctChange'<br>
+            },{<br>
+                xtype: 'datefield',<br>
+                fieldLabel: 'Last Updated',<br>
+                name: 'lastChange'<br>
+            }, {<br>
+                xtype: 'panel',<br>
+                layout: 'table',<br>
+                layoutConfig: {<br>
+                    columns: 4<br>
+                },<br>
+                anchor: '100%',<br>
+                defaults: {<br>
+                    border: false,<br>
+                    layout: 'form',<br>
+                    labelWidth: 15,<br>
+                    style: {<br>
+                        paddingRight: '10px'<br>
+                    }<br>
+                },</p>
+
+<p>                items: [{<br>
+                    cellCls: 'x-form-item',<br>
+                    xtype: 'label',<br>
+                    text: 'Rating',<br>
+                       width: 98<br>
+                }, {<br>
+                    items: {    <br>
+                        xtype: 'radio',<br>
+                        name: 'rating',<br>
+                        inputValue: '0',<br>
+                        fieldLabel: 'A'<br>
+                    }<br>
+                }, {<br>
+                    items: {<br>
+                        xtype: 'radio',<br>
+                        name: 'rating',<br>
+                        inputValue: '1',<br>
+                        fieldLabel: 'B'<br>
+                    }<br>
+                }, {<br>
+                    items: {<br>
+                        xtype: 'radio',<br>
+                        name: 'rating',<br>
+                        inputValue: '2',<br>
+                        fieldLabel: 'C'<br>
+                    }<br>
+                }]<br>
+            }],<br>
+            buttons:[{<br>
+            	text:'保存'<br>
+            }]<br>
+        }],<br>
+        renderTo: bd<br>
+    });<br>
+});<br>
+  </script>
+ 
+ <body>
+ </body>
+</html>
+</pre>
+若想保存修改后的内容，可以在右边的按钮上加，相应的事件：
+<a href="http://www.javachen.com/wp-content/uploads/2009/09/未命名.jpg"><img src="http://www.javachen.com/wp-content/uploads/2009/09/未命名-300x158.jpg" alt="ext_grid_to_form" title="ext_grid_to_form" width="300" height="158" class="alignright size-medium wp-image-512" /></a></p>

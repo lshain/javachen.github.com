@@ -1,0 +1,42 @@
+---
+layout: post
+title: 获取当前网页的名称
+categories:
+- JavaScript
+tags:
+- JavaScript
+- location
+- url
+- window
+published: true
+comments: true
+---
+<p>要想获取当前网页的名称，首先要知道当前网页的url，通过window.location.href可以获得，window.location是什么对象呢？百度一下就可以知道了。<!--more-->
+<blockquote>location 对象描述了与一个给定的 Window 对象关联的完整 URL。location 对象的每个属性都描述了 URL 的不同特性。<br />
+通常情况下，一个 URL 会有下面的格式：<br />
+协议//主机:端口/路径名称#哈希标识?搜索条件 例如：<br />
+http://www.javachen.com/index.html#topic?x=7&amp;y=2 这些部分是满足下列需求的：<br />
+“协议”是 URL 的起始部分，直到包含到第一个冒号。<br />
+“主机”描述了主机和域名，或者一个网络主机的 IP 地址。<br />
+“端口”描述了服务器用于通讯的通讯端口。<br />
+路径名称描述了 URL 的路径方面的信息。<br />
+“哈希标识”描述了 URL 中的锚名称，包括哈希掩码(#)。此属性只应用于 HTTP 的 URL。<br />
+“搜索条件”描述了该 URL 中的任何查询信息，包括问号。此属性只应用于 HTTP 的 URL。“搜索条件”字符串包含变量和值的配对；每对之间由一个“&amp;”连接。</blockquote>
+参照上面，只要获取了当前网页的url，就可以想办法知道当前网页的名称了。实现代码如下：
+<pre lang="javascript">function getFileName(){
+            var url = window.location.href;
+            //alert(url);
+            var pos = url.lastIndexOf("\\");//如果是网上文件，路径分割符为"\\"
+            if (pos == -1) //pos==-1表示为本地文件
+            {
+                pos = url.lastIndexOf("/"); //本地文件路径分割符为"/"
+               // alert(pos);
+            }</pre></p>
+
+<p>            var fileName = url.substring(pos + 1); //从url中获得文件名<br />
+            alert(fileName);<br />
+        }
+
+想看到实际的效果，可以看示例：<a href="http://www.javachen.com/demo/javascript/getHtmlTitle.html">http://www.javachen.com/demo/javascript/getHtmlTitle.html</a></p>
+
+<p>其实，window.location还有其他的一些用法，在我之前关于Ext的一篇文章里就用到了“window.location通过设置或获取 href 属性中跟在问号后面的部分”这一方法：<a href="http://www.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi/">http://www.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi/</a></p>

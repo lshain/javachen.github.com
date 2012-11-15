@@ -1,0 +1,113 @@
+---
+layout: post
+title: Begin to study struts2
+categories:
+- Struts
+tags:
+- Struts
+- Struts2
+published: true
+comments: true
+---
+<p>之前接触的是struts 1.X，今天开始学习struts 2，记录一下自己的学习过程。<br />
+下载jar包：
+<a href="http://struts.apache.org/download.cgi#Struts206">http://struts.apache.org/download.cgi#Struts206</a>
+下载Struts 2的完整版，将下载到的Zip文件解压缩，该文件就是一个典型的Web结构，该文件夹包含如下文件结构：<br />
+—  apps：该文件夹下包含了基于Struts 2的示例应用，这些示例应用对于学习者是非常有用的资料。<br />
+—  docs：该文件夹下包含了Struts 2的相关文档，包括Struts 2的快速入门、Struts 2的文档，以及API文档等内容。<br />
+—  j4：该文件夹下包含了让Struts 2支持JDK 1.4的JAR文件。<br />
+—  lib：该文件夹下包含了Struts 2框架的核心类库，以及Struts 2的第三方插件类库。<br />
+—  src：该文件夹下包含了Struts 2框架的全部源代码。</p>
+
+<p><strong>首先新建项目工程，导入jar包：</strong>
+commons-logging-1.0.4.jar.<br />
+freemarker-2.3.8.jar<br />
+ognl-2.6.11.jar<br />
+struts2-core-2.0.11.2.jar<br />
+xwork-2.0.2.jar<br />
+commons-io-1.4.jar<br />
+commons-fileupload-1.2.1.jar<br />
+整个项目工程目录如下：
+<div><a href="http://www.javachen.com/wp-content/uploads/2009/11/12.png"><img class="aligncenter size-medium wp-image-644" title="leanr to struts2" src="http://www.javachen.com/wp-content/uploads/2009/11/12-211x300.png" alt="leanr to struts2" width="260" height="300" /></a></div>
+<!--more--></p>
+
+<p>编辑Web应用的web.xml配置文件，配置Struts 2的核心Filter。下面是增加了Struts 2的核心Filter配置的web.xml配置文件的代码：
+<span style="color: #008080;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;web-app</span> <span style="color: #ff0000;">version=</span><span style="color: #0000ff;">"2.5"</span>
+ <span style="color: #ff0000;">xmlns=</span><span style="color: #0000ff;">"http://java.sun.com/xml/ns/javaee"</span>
+ <span style="color: #ff0000;">xmlns:xsi=</span><span style="color: #0000ff;">"http://www.w3.org/2001/XMLSchema-instance"</span>
+ <span style="color: #ff0000;">xsi:schemaLocation=</span><span style="color: #0000ff;">"http://java.sun.com/xml/ns/javaee </span>
+ <span style="color: #0000ff;"> http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span><span style="color: #000080; font-weight: bold;">&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;filter&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;filter-name&gt;</span><span style="color: #000000;">coreFilter</span><span style="color: #000080; font-weight: bold;">&lt;/filter-name&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;filter-class&gt;</span><span style="color: #000000;">com.javachen.mvc.core.filter.FilterDispatcher</span><span style="color: #000080; font-weight: bold;">&lt;/filter-class&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;/filter&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;filter-mapping&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;filter-name&gt;</span><span style="color: #000000;">coreFilter</span><span style="color: #000080; font-weight: bold;">&lt;/filter-name&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;url-pattern&gt;</span><span style="color: #000000;">/*</span><span style="color: #000080; font-weight: bold;">&lt;/url-pattern&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;/filter-mapping&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;welcome-file-list&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;welcome-file&gt;</span><span style="color: #000000;">index.jsp</span><span style="color: #000080; font-weight: bold;">&lt;/welcome-file&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;/welcome-file-list&gt;</span>
+ <span style="color: #000080; font-weight: bold;">&lt;/web-app&gt;</span>
+接下来，创建相应的文件并编写代码(注意其创建的位置),写LoginAction.java
+<div id="codee_html" style="background-color: #f9f7ed;">
+<div style="font-family: &quot;[object HTMLOptionElement]&quot;,&quot;Consolas&quot;,&quot;Lucida Console&quot;,&quot;Courier New&quot;; color: #000000; background-color: #f9f7ed;"><span style="color: #aaaaaa; font-style: italic;">01</span> <span style="color: #000000;">package</span> <span style="color: #000000;">com</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">javachen</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">mvc</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">app</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">action</span>;
+<span style="color: #aaaaaa; font-style: italic;">02</span>
+<span style="color: #aaaaaa; font-style: italic;">03</span> <span style="color: #0000aa;">public</span> <span style="color: #0000aa;">class</span> <span style="color: #00aa00; text-decoration: underline;">LoginAction</span> <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">04</span> <span style="color: #0000aa;">private</span> <span style="color: #000000;">String</span> <span style="color: #000000;">username</span>;
+<span style="color: #f810b0;">05</span> <span style="color: #0000aa;">private</span> <span style="color: #000000;">String</span> <span style="color: #000000;">password</span>;
+<span style="color: #aaaaaa; font-style: italic;">06</span> <span style="color: #0000aa;">public</span> <span style="color: #000000;">String</span> <span style="color: #00aa00;">getUsername</span>() <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">07</span> <span style="color: #0000aa;">return</span> <span style="color: #000000;">username</span>;
+<span style="color: #aaaaaa; font-style: italic;">08</span> <span style="color: #000000;">}</span>
+<span style="color: #aaaaaa; font-style: italic;">09</span>
+<span style="color: #f810b0;">10</span> <span style="color: #0000aa;">public</span> <span style="color: #00aaaa;">void</span> <span style="color: #00aa00;">setUsername</span>(<span style="color: #000000;">String</span> <span style="color: #000000;">username</span>) <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">11</span> <span style="color: #0000aa;">this</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">username</span> <span style="color: #000000;">=</span> <span style="color: #000000;">username</span>;
+<span style="color: #aaaaaa; font-style: italic;">12</span> <span style="color: #000000;">}</span>
+<span style="color: #aaaaaa; font-style: italic;">13</span>
+<span style="color: #aaaaaa; font-style: italic;">14</span> <span style="color: #0000aa;">public</span> <span style="color: #000000;">String</span> <span style="color: #00aa00;">getPassword</span>() <span style="color: #000000;">{</span>
+<span style="color: #f810b0;">15</span> <span style="color: #0000aa;">return</span> <span style="color: #000000;">password</span>;
+<span style="color: #aaaaaa; font-style: italic;">16</span> <span style="color: #000000;">}</span>
+<span style="color: #aaaaaa; font-style: italic;">17</span>
+<span style="color: #aaaaaa; font-style: italic;">18</span> <span style="color: #0000aa;">public</span> <span style="color: #00aaaa;">void</span> <span style="color: #00aa00;">setPassword</span>(<span style="color: #000000;">String</span> <span style="color: #000000;">password</span>) <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">19</span> <span style="color: #0000aa;">this</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">password</span> <span style="color: #000000;">=</span> <span style="color: #000000;">password</span>;
+<span style="color: #f810b0;">20</span> <span style="color: #000000;">}</span>
+<span style="color: #aaaaaa; font-style: italic;">21</span>
+<span style="color: #aaaaaa; font-style: italic;">22</span> <span style="color: #0000aa;">public</span> <span style="color: #000000;">String</span> <span style="color: #00aa00;">logon</span>() <span style="color: #0000aa;">throws</span> <span style="color: #000000;">Exception</span> <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">23</span> <span style="color: #000000;">System</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">out</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">println</span>(<span style="color: #aa5500;">"Login:username:"</span> <span style="color: #000000;">+</span> <span style="color: #000000;">username</span> <span style="color: #000000;">+</span> <span style="color: #aa5500;">" password:"</span>
+<span style="color: #aaaaaa; font-style: italic;">24</span> <span style="color: #000000;">+</span> <span style="color: #000000;">password</span>);
+<span style="color: #f810b0;">25</span> <span style="color: #0000aa;">if</span> (<span style="color: #aa5500;">"leno"</span><span style="color: #000000;">.</span><span style="color: #1e90ff;">equals</span>(<span style="color: #000000;">username</span>)) <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">26</span> <span style="color: #0000aa;">return</span> <span style="color: #aa5500;">"success"</span>;
+<span style="color: #aaaaaa; font-style: italic;">27</span> <span style="color: #000000;">}</span> <span style="color: #0000aa;">else</span> <span style="color: #000000;">{</span>
+<span style="color: #aaaaaa; font-style: italic;">28</span> <span style="color: #0000aa;">return</span> <span style="color: #aa5500;">"login"</span>;
+<span style="color: #aaaaaa; font-style: italic;">29</span> <span style="color: #000000;">}</span>
+<span style="color: #f810b0;">30</span> <span style="color: #000000;">}</span>
+<span style="color: #aaaaaa; font-style: italic;">31</span> <span style="color: #000000;">}</span></div>
+</div>
+<span style="color: #000000;"> </span></p>
+
+<p>配置struts.xml，注意一个问题，和struts1x不同，这个文件需要放到classes目录，即在myeclips中，应该放到src目录中。</p>
+
+<p><span style="color: #aaaaaa; font-style: italic;">01</span> <span style="color: #4c8317;">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">02</span> <span style="color: #4c8317;">&lt;!DOCTYPE struts PUBLIC</span>
+<span style="color: #aaaaaa; font-style: italic;">03</span> <span style="color: #4c8317;"> "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"</span>
+<span style="color: #aaaaaa; font-style: italic;">04</span> <span style="color: #4c8317;"> "http://struts.apache.org/dtds/struts-2.0.dtd"&gt;</span>
+<span style="color: #f810b0;">05</span> <span style="color: #1e90ff; font-weight: bold;">&lt;struts&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">06</span> <span style="color: #1e90ff; font-weight: bold;">&lt;package</span> <span style="color: #1e90ff;">name=</span><span style="color: #aa5500;">"default"</span> <span style="color: #1e90ff;">extends=</span><span style="color: #aa5500;">"struts-default"</span><span style="color: #1e90ff; font-weight: bold;">&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">07</span> <span style="color: #1e90ff; font-weight: bold;">&lt;action</span> <span style="color: #1e90ff;">name=</span><span style="color: #aa5500;">"register"</span>
+<span style="color: #aaaaaa; font-style: italic;">08</span> <span style="color: #1e90ff;">class=</span><span style="color: #aa5500;">"com.javachen.mvc.app.action.LoginAction"</span><span style="color: #1e90ff; font-weight: bold;">&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">09</span> <span style="color: #1e90ff; font-weight: bold;">&lt;exception-mapping</span> <span style="color: #1e90ff;">result=</span><span style="color: #aa5500;">"error"</span> <span style="color: #1e90ff;">exception=</span><span style="color: #aa5500;">"java.lang.Exception"</span><span style="color: #1e90ff; font-weight: bold;">&gt;&lt;/exception-mapping&gt;</span>
+<span style="color: #f810b0;">10</span> <span style="color: #1e90ff; font-weight: bold;">&lt;result</span> <span style="color: #1e90ff;">name=</span><span style="color: #aa5500;">"success"</span><span style="color: #1e90ff; font-weight: bold;">&gt;</span><span style="color: #000000;">/success.jsp</span><span style="color: #1e90ff; font-weight: bold;">&lt;/result&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">11</span> <span style="color: #1e90ff; font-weight: bold;">&lt;result</span> <span style="color: #1e90ff;">name=</span><span style="color: #aa5500;">"input"</span><span style="color: #1e90ff; font-weight: bold;">&gt;</span><span style="color: #000000;">/register.jsp</span><span style="color: #1e90ff; font-weight: bold;">&lt;/result&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">12</span> <span style="color: #1e90ff; font-weight: bold;">&lt;result</span> <span style="color: #1e90ff;">name=</span><span style="color: #aa5500;">"error"</span><span style="color: #1e90ff; font-weight: bold;">&gt;</span><span style="color: #000000;">/error.jsp</span><span style="color: #1e90ff; font-weight: bold;">&lt;/result&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">13</span> <span style="color: #1e90ff; font-weight: bold;">&lt;/action&gt;</span>
+<span style="color: #aaaaaa; font-style: italic;">14</span> <span style="color: #1e90ff; font-weight: bold;">&lt;/package&gt;</span>
+<span style="color: #f810b0;">15</span> <span style="color: #1e90ff; font-weight: bold;">&lt;/struts&gt;</span></p>
+
+<p><!-- 需要注意，action的目标是login.action，这个是webwork的风格哈--></p>
+
+<p>result.jsp 页面：<br />
+  username: ${requestScope.username }<br />
+  password: ${requestScope.password }
+<!--这里为了方便，用了EL-->
+对于上面的处理流程，可以简化为如下的流程：用户输入两个参数，即username和password，然后向login.action发送请求，该请求被FilterDispatcher转发给 LoginAction处理，如果LoginAction处理用户请求返回success字符串，则返回给用户result.jsp页面；如果返回 error字符串，则返回给用户index.jsp页面。</p>

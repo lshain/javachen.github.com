@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Struts2使用validate方法验证数据</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>29 Mar 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Struts/2010/03/29/struts2-action-validate-method.html'>Struts2使用validate方法验证数据</a></h1>
+  <div class='body'><p>在Struts2中最简单的验证数据的方法是使用validate。从ActionSupport类的源代码中可以看到，ActionSupport类实现了一个Validateable接口。这个接口只有一个validate方法。如果Action类实现了这个接口，Struts2在调用execute方法之前首先会调用这个方法，我们<span style="color: rgb(0, 0, 255);"><strong>可以在validate方法中验证，如果发生错误，可以根据错误的level选择字段级错误，还是动作级错误</strong></span>。并且可使用addFieldError或addActionError加入相应的错误信息，如果存在Action或 Field错误，Struts2会返回“input”，如果返回了“input”，Struts2就不会再调用execute方法了。如果不存在错误信息，Struts2在最后会调用execute方法。<!--more-->
+<pre line="1" lang="java">	
+@Override
+public void validate() {
+	System.out.println("validate~~~~~~~~~~~~~~~~~~~");</pre></p>
+
+<p>	if (null == username || username.length() &lt; 6 || username.length() &gt; 10) {<br />
+		this.addFieldError("username", "username invalid");<br />
+	}<br />
+	if (null == password || password.length() &lt; 6 || password.length() &gt; 10) {<br />
+		this.addFieldError("password", "password invalid");<br />
+	} else if (null == repassword || repassword.length() &lt; 6<br />
+			|| repassword.length() &gt; 10) {<br />
+		this.addFieldError("repassword", "re-password invalid");<br />
+	} else if (!password.equals(repassword)) {<br />
+		this.addFieldError("password", "two passwords not the same");<br />
+	}<br />
+	if (age &lt; 1 || age &gt; 150) {<br />
+		this.addFieldError("age", "age invalid");<br />
+	}<br />
+	if (null == birthday) {<br />
+		this.addFieldError("birthday", "birthday invalid");<br />
+	}<br />
+	if (null == graduation) {<br />
+		this.addFieldError("graduation", "graduation invalid");<br />
+	}<br />
+	if (null != birthday &amp;&amp; null != graduation) {<br />
+		Calendar c1 = Calendar.getInstance();<br />
+		c1.setTime(birthday);</p>
+
+<p>		Calendar c2 = Calendar.getInstance();<br />
+		c2.setTime(graduation);</p>
+
+<p>		if (!c1.before(c2)) {<br />
+			this.addFieldError("birthday",<br />
+					"birthday should be before graduation");<br />
+		}<br />
+	}<br />
+	if(!this.hasFieldErrors()){<br />
+		this.addActionMessage("action success");<br />
+	}else{<br />
+		this.addActionError("action error");<br />
+	}<br />
+}
+
+ActionSupport实现了ValidationAware接口，该接口有<span style="color: rgb(0, 0, 255);">addActionError，addFieldError，addActionMessage</span>三个方法<br />
+前两个add方法和ActionErrors类中的add方法类似，只是add方法的错误信息需要一个ActionMessage对象，比较麻烦。除了加入错误信息外，还可以使用addActionMessage方法加入成功提交后的信息。当提交成功后，可以显示这些信息。</p>
+
+<p>以上三个add方法都在ValidationAware接口中定义，并且在ActionSupport类中有一个默认的实现。其实，在 ActionSupport类中的实现实际上是调用了ValidationAwareSupport中的相应的方法，也就是这三个add方法是在 ValidationAwareSupport类中实现的，代码如下：
+<pre line="1" lang="java">private final ValidationAwareSupport validationAware=new ValidationAwareSupport();
+public void addActionError(String anErrorMessage)
+{　validationAware.addActionError(anErrorMessage);
+}
+public void addActionMessage(String aMessage)
+{
+validationAware.addActionMessage(aMessage);
+}
+public void addFieldError(String fieldName,String errorMessage)
+{
+validationAware.addFieldError(fieldName,errorMessage);
+}
+</pre>
+在请求的页面可以使用Struts2的tag：&lt;s:actionerror&gt;、&lt;s:fielderror&gt;和&lt;s:actionmessage&gt;，分别用来显示动作错误信息，字段错误信息，和动作信息。如果信息为空，则不显示。</p>
+
+<p>Field错误需要一个key（一般用来表示是哪一个属性出的错误），而Action错误和Action消息只要提供一个信息字符串就可以了。</p>
+
+<p>我们还可以使用ValidationAware接口的其他方法（由ValidationAwareSupport类实现）获得或设置字段错误信息、动作错误信息以及动作消息。如<span style="color: rgb(0, 0, 255);">hasActionErrors方法判断是否存在动作层的错误，getFieldErrors获得字段错误信息（一个Map对象）</span>。</p>
+
+<p><span style="color: red;"><strong>当遇到类型转换错误的时候（也就是说不能进行类型转换），struts2框架自动生成一条错误信息，并且将该错误信息放到addFieldError里面类型转换与输入校验的流程。</strong></span>
+<blockquote>1. 首先Struts2对客户端传来的数据进行类型转换<br />
+2. 类型转换完毕后再进行输入校验<br />
+3. 如果类型转换和输入校验都没有错误发生，那么进入execute方法（调用商业逻辑）</blockquote>
+注意：如果类型转换不成功，也同样要进行输入校验</p>
+
+<p>1. 真正存放field级别错误信息的对象是LinkedHashMap<br />
+2. 该LinkedHashMap的key是String类型的，value是ArrayList类型的<br />
+3. 对于Action级别的错误信息，实际上是放置在ArrayList中的</p>
+
+<p><div style="margin-top: 10px; height: 15px;" class="zemanta-pixie"><a class="zemanta-pixie-a" href="http://reblog.zemanta.com/zemified/b7162226-6ced-4d20-a366-5efed0a3e1ad/" title="Reblog this post [with Zemanta]"><img style="border: medium none; float: right;" class="zemanta-pixie-img" src="http://img.zemanta.com/reblog_e.png?x-id=b7162226-6ced-4d20-a366-5efed0a3e1ad" alt="Reblog this post [with Zemanta]" /></a><span class="zem-script more-related pretty-attribution"><script type="text/javascript" src="http://static.zemanta.com/readside/loader.js" defer="defer"></script></span></div></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Struts/2010/03/29/struts2-action-validate-method.html'>Struts2使用validate方法验证数据</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Getting Started Using the Cassandra CLI</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>09 Apr 2012</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></h1>
+  <div class='body'><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
+Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<p><h1>Starting the CLI</h1>
+使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
+如果你有一个但节点的集群，则使用以下命令：
+<pre> 
+$ cassandra-cli -host localhost -port 9160
+</pre>
+如果想连接多节点集群中的一个节点，可以使用以下命令:
+<pre>
+$ cassandra-cli -host 110.123.4.5 -port 9160
+</pre>
+或者，可以直接执行以下命令：
+<pre>
+$ cassandra-cli
+</pre>
+登录成功之后，可以看到：
+<pre>
+Welcome to cassandra CLI.
+Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+</pre>
+你必须指定连接一个节点：
+<pre>
+[default@unknown]connect localhost/9160;
+</pre>
+<!--more-->
+<h1>Creating a Keyspace</h1>
+<pre>
+[default@unknown] CREATE KEYSPACE demo;
+</pre>
+下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
+<pre>
+[default@unknown] CREATE KEYSPACE demo with 
+        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
+        and strategy_options = [{replication_factor:1}];
+</pre>
+你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<p><h1>Use a keyspace</h1>
+<pre>
+[default@unknown] USE demo;
+</pre></p>
+
+<p><h1>Creating a Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</pre>
+我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
+下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
+<pre>
+[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</pre></p>
+
+<p><h1>Creating a Counter Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+          default_validation_class=CounterColumnType 
+          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</pre>
+插入一行和计数列：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
+</pre>
+增加计数：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
+</pre></p>
+
+<p><h1>Inserting Rows and Columns</h1>
+以下命令以一个特点的行key值插入列到users中
+<pre>
+[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
+[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
+[default@demo] SET users['bobbyjo']['state']='TX';
+[default@demo] SET users['bobbyjo']['gender']='M';
+[default@demo] SET users['bobbyjo']['birth_year']='1975';
+</pre>
+更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
+获取数据： get users['bobbyjo'];<br />
+get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
+查询数据： get users where gender= 'M';<br />
+下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
+<pre>
+[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
+</pre></p>
+
+<p><h1>Reading Rows and Columns</h1>
+使用List命令查询记录，默认查询100条记录
+<pre>
+[default@demo] LIST users;
+</pre>
+Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：
+<pre>
+[default@demo] GET users[utf8('bobby')][utf8('full_name')];
+</pre>
+你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
+<pre>
+[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</pre></p>
+
+<p><h1>Setting an Expiring Column</h1>
+例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
+<pre>
+[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
+</pre>
+自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<p><h1>Indexing a Column</h1>
+给birth_year添加一个二级索引：
+<pre>
+[default@demo] UPDATE COLUMN FAMILY users 
+            WITH comparator = UTF8Type AND column_metadata = 
+            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</pre>
+由于该列被索引了，所以可以直接通过该列查询：
+<pre>
+[default@demo] GET users WHERE birth_date = 1969;
+</pre></p>
+
+<p><h1>Deleting Rows and Columns</h1>
+删除yomama索引的coupon_code列：
+<pre>
+[default@demo] DEL users ['yomama']['coupon_code'];
+[default@demo] GET users ['yomama'];
+</pre>
+或者删除整行：
+<pre>
+[default@demo] DEL users ['yomama'];
+</pre></p>
+
+<p><h1>Dropping Column Families and Keyspaces</h1>
+<pre>
+[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</pre></p>
+
+<p><h1>For help</h1>
+<pre>
+[default@unknown]help;
+</pre>
+查看某一个命令的详细说明：
+<pre>
+[default@unknown] help SET;
+</pre></p>
+
+<p><h1>To Quit</h1>
+<pre>
+[default@unknown]quit;
+</pre></p>
+
+<p><h1>To Execute Script</h1>
+<pre>
+bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</pre></p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
+2.<a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

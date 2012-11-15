@@ -1,0 +1,42 @@
+---
+layout: post
+title: 关于Hibernate启动时的配置需要注意的地方?(转)
+categories:
+- Hibernate
+tags:
+- Configuration
+- Hibernate
+published: true
+comments: true
+---
+<p>关于Hibernate启动时的配置需要注意的地方?</p>
+
+<p>Hibernate中Hibernate配置文件有三种形式:<br />
+1.使用Eclipse IDE自动生成的Hibernate-cfg.xml文件,目录在工程下的classes目录下<br />
+调用方式为:<br />
+Configuration config = new Configuration().config();<br />
+SessionFactory sessionFactory = config.buildSessionFactory();<br />
+Session session = sessoinFactory.openSession();<!--more--></p>
+
+<p>2.如果配置文件后缀名为.XML格式的文件而名字不是Hibernate-cfg.xml,是自己定义的一个名字.比如:aaa.xml,目录在工程下的classes目录下,调用方式为:<br />
+Configuration config = new Configuration().config("aaa.xml");<br />
+SessionFactory sessionFactory = config.buildSessionFactory();<br />
+Session session = sessionFactory.openSession();</p>
+
+<p>3.如果配置文件为Hibernate.properties,文件后缀名是*.properties的话,同样是工程下的classes目录下<br />
+调用方式为:<br />
+Configuration config = new Configuration();//跟上面不一样的是,这后面什么方法都不调用</p>
+
+<p>而是例如这里有一个Customer的javaBean需要被持久化到数据库里,而对应的也有他的 customer.hbm.xml配置文件的话<br />
+config.addClass(Customer.class);</p>
+
+<p>如果还有其他的javaBean你可以<br />
+config.addClass(Customer.class),addClass(A.class).addClass(B.class);<br />
+SessionFactory sessionFactory = config.buildSessionFactory();<br />
+Session session = sessionFactory.openSession();<br />
+反正都要被加载到缓存中,Hibernate在运行的时候会根据你的 Customer.class查找对应的Customer.hbm.xml文件进行加载元数据信息,总之一句话你把所有需要持久化的对象都要用 addClass()进行加载就行了但是必须要有对应的*.hbm.xml配置文件相对应</p>
+
+<p>运行上面代码时候已经启动Hibernate了.前提条件是你在数据库中已经建好了相应的表了.<br />
+如果还没有在数据库中建表,而希望Hibernate帮你自动生成表的话还需要在初始化 Configuration 对象代码下面加上以下代码<br />
+new SchemaExport(config).create(true,true);<br />
+这样的话 Hibernate会自动帮你生成数据库Schema的.</p>

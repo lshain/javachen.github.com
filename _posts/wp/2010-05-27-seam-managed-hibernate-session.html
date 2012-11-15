@@ -1,0 +1,27 @@
+---
+layout: post
+title: Seam管理hibernate会话
+categories:
+- Seam
+tags:
+- Hibernate
+- Seam
+- session
+published: true
+comments: true
+---
+<p>用Seam管理hibernate会话，前提是你要在你的项目中使用Seam和hibernate。 如果你是在Java EE 5环境外使用Seam，你不能依靠容器来为你管理持久化上下文生命周期。 即使在Java EE 5 环境中，你可能有一个很多松耦合组件在会话作用域内相互协作的复杂应用，这种情况下你可能发现在组件间传递持久化上下文既困难又容易出错。<br />
+在任何一种情况下，你都需要在你的组件中使用一个 受管持久化上下文（在 JPA中）或者一个 受管会话（Hibernate中）。一个 Seam管理的持久化上下文是在会话上下文中管理一个 EntityManager 实例或者 Session 实例的内置Seam组件。你可以使用 @In 注入它。</p>
+
+<p>如果你装载了一个内建的组件，Seam将会从你的 hibernate.cfg.xml 文件中引导一个 Hibernate SessionFactory：<br />
+&lt;persistence :hibernate-session-factory name="hibernateSessionFactory"/&gt;<br />
+如果你想要通过注入得到一个由Seam管理的Hibernate Session，还需要配置一个 managed session。<br />
+&lt;persistence :managed-hibernate-session name="hibernateSessionFactory"<br />
+session-factory="#{hibernateSessionFactory}"/&gt;<br />
+当然，在得到Hibernate SessionFactory时，你可以执行一些额外的操作，如hibernate配置文件初始化工作：<br />
+&lt;persistence :hibernate-session-factory<br />
+name="hibernateSessionFactory"&gt;<br />
+&lt;configuration -initializers&gt;<br />
+&lt;value&gt;com.javachen.hibernate.ConfigurationInitializer&lt;/value&gt;<br />
+&lt;/configuration&gt;<br />
+&lt;/persistence&gt;</p>

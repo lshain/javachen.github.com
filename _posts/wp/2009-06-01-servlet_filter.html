@@ -1,0 +1,75 @@
+---
+layout: post
+title: Servlet Filter
+categories:
+- JSP
+tags:
+- Filter
+- JSP
+- Servlet
+published: true
+comments: true
+---
+<p><strong>过滤器<br />
+1.  什么是过滤器?</strong>
+与Servlet相似，过滤器是一些Web应用程序组件，可以绑定到一个Web应用程序档案中。但是与其他Web应用程序组件不同的是，过滤器是“链”在容器的处理过程中的。这就意味着它们会在servlet处理器之前访问一个进入的请求，并且在外发的响应信息返回到客户前访问这些响应信息。这种访问使得过滤器可以检查并修改请求和响应的内容。<br />
+Servlet过滤器是Servlet的一种特殊用法，主要用来完成一些通用的操作。比如编码的过滤，判断用户的登陆状态等等。Servlet过滤器的适用场合：<br />
+A．认证过滤<br />
+B．登录和审核过滤<br />
+C．图像转换过滤<br />
+D．数据压缩过滤<br />
+E．加密过滤<br />
+F．令牌过滤<br />
+G．资源访问触发事件过滤<br />
+Servlet过滤器接口的构成：<br />
+所有的Servlet过滤器类都必须实现javax.servlet.Filter接口。这个接口含有3个过滤器类必须实现的方法：
+<strong> 方法                       说明</strong>
+init(FilterConfig cfg) 这是Servlet过滤器的初始化方法，性质等同与servlet的init方法。<br />
+doFilter(ServletRequest,ServletResponse,FilterChain) 完成实际的过滤操作，当请求访问过滤器关联的URL时，Servlet容器将先调用过滤器的doFilter方法。FilterChain参数用于访问后续过滤器<br />
+destroy() Servlet容器在销毁过滤器实例前调用该方法，这个方法中可以释放Servlet过滤器占用的资源。，性质等同与servlet的destory()方法。<br />
+Servlet过滤器的创建步骤：<!--more-->
+A．实现javax.servlet.Filter接口的servlet类<br />
+B．实现init方法，读取过滤器的初始化函数<br />
+C．实现doFilter方法，完成对请求或过滤的响应<br />
+D．调用FilterChain接口对象的doFilter方法，向后续的过滤器传递请求或响应<br />
+F.在web.xml中配置Filter</p>
+
+<p><strong>2.  过滤器可以用于：</strong>
+1) 为一个Web应用程序的新功能建立原型(可被添加到Web应用程序中或者从Web应用程序中删除而不需重写基层应用程序代码);<br />
+2) 向过去的代码中添加新功能。<br />
+3)使用过滤器处理中文问题<br />
+当用用户登陆页面输入帐号时，如果输入是中文，后台servlet再次输出这个内容时，可能就会是乱码，这是因为serlvet中默认是以ISO-8859-1格式编码的，如果后台有多个Servlet,多个参数，这样就不合适，这个问题，我们可以通过一个过滤器统一解决，使后台的输出输出都支持中文！将ISO-8859-1转码为GBK的那段代码！</p>
+
+<p><strong>3.  过滤器放在容器结构什么位置？</strong>
+过滤器放在Web资源之前，可以在请求抵达它所应用的Web资源(可以是一个servlet、一个JSP页面，甚至是一个HTML页面这样的静态内容)之前截获进入的请求，并且在它返回到客户之前截获输出请求。
+<strong>
+4.  过滤器的存活周期</strong>
+过滤器有四个阶段(与servlet类似)：<br />
+1) 实例化;<br />
+2) 初始化(调用init()方法);<br />
+3) 过滤(调用doFilter()方法);<br />
+4) 销毁(调用destroy()方法);</p>
+
+<p><strong>5. 过滤器类和接口</strong>
+所有的过滤器都必须实现javax.servlet.Filter接口:<br />
+1) 容器调用init()方法初始化过滤器实例：<br />
+public void init(FilterConfig config) throws ServletException<br />
+2) doFilter()方法包含过滤器逻辑：<br />
+public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException<br />
+3) destroy()方法由容器在销毁过滤器实例之前调用：<br />
+public void destroy();<br />
+4) FilterChain的doFilter()方法之后的代码构成了后期处理过滤器调用。</p>
+
+<p><strong>6.  配置过滤器</strong>
+使用&lt;filter&gt;和&lt;filter-mapping&gt;元素来配置：<br />
+&lt;filter&gt;<br />
+&lt;filter-name&gt;Filters&lt;/filter-name&gt;                   //过滤器名<br />
+&lt;filter-class&gt;com.kettas.servlet.Filters&lt;/filter-class&gt;     //具体过滤器类package+class<br />
+&lt;dispatch&gt;FORWARD&lt;/dispatch&gt;   //过滤转发的<br />
+&lt;dispatch&gt;REQUEST&lt;/dispatch&gt;   //默认过滤来自客户端的<br />
+&lt;dispatch&gt;INCLUDE&lt;/dispatch&gt;<br />
+&lt;/filter&gt;<br />
+&lt;filter-mapping&gt;                        //将过滤器应用于Web应用程序中的每个Web资源<br />
+&lt;filter-name&gt;Filters&lt;/filter-name&gt;<br />
+&lt;url-pattern&gt;/ *&lt;/url-pattern&gt;<br />
+&lt;/filter-mapping&gt;</p>

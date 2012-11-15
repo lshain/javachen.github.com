@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Java中的字符串截取</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>29 Dec 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Java Core/2009/12/29/java-string-split.html'>Java中的字符串截取</a></h1>
+  <div class='body'><p>编写一个截取字符串的函数，输入为一个字符串和字节数，输出为按字节截取的字符串。 但是要保证汉字不被截半个，如“我ABC”4，应该截为“我AB”，输入“我ABC汉DEF”，6，应该输出为“我ABC”而不是“我ABC+汉的半个”。</p>
+
+<p>这是我面试时候遇到的问题，刚开始的时候，思维就陷入了定势：用String的getBytes（）方法将字符串转化为byte数组，然后在遍历数组，每次遍历的时候要判断当前字符是字母还是汉字，面试的时候想着用正则判断汉字，却忘了正则表达式是怎样的。结果思路对了，就差不知道判断中文的正则怎样写了！ :arrow:</p>
+
+<p>现在，想了想怎样实现上门的要求。找到实现的方法如下：</p>
+
+<p><!--more--></p>
+
+<p>package stringTest;</p>
+
+<p>import java.io.UnsupportedEncodingException;</p>
+
+<p>public class SplitString {<br />
+/**<br />
+* 按字节截取字符串<br />
+*
+* @param orignal<br />
+*            原始字符串<br />
+* @param count<br />
+*            截取位数<br />
+* @return 截取后的字符串<br />
+* @throws UnsupportedEncodingException<br />
+*             使用了JAVA不支持的编码格式<br />
+*/<br />
+public String substring(String orignal, int count)<br />
+throws UnsupportedEncodingException {<br />
+// 原始字符不为null，也不是空字符串<br />
+if (orignal != null &amp;&amp; !"".equals(orignal)) {<br />
+// 将原始字符串转换为GBK编码格式<br />
+orignal = new String(orignal.getBytes(), "GBK");<br />
+// 要截取的字节数大于0，且小于原始字符串的字节数<br />
+if (count &gt; 0 &amp;&amp; count &lt; orignal.getBytes("GBK").length) {<br />
+StringBuffer buff = new StringBuffer();<br />
+char c;<br />
+for (int i = 0; i &lt; count; i++) {<br />
+// charAt(int index)也是按照字符来分解字符串的<br />
+c = orignal.charAt(i);<br />
+buff.append(c);<br />
+if (isChineseChar(c)) {<br />
+// 遇到中文汉字，截取字节总数减1<br />
+--count;<br />
+}
+}<br />
+return buff.toString();<br />
+}
+}<br />
+return orignal;<br />
+}</p>
+
+<p>/**<br />
+* 判断是否是一个中文汉字<br />
+*
+* @param c<br />
+*            字符<br />
+* @return true表示是中文汉字，false表示是英文字母<br />
+* @throws UnsupportedEncodingException<br />
+*             使用了JAVA不支持的编码格式<br />
+*/<br />
+public boolean isChineseChar(char c) throws UnsupportedEncodingException {<br />
+// 如果字节数大于1，是汉字<br />
+// 以这种方式区别英文字母和中文汉字并不是十分严谨，但在这个题目中，这样判断已经足够了<br />
+return String.valueOf(c).getBytes("GBK").length &gt; 1;<br />
+}</p>
+
+<p>public static void main(String[] args) {<br />
+String st = "test中dd文dsaf中男大3443n中国43中国人0ewldfls=103";<br />
+SplitString ss = new SplitString();</p>
+
+<p>try {<br />
+System.out.println("使用重写的subString截取："+ss.substring(st, 5));<br />
+} catch (UnsupportedEncodingException e) {<br />
+e.printStackTrace();<br />
+}
+}<br />
+}
+这里区别英文字母和中文汉字并不是十分严谨，使用的方法是：</p>
+
+<p>return String.valueOf(c).getBytes("GBK").length &gt; 1;</p>
+
+<p>当然，还有其他的办法可以判别。这只u是解决办法之一，后来看了看String的其他方法，发现还有一种更简单的解决办法：</p>
+
+<p>package stringTest;</p>
+
+<p>import java.io.UnsupportedEncodingException;</p>
+
+<p>public class SplitString {<br />
+String SplitStr;<br />
+int SplitByte;<br />
+public SplitString(String str, int bytes) {<br />
+SplitStr = str;<br />
+SplitByte = bytes;<br />
+System.out.println("The String is:'" + SplitStr + "';SplitBytes="<br />
++ SplitByte + ";The String length:" + SplitStr.length());<br />
+}
+public void SplitIt() {<br />
+int loopCount;</p>
+
+<p>loopCount = (SplitStr.length() % SplitByte == 0)<br />
+? (SplitStr.length() / SplitByte)<br />
+: (SplitStr.length() / SplitByte + 1);<br />
+System.out.println("Will Split into " + loopCount);<br />
+for (int i = 1; i &lt;= loopCount; i++) {<br />
+if (i == loopCount) {</p>
+
+<p>System.out.println(SplitStr.substring((i - 1) * SplitByte,<br />
+SplitStr.length()));<br />
+} else {</p>
+
+<p>System.out.println(SplitStr.substring((i - 1) * SplitByte,<br />
+(i * SplitByte)));<br />
+}
+}<br />
+}</p>
+
+<p>public static void main(String[] args) {<br />
+String st = "test中dd文dsaf中男大3443n中国43中国人0ewldfls=103";<br />
+SplitString ss = new SplitString(st, 4);<br />
+ss.SplitIt();<br />
+}
+}<br />
+这种方法使用的是String的subString方法，好处是不用关注当前的字符是字母还是汉字了。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Java Core/2009/12/29/java-string-split.html'>Java中的字符串截取</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

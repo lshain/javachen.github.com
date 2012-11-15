@@ -1,0 +1,27 @@
+---
+layout: post
+title: Hibernate的缓存机制
+categories:
+- Hibernate
+tags:
+- Cache
+- Hibernate
+- session
+published: true
+comments: true
+---
+<p>缓存是介于应用程序和物理数据源之间，其作用是为了降低应用程序对物理数据源访问的频次，从而提高了应用的运行性能。缓存内的数据是对物理数据源中的数据的复制，应用程序在运行时从缓存读写数据，在特定的时刻或事件会同步缓存和物理数据源的数据。<br />
+Hibernate的缓存有两种，一种是一级缓存（<span style="color: #0000ff;">缓存session操作过的所有对象，属于应用事物级缓存</span>），一种是二级缓存（<span style="color: #0000ff;">缓存生成的sql,以及hibernate管理过的部分对象</span>）。<!--more--></p>
+
+<p><span style="color: #0000ff;">在第一级缓存中，持久化类的每个实例都具有唯一的OID。</span>Session的缓存是内置的，不能被卸载。SessionFactory的缓存又可以分为两类：内置缓存和外置缓存。SessionFactory的内置缓存中存放了映射元数据和预定义SQL语句，SessionFactory的内置缓存是只读的，应用程序不能修改缓存中的映射元数据和预定义 SQL语句，因此SessionFactory不需要进行内置缓存与映射文件的同步。SessionFactory的外置缓存是一个可配置的插件。在默认情况下，SessionFactory不会启用这个插件。外置缓存的数据是hibernate管理过的部分对象的拷贝，外置缓存的介质可以是内存或者硬盘。</p>
+
+<p>什么样的数据适合存放到第二级缓存中？<br />
+1 很少被修改的数据<br />
+2 不是很重要的数据，允许出现偶尔并发的数据<br />
+3 不会被并发访问的数据<br />
+4 参考数据</p>
+
+<p>不适合存放到第二级缓存的数据？<br />
+1 经常被修改的数据<br />
+2 财务数据，绝对不允许出现并发<br />
+3 与其他应用共享的数据。</p>

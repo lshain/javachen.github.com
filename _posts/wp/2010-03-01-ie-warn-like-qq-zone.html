@@ -1,0 +1,34 @@
+---
+layout: post
+title: 模仿QQ空间的警告提示栏
+categories:
+- JavaScript
+tags:
+- alert
+- IE
+- JavaScript
+- QQ
+published: true
+comments: true
+---
+<p>下班了，闲来无聊决定捣鼓一下之前收集的一些网页特效之类的网页，研究一下其实现原理，扩展自己的知识和视野，顺便可以将自己参照网上例子做出来的sample上传到我的网站里，留着以后备份，方便查阅。还有一个目的就是通过整理研究以前收集的一些网页特效，进而慢慢的开始研究jquery技术实现前端界面的开发。<!--more-->
+<p style="text-align: center;">大家都进过QQ空间吧，一进去空间页面窗口的最上方有一个导航栏，如下：
+<img class="aligncenter size-medium wp-image-1053" title="ieWarn-like-QQZone" src="http://www.javachen.com/wp-content/uploads/2010/03/ieWarn-like-QQZone-300x64.jpg" alt="" width="300" height="64" />
+其实，这里还不是明显，在QQ空间其他地方用到的提示栏的地方更能说明问题，例如腾讯提示广大空间用户不要相信一些虚假中将信息的提示栏：
+<img class="aligncenter size-medium wp-image-1054" title="ieWarn-like-QQZone-01" src="http://www.javachen.com/wp-content/uploads/2010/03/ieWarn-like-QQZone-01-300x70.jpg" alt="" width="300" height="70" />点击提示栏的右上方的“X”就可以将该提示栏去掉。<br />
+在网上找到了一个实现类似效果的例子，演示地址：<a href="http://www.javachen.com/demo/javascript/ieWarn.html">http://www.javachen.com/demo/javascript/ieWarn.html</a></p>
+其实现的JavaScript原理如下：</p>
+
+<p>1.首先创建一个提示栏对象，其包含2个成员变量displayfreq和content
+<blockquote>function informationbar(){<br />
+this.displayfreq = "always"<br />
+this.content = '&lt;a href="javascript:informationbar.close()"&gt;&lt;img src="images/close.gif" style="width: 14px; height: 14px; float: right; border: 0; margin-right: 5px" /&gt;&lt;/a&gt;'<br />
+}</blockquote>
+2.利用prototype在其对象上加一些关闭、初始化，设置缓存等方法，详细注释看示例中的源代码。<br />
+3.最后调用代码：<br />
+var infobar=new informationbar()<br />
+infobar.setContent('hello welcome to www.javachen.com');<br />
+infobar.setfrequency("session");<br />
+infobar.initialize();</p>
+
+<p>其实，上面的JavaScript代码主要利用了JavaScript的原型prototype来创建一个informationbar对象，给其封装上一些方法，从而实现所需的功能，关于prototype的介绍，可以参看：<a href="http://www.javachen.com/2010/01/javascript-inner-function/">【JavaScript中的闭包】</a>和【<a rel="bookmark" href="../2009/12/javascript-prototype-notebook/">JavaScript prototype学习笔记</a>】</p>

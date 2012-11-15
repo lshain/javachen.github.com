@@ -1,0 +1,30 @@
+---
+layout: post
+title: Ext自定义LoadMask
+categories:
+- Extjs
+tags:
+- Extjs
+- Grid
+published: true
+comments: true
+---
+<p>先看看LoadMask, 注意 show和hide两个函数的调用. 在api文档中没有给出来..第一个参数是某元素的id值,当加载的时候, id的元素变成灰色的不可用状态.
+<pre lang="javascript" line="1">
+var mk = new Ext.LoadMask(控件id, {
+	msg : '正在更新数据，请稍候！',
+	removeMask : true
+// 完成后移除
+		});
+mk.show(); // 显示
+Ext.Ajax.request({
+	url : 'roleAction.evi', // 发送get请求.
+	method : 'GET',
+	success : function() {
+		mk.hide(); // 关闭
+	},
+	failure : function() {
+		mk.hide();
+	}
+});
+</pre></p>

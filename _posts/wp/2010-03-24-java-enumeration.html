@@ -1,0 +1,65 @@
+---
+layout: post
+title: Java Enumeration
+categories:
+- Java Core
+tags:
+- Enumeration
+- Hashtable
+- Java Core
+published: true
+comments: true
+---
+<p>Enumeration为接口，位于java.util包中，它生成一系列元素，一次生成一个。连续调用 nextElement 方法将返回一系列的连续元素。</p>
+
+<p>例如，要输出 Vector v 的所有元素，可使用以下方法：
+<pre lang="java">
+for (Enumeration e = v.elements(); e.hasMoreElements();){	
+     System.out.println(e.nextElement());
+}
+</pre>
+<!--more-->
+Enumeration这些方法主要通过向量的元素、哈希表的键以及哈希表中的值进行枚举。枚举也用于将输入流指定到 SequenceInputStream  中。</p>
+
+<p>使用Enumeration遍历Hashtable：
+<pre lang="java">   
+Hashtable hash=new Hashtable();  
+hash.put( "abc","1");   
+hash.put("ddd","1");   
+hash.put( "asdf","2");   
+Enumeration enumkey = hash.keys() ;   
+while(enumkey.hasMoreElements()){    
+    String str=(String)enumkey.nextElement();    
+    System.out.println("--------"+str);    
+    System.out.println("========="+hash.get( str));   
+}
+enumkey = hash.keys() ;   
+while(enumkey.hasMoreElements()){    
+     String str=(String)enumkey.nextElement();    
+     System.out.println("--------"+str);    
+     System.out.println("========="+hash.get( str));   
+}
+</pre>
+从上面的代码可以看出遍历一个枚举对象有两种方法，一种是for循环一种是使用while，应该特别注意使用for循环的方法与普通的for循环有点差异。</p>
+
+<p>为了读取枚举值中的内容，还可以使用IO输入流SequenceInputStream 将内容输出。<br />
+在Servlet中，通过request.getParameterNames()可以获取到请求中的附加参数的枚举值：
+<pre lang="java">
+Enumeration enume = request.getParameterNames();	
+PrintWriter out = response.getWriter();	
+out.write("");	
+out.write("");	
+out.write("");	
+out.write("servlet演示");
+out.write("");	
+out.write("");	
+out.write("");	
+out.write("传递的参数信息:");	
+while (enume.hasMoreElements()) {		
+          String paramName = enume.nextElement().toString();		
+          out.write(paramName + "=" + request.getParameter(paramName));	
+}	
+out.write("");	
+out.write("");</pre>
+注：此接口的功能与 Iterator 接口的功能是重复的。此外，Iterator 接口添加了一个可选的移除操作，并使用较短的方法名。新的实现应该优先考虑使用 Iterator 接口而不是 Enumeration 接口。
+<div class="zemanta-pixie" style="margin-top: 10px; height: 15px;"><a class="zemanta-pixie-a" title="Reblog this post [with Zemanta]" href="http://reblog.zemanta.com/zemified/7d05d789-3cb1-40bd-81d8-6f98c4048612/"><img class="zemanta-pixie-img" style="border: medium none; float: right;" src="http://img.zemanta.com/reblog_e.png?x-id=7d05d789-3cb1-40bd-81d8-6f98c4048612" alt="Reblog this post [with Zemanta]" /></a><span class="zem-script more-related pretty-attribution"></span></div></p>

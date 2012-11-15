@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>jQuery常用技巧</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>06 Aug 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/jQuery/2009/08/06/jquery-skills.html'>jQuery常用技巧</a></h1>
+  <div class='body'><p>1、关于页面元素的引用<br />
+通过jquery的$()引用元素包括通过id、class、元素名以及元素的层级关系及dom或者xpath条件等方法，且返回的对象为jquery对象（集合对象），不能直接调用dom定义的方法。</p>
+
+<p>2、jQuery对象与dom对象的转换<br />
+只有jquery对象才能使用jquery定义的方法。注意dom对象和jquery对象是有区别的，调用方法时要注意操作的是dom对象还是jquery对象。<br />
+普通的dom对象一般可以通过$()转换成jquery对象。<br />
+如：$(document.getElementById(”msg”))则为jquery对象，可以使用jquery的方法。<br />
+由于jquery对象本身是一个集合。所以如果jquery对象要转换为dom对象则必须取出其中的某一项，一般可通过索引取出。<br />
+如：$(”#msg”)[0]，$(”div”).eq(1)[0]，$(”div”).get()[1]，$(”td”)[5]这些都是dom对象，可以使用dom中的方法，但不能再使用Jquery的方法。<br />
+以下几种写法都是正确的：<br />
+$(”#msg”).html();<br />
+$(”#msg”)[0].innerHTML;<br />
+$(”#msg”).eq(0)[0].innerHTML;<br />
+$(”#msg”).get(0).innerHTML;</p>
+
+<p>3、如何获取jQuery集合的某一项<br />
+对于获取的元素集合，获取其中的某一项（通过索引指定）可以使用eq或get(n)方法或者索引号获取，要注意，eq返回的是jquery对象，而get(n)和索引返回的是dom元素对象。对于jquery对象只能使用jquery的方法，而dom对象只能使用dom的方法，如要获取第三个&lt;div&gt;元素的内容。有如下两种方法：<br />
+$(”div”).eq(2).html();    //调用jquery对象的方法<br />
+$(”div”).get(2).innerHTML; //调用dom的方法属性</p>
+
+<p><!--more--></p>
+
+<p>4、同一函数实现set和get<br />
+Jquery中的很多方法都是如此，主要包括如下几个：<br />
+$(”#msg”).html();    //返回id为msg的元素节点的html内容。<br />
+$(”#msg”).html(”&lt;b&gt;new content&lt;/b&gt;”);<br />
+//将“&lt;b&gt;new content&lt;/b&gt;” 作为html串写入id为msg的元素节点内容中,页面显示粗体的new content</p>
+
+<p>$(”#msg”).text();    //返回id为msg的元素节点的文本内容。<br />
+$(”#msg”).text(”&lt;b&gt;new content&lt;/b&gt;”);<br />
+//将“&lt;b&gt;new content&lt;/b&gt;” 作为普通文本串写入id为msg的元素节点内容中,页面显示&lt;b&gt;new content&lt;/b&gt;</p>
+
+<p>$(”#msg”).height();    //返回id为msg的元素的高度<br />
+$(”#msg”).height(”300″); //将id为msg的元素的高度设为300<br />
+$(”#msg”).width();    //返回id为msg的元素的宽度<br />
+$(”#msg”).width(”300″); //将id为msg的元素的宽度设为300</p>
+
+<p>$(”input”).val(”); //返回表单输入框的value值<br />
+$(”input”).val(”test”); //将表单输入框的value值设为test</p>
+
+<p>$(”#msg”).click(); //触发id为msg的元素的单击事件<br />
+$(”#msg”).click(fn); //为id为msg的元素单击事件添加函数<br />
+同样blur,focus,select,submit事件都可以有着两种调用方法</p>
+
+<p>5、集合处理功能<br />
+对于jquery返回的集合内容无需我们自己循环遍历并对每个对象分别做处理，jquery已经为我们提供的很方便的方法进行集合的处理。<br />
+包括两种形式：<br />
+$(”p”).each(function(i){this.style.color=['#f00','#0f0','#00f'][ i ]})<br />
+//为索引分别为0，1，2的p元素分别设定不同的字体颜色。</p>
+
+<p>$(”tr”).each(function(i){this.style.backgroundColor=['#ccc','#fff'][i%2]})<br />
+//实现表格的隔行换色效果</p>
+
+<p>$(”p”).click(function(){alert($(this).html())})<br />
+//为每个p元素增加了click事件，单击某个p元素则弹出其内容</p>
+
+<p>6、扩展我们需要的功能<br />
+$.extend({<br />
+min: function(a, b){return a &lt; b?a:b; },<br />
+max: function(a, b){return a &gt; b?a:b; }<br />
+}); //为jquery扩展了min,max两个方法<br />
+使用扩展的方法（通过“$.方法名”调用）：<br />
+alert(”a=10,b=20,max=”+$.max(10,20)+”,min=”+$.min(10,20));</p>
+
+<p>7、支持方法的连写<br />
+所谓连写，即可以对一个jquery对象连续调用各种不同的方法。<br />
+例如：<br />
+$(”p”).click(function(){alert($(this).html())})<br />
+.mouseover(function(){alert(’mouse over event’)})<br />
+.each(function(i){this.style.color=['#f00','#0f0','#00f'][ i ]});</p>
+
+<p>8、操作元素的样式<br />
+主要包括以下几种方式：<br />
+$(”#msg”).css(”background”);    //返回元素的背景颜色<br />
+$(”#msg”).css(”background”,”#ccc”) //设定元素背景为灰色<br />
+$(”#msg”).height(300); $(”#msg”).width(”200″); //设定宽高<br />
+$(”#msg”).css({ color: “red”, background: “blue” });//以名值对的形式设定样式<br />
+$(”#msg”).addClass(”select”); //为元素增加名称为select的class<br />
+$(”#msg”).removeClass(”select”); //删除元素名称为select的class<br />
+$(”#msg”).toggleClass(”select”); //如果存在（不存在）就删除（添加）名称为select的class</p>
+
+<p>9、完善的事件处理功能</p>
+
+<p>Jquery已经为我们提供了各种事件处理方法，我们无需在html元素上直接写事件，而可以直接为通过jquery获取的对象添加事件。<br />
+如：<br />
+$(”#msg”).click(function(){alert(”good”)}) //为元素添加了单击事件<br />
+$(”p”).click(function(i){this.style.color=['#f00','#0f0','#00f'][ i ]})<br />
+//为三个不同的p元素单击事件分别设定不同的处理<br />
+jQuery中几个自定义的事件：<br />
+（1）hover(fn1,fn2)：一个模仿悬停事件（鼠标移动到一个对象上面及移出这个对象）的方法。当鼠标移动到一个匹配的元素上面时，会触发指定的第一个函数。当鼠标移出这个元素时，会触发指定的第二个函数。<br />
+//当鼠标放在表格的某行上时将class置为over，离开时置为out。<br />
+$(”tr”).hover(function(){<br />
+$(this).addClass(”over”);<br />
+},<br />
+function(){<br />
+$(this).addClass(”out”);<br />
+});<br />
+（2）ready(fn):当DOM载入就绪可以查询及操纵时绑定一个要执行的函数。<br />
+$(document).ready(function(){alert(”Load Success”)})<br />
+//页面加载完毕提示“Load Success”,相当于onload事件。与$(fn)等价<br />
+（3）toggle(evenFn,oddFn): 每次点击时切换要调用的函数。如果点击了一个匹配的元素，则触发指定的第一个函数，当再次点击同一元素时，则触发指定的第二个函数。随后的每次点击都重复对这两个函数的轮番调用。<br />
+//每次点击时轮换添加和删除名为selected的class。<br />
+$(”p”).toggle(function(){<br />
+$(this).addClass(”selected”);<br />
+},function(){<br />
+$(this).removeClass(”selected”);<br />
+});<br />
+（4）trigger(eventtype): 在每一个匹配的元素上触发某类事件。<br />
+例如：<br />
+$(”p”).trigger(”click”);    //触发所有p元素的click事件<br />
+（5）bind(eventtype,fn)，unbind(eventtype): 事件的绑定与反绑定<br />
+从每一个匹配的元素中（添加）删除绑定的事件。<br />
+例如：<br />
+$(”p”).bind(”click”, function(){alert($(this).text());}); //为每个p元素添加单击事件<br />
+$(”p”).unbind(); //删除所有p元素上的所有事件<br />
+$(”p”).unbind(”click”) //删除所有p元素上的单击事件</p>
+
+<p>10、几个实用特效功能<br />
+其中toggle()和slidetoggle()方法提供了状态切换功能。<br />
+如toggle()方法包括了hide()和show()方法。<br />
+slideToggle()方法包括了slideDown()和slideUp方法。</p>
+
+<p>11、几个有用的jQuery方法<br />
+$.browser.浏览器类型：检测浏览器类型。有效参数：safari, opera, msie, mozilla。如检测是否ie：$.browser.isie，是ie浏览器则返回true。<br />
+$.each(obj, fn)：通用的迭代函数。可用于近似地迭代对象和数组（代替循环）。<br />
+如
+$.each( [0,1,2], function(i, n){ alert( “Item #” + i + “: ” + n ); });<br />
+等价于：<br />
+var tempArr=[0,1,2];<br />
+for(var i=0;i&lt;tempArr.length;i++){<br />
+alert(”Item #”+i+”: “+tempArr[ i ]);<br />
+}
+也可以处理json数据，如<br />
+$.each( { name: “John”, lang: “JS” }, function(i, n){ alert( “Name: ” + i + “, Value: ” + n ); });<br />
+结果为：<br />
+Name:name, Value:John<br />
+Name:lang, Value:JS<br />
+$.extend(target,prop1,propN)：用一个或多个其他对象来扩展一个对象，返回这个被扩展的对象。这是jquery实现的继承方式。<br />
+如：<br />
+$.extend(settings, options);<br />
+//合并settings和options，并将合并结果返回settings中，相当于options继承setting并将继承结果保存在setting中。<br />
+var settings = $.extend({}, defaults, options);<br />
+//合并defaults和options，并将合并结果返回到setting中而不覆盖default内容。<br />
+可以有多个参数（合并多项并返回）<br />
+$.map(array, fn)：数组映射。把一个数组中的项目(处理转换后)保存到到另一个新数组中，并返回生成的新数组。<br />
+如：<br />
+var tempArr=$.map( [0,1,2], function(i){ return i + 4; });<br />
+tempArr内容为：[4,5,6]<br />
+var tempArr=$.map( [0,1,2], function(i){ return i &gt; 0 ? i + 1 : null; });<br />
+tempArr内容为：[2,3]<br />
+$.merge(arr1,arr2):合并两个数组并删除其中重复的项目。<br />
+如：$.merge( [0,1,2], [2,3,4] ) //返回[0,1,2,3,4]<br />
+$.trim(str)：删除字符串两端的空白字符。<br />
+如：$.trim(”   hello, how are you? “); //返回”hello,how are you? ”</p>
+
+<p>12、解决自定义方法或其他类库与jQuery的冲突<br />
+很多时候我们自己定义了$(id)方法来获取一个元素，或者其他的一些js类库如prototype也都定义了$方法，如果同时把这些内容放在一起就会引起变量方法定义冲突，Jquery对此专门提供了方法用于解决此问题。<br />
+使用jquery中的jQuery.noConflict();方法即可把变量$的控制权让渡给第一个实现它的那个库或之前自定义的$方法。之后应用Jquery的时候只要将所有的$换成jQuery即可，如原来引用对象方法$(”#msg”)改为jQuery(”#msg”)。<br />
+如：<br />
+jQuery.noConflict();<br />
+// 开始使用jQuery<br />
+jQuery(”div p”).hide();<br />
+// 使用其他库的 $()<br />
+$(”content”).style.display = ‘none’;</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/jQuery/2009/08/06/jquery-skills.html'>jQuery常用技巧</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

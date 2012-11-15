@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>SAX解析XML的一点介绍</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>04 Dec 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Java Core/2010/12/04/some-tips-about-simple-api-for-xml.html'>SAX解析XML的一点介绍</a></h1>
+  <div class='body'><p>SAX (<span style="color: #0000ff;">Simple API for XML</span>) 和 DOM (<span style="color: #0000ff;">Document Object Model)</span> 是当前两个主要的XML API，几乎所有商用的xml 解析器都同时实现了这两个接口。<br />
+DOM 虽然是 W3C 的标准，提供了标准的解析方式，但它的解析效率一直不尽如人意，<span style="color: #ff00ff;">因为使用DOM解析XML时，解析器读入整个文档并构建一个驻留内存的树结构（节点树），然后您的代码才可以使用 DOM 的标准接口来操作这个树结构</span>。但大部分情况下我们只对文档的部分内容感兴趣，根本就不用先解析整个文档，并且从节点树的根节点来索引一些我们需要的数据也是非常耗时的。<br />
+Simple API for XML（简称SAX）是个循序存取XML的解析器API。SAX提供一个机制从XML文件读取资料。它是除了文档对象模型（DOM）的另外一种流行选择。<br />
+SAX是Simple API for XML的缩写，它并不是由W3C官方所提出的标准，可以说是“民间”的事实标准。实际上，它是一种社区性质的讨论产物。
+<span style="color: #ff00ff;">SAX 允许您在读取文档时处理它，从而不必等待整个文档被存储之后才采取操作</span>。它不涉及 DOM 所必需的开销和概念跳跃。 SAX API是一个基于事件的API ，适用于处理数据流，即随着数据的流动而依次处理数据。SAX API在其解析您的文档时发生一定事件的时候会通知您。在您对其响应时，您不作保存的数据将会被抛弃。<br />
+XML属性也作为传给元素事件资料的一部份。</p>
+
+<p><span style="color: #ff0000;">SAX 处理是单方向性的；解析过的资料无法在不重新开始的情况下再次读取。<!--more--></span></p>
+
+<p>因为SAX事件驱动的本质，处理文件通常会比DOM风格的解析器快。内存存取耗时，所以DOM较大的内存使用也是一个效能议题。<br />
+因为SAX的本质，从磁盘串流读取是可行的。无法放入内存的XML文件只可能使用SAX解析器（或另外的串流XML解析器）来处理。
+<h2><strong><span style="color: #00ccff;">缺点</span></strong></h2>
+SAX事件驱动的模型对于XML解析很有用，但它确实有某些缺点。<span style="color: #ff0000;">某些种类的XML验证需要存取整份文件</span>。</p>
+
+<p>例如，一个DTD IDREF属性需要文件内有项目使用指定字串当成DTD ID属性。要在SAX解析器内验证，必须追踪每个之前遇过的ID和IDREF属性，检查是否有任何相符。更甚者，一个IDREF找不到对应的ID，使用者只会在整份文件都解析完后才发现，若这种连结对于建立有效输出是重要的，那用在处理整份文件的时间只是浪费。<br />
+另外，某些XML处理仅要求存取整份文件。举例来说，XSLT及XPath需要能够任何时间存取任何解析过的XML树。当SAX以用来建构此树时，DOM解析器在设计上已经是如此了。
+<h2><span style="color: #00ccff;">如何在 SAX 和 DOM 之间选择</span></h2>
+选择 DOM 还是选择 SAX，这取决于下面几个因素：
+<span style="color: #0000ff;">1<strong>.应用程序的目的：</strong></span>如果打算对数据作出更改并将它输出为 XML，那么在大多数情况下，DOM 是适当的选择。并不是说使用 SAX 就不能更改数据，但是该过程要复杂得多，因为您必须对数据的一份拷贝而不是对数据本身作出更改。
+<span style="color: #0000ff;"><strong>2.数据容量：</strong></span> 对于大型文件，SAX 是更好的选择。<br />
+数据将如何使用：如果只有数据中的少量部分会被使用，那么使用 SAX 来将该部分数据提取到应用程序中可能更好。 另一方面，如果您知道自己以后会回头引用已处理过的大量信息，那么 SAX 也许不是恰当的选择。
+<span style="color: #0000ff;"><strong>3.对速度的需要：</strong></span> SAX 实现通常要比 DOM 实现更快。<br />
+SAX 和 DOM 不是相互排斥的，记住这点很重要。您可以使用 DOM 来创建 SAX 事件流，也可以使用 SAX 来创建 DOM 树。事实上，用于创建 DOM 树的大多数解析器实际上都使用 SAX 来完成这个任务！</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Java Core/2010/12/04/some-tips-about-simple-api-for-xml.html'>SAX解析XML的一点介绍</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

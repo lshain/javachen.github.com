@@ -1,0 +1,85 @@
+---
+layout: post
+title: Hibernate Object Persistence
+categories:
+- Hibernate
+tags:
+- EJB
+- Hibernate
+- JPA
+published: true
+comments: true
+---
+<p>上篇文章讲到了Java  Persistence API（Java 数据持久化API），hibernate作为JPA的一种实现，是一个数据持久化组件。所谓对象持久化(Object Persistence)，就是把数据保存在永久存储介质中（数据库）。<!--more--></p>
+
+<p>1.为什么要持久化:</p>
+
+<p>a.内存是暂时存储设备,断电后数据易丢失</p>
+
+<p>b.网络传输无法传输内存中的对象，需要将对象外化</p>
+
+<p>c.内存中数据查询,组织不方便</p>
+
+<p>d.内存只能存储少量数据</p>
+
+<p>2.怎样持久化</p>
+
+<p>a.对象序列化 --&gt; 二进制流；合并存储,粒度大,无规律；不支持检索只适合少数个别对象的序列化</p>
+
+<p>b.用JDBC/EJB/ORM 将数据存入数据库</p>
+
+<p>1） 用JDBC:(Java DB Connection)</p>
+
+<p>优点:底层开发,控制力强(细); 效率最高; 标准的(SQL)JDBC,有可移植性</p>
+
+<p>缺点:过于复杂; 代码量大; 可维护性差(代码重用性低);</p>
+
+<p>2）用EJB:(Entity Java Bean)</p>
+
+<p>优点:直接自动生成JDBC代码; 持久对象(PO)的状态由服务器管理; 声明式的事务</p>
+
+<p>缺点:功能不全(特殊的组件,不能做继承关系); EJB容器是侵入性容器,失去OO的优点; 调试更复杂</p>
+
+<p>3）用ORM:（object relation mapping）对象关系映射</p>
+
+<p>优点:自动生成JDBC(代码量下降); 使用(plain oldest java object---pojo),非侵入型; 提供状态管理; 难度下降,不需要容器</p>
+
+<p>缺点:由于开源, 文档少; bug多; 技术支持差</p>
+
+<p>结论: 用java开发--&gt;必须将数据持久化--&gt;用数据库持久化--&gt;须用ORM--&gt;需要用Hibernate</p>
+
+<p>3.Hibernate是如何实现ORM的功能？</p>
+
+<p>在使用Hibernate实现ORM功能的时候，主要的文件有：映射类（*.java）、映射文件（*.hbm.xml）以及数据库配置文件（*.properties或*.cfg.xml），它们各自的作用如下。<br />
+⑴映射类：它的作用是描述数据库表的结构，表中的字段在类中被描述成属性，将来就可以实现把表中的记录映射成为该类的对象。<br />
+⑵映射文件：它的作用是指定数据库表和映射类之间的关系，包括映射类和数据库表的对应关系、表字段和类属性类型的对应关系以及表字段和类属性名称的对应关系等。<br />
+⑶数据库配置文件：它的作用是指定与数据库连接时需要的连接信息，比如连接哪中数据库、登录用户名、登录密码以及连接字符串等。</p>
+
+<p>在这三种主要的文件中，映射类为普通Java源文件、映射文件为XML格式、数据库配置文件为Properties格式或者是XML格式。Hibernate就是通过解析这些文件，实现Java对象到数据库实体的映射。</p>
+
+<p>5.Hibernate 中Java对象的状态<br />
+1.临时状态 (transient)<br />
+特征：<br />
+1】不处于Session 缓存中<br />
+2】数据库中没有对象记录<br />
+Java如何进入临时状态<br />
+1】通过new语句刚创建一个对象时<br />
+2】当调用Session 的delete()方法，从Session 缓存中删除一个对象时。</p>
+
+<p>2.持久化状态(persisted)<br />
+特征：<br />
+1】处于Session 缓存中<br />
+2】持久化对象数据库中设有对象记录<br />
+3】Session 在特定时刻会保持二者同步<br />
+Java如何进入持久化状态<br />
+1】Session 的save()把临时－》持久化状态<br />
+2】Session 的load(),get()方法返回的对象<br />
+3】Session 的find()返回的list集合中存放的对象<br />
+4】Session 的update(),saveOrupdate()使游离－》持久化<br />
+3.游离状态(detached)<br />
+特征：<br />
+1】不再位于Session 缓存中<br />
+2】游离对象由持久化状态转变而来，数据库中可能还有对应记录。<br />
+Java如何进入持久化状态－》游离状态<br />
+1】Session 的close()方法<br />
+2】Session 的evict()方法，从缓存中删除一个对象。提高性能。少用。</p>

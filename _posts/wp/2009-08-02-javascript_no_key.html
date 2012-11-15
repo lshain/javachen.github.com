@@ -1,0 +1,48 @@
+---
+layout: post
+title: 屏蔽鼠标右键、Ctrl+N、Shift+F10、F5刷新、退格键
+categories:
+- JavaScript
+tags:
+- JavaScript
+published: true
+comments: true
+---
+<p><pre lang="javascript">屏蔽鼠标右键、Ctrl+N、Shift+F10、F5刷新、退格键
+function window.onhelp(){return false} //屏蔽F1帮助
+function KeyDown(){
+if ((window.event.altKey)&amp;&amp;
+((window.event.keyCode==37)|| //屏蔽 Alt+ 方向键 ←
+(window.event.keyCode==39))){ //屏蔽 Alt+ 方向键 →
+alert("不准你使用ALT+方向键前进或后退网页！");
+event.returnvalue=false;
+}</pre></p>
+
+<p><!--more-->
+注：这还不是真正地屏蔽 Alt+ 方向键，因为 Alt+ 方向键弹出警告框时，按住 Alt 键不放，用鼠标点掉警告框，这种屏蔽方法就失效了。<br />
+if ((event.keyCode == 8) &amp;&amp;<br />
+(event.srcElement.type != "text" &amp;&amp;<br />
+event.srcElement.type != "textarea" &amp;&amp;<br />
+event.srcElement.type != "password") || //屏蔽退格删除键<br />
+(event.keyCode==116)|| //屏蔽 F5 刷新键<br />
+(event.ctrlKey &amp;&amp; event.keyCode==82)){ //Ctrl + R<br />
+event.keyCode=0;<br />
+event.returnvalue=false;<br />
+}
+if ((event.ctrlKey)&amp;&amp;(event.keyCode==78)) //屏蔽 Ctrl+n<br />
+event.returnvalue=false;<br />
+if ((event.shiftKey)&amp;&amp;(event.keyCode==121)) //屏蔽 shift+F10<br />
+event.returnvalue=false;<br />
+if (window.event.srcElement.tagName == "A" &amp;&amp; window.event.shiftKey)    </p>
+
+<p>window.event.returnvalue = false; //屏蔽 shift 加鼠标左键新开一网页<br />
+if ((window.event.altKey)&amp;&amp;(window.event.keyCode==115)){ //屏蔽Alt+F4<br />
+window.showModelessDialog("about:blank","","dialogWidth:1px;dialogheight:1px");<br />
+return false;}<br />
+}
+另外可以用 window.open 的方法屏蔽 IE 的所有菜单<br />
+第一种方法：<br />
+window.open("你的.htm", "","toolbar=no,location=no,directories=no,menubar=no,<br />
+scrollbars=no,resizable=yes,status=no,top=0,left=0")<br />
+第二种方法是打开一个全屏的页面：<br />
+window.open("你的.asp", "", "fullscreen=yes")</p>

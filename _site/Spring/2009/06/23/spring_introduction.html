@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Spring的介绍</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>23 Jun 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Spring/2009/06/23/spring_introduction.html'>Spring的介绍</a></h1>
+  <div class='body'><p>一 , Spring 的介绍<br />
+    1, Spring 是什么?<br />
+        用于简化企业级开发的,开源的,分层的框架; <br />
+        Spring作者: Rod Johnson  书: < < Expert one-to-one J2EE Design and Development >>
+        开发EJB2.1: 接口, 实体bean , EQL语言也非常麻烦; 速度比较慢; <br />
+                    采用EJB框架需要使用其他企业级服务, jndi, 定时服务等; <br />
+        Spring带来了开发的春天; <br />
+        开源: open source 源代码公开, 依造某些协议 ; <br />
+        缺点: 但不是一个标准, 是否考虑到前后的兼容; <br />
+                <br />
+    2, 为什么要使用Spring? spring的作用？<br />
+        1) Spring 可以简化企业级开发, 对大部分的企业级服务做了良好的封装，提供了更好的访问这些服务的方式；<br />
+        2) 对于一些其他的子框架, 比如struts , hibernate 可以良好的集成; <br />
+        3) 提供IOC, AOP 功能的容器, 可以方便代码的开发; <br />
+        4) 良好的设计, 可以简化企业级的设计；<br />
+        5) 松散耦合，非侵入式框架；</p>
+
+<p>    3, 分层框架 : <br />
+        应用程序的分层, 1) 维护: 代码的纠缠, 界面, 业务, 数据访问; <br />
+                        2) 性能的提升, 扩展; <br />
+                    表示层, 业务层, 持久层<br />
+                   <br />
+                    表示层--- > 业务层 ---- > 持久层 ---> DB<br />
+                    --------------------------------------------<br />
+                    加一个域层: domain layer <br />
+                    <br />
+         域层: 业务类的集合; 需要存放到数据库; <br />
+         域: 指的是业务领域, 一系列的业务对象(集合), 业务领域当中的业务数据; <br />
+         域对象: 业务领域中的业务对象 ;<br />
+         	 实体类:持久化对象(域对象)<br />
+        	 边界类:控制事务<br />
+         	 控制类:控制流程的
+<!--more-->
+         域层为什么要跨越3层: 业务类和技术无关; <br />
+         <br />
+         表示层的作用: 展示模型层的数据和后台的数据, 接收客户端的输入;<br />
+                       能够接收视图的导航,可以从一个页面转到另一个页面, 简单的流层控制; <br />
+                       struts 是表示层的框架, 只是按照mvc的模式做了V和C; <br />
+                       处理业务层传过来的异常; <br />
+         <br />
+         业务层的作用: service, 业务逻辑的封装; 业务逻辑的处理; 并且向外暴露接口；负责事务，安全管理；<br />
+         域层的作用:   一套业务对象的集合, 业务对象的关系在这里建立起来; <br />
+                       简单的业务逻辑；<br />
+                       贯穿表示层, 持久层, 业务层, 方便使用; <br />
+          <br />
+         持久层的作用: 对数据的存取(透明的方式), 提供OR/Mapping的支持(HQL查询语句等) -- 这一条不是必须的;<br />
+                       不能用SQL语句; </p>
+
+<p>	=====================================================================<br />
+          表示层:Struts  MVC --V:jsp, form, tag ,resource,html/js ;<br />
+                             --C: ActionServlet , Action , struts.config.xml<br />
+                             分了MVC三层; <br />
+                             实现了表示层, 和 控制层 ; <br />
+          业务层: Spring  是一个很好的分层框架, 易于集成其他的框架; <br />
+                  提供IOC, AOP功能, 方便业务层对象的集成; <br />
+          持久层: Hibernate , 很好的持久层框架; <br />
+          域层:   将对象打包, 共同使用;                                <br />
+          <br />
+         <br />
+    4, Spring的组成: <br />
+        分7个模块: <br />
+       --1--    Spring Core /IOC : 核心容器(BeanFactory), 提供了对象的生成, 装配及生命周期管理; <br />
+       --2--    Spring Context: Spring 上下文, <br />
+                            作用: 1)基于Spring核心容器,扩展了核心容器的功能; <br />
+                                  2)提供了一些企业服务的支持, 如: JNDI, EJB, 远程调用, 邮件服务; <br />
+       --3--    Spring DAO: <br />
+                             1) JDBC的支持;<br />
+                             2) DAO的一些基础类;      <br />
+                             3) 事务的支持, 用到AOP; <br />
+       --4--    Spring  AOP: <br />
+                            AOP编程的支持; 面向切面编程; <br />
+       --5--    Spring  O/R Mapping: hibernate, jdo 等; <br />
+       --6--    Spring  WEB: 提供了web应用上下文；提供了对其他web框架的支持, struts/webwork<br />
+       --7--    Spring  WEB  MVC: 是一个完整的MVC的实现, 相当于struts, 实现不一样; 作用是一样的;  <br />
+     <br />
+     组合框架/整合框架:  SSH = Struts + Spring + Hibernate<br />
+         表示层: struts / webwork(已经融入到struts)  / flex<br />
+         持久层: hibernate / jdo /jdbc/ ibatis <br />
+         业务层: spring<br />
+         <br />
+         1) 框架的稳定性 ; 02年, struts <br />
+         2) 掌握技术的情况; <br />
+         3) 文档, 开发的准备; <br />
+         4) 对技术要求 ;</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Spring/2009/06/23/spring_introduction.html'>Spring的介绍</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

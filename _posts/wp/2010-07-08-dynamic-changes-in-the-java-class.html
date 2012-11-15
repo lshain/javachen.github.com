@@ -1,0 +1,44 @@
+---
+layout: post
+title: 动态改变java的父类
+categories:
+- OpenSource
+tags:
+- asm
+- javassist
+published: true
+comments: true
+---
+<p>在java开发中难免会重用代码，但有时候会觉得此代码用在彼处不是很合理，于是需要手动的修改代码，有没有一种简单的方式让不直接拷贝代码过来不修改代码而使用（注意不是直接使用，也不可能直接使用）呢？这样说比较抽象，举个实际项目中遇到的例子，现在又一个类继承另一个类，我想改变他的父类类型（类中的方法属性不变，改变后的父类和改变之前的类肯定存在一些关系的），将其用在另一个项目里，这时候我就想动态的改变java的父类。<!--more--></p>
+
+<p>在公司里，老大经过一段时间的摸索终于找到了处理此问题的方法，其使用的方法很简洁只有几行代码，我简单的看了看，貌似使用了开源的javassist包。查阅网上关于javassist资料，看到了一篇关于javassist如何使用的例子：【<a id="viewpost1_TitleUrl" href="http://www.blogjava.net/zyl/archive/2007/02/10/99171.html">使用 javassist动态注入代码</a>】。</p>
+
+<p><pre lang="java">
+   	public static Class setClassSupper(String target, String superClass) {
+		try {
+			ClassPool pool = ClassPool.getDefault();</pre></p>
+
+<p>			CtClass ct = pool.get(target);<br />
+			ct.defrost();<br />
+			CtClass sct = pool.get(superClass);<br />
+			if (!ct.getSuperclass().equals(sct)) {<br />
+				ct.setSuperclass(sct);<br />
+				ct.writeFile();<br />
+			}<br />
+			return ct.toClass();<br />
+		} catch (Exception e) {<br />
+			throw new java.lang.RuntimeException(e);<br />
+		}<br />
+	}
+
+关于java字节码的处理，目前有很多工具，如bcel，asm。不过这些都需要直接跟虚拟机指令打交道。如果你不想了解虚拟机指令，可以采用 javassist。javassist是jboss的一个子项目，其主要的优点，在于简单，而且快速。直接使用java编码的形式，而不需要了解虚拟机 指令，就能动态改变类的结构，或者动态生成类。</p>
+
+<p><span style="color: #00ff00;"><strong>Javassist是什么？</strong></span></p>
+
+<p>Javassist是一个开源的分析、编辑和创建Java字节码的类库。是由东京技术学院的数学和计算机科学系的 Shigeru Chiba  所创建的。它已加入了开放源代码JBoss 应用服务器项目,通过使用Javassist对字节码操作为JBoss实现动态AOP框架。</p>
+
+<p>该项目主页:<a href="http://www.csg.is.titech.ac.jp/%7Echiba/javassist/">http://www.csg.is.titech.ac.jp/~chiba/javassist/ </a></p>
+
+<p>学习文档：<a href="http://www.csg.is.titech.ac.jp/~chiba/javassist/tutorial/tutorial.html">http://www.csg.is.titech.ac.jp/~chiba/javassist/tutorial/tutorial.html</a></p>
+
+<p>看了很多开源框架，发现很多框架里都会映入该包或是ASM的包，可见该jar包对于java动态编程的贡献是多么大！</p>

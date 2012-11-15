@@ -1,0 +1,86 @@
+---
+layout: post
+title: Servlet的基础概念
+categories:
+- JSP
+tags:
+- JSP
+- Servlet
+published: true
+comments: true
+---
+<p>Servlet的基础概念<br />
+1.  Servlet是什么?<br />
+Servlet 是在服务器上运行来响应客户端请求的一种java组件。Servlet与具体的客户服务端协议无关，但Servlet常用于HTTP协议,所以，“Servle”t常被用于“HTTP Servlet”的意思。<br />
+Servlet使用的java软件包：javax.servlet(基本Servlet框架)和javax,servlet.http(HTTP Servlet)<br />
+HTTP Servlets典型应用包括：<br />
+1) 通过提交HTML表单操作存储数据。<br />
+2) 提供动态内容，如将从数据库中查询到的结果返回给客户端<br />
+3) 管理无状态的HTTP上的有状态的信息，如一个为多个同时存在的客户管理购物车并映射每一个请求到正确的客户的在线购物系统</p>
+
+<p>2.  HTTP和Servlets<br />
+1) Servlet是HTTP协议中作为 CGI(Commone Gateway Interface)的一个替代品;<br />
+2) HttpServlet类用于开发HTTP为基础的Servlet</p>
+
+<p>3.  HttpServlet<br />
+1) 继承抽象类javax.servlet.GenericServlet，实现接口java.io.Serializable;<br />
+2) 用以开发Http协议为基础的Servlet
+<!--more-->
+4.  服务方法<br />
+1) 每当服务接收到对Servlet的请求时，服务器就会产生一个新线程，并调用Service。service方法检查HTTP请求类型(GET、POST、PUT、DELETE等),并相应地调用doGet、doPost、doPut、doDelete等。<br />
+2) doGet/doPost方法接收HttpServletRequest和HttpServletResponse对象。<br />
+3) 99%的时间里，只需注意GET和/或POST请求;<br />
+4) 没有任何doHead方法。</p>
+
+<p>5.  返回响应<br />
+1) PrintWriter out = response.getWriter                 // 用于返回文本数据给客户端<br />
+2) ServletOutputStream out = response.getOutputStream   // 用于返回二进制数据给客户端</p>
+
+<p>6.  支持Servlet的Web服务器<br />
+1) J2EE应用服务器包括：Web Container和EJB Container;<br />
+2) Web Container的Servlet Engine提供对Servlet的运行支持;</p>
+
+<p>用Servlet处理表单数据<br />
+1. Form元素的属性<br />
+1) ACTION: 用来指定要处理FORM数据的Servlet的URL，也可以指定FORM数据将要发送到的电子邮件;<br />
+2) METHOD: 指定数据传送给HTTP服务器的方法;<br />
+3) ENCTYPE: 指定数据在传输之前进行编码的方式, 例multipart/form-data 编码将每个字段作为MIME可兼容的文档的单独部分传输。</p>
+
+<p>2. 解析请求<br />
+1) 对于所有的请求：<br />
+a. getParameterNames: 以Enumeration形式获取表单中清单, 每一项都可以转换成String;<br />
+b. getParameter: 返回表单中参数名(区分大小写)对应的值(没有这样的参数，返回null;没有任何值，返回空String);<br />
+c. getParameterValues: 返回表单中参数名(区分大小写)对应的字符串数组(没有这样的参数，返回null;只有一个值，返回值为单一元素组);</p>
+
+<p>Servlet的生命周期<br />
+Servlet 的生命周期就是指创建 Servlet 实例之后其存在的时间以及何时消失<br />
+生命周期的 3个方法为：init()、service()、destroy()<br />
+1.装载servlet类以及其他可能使用到的类<br />
+2.调用init(ServletConfig config)方法加载配置信息，初始化servlet(在整个生命周期中只被调用一次);<br />
+3.调用service(doGet/doPost)方法处理业务逻辑，service方法在初始化前不会被调用(在整个生命周期中可被调用多次);<br />
+4.调用destroy方法销毁不再使用的servlet(在整个生命周期中只被调用一次);<br />
+init方法<br />
+1) 当首次创建Servlet时就会调用init方法, 而不是每个用户请求都会调用该方法。<br />
+2) 除非被destroy方法移除，否则不能被重载;<br />
+3) init方法一结束，servlet即可接受客户端请求;</p>
+
+<p>init方法实例<br />
+1) 在编写接受ServletConfig作为参数的init方法时，应该总是在首行调用super.init;<br />
+2) init方法接受ServletConfig作为参数, 用以下方法获得参数值：<br />
+a. getInitParameter: 返回指定参数名称对应的值，如果参数不存在，返回null;<br />
+b. getInitParameterNames: 返回指定参数名称对应的值枚举，如果参数不存在，返回的空枚举;</p>
+
+<p>service方法<br />
+1) 每当服务器接收到对Servlet的请求时，服务器就会产生一个新线程, 并调用service。service方法检查HTTP请求类型，请相应地调用doGet、doPost、doPut、doDelete。<br />
+2) 被container调用去响应(ServletResponse)来自客户端的请求(ServletRequest);</p>
+
+<p>destroy方法<br />
+1) 服务器决定删除已经加载的Servlet实例之前将调用Servlet的destroy方法;<br />
+2) 该方法允许Servlet:<br />
+a. 关闭数据库连接;<br />
+b. 中止后台线程;<br />
+c. 将Cookie程序清单或访问计数写到磁盘以及执行其他类似的收尾工作。</p>
+
+<p>在Servlet终止时处理Service线程<br />
+1) 在destroy()方法中：如有服务(通过一个同步化的实例方法取得当前线程数大于0)，则置关闭状态为true(通过一个同步化的实例方法实现)。然后循环等待服务线程数为0.<br />
+2) 在Service()方法中: 如见关闭状态为true，便不执行具体逻辑方法，直接退出。</p>

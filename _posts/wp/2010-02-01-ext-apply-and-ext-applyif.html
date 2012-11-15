@@ -1,0 +1,49 @@
+---
+layout: post
+title: Ext.apply 与 Ext.applyIf
+categories:
+- Extjs
+tags:
+- Extjs
+published: true
+comments: true
+---
+<p>Ext.apply是整个ExtJs框架当中很重要的一个方法，Ext是一个对象，也可以说是一个Ext命名空间，在Extjs 3.0 ext-base.js中，Ext是如下定义的：<br />
+Ext = {<br />
+	version : '3.0'<br />
+};</p>
+
+<p>该对象初始化时有个version 属性，标注ExtJs框架的版本号。
+<!--more-->
+ apply及applyIf方法都是用于实现把一个对象中的属性应用于另外一个对象中，相当于属性拷贝。不同的是apply将会覆盖目标对象中的属性，而applyIf只拷贝目标对象中没有而源对象中有的属性。<br />
+apply方法的签名为“apply( Object obj, Object config, Object defaults ) : Object”，该方法包含三个参数，第一个参数是要拷贝的目标对象，第二个参数是拷贝的源对象，第三个参数是可选的，表示给目标对象提供一个默认值。可以简单的理解成把第三个参数（如果有的话）及第二个参数中的属性拷贝给第一个参数对象。<br />
+applyIf( Object obj, Object config ) : Object<br />
+从config拷贝所有属性至obj(如果obj未定义相应属性)</p>
+
+<p>以下是其源代码：
+<pre lang="javascript" line="1">
+//提供了defaults参数，说明在继承父对象之前，可以先为子对象初始化一些方法或属性
+Ext.apply = function(o, c, defaults) {
+	if (defaults)
+		Ext.apply(o, defaults);
+	if (o && c && typeof c == 'object') {
+		//将父对象中的属性复制到子对象
+		for (var p in c) {
+			o[p] = c[p];
+		}
+	}
+	return o;
+};</pre></p>
+
+<p>applyIf : function(o, c) {<br />
+	if (o) {<br />
+		for (var p in c) {<br />
+			//如果子对象中未定义属性，则将父对象的属性拷到子对象<br />
+			if (Ext.isEmpty(o[p])) {<br />
+				o[p] = c[p];<br />
+			}<br />
+		}<br />
+	}<br />
+	return o;<br />
+}
+</p>

@@ -1,0 +1,108 @@
+---
+layout: post
+title: JavaScript中的Date日期相加
+categories:
+- JavaScript
+tags:
+- Date
+- JavaScript
+published: true
+comments: true
+---
+<p>今天上午做项目，遇到一个小需求：已知一个回库日期（格式“yyyy-MM-dd”），周期为N（单位：月），需要求有效日期（等于回库日期加周期）。简单来说，就是一个日期的月份加上几个月得最后的日期。</p>
+
+<p>从网上找了一些JavaScript中的Date的介绍，找到了一个如下的解决办法：</p>
+
+<p>function setKEEPENDDATE(str,p){<br />
+//var str 回库日期的字符串形式，如2009-12-31<br />
+//var p   周期<br />
+var s;<br />
+//在构造日期的时候，月份上加p<br />
+var date = new Date(str.substring(0,4),str.substring(5,7)-1+p, str.substring(8,10));</p>
+
+<p>s = date.getYear() + "-";            //取年份<br />
+s += date.getMonth()+1 + "-"; //取月份<br />
+s += date.getDate();  //取日期<br />
+return s;<br />
+}<!--more--></p>
+
+<p>这样做的话，会实现月份增加p个月，而且当结果大于12的时候，会自动是年份加1，但是这样做有个问题：这样只是简单的实现月份相加，而没有考虑到一个月有多少天，换个思维说，如果把增加p个月份，改为增加相等于p个月的天数相加的话，到底增加多少天，是不能确定的，因为你不知道这时候的一个月应该是按28？29？30？31？天算的。</p>
+
+<p>举个例子：</p>
+
+<p>回库日期：2009-12-31</p>
+
+<p>周期：2月</p>
+
+<p>有效日期：2009-03-03</p>
+
+<p>仔细思考上面的结果就知道，这里的2个月是按62天算的，所以才得出上面的值，但是实际中你期望的2月份后的日期会是2009-03-03吗？显然不是！</p>
+
+<p>那么上面的问题该怎样解决呢？</p>
+
+<p>先来看看上面的问题，如果是用java代码处理，结果会是如何。关于java中的日期时间类的处理参看我的另一篇文章：【<a href="http://www.javachen.com/2009/12/java-date-operation-function/" target="_self"><strong>java中关于时间日期操作的常用函数 </strong></a>】</p>
+
+<p>SimpleDateFormat sdf = new SimpleDateFormat(<br />
+"yyyy-MM-dd");<br />
+Calendar calendar = new GregorianCalendar();<br />
+Date date = sdf.parse(LiscenseDate); // LiscenseDate回库日期的字符串形式<br />
+calendar.setTime(date);<br />
+calendar.add(Calendar.MONTH, Period); // Period为周期，回库日期+周期=有效期<br />
+KeepEndDate = sdf.format(calendar.getTime());//KeepEndDate为有效期的字符串形式</p>
+
+<p>还是上面的例子，用上门的java代码处理，得出的结果是：20010-02-28，这样的结果才更符合实际，也证明了上面用javascript实现的月份相加是不合实际的，那么用javascript到底如何解决上面的问题呢？方法如下：</p>
+
+<p>function setKEEPENDDATE(str,p){<br />
+var s;<br />
+var days=0;<br />
+var date = new Date(str.substring(0,4),<br />
+str.substring(5,7)-1,<br />
+str.substring(8,10));<br />
+for(var i=0;i&lt;p;i++){<br />
+days=GetMonthDayCount(date);<br />
+date.setDate(date.getDate()+days);<br />
+}
+s = date.getYear() + "-";            //取年份<br />
+s += date.getMonth()+1 + "-"; //取月份<br />
+s += date.getDate();  //取日期<br />
+return s;<br />
+}
+//   返回某个日期对应的月份的天数<br />
+function   GetMonthDayCount(date)<br />
+{
+var m=date.getMonth()+1;<br />
+if(m==12){<br />
+m=1;<br />
+}else{<br />
+m+=1;<br />
+}
+switch(m)<br />
+{
+case   1:case   3:case   5:case   7:case   8:case   10:case   12:<br />
+return   31;<br />
+case   4:case   6:case   9:case   11:<br />
+return   30;<br />
+}
+//feb:<br />
+date=new   Date(date);<br />
+var   lastd=28;<br />
+date.setDate(29);<br />
+while(date.getMonth()==1)<br />
+{
+lastd++;<br />
+AddDays(date,1);<br />
+}
+return   lastd;<br />
+}</p>
+
+<p>//   增加天<br />
+function   AddDays(date,value)<br />
+{
+date.setDate(date.getDate()+value);<br />
+}</p>
+
+<p>解决的思路是，把增加月份转化为增加天数，所以必须判断某一个月有多少天，应该增加多少天！</p>
+
+<p>其实，在Extjs中时间的相加非常简单。ExtJs提供了个add（）的日期方法，其第一个参数用来指定时间单位，可以为月、天、小时等。如：</p>
+
+<p>new Date('10/1/2010').add(Date.DAY,+3)用来计算某一个时间加3天后的日期</p>

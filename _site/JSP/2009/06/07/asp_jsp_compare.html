@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>ASP与JSP的比较</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>07 Jun 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JSP/2009/06/07/asp_jsp_compare.html'>ASP与JSP的比较</a></h1>
+  <div class='body'><p>ASP与JSP的比较<br />
+  从微软推出了ASP(ActiveServerPage)后，它以其强大的功能，简单易学的特点而受到广大WEB开发人员的喜欢。但是它却有微软产品的通病,只能在Windows平台下使用，虽然它可以通过增加控件而在LINUX下使用，但是其功能最强大的DCOM控件却不能使用。而SUN公司在JAVA的基础下开发出的JSP(Java ServerPages)实现了动态页面与静态页面的分离，脱离了硬件平台的束缚，以及编译后运行等方式大大提高了其执行效率而逐渐成为因特网上的主流开发工具。为了使用广大应用ASP的程序员们能近快的学会JSP。现把其异同对比如下：<!--more--></p>
+
+<p>一、结构<br />
+  JSP和ASP在结构上类似，都是以“”作为标计符，不同的是在标计符之间的代码ASP为JavaScript或VBScript脚本，而JSP为JAVA代码。JSP将网页的表现形式和服务器端的代码逻辑分开。作为服务器进程的JSP页面，首先被转换成servlet（一种服务器端运行的java程序）。Servlet支持HTTP协议的请求和响应。当JSP被转换成纯JAVA代码。多个用户同时请求一个jsp页面时，应用实例化线程来响应请求。这些线程由WEB服务器进程来管理，和ASP的线程管理器功能类似。同CGI为每个请求创建一个进程的模式比较，这种方式效率高的多。</p>
+
+<p>二、性能和平台无关性<br />
+  与C++、VB等语言比较，JAVA被看作是个效率不太高的语言，但它以牺牲效率换来了平台无关性使JAVA可以在大多数操作系统上运行而不需要重新编译--许多人愿意为此而付出代价。JAVA的编译代码是一种字节代码，在运行时由操作系统上的一个Java VirtualMachine(JVM)虚拟机解释。字节代码可以在所有平台上迁移，而不需要任何改动。交叉平台编程倾向于采用所有操作系统的“最小公分母“，尤其是使用图形化界面时(servlets不需要任何图形界面)。Servlets比传统的java程序（applets, javaapp）要快，因为它们在服务器端运行，不需要加载沉重的GUI（HTML的GUI是非常少的）。另外，servlets的字节代码只有在客户请求时才执行，所以尽管当首次调用servlets时会有几秒钟的加载时间，但后续的请求相应非常迅速，因为服务器已经缓存了运行的servlets。当前的jsp服务器，都带有java 即时编译器（JIT），因此，JSP的执行比每次都要解释执行的ASP代码要快，尤其是在代码中存在循环操作时，JSP的速度要快1到2个数量级。</p>
+
+<p>三、Session管理<br />
+  为了跟踪用户的操作状态，ASP应用SESSION对象。JSP使用一个叫HttpSession的对象实现同样的功能。Session的信息保存在服务器端，Session的id保存在客户机的cookie中。如果客户机禁止cookie，Session Id就必须带在url后面。Session一般在服务器上设置了一个30分钟的过期时间，当客户停止活动后自动失效。Session 中保存和检索的信息不能是基本数据类型（primitivedatatypes）如(int, double)等，而必须是java的相应的object(对象)如(Integer,Double)。<br />
+HttpSessionsession=request.getSession();//得到一个session对象或创建一个<br />
+session.getId()//得到sessionID数<br />
+Integerid=(Integer)session.getValue(“id“)//检索出session的值并转化为整型 session.putValue(“ItemValue“,itemName);//ItemValue必须不是must简单类型</p>
+
+<p>四、Application管理<br />
+  有时服务器需要管理面向整个应用的参数，使得每个客户都能获得同样的参数值。和Session一样，ASP使用Application对象而JSP使用ServletContext对象，操作的方法和Session一样。<br />
+getServletContext().setAttribute(“Item“,ItemValue);//设置一个应用变量<br />
+Integeri=(Integer)getServletContext().getAttribute(“ItemName“);//得到//item<br />
+五、ServerSideIncludes<br />
+  在服务器端引用上ASP和JSP有着相同之处。ASP和JSP都可以支持此功能的服务器(IIS,APACHE)上实现服务器端包含虚文件。但JSP是将动态页面的结果包含进来，而不是包含文件的代码本身。当你包含的文件在另一个服务器上时，不包含任何代码和对象是一个非常有效的功能。<br />
+ASP:<br />
+JSP:&lt;!--#include file="subfile.asp" --&gt;</p>
+
+<p>六、JAVA组件：JavaBeans<br />
+  JavaBeans是一些完成预定义功能的封装的对象数据。JavaBeans和JSP接合与COM和ASP相比如下：<br />
+  COM对象常用来封装商业逻辑和为ASP页面完成高强度计算。重用的组件使得页面简单快速，因为组件由编译语言（C++,VB）构成，而不是解释型的scripting语言（VBScript, JScript）。<br />
+  JavaBeans只能用java语言开发，com可以由符合标准对象模型的任何语言开发（包括Visual J++）。另一方面，JavaBeans更容易开发，因为一旦掌握了java,了解JavaBeans的结构非常容易。由于com的复杂性，需要大量的学习和培训才能掌握--即使你具有c++和vb的基础也需要额外的努力。Com 组件需要在服务器上注册，如果你修改了一个现有的组件，服务器需要重新启动才能使用它。JavaBeans不需要重新注册，如果开发者不需要得到对服务器的完全访问权限，这是其一个巨大的优点。<br />
+可以创建满足商业逻辑的完整的JavaBeans库，让非编程人员使用库来开发动态网站。<br />
+Beans可以在服务器端管理数据库连接。<br />
+  JavaBeans符合结构化对象模型：每个Bean由一个不带参数的构造函数，控制它的servlet可以使用内省（introspection）来设置其属性。要设置Bean的内置属性，必须使用带有属性名的setProperty标签。如果一个属性可以设置，Bean需要有一个setXxxx方法，Xxxx用实际的属性名来代替。</p>
+
+<p>七、JSP和数据库<br />
+  ASP使用ODBC通过ADO连接数据库，而JAVA通过一个叫JDBC的技术联接数据库。目标数据库需要一个JDBC驱动程序--一个数据库与JAVA的接口，使得JAVA可以用标准的方式访问数据库。JDBC不使用服务器端的数据源。只要有JDBC驱动程序，JAVA就可以访问数据库了。如果一个特定的数据库没有JDBC驱动程序，而只有ODBC驱动程序，JAVA提供一个JDBC-ODBC桥来将JDBC调用转化为ODBC调用。所有的JAVA编译器都带有一个免费的JDBC-ODBC桥。理论上，桥可以访问任何常见的数据库产品。</p>
+
+<p>  结论：JSP模型是在ASP之后定义的，它借用了ASP的许多优点，如Session,Application等对象。同时JSP使用灵活而强大的JAVA语言，而不是低效的Scripting语言。ASP开发者只能使用基于windows平台的技术，而java和jsp是跨平台的。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JSP/2009/06/07/asp_jsp_compare.html'>ASP与JSP的比较</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>DbUnit的初次使用</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>05 Mar 2011</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Post/2011/03/05/begin-dbunit-for-the-first-time.html'>DbUnit的初次使用</a></h1>
+  <div class='body'><p><strong>DbUnit是什么？</strong>
+来自【<a href="http://www.oschina.net/p/dbunit">OsChina</a>】的说明：
+<pre>DbUnit 使您可以容易地执行 JDBC 查询并获取它们的值。使用 DbUnit JDBC 包装器而不是纯粹的JDBC
+有几个理由：</pre></p>
+
+<p>    * 可以用 SQL 查询创建一个 Dataset ，并使用 DbUnit 的 assertion（断言）方法。<br />
+    * 可以用 SQL 查询创建一个 Dataset ，并将它保存为一个 FlatXmlDataSet 。<br />
+        可以在以后将它重新装载到数据库中。<br />
+    * 可以容易地从任何行中获取列的内容，无需进行迭代。
+上面的说明非常简单，如果你想查看更详细的说明，你可以在网上百度或是google一下或是去官网，鉴于网上的介绍他的文章多数都是一样的，我不想去把他们C and P过来。
+<!--more-->
+诚然DbUnit是做单元测试的，结合了junit，方便了使用者做单元测试，但这仅仅是针对junit做的封装，如果我想用testng做单元测试呢？再做一次封装？</p>
+
+<p>对DbUnit感兴趣，不是在于它方便了开发者做单元测试，而是对于其存取数据感兴趣，毕竟这个数据持久化的访问工具不用像hibernate那样需要将实体映射到数据库，这对不是很关心<strong><span style="color: #ff0000;">表字段的映射、表字段太多</span></strong>的系统来说很方便，在第一个公司就用过类似的数据库持久化框架，但是整体比较粗糙。</p>
+
+<p>既然我关心的是DbUnit的实现过程，就没有必要去关注junit，所以拿到DbUnit的源码之后，我就把其中关于ant和junit的代码都删去了，这样整个代码简单清晰不少。</p>
+
+<p>来看看DbUnit的使用方法吧：
+<span style="color: #0000ff;"><strong>第一步肯定是需要创建一个数据库的Connection连接了</strong></span>:
+<pre lang="java">Class.forName("oracle.jdbc.driver.OracleDriver");
+Connection conn = DriverManager.getConnection(
+   "jdbc:oracle:thin:@localhost:1521:orcl", "javachen","javachen");
+IDatabaseConnection connection=new OracleConnection(conn, "testSchema");</pre>
+显然，DbUnit对jdbc的Connection进行了一层封装即是IDatabaseConnection接口。</p>
+
+<p><strong><span style="color: #0000ff;">第二步，即是对数据库进行备份,DbUnit支持备份数据库为xml、csv、excel几种格式文件。</span></strong>
+<pre lang="java">
+QueryDataSet backupDataSet = new QueryDataSet(connection);
+backupDataSet.addTable("users");
+File file = File.createTempFile("users_backup", ".xml");// 备份文件
+FlatXmlDataSet.write(backupDataSet, new FileOutputStream(file));</pre></p>
+
+<p>file = File.createTempFile("users_backup", ".xls");<br />
+XlsDataSet.write(backupDataSet, new FileOutputStream(file));
+<strong><span style="color: #0000ff;">第三步，看下如何crud数据，以下为插入和查询数据.</span></strong>
+<pre lang="java">
+InputStream is = getClass().getResourceAsStream("/dbunitdemo-seed.xml");
+IDataSet dataSet = new FlatXmlDataSet(is);
+DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+Table data = connection.createQueryTable("users",
+	"SELECT * FROM users");</pre>
+IDataSet 是对数据集的一个封装，Table 是对数据库表的实体的一个封装，只是很可惜Table提供的对表实体的操作方法太少了，完全不能满足一些需求。</p>
+
+<p>DbUnit里使用了抽象工厂方法、组合、装饰方法，下一步就是深入的学习查看其代码架构以及实现。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Post/2011/03/05/begin-dbunit-for-the-first-time.html'>DbUnit的初次使用</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

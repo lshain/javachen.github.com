@@ -1,0 +1,194 @@
+---
+layout: post
+title: JavaScript模态窗口和非模态窗口
+categories:
+- JavaScript
+tags:
+- ModalDialog
+- ModelessDialog
+- window
+published: true
+comments: true
+---
+<p>JavaScript中弹出的窗口有模态窗口和非模态窗口。模态窗口就是打开一个子窗口，如果这个子窗口不关闭，就不能操作它的父窗口，原来程序暂停执行，直到这个模态窗口关闭后才回到原来程序继续。非模态的就是直接显示出来，然后原来的程序继续执行下面的语句，而且其他窗口也呈可用状态。 模态窗口独占了用户的输入，当一个模态窗口打开时，用户只能与该窗口进行交互，而其他用户界面对象收不到输入信息。 通常浏览器中windwo.open或超链接弹出的新窗口就是非模式窗口,而模式窗口是类似alert那种必须关闭才能响应其他事件的窗口。
+<h2>常见的方法</h2>
+<div class="info">
+window.showModalDialog("http://www.javachen.com","newwin","dialogHeight: 200px; dialogWidth: 150px; dialogTop: 458px; dialogLeft: 166px; edge: Raised; center: Yes; help: Yes; resizable: Yes; status: Yes;"); window.showModelessDialog() //用来创建一个显示HTML内容的非模态对话框。 <br />
+window.returnValue="javachen"; //设置模态窗口返回值 <br />
+var str=window.showModalDialog("http://www.javachen.com"); //获得模态窗口返回值 <br />
+window.close(); //关闭窗口 <br />
+window.focus(); //窗口聚焦
+</div>
+<h2>使用方法：</h2>
+参数说明： sURL--必选参数，类型：字符串。用来指定对话框要显示的文档的URL。 vArguments--可选参数，类型：变体。用来向对话框传递参数。传递的参数类型不限，包括数组等。对话框通过window.dialogArguments来取得传递进来的参数。
+<!--more-->
+sFeatures--可选参数，类型：字符串。用来描述对话框的外观等信息，可以使用以下的一个或几个，用分号“;”隔开。</p>
+
+<p>1.dialogHeight :对话框高度，不小于100px，IE4中dialogHeight 和 dialogWidth 默认的单位是em，而IE5中是px，为方便其见，在定义modal方式的对话框时，用px做单位。</p>
+
+<p>2.dialogWidth: 对话框宽度。</p>
+
+<p>3.dialogLeft: 离屏幕左的距离。</p>
+
+<p>4.dialogTop: 离屏幕上的距离。</p>
+
+<p>5.center: {yes | no | 1 | 0 }：窗口是否居中，默认yes，但仍可以指定高度和宽度。</p>
+
+<p>6.help: {yes | no | 1 | 0 }：是否显示帮助按钮，默认yes。</p>
+
+<p>7.resizable: {yes | no | 1 | 0 } ［IE5＋］：是否可被改变大小。默认no。</p>
+
+<p>8.status: {yes | no | 1 | 0 } ［IE5+］：是否显示状态栏。默认为yes[ Modeless]或no[Modal]。</p>
+
+<p>9.scroll:{ yes | no | 1 | 0 | on | off }：指明对话框是否显示滚动条。默认为yes。</p>
+
+<p>下面几个属性是用在HTA中的，在一般的网页中一般不使用。</p>
+
+<p>10.dialogHide:{ yes | no | 1 | 0 | on | off }：在打印或者打印预览时对话框是否隐藏。默认为no。</p>
+
+<p>11.edge:{ sunken | raised }：指明对话框的边框样式。默认为raised。</p>
+
+<p>12.unadorned:{ yes | no | 1 | 0 | on | off }：默认为no。</p>
+
+<p>上面的方法中需要设置太多的常数，我们可以对其进行封装，如window.open方法：
+<pre lang="javascript">
+       window.doOpenWinAction = function(sUrl, _nWidth, _nHeight, _oArgs, _nTop,
+		_nLeft) {
+	var nWidth = _nWidth || 200;
+	var nHeight = _nHeight || 200;</pre></p>
+
+<p>	var nLeft = _nLeft || (window.screen.availWidth - nWidth) / 2;<br />
+	var nTop = _nTop || (window.screen.availHeight - nHeight) / 2;</p>
+
+<p>	// 2.Construct parameters for dialog<br />
+	var sFeatures = "height="+ nHeight+ ", width="	+ nWidth+ ","+ "top="<br />
+             + nTop+ ",left="+ nLeft+ ",fullscreen =no,"<br />
+             +"menubar =no,toolbar =no,scrollbars=yes,location =no,titlebar=no,resizable=yes";</p>
+
+<p>	var oWin = window.open(sUrl, '_blank', sFeatures, false);<br />
+	if (oWin == null) {<br />
+		alert("您的IE插件已经将窗口拦截，无法打开新窗口！\n"<br />
+		+ "请将拦截去掉--&gt;点击退出--&gt;关闭IE，然后重新打开IE登录即可！"    <br />
+                +"\n" + "URL：" + _sUrl);<br />
+	} else {<br />
+		oWin.opener = window;<br />
+		oWin.focus();<br />
+	}<br />
+};
+而对模态窗口和非模态窗口的方法也可以封装如下：
+<pre lang="javascript">
+window.doModalDialogAction = function(sDialogUrl, _nWidth, _nHeight, _oArgs,
+		_nTop, _nLeft) {
+	// 1.verify parameters
+	var nWidth = _nWidth || 200;
+	var nHeight = _nHeight || 200;</pre></p>
+
+<p>	var nLeft = _nLeft || (window.screen.availWidth - nWidth) / 2;<br />
+	var nTop = _nTop || (window.screen.availHeight - nHeight) / 2;</p>
+
+<p>	// 2.Construct parameters for dialog<br />
+	var sFeatures = "dialogHeight: " + nHeight + "px; dialogWidth: " + nWidth<br />
+		+ "px; " + "dialogTop: " + nTop + "; dialogLeft: " + nLeft + "; "<br />
+		+ "center: Yes; scroll:Yes;help: No; resizable: No; status: No;";<br />
+	// 3.display Dialog<br />
+	var arArgs = [];<br />
+	arArgs[0] = window.location.href;<br />
+	arArgs[1] = _oArgs;<br />
+	try {<br />
+		var sResult = window.showModalDialog(sDialogUrl, arArgs, sFeatures);	<br />
+		return sResult;<br />
+	} catch (e) {<br />
+		alert("您的IE插件已经将对话框拦截！\n" + <br />
+          "请将拦截去掉--&gt;点击退出--&gt;关闭IE，然后重新打开IE登录即可！\n");<br />
+		return true;<br />
+	}</p>
+
+<p>};</p>
+
+<p>window.doModelessDialogAction = function(sDialogUrl, _nWidth, _nHeight, _oArgs,<br />
+		_nTop, _nLeft) {<br />
+	// 1.verify parameters<br />
+	var nWidth = _nWidth || 200;<br />
+	var nHeight = _nHeight || 200;</p>
+
+<p>	var nLeft = _nLeft || (window.screen.availWidth - nWidth) / 2;<br />
+	var nTop = _nTop || (window.screen.availHeight - nHeight) / 2;</p>
+
+<p>	// 2.Construct parameters for dialog<br />
+	var sFeatures = "dialogHeight: " + nHeight + "px; dialogWidth: " + nWidth<br />
+			+ "px; " + "dialogTop: " + nTop + "; dialogLeft: " + nLeft + "; "<br />
+			+ "center: Yes; scroll:Yes;help: No; resizable: No; status: No;";<br />
+	// 3.display Dialog<br />
+	var arArgs = new Array();<br />
+	arArgs[0] = window.location.href;<br />
+	arArgs[1] = _oArgs;<br />
+	try {<br />
+		var sResult = window.showModelessDialog(sDialogUrl, arArgs, sFeatures);<br />
+		return sResult;<br />
+	} catch (e) {<br />
+		alert("您的IE插件已经将对话框拦截！\n" + <br />
+          "请将拦截去掉--&gt;点击退出--&gt;关闭IE，然后重新打开IE登录即可！\n");<br />
+		return true;<br />
+	}</p>
+
+<p>};
+模态窗口一般是用于弹出窗口，让用户在模态窗口中选中某一数据之后关闭模态窗口将用户选择的结果返回到当前页面，如下图。下图单击浏览按钮将弹出窗口，用户当前弹出窗口中数据列表的某一行记录，就会关闭窗口将该行记录的id和name设置到当前窗口的隐藏域（id）和输入框上（name）。
+<div class="pic"><a href="http://www.javachen.com/wp-content/uploads/2011/08/modeldialog.png"><img class="aligncenter size-medium wp-image-2374" title="modeldialog" src="http://www.javachen.com/wp-content/uploads/2011/08/modeldialog-300x160.png" alt="" width="300" height="160" /></a></div>
+为了实现上面的效果，需要在浏览按钮上添加事件：
+<pre lang="javascript">function showSelectIdNameDialog(id, name, url, width, height, callback) {
+	var array = callback ? toArray(id, name, callback) : toArray(id, name);
+	var args = buildDialogArgs(onDialogSelectIdAndName, array,callback);
+	doModalDialogAction2(url, width, height, args);
+	return false;
+}</pre></p>
+
+<p><div class="note">
+常数id指定当前隐藏域的id；<br />
+name指定返回结果需要显示到的输入框name；<br />
+url为访问地址；<br />
+callback为回调函数，在关闭窗口后执行
+</div>
+设置好id和name的值，在调用上面的方法之后，但用户选中某一行数据之后，只需要在打开的页面设置好返回值，其他的就不用我们做了。showSelectIdNameDialog方法的内部往常数里添加列onDialogSelectIdAndName这个回调函数，而这个函数就是用于将窗口返回值设置到指定id和name的input域上。</p>
+
+<p>在弹出窗口的页面，需要返回结果：
+<pre lang="javascript">grid.attachEvent("onRowSelect", function(id, ind) {
+	dialogReturn(id, grid.cells(id, 1).getValue());//这句话是关键
+	return true;
+});</pre>
+当然，我们还可以自定义回调函数：
+<pre lang="javascript">
+/**
+ * 弹出选择窗口
+ * @param url
+ * @param width
+ * @param height
+ * @param callback
+ * @returns {Boolean}
+ */
+function showSelectDialog(url, width, height, callback) {
+	var args = buildDialogArgs(onDialogSelectCallback,callback);
+	doModalDialogAction2(url, width, height, args);
+	return false;
+}</pre></p>
+
+<p>/**<br />
+ * 弹出普通的窗口<br />
+ * @param url<br />
+ * @param width<br />
+ * @param height<br />
+ * @param callback<br />
+ * @returns {Boolean}<br />
+ */<br />
+function showNormalDialogCallback(url, width, height, callback) {<br />
+	var args = buildDialogArgs(callback,{});<br />
+	doModalDialogAction2(url, width, height, args);<br />
+	return false;<br />
+}</p>
+
+<p>function showModalDialogCallbackExt(url, width, height, callback, param) {<br />
+	var args = buildDialogArgs(callback, param);<br />
+	doModalDialogAction2(url, width, height, args);<br />
+	return false;<br />
+}
+<h2>说明：</h2>
+本文中的源码和例子可以通过email(在关于页面可以找到地址)向我索取。</p>

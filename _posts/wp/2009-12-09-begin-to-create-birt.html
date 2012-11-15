@@ -1,0 +1,75 @@
+---
+layout: post
+title: begin to create birt
+categories:
+- OpenSource
+tags:
+- Birt
+- MyEclipse
+- Open Sources
+published: true
+comments: true
+---
+<p>现在开始学习如何用myeclipse创建birt报表，记录如何创建报表的过程，虽然没有图片，但是整个步骤还是非常清晰的。</p>
+
+<p><strong>一、 </strong><strong>新建一个报表项目</strong><strong>Report Web Project</strong></p>
+
+<p>l  创建一个报表Report，选定所在的项目，填写报表名称，选中一个模版</p>
+
+<p><strong> </strong></p>
+
+<p><strong>二、 </strong><strong>设置报表的属性。</strong><strong> </strong></p>
+
+<p><strong>1.</strong><strong>设置数据源信息</strong><strong> </strong></p>
+
+<p>l  创建一个数据源Data Sources，设置一个jdbc连接，当然也可以设置其他数据源</p>
+
+<p>- In the Data Explorer view, right-click Data Sets and choose New Data Set.</p>
+
+<p>- On New Data Set, Choose Next.</p>
+
+<p>- On Query, in Available Items, expand one or more tables in the ClassicModels database.</p>
+
+<p>- To create a SQL query, drag column names from Available Items to the right pane to write the SELECT and FROM clauses, then choose Finish.</p>
+
+<p><!--more--></p>
+
+<p>l  设置数据集</p>
+
+<p>在数据源(data Source)一栏中选择你的数据源</p>
+
+<p>Query 一栏中输入你的查询sql语句.在这里可以（一个以上的）带参数。</p>
+
+<p>l  设置输出列表</p>
+
+<p>点击 output columns 进入下图界面 在display name栏中输入你要在数据表栏中显示的名字。</p>
+
+<p>l  设置计算列</p>
+
+<p>在一些报表中可能要对一些列进行计算生成新的列。点击computer column在column name 一栏中输入你的列名， data type中输入数据类型。</p>
+
+<p>在Expression 中点击按钮进入表达式生成界面，这里提供了data sets(数据集)，javaScript ,birt , operators(运算)4种类型计算新列的方法。</p>
+
+<p>l  设置数据集参数
+<ol>
+	<li>注意：1它和报表的参数不一样。</li>
+	<li>2在数据集查询中使用了”?”参数必须进行参数的设定。</li>
+	<li>2者之间需要邦定见下面的描述。</li>
+</ol>
+点击paraments 进入如下界面，输入你的参数名字，数据类型，direction中选择input （表示是输入参数，一般都是input）,default value.其中default value.可以是表达式的计算结果。（点击default value的按钮可以进入表达式设计界面）</p>
+
+<p><strong>2.</strong><strong>设置报表的布局</strong></p>
+
+<p>在palette 中有各种控件，将他们拖到空白的报表上(layout)就可以</p>
+
+<p><strong>3.</strong><strong>设置报表的样式</strong></p>
+
+<p>l  倒入样式表单</p>
+
+<p>Birt支持css样式表 你可以预先定义好各种控件的样式，在报表中统一应用 。</p>
+
+<p>在outline 中选择style 点击倒入按钮倒入你预先设计的css样式单</p>
+
+<p>l  设置控件样式</p>
+
+<p>选中你要设置的控件或控件组 在属性页中点击style选择你倒入的样式</p>

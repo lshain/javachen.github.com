@@ -1,0 +1,115 @@
+---
+layout: post
+title: Java ClassLoader
+categories:
+- Java Core
+tags:
+- Java Core
+- JVM
+published: true
+comments: true
+---
+<p>Java的类装载器是Java动态性的核心,是用来把类(class)装载进JVM的。VM规范定义了两种类型的类装载器：启动内装载器(bootstrap)和用户自定义装载器(user-defined class loader)。所有user-defined的class loader都是java.lang.ClassLoader的子类。jvm内置的class loader有3种，分别是 Bootstrap ClassLoader， Extension ClassLoader（即ExtClassLoader），System ClassLoader(即AppClassLoader)<br />
+bootstrap是JVM自带的类装载器，用来装载核心类库，如java.lang.*等。<br />
+Extension ClassLoader是用来加载扩展类，即/lib/ext中的类。<br />
+AppClassLoader用来加载Classpath的类，是和我们关系最密切的类。<br />
+URLClassLoader用来加载网络上远程的类，暂且不讨论。<!--more--></p>
+
+<p><strong>它们之间的关系:</strong>
+1.Parent-Child，按顺序从大到小。不是简单的继承关系。<br />
+2.ClassLoader有个getParent的方法，但是Ext ClassLoader调用后得到的是null，bootstrap是JVM自己的，用户看不到。<br />
+3.classloader的委托机制：当等级比较低的ClassLoader要加载某个类的时候，它首先会请求Parent加载器来加载，Parent再请求它的Parent</p>
+
+<p>测试你所使用的JVM的ClassLoader：
+<pre lang="java">package test.commons.reflect;</pre></p>
+
+<p>public class LoaderSample {<br />
+    public static void main(String[] args) {<br />
+    Class c;<br />
+    ClassLoader cl;<br />
+    cl = ClassLoader.getSystemClassLoader();<br />
+    System.out.println(cl);<br />
+    while (cl != null) {<br />
+        cl = cl.getParent();<br />
+        System.out.println(cl);<br />
+    }<br />
+    try {<br />
+        c = Class.forName("java.lang.Object");<br />
+        cl = c.getClassLoader();<br />
+        System.out.println("java.lang.Object’s loader is " + cl);<br />
+        c = Class.forName("test.commons.reflect.LoaderSample");<br />
+        cl = c.getClassLoader();<br />
+        System.out.println("LoaderSample’s loader is " + cl);<br />
+    } catch (Exception e) {<br />
+        e.printStackTrace();<br />
+    }<br />
+    }<br />
+}
+
+运行结果：
+<pre lang="java">sun.misc.Launcher$AppClassLoader@6b97fd
+sun.misc.Launcher$ExtClassLoader@1c78e57
+null
+java.lang.Object’s loader is null
+LoaderSample’s loader is sun.misc.Launcher$AppClassLoader@6b97fd
+</pre>
+第一行表示，系统类装载器实例化自类sun.misc.Launcher$AppClassLoader<br />
+第二行表示，系统类装载器的parent实例化自类sun.misc.Launcher$ExtClassLoader<br />
+第三行表示，系统类装载器parent的parent为bootstrap<br />
+第四行表示，核心类java.lang.Object是由bootstrap装载的<br />
+第五行表示，用户类LoaderSample是由系统类装载器装载的</p>
+
+<p><strong>双亲委派模型：</strong></p>
+
+<p>从1.2版本开始，Java引入了双亲委托模型，从而更好的保证Java平台的安全。在此模型下，当一个装载器被请求装载某个类时，它首先委托自己的parent去装载，<br />
+若parent能装载，则返回这个类所对应的Class对象，若parent不能装载，则由parent的请求者去装载。<br />
+loader2的parent为loader1，loader1的parent为system class  loader。假设loader2被要求装载类MyClass，在双亲委派模型下，loader2首先请求loader1代为装载，loader1再请求系统类装载器去装载MyClass。若系统装载器能成功装载，则将MyClass所对应的Class对象的reference返回给loader1，loader1再将reference返回给loader2，从而成功将类MyClass装载进虚拟机。若系统类装载器不能装载MyClass，loader1会尝试装载MyClass，若loader1也不能成功装载，loader2会尝试装载。若所有的parent及loader2本身都不能装载，则装载失败若有一个能成功装载，实际装载的类装载器被称为定义类装载器，所有能成功返回Class对象的装载器（包括定义类装载器）被称为初始类装载器。如图1所示，假设loader1实际装载了MyClass，则loader1为MyClass的定义类装载器，loader2和loader1为MyClass的初始类装载器。<br />
+system  class loader<br />
+loader1<br />
+loader2<br />
+MyClass<br />
+需要指出的是，Class  Loader是对象，它的父子关系和类的父子关系没有任何关系。一对父子loader可能实例化自同一个Class，也可能不是，甚至父loader实例化自子类，子loader实例化自父类。假设MyClassLoader继承自ParentClassLoader，我们可以有如下父子loader：
+<pre lang="java">Class loadClass(String name)
+Class loadClass(String name, boolean resolve)
+</pre>
+在JVM加载类的时候，需要经过三个步骤，装载、连接、初始化。装载就是找到相应的class文件，读入JVM，初始化就不用说了，最主要就说说连接。<br />
+连接分三步，第一步是验证class是否符合规格，第二步是准备，就是为类变量分配内存同时设置默认初始值，第三步就是解释，而这步就是可选的，<br />
+根据上面  loadClass方法的第二个参数来判定是否需要解释，所谓的解释根据《深入JVM》这本书的定义就是根据类中的符号引用查找相应的实体，<br />
+再把符号引用替换成一个直接引用的过程。<br />
+我们再来看看那个两个参数的loadClass方法，在JAVA  API  文档中，该方法的定义是protected，那也就是说该方法是被保护的，而用<br />
+户真正应该使用的方法是一个参数的那个，一个参数的loadclass方法实际上就是调用了两个参数的方法，而第二个参数默认为false，<br />
+因此在这里可以看出通过loadClass加载类实际上就是加载的时候并不对该类进行解释，因此也不会初始化该类。而Class类的forName方法则是相反，<br />
+使用forName加载的时候就会将Class进行解释和初始化，forName也有另外一个版本的方法，可以设置是否初始化以及设置ClassLoader。<br />
+在实际项目中要加载一个类，可以采用Thread.currentThread().getContextClassLoader(),getClass().getClassLoader(),ClassLoader.getSystemClassLoader() 三种方式依次加载知道成功加载类。
+<pre lang="java">
+public Class classForName(String name, ClassLoader classLoader)
+            throws ClassNotFoundException {
+        return classForName(name,
+                new ClassLoader[] { classLoader, defaultClassLoader,
+                     Thread.currentThread().getContextClassLoader(),
+                     getClass().getClassLoader(),
+                     ClassLoader.getSystemClassLoader() });
+    }
+    Class classForName(String name, ClassLoader[] classLoader)
+            throws ClassNotFoundException {</pre></p>
+
+<p>        for (ClassLoader cl : classLoader) {<br />
+            if (null != cl) {<br />
+                try {<br />
+                    Class c = Class.forName(name, true, cl);<br />
+                    if (null != c)<br />
+                        return c;<br />
+                } catch (ClassNotFoundException e) {<br />
+                }<br />
+            }<br />
+        }</p>
+
+<p>        throw new ClassNotFoundException("Cannot find class: "<br />
+            + name);</p>
+
+<p>    }
+
+<strong>参考资料：</strong></p>
+
+<p><a href="http://www.chinaitpower.com/A/2002-10-16/38081.html">Java的类装载器(ClassLoader)和命名空间(NameSpace) </a> by rostone
+<a href="http://edu.gamfe.com/tutor/d/20442.html">Java ClassLoader基础知识</a> by 董涵</p>

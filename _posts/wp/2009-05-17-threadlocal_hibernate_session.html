@@ -1,0 +1,54 @@
+---
+layout: post
+title: 利于ThreadLocal管理Hibernate 中的Session
+categories:
+- Hibernate
+tags:
+- Hibernate
+- session
+published: true
+comments: false
+---
+<p><blockquote>我们知道Session是由SessionFactory负责创建的，而SessionFactory的实现是线程安全的，多个并发的线程可以同时访问一个SessionFactory并从中获取Session实例，那么Session是否是线程安全的呢？很遗憾，答案是否定的。<br />
+session中包含了数据库操作相关的状态信息，那么说如果多个线程同时使用一个Session实例进行CRUD，就很有可能导致数据存取的混乱。<br />
+为了解决这个问题，java.lang.ThreadLocal给我们在编写多线程程序时提供了一种新的选择。ThreadLocal是什么呢？其实 ThreadLocal并非是一个线程的本地实现版本，它并不是一个Thread，而是thread local variable(线程局部变量)。线程局部变量(ThreadLocal)其实的功用非常简单，就是为每一个使用该变量的线程都提供一个变量值的副本，是每一个线程都可以独立地改变自己的副本，而不会和其它线程的副本冲突。从线程的角度看，就好像每一个线程都完全拥有一个该变量。
+<!--more-->
+ThreadLocal是如何做到为每一个线程维护变量的副本的呢？其实实现的思路很简单，在ThreadLocal类中有一个Map，用于存储每一个线程的变量的副本。</blockquote>
+关于ThreadLocal类的介绍，可以参照：
+<a href="http://www.blogjava.net/shooper/articles/45314.html">http://hi.baidu.com/mojiedao/blog/item/0ceeab99e7a0ad086f068c09.html</a></p>
+
+<p>package com.kettas.hibernate.util;</p>
+
+<p>import org.hibernate.Session;<br />
+import org.hibernate.SessionFactory;<br />
+import org.hibernate.Transaction;<br />
+import org.hibernate.cfg.Configuration;</p>
+
+<p>public class HibernateUtil {</p>
+
+<p>private static SessionFactory sf=new Configuration()<br />
+.configure().buildSessionFactory();</p>
+
+<p>public static Session getSession() throws Exception{<br />
+return sf.getCurrentSession();<br />
+}</p>
+
+<p>public static void release(){<br />
+sf.close();<br />
+}</p>
+
+<p>public static Transaction beginTransaction() throws Exception{<br />
+return getSession().beginTransaction();<br />
+}
+}
+<strong>注意：</strong>
+1.在hibernate中把ThreadLocal类得到一个线程安全的connection封装起来了，可以直接调用SessionFactory类的getCurrentSession()方法获得一个线程安全的session，这样保证每一个事物都只拥有一个session，事物结束，seesion生命周期也结束，当下次事物开始时候，事物重新获得一个session，在这里session是廉价的。<br />
+2.要想调用SessionFactory类的getCurrentSession()方法，必须配置和hibernate的配置文件：<br />
+在配置文件中加这一句话：
+<blockquote>&lt;!--配置线程安全安的session--&gt;<br />
+&lt;property name="current_session_context_class"&gt;thread&lt;/property&gt;</blockquote></p>
+
+<p>ThreadLocal与其它同步机制的比较
+<blockquote>ThreadLocal和其它同步机制相比有什么优势呢？ThreadLocal和其它所有的同步机制都是为了解决多线程中的对同一变量的访问冲突，在普通的同步机制中，是通过对象加锁来实现多个线程对同一变量的安全访问的。这时该变量是多个线程共享的，使用这种同步机制需要很细致地分析在什么时候对变量进行读写，什么时候需要锁定某个对象，什么时候释放该对象的锁等等很多。所有这些都是因为多个线程共享了资源造成的。ThreadLocal就从另一个角度来解决多线程的并发访问，ThreadLocal会为每一个线程维护一个和该线程绑定的变量的副本，从而隔离了多个线程的数据，每一个线程都拥有自己的变量副本，从而也就没有必要对该变量进行同步了。ThreadLocal提供了线程安全的共享对象，在编写多线程代码时，可以把不安全的整个变量封装进 ThreadLocal，或者把该对象的特定于线程的状态封装进ThreadLocal</blockquote></p>
+
+<p></p>

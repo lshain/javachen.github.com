@@ -1,0 +1,62 @@
+---
+layout: post
+title: Hibernate many-to-many实例
+categories:
+- Hibernate
+tags:
+- Hibernate
+- ORM
+published: true
+comments: true
+---
+<p><strong>多对多关联关系的使用</strong>
+Student（学生）和Course（课程）的关系就是多对多的关系。在映射多对多关系时，需要另外使用一个连接表（例如，Student_Course）。Student_Course表包含2个字段：CourseId和StuId。此外，在它们的映射文件中使用&lt;many-to-many&gt;标记。<br />
+Student的映射文件Student.hbm.xml中加入以下描述信息：<br />
+&lt;set  name="courses"  table=" Student_Course" lazy="false"<br />
+inverse="false" cascade="save-update" &gt;<br />
+&lt;key column="StuId"/&gt;<br />
+&lt;many-to-many class="test.Course" column="CourseId" /&gt;<br />
+&lt;/set&gt;</p>
+
+<p>相应地，Course的映射文件Course.hbm.xml加入以下描述信息：<br />
+&lt;set  name="students"  table=" Student_Course" lazy="false"<br />
+inverse="true" cascade="save-update" &gt;<br />
+&lt;key column="CourseId"/&gt;<br />
+&lt;many-to-many class="test.Student" column="StuId"  /&gt;<br />
+&lt;/set&gt;<!--more--></p>
+
+<p><strong>1．添加关联关系</strong>
+首先让我们编一个程序来看看一个名为Bill的学生选择了什么课程：<br />
+//获得包含Bill的Student对象<br />
+Student stu = (Student) session.createQuery(“from Student s where s.name =<br />
+‘Bill’ ”) .uniqueResult();</p>
+
+<p>List ls = new ArrayList(stu.getCourses());<br />
+for(int i=0; i&lt;ls.size(); i++) {<br />
+Course course = (Course)ls.get(i);  //获得Course对象<br />
+System.out.println(course.getName()); //打印Bill所选课程的清单<br />
+}</p>
+
+<p>现在Bill还想选修business课程，这对于程序员来说只是为Bill添加了一个到business的关联，也就是说在student_course表中新添一条记录，而T_Student 和T_Course表都不用变更。<br />
+Student stu = (Student) session.createQuery(“from Student s where<br />
+s.name = ‘Bill’ ”) .uniqueResult();<br />
+Course course = (Course) session.createQuery(“from Course c where c.name =<br />
+‘business’ ”) .uniqueResult();<br />
+//设置stu与course的相互关系<br />
+stu.getCourses().add(course);<br />
+course.getStudents().add(stu);<br />
+…..</p>
+
+<p><strong>2．删除关联关系</strong>
+删除关联关系比较简单，直接调用对象集合的remove()方法删除不要的对象即可。例如，要从学生Bill的选修课清单中删除politics和chemistry两门课，程序如下：<br />
+…….<br />
+Student stu = (Student) session.createQuery("from Student s where<br />
+s.name = 'Bill' ") .uniqueResult();<br />
+Course course1 = (Course) session.createQuery("from Course c where c.name =<br />
+'politics' ") .uniqueResult();<br />
+Course course2 = (Course) session.createQuery("from Course c where c.name =<br />
+'chemistry' ") .uniqueResult();<br />
+stu.getCourse().remove(course1); //删除politics课程<br />
+stu.getCourse().remove(course2); //删除chemisty课程</p>
+
+<p>运行以上语句将从student_course表中删除这两条记录，但T_Student和T_Course表没有任何变化。</p>

@@ -1,0 +1,159 @@
+---
+layout: post
+title: Spring Inversion of Control
+categories:
+- Spring
+tags:
+- IOC
+- Spring
+published: true
+comments: true
+---
+<p>最近开始复习Spring，决定拾起之前学的一点Spring知识，并且深入了解这个框架。看了看【<a href="http://www.jactiongroup.net/reference2/html/" target="_blank">Spring Framework 开发参考手册</a>】，觉得讲的还不错，决定先学习这个手册，掌握一些基础的Spring知识。</p>
+
+<p>Spring能有效地组织J2EE应用各层的对象。不管是控制层的Action对象，还是业务层的Service对象，还是持久层的DAO对象，都可在Spring的管理下有机地协调、运行。Spring将各层的对象以松耦合的方式组织在一起，Action对象无须关心Service对象的具体实现，Service对象无须关心持久层对象的具体实现，各层对象的调用完全面向接口。当系统需要重构时，代码的改写量将大大减少。<br />
+上面所说的一切都得宜于Spring的核心机制，依赖注入。依赖注入让bean与bean之间以配置文件组织在一起，而不是以硬编码的方式耦合在一起。
+<span style="color: #0000ff;"><strong><!--more-->
+理解依赖注入</strong></span>
+依赖注入(Dependency Injection)和控制反转(Inversion of Control)是同一个概念。具体含义是：<span style="color: #00ff00;">当某个角色(可能是一个Java实例，调用者)需要另一个角色(另一个Java实例，被调用者)的协助时，在传统的程序设计过程中，通常由调用者来创建被调用者的实例。</span>但在Spring里，创建被调用者的工作不再由调用者来完成，因此称为控制反转;创建被调用者实例的工作通常由Spring容器来完成，然后注入调用者，因此也称为依赖注入。</p>
+
+<p>不管是依赖注入，还是控制反转，都说明Spring采用动态、灵活的方式来管理各种对象。对象与对象之间的具体实现互相透明。<br />
+应用DI原则后，代码将更加清晰。而且当bean自己不再担心对象之间的依赖关系（甚至不知道依赖的定义指定地方和依赖的实际类）之后，实现更高层次的松耦合将易如反掌。DI主要有两种注入方式，即Setter注入和构造器注入。</p>
+
+<p><span style="color: #0000ff;"><strong>构造器注入</strong></span>
+基于构造器的DI通过调用带参数的构造器来实现，每个参数代表着一个依赖。此外，还可通过给stattic工厂方法传参数来构造bean。</p>
+
+<p>public class SimpleMovieLister {<br />
+// the SimpleMovieLister has a dependency on a MovieFinder<br />
+private MovieFinder movieFinder;<br />
+// a constructor so that the Spring container can 'inject' a MovieFinder<br />
+public SimpleMovieLister(MovieFinder movieFinder) {<br />
+this.movieFinder = movieFinder;<br />
+}
+// business logic that actually 'uses' the injected MovieFinder is omitted...<br />
+}</p>
+
+<p><span style="color: #ff0000;">*为了解决参数类型匹配问题，可以通过使用'type'属性来显式指定那些简单类型的构造参数的类型，我们还可以通过index属性来显式指定构造参数的索引</span>。<br />
+比如：<br />
+&lt;bean id="exampleBean"&gt;<br />
+&lt;constructor-arg type="int" value="7500000"/&gt;<br />
+&lt;constructor-arg type="java.lang.String" value="42"/&gt;<br />
+&lt;/bean&gt;<br />
+&lt;bean id="exampleBean"&gt;<br />
+&lt;constructor-arg index="0" value="7500000"/&gt;<br />
+&lt;constructor-arg index="1" value="42"/&gt;<br />
+&lt;/bean&gt;</p>
+
+<p><span style="color: #0000ff;"><strong>
+Setter注入</strong></span>
+通过调用无参构造器或无参static工厂方法实例化bean之后，调用该bean的setter方法，即可实现基于setter的DI。</p>
+
+<p>BeanFactory对于它所管理的bean提供两种注入依赖方式（实际上它也支持同时使用构造器注入和Setter方式注入依赖）。需要注入的依赖将保存在BeanDefinition中，它能根据指定的PropertyEditor实现将属性从一种格式转换成另外一种格式。然而，大部份的Spring用户并不需要直接以编程的方式处理这些类，而是采用XML的方式来进行定义，在内部这些定义将被转换成相应类的实例，并最终得到一个Spring IoC容器实例。</p>
+
+<p><span style="color: #0000ff;"><strong>处理bean依赖关系通常按以下步骤进行：</strong></span></p>
+
+<p>根据定义bean的配置（文件）创建并初始化BeanFactory实例（大部份的Spring用户使用支持XML格式配置文件的BeanFactory或ApplicationContext实现）。</p>
+
+<p>每个bean的依赖将以属性、构造器参数、或静态工厂方法参数的形式出现。当这些bean被实际创建时，这些依赖也将会提供给该bean。</p>
+
+<p>每个属性或构造器参数既可以是一个实际的值，也可以是对该容器中另一个bean的引用。</p>
+
+<p>每个指定的属性或构造器参数值必须能够被转换成特定的格式或构造参数所需的类型。默认情况下，Spring会以String类型提供值转换成各种内置类型，比如int、long、String、boolean等。</p>
+
+<p>Spring会在容器被创建时验证容器中每个bean的配置，包括验证那些bean所引用的属性是否指向一个有效的bean（即被引用的bean也在容器中被定义）。然而，在bean被实际创建之前，bean的属性并不会被设置。对于那些singleton类型和被设置为提前实例化的bean（比如ApplicationContext中的singleton bean）而言，bean实例将与容器同时被创建。而另外一些bean则会在需要的时候被创建，伴随着bean被实际创建，作为该bean的依赖bean以及依赖bean的依赖bean（依此类推）也将被创建和分配。</p>
+
+<p>通常情况下，你可以信赖Spring，它会在容器加载时发现配置错误（比如对无效bean的引用以及循环依赖）。Spring会在bean创建时才去设置属性和依赖关系（只在需要时创建所依赖的其他对象）。这意味着即使Spring容器被正确加载，当获取一个bean实例时，如果在创建bean或者设置依赖时出现问题，仍然会抛出一个异常。因缺少或设置了一个无效属性而导致抛出一个异常的情况的确是存在的。因为一些配置问题而导致潜在的可见性被延迟，所以在默认情况下，ApplicationContext实现中的bean采用提前实例化的singleton模式。在实际需要之前创建这些bean将带来时间与内存的开销。而这样做的好处就是ApplicationContext被加载的时候可以尽早的发现一些配置的问题。不过用户也可以根据需要采用延迟实例化来替代默认的singleton模式。</p>
+
+<p>如果撇开循环依赖不谈，当协作bean被注入到依赖bean时，协作bean必须在依赖bean之前完全配置好。例如bean A对bean B存在依赖关系，那么Spring IoC容器在调用bean A的setter方法之前，bean B必须被完全配置，这里所谓完全配置的意思就是bean将被实例化（如果不是采用提前实例化的singleton模式），相关的依赖也将被设置好，而且所有相关的lifecycle方法（如IntializingBean的init方法以及callback方法）也将被调用。</p>
+
+<p><span style="color: #0000ff;"><strong>依赖配置详解</strong></span>
+1.在spring的XML配置中使用&lt;property/&gt;和&lt;constructor-arg/&gt;元素定义。<br />
+2.idref元素用来将容器内其它bean的id传给&lt;constructor-arg/&gt; 或 &lt;property/&gt;元素，同时提供错误验证功能。</p>
+
+<p>&lt;bean id="theTargetBean"/&gt;<br />
+&lt;bean id="theClientBean"&gt;<br />
+&lt;property name="targetName"&gt;<br />
+&lt;idref bean="theTargetBean" /&gt;<br />
+&lt;/property&gt;<br />
+&lt;/bean&gt;<br />
+3.在&lt;constructor-arg/&gt;或&lt;property/&gt;元素内部还可以使用ref元素。该元素用来将bean中指定属性的值设置为对容器中的另外一个bean的引用。</p>
+
+<p><span style="color: #0000ff;"><strong>内部bean</strong></span>
+所谓的内部bean（inner bean）是指在一个bean的&lt;property/&gt;或 &lt;constructor-arg/&gt;元素中使用&lt;bean/&gt;元素定义的bean。内部bean定义不需要有id或name属性，即使指定id 或 name属性值也将会被容器忽略。</p>
+
+<p>&lt;bean id="outer"&gt;<br />
+&lt;!-- instead of using a reference to a target bean, simply define the target bean inline --&gt;<br />
+&lt;property name="target"&gt;<br />
+&lt;bean&gt; &lt;!-- this is the inner bean --&gt;<br />
+&lt;property name="name" value="Fiona Apple"/&gt;<br />
+&lt;property name="age" value="25"/&gt;<br />
+&lt;/bean&gt;<br />
+&lt;/property&gt;<br />
+&lt;/bean&gt;</p>
+
+<p><span style="color: #0000ff;"><strong>集合</strong></span>
+通过&lt;list/&gt;、&lt;set/&gt;、&lt;map/&gt;及&lt;props/&gt;元素可以定义和设置与Java Collection类型对应List、Set、Map及Properties的<span style="color: #0000ff;"><span style="color: #000000;">值。</span></span></p>
+
+<p>List:  可重复的,有序<br />
+可以存放字符串,对象, 以及集合;<br />
+&lt;property name="list"&gt;<br />
+&lt;list&gt;<br />
+&lt;value&gt;String1&lt;/value&gt;<br />
+&lt;value&gt;String2&lt;/value&gt;<br />
+&lt;/list&gt;<br />
+&lt;/property&gt;</p>
+
+<p>Set: 不重复, 无序<br />
+可以存放字符串,对象, 以及集合;<br />
+&lt;property name="set"&gt;<br />
+&lt;set&gt;<br />
+&lt;value&gt;String1&lt;/value&gt;<br />
+&lt;value&gt;String1&lt;/value&gt;<br />
+&lt;/set&gt;<br />
+&lt;/property&gt;</p>
+
+<p>Map:Key(只能用String), value  键值对;<br />
+&lt;property name="map"&gt;<br />
+&lt;map&gt;<br />
+&lt;entry key="key1"&gt;&lt;!-- 用key来存放key的值，用value来存放value值 --&gt;<br />
+&lt;value&gt;value1&lt;/value&gt;<br />
+&lt;/entry&gt;<br />
+&lt;entry key="key2"&gt;<br />
+&lt;value&gt;value2&lt;/value&gt;<br />
+&lt;/entry&gt;<br />
+&lt;/map&gt;<br />
+&lt;/property&gt;</p>
+
+<p>Properties: key(String),value(String) 键值对</p>
+
+<p>&lt;property name="properties"&gt;<br />
+&lt;props&gt;<br />
+&lt;prop key="key11"&gt;value11&lt;/prop&gt;<br />
+&lt;prop key="key22"&gt;value22&lt;/prop&gt;<br />
+&lt;/props&gt;<br />
+&lt;/property&gt;</p>
+
+<p><span style="color: #0000ff;"><strong>组合属性名称</strong></span>
+当设置bean的组合属性时，除了最后一个属性外，只要其他属性值不为null，组合或嵌套属性名是完全合法的。</p>
+
+<p><span style="color: #0000ff;"><strong>使用depends-on</strong></span>
+多数情况下，一个bean对另一个bean的依赖最简单的做法就是将一个bean设置为另外一个bean的属性。<br />
+“depends-on”属性不仅用来指定初始化时的依赖，同时也用来指定相应的销毁时的依赖（该依赖只针对singletonbean）。depends-on属性中指定的依赖bean会在相关bean销毁之前被销毁，从而可以让用户控制销毁顺序。</p>
+
+<p><span style="color: #0000ff;"><strong>继承关系: </strong></span>
+&lt;bean id="abstractBean" abstract="true"&gt;<br />
+&lt;property name="str1"&gt;<br />
+&lt;value&gt;string1&lt;/value&gt;<br />
+&lt;/property&gt;<br />
+&lt;property name="num"&gt;<br />
+&lt;value&gt;20&lt;/value&gt;<br />
+&lt;/property&gt;<br />
+&lt;/bean&gt;<br />
+&lt;!-- 继承关系 --&gt;<br />
+&lt;bean id="someBean" parent="abstractBean"&gt;<br />
+&lt;property name="num"&gt;<br />
+&lt;value&gt;30&lt;/value&gt;<br />
+&lt;/property&gt;<br />
+&lt;/bean&gt;</p>
+
+<p>得到的bean不想用单例时, 在bean标签上加 Scope=singleton/prototype</p>

@@ -1,0 +1,573 @@
+---
+layout: post
+title: Ext form实例
+categories:
+- Extjs
+tags:
+- Extjs
+- form
+published: true
+comments: true
+---
+<p>Ext.BLANK_IMAGE_URL = "../js/extjs/resources/images/default/s.gif";<br />
+Ext.onReady(form11);<br />
+function form1() {<br />
+	Ext.QuickTips.init();<br />
+	Ext.form.Field.prototype.msgTarget = "side";<br />
+	var form = new Ext.form.FormPanel({<br />
+		title : "用户登陆",<br />
+		labelWidth : 60,<br />
+		labelSeparator : ": ",<br />
+		bodyStyle : "padding:15 5 5 5",<br />
+		height : 120,<br />
+		width : 250,<br />
+		frame : true,<br />
+		labelWidth : 60,<br />
+		labelAlign : "right",<br />
+		applyTo : "form",
+<!--more-->
+<pre lang="javascript">
+	items : [new Ext.form.TextField({
+			fieldLabel : "用户名",
+			id : "userName",
+			minLength : 6,
+			minLengthText : "长度不能小于6个字符",
+			maxLength : 20,
+			maxLengthText : "长度超过了20个字符",
+			selectOnFocus : true,
+			allowBlank : false,
+			blankText : "请填写用户名",
+			regex : /^([\w]+)(.[\w]+)*@([\w-]+\.){1,5}([A-Za-z]){2,4}$/,
+			regexText : "用户名格式错误"
+		}), new Ext.form.TextField({
+			inputType : "password",
+			fieldLabel : "密码",
+			allowBlank : false,
+			blankText : "请填写密码",
+			minLength : 6,
+			minLengthText : "长度不能小于6个字符",
+			maxLength : 20,
+			maxLengthText : "长度超过了20个字符"
+		})]
+	})
+}
+function form2() {
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = "tip";
+	var form = new Ext.form.FormPanel({
+		title : "多行文本",
+		labelWidth : 60,
+		labelSeparator : ": ",
+		bodyStyle : "padding:15 5 5 5",
+		height : 250,
+		width : 250,
+		frame : true,
+		labelWidth : 60,
+		labelAlign : "right",
+		applyTo : "form",
+		items : [new Ext.form.TextArea({
+			fieldLabel : "备注",
+			id : "memo",
+			width : 150
+		}), new Ext.form.Radio({
+			name : "sex",
+			fieldLabel : "性别",
+			boxLabel : "男"</pre></p>
+
+<p>		}), new Ext.form.Radio({<br />
+			name : "sex",<br />
+			fieldLabel : "性别",<br />
+			boxLabel : "女"</p>
+
+<p>		}), new Ext.form.Checkbox({<br />
+			name : "walk",<br />
+			fieldLabel : "爱好",<br />
+			boxLabel : "散步"<br />
+		})],<br />
+		buttons : [{<br />
+			text : "确定",<br />
+			handler : showValue<br />
+		}]<br />
+	})<br />
+	function showValue() {<br />
+		var memo = form.findById("memo");<br />
+		alert(memo.getValue());<br />
+	}<br />
+}</p>
+
+<p>function form3() {<br />
+	var form = new Ext.form.FormPanel({<br />
+		title : "练习Trigger",<br />
+		labelSeparator : ": ",<br />
+		labelWidth : 80,<br />
+		bodyStyle : "padding:5 5 5 5",<br />
+		frame : true,<br />
+		height : 100,<br />
+		width : 270,<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.TriggerField({<br />
+			id : "memo",<br />
+			fieldLabel : "触发字段",<br />
+			hideTrigger : false,<br />
+			onTriggerClick : function(e) {<br />
+				var memo = form.findById("memo");<br />
+				alert(memo.getValue());<br />
+			}<br />
+		})]<br />
+	})<br />
+}</p>
+
+<p>function form4() {<br />
+	var store = new Ext.data.SimpleStore({<br />
+		fields : ["province", "post"],<br />
+		data : [["南充", "0"], ["成都", "1"], ["广元", "2"], ["乐山", "3"]]<br />
+	});<br />
+	var form = new Ext.form.FormPanel({<br />
+		title : "练习Trigger",<br />
+		labelSeparator : ": ",<br />
+		labelWidth : 80,<br />
+		bodyStyle : "padding:5 5 5 5",<br />
+		frame : true,<br />
+		height : 100,<br />
+		width : 340,<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.ComboBox({<br />
+			id : "post",<br />
+			fieldLabel : "四川的城市",<br />
+			triggerAction : "all",<br />
+			store : store,<br />
+			displayField : "province",<br />
+			valueField : "post",<br />
+			mode : "local",<br />
+			forceSelection : true,<br />
+			resization : true,<br />
+			typeAhead : true,<br />
+			value : "3",<br />
+			handleHeight : 100<br />
+		})]</p>
+
+<p>	})<br />
+}</p>
+
+<p>function form5() {<br />
+	var store = new Ext.data.SimpleStore({<br />
+		proxy : new Ext.data.HttpProxy({<br />
+			url : "/learn/index.jsp"<br />
+		}),<br />
+		fields : ["bookName"]<br />
+	});<br />
+	var form = new Ext.form.FormPanel({<br />
+		title : "远程数据",<br />
+		labelSeparator : ": ",<br />
+		labelWidth : 80,<br />
+		bodyStyle : "padding:5 5 5 5",<br />
+		frame : true,<br />
+		height : 100,<br />
+		width : 300,<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.ComboBox({<br />
+			id : "book",<br />
+			allQuery : "allbook",<br />
+			loadingText : "正在加载数据",<br />
+			minChars : 3,<br />
+			queyDelay : 300,<br />
+			queryParam : "searchbook",<br />
+			fieldLabel : "书籍列表",<br />
+			triggerAction : "all",<br />
+			store : store,<br />
+			displayField : "bookName",<br />
+			mode : "remote"<br />
+		})]<br />
+	})<br />
+}</p>
+
+<p>function form6() {<br />
+	Ext.apply(Ext.form.VTypes, {<br />
+		dateRange : function(val, field) {<br />
+			if (field.dateRange) {<br />
+				var beginId = field.dateRange.begin;<br />
+				/** 根据组件id得到组件 */<br />
+				this.beginField = Ext.getCmp(beginId);<br />
+				var endId = field.dateRange.end;<br />
+				this.endField = Ext.getCmp(endId);<br />
+				var beginDate = this.beginField.getValue();<br />
+				var endDate = this.endField.getValue();<br />
+			}<br />
+			if (beginDate &lt; = endDate) {<br />
+				return true;<br />
+			} else {<br />
+				return false;<br />
+			}<br />
+		},<br />
+		dateRangeText : "开始日期不能大于结束日期"<br />
+	});<br />
+	Ext.QuickTips.init();<br />
+	Ext.form.Field.prototype.msgTarget = "side";<br />
+	var dateForm = new Ext.form.FormPanel({<br />
+		title : "自定义form",<br />
+		labelSeparator : ":",<br />
+		labelWidth : 80,<br />
+		bodyStyle : "padding:5 5 5 5",<br />
+		frame : true,<br />
+		height : 130,<br />
+		width : 300,<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.DateField({<br />
+			id : "beginDate",<br />
+			format : "Y年m月d日",<br />
+			width : 150,<br />
+			allowBlank : false,<br />
+			readOnly : true,<br />
+			value : new Date(),<br />
+			fieldLabel : "开始日期",<br />
+			dateRange : {<br />
+				begin : "beginDate",<br />
+				end : "endDate"<br />
+			},<br />
+			vtype : "dateRange"<br />
+		}), new Ext.form.DateField({<br />
+			id : "endDate",<br />
+			format : "Y年m月d日",<br />
+			width : 150,<br />
+			allowBlank : false,<br />
+			readOnly : true,<br />
+			value : new Date(),<br />
+			fieldLabel : "开始日期",<br />
+			dateRange : {<br />
+				begin : "beginDate",<br />
+				end : "endDate"<br />
+			},<br />
+			vtype : "dateRange"<br />
+		})],<br />
+		buttons : [new Ext.Button({<br />
+			text : "提交",<br />
+			handler : function() {<br />
+				if (dateForm.form.isValid()) {<br />
+					Ext.Msg.alert("提示", "验证通过提交表单");<br />
+				}<br />
+			}<br />
+		})]<br />
+	})<br />
+}</p>
+
+<p>function form7() {<br />
+	Ext.QuickTips.init();<br />
+	Ext.form.Field.prototype.msgTarget = "side";<br />
+	var productForm = new Ext.form.FormPanel({<br />
+		title : "表单加载示例",<br />
+		labelWidth : 100,<br />
+		width : 300,<br />
+		frame : true,<br />
+		labelSeparator : ": ",<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.TextField({<br />
+			fieldLabel : "产品名称",<br />
+			name : "productName",<br />
+			width : 150,<br />
+			value : "HP5720本本"<br />
+		}), new Ext.form.NumberField({<br />
+			fieldLabel : "金额",<br />
+			name : "price",<br />
+			width : 150,<br />
+			value : 100<br />
+		}), new Ext.form.DateField({<br />
+			fieldLabel : "生产日期",<br />
+			formate : "Y年m月d日",<br />
+			width : 150,<br />
+			name : "date",<br />
+			value : new Date()<br />
+		}), new Ext.form.TextArea({<br />
+			id : "introduction",<br />
+			name : "introduction",<br />
+			fieldLabel : "产品简介",<br />
+			width : 150<br />
+		})],<br />
+		buttons : [new Ext.Button({<br />
+			text : "加载简介",<br />
+			handler : loadCallBack<br />
+		})]<br />
+	});<br />
+	function loadCallBack() {<br />
+		productForm.form.load({<br />
+			waitMsg : "正在加载产品简介信息",<br />
+			waitTitle : "提示",<br />
+			url : "/learn/productServe.jsp",<br />
+			method : "POST",<br />
+			success : function(form, action) {<br />
+				Ext.Msg.alert("提示", "产品加载成功");<br />
+			},<br />
+			failure : function(form, action) {<br />
+				Ext.Msg.alert("提示", "产品简介加载失败<br />
+失败原因:" + action.failureType);<br />
+			}<br />
+		});<br />
+	}<br />
+}</p>
+
+<p>function form8() {<br />
+	Ext.QuickTips.init();<br />
+	Ext.form.Field.prototype.msgTarget = "side";<br />
+	var loginForm = new Ext.form.FormPanel({<br />
+		title : "登陆",<br />
+		labelWidth : 60,<br />
+		width : 230,<br />
+		frame : true,<br />
+		labelSeparator : ":",<br />
+		applyTo : "form",<br />
+		items : [new Ext.form.TextField({<br />
+			fieldLabel : "用户名",<br />
+			name : "userName",<br />
+			allowBlank : false,<br />
+			vtype : "email"<br />
+		}), new Ext.form.NumberField({<br />
+			fieldLabel : "密码",<br />
+			name : "password",<br />
+			allowBlank : false<br />
+		})],<br />
+		buttons : [new Ext.Button({<br />
+			text : "登陆",<br />
+			handler : login<br />
+		}), new Ext.Button({<br />
+			text : "重置",<br />
+			handler : reset<br />
+		})]<br />
+	});<br />
+	function login() {<br />
+		loginForm.form.submit({<br />
+			clientValidation : true,<br />
+			waitMsg : "正在登录系统请稍后",<br />
+			waitTitle : "提示",<br />
+			url : "/learn/loginServe.jsp",<br />
+			method : "GET",<br />
+			success : function(form, action) {<br />
+				Ext.Msg.alert("提示", "系统登录成功");<br />
+			},<br />
+			failure : function(form, action) {<br />
+				Ext.Msg.alert("提示", "系统登陆失败" + action.failureType);<br />
+			}<br />
+		});<br />
+	}<br />
+	function reset() {<br />
+		loginForm.form.reset();<br />
+	}<br />
+}</p>
+
+<p>function form9() {<br />
+	var form = new Ext.form.FormPanel({<br />
+		labelAlign : 'right',<br />
+		labelWidth : 50,<br />
+		width : 600,<br />
+		title : 'form',<br />
+		frame : true,<br />
+		items : [{<br />
+			layout : 'column',<br />
+			items : [{<br />
+				columnWidth : .7,<br />
+				xtype : 'fieldset',<br />
+				checkboxToggle : true,<br />
+				title : '单纯输入',<br />
+				autoHeight : true,<br />
+				defaults : {<br />
+					width : 300<br />
+				},<br />
+				defaultType : 'textfield',<br />
+				items : [{<br />
+					fieldLabel : '文本',<br />
+					name : 'text'<br />
+				}, {<br />
+					xtype : 'numberfield',<br />
+					fieldLabel : '数字',<br />
+					name : 'number'<br />
+				}, {<br />
+					xtype : "combo",<br />
+					fieldLabel : '选择',<br />
+					name : 'combo',<br />
+					store : new Ext.data.SimpleStore({<br />
+						fields : ['value', 'text'],<br />
+						data : [['value1', 'text1'], ['value2', 'text2']]<br />
+					}),<br />
+					displayField : 'text',<br />
+					valueField : 'value',<br />
+					mode : 'local',<br />
+					emptyText : '请选择'<br />
+				}, {<br />
+					xtype : 'datefield',<br />
+					fieldLabel : '日期',<br />
+					name : 'date'<br />
+				}, {<br />
+					xtype : 'timefield',<br />
+					fieldLabel : '时间',<br />
+					name : 'time'<br />
+				}, {<br />
+					xtype : 'textarea',<br />
+					fieldLabel : '多行',<br />
+					name : 'textarea'<br />
+				}, {<br />
+					xtype : 'hidden',<br />
+					name : 'hidden'<br />
+				}]<br />
+			}, {<br />
+				columnWidth : .3,<br />
+				layout : 'form',<br />
+				items : [{<br />
+					xtype : 'fieldset',<br />
+					checkboxToggle : true,<br />
+					title : '多选',<br />
+					autoHeight : true,<br />
+					defaultType : 'checkbox',<br />
+					hideLabels : true,<br />
+					style : 'margin-left:10px;',<br />
+					bodyStyle : 'margin-left:20px;',<br />
+					items : [{<br />
+						boxLabel : '首先要穿暖',<br />
+						name : 'check',<br />
+						value : '1',<br />
+						checked : true,<br />
+						width : 'auto'<br />
+					}, {<br />
+						boxLabel : '然后要吃饱',<br />
+						name : 'check',<br />
+						value : '2',<br />
+						checked : true,<br />
+						width : 'auto'<br />
+					}, {<br />
+						boxLabel : '房子遮风避雨',<br />
+						name : 'check',<br />
+						value : '3',<br />
+						width : 'auto'<br />
+					}, {<br />
+						boxLabel : '行路方便',<br />
+						name : 'check',<br />
+						value : '4',<br />
+						width : 'auto'<br />
+					}]<br />
+				}, {<br />
+					xtype : 'fieldset',<br />
+					checkboxToggle : true,<br />
+					title : '单选',<br />
+					autoHeight : true,<br />
+					defaultType : 'radio',<br />
+					hideLabels : true,<br />
+					style : 'margin-left:10px;',<br />
+					bodyStyle : 'margin-left:20px;',<br />
+					items : [{<br />
+						boxLabel : '渴望自由',<br />
+						name : 'rad',<br />
+						value : '1',<br />
+						checked : true,<br />
+						width : 'auto'<br />
+					}, {<br />
+						boxLabel : '祈求爱情',<br />
+						name : 'rad',<br />
+						value : '2',<br />
+						width : 'auto'<br />
+					}]<br />
+				}]<br />
+			}]<br />
+		}, {<br />
+			layout : 'form',<br />
+			labelAlign : 'top',<br />
+			items : [{<br />
+				xtype : 'htmleditor',<br />
+				fieldLabel : '在线编辑器',<br />
+				id : 'editor',<br />
+				anchor : '98%'<br />
+			}]<br />
+		}],<br />
+		buttons : [{<br />
+			text : '保存'<br />
+		}, {<br />
+			text : '读取'<br />
+		}, {<br />
+			text : '取消'<br />
+		}]<br />
+	});<br />
+	form.render("form");<br />
+}</p>
+
+<p>function form10() {<br />
+	var field1 = new Ext.form.Field({<br />
+		fieldLabel : 'qtip',<br />
+		msgTarget : 'qtip'<br />
+	});<br />
+	var field2 = new Ext.form.Field({<br />
+		fieldLabel : 'title',<br />
+		msgTarget : 'title'<br />
+	});<br />
+	var field3 = new Ext.form.Field({<br />
+		fieldLabel : 'side',<br />
+		msgTarget : 'side'<br />
+	});<br />
+	var field4 = new Ext.form.Field({<br />
+		fieldLabel : 'under',<br />
+		msgTarget : 'under'<br />
+	});</p>
+
+<p>	var form = new Ext.form.FormPanel({<br />
+		title : 'form',<br />
+		frame : true,<br />
+		applyTo : "form",<br />
+		items : [field1, field2, field3, field4],<br />
+		renderTo : 'form'<br />
+	});<br />
+	field1.markInvalid();<br />
+	field2.markInvalid();<br />
+	field3.markInvalid();<br />
+	field4.markInvalid();<br />
+};</p>
+
+<p>function form11() {<br />
+	var grid = new Ext.grid.GridPanel({<br />
+		width : 300,<br />
+		autoHeight : true,<br />
+		title : 'grid',<br />
+		store : new Ext.data.SimpleStore({<br />
+			data : [['name1', 'female', 'descn1'], ['name2', 'male', 'descn2'],<br />
+					['name2', 'male', 'descn2'], ['name2', 'male', 'descn2']],<br />
+			fields : ['name', 'sex', 'descn']<br />
+		}),<br />
+		columns : [{<br />
+			header : '姓名',<br />
+			dataIndex : 'name'<br />
+		}, {<br />
+			header : '性别',<br />
+			dataIndex : 'sex'<br />
+		}, {<br />
+			header : '备注',<br />
+			dataIndex : 'descn'<br />
+		}],<br />
+		viewConfig : {<br />
+			forceFit : true<br />
+		}<br />
+	});</p>
+
+<p>	var selectMenu = new Ext.menu.Menu({<br />
+		items : [grid]<br />
+	});</p>
+
+<p>	var field = new Ext.form.TriggerField({<br />
+		fieldLabel : '选择',<br />
+		name : 'name',<br />
+		onSelect : function(record) {<br />
+		},<br />
+		onTriggerClick : function() {<br />
+			if (this.menu == null) {<br />
+				this.menu = selectMenu;<br />
+			}<br />
+			this.menu.show(this.el, "tl-bl?");<br />
+		}<br />
+	});</p>
+
+<p>	grid.on('rowclick', function(grid, rowIndex, e) {<br />
+		selectMenu.hide();<br />
+		field.setValue(rowIndex);<br />
+	});</p>
+
+<p>	var form = new Ext.form.FormPanel({<br />
+		title : 'form',<br />
+		frame : true,<br />
+		items : [field],<br />
+		renderTo : 'form'<br />
+	});<br />
+}
+</p>

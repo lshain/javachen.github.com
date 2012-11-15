@@ -1,0 +1,172 @@
+---
+layout: post
+title: prototype.js 源码之扩展Object
+categories:
+- JavaScript
+tags:
+- extend
+- Extjs
+- prototype
+published: true
+comments: true
+---
+<p>Object是其他对象实例的构造函数(var a=new  Object())，也是所有其他类的父类，对Object直接扩展(注意不是扩展Object.prototype，扩展 Object.prototype相当于添加实例方法)相当于为Object类添加静态方法。
+<!--more-->
+在对Object的扩展代码如下：
+<pre lang="javascript">
+(function() {</pre></p>
+
+<p>  //Object对象的toString方法的引用<br />
+  var _toString = Object.prototype.toString;</p>
+
+<p>  //属性拷贝<br />
+  function extend(destination, source) {<br />
+    for (var property in source)<br />
+      destination[property] = source[property];<br />
+    return destination;<br />
+  }</p>
+
+<p>  //调用object的inspect(如果定义了)或toString方法，返回一个对象的字符串表示<br />
+  function inspect(object) {<br />
+    try {<br />
+      if (isUndefined(object)) return 'undefined';<br />
+      if (object === null) return 'null';<br />
+      return object.inspect ? object.inspect() : String(object);<br />
+    } catch (e) {<br />
+      if (e instanceof RangeError) return '...';<br />
+      throw e;<br />
+    }<br />
+  }</p>
+
+<p>  function toJSON(object) {<br />
+    var type = typeof object;<br />
+    switch (type) {<br />
+      case 'undefined':<br />
+      case 'function':<br />
+      case 'unknown': return;<br />
+      case 'boolean': return object.toString();<br />
+    }</p>
+
+<p>    if (object === null) return 'null';<br />
+    if (object.toJSON) return object.toJSON();<br />
+    if (isElement(object)) return;</p>
+
+<p>    var results = [];<br />
+	//递归调用<br />
+    for (var property in object) {<br />
+      var value = toJSON(object[property]);<br />
+      if (!isUndefined(value))<br />
+        results.push(property.toJSON() + ': ' + value);<br />
+    }</p>
+
+<p>    return '{' + results.join(', ') + '}';<br />
+  }</p>
+
+<p>  //将一个对象转化为hash码<br />
+  function toQueryString(object) {<br />
+    return $H(object).toQueryString();<br />
+  }</p>
+
+<p>  function toHTML(object) {<br />
+    return object && object.toHTML ? object.toHTML() : String.interpret(object);<br />
+  }</p>
+
+<p>  //得到一个对象的所有属性名称<br />
+  function keys(object) {<br />
+    var results = [];<br />
+    for (var property in object)<br />
+      results.push(property);<br />
+    return results;<br />
+  }</p>
+
+<p> //得到一个对象的所有属性值<br />
+  function values(object) {<br />
+    var results = [];<br />
+    for (var property in object)<br />
+      results.push(object[property]);<br />
+    return results;<br />
+  }</p>
+
+<p> //克隆一个对象，返回新的对象<br />
+  function clone(object) {<br />
+    return extend({ }, object);<br />
+  }</p>
+
+<p>  //判断一个对象是否是Element<br />
+  function isElement(object) {<br />
+    return !!(object && object.nodeType == 1);<br />
+  }</p>
+
+<p>//判断一个对象是否是数组<br />
+  function isArray(object) {<br />
+    return _toString.call(object) == "[object Array]";<br />
+  }</p>
+
+<p>//判断一个对象是否是Hash<br />
+  function isHash(object) {<br />
+    return object instanceof Hash;<br />
+  }</p>
+
+<p>  function isFunction(object) {<br />
+    return typeof object === "function";<br />
+  }</p>
+
+<p>  function isString(object) {<br />
+    return _toString.call(object) == "[object String]";<br />
+  }</p>
+
+<p>  function isNumber(object) {<br />
+    return _toString.call(object) == "[object Number]";<br />
+  }</p>
+
+<p>  function isUndefined(object) {<br />
+    return typeof object === "undefined";<br />
+  }</p>
+
+<p>  extend(Object, {<br />
+    extend:        extend,<br />
+    inspect:       inspect,<br />
+    toJSON:        toJSON,<br />
+    toQueryString: toQueryString,<br />
+    toHTML:        toHTML,<br />
+    keys:          keys,<br />
+    values:        values,<br />
+    clone:         clone,<br />
+    isElement:     isElement,<br />
+    isArray:       isArray,<br />
+    isHash:        isHash,<br />
+    isFunction:    isFunction,<br />
+    isString:      isString,<br />
+    isNumber:      isNumber,<br />
+    isUndefined:   isUndefined<br />
+  });<br />
+})();
+
+给一个对象增加一些属性和方法可以在其原型上增加，但是Prototype却并没有这么做，而是采用了现在广为流行的extend继承方式，jQuery和ExtJs也都采用了这种方式。<br />
+在上面代码中，定义了一个闭包，闭包内包括一些函数，为了将这些函数或是成为方法赋给Object对象，Prototype采用了extend机制。所谓extend，无外乎就是讲一个对象的属性和方法拷贝到另一个对象上去，这样另一个对象也就有了相同的属性和方法。</p>
+
+<p>上面的代码中有对javascript各种对象类型的判断，其判断方式值得学习。<br />
+判断一个对象是否是函数，用typeof object === "function"，为什么不用“==”？因为“===”是全等运算符，其比较的是两个对象的值和类型，只有当两个对象的值和类型都相同时才是相等。需要注意到，在判断一个对象是否undefined时候，也是用到了“===”，如：typeof object === "undefined"<br />
+判断一个对象是字符串或是数字或是数组，采用了Object.prototype.toString.call()的方法，直接判断一个对象的字符串形式是否和目标对象（字符串或是数字或是数组）的字符串形式是否相同。</p>
+
+<p>在闭包定义一些方法，然后在用extend方法将这些方法拷贝到Object对象，这样的话Object对象里就有了一些我们想要的方法了，这有点类似AOP的思想，往一个对象里注入我们想要的属性或方法。</p>
+
+<p>看了上面的代码，让我想起来之前看到的一些类似的代码,下面这段代码来自于ExtJs的Ext.js文件。
+<pre lang="javascript">
+        isArray: function(v){
+            return Object.prototype.toString.apply(v) === '[object Array]';
+        },
+        
+        isObject: function(v){
+            return v && typeof v == "object";
+        },
+        
+        isPrimitive: function(v){
+            var t = typeof v;
+            return t == 'string' || t == 'number' || t == 'boolean';
+        },
+        
+        isFunction: function(v){
+            return typeof v == "function";
+        },
+</pre></p>

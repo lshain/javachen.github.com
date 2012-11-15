@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Handling Keyboard Shortcuts in JavaScript</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>11 Mar 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JavaScript/2010/03/11/handling-keyboard-shortcuts-in-javascript.html'>Handling Keyboard Shortcuts in JavaScript</a></h1>
+  <div class='body'><p>在web开发中，对页面的进行全局或部分页面进行键盘快捷键事件注册，能够有效的提高页面的用户体验。在ExtJs中的表格Form中就有回车提交的事件，实现方法可以参照我的另一篇文章：<a href="http://www.javachen.com/2009/10/ext_enter/">Ext监控回车按键</a>。<br />
+在网络上看到了一篇处理JavaScript键盘快捷键事件的文章：<a href="http://www.openjs.com/scripts/events/keyboard_shortcuts/">Handling Keyboard Shortcuts in JavaScript </a> ，其实现方法很简单，只是封装了一个shortcut的类，提供了注册快捷键的方法和删除快捷键事件的方法。<!--more-->
+其源代码如下，其中代码逻辑很容易看懂而且其中考虑了各种浏览器的兼容问题（可以参照我的上一篇文章：<a href="http://www.javachen.com/2010/03/dom-event-model/">DOM 事件模型</a>）。通过以下代码，可以熟悉如何处理各种浏览器事件处理的兼容性问题。
+<pre lang="javascript">/**
+ * http://www.openjs.com/scripts/events/keyboard_shortcuts/ Version : 2.01.B By
+ * Binny V A License : BSD
+ * Modified by www.javachen.com  javachen
+ */
+shortcut = {
+	'all_shortcuts' : {},// All the shortcuts are stored in this array
+	'add' : function(shortcut_combination, callback, opt) {
+		// Provide a set of default options
+		var default_options = {
+			'type' : 'keydown',//按键事件类型,IE中keypress不支持功能按键，所以应该用keydown/keyup事件来进行补充。
+			'propagate' : false,
+			'disable_in_input' : false,//是否在input,Textarea内有效
+			'target' : document,//事件作用对象,相当于事件的相应范围scope,该值可以为节点的ID
+			'keycode' : false
+		}
+		//处理配置项,如果为空就使用默认的
+		if (!opt)
+			opt = default_options;
+		else {
+			for (var dfo in default_options) {
+				if (typeof opt[dfo] == 'undefined')
+					opt[dfo] = default_options[dfo];
+			}
+		}</pre></p>
+
+<p>		//如果target为字符串,则通过该字符串取得该DOM对象<br />
+		var ele = opt.target;<br />
+		if (typeof opt.target == 'string')<br />
+			ele = document.getElementById(opt.target);</p>
+
+<p>		var ths = this;//保存当前的this引用<br />
+		//联合快捷键<br />
+		shortcut_combination = shortcut_combination.toLowerCase();</p>
+
+<p>		// The function to be called at keypress<br />
+		var func = function(e) {<br />
+			e = e || window.event;//处理浏览器对event的兼容性,只有IE浏览器的event=window.event</p>
+
+<p>			if (opt['disable_in_input']) { // Don't enable shortcut keys in<br />
+				// Input, Textarea fields<br />
+				var element;<br />
+				if (e.target)<br />
+					//针对IE浏览器<br />
+					element = e.target;<br />
+				else if (e.srcElement)<br />
+					//针对DOM标准浏览器<br />
+					element = e.srcElement;<br />
+				//如果当前节点为文本节点,则取其父节点<br />
+				if (element.nodeType == 3)<br />
+					element = element.parentNode;<br />
+				//如果当前节点标签名为INPUT或TEXTAREA,则当前函数不做处理<br />
+				if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA')<br />
+					return;<br />
+			}</p>
+
+<p>			// Find Which key is pressed<br />
+			if (e.keyCode)<br />
+			    //针对IE浏览器,e.keyCode返回按键对应的数值<br />
+				code = e.keyCode;<br />
+			else if (e.which)<br />
+			    //针对DOM标准浏览器,如Firefox,e.keyCode返回按键对应的数值<br />
+				code = e.which;<br />
+			//e.which将给出该键的索引值，把索引值转化成该键的字母或数字值的方法需要用到静态函数String.fromCharCode()<br />
+			var character = String.fromCharCode(code).toLowerCase();</p>
+
+<p>			if (code == 188)<br />
+				character = ",";<br />
+			if (code == 190)<br />
+				character = "."; </p>
+
+<p>			var keys = shortcut_combination.split("+");<br />
+			// Key Pressed - counts the number of valid keypresses - if it is<br />
+			// same as the number of keys, the shortcut function is invoked<br />
+			var kp = 0;</p>
+
+<p>			// Work around for stupid Shift key bug created by using lowercase -<br />
+			// as a result the shift+num combination was broken<br />
+			var shift_nums = {<br />
+				"`" : "~",<br />
+				"1" : "!",<br />
+				"2" : "@",<br />
+				"3" : "#",<br />
+				"4" : "$",<br />
+				"5" : "%",<br />
+				"6" : "^",<br />
+				"7" : "&amp;",<br />
+				"8" : "*",<br />
+				"9" : "(",<br />
+				"0" : ")",<br />
+				"-" : "_",<br />
+				"=" : "+",<br />
+				";" : ":",<br />
+				"'" : "\"",<br />
+				"," : "&lt;", 				<br />
+                                "." : "&gt;",<br />
+				"/" : "?",<br />
+				"\\" : "|"<br />
+			}<br />
+			// Special Keys - and their codes<br />
+			var special_keys = {<br />
+				'esc' : 27,<br />
+				'escape' : 27,<br />
+				'tab' : 9,<br />
+				'space' : 32,<br />
+				'return' : 13,<br />
+				'enter' : 13,<br />
+				'backspace' : 8,</p>
+
+<p>				'scrolllock' : 145,<br />
+				'scroll_lock' : 145,<br />
+				'scroll' : 145,<br />
+				'capslock' : 20,<br />
+				'caps_lock' : 20,<br />
+				'caps' : 20,<br />
+				'numlock' : 144,<br />
+				'num_lock' : 144,<br />
+				'num' : 144,</p>
+
+<p>				'pause' : 19,<br />
+				'break' : 19,</p>
+
+<p>				'insert' : 45,<br />
+				'home' : 36,<br />
+				'delete' : 46,<br />
+				'end' : 35,</p>
+
+<p>				'pageup' : 33,<br />
+				'page_up' : 33,<br />
+				'pu' : 33,</p>
+
+<p>				'pagedown' : 34,<br />
+				'page_down' : 34,<br />
+				'pd' : 34,</p>
+
+<p>				'left' : 37,<br />
+				'up' : 38,<br />
+				'right' : 39,<br />
+				'down' : 40,</p>
+
+<p>				'f1' : 112,<br />
+				'f2' : 113,<br />
+				'f3' : 114,<br />
+				'f4' : 115,<br />
+				'f5' : 116,<br />
+				'f6' : 117,<br />
+				'f7' : 118,<br />
+				'f8' : 119,<br />
+				'f9' : 120,<br />
+				'f10' : 121,<br />
+				'f11' : 122,<br />
+				'f12' : 123<br />
+			}</p>
+
+<p>			var modifiers = {<br />
+				shift : {<br />
+					wanted : false,<br />
+					pressed : false//是否被按<br />
+				},<br />
+				ctrl : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				},<br />
+				alt : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				},<br />
+				meta : {<br />
+					wanted : false,<br />
+					pressed : false<br />
+				} // Meta is Mac specific<br />
+			};</p>
+
+<p>			if (e.ctrlKey)<br />
+				modifiers.ctrl.pressed = true;<br />
+			if (e.shiftKey)<br />
+				modifiers.shift.pressed = true;<br />
+			if (e.altKey)<br />
+				modifiers.alt.pressed = true;<br />
+			if (e.metaKey)<br />
+				modifiers.meta.pressed = true;</p>
+
+<p>			for (var i = 0; k = keys[i], i < keys.length; i++) {<br />
+				// Modifiers<br />
+				if (k == 'ctrl' || k == 'control') {<br />
+					kp++;<br />
+					modifiers.ctrl.wanted = true;</p>
+
+<p>				} else if (k == 'shift') {<br />
+					kp++;<br />
+					modifiers.shift.wanted = true;</p>
+
+<p>				} else if (k == 'alt') {<br />
+					kp++;<br />
+					modifiers.alt.wanted = true;<br />
+				} else if (k == 'meta') {<br />
+					kp++;<br />
+					modifiers.meta.wanted = true;<br />
+				} else if (k.length > 1) { // If it is a special key<br />
+					if (special_keys[k] == code)<br />
+						kp++;</p>
+
+<p>				} else if (opt['keycode']) {<br />
+					if (opt['keycode'] == code)<br />
+						kp++;</p>
+
+<p>				} else { // The special keys did not match<br />
+					if (character == k)<br />
+						kp++;<br />
+					else {<br />
+						if (shift_nums[character] && e.shiftKey) { // Stupid<br />
+							// Shift key<br />
+							// bug<br />
+							// created<br />
+							// by using<br />
+							// lowercase<br />
+							character = shift_nums[character];<br />
+							if (character == k)<br />
+								kp++;<br />
+						}<br />
+					}<br />
+				}<br />
+			}<br />
+			if (kp == keys.length<br />
+					&amp;&amp; modifiers.ctrl.pressed == modifiers.ctrl.wanted<br />
+					&amp;&amp; modifiers.shift.pressed == modifiers.shift.wanted<br />
+					&amp;&amp; modifiers.alt.pressed == modifiers.alt.wanted<br />
+					&amp;&amp; modifiers.meta.pressed == modifiers.meta.wanted) {<br />
+				callback(e);</p>
+
+<p>				if (!opt['propagate']) { // Stop the event<br />
+					// e.cancelBubble is supported by IE - this will kill the<br />
+					// bubbling process.<br />
+					e.cancelBubble = true;<br />
+					e.returnValue = false;</p>
+
+<p>					// e.stopPropagation works in Firefox.<br />
+					if (e.stopPropagation) {<br />
+						e.stopPropagation();<br />
+						e.preventDefault();<br />
+					}<br />
+					return false;<br />
+				}<br />
+			}<br />
+		}<br />
+		this.all_shortcuts[shortcut_combination] = {<br />
+			'callback' : func,<br />
+			'target' : ele,<br />
+			'event' : opt['type']<br />
+		};<br />
+		// Attach the function with the event<br />
+		if (ele.addEventListener)<br />
+			ele.addEventListener(opt['type'], func, false);<br />
+		else if (ele.attachEvent)<br />
+			ele.attachEvent('on' + opt['type'], func);<br />
+		else<br />
+			ele['on' + opt['type']] = func;<br />
+	},</p>
+
+<p>	// Remove the shortcut - just specify the shortcut and I will remove the<br />
+	// binding<br />
+	'remove' : function(shortcut_combination) {<br />
+		shortcut_combination = shortcut_combination.toLowerCase();<br />
+		var binding = this.all_shortcuts[shortcut_combination];<br />
+		delete(this.all_shortcuts[shortcut_combination])<br />
+		if (!binding)<br />
+			return;<br />
+		var type = binding['event'];<br />
+		var ele = binding['target'];<br />
+		var callback = binding['callback'];</p>
+
+<p>		if (ele.detachEvent)<br />
+			ele.detachEvent('on' + type, callback);<br />
+		else if (ele.removeEventListener)<br />
+			ele.removeEventListener(type, callback, false);<br />
+		else<br />
+			ele['on' + type] = false;<br />
+	}<br />
+}
+</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2010/03/11/handling-keyboard-shortcuts-in-javascript.html'>Handling Keyboard Shortcuts in JavaScript</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

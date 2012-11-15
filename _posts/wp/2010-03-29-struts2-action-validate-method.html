@@ -1,0 +1,91 @@
+---
+layout: post
+title: Struts2使用validate方法验证数据
+categories:
+- Struts
+tags:
+- Security
+- Struts
+- Struts2
+published: true
+comments: true
+---
+<p>在Struts2中最简单的验证数据的方法是使用validate。从ActionSupport类的源代码中可以看到，ActionSupport类实现了一个Validateable接口。这个接口只有一个validate方法。如果Action类实现了这个接口，Struts2在调用execute方法之前首先会调用这个方法，我们<span style="color: rgb(0, 0, 255);"><strong>可以在validate方法中验证，如果发生错误，可以根据错误的level选择字段级错误，还是动作级错误</strong></span>。并且可使用addFieldError或addActionError加入相应的错误信息，如果存在Action或 Field错误，Struts2会返回“input”，如果返回了“input”，Struts2就不会再调用execute方法了。如果不存在错误信息，Struts2在最后会调用execute方法。<!--more-->
+<pre line="1" lang="java">	
+@Override
+public void validate() {
+	System.out.println("validate~~~~~~~~~~~~~~~~~~~");</pre></p>
+
+<p>	if (null == username || username.length() &lt; 6 || username.length() &gt; 10) {<br />
+		this.addFieldError("username", "username invalid");<br />
+	}<br />
+	if (null == password || password.length() &lt; 6 || password.length() &gt; 10) {<br />
+		this.addFieldError("password", "password invalid");<br />
+	} else if (null == repassword || repassword.length() &lt; 6<br />
+			|| repassword.length() &gt; 10) {<br />
+		this.addFieldError("repassword", "re-password invalid");<br />
+	} else if (!password.equals(repassword)) {<br />
+		this.addFieldError("password", "two passwords not the same");<br />
+	}<br />
+	if (age &lt; 1 || age &gt; 150) {<br />
+		this.addFieldError("age", "age invalid");<br />
+	}<br />
+	if (null == birthday) {<br />
+		this.addFieldError("birthday", "birthday invalid");<br />
+	}<br />
+	if (null == graduation) {<br />
+		this.addFieldError("graduation", "graduation invalid");<br />
+	}<br />
+	if (null != birthday &amp;&amp; null != graduation) {<br />
+		Calendar c1 = Calendar.getInstance();<br />
+		c1.setTime(birthday);</p>
+
+<p>		Calendar c2 = Calendar.getInstance();<br />
+		c2.setTime(graduation);</p>
+
+<p>		if (!c1.before(c2)) {<br />
+			this.addFieldError("birthday",<br />
+					"birthday should be before graduation");<br />
+		}<br />
+	}<br />
+	if(!this.hasFieldErrors()){<br />
+		this.addActionMessage("action success");<br />
+	}else{<br />
+		this.addActionError("action error");<br />
+	}<br />
+}
+
+ActionSupport实现了ValidationAware接口，该接口有<span style="color: rgb(0, 0, 255);">addActionError，addFieldError，addActionMessage</span>三个方法<br />
+前两个add方法和ActionErrors类中的add方法类似，只是add方法的错误信息需要一个ActionMessage对象，比较麻烦。除了加入错误信息外，还可以使用addActionMessage方法加入成功提交后的信息。当提交成功后，可以显示这些信息。</p>
+
+<p>以上三个add方法都在ValidationAware接口中定义，并且在ActionSupport类中有一个默认的实现。其实，在 ActionSupport类中的实现实际上是调用了ValidationAwareSupport中的相应的方法，也就是这三个add方法是在 ValidationAwareSupport类中实现的，代码如下：
+<pre line="1" lang="java">private final ValidationAwareSupport validationAware=new ValidationAwareSupport();
+public void addActionError(String anErrorMessage)
+{　validationAware.addActionError(anErrorMessage);
+}
+public void addActionMessage(String aMessage)
+{
+validationAware.addActionMessage(aMessage);
+}
+public void addFieldError(String fieldName,String errorMessage)
+{
+validationAware.addFieldError(fieldName,errorMessage);
+}
+</pre>
+在请求的页面可以使用Struts2的tag：&lt;s:actionerror&gt;、&lt;s:fielderror&gt;和&lt;s:actionmessage&gt;，分别用来显示动作错误信息，字段错误信息，和动作信息。如果信息为空，则不显示。</p>
+
+<p>Field错误需要一个key（一般用来表示是哪一个属性出的错误），而Action错误和Action消息只要提供一个信息字符串就可以了。</p>
+
+<p>我们还可以使用ValidationAware接口的其他方法（由ValidationAwareSupport类实现）获得或设置字段错误信息、动作错误信息以及动作消息。如<span style="color: rgb(0, 0, 255);">hasActionErrors方法判断是否存在动作层的错误，getFieldErrors获得字段错误信息（一个Map对象）</span>。</p>
+
+<p><span style="color: red;"><strong>当遇到类型转换错误的时候（也就是说不能进行类型转换），struts2框架自动生成一条错误信息，并且将该错误信息放到addFieldError里面类型转换与输入校验的流程。</strong></span>
+<blockquote>1. 首先Struts2对客户端传来的数据进行类型转换<br />
+2. 类型转换完毕后再进行输入校验<br />
+3. 如果类型转换和输入校验都没有错误发生，那么进入execute方法（调用商业逻辑）</blockquote>
+注意：如果类型转换不成功，也同样要进行输入校验</p>
+
+<p>1. 真正存放field级别错误信息的对象是LinkedHashMap<br />
+2. 该LinkedHashMap的key是String类型的，value是ArrayList类型的<br />
+3. 对于Action级别的错误信息，实际上是放置在ArrayList中的</p>
+
+<p><div style="margin-top: 10px; height: 15px;" class="zemanta-pixie"><a class="zemanta-pixie-a" href="http://reblog.zemanta.com/zemified/b7162226-6ced-4d20-a366-5efed0a3e1ad/" title="Reblog this post [with Zemanta]"><img style="border: medium none; float: right;" class="zemanta-pixie-img" src="http://img.zemanta.com/reblog_e.png?x-id=b7162226-6ced-4d20-a366-5efed0a3e1ad" alt="Reblog this post [with Zemanta]" /></a><span class="zem-script more-related pretty-attribution"><script type="text/javascript" src="http://static.zemanta.com/readside/loader.js" defer="defer"></script></span></div></p>

@@ -1,0 +1,20 @@
+---
+layout: post
+title: Java within Hypertext Markup Language
+categories:
+- Java Core
+tags:
+- html
+- Java Core
+- JHTML
+published: true
+comments: true
+---
+<p>今天在看一个开源blog的代码时候，看到一个jsp页面动态引入了一个jhtml页面，myeclipse8.5提示页面有错误，但一直不知道为何会提示错误，也不知道<a href="http://jhtml.sourceforge.net/">jhtml</a>是啥东西，百度查阅一下才知道jhtml是超文本标记语言中的Java程序。看在网上找找关于jhtml的例子，可是却没有找到，只找到下面的一段对于它的介绍，为什么网上没有关于它的详细介绍呢？难道这种语言在实际项目中很少用到？最后，在搜索PageCompileServlet 和jhtml这两个关键字的情况下，终于找到了一篇介绍文档：<a href="http://download.oracle.com/docs/cd/E13222_01/wls/docs45/classdocs/API_jhtml.html">Using WebLogic JHTML </a>
+<blockquote>For future HTTP servlet projects, we recommend you use JSP  instead of the older JHTML standard.</blockquote>
+貌似jhtml语言在当今社会已经被jsp替代了！ :cry: </p>
+
+<p><!--more-->
+<blockquote><a href="http://jhtml.sourceforge.net/">JHTML</a> (Java within Hypertext Markup Language，超文本标记语言中的Java程序)是在网页(用超文本标记语言HTML写的页面)中把Java程序包括进去使其作为网页一部分的标准。网站开发者可以用Java编程语言写一个小程序并把它插入到网页当中。当用户请求这个页面时，一直注意着带文件后缀.jhtml的请求的网站服务器将把代码传给一个专门的Java程序，它是专门设计用于处理JHTML的。这个叫做PageCompileServlet的程序调用Java编译器，再由Java编译器就快速地编译代码。(如果这个代码在以前就已经由早些的页面请求被编译，这个步骤就可以省略了。)然后这段代码就被执行，它会在被发送给请求者之前以某种方式修改网页的内容。<br />
+JHTML与ASP和PHTML在原理上是一样的，它们都是在服务器端将网页内容改变，传送到客户端的内容仍然是HTML语言写成的内容，这与在客户端执行的JavaScript有本本质的不同，在客户端执行时，必须将程序源代码传送到客户端的计算机上，开发者辛苦写成的源代码就这样被用户得到了，而在服务器端执行就不会出现这种问题，因为客户端得到的只是HTML语言写成的网页，舍此无二。JHTML还可以通过Java数据库连接（JDBC）接口访问 Web数据库。如果要使用JHTML，您必须确认在服务器端已经安装了Java编译器，否则无法执行。<br />
+JHTML要求在Web服务器端安装Java编译器。JHTML是JavaSoft的Java网络服务器应用程序接口的一部分。</blockquote></p>

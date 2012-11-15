@@ -1,0 +1,114 @@
+---
+layout: post
+title: 用jquery实现自动填充功能
+categories:
+- jQuery
+tags:
+- jQuery
+published: true
+comments: true
+---
+<p>现在公司有一个项目需要实现一个功能 当点下拉框时动态加载后台数据。因为之前使用过jquery，所以很快想到使用jquery实现这一功能，但后来发现公司所做的项目界面全部是通过配置文件生成的，每一个文本域的CSS都不一样，在界面很难统一一个CSS样式去动态生成一个下来列表与原来的文本域宽度以及坐标相匹配，总之，使用这种方式html、css、javascript代码耦合度太高了，不适合于全局使用。当然通过javascript代码也能实现下拉列表的坐标定位，但是这样做又过于复杂，不可取。<br />
+用Jquery实现的自动填充代码如下，网上也有实现此功能的插件，可以用用。<!--more-->
+<pre lang="javascript" line="1">
+< !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>jQuery实现自动提示的文本框</title>
+<style>
+<!--<br>
+body{<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	font-size:12px; padding:0px; margin:5px;<br>
+}
+form{padding:0px; margin:0px;}<br>
+input{<br>
+	/* 用户输入框的样式 */<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	font-size:12px; border:1px solid #000000;<br>
+	width:200px; padding:1px; margin:0px;<br>
+}
+#popup{<br>
+	/* 提示框div块的样式 */<br>
+	position:absolute; width:202px;<br>
+	color:#004a7e; font-size:12px;<br>
+	font-family:Arial, Helvetica, sans-serif;<br>
+	left:41px; top:25px;<br>
+}
+#popup.show{<br>
+	/* 显示提示框的边框 */	<br>
+	border:1px solid #004a7e;<br>
+}
+/* 提示框的样式风格 */<br>
+ul{<br>
+	list-style:none;<br>
+	margin:0px; padding:0px;<br>
+	color:#004a7e;<br>
+}
+li.mouseOver{<br>
+	background-color:#004a7e;<br>
+	color:#FFFFFF;<br>
+}
+-->
+</style>
+<script language="javascript" src="jquery.min.js"></script>
+<script language="javascript">
+var oInputField;	//考虑到很多函数中都要使用<br>
+var oPopDiv;		//因此采用全局变量的形式<br>
+var oColorsUl;<br>
+function initVars(){<br>
+	//初始化变量<br>
+	oInputField = $("#colors");<br>
+	oPopDiv = $("#popup");<br>
+	oColorsUl = $("#colors_ul");<br>
+}
+function clearColors(){<br>
+	//清除提示内容<br>
+	oColorsUl.empty();<br>
+	oPopDiv.removeClass("show");<br>
+}
+function setColors(the_colors){<br>
+	//显示提示框，传入的参数即为匹配出来的结果组成的数组<br>
+	clearColors();	//每输入一个字母就先清除原先的提示，再继续<br>
+	oPopDiv.addClass("show");<br>
+	for(var i=0;i<the_colors .length;i++)<br>
+		//将匹配的提示结果逐一显示给用户<br>
+		oColorsUl.append($("<li>"+the_colors[i]+""));<br>
+	oColorsUl.find("li").click(function(){<br>
+		oInputField.val($(this).text());<br>
+		clearColors();<br>
+	}).hover(<br>
+		function(){$(this).addClass("mouseOver");},<br>
+		function(){$(this).removeClass("mouseOver");}<br>
+	);<br>
+}
+function findColors(){<br>
+	initVars();		//初始化变量<br>
+	if(oInputField.val().length > 0){<br>
+		//获取异步数据<br>
+		$.get("14-10.aspx",{sColor:oInputField.val()},<br>
+			function(data){<br>
+				var aResult = new Array();<br>
+				if(data.length > 0){<br>
+					aResult = data.split(",");<br>
+					setColors(aResult);	//显示服务器结果<br>
+				}<br>
+				else<br>
+					clearColors();<br>
+		});<br>
+	}<br>
+	else<br>
+		clearColors();	//无输入时清除提示框（例如用户按del键）<br>
+}
+</the_colors></script>
+</head>
+<body>
+<form method="post" name="myForm1">
+Color: <input type="text" name="colors" id="colors" onkeyup="findColors();" />
+</form>
+<div id="popup">
+	<ul id="colors_ul"></ul>
+</div>
+</body>
+</html>
+</pre></p>

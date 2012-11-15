@@ -1,0 +1,121 @@
+---
+layout: post
+title: Ext grid改变行背景颜色
+categories:
+- Extjs
+tags:
+- Extjs
+- Grid
+published: true
+comments: true
+---
+<p><p>Ext grid显示的行记录背景颜色都是一样的，这样不容易区分不同行的颜色、方便用户区分不同的记录。<br />
+改变单元格背景颜色的方法有几种，由简单的说起吧！<br />
+<span style="color: rgb(0, 0, 255);" mce_style="color: #0000ff;"><b>第一种情况：加载数据时改变列的颜色。</b></span>这种方式是通过Ext.grid.ColumnModel中某一列的renderer 函数来实现的。<br />
+首先定义一个样式如下：<br />
+.x-grid-record-gray{<br />
+background: #c3daf9;<br />
+}</p>
+<p><img src="http://www.javachen.com/wp-includes/js/tinymce/plugins/wordpress/img/trans.gif" mce_src="http://www.javachen.com/wp-includes/js/tinymce/plugins/wordpress/img/trans.gif" alt="" class="mceWPmore mceItemNoResize" title="更多..." /><br />
+定义改变颜色的列，加上renderer 渲染函数：<br />
+{header:'摘要',dataIndex:'zhaoyao',align:'left',width:150,<br />
+renderer : function(value, m){<br />
+m.css='x-grid-record-gray';<br />
+return value;<br />
+}<br />
+}</p>
+<p><span style="color: rgb(0, 0, 255);" mce_style="color: #0000ff;"><b>第二种情况：加载数据完成后改变行的颜色</b></span><br />
+首先要解决的一个问题是如果判断数据已经加载完毕，最简单的方法是给grid的store添加onload事件。<br />
+如果你想有条件地改变某行的背景颜色，则还需要遍历gird的store，这里有个简单的方法即store的<br />
+each方法。看下面这个例子：<br />
+grid.getStore().addListener('load',handleGridLoadEvent);<br />
+function handleGridLoadEvent(store,records) {<br />
+var girdcount=0;<br />
+store.each(function(r){<br />
+if(r.get('STORESUSEDQTY')==0){<br />
+grid.getView().getRow(girdcount).style.backgroundColor='#c3daf9';<br />
+}<br />
+girdcount=girdcount+1;<br />
+});<br />
+}</p>
+<p><span style="color: rgb(0, 0, 255);" mce_style="color: #0000ff;"><b>第三种情况：使用Ext本身的颜色渲染效果</b></span><br />
+在grid中配置stripeRows为true，可以实现隔行变色，但不能达到根据不同记录集实现不同颜色的显示效果.</p>
+<p>说完上面常见的几种方法之后，在来结合项目中的需求来实现背景颜色变色。现在项目中的Ext grid表格是三方公司用代码更具配置文件动态生成的，其代码都封装了一个动态命名的命名空间里，JavaScript代码写在了页面上。我只能在这个Ext grid代码生成之后获得一个grid引用。<br />
+下面是部分代码：<br />
+Ext.namespace('BO_PC_REQUIRE_S');<br />
+BO_PC_REQUIRE_S.Grid=function(){<br />
+currentRowInd=0;<br />
+currentColInd=0;<br />
+var AWS_GRID_CHECK;<br />
+var AWS_FORM;<br />
+var AWS_GRID_DS_PLANT;<br />
+var AWS_GRID_DS;<br />
+var AWS_GRID_CM;<br />
+var AWS_GRID_PANEL;</p>
+<p>return {<br />
+perPage: 50,<br />
+currentRowInd:0,<br />
+currentColInd:0,<br />
+init : function(){</p>
+<p>},<br />
+getDataSource: function() {<br />
+return AWS_GRID_DS;<br />
+},<br />
+getGridPanel: function() {<br />
+return AWS_GRID_PANEL;<br />
+},<br />
+getCurrentRowInd: function() {<br />
+return currentRowInd;<br />
+},<br />
+getCurrentColInd: function() {<br />
+return currentColInd;<br />
+},<br />
+getTitle: function(){<br />
+return '采购需求单子表（设计师）';<br />
+},<br />
+saveData: function(){<br />
+if(typeof(outerDoSaveGrid)=='function'){return outerDoSaveGrid();}<br />
+},<br />
+setCellValue: function(f,v,r){<br />
+var rowInd=currentRowInd;<br />
+if(r!=undefined)rowInd=r;<br />
+AWS_GRID_DS.getAt(rowInd).set(f,v);<br />
+},<br />
+getCellValue: function(f,r){<br />
+var rowInd=currentRowInd;<br />
+if(r!=undefined)rowInd=r;<br />
+return AWS_GRID_DS.getAt(rowInd).get(f);<br />
+}<br />
+}//End return<br />
+});</p>
+<p><span style="color: rgb(0, 0, 255);" mce_style="color: #0000ff;">参考上门说的三种方法，第一种不可实现，第二种可以实现</span>，但存在一些问题：数据加载完之后，达到不同行显示不同背景色的目的，但是当你单击表头进行排序的时候，表格内的所有行背景颜色又都回到了默认颜色，让人烦恼！这时候想想，我可不可以重写表头的事件，使执行这些事件的时候，也是行背景变色呢？实现代码如下：<br />
+BO_PC_REQUIRE_S.Grid.getGridPanel().getStore().addListener('load',<br />
+handleGridLoadEvent);<br />
+function handleGridLoadEvent(store,records) {<br />
+var girdcount=0;<br />
+store.each(function(r){<br />
+if(r.get('STORESUSEDQTY')==0){<br />
+BO_PC_REQUIRE_S.Grid.getGridPanel().getView().getRow(girdcount).style.backgroundColor='#c3daf9';<br />
+}<br />
+girdcount=girdcount+1;<br />
+});<br />
+}</p>
+<p>BO_PC_REQUIRE_S.Grid.getGridPanel().addListener('headerclick',<br />
+function(){<br />
+var girdcount=0;<br />
+BO_PC_REQUIRE_S.Grid.getDataSource().each(function(r){<br />
+if(r.get('STORESUSEDQTY')==0){<br />
+BO_PC_REQUIRE_S.Grid.getGridPanel().getView().getRow(girdcount).style.backgroundColor='#c3daf9';<br />
+}<br />
+girdcount=girdcount+1;<br />
+});<br />
+});</p>
+<p>BO_PC_REQUIRE_S.Grid.getGridPanel().addListener('headermousedown',	function(){});</p>
+<p>这样做又有了问题，表格排序事件不起作用了，有没有更好的解决办法呢？<span style="color: rgb(0, 0, 255);" mce_style="color: #0000ff;">看看API，grid里有个视图，通过改变视图里的getRowClass方法，可以实现行跨多列显示、单行内显示多行内容等等效果。</span>可不可以参照这个思路，通过改变css实现行背景换色呢？<br />
+代码如下：<br />
+BO_PC_REQUIRE_S.Grid.getGridPanel().getView().getRowClass=function(record,rowIndex,rowParams,store){<br />
+if(record.data.STORESUSEDQTY==0){<br />
+return 'x-grid-record-gray';<br />
+}else{<br />
+return '';<br />
+}};</p></p>

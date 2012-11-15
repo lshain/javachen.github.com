@@ -1,0 +1,25 @@
+---
+layout: post
+title: Ex.get与Ext.fly
+categories:
+- Extjs
+tags:
+- Extjs
+published: true
+comments: true
+---
+<p><strong>Ext.get</strong>( <code>Mixed el</code> )  : Element<br />
+Uses simple caching to consistently return the same object. Automatically  fixes if an object was recreated with the same id via AJAX or DOM.
+<strong>Ext.fly</strong>
+语法: fly( String/HTMLElement el, [String named] ) : Element</p>
+
+<p><span><span>Ext</span></span>.<span><span>fly</span></span>是<span><span>Ext</span></span>.Element.<span><span>fly</span></span>weight的简写，是<span><span>Ext</span></span>的Element类中对享元模式的应用，因Element类中的方法都是对DOM对象的操作，而DOM操作又是<span><span>Ext</span></span>的核心，所以如果太过于频繁的创建DOM节点的话会造成性能的下降，因而采用享元模式，<span>享元模式</span>以共享的方式高效地支持大量的细粒度对象</p>
+
+<p><span>Ext</span>.Element是<span>Ext</span>对 Dom元素的一个强有力封装，它封装了很多方便对dom操作的接口(并通过Element的dom属性引用对应的dom元素)，因此每创建一个 Element元素都将消耗不少的内存(主要是大量的操作接口消耗)，因此如果创建过多的Element元素必然导致内存占用的剧增和系统性能的下降。<!--more--></p>
+
+<p><span>Ext</span>.<span>get</span>和<span>Ext</span>.<span>fly</span>返回的都是一个Element对象，但是<span>Ext</span>.<span>get</span>返回的是一个独立的Element，拥有自己独立的操作接口封装，可以将其返回值保存到变量中，以便以后调用操作等，这样为重用带来了方便。但是它的一个很大缺点就是内存消耗问题，假如调用<span>Ext</span>.<span>get</span>(id)1000 次，则会在内存中创建1000个独立Element，其内存占用可想而知。但是很多时候我们可能仅仅只是对该dom元素执行一次很简单的操作，如隐藏 (hide)，这样如果每次都创建一个独立Element放在内存中，实在是对内存的巨大浪费，因此当我们在只需要执行一次操作或者一个很简单的操作时， 采用<span>Ext</span>.<span>get</span>就显得很不合理。<span>Ext</span>.<span>fly</span>正是为了解决这个问题而出现，它通过使每次创建的Element共享内存中的一套操作接口来达到节省内存的效果。</p>
+
+<p><strong>关于<span><span>fly</span></span>weight</strong>
+1. Flyweight是减少内存的使用量的一种模式，间接的可能会提高性能。两者没有必然联系。<br />
+2. Flyweight和Object pool完全不同。FlyWeight内部用到的共享机制在实现上和object cache有点像，但是有本质上的区别。<br />
+3. Flyweight未必会减少实例的创建次数。反而可能会增加实例的创建次数。（尤其对于非JAVA语言）</p>

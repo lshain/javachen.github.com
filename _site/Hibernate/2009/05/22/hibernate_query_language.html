@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Hibernate Query Language</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>22 May 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Hibernate/2009/05/22/hibernate_query_language.html'>Hibernate Query Language</a></h1>
+  <div class='body'><p><h3><span style="color: #0000ff;">Hibernate Query Language（HQL）</span></h3>
+HQL具有与SQL语言类似的语法规范，只不过SQL针对表中字段进行查询，而HQL针对持久化对象，它用来取得对象，而不进行update、delete和insert等操作。而且HQL是完全面向对象的，具备继承、多态和关联等特性。
+<strong><span style="color: #0000ff;">1．from子句</span></strong>
+from字句是最简单的HQL语句，例如 from Student，也可以写成select s from Student s。它简单地返回Student类的所有实例。<br />
+除了Java类和属性的名称外，HQL语句对大小写并不敏感，所以在上一句HQL语句中，from与FROM是相同的，但是Student 与student就不同了，所以上述语句写成from student就会报错。下列程序演示如何通过执行from语句取得所有的Student对象。<br />
+Query query = session.createQuery(“from Student”);<br />
+List list = query.list();<br />
+for (int i=0;i&lt;list.size(); i++)<br />
+{
+Student stu = (Student)list.get(i);<br />
+System.out.println(stu.getName());<br />
+}<!--more-->
+如果执行HQL语句“from Student, Course”，并不简单地返回两个对象，而是返回这两个对象的的笛卡儿积，这类似于SQL语句中字段的全外连接。在实际应用中，像“from Student, Course”这样的语句几乎不会出现。
+<strong>
+<span style="color: #0000ff;">2．select子句</span></strong>
+有时并不需要得到对象的所有属性，这时可以使用select子句进行属性查询，例如，select s.name from Student s。下面程序演示如何执行这个语句：<br />
+Query query = session.createQuery(“select s.name from Student s”);<br />
+List list = query.list();<br />
+for (int i=0;i&lt;list.size(); i++) {<br />
+String name = (String)list.get(i);<br />
+System.out.println(ame());<br />
+}</p>
+
+<p>如果要查询两个以上的属性，查询结果会以数组的方式返回，如下所示：<br />
+Query query = session.createQuery(“select s.name, s.sex from Student as s”);<br />
+List list = query.list();<br />
+for (int i=0;i&lt;list.size(); i++) {<br />
+Object obj[] = (Object[])list.get(i);<br />
+System.out.println(ame(obj[0] + “的性别是：” +obj[1]));<br />
+}
+在使用属性查询时，由于使用对象数组，操作和理解都不太方便，如果将一个object[]中所有成员封装成一个对象就方便多了。下面的程序将查询结果进行了实例化：<br />
+Query query = session.createQuery(“select new Student(s.name, s.sex) from Student s”);<br />
+List list = query.list();<br />
+for (int i=0;i&lt;list.size(); i++) {<br />
+Student stu = (Student)list.get(i);<br />
+System.out.println(stu.getName());<br />
+}
+要正确运行以上程序，还需要在Student类中加入一个如下的构造函数：<br />
+public Student(String name, String sex)<br />
+{
+this.name = name;<br />
+this.sex = sex;<br />
+}
+<span style="color: #0000ff;"><strong>
+3．组函数查询</strong></span>
+可以在HQL中使用函数，经常使用的函数有：<br />
+count()：统计记录条数<br />
+min()：求最小值<br />
+max()：求最大值<br />
+sum()：求和<br />
+age()：求平均值<br />
+例如，要取得Student实例的数量，可以编写如下HQL语句：<br />
+select count(*) from Student<br />
+取得Student的平均年龄的HQL语句如下：<br />
+select avg(s.age) from Student as s<br />
+可以使用distinct去除重复数据：<br />
+select distinct s.age from Student as s</p>
+
+<p><span style="color: #0000ff;"><strong>4．where子句</strong></span>
+HQL也支持子查询，它通过where子句实现这一机制。where子句让用户缩小要返回的实例的列表范围，例如下面语句会返回所有名字为“Bill”的Student实例：<br />
+Query query = session.createQuery("from Student as s where s.name='Bill' ");<br />
+where子句允许出现的表达式包括了SQL中可以使用的大多数情况：<br />
+数学操作：+，-，*，/<br />
+真假比较操作：=，&gt;=，&lt;=，&lt;&gt;，!=，like<br />
+逻辑操作：and，or, not<br />
+字符串连接：||<br />
+SQL标量函数：例如upper()和lower()</p>
+
+<p>如果子查询返回多条记录，可以用以下的关键字来量化：<br />
+all：表示所有的记录。<br />
+any：表示所有记录中的任意一条。<br />
+some：与any用法相同。<br />
+in：与any等价。<br />
+exists：表示子查询至少要返回一条记录。</p>
+
+<p>例如，下面语句返回所有学生的年龄都大于22的班级对象：<br />
+from Group g where 22&lt;all (select s.age from g.students s)<br />
+下述语句返回在所有学生中有一个学生的年龄等于22的班级：<br />
+from Group g where 22=any (select s.age from g.students s)<br />
+或者<br />
+from Group g where 22=some (select s.age from g.students s)<br />
+或者<br />
+from Group g where 22 in (select s.age from g.students s)</p>
+
+<p><span style="color: #0000ff;"><strong>5．order by 子句</strong></span>
+查询返回的列表可以按照任何返回的类或者组件的属性排序：<br />
+from Student s order by s.name asc<br />
+asc和desc是可选的，分别代表升序或者降序。</p>
+
+<p><span style="color: #0000ff;"><strong>6．连接查询</strong></span>
+与SQL查询一样， HQL也支持连接查询，如内连接、外连接和交叉连接。<br />
+inner join： 内连接<br />
+left outer join：左外连接<br />
+right outer join：右外连接<br />
+full join： 全连接，但不常用<br />
+下面重点讲解内连接查询，左外连接和右外连接查询和内连接大同小异，而全连接几乎不怎么使用。<br />
+inner join可以简写为join，例如在查询得到Group对象时，内连接取得对应的Student对象，实现的程序如下。<br />
+……//打开Session，开启事务<br />
+Student  stu = null;  //声明Student实例<br />
+Group  group = null; //声明Group实例<br />
+Query query = session.createQuery("from Group g join g.students");<br />
+List list = query.list();<br />
+Object obj[] = null;  //声明对象数组</p>
+
+<p>for(int i=0;i&lt;list.size();i++)  {<br />
+obj = (Object[])list.get(i); //取得集合中的第i个数组<br />
+group = (Group)obj[0];  //group是数组中第一个对象<br />
+stu = (Student)obj[1];   //stu是数组中第二个对象<br />
+System.out.println(stu.getName() + "属于：" +group.getName() );<br />
+}
+……//提交事务，关闭Session</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Hibernate/2009/05/22/hibernate_query_language.html'>Hibernate Query Language</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

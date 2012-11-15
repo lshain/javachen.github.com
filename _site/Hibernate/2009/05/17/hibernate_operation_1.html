@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Hibernate 开发步骤</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>17 May 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Hibernate/2009/05/17/hibernate_operation_1.html'>Hibernate 开发步骤</a></h1>
+  <div class='body'><p><p>1.Object Relation Mapping<br />
+持久化类与关系表对应，持久化类实例与表中一行记录对应。<br />
+2.相关名词：<br />
+POJO(Plain Old Java Objects)：实际就是普通JavaBeans,使用POJO名称是为了和EJB混淆起来, 而且简称比较直接.在Hibernate中代表包含Setter、Getter这些最基本操作的值对象。<br />
+BO：代表包含一些业务逻辑的值对象，它的作用域很大，也就是说BO在充当持久类的同时可以传到UI层。  PO代表持久对象，是纳入Hibernate管理框架中的，在一定程度上可以和值对象的概念互换，值对象经过Hibernate<br />
+进行处理，就变成了PO。<br />
+Hibernate配置文件:<br />
+hibernate.cfg.xml或 hibernate.properties，不过推荐使用XML格式。<br />
+<img src="http://www.javachen.com/wp-includes/js/tinymce/plugins/wordpress/img/trans.gif" mce_src="http://www.javachen.com/wp-includes/js/tinymce/plugins/wordpress/img/trans.gif" alt="" class="mceWPmore mceItemNoResize" title="More..." /> 映射文件*.hbm.xml：映射文件的作用是将POJO与关系型数据库数据相绑定，作为一个桥梁。<br />
+OID： Hibernate中用对象标识符OID来维持java对象和表中记录的对应关系，OID定义为整数类型(short、int、long),通常由Hibernate或通过底层数据库给OID赋值。<br />
+持久化类：被Hibernate持久化到数据库中，通过Setter和Getter方法，若为boolean型则可用is*方法。Hibernate不要求持久化类必须实现Serializable，但在分布式不同结点间传输持久化类必须实现Serializable接口<br />
+3.在开发Hibernate应用的时候需要预先把相应的JAR包配置到CLASS_PATH，我使用的是MyEclipse作为开发工具，主要的JAR大致如下：<br />
+---antlr.jar<br />
+---cglib.jar<br />
+---asm.jar<br />
+---asm-attrs.jar<br />
+---commons-collections.jar<br />
+---commons-logging.jar<br />
+---ehcache.jar<br />
+---hibernate3.jar<br />
+---jta.jar<br />
+---dom4j.jar<br />
+---log4j.jar</p>
+<p>4.开发Hibernate程序的步骤<br />
+开发Hibernate程序通常分为下面这几步：<br />
+1&gt;、 建立JavaBean--&gt; 每个JavaBean必须提供一个无参的构造函数，并为private属性提供get/set访问方法。如下：</p>
+<p>[code lang="Java"]<br />
+package com.kettas.hibernate.orm.m2m;<br />
+import java.util.HashSet;<br />
+import java.util.Set;<br />
+public class Student {<br />
+private Integer sid;   //oid属性，用于与数据的表中主键相对应<br />
+private String sname;  // syudent age sex 为业务属性<br />
+private int age;<br />
+private String sex;<br />
+private Set courses=new HashSet();  //关系属性，用于维护实体之间的关系</p>
+<p>public Student() {   //提供一个默认的构造方法，便于hibernate底层使用发射机制<br />
+super();<br />
+}</p>
+<p>public Student(String sname, int age, String sex) {<br />
+this.sname = sname;<br />
+this.age = age;<br />
+this.sex = sex;<br />
+}</p>
+<p>public int getAge() {<br />
+return age;<br />
+}</p>
+<p>public void setAge(int age) {<br />
+this.age = age;<br />
+}</p>
+<p>public Set getCourses() {<br />
+return courses;<br />
+}</p>
+<p>public void setCourses(Set courses) {<br />
+this.courses = courses;<br />
+}</p>
+<p>public String getSex() {<br />
+return sex;<br />
+}</p>
+<p>public void setSex(String sex) {<br />
+this.sex = sex;<br />
+}</p>
+<p>public Integer getSid() {<br />
+return sid;<br />
+}</p>
+<p>public void setSid(Integer sid) {<br />
+this.sid = sid;<br />
+}</p>
+<p>public String getSname() {<br />
+return sname;<br />
+}</p>
+<p>public void setSname(String sname) {<br />
+this.sname = sname;<br />
+}<br />
+}</p>
+<p>[/code]</p>
+<p>----------field和property的区别以及应注意事项-------------------<br />
+区别：<br />
+field指用privat关键字修饰的变量sid，sname，age，sex，而private指的是setter和getter方法去掉set和get得到的将大写字母转换为小写的字母的变量。<br />
+注意：<br />
+(2)javabean中的setter和getter后面的名字一定要与field的值相对应 如 priavte String sname ,getSname(),setSname(),这点很重要，不然hibernate<br />
+读取配置文件会报错<br />
+(2)每个JavaBean必须提供一个无参的构造函数，并为private属性提供get/set访问方法。</p>
+<p>5.标准的配置文件<br />
+&lt; ?xml version="1.0" encoding="UTF-8"?&gt;<br />
+&lt; !DOCTYPE hibernate-configuration PUBLIC<br />
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"<br />
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;</p>
+<p><!--配置线程安全安的session，为每一个事物transaction分配一个session--></p>
+<p>thread</p>
+<p><!-- 显示SQL --></p>
+<p>true true</p>
+<p><!-- 配置数据库方言 --></p>
+<p>org.hibernate.dialect.Oracle9Dialect</p>
+<p><!-- 配置数据库连接 --></p>
+<p>oracle.jdbc.driver.OracleDriver kettas kettas jdbc:oracle:thin:@192.168.0.200:1521:kettas</p>
+<p><!-- 配置连接池 --></p>
+<p>2 2 5000 100 3000 2 false</p>
+<p><!--配置jdbc里的batch大小--></p>
+<p>20 false</p>
+<p><!-- 指定hibernate管理的映射文件 --></p>
+<p>说明：<br />
+1.指明配置文件所在地方，在这里包结构用/连接不是用.<br />
+2.配置文件放在实体类所在位置，一般是放在entity包内与实体类在一起。</p>
+<p>--------------------&gt;映射文件：<br />
+&lt; ?xml version="1.0"?&gt;<br />
+&lt; !DOCTYPE hibernate-mapping PUBLIC<br />
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"<br />
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;</p>
+<p>czj_hibernate_student_seq</p>
+<p>czj_hibernate_course_seq</p>
+<p>映射文件说明：<br />
+Java                         database<br />
+calss(entity) 	    		table<br />
+object(persistent object)       row<br />
+field				column(oid----k)<br />
+relation			pk,fk<br />
+1&gt;    标签用于指定哪一个类对应数据库中哪一个表<br />
+package属性用于指定本映射文件中包含类的包名为全局包，从而不必为每个类指定完整包名。<br />
+2&gt;      标签用于指定java中oid对应于数据库中的哪一列<br />
+指定以哪种方式生成数据库中主键标识符<br />
+-----------常见标识符生成器--------------------------<br />
+Hibernate中内置标识符生成器，均适合代理主键<br />
+increment：由Hibernate自增生成<br />
+identity：由底层数据库生成<br />
+sequence：底层数据库序列生成<br />
+hilo：根据high/low等算法生成以特定表字段作high值<br />
+native：自动选择identity、dequence、hilo<br />
+assgned：自然主键(尽量避免使用)<br />
+------------------------------------------------<br />
+3&gt;</p>
+<p>说明： 标签指定java中的关系对应数据库中的表与表之间的关系<br />
+inverse属性： 为避免Hibernate在清理缓存时对相关联对象都执行更新操作，将inverse设置为true，将主控权交给many一方，以仅控mamy方状态更新对象。<br />
+不加默认为false，双方都不维护java类中的关系，运行会报错，此属性只用在one-to-many many-to-many中<br />
+cascade属性： 级联属性，当cascade属性设置为delete，在删除一对象时自动删除与其级联的对象，删除后持久化对象变为临时状态。<br />
+中column列值指的是Course类对应czj_hibernate_relation中的course_id这一列<br />
+指明Student这一类中的关系属性Set集合中Course类在java中与Student类的关系</p>
+<p>6。hiberante开发步骤<br />
+1&gt;写实体层中的实体类<br />
+2&gt;在数据库中建表<br />
+3&gt;写配置文件和映射文件<br />
+4&gt;写Dao层，在此层写hibernate应用程序<br />
+----------------------hibernate应用程序步骤---------------------------<br />
+1&gt;、创建配置(Configuration)<br />
+Configuration cfg = new Configuration().configure();<br />
+2&gt;、构建会话工厂(SessionFactory)<br />
+SessionFactory ＝ cfg.buildSessionFactory();<br />
+3&gt;、打开会话（session）<br />
+Session session = sf.openSession();<br />
+4&gt;、启动事务(Transaction)<br />
+Transaction ts = session.beginTransaction();<br />
+5&gt;、持久化操作（CUQD）<br />
+session.save(*);  *表示一个对象<br />
+session.update(*);<br />
+session.delete(*);<br />
+6&gt;、提交事务(commit)     ts.commit();<br />
+7&gt;、事务回滚（rollback）  ts.rollback();</p></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Hibernate/2009/05/17/hibernate_operation_1.html'>Hibernate 开发步骤</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

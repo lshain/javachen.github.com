@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>hibernate如何初始化</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>11 Jun 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Hibernate/2010/06/11/how-to-init-hibernate.html'>hibernate如何初始化</a></h1>
+  <div class='body'><p><p style="text-align: left;">要在应用中使用Hibernate，首先要初始化Hibernate的运行环境，使持久化类和数据库受控于Hibernate，才能使用Hibernate提供的接口实现对象和数据库的互操作。<br />
+使用了hibernate很长时间，一直都是在使用的过程中，发现项目在启动的时候，系统会预先初始化hibernate的环境，但一直没有仔细研究为什么在项目启动的时候会初始化hibernate以及是如何开始初始化的。仔细看看项目里的web.xml文件,发现项目中有spring的配置文件，spring配置文件中引入了hibernate的配置文件，原来是spring读取了hibernate的配置文件，导致hibernate的初始化！如果项目里就只有hibernate的jar包，web.xml里什么都没有，很显然在项目启动的时候是不会初始化hibernate的，但是当你在页面上第一次调用hibernate的时候，hibernate就会完成所有的初始化工作。</p>
+<p style="text-align: left;"><a href="http://www.javachen.com/wp-content/uploads/2010/06/Hibernate应用启动和处理序列图.jpg">
+</a><!--more-->
+由于Hibernate在内部封装了Hibernate环境的初始化过程，因此只要在应用程序中简单的使用配置文件初始化就可以了。configuration对象是整个hibernate应用的入口，在使用hibernate功能之前首先创建Configuration对象的实例和进行Hibernate参数的初始化工作。
+<strong>首先，应用通过实例化Configuration对象初始化应用环境。该对象读取配置文件和映射文件信息，并解析这些文件，然后根据配置文件和映射文件的定义，设置应用的环境。</strong>在解析过程中：</p>
+l <strong>Configuration对象根据配置文件的设置，读取属性配置信息</strong>，比如：JDBC连接属性、方言属性等。然后检查属性配置并把配置信息放入应用环境中。系统默认的配置文件路径是应用程序的classpath，当然也可以指定配置文件路径，不过这需要使用Configuration对象的configure()方法指定配置文件。</p>
+
+<p>l <strong>Configuration对象根据配置文件的信息，按照映射文件、类缓存、集合缓存、监听器、事件的顺序依次读取并解析</strong>。如果是映射文件，则根据配置的路径解析映射文件，实现持久化类到数据表的映射配置。如果是缓存配置，则根据缓存配置策略设置类或集合的缓存特性。</p>
+
+<p>l <strong>构建SessionFactory</strong>。通过调用Configuration对象的buildSessionFactory()方法，可以获取一个SessionFactory对象实现。buildSessionFactory()方法根据以上两步的配置，验证配置属性和映射属性，返回SessionFactoryImpl对象实例。SessionFactoryImpl是SessionFactory的一个实现。</p>
+
+<p><strong>接下来，通过Configuration对象获取SessionFactory的实现，并通过SessionFactory的实现获取Session对象，完成数据操作任务，过程如下：</strong></p>
+
+<p>l <strong>根据Configuration对象获取SessionFactory对象。</strong>SessionFactory根据Configuration对象获取的配置信息和映射信息，完成应用的元数据配置。SessionFactory根据属性配置对关系数据库进行设置，以便Hibernate管理。比如：如果设置了属性hbm2ddl.auto的值为create，那么，Hibernate将自动根据映射文件生成数据库模式并导入到数据库中。在运行期间，SessionFactory是元数据的缓存且不允许修改。</p>
+
+<p>l <strong>获取Session对象。</strong>SessionFactory是Session的工厂。通过调用SessionFactory实例的openSession()方法可以获取SessionImpl对象。SessionImpl是Session接口的实现。即：openSession()方法使用SessionFactory的中的元数据信息和JDBC连接等初始化Session对象。</p>
+
+<p>l<strong> 启动事务。</strong>使用Session对象实现数据的操作时，这些操作单元需要放置于事务范围中。Hibernate对数据库事务进行了封装，实现了统一的事务处理方式，具体可以通过Session对象的beginTransaction()方法，开始一个事务。Session对象的beginTransaction()方法将事务的创建和启动合二为一，简化了用户的操作。JDBCContext使用应用程序的配置信息从事务工厂中创建Hibernate事务，并通过Session对象的beginTransaction()方法提供给客户。</p>
+
+<p>l <strong>提交事务。</strong>数据操作完成后，需要提交事务，确认对数据库的操作。如果事务没有提交，那么在该事务范围内的数据操作不会对数据库造成影响。在Hibernate中，事务的提交只需要调用刚刚获取的Hibernate事务对象的commit()方法即可。底层事务的提交操作细节由Hibernate的事务对象负责完成。</p>
+
+<p>l <strong>关闭应用。</strong>在完成业务逻辑的处理后，关闭系统时，需要清理Hibernate应用环境，释放Hibernate占用的资源。首先通过Session对象的close()方法关闭Session对象，释放数据库连接，清除session中的对象。然后通过SessionFactory对象的close()方法关闭SessionFactory对象，释放所有的数据库连接，清理缓存中的对象并关闭缓存，如果配置文件中hbm2ddl.auto属性的值是drop或create-drop，Hibernate将删除对应的数据库模式。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Hibernate/2010/06/11/how-to-init-hibernate.html'>hibernate如何初始化</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

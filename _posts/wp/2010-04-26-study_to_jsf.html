@@ -1,0 +1,38 @@
+---
+layout: post
+title: 开始学习JSF
+categories:
+- JSF
+tags:
+- JSF
+- MVC
+published: true
+comments: true
+---
+<p>在辞职前一直在看Struts2和Hiberante，现在找到工作了由于工作需要需要学习JSF、Seam、Hibernate三种结合在一起使用的技术。话说JSF在国外很是流行，在中国却是不那受欢迎（主要是用的人少），大多数程序员和公司每天就是SSH的架构项目，很少有人关注一些够简洁方便的其他框架。<br />
+Struts是一个基于Sun J2EE平台的MVC框架，主要是采用Servlet和JSP技术来实现的。由于Struts能充分满足应用开发的需求，简单易用，敏捷迅速，在过去的一年中颇受关注。<!--more-->
+<strong>MVC：</strong>
+<blockquote>MVC是Java-Blueprints推荐的架构设计模式，MVC将几个方面分离开来，从而减少代码的重复，它以控制为中心并使得应用更具扩展性。 MVC同时­可帮助具有不同技能的用户更关注于自己的技能，通过定义良好的接口进行相互合作。MVC是表示层的架构设计模式。</blockquote>
+Struts把Servlet、JSP、自定义标签和信息资源(message resources)整合到一个统一的框架中，开发人员利用其进行开发时不用再自己编码实现全套MVC模式，极大的节省了时间，所以说Struts是一个非常不错的应用框架。
+<strong>JSF：</strong>
+<blockquote>JSF是Web应用的服务器端用户组件框架，它包含以下API：表示UI组件、管理它们的状态、处理事件、服务器端验证、数据转换、定义页面导航、支持国际化，并为这­些特性提供扩展能力。它同时包括两个JSP的tag库以在JSP页面中表示UI组件，以及将组件wire为服务器端对象。</blockquote>
+而同样作为表现层的JSF和stuts存在一些区别，struts只是单纯的 MVC模式框架，所谓单纯是相对于JSF而言，因为JSF作为一种表现层技术的标准，主要是一种事件驱动型的组件模型，是一种新的用于构架j2ee应用用户界面的技术，它尤其适合于基于MVC架构的应用中，他在前后台的控制上更加简洁方便，它在行为和表示之间提供了清晰的分离，它使得你可以采用熟悉的UI组件和web层概念而无需受限于某种特殊的脚本技术­或标记语言。
+<h3><strong>为什么选用JSF？</strong></h3>
+JSF不仅仅是另外一个Web框架，下面这些特性是JSF区别于其他Web框架之所在：<br />
+*类Swing的面向对象的Web应用开发：服务器端有状态的UI组件模型，配合event<br />
+listeners和handlers，促进了面向对象的Web应用开发。<br />
+* backing-bean管理： backing bean是与页面中使用的UI组件相关联的javabean组件，backing-bean管理将UI组件对象的定义同执行应用相关处理和拥有数据的对象分离开­来。JSF在合适的范围内保存和管理这些backing-bean实例。<br />
+*可扩展的UI模型：JSF的UI模型是可配置的、可重用的，用以构建JSF应用的用户界面。你可以通过扩展标准的UI组件来开发出更为复杂的组件，例如菜单条、­树组件等。<br />
+*灵活的rendering模型：renderer分离了UI组件的功能和显示，多个renderers可创建和用来为同一客户端或不同的客户端定义不同的显示。<br />
+*可扩展的转换和验证模型：基于标准的converter和validator，你可以开发出自己的可提供更好的模型保护的converter和 validato­r。
+<strong>选择JSF而不选Struts 的十大理由：</strong>
+<blockquote>1.Components(组件)<br />
+2.Render Kits<br />
+3.Renderers<br />
+4.Value Binding Expressions（值绑定表达式）<br />
+5.Event Model（事件模型）<br />
+6.Extensibility(可扩展性)<br />
+7.Managed Beans(Dependency Injection 依赖注入)<br />
+8.POJO Action Methods<br />
+9.JSF is the standard Java-based web app  framework (JSF是java web应用程序的标准框架)<br />
+10.There's only one Struts(只有一个Struts)</blockquote></p>

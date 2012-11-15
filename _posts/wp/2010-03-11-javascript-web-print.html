@@ -1,0 +1,70 @@
+---
+layout: post
+title: JavaScript 实现Web打印
+categories:
+- JavaScript
+tags:
+- JatoolsPrinter
+- JavaScript
+- Print
+- WebBrowser
+published: true
+comments: true
+---
+<p>在Web中想用JavaScript实现打印功能，需要一个浏览器控件WebBrowser。WebBrowser是IE内置的浏览器控件，无需用户下载，只需要在页面简单的设置，就可以Dom方法获取到该对象.<!--more-->
+<blockquote>WebBrowser 控件为 WebBrowser ActiveX 控件提供了托管包装。托管包装使您可以在 Windows  窗体客户端应用程序中显示网页。使用 WebBrowser 控件，可以复制应用程序中的 Internet Explorer Web  浏览功能，还可以禁用默认的 Internet Explorer 功能，并将该控件用作简单的 HTML 文档查看器。此外，可以使用该控件将基于  DHTML 的用户界面元素添加到窗体中，还可以隐瞒这些元素在 WebBrowser 控件中承载的事实。通过这种方法，可以将 Web 控件和  Windows 窗体控件无缝地整合到一个应用程序中。<br />
+WebBrowser 控件包含多种可以用来实现 Internet Explorer 中的控件的属性、方法和事件。例如，可以使用  Navigate 方法实现地址栏，使用 GoBack、GoForward、Stop 和 Refresh 方法实现工具栏中的导航按钮。可以处理  Navigated 事件，以便使用 Url 属性的值更新地址栏，使用 DocumentTitle 属性的值更新标题栏。</blockquote>
+用WebBrowser实现打印方法如下：</p>
+
+<p><span style="color: #0000ff;"><strong>1．引入一个WebBrowser</strong>：</span></p>
+
+<p>&lt;object id="WebBrowser"  classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height="0"  width="0"&gt;<br />
+&lt;/object&gt;</p>
+
+<p><span style="color: #3366ff;"><strong><span style="color: #0000ff;">2. 隐藏不打印的页面元素和分页</span> </strong></span>
+CSS 有个Media 属性，可以分开设置打印和显示的格式。<br />
+如 &lt;style media="print" type="text/css"&gt; …&lt;/style&gt;  中间的格式将只在打印时起作用，不会影响显示界面。<br />
+所以可以设定<br />
+&lt;style media="print" type="text/css"&gt;<br />
+.Noprint{display:none;}<br />
+.PageNext{page-break-after: always;}<br />
+&lt;/style&gt;<br />
+然后给不想打印的页面元素添加： ，那就不会出现在打印和打印预览中了。  想分页的地方添加： &lt;div&gt;&lt;/div&gt; 就可以了。</p>
+
+<p><span style="color: #0000ff;"><strong>3. 页面设置和打印预览</strong></span></p>
+
+<p>常用的：<br />
+WebBrowser.ExecWB(1,1) 打开<br />
+WebBrowser.ExecWB(2,1) 关闭现在所有的IE窗口，并打开一个新窗口<br />
+WebBrowser.ExecWB(4,1) 保存网页<br />
+WebBrowser.ExecWB(6,1) 打印<br />
+WebBrowser.ExecWB(7,1) 打印预览<br />
+WebBrowser.ExecWB(8,1) 打印页面设置<br />
+WebBrowser.ExecWB(10,1) 查看页面属性<br />
+WebBrowser.ExecWB(15,1) 撤销<br />
+WebBrowser.ExecWB(17,1) 全选<br />
+WebBrowser.ExecWB(22,1) 刷新<br />
+WebBrowser.ExecWB(45,1) 关闭窗体无提示</p>
+
+<p><span style="color: #0000ff;"><strong>在ExtJs中实现打印</strong></span></p>
+
+<p>简单来说就是将要打印的innerHtml内赋值给window.document.body.innerHTM，然后调用window.focus()：</p>
+
+<p>function doPrint(){<br />
+var  printArea=.......;//这个是取得要打印的那个组件<br />
+window.document.body.innerHTML=printArea.innerHTML;<br />
+window.focus();<br />
+WebBrowser.ExecWB(6,6);<br />
+}</p>
+
+<p><span style="color: #0000ff;"><strong>window.print()</strong></span></p>
+
+<p>上面ExtJs打印代码用到了<strong>window.print() ，</strong>实际上，<strong>window.print() </strong>是浏览器打印功能菜单的一种程序调用。</p>
+
+<p>与点击打印功能菜单一样，不能精确分页，不能设置纸型，套打的问题更加无从谈起，只不 过，可以让用户不用去点菜单，直接点击网页中的一个按钮，或一个链接里面调用罢了。事实上，很多用户都是采用这种方式打印，但 是这种方式最致命的缺点是不能设置打印参数，比如纸型，页边距，选择打印机等等。<br />
+需要指出的是这种方法提供一个打印前和打印后的事件onbeforeprint、onafterprint。可以在打印前的时候重新编辑一些格式，专门送 去打印，打印后又处理回来。</p>
+
+<p><span style="color: #0000ff;"><strong>分享一个国内打印工具</strong></span><strong> J</strong>atoolsPrinter：<a href="http://www.jatools.com/print/" target="_blank">官方网站</a>
+<blockquote>jatoolsPrinter 																					 （杰表.打印控件）是一款实现网页套打的专用工具。作为web应用开发者，我们经常会遇到在浏览器中打印报表、票据的需求，这些需求浏览器本身的打印功能 一般不能满足， 																					如精确分页，套打等。这就需要有一种能解决常见的浏览器端打印问题的软件工具，这也是 																					jatoolsPrinter 的研发背景。</blockquote></p>
+
+<p>jatoolsPrinter 																					的特点是可以直接对web页面进行精确的分页打印。jatoolsPrinter 																					通过在网页中嵌入控件，解决了web客户端精确打印，批量打印，打印配置自动保留等问题。</p>

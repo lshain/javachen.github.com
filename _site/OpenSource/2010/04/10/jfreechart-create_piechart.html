@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>JFreeChart 生成饼状图</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>10 Apr 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/OpenSource/2010/04/10/jfreechart-create_piechart.html'>JFreeChart 生成饼状图</a></h1>
+  <div class='body'><p><a href="http://www.javachen.com/2010/04/jfreechart-create_piechart/"><img class="size-thumbnail wp-image-1298 alignleft" title="PiePlotSample" src="http://www.javachen.com/wp-content/uploads/2010/04/PiePlotSample-150x100.png" alt="" width="180" height="120" /></a> 最近在准备面试的过程中，遇到一个关于JFreeChart的复试题目，需要用JFreeChart做一个报表出来，具体题目内容待我实现之后在贴出来。周末闲着没事做，决定写写代码，熟悉JFreeChart的相关操作。<br />
+花了点时间，看看JFreeChart的API，利用JFreeChart jar包可以绘制pie charts 饼图,bar charts 柱状图,line and area charts曲线图,scatter plots and bubble charts 散列图,time series 时序图,Area Charts区域图,Difference Chart差异图,Step Chart步骤图,Multiple Axis Charts 混合图,Gantt charts甘特图，combination charts 复合图.<!--more--></p>
+
+<p>其主要的核心类如下：<br />
+两个大包：<br />
+org.jfree.chart.* 主要与图形本身有关<br />
+org.jfree.data.* 与图形显示的数据有关</p>
+
+<p>核心类主要有：<br />
+org.jfree.chart.JFreeChart：图表对象，任何类型的图表的最终表现形式都是在该对象进行一些属性的定制。JFreeChart 引擎本身提供了一个工厂类用于创建不同类型的图表对象<br />
+org.jfree.data.category.XXXDataSet:数据集对象，用于提供显示图表所用的数据。根据不同类型的图表对应着很多类型的数据集对象类<br />
+org.jfree.chart.plot.XXXPlot：图表区域对象，基本上这个对象决定着什么样式的图表，创建该对象的时候需要Axis、 Renderer以及数据集对象的支持<br />
+org.jfree.chart.axis.XXXAxis：用于处理图表的两个轴：纵轴和横轴<br />
+org.jfree.chart.render.XXXRender：负责如何显示一个图表对象<br />
+org.jfree.chart.urls.XXXURLGenerator:用于生成Web图表中每个项目的鼠标点击链接<br />
+XXXXXToolTipGenerator:用于生成图象的帮助提示，不同类型图表对应不同类型的工具提示类</p>
+
+<p>下面通过生成一个JFreeChart的 Pie饼状图，来熟悉JFreeChart的框架以及如何编写代码生成想要的图形。下面例子是在网上找到的，我稍微修改、加了一点注释。
+<pre lang="java">package com.javachen.jfreechart;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.FileOutputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;</pre></p>
+
+<p>import org.jfree.chart.ChartFactory;<br />
+import org.jfree.chart.ChartUtilities;<br />
+import org.jfree.chart.JFreeChart;<br />
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;<br />
+import org.jfree.chart.labels.StandardPieToolTipGenerator;<br />
+import org.jfree.chart.plot.PiePlot;<br />
+import org.jfree.chart.plot.PiePlot3D;<br />
+import org.jfree.chart.title.TextTitle;<br />
+import org.jfree.data.general.DefaultPieDataset;<br />
+import org.jfree.data.general.PieDataset;</p>
+
+<p>public class PieChart {<br />
+	public static void main(String[] args) {<br />
+		createPieChart();<br />
+		createPieChart3D();<br />
+	}</p>
+
+<p>	public static void createPieChart3D(){<br />
+		PieDataset dataset = getDataSet();<br />
+		JFreeChart chart = ChartFactory.createPieChart3D(<br />
+				" 项目进度分布",// 图表标题<br />
+				dataset,// data<br />
+				true,// include legend<br />
+				true, true);<br />
+		PiePlot3D plot = (PiePlot3D) chart.getPlot();<br />
+		// 图片中显示百分比:默认方式<br />
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+				StandardPieToolTipGenerator.DEFAULT_TOOLTIP_FORMAT));<br />
+		// 图片中显示百分比:自定义方式，{0} 表示选项， {1} 表示数值，<br />
+		//{2} 表示所占比例 ,小数点后两位<br />
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+				"{0}={1}({2})", NumberFormat.getNumberInstance(),<br />
+				new DecimalFormat("0.00%")));<br />
+		// 图例显示百分比:自定义方式， {0} 表示选项， {1} 表示数值， {2} 表示所占比例<br />
+		plot.setLegendLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+						"{0}"));<br />
+		// 指定图片的透明度(0.0-1.0)<br />
+		plot.setForegroundAlpha(1.0f);<br />
+		// 指定显示的饼图上圆形(true)还椭圆形(false)<br />
+		plot.setCircular(true);<br />
+		// 设置图上分类标签label的字体，解决中文乱码<br />
+		plot.setLabelFont(new Font("黑体", Font.PLAIN, 12));<br />
+		// 设置图上分类标签label的最大宽度，相对与plot的百分比<br />
+		plot.setMaximumLabelWidth(0.2);<br />
+		// 设置3D饼图的Z轴高度（0.0～1.0）<br />
+		plot.setDepthFactor(0.07);<br />
+		//设置起始角度，默认值为90，当为0时，起始值在3点钟方向<br />
+		plot.setStartAngle(45);</p>
+
+<p>		// 设置图标题的字体，解决中文乱码<br />
+		TextTitle textTitle = chart.getTitle();<br />
+		textTitle.setFont(new Font("黑体", Font.PLAIN, 20));</p>
+
+<p>		// 设置背景色为白色<br />
+		chart.setBackgroundPaint(Color.white);<br />
+		// 设置Legend部分字体，解决中文乱码<br />
+		chart.getLegend().setItemFont(new Font("宋体", Font.PLAIN, 12));</p>
+
+<p>		// 输出图片到文件<br />
+		FileOutputStream fos_jpg = null;<br />
+		try {<br />
+			fos_jpg = new FileOutputStream("D:\\项目状态分布-3D.jpg");<br />
+			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,<br />
+					null);<br />
+			fos_jpg.close();<br />
+		} catch (Exception e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}</p>
+
+<p>	public static void createPieChart(){<br />
+		PieDataset dataset = getDataSet();<br />
+		JFreeChart chart = ChartFactory.createPieChart(" 项目进度分布",// 图表标题<br />
+				dataset,// data<br />
+				true,// include legend<br />
+				true, true);<br />
+		PiePlot plot = (PiePlot) chart.getPlot();<br />
+		// 图片中显示百分比:默认方式<br />
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+				StandardPieToolTipGenerator.DEFAULT_TOOLTIP_FORMAT));<br />
+		// 图片中显示百分比:自定义方式，{0} 表示选项， {1} 表示数值，<br />
+		//{2} 表示所占比例 ,小数点后两位<br />
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+				"{0}={1}({2})", NumberFormat.getNumberInstance(),<br />
+				new DecimalFormat("0.00%")));<br />
+		// 图例显示百分比:自定义方式， {0} 表示选项， {1} 表示数值， {2} 表示所占比例<br />
+		plot.setLegendLabelGenerator(new StandardPieSectionLabelGenerator(<br />
+						"{0}"));<br />
+		// 指定图片的透明度(0.0-1.0)<br />
+		plot.setForegroundAlpha(1.0f);<br />
+		// 指定显示的饼图上圆形(true)还椭圆形(false)<br />
+		plot.setCircular(true);<br />
+		// 设置图上分类标签label的字体，解决中文乱码<br />
+		plot.setLabelFont(new Font("黑体", Font.PLAIN, 12));<br />
+		// 设置图上分类标签label的最大宽度，相对与plot的百分比<br />
+		plot.setMaximumLabelWidth(0.2);<br />
+		//设置起始角度，默认值为90，当为0时，起始值在3点钟方向<br />
+		plot.setStartAngle(45);</p>
+
+<p>		/**<br />
+		 * 设置某一块凸出，第一个参数为dataSet的key，此方法只在PiePlot中有效<br />
+		 */<br />
+		plot.setExplodePercent(" 运维", 0.2);</p>
+
+<p>		// 设置图标题的字体，解决中文乱码<br />
+		TextTitle textTitle = chart.getTitle();<br />
+		textTitle.setFont(new Font("黑体", Font.PLAIN, 20));</p>
+
+<p>		// 设置背景色为白色<br />
+		chart.setBackgroundPaint(Color.white);<br />
+		// 设置Legend部分字体，解决中文乱码<br />
+		chart.getLegend().setItemFont(new Font("宋体", Font.PLAIN, 12));</p>
+
+<p>		// 输出图片到文件<br />
+		FileOutputStream fos_jpg = null;<br />
+		try {<br />
+			fos_jpg = new FileOutputStream("D:\\项目状态分布.jpg");<br />
+			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,<br />
+					null);<br />
+			fos_jpg.close();<br />
+		} catch (Exception e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}</p>
+
+<p>	private static PieDataset getDataSet() {<br />
+		DefaultPieDataset dataset = new DefaultPieDataset();<br />
+		dataset.setValue(" 市场前期", new Double(10));<br />
+		dataset.setValue(" 立项", new Double(15));<br />
+		dataset.setValue(" 计划", new Double(10));<br />
+		dataset.setValue(" 需求与设计", new Double(10));<br />
+		dataset.setValue(" 执行控制", new Double(35));<br />
+		dataset.setValue(" 收尾", new Double(10));<br />
+		dataset.setValue(" 运维", new Double(10));<br />
+		return dataset;<br />
+	}<br />
+}
+<p style="text-align: center;">根据上面的代码，最后生成的饼状图如下：<a href="http://www.javachen.com/wp-content/uploads/2010/04/PiePlot3DSample.jpg"><img class="aligncenter size-medium wp-image-1296" title="PiePlot3DSample" src="http://www.javachen.com/wp-content/uploads/2010/04/PiePlot3DSample-300x225.jpg" alt="" width="300" height="225" /></a></p>
+查阅api相关的方法，可以美化上图，关于Pie的相关类和方法如下：
+<blockquote>Plot类：<br />
+void setBackgroundImage(Image image)   数据区的背景图片<br />
+void setBackgroundImageAlignment(int alignment)  数据区的背景图片对齐方式（参数常量在org.jfree.ui.Align类中定义）<br />
+void setBackgroundPaint(Paint paint)   数据区的背景图片背景色<br />
+void setBackgroundAlpha(float alpha)   数据区的背景透明度（0.0～1.0）<br />
+void setForegroundAlpha(float alpha)   数据区的前景透明度（0.0～1.0）<br />
+void setDataAreaRatio(double ratio)   数据区占整个图表区的百分比<br />
+void setOutLinePaint(Paint paint)   数据区的边界线条颜色<br />
+void setOutLineStroke(Stroke stroke)   数据区的边界线条笔触<br />
+void setNoDataMessage(String message)   没有数据时显示的消息<br />
+void setNoDataMessageFont(Font font)   没有数据时显示的消息字体<br />
+void setNoDataMessagePaint(Paint paint)   没有数据时显示的消息颜色<br />
+--------------------------------------------------------------------------------------------------------<br />
+CategoryPlot(Plot)类：<br />
+void setDataset(CategoryDataset dataset)  数据区的2维数据表<br />
+void setColumnRenderingOrder(SortOrder order)  数据分类的排序方式<br />
+void setAxisOffset(Spacer offset)   坐标轴到数据区的间距<br />
+void setOrientation(PlotOrientation orientation) 数据区的方向（PlotOrientation.HORIZONTAL或PlotOrientation.VERTICAL）<br />
+void setDomainAxis(CategoryAxis axis)   数据区的分类轴<br />
+void setDomainAxisLocation(AxisLocation location) 分类轴的位置（参数常量在org.jfree.chart.axis.AxisLocation类中定义）<br />
+void setDomainGridlinesVisible(boolean visible)  分类轴网格是否可见<br />
+void setDomainGridlinePaint(Paint paint)  分类轴网格线条颜色<br />
+void setDomainGridlineStroke(Stroke stroke)  分类轴网格线条笔触<br />
+void setRangeAxis(ValueAxis axis)   数据区的数据轴<br />
+void setRangeAxisLocation(AxisLocation location) 数据轴的位置（参数常量在org.jfree.chart.axis.AxisLocation类中定义）<br />
+void setRangeGridlinesVisible(boolean visible)  数据轴网格是否可见<br />
+void setRangeGridlinePaint(Paint paint)   数据轴网格线条颜色<br />
+void setRangeGridlineStroke(Stroke stroke)  数据轴网格线条笔触<br />
+void setRenderer(CategoryItemRenderer renderer) 数据区的表示者（详见Renderer组）<br />
+void addAnnotation(CategoryAnnotation annotation) 给数据区加一个注释<br />
+void addRangeMarker(Marker marker,Layer layer)  给数据区加一个数值范围区域<br />
+---------------------------------------------------------------------------------------------------------<br />
+PiePlot(Plot)类：<br />
+void setDataset(PieDataset dataset)   数据区的1维数据表<br />
+void setIgnoreNullValues(boolean flag)   忽略无值的分类<br />
+void setCircular(boolean flag)    饼图是否一定是正圆<br />
+void setStartAngle(double angle)   饼图的初始角度<br />
+void setDirection(Rotation direction)   饼图的旋转方向<br />
+void setExplodePercent(int section,double percent) 抽取的那块（1维数据表的分类下标）以及抽取出来的距离（0.0～1.0），3D饼图无效<br />
+void setLabelBackgroundPaint(Paint paint)  分类标签的底色<br />
+void setLabelFont(Font font)    分类标签的字体<br />
+void setLabelPaint(Paint paint)    分类标签的字体颜色<br />
+void setLabelLinkMargin(double margin)   分类标签与图的连接线边距<br />
+void setLabelLinkPaint(Paint paint)   分类标签与图的连接线颜色<br />
+void setLabelLinkStroke(Stroke stroke)   分类标签与图的连接线笔触<br />
+void setLabelOutlinePaint(Paint paint)   分类标签边框颜色<br />
+void setLabelOutlineStroke(Paint paint)   分类标签边框笔触<br />
+void setLabelShadowPaint(Paint paint)   分类标签阴影颜色<br />
+void setMaximumLabelWidth(double width)   分类标签的最大长度（0.0～1.0）<br />
+void setPieIndex(int index)    饼图的索引（复合饼图中用到）<br />
+void setSectionOutlinePaint(int section,Paint paint) 指定分类饼的边框颜色<br />
+void setSectionOutlineStroke(int section,Stroke stroke) 指定分类饼的边框笔触<br />
+void setSectionPaint(int section,Paint paint)  指定分类饼的颜色<br />
+void setShadowPaint(Paint paint)   饼图的阴影颜色<br />
+void setShadowXOffset(double offset)   饼图的阴影相对图的水平偏移<br />
+void setShadowYOffset(double offset)   饼图的阴影相对图的垂直偏移<br />
+void setLabelGenerator(PieSectionLabelGenerator generator) 分类标签的格式，设置成null则整个标签包括连接线都不显示<br />
+void setToolTipGenerator(PieToolTipGenerator generator) MAP中鼠标移上的显示格式<br />
+void setURLGenerator(PieURLGenerator generator)   MAP中钻取链接格式<br />
+---------------------------------------------------------------------------------------------------------<br />
+PiePlot3D(PiePlot)类：<br />
+void setDepthFactor(double factor)   3D饼图的Z轴高度（0.0～1.0）</blockquote></p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/OpenSource/2010/04/10/jfreechart-create_piechart.html'>JFreeChart 生成饼状图</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

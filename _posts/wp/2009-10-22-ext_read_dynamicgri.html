@@ -1,0 +1,121 @@
+---
+layout: post
+title: Ext 动态读取grid 列数
+categories:
+- Extjs
+tags:
+- Extjs
+- Grid
+published: true
+comments: true
+---
+<p>在公司做项目，为了实现代码的通用性，要求开发一些通用的组件，实现组件的复用性。Ext通过json读取xml文件里的配置信息返回相应的json数据给前台，让前台生成相应的Ext.grid.ColumnModel（）。<br />
+相信的内容可以参照：<a href="http://www.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi/">【Ext读取xml文件生成动态表格和表单】</a>
+<!--more-->
+<pre lang="javascript" line="1">
+var result = {};
+var grid;
+var store;
+var sm = new Ext.grid.CheckboxSelectionModel();
+// 获取显示查询结果部分的表格控件
+function getInsertGrid() {
+	var columns = new Ext.grid.ColumnModel(result.columnHeaders);
+//result.columnHeadersl来自后台返回的json对象
+	columns.defaultSortable = true;// 默认可以排序</pre></p>
+
+<p>	grid = new Ext.grid.GridPanel({<br />
+		id : 'grid',<br />
+		frame : true,<br />
+		title : '物资明细',<br />
+		region : 'center',<br />
+		loadMask : true,<br />
+		height : 800,<br />
+		autoExpandColumn : 0, // 自动扩展宽度的列<br />
+		autoScroll : true,<br />
+		loadMask : {<br />
+			msg : "数据加载中，请稍等..."<br />
+		},<br />
+		emptyMsg : '没有相关数据...',<br />
+		cm : columns,<br />
+		sm : sm,<br />
+		store : store,<br />
+		viewConfig : {<br />
+			forceFit : true,<br />
+			columnsText : '请选择显示的列',<br />
+			scrollOffset : 10,<br />
+			sortAscText : '升序',<br />
+			sortDescText : '倒序'<br />
+		},<br />
+		tbar : new Ext.PagingToolbar({<br />
+			pageSize : result.limit,<br />
+			store : store,<br />
+			plugins : new Ext.ux.grid.PageSizePlugin(),<br />
+			displayInfo : true,<br />
+			prevText : "上一页",<br />
+			firstText : "首页",<br />
+			lastText : "尾页",<br />
+			nextText : "下一页",<br />
+			beforePageText : "当前第",<br />
+			refreshText : "刷新",<br />
+			afterPageText : "页，一共{0}页",<br />
+			displayMsg : '第{0}条到{1}条，一共{2}条记录',<br />
+			emptyMsg : '对不起，没有您查询的信息'<br />
+		})<br />
+	});</p>
+
+<p>	grid.on('rowclick', function(grid, rowIndex, event) {<br />
+		var record = grid.getStore().getAt(rowIndex);<br />
+		form.getForm().loadRecord(record);<br />
+	});<br />
+	return grid;<br />
+}</p>
+
+<p>// 获得界面初始化的一些数据<br />
+function getInitData(xmlObj) {<br />
+	result.columnHeaders = [];<br />
+	// 获取表格表头的界面数据和rcord记录的数据格式<br />
+	var fields = xmlObj.getElementsByTagName("field");<br />
+	result.columnHeaders.push(sm);// 插入多选框<br />
+	result.columnHeaders.push(new Ext.grid.RowNumberer({<br />
+		width : 20<br />
+	}));// 插入行号<br />
+	for (var i = 0; i < fields.length; i++) {<br />
+		var item = {};<br />
+		var record = {};<br />
+		var array = [];<br />
+		var field = cleanWhitespaces(fields[i]);<br />
+		var renderDate = function(value) {<br />
+			return value ? value.dateFormat('Y-m-d') : '';<br />
+		}<br />
+		// 生成grid表格中store数据记录<br />
+		record.name = field[0].firstChild.nodeValue;<br />
+		record.mapping = field[0].firstChild.nodeValue;<br />
+		if (field[1].firstChild.nodeValue == '日期') {<br />
+			record.type = 'date';<br />
+			record.dateFormat = 'Y-m-d';<br />
+			item.renderer = Ext.util.Format.dateRenderer('Y-m-d')<br />
+		} else if (field[1].firstChild.nodeValue == '数值') {<br />
+			record.type = 'auto';<br />
+		} else {<br />
+			record.type = 'string';<br />
+		}<br />
+		result.gridRecords.push(record);</p>
+
+<p>		// 生成grid表格表头数据记录<br />
+		item.dataIndex = field[0].firstChild.nodeValue;<br />
+		item.header = field[2].firstChild.nodeValue;<br />
+		// item.width=field[3].firstChild.nodeValue;<br />
+		item.sortable = true;<br />
+		if (field.length == 7<br />
+				&& field[5].firstChild.nodeValue.toUpperCase() == 'TRUE') {<br />
+			item.hidden = true;<br />
+			// item.hideable=false;<br />
+		}<br />
+		if (field.length == 6) {<br />
+			item.hidden = false;<br />
+		}<br />
+		result.columnHeaders.push(item);<br />
+	}<br />
+	return result;<br />
+};
+</p>

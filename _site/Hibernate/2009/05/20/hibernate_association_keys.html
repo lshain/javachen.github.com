@@ -1,0 +1,512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Hibernate 关联属性详解</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>20 May 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Hibernate/2009/05/20/hibernate_association_keys.html'>Hibernate 关联属性详解</a></h1>
+  <div class='body'><p>1.&lt;class&gt;元素<br />
+name="ClassName"                              (1)<br />
+table="tableName"                             (2)<br />
+discriminator-value="discriminator_value"     (3)<br />
+mutable="true|false"                          (4)<br />
+schema="owner"                                (5)<br />
+catalog="catalog"                             (6)<br />
+proxy="ProxyInterface"                        (7)<br />
+dynamic-update="true|false"                   (8)<br />
+dynamic-insert="true|false"                   (9)<br />
+select-before-update="true|false"             (10)<br />
+polymorphism="implicit|explicit"              (11)<br />
+where="arbitrary sql where condition"         (12)<br />
+persister="PersisterClass"                    (13)<br />
+batch-size="N"                                (14)<!--more-->
+optimistic-lock="none|version|dirty|all"      (15)<br />
+lazy="true|false"                             (16)<br />
+entity-name="EntityName"                      (17)<br />
+check="arbitrary sql check condition"         (18)<br />
+rowid="rowid"                                 (19)<br />
+subselect="SQL expression"                    (20)<br />
+abstract="true|false"                         (21)<br />
+entity-name="EntityName"                      (22)<br />
+node="element-name"                           (23)<br />
+/&gt;<br />
+(1) name (可选): 持久化类（或者接口）的Java全限定名。 如果这个属性不存在，Hibernate将假定这是一个非POJO的实体映射。<br />
+(2) table (可选 - 默认是类的非全限定名): 对应的数据库表名。<br />
+(3) discriminator-value (可选 - 默认和类名一样): 一个用于区分不同的子类的值，在多态行为时使用。它可以接受的值包括 null 和 not null。<br />
+(4) mutable (可选，默认值为true): 表明该类的实例是可变的或者可变的。<br />
+(5) schema (可选): 覆盖在根&lt;hibernate-mapping&gt;元素中指定的schema名字。<br />
+(6) catalog (可选): 覆盖在根&lt;hibernate-mapping&gt;元素中指定的catalog名字。<br />
+(7) proxy (可选): 指定一个接口，在延迟装载时作为代理使用。 你可以在这里使用该类自己的名字。<br />
+(8) dynamic-update (可选, 默认为 false): 指定用于UPDATE 的SQL将会在运行时动态生成，并且只更新那些改变过的字段。<br />
+(9) dynamic-insert (可选, 默认为 false): 指定用于INSERT的 SQL 将会在运行时动态生成，并且只包含那些非空值字段。<br />
+(10)select-before-update (可选, 默认为 false): 指定Hibernate除非确定对象真正被修改了（如果该值为true－译注），否则不会执行SQL UPDATE操作。在特定场合（实际上，它只在一个瞬时对象（transient object）关联到一个 新的session中时执行的update()中生效），这说明Hibernate会在UPDATE 之前执行一次额外的SQL SELECT操作，来决定是否应该执行 UPDATE。<br />
+(11) polymorphism（多态） (可选, 默认值为 implicit (隐式) ): 界定是隐式还是显式的使用多态查询（这只在Hibernate的具体表继承策略中用到－译注）。<br />
+(12) where (可选) 指定一个附加的SQLWHERE 条件， 在抓取这个类的对象时会一直增加这个条件。<br />
+(13) persister (可选): 指定一个定制的ClassPersister。<br />
+(14) batch-size (可选,默认是1) 指定一个用于 根据标识符（identifier）抓取实例时使用的"batch size"（批次抓取数量）<br />
+(15) optimistic-lock（乐观锁定） (可选，默认是version): 决定乐观锁定的策略。<br />
+optimistic-lock：乐观锁大多是基于数据版本（Version）记录机制实现，Hibernate中可以通过class描述符的optimistic-lock属性结合version 描述符指定。<br />
+optimistic-lock属性有如下可选取值：<br />
+none 无乐观锁<br />
+version 通过版本机制实现乐观锁<br />
+dirty 通过检查发生变动过的属性实现乐观锁<br />
+all 通过检查所有属性实现乐观锁<br />
+Pessimistic-Lock：指的是对数据被外界（包括本系统当前的其他事务，以及来自外部系统的事务处理）修改持保守态度，因此，在整个数据处理过程中，将数据处于锁定状态。<br />
+一个典型的倚赖数据库的悲观锁调用： select * from account where name=”Erica” for update 这条sql 语句锁定了account 表中所有符合检索条件（name=”Erica”）的记录。本次事务提交之前（事务提交时会释放事务过程中的锁），外界无法修改这些记录。<br />
+========================================&gt;<br />
+Hibernate的加锁模式有：<br />
+Ø LockMode.NONE ： 无锁机制。<br />
+Ø LockMode.WRITE ：Hibernate在Insert和Update记录的时候会自动    获取。<br />
+Ø LockMode.READ ： Hibernate在读取记录的时候会自动获取。<br />
+以上这三种锁机制一般由Hibernate内部使用，如Hibernate为了保证Update过程中对象不会被外界修改，会在save方法实现中自动为目标对象加上WRITE锁。<br />
+Ø LockMode.UPGRADE ：利用数据库的for update子句加锁。<br />
+Ø LockMode. UPGRADE_NOWAIT ：Oracle的特定实现，利用Oracle的for update nowait子句实现加锁。<br />
+&lt;=======================================<br />
+(16) lazy (optional): 通过设置lazy="false"， 所有的延迟加载（Lazy fetching）功能将未被激活（disabled）。<br />
+(17) entity-name (可选): Hibernate3允许一个类进行多次映射（ 默认情况是映射到不同的表），并且允许使用Maps或XML代替Java层次的实体映射 （也就是实现动态领域模型，不用写持久化类－译注）。<br />
+(18) check (可选): 这是一个SQL表达式， 用于为自动生成的schema添加多行（multi-row）约束检查。<br />
+(19) rowid (可选): Hibernate可以使用数据库支持的所谓的ROWIDs，例如： Oracle数据库，如果你设置这个可选的rowid， Hibernate可以使用额外的字段rowid实现快速更新。ROWID是这个功能实现的重点， 它代表了一个存储元组（tuple）的物理位置。<br />
+(20) subselect (可选): 它将一个不可变（immutable）并且只读的实体映射到一个数据库的 子查询中。它用于实现一个视图代替一张基本表，但是最好不要这样做。更多的介绍请看下面内容。<br />
+(21) abstract (可选): 用于在&lt;union-subclass&gt;的继承结构 （hierarchies）中标识抽象超类。<br />
+(22) entity-name (可选, 默认为类名): 显式指定实体名</p>
+
+<p>2.&lt;id&gt;元素<br />
+被映射的类必须定义对应数据库表主键字段。大多数类有一个JavaBeans风格的属性， 为每一个实例包含唯一的标识。&lt;id&gt; 元素定义了该属性到数据库表主键字段的映射。<br />
+&lt;id     name="propertyName"                                          (1)<br />
+type="typename"                                              (2)<br />
+column="column_name"                                         (3)<br />
+unsaved-value="null|any|none|undefined|id_value"             (4)<br />
+access="field|property|ClassName"                            (5)<br />
+node="element-name|@attribute-name|element/@attribute|."&gt;<br />
+&lt;generator class="generatorClass"/&gt;<br />
+&lt;/id&gt;<br />
+(1) name (可选): 标识属性的名字。<br />
+(2) type (可选): 标识Hibernate类型的名字。<br />
+(3) column (可选 - 默认为属性名): 主键字段的名字。<br />
+(4) unsaved-value (可选 - 默认为一个字段判断（sensible）的值): 一个特定的标识属性值，用来标志该实例是刚刚创建的，尚未保存。 这可以把这种实例和从以前的session中装载过（可能又做过修改--译者注） 但未再次持久化的实例区分开来。<br />
+(5) access (可选 - 默认为property): Hibernate用来访问属性值的策略。如果 name属性不存在，会认为这个类没有标识属性。<br />
+unsaved-value 属性很重要！如果你的类的标识属性不是默认为 正常的Java默认值（null或零），你应该指定正确的默认值。<br />
+还有一个另外的&lt;composite-id&gt;定义可以访问旧式的多主键数据。 我们强烈不建议使用这种方式。</p>
+
+<p>&lt;generator&gt;元素<br />
+可选的&lt;generator&gt;子元素是一个Java类的名字， 用来为该持久化类的实例生成唯一的标识。如果这个生成器实例需要某些配置值或者初始化参数， 用&lt;param&gt;元素来传递。<br />
+&lt;id name="id" type="long" column="cat_id"&gt;<br />
+&lt;generator class="org.hibernate.id.TableHiLoGenerator"&gt;<br />
+&lt;param name="table"&gt;uid_table&lt;/param&gt;<br />
+&lt;param name="column"&gt;next_hi_value_column&lt;/param&gt;<br />
+&lt;/generator&gt;<br />
+&lt;/id&gt;<br />
+所有的生成器都实现net.sf.hibernate.id.IdentifierGenerator接口。 这是一个非常简单的接口；某些应用程序可以选择提供他们自己特定的实现。当然， Hibernate提供了很多内置的实现。下面是一些内置生成器的快捷名字：</p>
+
+<p>increment<br />
+用于为long, short或者int类型生成 唯一标识。只有在没有其他进程往同一张表中插入数据时才能使用。 在集群下不要使用。<br />
+identity<br />
+对DB2,MySQL, MS SQL Server, Sybase和HypersonicSQL的内置标识字段提供支持。 返回的标识符是long, short 或者int类型的。<br />
+sequence<br />
+在DB2,PostgreSQL, Oracle, SAP DB, McKoi中使用序列（sequence)， 而在Interbase中使用生成器(generator)。返回的标识符是long, short或者 int类型的。<br />
+hilo<br />
+使用一个高/低位算法高效的生成long, short 或者 int类型的标识符。给定一个表和字段（默认分别是是 hibernate_unique_key 和next_hi）作为高位值的来源。 高/低位算法生成的标识符只在一个特定的数据库中是唯一的。<br />
+seqhilo<br />
+使用一个高/低位算法来高效的生成long, short 或者 int类型的标识符，给定一个数据库序列（sequence)的名字。<br />
+uuid<br />
+用一个128-bit的UUID算法生成字符串类型的标识符， 这在一个网络中是唯一的（使用了IP地址）。UUID被编码为一个32位16进制数字的字符串。<br />
+guid<br />
+在MS SQL Server 和 MySQL 中使用数据库生成的GUID字符串。<br />
+native<br />
+根据底层数据库的能力选择identity, sequence 或者hilo中的一个。<br />
+assigned<br />
+让应用程序在save()之前为对象分配一个标示符。这是 &lt;generator&gt;元素没有指定时的默认生成策略。<br />
+select<br />
+通过数据库触发器选择一些唯一主键的行并返回主键值来分配一个主键。<br />
+foreign<br />
+使用另外一个相关联的对象的标识符。通常和&lt;one-to-one&gt;联合起来使用。</p>
+
+<p>&lt;properties&gt; 元素允许定义一个命名的逻辑分组(grouping)包含一个类中的多个属性。 这个元素最重要的用处是允许多个属性的组合作为property-ref的目标(target)。 这也是定义多字段唯一约束的一种方便途径。</p>
+
+<p>&lt;properties<br />
+name="logicalName"                  (1)<br />
+insert="true|false"                 (2)<br />
+update="true|false"                 (3)<br />
+optimistic-lock="true|false"        (4)<br />
+unique="true|false"                 (5)<br />
+&gt;<br />
+&lt;property ...../&gt;<br />
+&lt;many-to-one .... /&gt;<br />
+........<br />
+&lt;/properties&gt;</p>
+
+<p>(1) name: 分组的逻辑名称 - 不是 实际属性的名称.<br />
+(2) insert: 被映射的字段是否出现在SQL的 INSERT语句中?<br />
+(3) update: 被映射的字段是否出现在SQL的 UPDATE语句中?<br />
+(4) optimistic-lock (可选 - 默认是 true):表明更新此组件是否需要获取乐观锁。换句话说，当这个属性变脏时，是否增加版本号(Version)<br />
+(5) unique (可选 - 默认是 false):表明组件映射的所有字段上都有唯一性约束</p>
+
+<p>&lt;subclass<br />
+name="ClassName"                              (1)<br />
+discriminator-value="discriminator_value"     (2)<br />
+proxy="ProxyInterface"                        (3)<br />
+lazy="true|false"                             (4)<br />
+dynamic-update="true|false"<br />
+dynamic-insert="true|false"<br />
+entity-name="EntityName"<br />
+node="element-name"&gt;<br />
+&lt;property .... /&gt;<br />
+.....<br />
+&lt;/subclass&gt;</p>
+
+<p>(1)name: 子类的全限定名。<br />
+(2)discriminator-value(辨别标志) (可选 - 默认为类名):一个用于区分每个独立的子类的值。<br />
+(3)proxy(代理) (可选): 指定一个类或者接口，在延迟装载时作为代理使用。<br />
+(4)lazy (可选, 默认是true): 设置为 lazy="false" 禁止使用延迟抓取</p>
+
+<p>每个子类都应该定义它自己的持久化属性和子类。 &lt;version&gt; 和&lt;id&gt; 属性可以从根父类继承下来。在一棵继承树上的每个子类都必须定义一个唯一的discriminator-value。如果没有指定，就会使用Java类的全限定名。</p>
+
+<p>可以在单独的映射文件中，直接在hibernate-mapping下定义subclass，union-subclass和joined-subclass映射。这样你只要增加一个新的映射文件就可以继承一棵类继承树。你必须在子类的映射中指定extends 属性来指定已映射的超类。注意：以前，这个特性使得映射文件的顺序变得很重要。从Hibernate3开始，当使用extends关键字的时候，映射文件的次序便不重要了。而在单一映射文件中，依旧需要保持将超类定义在子类之前这样的次序。</p>
+
+<p>&lt;hibernate-mapping&gt;<br />
+&lt;subclass name="DomesticCat" extends="Cat" discriminator-value="D"&gt;<br />
+&lt;property name="name" type="string"/&gt;<br />
+&lt;/subclass&gt;<br />
+&lt;/hibernate-mapping&gt;</p>
+
+<p>连接的子类(joined-subclass)</p>
+
+<p>此外，每个子类可能被映射到他自己的表中(每个子类一个表的策略)。被继承的状态通过和超类的表关联得到。我们使用&lt;joined-subclass&gt;元素。<br />
+&lt;joined-subclass<br />
+name="ClassName"                    (1)<br />
+table="tablename"                   (2)<br />
+proxy="ProxyInterface"              (3)<br />
+lazy="true|false"                   (4)<br />
+dynamic-update="true|false"<br />
+dynamic-insert="true|false"<br />
+schema="schema"<br />
+catalog="catalog"<br />
+extends="SuperclassName"<br />
+persister="ClassName"<br />
+subselect="SQL expression"<br />
+entity-name="EntityName"<br />
+node="element-name"&gt;</p>
+
+<p>&lt;key .... &gt;<br />
+&lt;property .... /&gt;<br />
+.....<br />
+&lt;/joined-subclass&gt;<br />
+(1)name: 子类的全限定名。<br />
+(2)table: 子类的表名.<br />
+(3)proxy (可选): 指定一个类或者接口，在延迟装载时作为代理使用。<br />
+(4)lazy (可选, 默认是 true): 设置为 lazy="false" 禁止使用延迟装载。</p>
+
+<p>这种映射策略不需要指定辨别标志(discriminator)字段。但是，每一个子类都必须使用&lt;key&gt;元素指定一个表字段来持有对象的标识符。本章开始的映射可以被用如下方式重写：</p>
+
+<p>&lt;?xml version="1.0"?&gt;<br />
+&lt;!DOCTYPE hibernate-mapping PUBLIC<br />
+"-//Hibernate/Hibernate Mapping DTD//EN"<br />
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;<br />
+&lt;hibernate-mapping package="eg"&gt;<br />
+&lt;class name="Cat" table="CATS"&gt;<br />
+&lt;id name="id" column="uid" type="long"&gt;<br />
+&lt;generator class="hilo"/&gt;<br />
+&lt;/id&gt;<br />
+&lt;property name="birthdate" type="date"/&gt;<br />
+&lt;property name="color" not-null="true"/&gt;<br />
+&lt;property name="sex" not-null="true"/&gt;<br />
+&lt;property name="weight"/&gt;<br />
+&lt;many-to-one name="mate"/&gt;<br />
+&lt;set name="kittens"&gt;<br />
+&lt;key column="MOTHER"/&gt;<br />
+&lt;one-to-many class="Cat"/&gt;<br />
+&lt;/set&gt;<br />
+&lt;joined-subclass name="DomesticCat" table="DOMESTIC_CATS"&gt;<br />
+&lt;key column="CAT"/&gt;<br />
+&lt;property name="name" type="string"/&gt;<br />
+&lt;/joined-subclass&gt;<br />
+&lt;/class&gt;<br />
+&lt;class name="eg.Dog"&gt;<br />
+&lt;!-- mapping for Dog could go here --&gt;<br />
+&lt;/class&gt;<br />
+&lt;/hibernate-mapping&gt;</p>
+
+<p>联合子类(union-subclass)<br />
+第三种选择是仅仅映射类继承树中具体类部分到表中(每个具体类一张表的策略)。其中，每张表定义了类的所有持久化状态，包括继承的状态。在 Hibernate 中，并不需要完全显式地映射这样的继承树。你可以简单地使用单独的&lt;class&gt;定义映射每个类。然而，如果你想使用多态关联(例如，一个对类继承树中超类的关联)，你需要使用&lt;union-subclass&gt;映射。<br />
+&lt;union-subclass<br />
+name="ClassName"                    (1)<br />
+table="tablename"                   (2)<br />
+proxy="ProxyInterface"              (3)<br />
+lazy="true|false"                   (4)<br />
+dynamic-update="true|false"<br />
+dynamic-insert="true|false"<br />
+schema="schema"<br />
+catalog="catalog"<br />
+extends="SuperclassName"<br />
+abstract="true|false"<br />
+persister="ClassName"<br />
+subselect="SQL expression"<br />
+entity-name="EntityName"<br />
+node="element-name"&gt;</p>
+
+<p>&lt;property .... /&gt;<br />
+.....<br />
+&lt;/union-subclass&gt;<br />
+(1)name: 子类的全限定名。<br />
+(2)table: 子类的表名<br />
+(3)proxy (可选): 指定一个类或者接口，在延迟装载时作为代理使用。<br />
+(4)lazy (可选, 默认是 true): 设置为 lazy="false" 禁止使用延迟装载。<br />
+这种映射策略不需要指定辨别标志(discriminator)字段。</p>
+
+<p>多对一（many-to-one）<br />
+通过many-to-one元素,可以定义一种常见的与另一个持久化类的关联。 这种关系模型是多对一关联（实际上是一个对象引用－译注）：这个表的一个外键引用目标表的 主键字段。<br />
+&lt;many-to-one<br />
+name="propertyName"                                          (1)<br />
+column="column_name"                                         (2)<br />
+class="ClassName"                                            (3)<br />
+cascade="cascade_style"                                      (4)<br />
+fetch="join|select"                                          (5)<br />
+update="true|false"                                          (6)<br />
+insert="true|false"                                          (6)<br />
+property-ref="propertyNameFromAssociatedClass"               (7)<br />
+access="field|property|ClassName"                            (8)<br />
+unique="true|false"                                          (9)<br />
+not-null="true|false"                                        (10)<br />
+optimistic-lock="true|false"                                 (11)<br />
+lazy="true|proxy|false"                                      (12)<br />
+not-found="ignore|exception"                                 (13)<br />
+entity-name="EntityName"                                     (14)<br />
+node="element-name|@attribute-name|element/@attribute|."<br />
+embed-xml="true|false"</p>
+
+<p>/&gt;<br />
+(1) name: 属性名。<br />
+(2) column (可选): 外间字段名。它也可以通过嵌套的 &lt;column&gt;元素指定。<br />
+(3) class (可选 - 默认是通过反射得到属性类型): 关联的类的名字。<br />
+(4) cascade（级联） (可选): 指明哪些操作会从父对象级联到关联的对象。<br />
+(5) fetch (可选 - 默认为 select): 在外连接抓取（outer-join fetching）和序列选择抓取（sequential select fetching）两者中选择其一。<br />
+(6) update, insert (可选 - defaults to true) 指定对应的字段是否包含在用于UPDATE 和/或 INSERT 的SQL语句中。如果二者都是false,则这是一个纯粹的 “外源性（derived）”关联，它的值是通过映射到同一个（或多个）字段的某些其他属性得到 或者通过trigger(触发器）、或其他程序。<br />
+(7) property-ref: (可选) 指定关联类的一个属性，这个属性将会和本外键相对应。 如果没有指定，会使用对方关联类的主键。<br />
+(8) access (可选 - 默认是 property): Hibernate用来访问属性的策略。<br />
+(9) unique (可选): 使用DDL为外键字段生成一个唯一约束。此外， 这也可以用作property-ref的目标属性。这使关联同时具有 一对一的效果。<br />
+(10)not-null (可选): 使用DDL为外键字段生成一个非空约束。<br />
+(11) optimistic-lock (可选 - 默认为 true): 指定这个属性在做更新时是否需要获得乐观锁定（optimistic lock）。 换句话说，它决定这个属性发生脏数据时版本（version）的值是否增长。<br />
+(12) lazy (可选 - 默认为 proxy): 默认情况下，单点关联是经过代理的。lazy="true"指定此属性应该在实例变量第一次被访问时应该延迟抓取（fetche lazily）（需要运行时字节码的增强）。 lazy="false"指定此关联总是被预先抓取。<br />
+(13) not-found (可选 - 默认为 exception): 指定外键引用的数据不存在时如何处理： ignore会将数据不存在作为关联到一个空对象（null）处理。<br />
+(14) entity-name (optional): 被关联的类的实体名。</p>
+
+<p>cascade属性设置为除了none以外任何有意义的值， 它将把特定的操作传播到关联对象中。这个值就代表着Hibernate基本操作的名称， persist, merge, delete, save-update, evict, replicate, lock, refresh， 以及特别的值delete-orphan和all，并且可以用逗号分隔符 来合并这些操作，例如，cascade="persist,merge,evict"或 cascade="all,delete-orphan"。更全面的解释请参考第 11.11 节 “传播性持久化(transitive persistence)”.</p>
+
+<p>一个典型的简单many-to-one定义例子：<br />
+&lt;many-to-one name="product" class="Product" column="PRODUCT_ID"/&gt;<br />
+property-ref属性只应该用来对付老旧的数据库系统， 可能有外键指向对方关联表的是个非主键字段（但是应该是一个惟一关键字）的情况下。 这是一种十分丑陋的关系模型。比如说，假设Product类有一个惟一的序列号， 它并不是主键。（unique属性控制Hibernate通过SchemaExport工具生成DDL的过程。）<br />
+&lt;property name="serialNumber" unique="true" type="string" column="SERIAL_NUMBER"/&gt;<br />
+那么关于OrderItem 的映射可能是：<br />
+&lt;many-to-one name="product" property-ref="serialNumber" column="PRODUCT_SERIAL_NUMBER"/&gt;<br />
+当然，我们决不鼓励这种用法。<br />
+如果被引用的唯一主键由关联实体的多个属性组成，你应该在名称为&lt;properties&gt;的元素 里面映射所有关联的属性。</p>
+
+<p>一对一<br />
+持久化对象之间一对一的关联关系是通过one-to-one元素定义的。<br />
+&lt;one-to-one<br />
+name="propertyName"                                          (1)<br />
+class="ClassName"                                            (2)<br />
+cascade="cascade_style"                                      (3)<br />
+constrained="true|false"                                     (4)<br />
+fetch="join|select"                                          (5)<br />
+property-ref="propertyNameFromAssociatedClass"               (6)<br />
+access="field|property|ClassName"                            (7)<br />
+formula="any SQL expression"                                 (8)<br />
+lazy="true|proxy|false"                                      (9)<br />
+entity-name="EntityName"                                     (10)<br />
+node="element-name|@attribute-name|element/@attribute|."<br />
+embed-xml="true|false"<br />
+/&gt;<br />
+(1) name: 属性的名字。<br />
+(2) class (可选 - 默认是通过反射得到的属性类型)：被关联的类的名字。<br />
+(3) cascade(级联) (可选) 表明操作是否从父对象级联到被关联的对象。<br />
+(4) constrained(约束) (可选) 表明该类对应的表对应的数据库表，和被关联的对象所对应的数据库表之间，通过一个外键引用对主键进行约束。 这个选项影响save()和delete()在级联执行时的先后顺序以及 决定该关联能否被委托(也在schema export tool中被使用).<br />
+(5) fetch (可选 - 默认设置为选择): 在外连接抓取或者序列选择抓取选择其一.<br />
+(6) property-ref: (可选) 指定关联类的属性名，这个属性将会和本类的主键相对应。如果没有指定，会使用对方关联类的主键。<br />
+(7) access (可选 - 默认是 property): Hibernate用来访问属性的策略。<br />
+(8) formula (可选):绝大多数一对一的关联都指向其实体的主键。在一些少见的情况中， 你可能会指向其他的一个或多个字段，或者是一个表达式，这些情况下，你可以用一个SQL公式来表示。 （可以在org.hibernate.test.onetooneformula找到例子）<br />
+(9) lazy (可选 - 默认为 proxy): 默认情况下，单点关联是经过代理的。lazy="true"指定此属性应该在实例变量第一次被访问时应该延迟抓取（fetche lazily）（需要运行时字节码的增强）。 lazy="false"指定此关联总是被预先抓取。注意，如果constrained="false", 不可能使用代理，Hibernate会采取预先抓取！<br />
+(10) entity-name (可选): 被关联的类的实体名。</p>
+
+<p>有两种不同的一对一关联：<br />
+*     主键关联<br />
+*     惟一外键关联<br />
+主键关联不需要额外的表字段；如果两行是通过这种一对一关系相关联的，那么这两行就共享同样的主关键字值。所以如果你希望两个对象通过主键一对一关联，你必须确认它们被赋予同样的标识值！<br />
+比如说，对下面的Employee和Person进行主键一对一关联:<br />
+&lt;one-to-one name="person" class="Person"/&gt;<br />
+&lt;one-to-one name="employee" class="Employee" constrained="true"/&gt;<br />
+现在我们必须确保PERSON和EMPLOYEE中相关的字段是相等的。我们使用一个被成为foreign的特殊的hibernate标识符生成策略：<br />
+&lt;class name="person" table="PERSON"&gt;<br />
+&lt;id name="id" column="PERSON_ID"&gt;<br />
+&lt;generator class="foreign"&gt;<br />
+&lt;param name="property"&gt;employee&lt;/param&gt;<br />
+&lt;/generator&gt;<br />
+&lt;/id&gt;<br />
+...<br />
+&lt;one-to-one name="employee"<br />
+class="Employee"<br />
+constrained="true"/&gt;<br />
+&lt;/class&gt;<br />
+一个刚刚保存的Person实例被赋予和该Person的employee属性所指向的Employee实例同样的关键字值。<br />
+另一种方式是一个外键和一个惟一关键字对应，上面的Employee和Person的例子，如果使用这种关联方式，可以表达成：<br />
+&lt;many-to-one name="person" class="Person" column="PERSON_ID" unique="true"/&gt;<br />
+如果在Person的映射加入下面几句，这种关联就是双向的：<br />
+&lt;one-to-one name"employee" class="Employee" property-ref="person"/&gt;</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Hibernate/2009/05/20/hibernate_association_keys.html'>Hibernate 关联属性详解</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

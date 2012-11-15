@@ -1,0 +1,212 @@
+---
+layout: post
+title: Faceletes模板构建方法
+categories:
+- JSF
+tags:
+- Faceletes
+- templates
+published: true
+comments: true
+---
+<p>Faceletes模板构建方法，这是在公司编写《java培训手册》时候找到的一点资料，这篇文章写得比较好，对新手还是有点帮助，故把其贴出来，和大家分享！
+<h3>基本介绍</h3>
+模板可以让你快速的建立相同页面布局而内部不同的网页，将通用的，不常变化的部分抽取出来放到模板页中，之后由子页面继承模板页面，子页面既具有模板页面的相同特征，可以简化系统的维护难度，降低维护成本。
+<h3>XHTML模板</h3>
+xhtml模板技术是一种动态的模板框架，模板中定义整体风格和占位符，在具体的页面实现中实现占位符的内容即可</p>
+
+<p>（1）使用&lt;ui:insert name="title"/&gt;实现占位符，其中name为占位符的唯一名称，在模板xhtml中</p>
+
+<p>（2）使用&lt;ui:define name="title"&gt;RichFaces Components&lt;/ui:define&gt;实现占位符的内容，写在具体的页面xhtml中<!--more-->
+<h3>标准模板创建示例</h3>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;</p>
+
+<p>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</p>
+
+<p>&lt;!--  xhtml模板头，并登记标签库 --&gt;</p>
+
+<p>&lt;html xmlns="http://www.w3.org/1999/xhtml"</p>
+
+<p>xmlns:ui="http://java.sun.com/jsf/facelets"</p>
+
+<p>xmlns:h="http://java.sun.com/jsf/html"</p>
+
+<p>xmlns:f="http://java.sun.com/jsf/core"</p>
+
+<p>xmlns:a4j="http://richfaces.org/a4j"</p>
+
+<p>xmlns:rich="http://richfaces.org/rich"&gt;</p>
+
+<p>&lt;head&gt;</p>
+
+<p>&lt;!--  定义文档类型 --&gt;</p>
+
+<p>&lt;meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8"/&gt;</p>
+
+<p>&lt;title&gt;</p>
+
+<p>&lt;!--  定义一个标题占位符  --&gt;</p>
+
+<p>&lt;ui:insert name="title"/&gt;</p>
+
+<p>&lt;/title&gt;</p>
+
+<p>&lt;link el="STYLESHEET" type="text/css" href="${facesContext.externalContext.requestContextPath}/css/common.css"/&gt;</p>
+
+<p>&lt;!— 动态加入一个组件  --&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/dynamic-css.xhtml" /&gt;</p>
+
+<p>&lt;/head&gt;</p>
+
+<p>&lt;body&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/header.xhtml" /&gt;</p>
+
+<p>&lt;table class="left_menu" cellpadding="0" cellspacing="0" border="0"&gt;</p>
+
+<p>&lt;tbody&gt;</p>
+
+<p>&lt;tr&gt;</p>
+
+<p>&lt;td&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/references.xhtml" /&gt;</p>
+
+<p>&lt;div class="menu_separator"&gt;</p>
+
+<p>&amp;nbsp;</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>&lt;ui:include src="/templates/include/components-navigation.xhtml" /&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;/tr&gt;</p>
+
+<p>&lt;/tbody&gt;</p>
+
+<p>&lt;/table&gt;</p>
+
+<p>&nbsp;</p>
+
+<p>&lt;h:graphicImage value="#{componentNavigator.currentComponent.captionImage}"</p>
+
+<p>rendered="#{componentNavigator.hasCurrentComponent}" height="40" alt="" border="0" styleClass="component_name"/&gt;</p>
+
+<p>&lt;table cellpadding="0" cellspacing="0" border="0" class="content_container" width="100%"&gt;</p>
+
+<p>&lt;tbody&gt;</p>
+
+<p>&lt;tr&gt;</p>
+
+<p>&lt;td&gt;</p>
+
+<p>&lt;div class="content_container_left_brick"&gt;&lt;/div&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;td width="100%" class="content_container_pdddings"&gt;</p>
+
+<p>&lt;!-- tabpanel begin --&gt;</p>
+
+<p>&lt;ui:insert name="body"&gt;Body&lt;/ui:insert&gt;</p>
+
+<p>&lt;!-- tabpanel end --&gt;</p>
+
+<p>&lt;rich:spacer style="height:10px;" /&gt;</p>
+
+<p>&lt;rich:separator style="height:1px" /&gt;</p>
+
+<p>&lt;div style="float:right;" class="footer-text"&gt;#{environment.version}&lt;/div&gt;</p>
+
+<p>&lt;div style="float:none"&gt;</p>
+
+<p>&lt;a href="http://jboss.com/index.html?module=bb&amp;amp;op=viewtopic&amp;amp;t=104575"</p>
+
+<p>style="color:#000; display:block" &gt;RichFaces. Most Important Links&lt;/a&gt;</p>
+
+<p>&lt;/div&gt;</p>
+
+<p>&lt;/td&gt;</p>
+
+<p>&lt;/tr&gt;</p>
+
+<p>&lt;/tbody&gt;</p>
+
+<p>&lt;/table&gt;</p>
+
+<p>&lt;/body&gt;</p>
+
+<p>&lt;/html&gt;</p>
+
+<p>&nbsp;
+<h3>模板页的构成</h3>
+main.xhtml为主模板页，它可以为四个可变区域，</p>
+
+<p>一个是&lt;ui:insert name="title"&gt;&lt;/ui:insert&gt;用来定义页面的标题</p>
+
+<p>一个是&lt;ui:include src="/templates/include/header.xhtml" /&gt;用来包含页眉</p>
+
+<p>一个是&lt;ui:insert name="body"&gt;&lt;/ui:insert&gt;用来包含具体呈现页面内容</p>
+
+<p>一个是&lt;ui:include src="/templates/include/footer.xhtml" /&gt;用来包含页脚</p>
+
+<p>其中header.xhtml 、footer.xhtml为所有公共的使用，其中 header.xhtml页面中设置具体导航菜单中的页面显示</p>
+
+<p>&lt;li id="home"&gt;</p>
+
+<p>&lt;a href="${facesContext.externalContext.requestContextPath}/index.jspx"&gt;&lt;/a&gt;</p>
+
+<p>&lt;/li&gt;
+<h3>模板页的继承</h3>
+要想在菜单中增加一个页面就继承main.xhtml</p>
+
+<p>指定集成的模块页为 <strong>/templates/main.xhtml</strong></p>
+
+<p>&lt;ui:composition <strong>template="/templates/main.xhtml"</strong></p>
+
+<p>xmlns="http://www.w3.org/1999/xhtml"</p>
+
+<p>xmlns:ui="http://java.sun.com/jsf/facelets"</p>
+
+<p>xmlns:h="http://java.sun.com/jsf/html"</p>
+
+<p>xmlns:f="http://java.sun.com/jsf/core"</p>
+
+<p>xmlns:a4j="http://richfaces.org/a4j"</p>
+
+<p>xmlns:rich="http://richfaces.org/rich"</p>
+
+<p>xmlns:s="http://jboss.com/products/seam/taglib"&gt;</p>
+
+<p>&lt;ui:param name="bodyClass" value="czdt"&gt;&lt;/ui:param&gt;</p>
+
+<p><strong>&lt;ui:define name="title"&gt;-</strong><strong>此部分是子页自定义的部分</strong><strong>&lt;/ui:define&gt;</strong></p>
+
+<p>&lt;/ui:composition&gt;</p>
+
+<p>&nbsp;
+<h3>具体页面应用</h3>
+1 修改页面的标题</p>
+
+<p>找到对应页面的模板页在&lt;ui:define name="title"&gt;-管理&lt;/ui:define&gt;</p>
+
+<p>2 添加菜单项</p>
+
+<p>直接在header.xhtml里增加菜单</p>
+
+<p>3 修改页脚</p>
+
+<p>直接在footer.xhtml里编辑</p>
+
+<p>4 标题相同，相同菜单下的不同呈现页</p>
+
+<p>在设置好对应页面标题好，可以用该页面再做为模板，让其他页面再进行继承。然后根据不同的页面在中&lt;ui:define name="body"&gt;加具体内容&lt;/ui:define&gt;。</p>
+
+<p>5 其他样式扩展。</p>
+
+<p>你可以在继承了模板页面，定义自己的样式和页面结构</p>
+
+<p>&nbsp;</p>

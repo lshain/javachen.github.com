@@ -1,0 +1,46 @@
+---
+layout: post
+title: JavaScript和Java的区别
+categories:
+- Java Core
+tags:
+- Java Core
+- JavaScript
+published: true
+comments: true
+---
+<p><span style="color: #7d7d7d;"><span style="color: #009933;">JavaScript和Java的区别</span></span></p>
+
+<p><span style="color: #7d7d7d;">虽 然JavaScript与Java有紧密的联系，但却是两个公司开发的不同的两个产品。Java是SUN公司推出的新一代面向对象的程序设计语言，特别适 合于Internet应用程序开发；而JavaScript是Netscape公司的产品，其目的是为了扩展Netscape Navigator功能,而开发的一种可以嵌入Web页面中的基于对象和事件驱动的解释性语言, 它的前身是Live Script；而Java的前身是Oak语言。下面对两种语言间的异同作如下比较：<!--more--></span></p>
+
+<p><span style="color: #7d7d7d;">基于对象和面向对象<br />
+Java是一种真正的面向对象的语言，即使是开发简单的程序，必须设计对象。<br />
+JavaScript是种脚本语言，它可以用来制作与网络无关的，与用户交互作用的复杂软件。它是一种基于对象（Object      Based）和事件驱动（Event Driver）的编程语言。因而它本身提供了非常丰富的内部对象供设计人员使用。<br />
+解释和编译<br />
+两种语言在其浏览器中所执行的方式不一样。Java的源代码在传递到客户端执行之前，必须经过编译，因而客户端上必须具有相应平台上的仿真器或解释器，它可以通过编译器或解释器实现独立于某个特定的平台编译代码的束缚。<br />
+JavaScript是一种解释性编程语言，其源代码在发往客户端执行之前不需经过编译，而是将文本格式的字符代码发送给客户编由浏览器解释执行。<br />
+强变量和弱变量<br />
+两种语言所采取的变量是不一样的。<br />
+Java采用强类型变量检查，即所有变量在编译之前必须作声明。如:<br />
+Integer x;<br />
+String y;<br />
+x=1234;<br />
+x=4321;</span></p>
+
+<p><span style="color: #7d7d7d;">其中X=1234说明是一个整数，Y=4321说明是一个字符串。<br />
+JavaScript中变量声明，采用其弱类型。即变量在使用前不需作声明，而是解释器在运行时检查其数据类型，如：</span></p>
+
+<p><span style="color: #7d7d7d;">x=1234;</span></p>
+
+<p><span style="color: #7d7d7d;">y＝"4321";</span></p>
+
+<p><span style="color: #7d7d7d;">前者说明x为其数值型变量，而后者说明y为字符型变量。</span></p>
+
+<p><span style="color: #7d7d7d;">代码格式不一样<br />
+Java是一种与HTML无关的格式，必须通过像HTML中引用外媒体那么进行装载，其代码以字节代码的形式保存在独立的文档中。<br />
+JavaScript的代码是一种文本字符格式，可以直接嵌入HTML文档中，并且可动态装载。编写HTML文档就像编辑文本文件一样方便。<br />
+嵌入方式不一样<br />
+在HTML文档中，两种编程语言的标识不同，JavaScript使用&lt;Script&gt;...&lt;/Script&gt;来标识，而Java使用&lt;applet&gt;...&lt;/applet&gt;来标识。<br />
+静态联编和动态联编<br />
+Java采用静态联编，即Java的对象引用必须在编译时的进行，以使编译器能够实现强类型检查。<br />
+JavaScript采用动态联编，即JavaScript的对象引用在运行时进行检查，如不经编译则就无法实现对象引用的检查。 </span></p>

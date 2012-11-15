@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Struts 2.0中的Action</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>29 Nov 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Struts/2009/11/29/struts-2-0-action.html'>Struts 2.0中的Action</a></h1>
+  <div class='body'><p><img class="alignright size-full wp-image-675" title="itman" src="http://www.javachen.com/wp-content/uploads/2009/11/itman.gif" alt="itman" width="100" height="67" />和Struts 1.x一样，Struts 2.0中的Action类是其核心内容，只是两者在Action模型上有很大的区别。
+<table style="border-top: 2px solid #008000; border-bottom: 2px solid #008000; text-align: left;" border="0" cellspacing="0" cellpadding="4">
+<tbody>
+<tr>
+<td style="border-bottom: 1px solid #008000; font-weight: bold; height: 21px; background-color: #ccffcc;"></td>
+<td style="border-bottom: 1px solid #008000; font-weight: bold; height: 21px; background-color: #ccffcc;">Struts 1.x</td>
+<td style="border-bottom: 1px solid #008000; font-weight: bold; height: 21px; background-color: #ccffcc;">Stuts 2.0</td>
+</tr>
+<tr>
+<td>接口</td>
+<td>必须继承org.apache.struts.action.Action或者其子类</td>
+<td>无须继承任何类型或实现任何接口</td>
+</tr>
+<tr>
+<td>表单数据</td>
+<td>表单数据封装在FormBean中</td>
+<td>表单数据包含在Action中，通过Getter和Setter获取</td>
+</tr>
+</tbody>
+</table>
+理论上Struts 2.0的Action无须实现任何接口或继承任何类型，但是，我们为了方便实现Action，大多数情况下都会继承 com.opensymphony.xwork2.ActionSupport类，并重载（Override）此类里的String execute()方法。<!--more--></p>
+
+<p>参考API，可发现<a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/ActionSupport.html">ActionSupport</a>类实现了接口：
+<ul>
+	<li><a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/Action.html">com.opensymphony.xwork2.Action</a></li>
+	<li><a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/LocaleProvider.html">com.opensymphony.xwork2.LoaleProvider</a></li>
+	<li><a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/TextProvider.html">com.opensymphony.xwork2.TextProvider</a></li>
+	<li><a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/Validateable.html">com.opensymphony.xwork2.Validateable</a></li>
+	<li><a href="http://www.opensymphony.com/webwork/api/com/opensymphony/xwork/ValidationAware.html">com.opensymphony.xwork2.ValidationAware</a></li>
+	<li>com.uwyn.rife.continuations.ContinuableObject</li>
+	<li><a href="http://java.sun.com/j2se/1.4/docs/api/java/io/Serializable.html">java.io.Searializable</a></li>
+	<li><a href="http://java.sun.com/j2se/1.4/docs/api/java/lang/Cloneable.html">java.lang.Cloneable</a></li>
+</ul>
+默认情况下，当请求一个action发生时，Struts运行时（Runtime）根据struts.xml里的Action映 射集(Mapping)，实例化action类，并调用其execute方法。当然，我们可以通过以下两种方法改变这种默认调 用。这个功能（Feature）有点类似Struts 1.x中的LookupDispathAction。
+<ol>
+	<li>在classes/sturts.xml中新建Action，并指明其调用的方法；</li>
+	<li>在Action增加一个方法，访问Action时，在Action名后加上“!xxx”（xxx为方法名）</li>
+</ol>
+实现方法一，在classes/sturts.xml中加入下面代码：
+<div style="border: 1px solid #cccccc; padding: 4px 5px 4px 4px; font-size: 13px; width: 98%; background-color: #eeeeee;" /></p>
+
+<p><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">action </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="actionName"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="actionClass"</span><span style="color: #ff0000;"> method</span><span style="color: #0000ff;">="aliasAction"</span><span style="color: #0000ff;">&gt;</span></p>
+
+<p><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">/index.jsp</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">result</span><span style="color: #0000ff;">&gt;</span></p>
+
+<p><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">action</span><span style="color: #0000ff;">&gt;</span></p>
+
+<p>
+实现方法二，在浏览器地址栏中键入http://localhost:8080/Struts2/Alias<span style="color: #0000ff;">actionName</span>.action或 http://localhost:8080/Struts2/<span style="color: #0000ff;">actionName</span>!aliasAction.action地址来访问<span style="color: #0000ff;">actionName </span>Action。</p>
+
+<p>ActionSupport类中<span id="Codehighlighter1_165_389_Open_Text"><span style="color: #000000;">execute()的返回值</span></span>有SUCCESS，ERROR，INPUT，LOGIN，NONE四种，这些常量定义在其接口Action类中。</p>
+
+<p>public interface Action{</p>
+
+<p>//下面定义了5个字符串常量</p>
+
+<p>public static final String SUCCESS = "success";</p>
+
+<p>public static final String NONE = "none";</p>
+
+<p>public static final String ERROR = "error";</p>
+
+<p>public static final String INPUT = "input";</p>
+
+<p>public static final String LOGIN = "login";</p>
+
+<p>//定义处理用户请求的execute抽象方法</p>
+
+<p>public String execute() throws Exception;</p>
+
+<p>}</p>
+
+<p>值得一提的是Struts 2.0中的result不仅仅是Struts 1.x中forward的别名，它可以实现除forward外的很激动人心的功能，如将Action输出到FreeMaker模板、Velocity模 板、JasperReports和使用XSL转换等。这些都过result里的type（类型）属性（Attribute）定义的。另外，您还可以自定义 result类型。</p>
+
+<p>Struts 2.0还可以支持更高级的POJO访问，可以将一些实体类从action中分离出来。这样对我们开发多层系统尤其有用。它可以使系统结构更清晰。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Struts/2009/11/29/struts-2-0-action.html'>Struts 2.0中的Action</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

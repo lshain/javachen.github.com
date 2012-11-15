@@ -1,0 +1,116 @@
+---
+layout: post
+title: First Servlet Application
+categories:
+- JSP
+tags:
+- JSP
+- Servlet
+- tomcat
+published: true
+comments: true
+---
+<p><strong>1.安装使用Tomcat .</strong>
+1, 下载 www.apache.org<br />
+2, 将tomcat 目录拷贝到自己的主目录中 .<br />
+3, JAVA_HOME=指定JDK的安装目录 .<br />
+PATH=$JAVA_HOME/bin:A:B:C<br />
+CLASSPATH=servlet-api.jar:jsp-api.jar<br />
+4, 修改tomcat的权限 :<br />
+a,进入tomcat的目录 .<br />
+ls  -l<br />
+b, 进入tomcat 的 bin 子目录 .<br />
+ls<br />
+chmod  a+x   * (一定在bin目录中执行)<br />
+./catalina.sh  run ( command not found )
+<!--more-->
+打开主页：  http://localhost:8080</p>
+
+<p><strong>2.tomcat目录下的文件说明</strong>
+$TOMCAT:/<br />
+|- bin : 用于存放可执行命令( catalina.sh )<br />
+|- conf : 用于存放tomcat需要的配置文件.<br />
+|- lib : 存放tomcat在运行时要用到的类文件.<br />
+jsp-api.jar<br />
+servlet-api.jar<br />
+|- webapps<br />
+|- logs : 日志文件 .<br />
+|- work : 内部临时文件.<br />
+|- temp : 临时文件.<br />
+===============================================</p>
+
+<p>webapps目录下文件夹说明：<br />
+$Tomcat/<br />
+|- webapps/<br />
+|- a<br />
+|- b<br />
+|- servletapp ( root )/<br />
+|- WEB-INF/<br />
+|- classes (*.class)<br />
+|- lib     (*.jar )<br />
+|- web.xml ( 部署描述符 )<br />
+=================================================</p>
+
+<p><strong>3.创建自己的web应用 .</strong>
+1),在webapps中创建一个属于自己的根目录<br />
+2),在应用的根下,创建 WEB-INF 的目录结构.<br />
+3),将servlet的包结构和类文件拷贝到classes目录中.<br />
+4),在配置文件中( web.xml )对servlet进行配置.<br />
+http://localhost:8989/servletapp/showDate<br />
+===============================================<br />
+1) coding implements Servlet<br />
+2) deploy<br />
+a, 建立web应用的目录结构 .<br />
+b, 确保类文件和包结构在classes中 .<br />
+c, web.xml<br />
+===========================================<br />
+GenericServlet implements Servlet</p>
+
+<p><strong>4.第一个servlet程序</strong>
+<pre lang="java">
+package com.kettas.servlet;</pre></p>
+
+<p>import javax.servlet.*;<br />
+import java.io.*;<br />
+import java.util.Date;</p>
+
+<p>public class ShowDate extends GenericServlet{<br />
+	@Override<br />
+	public void service(ServletRequest servlet, ServletResponse response)<br />
+                  throws ServletException, IOException {<br />
+		response.setContentType("text/html");<br />
+		PrintWriter out=response.getWriter();<br />
+		out.println("<html>");<br />
+		out.println("<body><h1><font color="\\"blue\">");<br />
+		out.println(new Date()+"</font>");<br />
+		out.println("</h1></body></html>");<br />
+		out.flush();<br />
+      }<br />
+}
+
+================================================================<br />
+web.xml：
+<pre lang="xml">
+< ?xml version="1.0" encoding="ISO-8859-1"?>
+<web -app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5"> 
+  <servlet>
+    </servlet><servlet -name>date</servlet>
+    <servlet -class>com.kettas.servlet.ShowDate</servlet>
+  </pre></p>
+
+<p>  <servlet -mapping>
+    </servlet><servlet -name>date</servlet>
+      <url -pattern>/show</url>
+  
+
+
+在浏览器里输入http://localhost:8080/servletExample1/show，查看servlet程序。<br />
+其中URL地址访问servlet是参考<url -pattern>标签里的内容。</url></p>
+
+<p><strong>说明：</strong>
+1.servlet－name为任意名字，但个名字须一致。<br />
+2.url-pattern 后的url必须以根目录/开始，不能写url全称,同样这里，可以随意取名！
+</p>

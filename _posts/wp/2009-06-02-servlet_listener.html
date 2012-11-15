@@ -1,0 +1,51 @@
+---
+layout: post
+title: Servlet 事件及监听器
+categories:
+- JSP
+tags:
+- JSP
+- Servlet
+published: true
+comments: true
+---
+<p>Web应用程序生命周期事件及监听器(Servlet V2.3版本以后新增功能)<br />
+1. 什么是事件监听器?<br />
+1) 支持ServletContext、HttpSession(since v2.3)及ServletRequest(since v2.4)中状态改变的事件通知;<br />
+2) 实现了一个或多个servlet事件监听器接口的类型;<br />
+3) 控制ServletContext、HttpSession(since v2.3)及ServletRequest(since v2.4)中的生命周期;</p>
+
+<p>2. Servlet Context事件监听器<br />
+1) 对于应用程序而言在JVM层别管理资源或保存状态<br />
+2) 有二种类型的事件监听器：<br />
+a. ServletContextListener(以下是该监听器的方法)<br />
+contextDestroyed(ServletContextEvent sce)<br />
+contextInitialized(ServletContextEvent sce)<br />
+b. ServletContextAttributeListener(以下是该监听器的方法)<br />
+attributeAdded(ServletContextAttributeEvent scab)<br />
+attributeRemoved(ServletContextAttributeEvent scab)<br />
+attributeReplaced(ServletContextAttributeEvent scab)
+<!--more-->3. HTTP Session事件监听器<br />
+1) 管理从同一个客户端或用户向一个Web应用程序发出的一系列请求相关的状态或资源;<br />
+2) 有二种类型的事件监听器:<br />
+a. HttpSessionListener(以下是该监听器的方法)<br />
+sessionCreated(HttpSessionEvent se)<br />
+sessionDestroyed(HttpSessionEvent se)<br />
+b. HttpSessionAttributeListener(以下是该监听器的方法)<br />
+attributeAdded(HttpSessionBindingEvent se)<br />
+attributeRemoved(HttpSessionBindingEvent se)<br />
+attributeReplaced(HttpSessionBindingEvent se)</p>
+
+<p>4. Servlet Requst事件监听器<br />
+1) 管理整个request生命周期的状态<br />
+2) 有二种类型的事件监听器<br />
+a. ServletRequestListener(以下是该监听器的方法)<br />
+requestDestroyed(ServletRequestEvent sre)<br />
+requestInitialized(ServletRequestEvent sre)<br />
+b. ServletRequestAttributeListener(以下是该监听器的方法)<br />
+attributeAdded(ServletRequestAttributeEvent srae)<br />
+attributeRemoved(ServletRequestAttributeEvent srae)<br />
+attributeReplaced(ServletRequestAttributeEvent srae)</p>
+
+<p>5. 监听器类的规定<br />
+答：1) 必须在部署描述符中配置实现类;</p>

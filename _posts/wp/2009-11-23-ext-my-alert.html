@@ -1,0 +1,50 @@
+---
+layout: post
+title: Ext自定义弹出窗口
+categories:
+- Extjs
+tags:
+- alert
+- Extjs
+published: true
+comments: true
+---
+<p>Ext中用alert弹出提示窗口后，每次都要点确定，非常不友好，要是能够每次弹出窗口，不用点确定，窗口自动消失，就好了！实际上，用Ext也可以实现这样的功能，如下：<!--more-->
+<pre lang="javascript" line="1">
+Ext.namespace('Ext.ux');
+Ext.ux.MessageBox = function() {
+    var msgCt;</pre></p>
+
+<p>    function createBox(t, s) {<br />
+        return [<br />
+                '<div class="msg">',<br />
+                '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',<br />
+                '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><h3>',<br />
+                t,<br />
+                '</h3>',<br />
+                s,<br />
+                '</div></div></div>',<br />
+                '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',<br />
+                '</div>'].join('');<br />
+    }<br />
+    return {<br />
+        msg : function(title, format) {<br />
+            if (!msgCt) {<br />
+                msgCt = Ext.DomHelper.insertFirst(document.body, {<br />
+                    id : 'msg-div',<br />
+                    style : 'position:absolute;width: 230px;z-index:10001'<br />
+                }, true);<br />
+            }<br />
+            var s = String.format.apply(String, Array.prototype.slice.call(<br />
+                    arguments, 1));<br />
+            var m = Ext.DomHelper.append(msgCt, {<br />
+                html : createBox(title, s)<br />
+            }, true);<br />
+            msgCt.alignTo(document, 't-t');<br />
+            m.slideIn('t').pause(1.5).ghost("t", {<br />
+                remove : true<br />
+            });<br />
+        }<br />
+    };<br />
+}();
+</p>

@@ -1,0 +1,103 @@
+---
+layout: post
+title: prototype.js 源码之Prototype
+categories:
+- JavaScript
+tags:
+- chrome
+- Firefox
+- IE
+- opera
+- prototype
+- userAgent
+published: true
+comments: true
+---
+<p>Prototype is a JavaScript Framework that aims to ease development of dynamic web applications.<br />
+Featuring a unique, easy-to-use toolkit for class-driven development and the nicest Ajax library around, Prototype is quickly becoming the codebase of choice for web application developers everywhere.<br />
+Prototype是一个致力于动态Web应用的开发的JavaScript框架。之前学校jquery源码，无意之中看到了Prototype，于是想看看Prototype是怎样实现的，顺便熟悉javascript的Prototype的概念。
+<!--more-->
+Prototype（1.61版本）源码第一部分就是Prototype的定义：
+<pre lang="javascript">var Prototype = {
+  Version: '1.6.1',</pre></p>
+
+<p>  Browser: (function(){<br />
+    var ua = navigator.userAgent;<br />
+	//opera浏览器为window定义了一个window.opera的属性，可以通过它来判断浏览器是否为opera。<br />
+    var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';<br />
+    return {<br />
+   //而ie浏览器是通过对attachEvent这个私有的事件绑定方法的判断来实现的，由于opera也支持attachEvent，<br />
+    //所以又进行了!isOpera的判断<br />
+      IE:             !!window.attachEvent &amp;&amp; !isOpera,<br />
+      Opera:          isOpera,<br />
+      WebKit:         ua.indexOf('AppleWebKit/') &gt; -1,<br />
+      Gecko:          ua.indexOf('Gecko') &gt; -1 &amp;&amp; ua.indexOf('KHTML') === -1,<br />
+      MobileSafari:   /Apple.*Mobile.*Safari/.test(ua)<br />
+    }<br />
+  })(),</p>
+
+<p>  BrowserFeatures: {<br />
+  	//判断浏览器是否支持w3c提供的元素选择器<br />
+    XPath: !!document.evaluate,<br />
+	//是否支持w3c提供的元素css模式查找功能<br />
+    SelectorsAPI: !!document.querySelector,<br />
+	//元素是否可以扩展<br />
+     ElementExtensions: (function() {<br />
+	 //构造函数为element和HTMLElement,ie隐藏了HTMLElement这个类，不能通过代码访问<br />
+      var constructor = window.Element || window.HTMLElement;<br />
+	  //检查当前浏览器是否支持对元素的原型的扩展<br />
+      return !!(constructor &amp;&amp; constructor.prototype);<br />
+    })(),<br />
+    //是否支持特定的元素扩展<br />
+    SpecificElementExtensions: (function() {<br />
+     //ie6和ie7不可访问HTMLDivElement，ie8和标准浏览器可以对这个类进行扩展，它继承自HTMLElement<br />
+      if (typeof window.HTMLDivElement !== 'undefined')<br />
+        return true;</p>
+
+<p>      var div = document.createElement('div');<br />
+      var form = document.createElement('form');<br />
+      var isSupported = false;</p>
+
+<p>	  //检查是否支持__proto__属性,firefox,safari,chrome提供了对prototype对象的访问<br />
+      if (div['__proto__'] &amp;&amp; (div['__proto__'] !== form['__proto__'])) {<br />
+        isSupported = true;<br />
+      }</p>
+
+<p>	  //释放创建出来的临时元素<br />
+      div = form = null;</p>
+
+<p>      return isSupported;<br />
+    })()<br />
+  },</p>
+
+<p>  //匹配script标签的内容的正则字符串<br />
+  ScriptFragment: ']*&gt;([\\S\\s]*?)&lt;\/script&gt;',<br />
+  //json过滤<br />
+  JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,<br />
+  //空函数<br />
+  emptyFunction: function() { },<br />
+  K: function(x) { return x }<br />
+};
+关于源码的分析网上有很多，上面代码的分析就基本上来自于这篇文章【<a href="http://www.cnblogs.com/yqstudy/archive/2009/12/14/1623984.html">prototype.js 源码学习笔记（一）</a>】<br />
+这一部分内容主要应该就是浏览器判断和prototype版本号的体现。关于浏览器的判断可以参考我之前写过的一篇文章：【<a href="http://www.javachen.com/2010/02/javascript-navigator-type-check/">JavaScript判断浏览器类型及版本</a>】，这篇文章里列出了各种浏览器的特征及其userAgent，根据userAgent就可以区分出不同的浏览器。<br />
+CSS最佳实践就有一点说用特性判断而非浏览器判断，以下就一些特性来区分不同的浏览器。在Prototype的源码中，是通过浏览器各自具有的特性来判断浏览器的类型的。
+<ul>
+	<li> opera浏览器为window定义了一个window.opera的属性，可以通过它来判断浏览器是否为opera。</li>
+	<li> ie浏览器是通过对attachEvent这个私有的事件绑定方法的判断来实现的，由于opera也支持attachEvent，所以又进行了!isOpera的判断。</li>
+	<li> 后面的几个浏览器判断是根据各个浏览器的userAgent来判断的，firefox用的是gecko,safari用的是webkit，chrome则是在webkit和gecko基础上开发的。safari和 chrome可以通过浏览器信息查找到字符串"KHTML"，firefox和chrome可以查找到字符串"gecko",所以可以通过"gecko","KHTML"这几个字符串来区分它们。</li>
+</ul>
+<span style="color: #3366ff;"><strong>Object.prototype.toString.call(window.opera) == '[object Opera]'</strong></span>
+该代码的意思是把Object的toString放到window.opera对象上使用，看其toString方法的结果是否等于'[object Opera]'，关于call 方法的使用，可以参考这篇文章:【<a href="http://www.javachen.com/2010/02/javascript-call-and-apply/">JavaScript 中的 call与apply</a>】</p>
+
+<p><strong><span style="color: #3366ff;">XPath: !!document.evaluate</span></strong>
+!!用来判断某对象是否有某一方法，上例子中如果浏览器不支持document.evaluate方法，那么document.evaluate就会为undefined，而对undefine取反就为false，再一次取反从其结果就知道该对象是否支持某一方法。这样的判断方式比起if else语句，真是要精简巧妙许多！</p>
+
+<p><strong><span style="color: #3366ff;">window.Element || window.HTMLElement</span></strong>
+Element除了ie6和ie7其他浏览器都支持（包括ie8），但一个诡异的问题就出了，因为HTMLElement是继承自Element(参考这里：http://www.cnblogs.com/LongWay/archive/2008/10/08/1305952.html)，按常理来说支持访问Element就应该也支持对HTMLElement的访问，但是ie8访问HTMLElement却返回"undefined"。我在ie8下alert  window.Element 和window.HTMLElement，其结果都为undefined
+<a href="http://www.javachen.com/wp-content/uploads/2010/09/HTMLElementInIE.jpg"><img class="aligncenter size-medium wp-image-1842" title="HTMLElementInIE" src="http://www.javachen.com/wp-content/uploads/2010/09/HTMLElementInIE-300x285.jpg" alt="" width="300" height="285" /></a>
+在DOM标准中，每个HTML元素都是继承自HTMLElement。在IE中将HTMLElement这个类隐藏了，咱们不能直接访问到这个类。除了ie而外的浏览器都能够访问到HTMLElement这个类。</p>
+
+<p><span style="color: #3366ff;"><strong>参考文档：</strong></span>
+document.evaluate方法的参考见这里<a href="http://liudaoru.javaeye.com/blog/129748">http://liudaoru.javaeye.com/blog/129748</a>
+SelectorsAPI属性参考资料<a href="http://blog.darkthread.net/blogs/darkthreadtw/archive/2008/04/16/document-queryselector-in-ie8.aspx">http://blog.darkthread.net/blogs/darkthreadtw/archive/2008/04/16/document-queryselector-in-ie8.aspx</a>
+ElementExtensions是检查浏览器是否可以访问Element或者HTMLElement类，参考这里：<a href="http://www.cnblogs.com/LongWay/archive/2008/10/08/1305952.html">http://www.cnblogs.com/LongWay/archive/2008/10/08/1305952.html</a></p>

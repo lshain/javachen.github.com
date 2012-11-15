@@ -1,0 +1,28 @@
+---
+layout: post
+title: DWR 的 util.addRows() 函数的使用
+categories:
+- DWR
+tags:
+- DWR
+published: true
+comments: true
+---
+<p>util.addRows(id, array, cellfuncs, [options]);</p>
+
+<p>描述:<br />
+向指定id的table元素添加行。它使用数组中的每一个元素(对象)在table中创建一行。然后用 cellfuncs 数组中的对应的函数创建一个列。单元格是依次用 cellfunc 根据没有数组中的元素创建出来的。</p>
+
+<p>DWR1.1开始，addRows()也可以用对象(遍历对象的属性创建行)做为数据。如果你用一个对象代替一个数组来创建单元格，这个对象会被传递给cell函数。</p>
+
+<p>参数(前三个函数 id, array, cellfuncs 是必须的):</p>
+
+<p>id: table元素的id(最好是tbody元素的id)<br />
+array: 数组(DWR1.1以后可以是对象，这种用法会有代码说明)，做为更新表格数据。<br />
+cellfuncs: 函数数组，从传递过来的行数据中提取单元格数据。每个函数对应于一列</p>
+
+<p>options: 一个包含选项的对象(见下面)<br />
+选项包括:<br />
+rowCreator: 一个用来创建行的函数(例如，你希望个tr加个css). 默认是返回一个document.createElement("tr")<br />
+cellCreator: 一个用来创建单元格的函数(例如，用th代替td). 默认返回一个document.createElement("td")<br />
+escapeHtml: true 或 false，设定是忽略创建列时 cellfunc 函数中返回的 HTML 代码，默认为 true</p>

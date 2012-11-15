@@ -1,0 +1,77 @@
+---
+layout: post
+title: Ext监控回车按键
+categories:
+- Extjs
+tags:
+- Enter
+- Extjs
+published: true
+comments: true
+---
+<p>listeners : {<br />
+specialkey : function(field, e) {<br />
+if (e.getKey() == Ext.EventObject.ENTER) {<br />
+searchByFilter();<br />
+}
+}<br />
+}</p>
+
+<p>这是以监听器的方式添加监听事件，还有一种方法与此差不多：</p>
+
+<p>keys : {<br />
+key : Ext.EventObject.ENTER,<br />
+fn : function(btn, e) {<br />
+searchData();<br />
+}
+}<!--more--></p>
+
+<p>比如，我想设置在表单内单击回车执行submit提交，就可以这样做，下面是一个实例：
+<div style="font-family: &quot;[object HTMLOptionElement]&quot;,&quot;Consolas&quot;,&quot;Lucida Console&quot;,&quot;Courier New&quot;; color: #000000;"><span style="color: #008800; font-style: italic;">01 </span> <span style="color: #000080; font-weight: bold;">var</span> <span style="color: #000000;">loginForm</span> <span style="color: #000000;">=</span> <span style="color: #000080; font-weight: bold;">new</span> <span style="color: #000000;">Ext</span><span style="color: #000000;">.</span><span style="color: #000000;">form</span><span style="color: #000000;">.</span><span style="color: #000000;">FormPanel</span><span style="color: #000000;">({</span>
+<span style="color: #008800; font-style: italic;">02 </span> <span style="color: #000000;">labelWidth</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">80</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">03 </span> <span style="color: #000000;">frame</span> <span style="color: #000000;">:</span> <span style="color: #000080; font-weight: bold;">true</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">04 </span> <span style="color: #000000;">title</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'用户登陆'</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">05 </span> <span style="color: #000000;">bodyStyle</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'padding:5px 5px 0'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">06 </span> <span style="color: #000000;">width</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">370</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">07 </span> <span style="color: #000000;">layout</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'form'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">08 </span> <span style="color: #000000;">onSubmit</span> <span style="color: #000000;">:</span> <span style="color: #000000;">Ext</span><span style="color: #000000;">.</span><span style="color: #000000;">emptyFn</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">09 </span> <span style="color: #000000;">defaultType</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'textfield'</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">10 </span> <span style="color: #000000;">submit</span> <span style="color: #000000;">:</span> <span style="color: #000080; font-weight: bold;">function</span>() <span style="color: #000000;">{</span>
+<span style="color: #008800; font-style: italic;">11 </span> <span style="color: #000000;">loginForm</span><span style="color: #000000;">.</span><span style="color: #000000;">getForm</span><span style="color: #000000;">().</span><span style="color: #000000;">getEl</span><span style="color: #000000;">().</span><span style="color: #000000;">dom</span><span style="color: #000000;">.</span><span style="color: #000000;">action</span> <span style="color: #000000;">=</span> BP
+<span style="color: #008800; font-style: italic;">12 </span> <span style="color: #000000;">+</span> <span style="color: #0000ff;">'j_acegi_security_check'</span>;
+<span style="color: #008800; font-style: italic;">13 </span> <span style="color: #000000;">loginForm</span><span style="color: #000000;">.</span><span style="color: #000000;">getForm</span><span style="color: #000000;">().</span><span style="color: #000000;">getEl</span><span style="color: #000000;">().</span><span style="color: #000000;">dom</span><span style="color: #000000;">.</span><span style="color: #000000;">submit</span>();
+<span style="color: #008800; font-style: italic;">14 </span> <span style="color: #000000;">}</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">15 </span> <span style="color: #000000;">items</span> <span style="color: #000000;">:</span> <span style="color: #000000;">[{</span>
+<span style="color: #008800; font-style: italic;">16 </span> <span style="color: #000000;">fieldLabel</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'帐户'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">17 </span> <span style="color: #000000;">name</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'j_username'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">18 </span> <span style="color: #000000;">width</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">200</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">19 </span> <span style="color: #000000;">allowBlank</span> <span style="color: #000000;">:</span> <span style="color: #000080; font-weight: bold;">false</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">20 </span> <span style="color: #000000;">vtypeText</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'帐户不能为空'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">21 </span> <span style="color: #000000;">validateOnBlur</span><span style="color: #000000;">:</span><span style="color: #000080; font-weight: bold;">true</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">22 </span> <span style="color: #000000;">tabIndex</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">1</span>
+<span style="color: #008800; font-style: italic;">23 </span> <span style="color: #000000;">}</span><span style="color: #000000;">,</span> <span style="color: #000000;">{</span>
+<span style="color: #008800; font-style: italic;">24 </span> <span style="color: #000000;">fieldLabel</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'密码'</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">25 </span> <span style="color: #000000;">width</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">200</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">26 </span> <span style="color: #000000;">validateOnBlur</span><span style="color: #000000;">:</span><span style="color: #000080; font-weight: bold;">true</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">27 </span> <span style="color: #000000;">name</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'j_password'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">28 </span> <span style="color: #000000;">inputType</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'password'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">29 </span> <span style="color: #000000;">tabIndex</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">2</span>
+<span style="color: #f810b0;">30 </span> <span style="color: #000000;">}]</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">31 </span> <span style="color: #000000;">keys</span><span style="color: #000000;">:</span><span style="color: #000000;">{</span>
+<span style="color: #008800; font-style: italic;">32 </span> <span style="color: #000000;">key</span><span style="color: #000000;">:</span><span style="color: #000000;">Ext</span><span style="color: #000000;">.</span><span style="color: #000000;">EventObject</span><span style="color: #000000;">.</span><span style="color: #000000;">ENTER</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">33 </span> <span style="color: #000000;">fn</span><span style="color: #000000;">:</span><span style="color: #000080; font-weight: bold;">function</span>(<span style="color: #000000;">btn</span><span style="color: #000000;">,</span><span style="color: #000000;">e</span><span style="color: #000000;">){</span>
+<span style="color: #008800; font-style: italic;">34 </span> <span style="color: #000000;">loginForm</span><span style="color: #000000;">.</span><span style="color: #000000;">getForm</span><span style="color: #000000;">().</span><span style="color: #000000;">submit</span>();
+<span style="color: #f810b0;">35 </span> <span style="color: #000000;">}</span>
+<span style="color: #008800; font-style: italic;">36 </span> <span style="color: #000000;">}</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">37 </span> <span style="color: #000000;">buttons</span> <span style="color: #000000;">:</span> <span style="color: #000000;">[{</span>
+<span style="color: #008800; font-style: italic;">38 </span> <span style="color: #000000;">text</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'登陆'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">39 </span> <span style="color: #000000;">type</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'submit'</span><span style="color: #000000;">,</span>
+<span style="color: #f810b0;">40 </span> <span style="color: #000000;">tooltip</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'Login'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">41 </span> <span style="color: #000000;">clickEvent</span> <span style="color: #000000;">:</span> <span style="color: #0000ff;">'click'</span><span style="color: #000000;">,</span>
+<span style="color: #008800; font-style: italic;">42 </span> <span style="color: #000000;">handler</span> <span style="color: #000000;">:</span> <span style="color: #000080; font-weight: bold;">function</span>() <span style="color: #000000;">{</span>
+<span style="color: #008800; font-style: italic;">43 </span> <span style="color: #000000;">loginForm</span><span style="color: #000000;">.</span><span style="color: #000000;">getForm</span><span style="color: #000000;">().</span><span style="color: #000000;">submit</span>();
+<span style="color: #008800; font-style: italic;">44 </span>
+<span style="color: #f810b0;">45 </span> <span style="color: #000000;">}</span>
+<span style="color: #008800; font-style: italic;">46 </span>
+<span style="color: #008800; font-style: italic;">47 </span> <span style="color: #000000;">}]</span>
+<span style="color: #008800; font-style: italic;">48 </span> <span style="color: #000000;">});</span></div></p>

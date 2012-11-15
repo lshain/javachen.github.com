@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>JSP自定义日历标签</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>10 Jun 2009</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/JSP/2009/06/10/jsp_calendar.html'>JSP自定义日历标签</a></h1>
+  <div class='body'><p><p><strong>1.配置文件：</strong><br />
+将jstl.jar和standard.jar两jar包配置到WEB－INF下的lib目录或是根目录下的lib目录下。<br />
+<strong>2.配置tld文件</strong><br />
+<font color="red">calendar.tld －－－>文件名任意</font></p>
+<pre lang="xml">
+< ?xml version="1.0" encoding="UTF-8"?>
+< !DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+    <tlib -version>1.0</tlib>
+    <jsp -version>2.0</jsp>
+    <short -name>jr</short>
+    <uri>calendar@huaiyu.com</uri>
+    <tag>
+        <name>calendar</name>
+        </tag><tag -class>
+            com.kettas.servlet.TagCalendar
+        </tag>
+        <body -content>empty</body>
+ </taglib></pre>
+<font color="red"><br />
+ name指定标签名<br />
+ tag -class标签名于相应的类对应</font>
+<!--more--><br /></p>
+
+<p><strong>3.类文件 ：TagCalendar.java</strong>
+<pre lang="java">
+package com.kettas.servlet;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.JspWriter;</pre></p>
+
+<p>public class TagCalendar extends TagSupport {<br />
+    private static final long serialVersionUID = -7677534442361565504L;<br />
+    @Override<br />
+    public int doStartTag() throws JspException {<br />
+        JspWriter out = pageContext.getOut();<br />
+        StringBuffer sCalendar = new StringBuffer();<br />
+        GregorianCalendar gc = new GregorianCalendar();<br />
+        int today = gc.get(Calendar.DAY_OF_MONTH);<br />
+        int month = gc.get(Calendar.MONTH);<br />
+        int year = gc.get(Calendar.YEAR);<br />
+        String days[] = new String[42];<br />
+        for (int i = 0; i < 42; i++) {<br />
+            days[i] = "";<br />
+        }<br />
+        Calendar cal = Calendar.getInstance();<br />
+        cal.clear();<br />
+        cal.set(Calendar.MONTH, month); // 设置当月<br />
+        cal.set(Calendar.YEAR, year); // 设置当年<br />
+        cal.setFirstDayOfWeek(Calendar.SUNDAY);// 设置星期天开始<br />
+        cal.set(Calendar.DAY_OF_MONTH, 1); // 设置1号<br />
+        int firstIndex = cal.get(Calendar.DAY_OF_WEEK) - 1; // 取得当月1号所在的星期数<br />
+        int maxIndex = cal.getActualMaximum(Calendar.DAY_OF_MONTH); // 取得当月的最大天数<br />
+        for (int i = 0; i < maxIndex; i++) {<br />
+            days[firstIndex + i] = String.valueOf(i + 1);<br />
+        }<br />
+        try {<br />
+            sCalendar.append("
+<table border="0" width="168" height="81">");</table><br />
+            sCalendar.append("
+<tr>
+<td colspan="7" align="center">"+year + "年" + (month + 1) + "月" + today+"日</td>
+</tr></p>
+
+<p>");<br />
+            sCalendar.append("
+<tr>
+<th width="25" height="16"><font color="red">日</font></th></tr></p>
+
+<p>");<br />
+            sCalendar.append("
+<th width="25" height="16">一</th>
+<th width="25" height="16">二</th></p>
+
+<p>");<br />
+            sCalendar.append("
+<th width="25" height="16">三</th>
+<th width="25" height="16">四</th></p>
+
+<p>");<br />
+            sCalendar.append("
+<th width="25" height="16">五</th>
+<th width="25" height="16"><font color="red"> 六</font></th>
+</p>
+
+<p>");<br />
+            for(int i=0;i&lt;6;i++){<br />
+                sCalendar.append("
+<tr>");</tr><br />
+                for(int j=i*7;j< (i+1)*7;j++){<br />
+                    sCalendar.append("
+<td width="15%" height="16" valign="middle" align="center">");<br />
+                    if((j-firstIndex+1)==today){<br />
+                        sCalendar.append("<font color="red">"+days[j]+"</font>");<br />
+                    }else{<br />
+                        sCalendar.append(days[j]);<br />
+                    }<br />
+                    sCalendar.append("");<br />
+                }<br />
+                sCalendar.append("</td></p>
+
+<p>");<br />
+            }<br />
+            sCalendar.append("");<br />
+            out.print(sCalendar.toString());<br />
+        } catch (IOException e) {<br />
+            e.printStackTrace();<br />
+        }<br />
+        return TagSupport.SKIP_BODY;<br />
+    }<br />
+}
+
+<p><strong>4.jsp文件：calendar.jsp</strong></p>
+<pre lang="jsp">
+< %@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+< %@ taglib prefix="jr" uri="calendar@huaiyu.com"%>
+< !DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head></html></pre></p>
+
+<p>
+<body>
+<jr :calendar />
+</body>
+
+
+<p>－－－－－>注意jsp文件中的uri与tld中的uri相一致，不然找不到tld文件</p>
+</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JSP/2009/06/10/jsp_calendar.html'>JSP自定义日历标签</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

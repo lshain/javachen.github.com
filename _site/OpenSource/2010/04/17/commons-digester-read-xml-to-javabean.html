@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>Commons-Digester read xml to JavaBean</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>17 Apr 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/OpenSource/2010/04/17/commons-digester-read-xml-to-javabean.html'>Commons-Digester read xml to JavaBean</a></h1>
+  <div class='body'><p>最近在做一个小项目，需要读取数据字典XML中的内容取出相应的配置信息，在前台用Extjs生成一个查询框架，刚开始我是自己利用dom的开源lib以SAX的方式读数据字典，生成相应的java对象，但总感觉自己写的读取方法不是很完美，所以想在网上找找更好的解决办法。百度一下，看到了 Commons-Digester这个开源的jar文件，Digester本来仅仅是Jakarta Struts中的一个工具，用于处理struts-config.xml配置文件，后来就独立出来用于解析XML文件。</p>
+
+<p>Digester由"事件"驱动，通过调用预定义的规则操作对象栈，将XML文件转换为Java对象。工作原理如下:<br />
+Digester底层采用SAX解析XML文件，所以很自然的，对象转换由"事件"驱动，即在识别出特定XML元素时(实际被细分为begin、 body、end、finish四个时点)，将执行特定的动作，比如创建特定的Java对象，或调用特定对象的方法等。此处的XML元素根据匹配模式 (matching pattern)识别，而相关操作由规则(rule)定义。在转换过程中，Digester维持了一个对象栈，可以看作对象转换的工作台，用来存放转换中生成的、或是为转换临时创建的Java对象。对输入XML文件作了一趟完整的扫描后，对象栈的栈顶元素即为目标对象。由于Digester屏蔽了SAX解析的细节，使用者仅需关注转换操作本身，大大简化了转换操作。</p>
+
+<p>使用Digester，基本步骤如下:<br />
+1.创建Digester对象实例。<br />
+2.设置该Digester对象的配置属性(可选)。<br />
+3.将需要的初始对象 push到该Digester对象的对象栈上(可选)。<br />
+4.需要注册所有的XML元素匹配模式与处理规则之间的映射关系。<br />
+5.用 digester.parse()解析的XML文档对象，得到目标对象。</p>
+
+<p>在了解了Digester的实现原理和解析方式，就寻找网上现成的例子，自己在电脑上实现了一遍，由于网上的例子大多都不详细，所以在测试的过程中不断出现一些异常，但又不知道问题出自哪里、如何解决 :cry: <br />
+最后终于找到了一个比较详细的实例，呵呵<br />
+以下是一个测试方法，其它的代码没有贴出，如有需要可以告诉我：</p>
+
+<p><pre escaped="true" lang="java">
+package com.javachen.xml.digester;</pre></p>
+
+<p>import java.io.File;<br />
+import java.io.IOException;<br />
+import org.junit.Test;<br />
+import org.xml.sax.SAXException;</p>
+
+<p>import org.apache.commons.digester.Digester;</p>
+
+<p>import static org.junit.Assert.*;</p>
+
+<p>public class DigesterTest {</p>
+
+<p>	/**<br />
+	 * 属性方式<br />
+	 */<br />
+	@Test<br />
+	public void testOne() {<br />
+		Digester digester = new Digester();<br />
+		// 设置不进行合法性验证<br />
+		digester.setValidating(false);<br />
+		// 当遇到&lt;teacher&gt;时创建一个Teacher对象，放入栈顶<br />
+		digester.addObjectCreate("teacher", Teacher.class);<br />
+		digester.addSetProperties("teacher");<br />
+		// 当遇到&lt;teacher&gt;的子元素&lt;student&gt;时创建一个Student对象，放入栈顶<br />
+		digester.addObjectCreate("teacher/student", Student.class);<br />
+		// 设置&lt;student&gt;的属性值，根据属性值调用相应的set方法<br />
+		digester.addSetProperties("teacher/student");<br />
+		// 当再次遇到&lt;student&gt;时创建一个Student对象，放入栈顶，<br />
+                //同时调用栈次顶的addStudent方法<br />
+		digester.addSetNext("teacher/student", "addStudent",<br />
+				"com.javachen.xml.digester.Student");<br />
+		try {<br />
+			Teacher teacher = (Teacher) digester.parse(new File(<br />
+					"src/com/javachen/xml/digester/student.xml"));<br />
+			assertEquals(8, teacher.getStudents().size());<br />
+		} catch (IOException e) {<br />
+			e.printStackTrace();<br />
+		} catch (SAXException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}</p>
+
+<p>	/**<br />
+	 * 子标签方式(设置Property方式一)<br />
+	 */<br />
+	@Test<br />
+	public void testTwo() {<br />
+		Digester digester = new Digester();<br />
+		digester.setValidating(false);<br />
+		// 设置栈顶<br />
+		digester.push(new TeacherList());<br />
+		digester.addObjectCreate("teachers/teacher", Teacher.class);<br />
+		digester.addSetProperties("teachers/teacher");<br />
+		digester.addObjectCreate("teachers/teacher/student", Student.class);<br />
+//		digester.addSetProperties("teachers/teacher/student");<br />
+		// 子标签方式设置属性方法之一，第三个参数是第二个参数所指方法的参数个数<br />
+		digester.addCallMethod("teachers/teacher/student/name", "setName", 1);<br />
+		digester.addCallMethod("teachers/teacher/student/age", "setAge", 1);<br />
+		digester.addCallMethod("teachers/teacher/student/id", "setId", 1);<br />
+		digester.addSetNext("teachers/teacher/student", "addStudent",<br />
+				"com.javachen.xml.digester.Student");<br />
+		digester.addSetNext("teachers/teacher", "addTeachers",<br />
+				"com.javachen.xml.digester.Teacher");<br />
+		try {<br />
+			TeacherList teacher = (TeacherList) digester.parse(new File(<br />
+					"src/com/javachen/xml/digester/teacher.xml"));<br />
+			assertEquals(2, teacher.getTeachers().size());<br />
+			assertEquals("java", teacher.getTeachers().get(0).getCourse());<br />
+			assertEquals(8, teacher.getTeachers().get(0).getStudents().size());<br />
+		} catch (IOException e) {<br />
+			e.printStackTrace();<br />
+		} catch (SAXException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}</p>
+
+<p>	/**<br />
+	 * 子标签方式(设置Property方式二)<br />
+	 */<br />
+	@Test<br />
+	public void testThree() {<br />
+		Digester digester = new Digester();<br />
+		digester.setValidating(false);<br />
+		// 设置栈顶<br />
+		digester.push(new TeacherList());<br />
+		digester.addObjectCreate("teachers/teacher", Teacher.class);<br />
+		digester.addSetProperties("teachers/teacher");<br />
+		digester.addObjectCreate("teachers/teacher/student", Student.class);<br />
+		// 子标签方式设置属性方法之二<br />
+		digester.addBeanPropertySetter("teachers/teacher/student/name");<br />
+		digester.addBeanPropertySetter("teachers/teacher/student/age");<br />
+		digester.addBeanPropertySetter("teachers/teacher/student/id");<br />
+		digester.addSetNext("teachers/teacher/student", "addStudent",<br />
+				"com.javachen.xml.digester.Student");<br />
+		digester.addSetNext("teachers/teacher", "addTeachers",<br />
+				"com.javachen.xml.digester.Teacher");<br />
+		try {</p>
+
+<p>			TeacherList teacher = (TeacherList) digester.parse(new File(<br />
+					"src/com/javachen/xml/digester/teacher.xml"));<br />
+			assertEquals(2, teacher.getTeachers().size());<br />
+			assertEquals("java", teacher.getTeachers().get(0).getCourse());<br />
+			assertEquals(8, teacher.getTeachers().get(0).getStudents().size());<br />
+		} catch (IOException e) {<br />
+			e.printStackTrace();<br />
+		} catch (SAXException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}</p>
+
+<p>	/**<br />
+	 * 子标签方式 (callMethod callParam方式)<br />
+	 */<br />
+	@Test<br />
+	public void testFour() {<br />
+		Digester digester = new Digester();<br />
+		digester.setValidating(false);<br />
+		digester.push(new TeacherList());<br />
+		digester.addObjectCreate("teachers/teacher", "com.javachen.xml.digester.Teacher");<br />
+		digester.addSetProperties("teachers/teacher");<br />
+		// 当&lt;student&gt;时调用栈顶元素(Teacher)的addStudents却并不执行，<br />
+               //等待addCallParam设置参数，3为参数个数，这里传入的参数是字符串。<br />
+		digester.addCallMethod("teachers/teacher/student", "addStudent", 3);<br />
+		digester.addCallParam("teachers/teacher/student/name", 0);<br />
+		digester.addCallParam("teachers/teacher/student/age", 1);<br />
+		// 这句之后即&lt;/student&gt;才调用addStudents方法，并且如果再次遇到&lt;student&gt;重复。<br />
+		digester.addCallParam("teachers/teacher/student/id", 2);<br />
+		digester.addSetNext("teachers/teacher", "addTeachers",<br />
+				"com.javachen.xml.digester.Teacher");<br />
+		try {<br />
+			TeacherList teacher = (TeacherList) digester.parse(new File(<br />
+					"src/com/javachen/xml/digester/teacher.xml"));<br />
+			assertEquals(2, teacher.getTeachers().size());<br />
+			assertEquals("java", teacher.getTeachers().get(0).getCourse());<br />
+			assertEquals(8, teacher.getTeachers().get(0).getStudents().size());<br />
+			assertEquals("李世民2", teacher.getTeachers().get(1).getStudents()<br />
+					.get(2).getName());<br />
+		} catch (IOException e) {<br />
+			e.printStackTrace();<br />
+		} catch (SAXException e) {<br />
+			e.printStackTrace();<br />
+		}<br />
+	}<br />
+}
+</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/OpenSource/2010/04/17/commons-digester-read-xml-to-javabean.html'>Commons-Digester read xml to JavaBean</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

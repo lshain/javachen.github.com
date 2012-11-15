@@ -1,0 +1,187 @@
+---
+layout: post
+title: Hibernate one-to-one association
+categories:
+- Hibernate
+tags:
+- Hibernate
+published: true
+comments: true
+---
+<p>one-to-one关系的现实模型: 现代社会的一夫一妻制度就是典型的one-to-one关系模型。<br />
+在数据库设计里，one-to-one模型可以用2种方法来实现。
+<font color="blue">1，主键关联：这时候要保证2个表的主键具有完全相同的值。</font>
+<font color="blue">2，外键关联：其中一个表使用外键关联另一个表。</font>
+在表关联的设计中，不论是一对多还是多对一，都要将关联字段设置在多的那一方。<br />
+单向关联：<br />
+单向关联只有一方维护关系，one-to-one或 many-to-many 只在一方声明
+<strong>1.基于外键关联的单向一对一关联和单向多对一关联几乎是一样的。唯一的不同就是单向一对一关联中的外键字段具有唯一性约束:fk+unique。</strong>
+<!--more-->
+<pre lang="java5">
+package com.kettas.hibernate.orm.o2o.ui.fkuk;
+public class Car {
+private Integer cid;
+private String productType;
+private String manufactory;
+private License license;
+public void addLicense(License license){
+this.license=license;
+this.license.addCar(this);
+}</pre></p>
+
+<p>public void removeLicense(){<br />
+this.license.remove();<br />
+this.license=null;<br />
+}
+}<br />
+package com.kettas.hibernate.orm.o2o.ui.fkuk;<br />
+public class License {<br />
+private Integer lid;<br />
+private String serialNum;<br />
+private String licenseType;<br />
+private Car car;<br />
+public void addCar(Car car){<br />
+this.car=car;<br />
+this.car.addLicense(this);<br />
+}</p>
+
+<p>public void remove(){<br />
+this.car=null;<br />
+this.car.removeLicense(this);<br />
+}
+}
+
+建表语句：
+<pre lang="sql">
+create sequence jdbc_car_seq;
+create sequence jdbc_license_seq;
+create table jdbc_car
+( cid number(7) primary key,
+manufactory varchar2(15) not null,
+producttype varchar2(15) not null,
+);</pre></p>
+
+<p>create table jdbc_license<br />
+( lid number(7) primary key,<br />
+serialnum varchar2(15) not null,<br />
+licensetype varchar2(15) not null,<br />
+car_id number(7) references jdbc_car(cid) unique<br />
+);
+
+jdbc_car                    jdbc_license<br />
+cid(pk)  manufactory        lid(pk)  car_id(fk+unique)<br />
+1        A                                    1       1<br />
+2        B                                    2       2</p>
+
+<p>映射文件：
+<pre lang="xml">
+    <class name="Car" table="jdbc_car">
+    <id name="cid" column="cid" unsaved-value="null">
+    <generator class="sequence">
+    <param name="sequence" />jdbc_car_seq
+    </generator>
+    </id>
+    <property name="manufactory"></property>
+    <property name="productType" />
+    </class>
+    <class name="License" table="jdbc_license">
+    <id name="lid" column="lid" unsaved-value="null">
+    <generator class="sequence">
+    <param name="sequence" />jdbc_license_seq
+    </generator>
+    </id>
+    <property name="serialNum"></property>
+    <property name="licenseType" />
+    <many -to-one name="car" column="car_id" unique="true" not-null="true" cascade="save-update"></many>
+    </class>
+</pre>
+main()方法：<br />
+Car c=new Car("qq","111");<br />
+License license=new License("6666","minyong");<br />
+license.addCar(c);<br />
+sess.save(license);</p>
+
+<p>=======================================================<br />
+one-to-one维护关系可以随便在哪一方。本例中维护关系在License，License为主体，所以应该license.addCar(c);  sess.save(license);</p>
+
+<p><strong>2.基于主键关联的单向一对一关联通常使用一个特定的id生成器.(请注意，在这个例子中我们掉换了关联的方向.)</strong>
+<pre lang="xml">
+    <class name="Car" table="jdbc_car">
+    <id name="cid" column="cid" unsaved-value="null">
+    <generator class="sequence">
+    <param name="sequence" />jdbc_car_seq
+    </generator>
+    </id>
+    <property name="manufactory"></property>
+    <property name="productType" />
+    </class>
+    <class name="License" table="jdbc_license">
+    <id name="lid" column="lid" unsaved-value="null">
+    <generator class="sequence">
+    <param name="sequence" />jdbc_license_seq
+    </generator>
+    </id>
+    <property name="serialNum"></property>
+    <property name="licenseType" />
+   <many -to-one name="car" column="car_id" unique="true" not-null="true" cascade="save-update"></many>
+    </class>
+</pre>
+main()方法：<br />
+Car c=new Car("qq","111");<br />
+License license=new License("6666","minyong");<br />
+license.addCar(c);<br />
+sess.save(license);</p>
+
+<p>＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊<br />
+本例中维护关系在License，License为主体,Car只需要管好自己。<br />
+请注意这里的constrained属性，它必须要被设置为"true"。<br />
+one-to-one关系是需要在双方的hbm文件里定义。constrained="true"必须在声明为外键的一方加以定义。<br />
+为了保证2个表被生成的主键具有相同的值，其中一个表的主键生成要采用foreign生成方式。告诉hibernate此表的主键采用外键方式。</p>
+
+<p><strong>双向关联：<br />
+1.基于外键关联的双向一对一关联</strong>
+<pre lang="xml">
+    <class name="Person">
+    <id name="id" column="personId">
+    <generator class="native" />
+    </id>
+    <many -to-one name="address"
+    column="addressId"
+    unique="true"
+    not-null="true"/>
+    </class>
+    <class name="Address">
+    <id name="id" column="addressId">
+    <generator class="native" />
+    </id>
+    <one -to-one name="person" property-ref="address" />   //property-ref (可选): 表明外键引用的字段不是原表的主键(提供给遗留数据)。
+    </class>
+   create table Person ( personId bigint not null primary key, addressId bigint not null unique )
+    create table Address ( addressId bigint not null primary key )
+</pre>
+    ===>  Person                  Address<br />
+    personId addressId       addressId<br />
+    1          1               1<br />
+    2          2               2<br />
+    3          3               3</p>
+
+<p><strong>2.基于主键关联的一对一关联 需要使用特定的id生成器。</strong>
+<pre lang="xml">
+    <class name="Person">
+    <id name="id" column="personId">
+    <generator class="native" />
+    </id>
+    <one -to-one name="address" />
+    </class>
+   <class name="Address">
+    <id name="id" column="personId">
+    <generator class="foreign">
+    <param name="property" />person
+    </generator>
+    </id>
+    <one -to-one name="person" constrained="true" />
+    </class>
+</pre>
+   create table Person ( personId bigint not null primary key )<br />
+    create table Address ( personId bigint not null primary key )
+</p>

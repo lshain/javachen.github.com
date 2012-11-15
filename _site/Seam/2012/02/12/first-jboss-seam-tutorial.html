@@ -1,0 +1,813 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>翻译：First JBoss Seam tutorial</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>12 Feb 2012</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/Seam/2012/02/12/first-jboss-seam-tutorial.html'>翻译：First JBoss Seam tutorial</a></h1>
+  <div class='body'><p><h4><span style="color: #0000ff;"><strong>说明</strong></span></h4>
+该文章翻译于《<a href="http://www.laliluna.de/articles/posts/first-jboss-seam.html" target="_blank">First JBoss Seam tutorial</a>》，原文作者：Sebastian Hennebrueder，翻译者:JavaChen。</p>
+
+<p>原文链接：<a href="http://www.laliluna.de/articles/posts/first-jboss-seam.html" target="_blank">http://www.laliluna.de/articles/posts/first-jboss-seam.html</a></p>
+
+<p>一步一步的创建Jboss seam应用</p>
+
+<p><h4><span style="color: #0000ff;"><strong>介绍</strong></span></h4>
+这篇教程展示如何使用JBoss Seam、JSF和Facelets创建一个应用。我将为Tomcat和JBoss应用服务器列出一个配置。此外，你可以学习如何使用Maven定义依赖。</p>
+
+<p><h4><span style="color: #0000ff;"><strong>版本</strong></span></h4>
+教程版本：1.0 作者：Sebastian Hennebrueder</p>
+
+<p><h4><span style="color: #0000ff;"><strong>包版本</strong></span></h4>
+1.Seam 2.0.1.GA<br />
+2.Tomcat 6<br />
+3.JBoss Application Server 4.2 (not 4.0)</p>
+
+<p><h4><span style="color: #0000ff;"><strong>下载</strong></span></h4>
+<strong>教程PDF：</strong>
+<a href="http://www.laliluna.de/download/first-jboss-seam-en.pdf" target="_blank">http://www.laliluna.de/download/first-jboss-seam-en.pdf</a>
+<strong>项目例子代码</strong>
+<a href="http://www.laliluna.de/download/first-jboss-seam-source.zip" target="_blank">http://www.laliluna.de/download/first-jboss-seam-source.zip</a></p>
+
+<p><!--more-->
+<h4><span style="color: #0000ff;"><strong>创建项目</strong></span></h4>
+使用你喜欢的IDE创建一个web工程。我将使用一个WAR包开发。</p>
+
+<p><h4><span style="color: #0000ff;"><strong>Seam配置文件</strong></span></h4>
+我们需要下面的配置文件。</p>
+
+<p><strong>components.xml</strong>
+该文件配置Seam和我们的组件。我更喜欢使用注解配置文档组件而不用这个文件配置，但是在这里我们还是在该文件里定义。</p>
+
+<p>位置：WAR包的WEB-INF目录下，JAR包的META-INF目录下。这里，我们使用的是WAR包。</p>
+
+<p>告诉Seam我们不想让他管理事物（此刻）。
+<pre lang="xml">
+< ?xml version="1.0" encoding="UTF-8"?>
+<components xmlns="http://jboss.com/products/seam/components"
+  xmlns:core="http://jboss.com/products/seam/core"
+  xmlns:persistence="http://jboss.com/products/seam/persistence"
+  xmlns:security="http://jboss.com/products/seam/security"
+  xmlns:drools="http://jboss.com/products/seam/drools"
+  xmlns:web="http://jboss.com/products/seam/web"
+  xmlns:mail="http://jboss.com/products/seam/mail"
+  xmlns:transaction="http://jboss.com/products/seam/transaction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation=
+      "http://jboss.com/products/seam/core 
+       http://jboss.com/products/seam/core-2.0.xsd
+       http://jboss.com/products/seam/persistence 
+       http://jboss.com/products/seam/persistence-2.0.xsd
+       http://jboss.com/products/seam/security 
+       http://jboss.com/products/seam/security-2.0.xsd
+       http://jboss.com/products/seam/web 
+       http://jboss.com/products/seam/web-2.0.xsd
+       http://jboss.com/products/seam/drools 
+       http://jboss.com/products/seam/drools-2.0.xsd
+       http://jboss.com/products/seam/mail 
+       http://jboss.com/products/seam/mail-2.0.xsd
+       http://jboss.com/products/seam/transaction 
+       http://jboss.com/products/seam/transaction-2.0.xsd
+       http://jboss.com/products/seam/components 
+       http://jboss.com/products/seam/components-2.0.xsd"></pre></p>
+
+<p>  <core:init transaction-management-enabled="false" />
+  <transaction:no -transaction /></p>
+
+<p>
+</p>
+
+<p><strong>seam.properties</strong></p>
+
+<p>包括一些可以在components.xml使用的设置。除了这，他仅仅是标记告诉Seam一个存档文件（WAR或者JAR）包括Seam组件。所以只需要创建一个空文件。</p>
+
+<p>位置：源文件的根目录下（你的Java classes目录下）。</p>
+
+<p><strong>pages.xml</strong>
+包括导航规则，可以和JSF的faces-config.xml文件想比较有什么区别，此外我们还可以添加权限规则。</p>
+
+<p>位置：一个WAR工程的 WEB-INF 目录下。
+<pre lang="xml">
+< ?xml version="1.0" encoding="UTF-8"?>
+<pages xmlns="http://jboss.com/products/seam/pages"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://jboss.com/products/seam/pages 
+   http://jboss.com/products/seam/pages-2.0.xsd"
+   no-conversation-view-id="/home.xhtml"
+   login-view-id="/login.xhtml"></pre></p>
+
+<p> <page view-id="*">
+  <navigation>
+   <rule if-outcome="home">
+    <redirect view-id="/home.xhtml" />
+   </rule>
+  </navigation>
+ </page></p>
+
+<p> <exception>
+  <redirect view-id="/error.xhtml">
+   <message>Unexpected error, please try again</message>
+  </redirect>
+ </exception></p>
+
+<p>
+</p>
+
+<p><strong>faces-config.xml</strong>
+普通的JavaServer Faces配置文件。Seam的默认渲染器是JavaServer Faces，这就是我们需要这个配置文件的原因。<br />
+我们定义默认的和可支持的语言以及资源文件的前缀。<br />
+本例子将会使用facelets用于渲染。这就是为什么我们要在该文件中定义facelets视图处理器的原因。<br />
+不要在该文件中添加JSF的导航规则，因为Seam会使用pages.xml来导航。
+<pre lang="xml">
+< ?xml version='1.0' encoding='UTF-8'?>
+<faces -config version="1.2"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+  <application>
+    <message -bundle>messages</message>
+    <locale -config>
+ <default -locale>en</default>
+ <supported -locale>en</supported>
+    </locale>
+    <view -handler>com.sun.facelets.FaceletViewHandler</view>
+  </application>
+
+</pre></p>
+
+<p><strong>web.xml</strong>
+位置：应该保存于webapp目录下</p>
+
+<p>定义Seam和JSF的特定设置、过滤器和servlet。
+<pre lang="xml">
+< ?xml version="1.0" ?>
+<web -app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+ id="WebApp_ID" version="2.5"></pre></p>
+
+<p>   <!-- Seam -->    <br />
+   <listener>
+      </listener><listener -class>org.jboss.seam.servlet.SeamListener</listener>
+   <br />
+   <filter>
+        </filter><filter -name>Seam Filter</filter>
+        <filter -class>org.jboss.seam.web.SeamFilter</filter>
+    <br />
+    <filter -mapping>
+        </filter><filter -name>Seam Filter</filter>
+        <url -pattern>/*</url>
+    </p>
+
+<p>  <!-- Facelets development mode (disable in production) --> <br />
+   <context -param>
+      <param -name />facelets.DEVELOPMENT
+      <param -value />true
+   </context></p>
+
+<p>   <!-- JSF -->    <br />
+   <context -param>
+      <param -name />javax.faces.STATE_SAVING_METHOD
+      <param -value />client
+   </context>    <br />
+   <context -param>
+      <param -name />javax.faces.DEFAULT_SUFFIX
+      <param -value />.xhtml
+   </context>
+   <servlet>
+      </servlet><servlet -name>Faces Servlet</servlet>
+      <servlet -class>javax.faces.webapp.FacesServlet</servlet>
+      <load -on-startup>1</load>
+       <br />
+   <servlet -mapping>
+      </servlet><servlet -name>Faces Servlet</servlet>
+      <url -pattern>*.seam</url>
+                     
+
+</p>
+
+<p><h4><span style="color: #0000ff;"><strong>添加libraries</strong></span></h4>
+我们创建了一个配置最小化的JBoss Seam例子。所以libraries中你不必包括Seam Email、Seam PDF等等。<br />
+JBoss4.2已经提供了jsf-api和jsf-impl包。所以不用添加他们。当然Tomcat或Jetty需要添加他们。</p>
+
+<p><strong>手动添加</strong>
+拷贝下面jar文件到WEB-INF目录下。你可以在你下载的JBoss Seam的lib目录下找到他们。<br />
+dom4j-1.6.1-jboss.jar<br />
+commons-beanutils-1.7.0.jar<br />
+hibernate-validator-3.0.0.ga.jar<br />
+javassist-3.3.ga.jar<br />
+jboss-el-2.0.1.GA.jar<br />
+jboss-seam-2.0.1.GA.jar<br />
+jboss-seam-ui-2.0.1.GA.jar<br />
+jsf-api-1.2_04-p02.jar<br />
+jsf-facelets-1.1.11.jar<br />
+jsf-impl-1.2_04-p02.jar<br />
+jta-1.1.jar<br />
+persistence-api-1.0.jar</p>
+
+<p><strong>使用Maven</strong>
+可选的，你可以使用Maven。我喜欢用他来管理jar包。我们需要一个JBoss仓库。我的IntelliJ工程无意中部署了Maven加载的 el-api.jar。这在Tomcat 6和JBoss 4.2中会产生一个问题。确定该文件没有被部署。</p>
+
+<p>下面是一个我们需要的pom.xml文件
+<pre lang="xml">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+  http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelversion>4.0.0</modelversion>
+  <groupid>de.laliluna</groupid>
+  <artifactid>seamWeb</artifactid></pre></p>
+
+<p>  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>seamWeb</name>
+  <url>http://maven.apache.org</url></p>
+
+<p>  <build>
+    <finalname>seamWeb</finalname>
+    <plugins>
+      <plugin>
+        <groupid>org.apache.maven.plugins</groupid>
+        <artifactid>maven-compiler-plugin</artifactid>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupid>org.apache.maven.plugins</groupid>
+        <artifactid>maven-idea-plugin</artifactid>
+        <configuration>
+          <downloadsources>true</downloadsources>
+          <downloadjavadocs>true</downloadjavadocs>
+        </configuration>
+      </plugin>
+    </plugins></build></p>
+
+<p>  
+  <repositories>
+    <repository>
+      <id>repository.jboss.org</id>
+      <url>http://repository.jboss.org/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories></p>
+
+<p>  <dependencies /></p>
+
+<p>    <!-- JBoss Seam minimal -->
+    <dependency>
+      <groupid>org.jboss.seam</groupid>
+      <artifactid>jboss-seam</artifactid>
+      <version>2.0.1.GA</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupid>org.jboss.seam</groupid>
+      <artifactid>jboss-seam-ui</artifactid>
+      <version>2.0.1.GA</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Seam makes use of Hibernate validator and sadly<br>
+     depends on JTA and JPA even if we don't use it -->
+    <dependency>
+      <groupid>javax.transaction</groupid>
+      <artifactid>jta</artifactid>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupid>javax.persistence</groupid>
+      <artifactid>persistence-api</artifactid>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupid>org.hibernate</groupid>
+      <artifactid>hibernate-validator</artifactid>
+      <version>3.0.0.ga</version>
+    </dependency></p>
+
+<p>    <!-- JSF and facelets -->
+    <dependency>
+      <groupid>javax.faces</groupid>
+      <artifactid>jsf-api</artifactid>
+      <version>1.2_04-p02</version>
+    </dependency>
+    <dependency>
+      <groupid>javax.faces</groupid>
+      <artifactid>jsf-impl</artifactid>
+      <version>1.2_04-p02</version>
+    </dependency>
+    <dependency>
+      <groupid>com.sun.facelets</groupid>
+      <artifactid>jsf-facelets</artifactid>
+      <version>1.1.11</version>
+    </dependency></p>
+
+<p>    <!-- I like to have log4j without Hibernate as well -->
+    <dependency>
+      <groupid>log4j</groupid>
+      <artifactid>log4j</artifactid>
+      <version>1.2.14</version>
+      <scope>compile</scope>
+    </dependency></p>
+
+<p>  
+
+</p>
+
+<p><h4><span style="color: #0000ff;"><strong>Hello world</strong></span></h4>
+在根目录创建一个index.jsp文件。他会将我们重定向到hello页面。
+<pre lang="jsp">
+< % response.sendRedirect("hello.seam"); %>
+</pre></p>
+
+<p>创建一个facelets页面hello.xhtml。
+<pre lang="xml">
+< ?xml version="1.0" encoding="UTF-8"?>
+< !DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <head>
+    <title>Hello world</title>
+  </head>
+  <body>
+  <p>Welcome to your first Seam application</p></body></pre></p>
+
+<p>  
+
+
+部署你的应用到Tomcat或者JBoss并且测试该页面。在我的工程中，我使用下面的url：<br />
+http://localhost:8080/seamWeb/</p>
+
+<p><h4><span style="color: #0000ff;"><strong>编写一个Seam组件</strong></span></h4>
+下一步改进hello页面。<br />
+我们的应用要处理hedgehogs并且第一件事是打印出hedgehogs 的列表。
+<pre lang="java">
+package de.laliluna.seam;</pre></p>
+
+<p>public class Hedgehog {</p>
+
+<p>  private String name;</p>
+
+<p>  public Hedgehog() {<br />
+  }</p>
+
+<p>  public String getName() {<br />
+    return name;<br />
+  }</p>
+
+<p>  @Override<br />
+  public String toString() {<br />
+    final StringBuilder sb = new StringBuilder();<br />
+    sb.append("Hedgehog");<br />
+    sb.append("{name='").append(name).append(''');<br />
+    sb.append('}');<br />
+    return sb.toString();<br />
+  }</p>
+
+<p>  public void setName(String name) {<br />
+    this.name = name;<br />
+  }</p>
+
+<p>  public Hedgehog(String name) {<br />
+    this.name = name;<br />
+  }<br />
+}
+</p>
+
+<p>创建一个HedgehogService类。他是一个Seam组件。Name注解标记他是个一个组件并定义他的名称。此外，我们可以使用Scope注解定义他将会被放置到哪里的上下文。</p>
+
+<p>我们稍后将会看到我们可以使用名称来引用该组件。我们的服务类为JSF data table提供了一个数据模型-hedgehogs。
+<pre lang="java">
+package de.laliluna.seam;</pre></p>
+
+<p>import org.jboss.seam.annotations.Name;<br />
+import org.jboss.seam.annotations.Scope;<br />
+import org.jboss.seam.annotations.datamodel.DataModel;<br />
+import org.jboss.seam.ScopeType;<br />
+import java.util.List;<br />
+import java.util.ArrayList;</p>
+
+<p>@Name("hedgehogService")<br />
+@Scope(ScopeType.SESSION)<br />
+public class HedgehogService {</p>
+
+<p>  @DataModel<br />
+  private List<hedgehog> hedgehogs;</hedgehog></p>
+
+<p>  public HedgehogService() {<br />
+    hedgehogs = new ArrayList<hedgehog>();<br />
+    hedgehogs.add(new Hedgehog("Holger"));<br />
+    hedgehogs.add(new Hedgehog("Pete"));<br />
+    hedgehogs.add(new Hedgehog("Sebastian"));<br />
+  }</hedgehog></p>
+
+<p>  public String getHello() {<br />
+    return "Your hedgehogService says hello";<br />
+  }<br />
+}
+</p>
+
+<p>最后，我们添加一些信息到English资源文件。<br />
+在src目录下创建一个messages_en.properties文件。
+<pre lang="properties">
+hello=Welcome to your Seam application
+hedgehog.name=Name
+</pre></p>
+
+<p>改进hello.xhtml文件打印hedgehogs，提示信息来自资源文件和getHello方法。
+<pre lang="xml">
+< ?xml version="1.0" encoding="UTF-8"?>
+< !DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:s="http://jboss.com/products/seam/taglib"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<head>
+  <title>Hello</title>
+</head>
+<body>
+<p>#{messages.hello}</p></body></pre></p>
+
+<p><p>#{hedgehogService.hello}</p></p>
+
+<p><h:datatable value="#{hedgehogs}" var="h">
+  <h:column>
+    <f:facet name="header">#{messages['hedgehog.name']}</f:facet>
+    #{h.name}<br />
+  </h:column>
+</h:datatable>
+
+
+
+这就是所有的，再一次测试你的应用。</p>
+
+<p><h4><span style="color: #0000ff;"><strong>调试技巧</strong></span></h4>
+当你的应用启动的时候，将会打印所有被创建（Seam和你）的组件和他们所处的上下文。验证你新建的组件是否正确。<br />
+Seam有一个调试页面显示一些信息。<br />
+添加jboss-seam-debug.jar到WEB-INF目录。可选的，添加下面依赖到pom.xml文件。
+<pre lang="xml">
+ <dependency>
+      <groupid>org.jboss.seam</groupid>
+      <artifactid>jboss-seam-debug</artifactid>
+      <version>2.0.1.GA</version>
+    </dependency>
+</pre></p>
+
+<p>在components.xml中激活调试模式。
+<pre lang="xml">
+<core:init transaction-management-enabled="false" debug="true" />
+</pre></p>
+
+<p>打开你的浏览器并输入下面url进入调试页面<br />
+http://localhost:8080/seamWeb/debug.seam</p>
+
+<p>添加Hibernate<br />
+这一步中我们将会从数据库中加载hedgehogs。</p>
+
+<p>本例中，我将会使用PostgreSQL数据库。想改变数据库，只需要修改 hibernate.cfg.xml的设置并且替换jdbc驱动。</p>
+
+<p><h4><span style="color: #0000ff;"><strong>添加libraries</strong></span></h4>
+额外的，我们需要添加以下文件<br />
+antlr-2.7.6.jar<br />
+asm-1.5.3.jar<br />
+commons-beanutils-1.7.0.jar<br />
+asm-attrs-1.5.3.jar<br />
+hibernate-3.2.5.ga.jar<br />
+commons-collections-2.1.1.jar<br />
+c3p0-0.9.1.2.jar<br />
+postgresql-8.2-507.jdbc3.jar<br />
+backport-util-concurrent-3.0.jar<br />
+commons-logging-1.0.4.jar<br />
+hibernate-annotations-3.3.0.ga.jar<br />
+hibernate-commons-annotations-3.3.0.ga.jar<br />
+ehcache-1.3.0.jar<br />
+cglib-2.1_3.jar<br />
+jsr107cache-1.0.jar</p>
+
+<p>如果你使用Maven，添加下面依赖
+<pre lang="xml">
+<dependency>
+   <groupid>org.hibernate</groupid>
+   <artifactid>hibernate</artifactid>
+   <version>3.2.5.ga</version>
+   <scope>compile</scope>
+ </dependency>
+ <dependency>
+   <groupid>c3p0</groupid>
+   <artifactid>c3p0</artifactid>
+   <version>0.9.1.2</version>
+   <scope>compile</scope>
+ </dependency>
+ <dependency>
+   <groupid>net.sf.ehcache</groupid>
+   <artifactid>ehcache</artifactid>
+   <version>1.3.0</version>
+ </dependency>
+ <dependency>
+   <groupid>org.hibernate</groupid>
+   <artifactid>hibernate-annotations</artifactid>
+   <version>3.3.0.ga</version>
+   <scope>compile</scope>
+ </dependency>
+ <dependency>
+   <groupid>org.hibernate</groupid>
+   <artifactid>hibernate-commons-annotations</artifactid>
+   <version>3.3.0.ga</version>
+ </dependency>
+ <!-- other -->
+ <dependency>
+   <groupid>postgresql</groupid>
+   <artifactid>postgresql</artifactid>
+   <version>8.2-507.jdbc3</version>
+   <scope>compile</scope>
+ </dependency>
+</pre></p>
+
+<p><h4><span style="color: #0000ff;"><strong>Configuration</strong></span></h4>
+我们需要在源代码的根目录下添加一个hibernate.cfg.xml文件。
+<pre lang="xml">
+< ?xml version='1.0' encoding='UTF-8'?>
+< !DOCTYPE hibernate-configuration PUBLIC
+          "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"></pre></p>
+
+<p><hibernate -configuration>
+<session -factory>
+ <!--  postgre SQL configuration-->
+ <property name="connection.url">
+  jdbc:postgresql://localhost:5432/learninghibernate<br />
+ </property>
+ <property name="connection.username">postgres</property>
+ <property name="connection.password">p</property>
+ <property name="connection.driver_class">
+ org.postgresql.Driver<br />
+ </property>
+ <property name="dialect">
+  org.hibernate.dialect.PostgreSQLDialect<br />
+ </property>
+ <property name="c3p0.max_size">4</property>
+ <property name="c3p0.min_size">1</property></session></hibernate></p>
+
+<p> <property name="cache.provider_class">
+  org.hibernate.cache.EhCacheProvider<br />
+ </property>
+ <property name="transaction.factory_class">
+  org.hibernate.transaction.JDBCTransactionFactory<br />
+ </property>
+  <property name="transaction.flush_before_completion">true</property>
+  <property name="connection.release_mode">after_statement</property>  <br />
+  <property name="hbm2ddl.auto">update</property>
+ <property name="default_batch_fetch_size">4</property>
+ <mapping class="de.laliluna.seam.Hedgehog" />
+
+
+</p>
+
+<p>在components.xml中你需要修改事物处理方式。工厂仅仅是为了解决命名问题。我们不能使用session作为名称注入到Hibernate session中，但是我想在我的应用中使用这个组件名称。
+<pre lang="xml">
+<!--<br>
+  <core:init transaction-management-enabled="false" debug="true"/>
+  <transaction:no -transaction/>
+  --></pre></p>
+
+<p>  <core:init debug="true" />
+  <persistence:hibernate -session-factory name="hibernateSessionFactory" />
+  <persistence:managed -hibernate-session name="xsession"<br />
+                           auto-create="true"<br />
+                           session-factory="#{hibernateSessionFactory}"/>
+  <transaction:hibernate -transaction session="#{xsession}" />
+  <factory name="session"<br />
+           scope="STATELESS"<br />
+           auto-create="true"<br />
+           value="#{xsession}"/>
+</p>
+
+<p><h4><span style="color: #0000ff;"><strong>代码</strong></span></h4>
+我们必须添加加载和保存代码到HedgehogService 类中。<br />
+首先，我们需要注入session组件到我们的类中。<br />
+然后我们定义Data model有一个工程方法加载hedgehogs。</p>
+
+<p>我改变了Scope的值为conversation 以便我们在创建一个新的hedgehog时候可以重新加载所有hedgehog。
+<pre lang="java">
+@Name("hedgehogService")
+@Scope(ScopeType.CONVERSATION)
+public class HedgehogService implements Serializable {
+  @In
+  private Session session;</pre></p>
+
+<p>  @DataModel<br />
+  private List<hedgehog> hedgehogs;</hedgehog></p>
+
+<p>  @Factory("hedgehogs")<br />
+  public void loadHedgehogs() {<br />
+    hedgehogs = session.createCriteria(Hedgehog.class).list();<br />
+  }</p>
+
+<p>  public void createHedgehog() {<br />
+    session.save(new Hedgehog("Name " + new Date()));<br />
+  }
+< ?pre></p>
+
+<p>Hedgehog类需要Hibernate的注解进行定义。
+<pre lang="java">
+@Entity
+public class Hedgehog implements Serializable{</pre></p>
+
+<p>  @Id<br />
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)<br />
+  private Long id;</p>
+
+<p>// getter and setter are omitted
+</p>
+
+<p><h4><span style="color: #0000ff;"><strong>前端页面</strong></span></h4>
+我们改进hello.xhtml页面。我们添加一个链接用于创建一个新的hedgehogs。
+<pre lang="xml">
+<s:link action="#{hedgehogService.createHedgehog}">Create a hedgehog</s:link></pre></p>
+
+<p><s:fragment rendered="#{empty hedgehogs}">
+  No hedgehogs
+</s:fragment>
+<h:datatable value="#{hedgehogs}" var="h" rendered="#{! empty hedgehogs}">
+  <h:column>
+    <f:facet name="header">#{messages['hedgehog.name']}</f:facet>
+    #{h.name}<br />
+  </h:column>
+</h:datatable>
+</p>
+
+<p><h4><span style="color: #0000ff;"><strong>结论</strong></span></h4>
+使用JBoss Seam创建一个Web应用是非常简单的。虽然该框架被设计于集成JSF和EJB3，我们可以在Tomcat应用服务器中的Pojo类上使用。我们甚至可以获得免费的事物管理。<br />
+手动创建一个应用的有点是我们可以仅仅添加需要的jar包而不需要添加整个package包。</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Seam/2012/02/12/first-jboss-seam-tutorial.html'>翻译：First JBoss Seam tutorial</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>

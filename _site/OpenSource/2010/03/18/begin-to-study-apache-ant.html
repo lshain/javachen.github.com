@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    <link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/images/favicon.ico"/>
+    <!-- weibo -->
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <!-- seo -->
+    <meta name="description" content="javachen" />
+    <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,bi,pentaho,kettle,nosql,cassandra,bigdata,cloud,opensource" />
+
+    <title>初涉Ant</title>
+    <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shThemeMidnight.css"/>
+    <script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/javascripts/jquery.github.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <a href="http://github.com/javachen/javachen.github.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    <div id='wrapper'>
+      <div id='header'>
+        <h1><a href='/'>JavaChen</a></h1>
+        
+        <div id='menu'>
+          <ul>
+            <li><a href='/' id='home-link' title='Home'>Home</a></li>
+            <li><a href='/blog.html' id='blog-link' title='Blog'>Blog</a></li>
+            <li><a href='/categories.html' id='categories-link' title='Categories'>Categories</a></li>
+            <li><a href='/tags.html' id='tags-link' title='Tags'>Tags</a></li>
+            <li><a href='/about.html' id='about-link' title='About'>About</a></li>
+            <li><a href='http://github.com/javachen' target='_blank' title='GitHub' rel='me' id='github-link'>GitHub</a></li>
+            <li><a href='http://weibo.com/chenzhijun' title='weibo' target='_blank' id='weibo-link'>Weibo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id='content'>
+        <div class='post'>
+  <span class='date'>18 Mar 2010</span>
+  <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
+  <h1><a href='/OpenSource/2010/03/18/begin-to-study-apache-ant.html'>初涉Ant</a></h1>
+  <div class='body'><p>之前写了一篇关于maven的文章，觉得maven过于复杂，而且现在项目中根本没有使用，所以只是简单的了解了以下。在了解maven的过程当中，发现了ant这一熟悉而又陌生的名称，网上还有一些关于maven和ant对比的文章。关于ant，每次打开myeclipse的时候总会看到他，却不知道他有什么作用，于是准备从ant开始，进而学习maven，再次学会利用maven构建自己的项目，就当作充实自己的技术面吧！<!--more--></p>
+
+<p><span style="color: #0000ff;"><strong>初识Ant</strong></span></p>
+
+<p>Apache Ant，是一个将软件编译、测试、部署等步骤联系在一起加以自动化的一个工具，大多用于Java环境中的软件开发。<br />
+Ant的原名为Another neat tool,翻译过来为另外一个干净的工具，在Java程序的开发中，ant是一个极好的助手。Ant使用XML格式的文件作为其运行的脚本,xml已经被大多数组织承认为通用的数据交换协议，具有容易阅读，编写，修改等良好的特性，被大多数人所接受。Ant运行的XML脚本文件中的每个元素都代表一个动作，ant通过动作调用相应的程序来执行任务，完成用户的操作。执行命令是ant的基本目标，把完成一项任务所需的命令按照正常的顺序写入ant脚本文件，ant调用脚本顺序执行，便可以完成一项大的任务。脚本具有一次完成编写，多次使用的特性，适合可重复的，顺序完成的任务。<br />
+默认情况下，XML文件名为bild.xml 。</p>
+
+<p><span style="color: #0000ff;"><strong>构建ant环境</strong></span></p>
+
+<p>要使用ant首先要构建一个ant环境，步骤很简单：<br />
+1),安装jdk，设置JAVA_HOME ,PATH ,CLASS_PATH<br />
+2),下载ant 地址www.apache.org<br />
+3), 解压ant 你得到的是一个压缩包，解压缩它，并把它放在一个尽量简单的目录<br />
+4), 设置ANT_HOME PATH中添加ANT_HOME目录下的bin目录<br />
+5),测试一下你的设置,开始--&gt;运行--&gt;cmd进入命令行--&gt;键入 ant 回车,如果看到<br />
+Buildfile: build.xml does not exist!<br />
+Build failed<br />
+那么恭喜你你已经完成ant的设置</p>
+
+<p><span style="color: #0000ff;"><strong>使用Ant</strong></span>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />
+&lt;project name="HelloWorld" default="run" basedir="./"&gt;<br />
+&lt;property name="src" value="src" /&gt;</p>
+
+<p>&lt;property name="build.dir" value="build" /&gt;<br />
+&lt;property name="build.classes" value="${build.dir}/classes" /&gt;<br />
+&lt;property name="build.lib" value="${build.dir}/lib" /&gt;<br />
+&lt;property name="hello_jar" value="${build.lib}/hello1.jar" /&gt;<br />
+&lt;target name="init"&gt;<br />
+&lt;mkdir dir="${build.dir}" /&gt;<br />
+&lt;mkdir dir="${build.lib}" /&gt;<br />
+&lt;mkdir dir="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;target name="compile" depends="init"&gt;<br />
+&lt;javac srcdir="${src}" destdir="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;target name="build" depends="compile"&gt;<br />
+&lt;jar jarfile="${hello_jar}" basedir="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;target name="run" depends="build"&gt;<br />
+&lt;java classname="com.javachen.ant.HelloWorld" classpath="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;target name="clean"&gt;<br />
+&lt;delete dir="${build.dir}" /&gt;<br />
+&lt;delete file="${hello_jar}" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;target name="rerun" depends="run,clean"&gt;<br />
+&lt;ant target="clean" /&gt;<br />
+&lt;ant target="run" /&gt;<br />
+&lt;/target&gt;<br />
+&lt;/project&gt;</p>
+
+<p>&lt;project name="HelloWorld" default="run" basedir="."&gt;<br />
+&lt;/project&gt;</p>
+
+<p><span style="color: #0000ff;">分析说明：</span></p>
+
+<p>ant 的所有内容必须包含在这个里边，<span style="color: #ff00ff;">name是你给它取的名字，basedir故名思意就是工作的根目录 .代表当前目录。default代表默认要做的事情</span>。</p>
+
+<p>特性定义允许我们避免在构建文件中将目录名硬编码。这些路径通常都是相对于&lt;project&gt; 元素所指定的基目录。<br />
+例如，以下标签设置了源文件目录名。<br />
+&lt;property name="src" value="src"/&gt;<br />
+类似程序中的变量，为什么这么做想一下变量的作用</p>
+
+<p>其后，这个构建文件定义了多个目标。每个目标都有一个名字，如“prepare”、“clean”或“compile”。开发人员从命令行调用Ant 时要结合这些目标名。每个目标定义了0 个或多个依赖关系（d e p e n d e n c y ）， 同时还有一个可选的description 属性（attribute）。依赖关系指定了在当前目标执行之前，Ant 必须先执行的目标。例如“prepare”必须在“compile”之前执行。对于Ant 将显示的目标，description 属性为其提供一个适合阅读的描述。</p>
+
+<p>把你想做的每一件事情写成一个target ，它有一个名字，depends是它所依赖的target，在执行这个target 例如这里的compile之前ant会先检查init是否曾经被执行过，如果执行过则直接直接执行compile，如果没有则会先执行它依赖的 target例如这里的init，然后在执行这个target。</p>
+
+<p>如我们的计划
+<span style="color: #0000ff;">编译：</span>
+&lt;target name="compile" depends="init"&gt;<br />
+&lt;javac srcdir="${src}" destdir="${build.classes}" /&gt;<br />
+&lt;/target&gt;</p>
+
+<p><span style="color: #0000ff;">做jar包:</span>
+&lt;target name="build" depends="compile"&gt;<br />
+&lt;jar jarfile="${hello_jar}" basedir="${build.classes}" /&gt;<br />
+&lt;/target&gt;
+<span style="color: #0000ff;">运行：</span>
+&lt;target name="run" depends="build"&gt;<br />
+&lt;java classname="com.javachen.ant.HelloWorld" classpath="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+为了不用拷贝，我们可以在最开始定义好目标文件夹，这样ant直接把结果就放在目标文件夹中了.
+<span style="color: #0000ff;">新建文件夹:</span>
+&lt;target name="init"&gt;<br />
+&lt;mkdir dir="${build.dir}" /&gt;<br />
+&lt;mkdir dir="${build.lib}" /&gt;<br />
+&lt;mkdir dir="${build.classes}" /&gt;<br />
+&lt;/target&gt;<br />
+为了更多一点的功能体现，又加入了两个target:
+<span style="color: #0000ff;">删除生成的文件</span>
+&lt;target name="clean"&gt;<br />
+&lt;delete dir="${build.dir}" /&gt;<br />
+&lt;delete file="${hello_jar}" /&gt;<br />
+&lt;/target&gt;
+<span style="color: #0000ff;">再次运行</span>，这里显示了如何在一个target里边调用其他的target<br />
+&lt;target name="rerun" depends="clean,run"&gt;<br />
+&lt;ant target="clean" /&gt;<br />
+&lt;ant target="run" /&gt;<br />
+&lt;/target&gt;</p>
+
+<p><span style="color: #0000ff;"><strong>Ant build.xml配置文件解释</strong></span>
+<div><span style="color: #0000ff;">&lt;project&gt;标签</span>
+每个构建文件对应一个项目。&lt;project&gt;标签时构建文件的根标签。它可以有多个内在属性，<span>就如代码中所示，其各个属性 的含义分别如下。
+<span style="color: #ff6600;">(1) default表示默认的运行目标，这个属性是必须的。<br />
+(2) basedir表示项目的基准目录。<br />
+(3) name表示项目名。<br />
+(4) description表示项目的描述。</span>
+</span></div>
+<span><span style="color: #0000ff;">&lt;target&gt;标签
+</span>一个项目标签下可以有一个或多个target标签。一个target标签可以依赖其他的target标签。例</span><span>如， 有一个target用于编译程序，另一个target用于声称可执行文件。在生成可执行文件之前必</span><span>须先编译该文件，因策可执行 文件的target依赖于编译程序的target。Target的所有属性如下。
+<span style="color: #008080;"><span style="color: #ff6600;">(1).name表示标明，这个属性是必须的。<br />
+(2).depends表示依赖的目标。<br />
+(3)if表示仅当属性设置时才执行。<br />
+(4)unless表示当属性没有设置时才执行。<br />
+(5)description表示项目的描述。</span>
+</span>Ant的depends属性指定了target的执行顺序。Ant会依照depends属性中target出现顺序依次执行</span><span>每个 target。在执行之前，首先需要执行它所依赖的target。程序中的名为run的target的</span><span>depends属性 compile，而名为compile的target的depends属性是prepare，所以这几个target执</span><span>行的顺 序是 <span style="color: #ff0000;">prepare-&gt;compile-&gt;run</span>。</span><span>一 个target只能被执行一次，即使有多个target依赖于它。如果没有if或unless属性，target总</span><span>会被执行。</span></p>
+
+<p><span><span style="color: #0000ff;">&lt;mkdir&gt;标签</span>
+该标签用于创建一个目录，它有一个属性dir用来指定所创建的目录名，其代码如下：
+<span style="color: #ff6600;">&lt;mkdir dir=”＄{class.root}”/&gt;</span>
+通过以上代码就创建了一个目录，这个目录已经被前面的property标签所指定。</span></p>
+
+<p><span><span style="color: #0000ff;">&lt;jar&gt;标签</span>
+该标签用来生成一个JAR文件，其属性如下。
+<span style="color: #ff6600;">(1) destfile表示JAR文件名。<br />
+(2) basedir表示被归档的文件名。<br />
+(3) includes表示别归档的文件模式。<br />
+(4) exchudes表示被排除的文件模式。</span></span></p>
+
+<p><span><span style="color: #0000ff;">&lt;javac标签&gt;</span>
+该标签用于编译一个或一组java文件，其属性如下。
+<span style="color: #ff6600;">(1).srcdir表示源程序的目录。<br />
+(2).destdir表示class文件的输出目录。<br />
+(3).include表示被编译的文件的模式。<br />
+(4).excludes表示被排除的文件的模式。<br />
+(5).classpath表示所使用的类路径。<br />
+(6).debug表示包含的调试信息。<br />
+(7).optimize表示是否使用优化。<br />
+(8).verbose 表示提供详细的输出信息。<br />
+(9).fileonerror表示当碰到错误就自动停止。</span></span></p>
+
+<p><span><span style="color: #0000ff;">&lt;java&gt;标签</span>
+该标签用来执行编译生成的.class文件，其属性如下。
+<span style="color: #ff6600;">(1).classname 表示将执行的类名。<br />
+(2).jar表示包含该类的JAR文件名。<br />
+(3).classpath所表示用到的类路径。<br />
+(4).fork表示在一个新的虚拟机中运行该类。<br />
+(5).failonerror表示当出现错误时自动停止。<br />
+(6).output 表示输出文件。<br />
+(7).append表示追加或者覆盖默认文件。</span></span></p>
+
+<p><span><span style="color: #0000ff;">&lt;delete&gt;标签</span>
+该标签用于删除一个文件或一组文件，去属性如下。
+<span style="color: #ff6600;">(1)/file表示要删除的文件。<br />
+(2).dir表示要删除的目录。<br />
+(3).includeEmptyDirs 表示指定是否要删除空目录，默认值是删除。<br />
+(4).failonerror 表示指定当碰到错误是否停止，默认值是自动停止。<br />
+(5).verbose表示指定是否列出所删除的文件，默认值为不列出。</span></span></p>
+
+<p><span><span style="color: #0000ff;">&lt;copy&gt;标签</span>
+该标签用于文件或文件集的拷贝，其属性如下。
+<span style="color: #ff6600;">(1).file 表示源文件。<br />
+(2).tofile 表示目标文件。<br />
+(3).todir 表示目标目录。<br />
+(4).overwrite 表示指定是否覆盖目标文件，默认值是不覆盖。<br />
+(5).includeEmptyDirs 表示制定是否拷贝空目录，默认值为拷贝。<br />
+(6).failonerror 表示指定如目标没有发现是否自动停止，默认值是停止。<br />
+(7).verbose 表示制定是否显示详细信息，默认值不显示。</span></span></p>
+
+<p><span style="color: #0000ff;"><strong>Ant的数据类型</strong></span></p>
+
+<p>在构建文件中为了标识文件 或文件组，经常需要使用数据类型。数据类型包含在 org.apache.tool.ant.types包中。下面镜简单介绍构建文件中一些常用的数据类型。<br />
+1. argument 类型<br />
+由Ant构建文件调用的程序，可以通过&lt;arg&gt;元素向其传递命令行参数，如 apply,exec和java任务均可接受嵌套&lt;arg&gt;元素，可以为各自的过程调用指定参数。以下 是&lt;arg&gt;的所有属性。<br />
+(1).values 是一个命令参数。如果参数种有空格，但又想将它作为单独一个值，则使用此属性。<br />
+(2).file表示一个参数的文件名。在构建文件中，此文件名相对于当前的工作目录。<br />
+(3).line表示用空格分隔的多个参数列表。<br />
+(4).path表示路径。</p>
+
+<p>2.ervironment 类型<br />
+由Ant构建文件调用的外部命令或程序，&lt;env&gt;元素制定了哪些环境变量 要传递给正在执行的系统命令，&lt;env&gt;元素可以接受以下属性。<br />
+(1).file表示环境变量值得文件名。此文件名要被转换位一个绝对路径。<br />
+(2).path表示环境变量的路径。Ant会将它转换为一个本地约定。<br />
+(3).value 表示环境变量的一个直接变量。<br />
+(4).key 表示环境变量名。<br />
+注意  file path 或 value只能取一个。</p>
+
+<p>3.filelist类型<br />
+Filelist 是一个支持命名的文件列表的数据类型，包含在一个filelist类型中的文件不一定是存在的文件。以下 是其所有的属性。<br />
+(1).dir是用于计算绝对文件名的目录。<br />
+(2).files 是用逗号分隔的文件名列表。<br />
+(3).refid 是对某处定义的一个&lt;filelist&gt;的引用。<br />
+注意  dir 和 files 都是必要的，除非指定了refid(这种情况下，dir和files都不允许使用)。</p>
+
+<p>4.fileset类型<br />
+Fileset 数据类型定义了一组文件，并通常表示为&lt;fileset&gt;元素。不过，许多ant任 务构建成了隐式的fileset,这说明他们支持所有的fileset属性和嵌套元素。以下为fileset 的属性列表。<br />
+(1).dir表示fileset 的基目录。<br />
+(2).casesensitive的值如果为false，那么匹配文件名时，fileset不是区分大小写的，其默认值为 true.<br />
+(3).defaultexcludes 用来确定是否使用默认的排除模式，默认为true。<br />
+(4).excludes 是用逗号分隔的需要派出的文件模式列表。<br />
+(5).excludesfile 表示每行包含一个排除模式的文件的文件名。<br />
+(6).includes 是用逗号分隔的，需要包含的文件模式列表。<br />
+(7).includesfile 表示每行包括一个包含模式的文件名。</p>
+
+<p>5.patternset 类型<br />
+Fileset 是对文件的分组，而patternset是对模式的分组，他们是紧密相关的概念。&lt;patternset&gt; 支持4个属性：includes excludex includexfile 和 excludesfile,与fileset相同。 Patternset 还允许以下嵌套元素：include,exclude,includefile 和 excludesfile.</p>
+
+<p>6.filterset 类型<br />
+Filterset定义了一组过滤器，这些过滤器将在文件移动或复制时完成文件的文本替换。主要属性如下：<br />
+(1).begintoken 表示嵌套过滤器所搜索的记号，这是标识其开始的字符串。<br />
+(2).endtoken表示嵌套过滤器所搜索的记号这是标识其结束的字符串。<br />
+(3).id是过滤器的唯一标志符。<br />
+(4).refid是对构建文件中某处定义一个过滤器的引用。</p>
+
+<p>7.Path类型<br />
+Path元素用来表示一个类路径，不过它还可以用于表示其他的路径。在用作揖个属性时，路经中的各项用分号或冒号隔开。在构建 的时候，此分隔符将代替当前平台中所有的路径分隔符，其拥有的属性如下。<br />
+(1).location 表示一个文件或目录。Ant在内部将此扩展为一个绝对路径。<br />
+(2).refid 是对当前构建文件中某处定义的一个path的引用。<br />
+(3).path表示一个文件或路径名列表。</p>
+
+<p>8.mapper类型<br />
+Mapper类型定义了一组输入文件和一组输出文件间的关系，其属性如下。<br />
+(1).classname 表示实现mapper类的类名。当内置mapper不满足要求时，用于创建定制mapper.<br />
+(2).classpath表示查找一个定制mapper时所用的类型路径。<br />
+(3).classpathref是对某处定义的一个类路径的引用。<br />
+(4).from属性的含义取决于所用的mapper.<br />
+(5).to属性的含义取决于所用的mapper.<br />
+(6).type属性的取值为identity，flatten glob merge  regexp  其中之一，它定义了要是用的内 置mapper的类型。</p>
+
+<p><span style="color: #0000ff;"><strong>关于构建文件有几点需要记住：</strong></span>
+● 所有构建文件都要有&lt;project&gt;元素，而且至少有一个&lt;target&gt; 元素。<br />
+● 对于&lt;project&gt; 元素的default 属性并没有默认值。<br />
+● 构建文件并不一定要被命名为build.xml。不过build.xml 是Ant 要搜索的默认文件名。<br />
+● 每个构建文件只能有一个&lt;project&gt; 元素。</p>
+
+<p><span style="color: #0000ff;"><strong>根据《ANT十五大最佳实践》，必须遵循以下几个原则：</strong></span>
+1. 采用一致的编码规范<br />
+精选含意明确、容易读懂的词汇来命名任务和属性。比如，dir.reports就比rpts好。特定的编码规范并不重要，只要拿出一套规范并坚持使用就行。</p>
+
+<p>2. 将build.xml放在项目根目录中<br />
+以下是一个典型的项目目录层次：<br />
+[root dir]<br />
+| build.xml<br />
++--src<br />
++--lib (包含第三方 JAR包)<br />
++--build (由 build任务生成)<br />
++--dist (由 build任务生成)<br />
+当build.xml在顶级目录时，假设你处于项目某个子目录中，只要输入：ant -find compile 命令，不需要改变工作目录就能够以命令行方式编译代码。参数-find告诉Ant寻找存在于上级目录中的build.xml并执行。</p>
+
+<p>3. 使用单一的构建文件<br />
+4. 提供良好的帮助说明<br />
+5. 提供清除任务<br />
+6. 使用ANT管理任务从属关系<br />
+7. 定义并重用文件路径<br />
+8. 定义恰当的任务从属关系<br />
+9. 使用属性<br />
+10. 保持构建过程独立<br />
+11. 使用版本控制系统<br />
+12. 使用版本控制系统<br />
+13. 使用zipfileset属性<br />
+14. 测试Clean任务<br />
+15. 避免特定平台的Ant封装</p>
+
+<p><span style="color: #0000ff;"><strong>MyEclipse自动生成Ant Build.xml </strong></span></p>
+
+<p>关于MyEclipse 自动生成 Ant Build.xml 配置文件,生成的方法很隐蔽,是自己无意中找到的.</p>
+
+<p>选择你要生成Build.xml文件的项目,右键. Export-&gt; General -&gt; Ant Buildfiles .</p>
+
+<p>点Next,再点Finish.  OK,生成完毕.然后自己再根据需求去修改.</p>
+
+<p><span style="color: #0000ff;"><strong>参考资料：</strong></span>
+ant 入门：http://www.blogjava.net/dreamstone/archive/2006/09/20/70649.html<br />
+ANT十五大最佳实践：http://oreilly.com.cn/news/ant15toppractices.php?c=java<br />
+《Ant权威指南》：http://oreilly.com.cn/book.php?bn=7-5083-1417-4</p>
+</div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/OpenSource/2010/03/18/begin-to-study-apache-ant.html'>初涉Ant</a></div>
+</div>
+
+<!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+<a class="jiathis_button_tsina"></a>
+<a class="jiathis_button_tqq"></a>
+<a class="jiathis_button_douban"></a>
+<a class="jiathis_button_googleplus"></a>
+<a class="jiathis_button_evernote"></a>
+<a class="jiathis_button_ujian"></a>
+<a class="jiathis_button_fav"></a>
+<a class="jiathis_button_copy"></a>
+<a class="jiathis_button_ishare"></a>
+<a href="http://www.jiathis.com/share?uid=1352701524431612" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"chenzhijun"
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1352701524431612" charset="utf-8"></script>
+
+<!-- JiaThis Button END -->
+
+<!-- Wumii Related BEGIN -->
+<div id="comments"  style="padding-bottom: 1em;"/>
+<script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiSitePrefix = "http://blog.javachen.com/";
+    var wumiiParams = "&num=9&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>
+<!-- Wumii Related END -->
+
+        <div class='clearfix'></div>
+      </div>
+      <!-- Duoshuo Comment BEGIN -->
+      <div class="ds-thread"></div>
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name: "huaiyu2008"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+      <!-- Duoshuo Comment END -->
+    </div>
+    <div id='footer'>
+      Copyright &copy; 2012 JavaChen. Hosted by <a href='http://github.com/javachen/javachen.github.com/' target='_blank'>GitHub</a> and powered by <a href='http://github.com/mojombo/jekyll'>Jekyll</a>. Templates from <a href='http://github.com/mbleigh/mbleigh.github.com/' target='_blank'>Michael Bleigh</a>. <script language="javascript" type="text/javascript" src="http://js.users.51.la/2845297.js"></script>
+<noscript><a href="http://www.51.la/?2845297" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/2845297.asp" style="border:none" /></a></noscript>
+    </div>
+
+    <!-- 语法高亮 BEGIN -->
+    <script src="/javascripts/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="/javascripts/syntaxhighlighter/scripts/shAutoloader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+      SyntaxHighlighter.autoloader.apply(null, path(
+        'applescript            @shBrushAppleScript.js',
+        'actionscript3 as3      @shBrushAS3.js',
+        'bash shell             @shBrushBash.js',
+        'coldfusion cf          @shBrushColdFusion.js',
+        'cpp c                  @shBrushCpp.js',
+        'c# c-sharp csharp      @shBrushCSharp.js',
+        'css                    @shBrushCss.js',
+        'delphi pascal          @shBrushDelphi.js',
+        'diff patch pas         @shBrushDiff.js',
+        'erl erlang             @shBrushErlang.js',
+        'groovy                 @shBrushGroovy.js',
+        'java                   @shBrushJava.js',
+        'jfx javafx             @shBrushJavaFX.js',
+        'js jscript javascript  @shBrushJScript.js',
+        'perl pl                @shBrushPerl.js',
+        'php                    @shBrushPhp.js',
+        'text plain             @shBrushPlain.js',
+        'py python              @shBrushPython.js',
+        'ruby rails ror rb      @shBrushRuby.js',
+        'sass scss              @shBrushSass.js',
+        'scala                  @shBrushScala.js',
+        'sql                    @shBrushSql.js',
+        'vb vbnet               @shBrushVb.js',
+        'xml xhtml xslt html    @shBrushXml.js'
+      ));
+      SyntaxHighlighter.config.bloggerMode = true;
+      SyntaxHighlighter.all();
+    });
+    function path() {
+      var args = arguments, result = [];
+           
+      for(var i = 0; i < args.length; i++) {
+        result.push(args[i].replace('@', '/javascripts/syntaxhighlighter/scripts/'));
+      }
+      return result;
+    };
+    </script>
+    <!-- 语法高亮 END -->
+
+   <!-- UJian Button BEGIN -->
+   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+   <!-- UJian Button END -->
+  </body>
+</html>
