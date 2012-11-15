@@ -8,7 +8,7 @@ layout: nil
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
- <id>http://www.kafeitu.me/</id>
+ <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
    <email>june.chan@foxmail.com</email>

@@ -1,11 +1,11 @@
 ---
-title: 关于
+title: About me
 layout: master
 ---
 
 h2. 关于我
 
-* 目前在一家创业型公司工作，任职方案架构师
+* 目前在一家做开源解决方案的公司工作，任职方案架构师
 
 * 擅长B/S系统开发，使用技术、框架：Java及其(SS、SSH2)架构、Ajax(jQuery)、JBoss、Pentaho、NoSql
 
