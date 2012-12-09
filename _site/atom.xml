@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2012-11-16T17:35:58+08:00</updated>
+ <updated>2012-12-09T16:15:04+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -202,13 +202,13 @@ rake deploy
 
 &lt;h2&gt;参考文章&lt;/h2&gt;
 
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;http://octopress.org/docs/setup/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://octopress.org/docs/deploying/&quot;&gt;http://octopress.org/docs/deploying/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&quot;&gt;http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&quot;&gt;http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://log4d.com/2012/05/image-host/&quot;&gt;http://log4d.com/2012/05/image-host/&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/ul&gt;
 
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html'>使用Octopress将博客从wordpress迁移到GitHub上</a></content>
  </entry>
