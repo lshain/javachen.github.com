@@ -301,8 +301,8 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 
   <div class='post'>
     <span class='date'>09 Apr 2012</span>
-    <a href='/NoSql/2012/04/09/getting-started-using-the-cassandra-cli.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-    <h1><a href='/NoSql/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></h1>
+    <a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+    <h1><a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></h1>
     <div class='body'><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
 
@@ -479,16 +479,172 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 
 <p><h1>参考文章</h1>
 1.<a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
-
 2.<a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>
 </div>
 
   </div>
 
   <div class='post'>
+    <span class='date'>06 Apr 2012</span>
+    <a href='/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+    <h1><a href='/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></h1>
+    <div class='body'><p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
+
+<p><h1>检查java环境</h1>
+Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
+<h3>1.检查是否安装java:</h3>
+<pre>
+# java -version
+</pre>
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+<h3>2.安装jdk</h3>
+下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:
+<pre>
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+</pre>
+<!--more-->
+2）解压执行RPM文件,例如:
+<pre>
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+</pre>
+这样JRE会安装在/usr/java/<br />
+3）配置Oracle JRE取代OpenJDK JRE<br />
+可以使用alternatives命令添加一个链接到Oracle JRE.
+<pre>
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+</pre>
+4）确认是否安装JRE
+<pre>
+$ java -version
+  java version "1.6.0_25"
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+</pre>
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
+<pre>
+$ sudo alternatives --config java
+There are 2 programs which provide 'java'.</pre></p>
+
+<p>Selection      Command<br />
+-----------------------------------------------<br />
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java<br />
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+</p>
+
+<p><h1>在Linux系统上安装DataStax Community二进制文件</h1>
+<h3>1.在用户目录创建一个目录,如datas</h3>
+<pre>
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+</pre>
+<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
+<pre>
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+</pre>
+<h3>3.解压</h3>
+<pre>
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+</pre>
+<h3>4.设置环境变量</h3>
+1)编辑 .bashrc 
+<pre>
+ vi $HOME/.bashrc
+</pre>
+2)添加以下代码
+<pre>
+export CASSANDRA_HOME=$HOME/datas/</pre><font color="red">dsc_package_name</font>
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager<br />
+export OPSC_HOME=$HOME/datas/<font color="red">opscenter_package_name</font>
+export PATH="$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin"
+
+注意替换<font color="red">dsc_package_name</font>和<font color="red">opscenter_package_name</font>
+3)保存退出<br />
+4)使该文件生效
+<pre>
+source $HOME/.bashrc
+</pre>
+<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
+<pre>
+$ mkdir $HOME/datas/cassandra-data
+</pre></p>
+
+<p><h1>配置并启动单节点</h1>
+<h3>1.编辑配置环境</h3>
+修改$CASSANDRA_HOME/conf/cassandra.yaml
+<pre>
+$ sed -i -e "s,initial_token:,initial_token: 0," \
+  $CASSANDRA_HOME/conf/cassandra.yaml</pre></p>
+
+<p>$ sed -i -e "s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,saved_caches_directory: /var/lib/cassandra/saved_caches, \<br />
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \<br />
+  $HOME/datastax/cassandra-data/commitlog," $CASSANDRA_HOME/conf/cassandra.yaml
+
+<h3>2.设置日志文件位置</h3> <br />
+修改：$CASSANDRA_HOME/conf/log4j-server.properties
+<pre>
+$ sed -i -e "s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log," \
+  $CASSANDRA_HOME/conf/log4j-server.properties
+</pre>
+<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
+<pre>
+$ sed -i -e "s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>," \
+  $DSCDEMO_HOME/bin/pricer
+</dsc_package_name></pre>
+<h3>4.后台启动Cassandra</h3>
+<pre>
+$ cassandra
+</pre>
+<h3>5.检查cassandra环是否在运行</h3>
+<pre>
+$ nodetool ring -h localhost
+</pre>
+<h3>6.运行Portfolio Demo示例程序</h3>
+1)进入Portfolio目录
+<pre>
+$ cd $DSCDEMO_HOME
+</pre>
+2)运行 ./bin/pricer工具生成数据
+<pre>
+./bin/pricer --help
+</pre>
+下面代码生成100天的历史数据
+<pre>
+./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+</pre>
+3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)
+<pre>
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &
+</pre>
+4)浏览程序 http://localhost:8983/portfolio</p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></p>
+</div>
+
+  </div>
+
+  <div class='post'>
     <span class='date'>26 Mar 2012</span>
-    <a href='/Java/2012/03/26/hash-and-hash-functions.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-    <h1><a href='/Java/2012/03/26/hash-and-hash-functions.html'>哈希表</a></h1>
+    <a href='/Java%20Core/2012/03/26/hash-and-hash-functions.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+    <h1><a href='/Java%20Core/2012/03/26/hash-and-hash-functions.html'>哈希表</a></h1>
     <div class='body'><p><strong>定义 </strong>
 一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。</p>
 
@@ -639,131 +795,9 @@ java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap�
 
 <p><strong>扩展阅读</strong>
 Hash碰撞的拒绝式服务攻击 <a href="http://blog.jobbole.com/11454/" target="_blank">http://blog.jobbole.com/11454/</a>
-
 Berkeley DB Hash、Btree、Queue、Recno选择<a href=" http://www.webzone8.com/article/560.html" target="_blank"> http://www.webzone8.com/article/560.html</a>
-
 Java Hashtable <a href="http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1" target="_blank">http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1</a>
-
 Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_blank">http://kantery.iteye.com/blog/441755</a></p>
-</div>
-
-  </div>
-
-  <div class='post'>
-    <span class='date'>23 Mar 2012</span>
-    <a href='/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-    <h1><a href='/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></h1>
-    <div class='body'><p>这是在QQ群里有人问到的一个问题.<br />
-如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
-
-<p>在kettle中实现cassandra的输入与输出有以下两种方式:<br />
-第一种方式:自己编写cassandra输入输出组件<br />
-第二种方式:使用别人编写好的插件,将其集成进来</p>
-
-<p>当然还有第三种方法,直接使用4.3版本的pdi.<br />
-第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
-
-<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.<br />
-故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.<br />
-在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:
-<!--more-->
-<pre>
-.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|-- kettle-gpload-plugin
-|-- kettle-hl7-plugin
-|-- kettle-palo-plugin
-|-- pentaho-big-data-plugin
-|-- repositories
-|-- spoon
-|-- steps
-`-- versioncheck
-</pre></p>
-
-<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下
-<pre>
-.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|   `-- DummyJob
-|       |-- DPL.png
-|       |-- dummyjob.jar
-|       `-- plugin.xml
-|-- pentaho-big-data-plugin
-|   |-- lib
-|   |   |-- apache-cassandra-1.0.0.jar
-|   |   |-- apache-cassandra-thrift-1.0.0.jar
-|   |   |-- aws-java-sdk-1.0.008.jar
-|   |   |-- commons-cli-1.2.jar
-|   |   |-- guava-r08.jar
-|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
-|   |   |-- jline-0.9.94.jar
-|   |   |-- libthrift-0.6.jar
-|   |   |-- mongo-java-driver-2.7.2.jar
-|   |   |-- pig-0.8.1.jar
-|   |   |-- xpp3_min-1.1.4c.jar
-|   |   `-- xstream-1.3.1.jar
-|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
-|-- repositories
-|-- spoon
-|-- steps
-|   |-- DummyPlugin
-|   |   |-- DPL.png
-|   |   |-- dummy.jar
-|   |   `-- plugin.xml
-|   |-- S3CsvInput
-|   |   |-- jets3t-0.7.0.jar
-|   |   |-- plugin.xml
-|   |   |-- S3CIN.png
-|   |   `-- s3csvinput.jar
-|   `-- ShapeFileReader3
-|       |-- plugin.xml
-|       |-- SFR.png
-|       `-- shapefilereader3.jar
-`-- versioncheck
-    |-- kettle-version-checker-0.2.0.jar
-    `-- lib
-        `-- pentaho-versionchecker.jar</pre></p>
-
-<p>13 directories, 29 files
-</p>
-
-<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
-<div class="pic">
-<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
-<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
-</a>
-</div></p>
-
-<p><strong>获取pentaho-big-data-plugin源码</strong>
-如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?<br />
-你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
-
-<p>然后,需要在kettle-steps.xml中注册步骤节点<br />
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.
-<pre>
-<step id="MongoDbInput">
-<description>i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
-<classname>org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
-<category>i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
-<tooltip>i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
-<iconfile>ui/images/mongodb-input.png
-</iconfile></tooltip></category></classname></description></step>
-</pre></p>
-
-<p><div class="note">
-<h>注意:<br />
-由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
-</h></div></p>
-
-<p><strong>扩展阅读:</strong>
-Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a>
-pentaho-big-data-plugin ci
-<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a>
-Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></p>
 </div>
 
   </div>
@@ -800,21 +834,21 @@ Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/displa
       
       <li title='发布日期：13 Apr 2012'><a href='/Pentaho/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></li>
       
-      <li title='发布日期：09 Apr 2012'><a href='/NoSql/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></li>
+      <li title='发布日期：09 Apr 2012'><a href='/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></li>
       
-      <li title='发布日期：26 Mar 2012'><a href='/Java/2012/03/26/hash-and-hash-functions.html'>哈希表</a></li>
+      <li title='发布日期：06 Apr 2012'><a href='/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></li>
       
-      <li title='发布日期：23 Mar 2012'><a href='/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></li>
+      <li title='发布日期：26 Mar 2012'><a href='/Java%20Core/2012/03/26/hash-and-hash-functions.html'>哈希表</a></li>
       
-      <li title='发布日期：22 Feb 2012'><a href='/Pentaho/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></li>
+      <li title='发布日期：23 Mar 2012'><a href='/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></li>
       
-      <li title='发布日期：21 Feb 2012'><a href='/Pentaho/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></li>
+      <li title='发布日期：23 Feb 2012'><a href='/Seam/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></li>
       
-      <li title='发布日期：17 Feb 2012'><a href='/Pentaho/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></li>
+      <li title='发布日期：22 Feb 2012'><a href='/Kettle/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></li>
       
-      <li title='发布日期：14 Feb 2012'><a href='/JSF/2012/02/14/this-expression-of-jsf-el.html'>JSF中EL表达式之this扩展</a></li>
+      <li title='发布日期：21 Feb 2012'><a href='/Kettle/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></li>
       
-      <li title='发布日期：31 Jan 2012'><a href='/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></li>
+      <li title='发布日期：17 Feb 2012'><a href='/Kettle/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></li>
       
     </ul>
     </div>

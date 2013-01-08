@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2012-12-09T16:15:04+08:00</updated>
+ <updated>2013-01-08T19:37:41+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -265,9 +265,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
  
  <entry>
    <title>Getting Started Using the Cassandra CLI</title>
-   <link href="http://blog.javachen.com/NoSql/2012/04/09/getting-started-using-the-cassandra-cli.html"/>
+   <link href="http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html"/>
    <updated>2012-04-09T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/NoSql/2012/04/09/getting-started-using-the-cassandra-cli</id>
+   <id>http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli</id>
    <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;br /&gt;
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
 
@@ -444,16 +444,172 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
 1.&lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;
-
 2.&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/NoSql/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
+ </entry>
+ 
+ <entry>
+   <title>使用DataStax Community Edition安装Cassandra单节点</title>
+   <link href="http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html"/>
+   <updated>2012-04-06T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio</id>
+   <content type="html">&lt;p&gt;本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.&lt;/p&gt;
+
+&lt;p&gt;&lt;h1&gt;检查java环境&lt;/h1&gt;
+Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
+&lt;h3&gt;1.检查是否安装java:&lt;/h3&gt;
+&lt;pre&gt;
+# java -version
+&lt;/pre&gt;
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+&lt;h3&gt;2.安装jdk&lt;/h3&gt;
+下载&lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/index.html&quot; target=&quot;_blank&quot;&gt;Oracle JRE&lt;/a&gt;
+1）修改执行权限:
+&lt;pre&gt;
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+&lt;/pre&gt;
+&lt;!--more--&gt;
+2）解压执行RPM文件,例如:
+&lt;pre&gt;
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+&lt;/pre&gt;
+这样JRE会安装在/usr/java/&lt;br /&gt;
+3）配置Oracle JRE取代OpenJDK JRE&lt;br /&gt;
+可以使用alternatives命令添加一个链接到Oracle JRE.
+&lt;pre&gt;
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+&lt;/pre&gt;
+4）确认是否安装JRE
+&lt;pre&gt;
+$ java -version
+  java version &quot;1.6.0_25&quot;
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+&lt;/pre&gt;
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
+&lt;pre&gt;
+$ sudo alternatives --config java
+There are 2 programs which provide 'java'.&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;Selection      Command&lt;br /&gt;
+-----------------------------------------------&lt;br /&gt;
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java&lt;br /&gt;
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+&lt;/p&gt;
+
+&lt;p&gt;&lt;h1&gt;在Linux系统上安装DataStax Community二进制文件&lt;/h1&gt;
+&lt;h3&gt;1.在用户目录创建一个目录,如datas&lt;/h3&gt;
+&lt;pre&gt;
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+&lt;/pre&gt;
+&lt;h3&gt;2.下载cassandra(必须的)和OpsCenter包(可选的)&lt;/h3&gt;
+&lt;pre&gt;
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+&lt;/pre&gt;
+&lt;h3&gt;3.解压&lt;/h3&gt;
+&lt;pre&gt;
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+&lt;/pre&gt;
+&lt;h3&gt;4.设置环境变量&lt;/h3&gt;
+1)编辑 .bashrc 
+&lt;pre&gt;
+ vi $HOME/.bashrc
+&lt;/pre&gt;
+2)添加以下代码
+&lt;pre&gt;
+export CASSANDRA_HOME=$HOME/datas/&lt;/pre&gt;&lt;font color=&quot;red&quot;&gt;dsc_package_name&lt;/font&gt;
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager&lt;br /&gt;
+export OPSC_HOME=$HOME/datas/&lt;font color=&quot;red&quot;&gt;opscenter_package_name&lt;/font&gt;
+export PATH=&quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&quot;
+
+注意替换&lt;font color=&quot;red&quot;&gt;dsc_package_name&lt;/font&gt;和&lt;font color=&quot;red&quot;&gt;opscenter_package_name&lt;/font&gt;
+3)保存退出&lt;br /&gt;
+4)使该文件生效
+&lt;pre&gt;
+source $HOME/.bashrc
+&lt;/pre&gt;
+&lt;h3&gt;5.创建保存Cassandra数据的文件和日志目录&lt;/h3&gt;
+&lt;pre&gt;
+$ mkdir $HOME/datas/cassandra-data
+&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h1&gt;配置并启动单节点&lt;/h1&gt;
+&lt;h3&gt;1.编辑配置环境&lt;/h3&gt;
+修改$CASSANDRA_HOME/conf/cassandra.yaml
+&lt;pre&gt;
+$ sed -i -e &quot;s,initial_token:,initial_token: 0,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \&lt;br /&gt;
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
+
+&lt;p&gt;$ sed -i -e &quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \&lt;br /&gt;
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&quot; \&lt;br /&gt;
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
+
+&lt;p&gt;$ sed -i -e &quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \&lt;br /&gt;
+  $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
+
+&lt;h3&gt;2.设置日志文件位置&lt;/h3&gt; &lt;br /&gt;
+修改：$CASSANDRA_HOME/conf/log4j-server.properties
+&lt;pre&gt;
+$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
+  $CASSANDRA_HOME/conf/log4j-server.properties
+&lt;/pre&gt;
+&lt;h3&gt;3.配置DataStax示例程序指向Cassandra的安装位置&lt;/h3&gt;
+&lt;pre&gt;
+$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/&lt;dsc_package_name&gt;,&quot; \
+  $DSCDEMO_HOME/bin/pricer
+&lt;/dsc_package_name&gt;&lt;/pre&gt;
+&lt;h3&gt;4.后台启动Cassandra&lt;/h3&gt;
+&lt;pre&gt;
+$ cassandra
+&lt;/pre&gt;
+&lt;h3&gt;5.检查cassandra环是否在运行&lt;/h3&gt;
+&lt;pre&gt;
+$ nodetool ring -h localhost
+&lt;/pre&gt;
+&lt;h3&gt;6.运行Portfolio Demo示例程序&lt;/h3&gt;
+1)进入Portfolio目录
+&lt;pre&gt;
+$ cd $DSCDEMO_HOME
+&lt;/pre&gt;
+2)运行 ./bin/pricer工具生成数据
+&lt;pre&gt;
+./bin/pricer --help
+&lt;/pre&gt;
+下面代码生成100天的历史数据
+&lt;pre&gt;
+./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+&lt;/pre&gt;
+3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)
+&lt;pre&gt;
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &amp;
+&lt;/pre&gt;
+4)浏览程序 http://localhost:8983/portfolio&lt;/p&gt;
+
+&lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
+1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/p&gt;
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
  </entry>
  
  <entry>
    <title>哈希表</title>
-   <link href="http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions.html"/>
+   <link href="http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions.html"/>
    <updated>2012-03-26T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions</id>
+   <id>http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;定义 &lt;/strong&gt;
 一般的线性表、树，数据在结构中的相对位置是&lt;code&gt;随机&lt;/code&gt;的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。&lt;/p&gt;
 
@@ -604,20 +760,17 @@ java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap�
 
 &lt;p&gt;&lt;strong&gt;扩展阅读&lt;/strong&gt;
 Hash碰撞的拒绝式服务攻击 &lt;a href=&quot;http://blog.jobbole.com/11454/&quot; target=&quot;_blank&quot;&gt;http://blog.jobbole.com/11454/&lt;/a&gt;
-
 Berkeley DB Hash、Btree、Queue、Recno选择&lt;a href=&quot; http://www.webzone8.com/article/560.html&quot; target=&quot;_blank&quot;&gt; http://www.webzone8.com/article/560.html&lt;/a&gt;
-
 Java Hashtable &lt;a href=&quot;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&quot; target=&quot;_blank&quot;&gt;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&lt;/a&gt;
-
 Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot; target=&quot;_blank&quot;&gt;http://kantery.iteye.com/blog/441755&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
  </entry>
  
  <entry>
    <title>如何在kettle4.2上面实现cassandra的输入与输出</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html"/>
    <updated>2012-03-23T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2</id>
+   <id>http://blog.javachen.com/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2</id>
    <content type="html">&lt;p&gt;这是在QQ群里有人问到的一个问题.&lt;br /&gt;
 如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?&lt;/p&gt;
 
@@ -729,17 +882,69 @@ Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Get
 pentaho-big-data-plugin ci
 &lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&lt;/a&gt;
 Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></content>
+ </entry>
+ 
+ <entry>
+   <title>Seam的启动过程</title>
+   <link href="http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation.html"/>
+   <updated>2012-02-23T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation</id>
+   <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
+&lt;pre lang=&quot;xml&quot;&gt;
+&lt; listener&gt;
+	&lt; listener-class&gt;org.jboss.seam.servlet.SeamListener&lt; /listener-class&gt;
+&lt; /listener&gt;
+&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。
+&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.&lt;/blockquote&gt;&lt;/p&gt;
+
+&lt;p&gt;从描述中可以知道&lt;br /&gt;
+SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。&lt;/p&gt;
+
+&lt;p&gt;该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。&lt;br /&gt;
+该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。
+&lt;!--more--&gt;
+&lt;strong&gt;第一步&lt;/strong&gt;，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第二步&lt;/strong&gt;，扫描配置文件完成seam组件的初始化（Initialization的create方法）。&lt;br /&gt;
+其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。&lt;br /&gt;
+1.添加命名空间&lt;br /&gt;
+2.从“/WEB-INF/components.xml”加载组件&lt;br /&gt;
+3.从“/WEB-INF/events.xml”加载组件&lt;br /&gt;
+4.从“META-INF/components.xml”加载组件&lt;br /&gt;
+5.从ServletContext初始化Properties&lt;br /&gt;
+6.从“/seam.properties”初始化Properties&lt;br /&gt;
+7.初始化jndi Properties&lt;br /&gt;
+8.从system加载Properties&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第三步&lt;/strong&gt;，seam初始化过程（Initialization的init方法）。&lt;br /&gt;
+1.ServletLifecycle开始初始化&lt;br /&gt;
+2.设置Application上下文&lt;br /&gt;
+3.添加Init组件&lt;br /&gt;
+4.通过standardDeploymentStrategy的注解和xml组件扫描组件&lt;br /&gt;
+5.判断jbpm是否安装&lt;br /&gt;
+6.检查默认拦截器&lt;br /&gt;
+7.添加特别组件&lt;br /&gt;
+8.添加war root部署、热部署&lt;br /&gt;
+9.安装组件&lt;br /&gt;
+10.导入命名空间&lt;br /&gt;
+11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/p&gt;
+
+&lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。
+&lt;/p&gt;
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></content>
  </entry>
  
  <entry>
    <title>Kettle运行作业之前的初始化过程</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/02/22/the-init-process-before-job-execution.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/02/22/the-init-process-before-job-execution.html"/>
    <updated>2012-02-22T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/02/22/the-init-process-before-job-execution</id>
+   <id>http://blog.javachen.com/Kettle/2012/02/22/the-init-process-before-job-execution</id>
    <content type="html">&lt;p&gt;本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。&lt;/p&gt;
 
-&lt;p&gt;之前用英文写了一篇文章《&lt;a href=&quot;http://blog.javachen.com/2012/02/the-execution-process-of-kettles-job/&quot; target=&quot;_blank&quot;&gt;The execution process of kettle’s job&lt;/a&gt;》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。&lt;/p&gt;
+&lt;p&gt;之前用英文写了一篇文章《&lt;a href=&quot;http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/&quot; target=&quot;_blank&quot;&gt;The execution process of kettle’s job&lt;/a&gt;》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。&lt;/p&gt;
 
 &lt;p&gt;在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。&lt;/p&gt;
 
@@ -803,14 +1008,14 @@ safe：是否安全模式&lt;/p&gt;
 5.调用Job的start方法，启动线程开始执行一个job。&lt;/p&gt;
 
 &lt;p&gt;Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>
  </entry>
  
  <entry>
    <title>The execution process of kettle’s job</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/02/21/the-execution-process-of-kettles-job.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job.html"/>
    <updated>2012-02-21T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/02/21/the-execution-process-of-kettles-job</id>
+   <id>http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job</id>
    <content type="html">&lt;p&gt;How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is &quot;org.pentaho.di.ui.spoon.Spoon.java&quot;.This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.&lt;/p&gt;
 
 &lt;p&gt;When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.&lt;/p&gt;
@@ -818,18 +1023,18 @@ safe：是否安全模式&lt;/p&gt;
 &lt;p&gt;This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&quot;pic&quot;&gt;
-&lt;a href=&quot;http://blog.javachen.com/files/2012/02/spoon-execute-sequence.jpg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;http://blog.javachen.com/files/2012/02/spoon-execute-sequence-300x180.jpg&quot; alt=&quot;&quot; title=&quot;spoon execute sequence&quot; width=&quot;300&quot; height=&quot;180&quot; class=&quot;aligncenter size-medium wp-image-2511&quot; /&gt;&lt;/a&gt;
+&lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg&quot; alt=&quot;&quot; title=&quot;spoon execute sequence&quot; width=&quot;300&quot; height=&quot;180&quot; class=&quot;aligncenter size-medium wp-image-2511&quot; /&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;What is the detail process of job execution? You should look into the Job.run() method for detail information.&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></content>
  </entry>
  
  <entry>
    <title>kettle中定义错误处理</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/02/17/step-error-handling-in-kettle.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/02/17/step-error-handling-in-kettle.html"/>
    <updated>2012-02-17T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/02/17/step-error-handling-in-kettle</id>
+   <id>http://blog.javachen.com/Kettle/2012/02/17/step-error-handling-in-kettle</id>
    <content type="html">&lt;p&gt;在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。&lt;/p&gt;
 
 &lt;p&gt;下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：
@@ -899,9 +1104,8 @@ CREATE TABLE a1
 
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 1.&lt;a href=&quot;http://wiki.pentaho.com/display/EAI/.09+Transformation+Steps#.09TransformationSteps-StepErrorHandling&quot; target=&quot;_blank&quot;&gt;Step Error Handling&lt;/a&gt;
-
 2.&lt;a href=&quot;http://wiki.pentaho.com/display/COM/Step+error+handling+codes&quot; target=&quot;_blank&quot;&gt;Step error handling codes&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></content>
  </entry>
  
  <entry>
@@ -1183,94 +1387,33 @@ CREATE TABLE a1
  </entry>
  
  <entry>
-   <title>在eclipse中构建Pentaho BI Server工程</title>
-   <link href="http://blog.javachen.com/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html"/>
-   <updated>2011-09-28T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse</id>
-   <content type="html">&lt;p&gt;首先需要说明的是，Pentaho BI Server源代码在&lt;em&gt;svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/&lt;/em&gt;，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。&lt;br /&gt;
-当然，您可以参考&lt;a href=&quot;http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse&quot; target=&quot;_blank&quot;&gt;官方文档&lt;/a&gt;构建源码。&lt;/p&gt;
+   <title>Mondrian and OLAP</title>
+   <link href="http://blog.javachen.com/Pentaho/2011/12/07/mondrian-and-olap.html"/>
+   <updated>2011-12-07T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/Pentaho/2011/12/07/mondrian-and-olap</id>
+   <content type="html">&lt;p&gt;Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。&lt;/p&gt;
 
-&lt;p&gt;Pentaho BI Server打包后的文件存于&lt;a href=&quot;http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。
-&lt;!--more--&gt;
-将biserver-ce-3.9.0-stable.zip解压之后执行&lt;em&gt;biserver-ce/start-pentaho.bat&lt;/em&gt;（或是再linux环境下：&lt;em&gt;biserver-ce/start-pentaho.sh&lt;/em&gt;），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;Online Analytical Processing&lt;/span&gt;&lt;/strong&gt;
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-&lt;wbr&gt;Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。&lt;/wbr&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。&lt;/strong&gt;
-在eclipse中创建一个web项目，名称为pentaho，然后将&lt;em&gt;biserver-ce/tomcat/webapps&lt;/em&gt;下的&lt;code&gt;pentaho-style&lt;/code&gt;和&lt;code&gt;sw-style&lt;/code&gt;拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改&lt;code&gt;WEB-INF/web.xml&lt;/code&gt;文件你的以下配置，用于指定pentaho-solutions的路径：
-&lt;pre&gt;
-&lt; context-param &gt;
-	&lt; param-name &gt;solution-path&lt; /param-name&gt;
-	&lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
-&lt; /context-param &gt;
-&lt;/pre&gt;
-现在即可部署项目，运行&lt;code&gt;biserver-ce/data/start_hypersonic.bat&lt;/code&gt;（用于启动数据库），然后启动tomcat，就可以通过&lt;em&gt;http://localhost:8080/pentaho&lt;/em&gt;访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（&lt;em&gt;\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib&lt;/em&gt;）。&lt;br /&gt;
-现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。&lt;/p&gt;
+&lt;p&gt;OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;接下来，构建源代码。&lt;/strong&gt;
-在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217.jpg&quot;&gt;&lt;img class=&quot;size-medium wp-image-2469 aligncenter&quot; title=&quot;olap_examples20111217&quot; src=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217-300x129.jpg&quot; alt=&quot;olap多维视图&quot; width=&quot;300&quot; height=&quot;129&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;&lt;font color=&quot;red&quot;&gt;需要注意的是：&lt;/font&gt;&lt;/strong&gt;
-1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件&lt;br /&gt;
-2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。&lt;br /&gt;
-3.
-&lt;pre&gt;	
-&lt;ul&gt;
-&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，&lt;/li&gt;
-   	&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，&lt;/li&gt;
-	&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，&lt;/li&gt;
-&lt;li&gt; biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，&lt;/li&gt;
-&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/pre&gt;
-4.biserver-ce-3.9.0-stable.zip的lib（biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误
-&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html'>在eclipse中构建Pentaho BI Server工程</a></content>
- </entry>
- 
- <entry>
-   <title>Pentaho现场支持遇到问题及解决办法</title>
-   <link href="http://blog.javachen.com/Pentaho/2011/09/26/resolved-pentaho-problems-9-16.html"/>
-   <updated>2011-09-26T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2011/09/26/resolved-pentaho-problems-9-16</id>
-   <content type="html">&lt;p&gt;很久没写文章了，最近在关注Pentaho。&lt;br /&gt;
- 以下是9月16日现场提出的问题解决办法：&lt;br /&gt;
-      1、PDF预览中文没显示，txt预览中文乱码：&lt;br /&gt;
-           1）、设置File-&gt;Configuration -&gt;output-pageable-pdf的encoding 为Identity-H&lt;br /&gt;
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体&lt;br /&gt;
-           3）、如要发布到服务器，需要修改如下的配置：&lt;br /&gt;
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：&lt;br /&gt;
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H&lt;br /&gt;
-     2、实现文件拷贝方式发布报表&lt;br /&gt;
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了&lt;br /&gt;
-     3、报表链接参数传递问题&lt;br /&gt;
-          由于参数带中文造成的，可以对参数的值URLENCODE(&quot;value&quot;; &quot;utf-8&quot;)来解决&lt;br /&gt;
-     4、查询参数缺省值问题&lt;br /&gt;
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。&lt;br /&gt;
-     5、实现在pie chart上显示文字&lt;br /&gt;
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。&lt;br /&gt;
-     6、报表集成时候垂直滚动条是否可以去掉&lt;br /&gt;
-          改变报表的高度：报表设计器 file-page setup&lt;br /&gt;
-     7、报表中的chart不能导出到Excel2007&lt;br /&gt;
-          目前为系统bug，excel2003能够正常导出&lt;br /&gt;
-     8、实现隔行换色&lt;br /&gt;
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format--&gt;Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入&quot;row-band&quot;&lt;br /&gt;
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2011/09/26/resolved-pentaho-problems-9-16.html'>Pentaho现场支持遇到问题及解决办法</a></content>
- </entry>
- 
- <entry>
-   <title>在Fedora 15 上搭建Eucalyptus</title>
-   <link href="http://blog.javachen.com/cloud computing/2011/08/20/install-eucalyptus-on-fedora-15.html"/>
-   <updated>2011-08-20T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/cloud computing/2011/08/20/install-eucalyptus-on-fedora-15</id>
-   <content type="html">&lt;p&gt;&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章&lt;a href=&quot;http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0&quot; target=&quot;_blank&quot;&gt;Installing Eucalyptus (2.0) on Fedora 12&lt;/a&gt;，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.&lt;/p&gt;
+&lt;p&gt;行轴包括&quot;All products&quot;, &quot;Books&quot;,&quot;Fiction&quot;等等，并且列轴包括生产年份&quot;2000&quot;”和&quot;2001&quot;、&quot;Growth&quot;的计算值以及&quot;Unit sales&quot;和&quot;Dollar sales&quot;的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。&lt;/p&gt;
 
-&lt;p&gt;毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。&lt;/p&gt;
+&lt;p&gt;这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在&quot;2000&quot;和&quot;2001&quot;一行，&quot;Growth&quot;是一个计算出来的值，它引入一个公式从其他列计算当前列的值。&lt;/p&gt;
 
-&lt;p&gt;如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。&lt;/p&gt;
+&lt;p&gt;该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/cloud computing/2011/08/20/install-eucalyptus-on-fedora-15.html'>在Fedora 15 上搭建Eucalyptus</a></content>
+&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;结论&lt;/span&gt;&lt;/strong&gt;
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。&lt;br /&gt;
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;说明&lt;/span&gt;&lt;/strong&gt;
+&lt;div class=&quot;note&quot;&gt;
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。&lt;/div&gt;&lt;/p&gt;
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2011/12/07/mondrian-and-olap.html'>Mondrian and OLAP</a></content>
  </entry>
  
  
