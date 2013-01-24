@@ -15,7 +15,7 @@
     <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
     java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
 
-    <title>Export DhtmlxGrid to PDF in Java</title>
+    <title>在Fedora 15 上搭建Eucalyptus</title>
     <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
@@ -43,184 +43,19 @@
       </div>
       <div id='content'>
         <div class='post'>
-  <span class='date'>11 Aug 2011</span>
+  <span class='date'>20 Aug 2011</span>
   <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
-  <h1><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></h1>
-  <div class='body'><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+  <h1><a href='/CloudComputing/2011/08/20/install-eucalyptus-on-fedora-15.html'>在Fedora 15 上搭建Eucalyptus</a></h1>
+  <div class='body'><p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
+在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
 
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。<br />
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf-300x166.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" /></a>
-</div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();</pre></p>
-
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。<br />
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-	Element root;
-	PDFColumn[][] columns;
-	PDFRow[] rows;
-	double[] widths;
-	private Boolean header = false;
-	private Boolean footer = false;
-	private String profile = "gray";
-	private double[] orientation = null;</pre></p>
-
-<p>	public void setXML(String xml) {<br />
-		SAXReader saxReader = new SAXReader();</p>
-
-<p>		Document document = null;<br />
-		try {<br />
-			document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));<br />
-		} catch (DocumentException e) {<br />
-			e.printStackTrace();<br />
-		}<br />
-		root = document.getRootElement();</p>
-
-<p>		if ((root.attributeValue("header") != null)<br />
-				&amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {<br />
-			header = true;<br />
-		}<br />
-		String footer_string = root.attributeValue("footer");<br />
-		if ((footer_string != null)<br />
-				&amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {<br />
-			footer = true;<br />
-		}<br />
-		String profile_string = root.attributeValue("profile");<br />
-		if (profile_string != null) {<br />
-			profile = profile_string;<br />
-		}</p>
-
-<p>		String orientation_string = root.attributeValue("orientation");<br />
-		if (orientation_string != null) {<br />
-			if (orientation_string.equalsIgnoreCase("landscape")) {<br />
-				orientation = A4.LANDSCAPE;<br />
-			} else {<br />
-				orientation = A4.PORTRAIT;<br />
-			}<br />
-		} else {<br />
-			orientation = Letter.PORTRAIT;<br />
-		}<br />
-	}</p>
-
-<p>	public PDFColumn[][] getColumnsInfo() {<br />
-		PDFColumn[] colLine = null;<br />
-		List n1 = root.element("head").elements("columns");<br />
-		if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {<br />
-			columns = new PDFColumn[n1.size()][];<br />
-			for (int i = 0; i &lt; n1.size(); i++) {<br />
-				Element cols = (Element) n1.get(i);<br />
-				List n2 = cols.elements("column");<br />
-				if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {<br />
-					colLine = new PDFColumn[n2.size()];<br />
-					for (int j = 0; j &lt; n2.size(); j++) {<br />
-						Element col_xml = (Element) n2.get(j);<br />
-						PDFColumn col = new PDFColumn();<br />
-						col.parse(col_xml);<br />
-						colLine[j] = col;<br />
-					}<br />
-				}<br />
-				columns[i] = colLine;<br />
-			}<br />
-		}<br />
-		createWidthsArray();<br />
-		optimizeColumns();<br />
-		return columns;<br />
-	}<br />
-        public PDFRow[] getGridContent() {<br />
-		List nodes = root.elements("row");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			rows = new PDFRow[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				rows[i] = new PDFRow();<br />
-				rows[i].parse((Element) nodes.get(i));<br />
-			}<br />
-		}<br />
-		return rows;</p>
-
-<p>	}</p>
-
-<p>       *****<br />
-}</p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</pre></p>
-
-<p>	private String[] cells;</p>
-
-<p>	public void parse(Element parent) {<br />
-		List nodes = ((Element) parent).elements("cell");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			cells = new String[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				cells[i] = ((Element) nodes.get(i)).getTextTrim();<br />
-			}<br />
-		}<br />
-	}</p>
-
-<p>	public String[] getCells() {<br />
-		return cells;<br />
-	}<br />
-}</p>
-
-<p>public class PDFColumn {</p>
-
-<p>	public void parse(Element parent) {<br />
-		colName = parent.getText();<br />
-		String width_string = parent.attributeValue("width");<br />
-		if (width_string!=null&&width_string.length() > 0) {<br />
-			width = Integer.parseInt(width_string);<br />
-		}<br />
-		type = parent.attributeValue("type");<br />
-		align = parent.attributeValue("align");<br />
-		String colspan_string = parent.attributeValue("colspan");<br />
-		if (colspan_string!=null&&colspan_string.length() > 0) {<br />
-			colspan = Integer.parseInt(colspan_string);<br />
-		}<br />
-		String rowspan_string = parent.attributeValue("rowspan");<br />
-		if (rowspan_string!=null&&rowspan_string.length() > 0) {<br />
-			rowspan= Integer.parseInt(rowspan_string);<br />
-		}<br />
-	}<br />
-}
-</p>
-
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf-300x134.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" /></a>
-</div></p>
-
-<p><h2>结论：</h2>
-<div class="note">
-1.导出pdf和导出Excel代码差不多，这里不做说明。<br />
-2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。<br />
-3.导出的pdf为多页显示，每页有表头<br />
-4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。
-</div></p>
+<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
 
 <p></p>
 </div>
-  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java-JavaChen Blog</a></div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/CloudComputing/2011/08/20/install-eucalyptus-on-fedora-15.html'>在Fedora 15 上搭建Eucalyptus-JavaChen Blog</a></div>
 </div>
 
 <!-- JiaThis Button BEGIN -->

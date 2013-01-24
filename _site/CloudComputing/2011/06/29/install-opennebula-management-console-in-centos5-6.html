@@ -15,7 +15,7 @@
     <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
     java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
 
-    <title>Export DhtmlxGrid to PDF in Java</title>
+    <title>Centos上安装 OpenNebula Management Console</title>
     <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
@@ -43,184 +43,84 @@
       </div>
       <div id='content'>
         <div class='post'>
-  <span class='date'>11 Aug 2011</span>
+  <span class='date'>29 Jun 2011</span>
   <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
-  <h1><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></h1>
-  <div class='body'><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+  <h1><a href='/CloudComputing/2011/06/29/install-opennebula-management-console-in-centos5-6.html'>Centos上安装 OpenNebula Management Console</a></h1>
+  <div class='body'><p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
 
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。<br />
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+<p>OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章：<br />
+《<a href="http://www.vpsee.com/2011/03/install-opennebula-management-console-on-centos/" target="_blank">安装 OpenNebula 基于 Web 的管理控制台》</a>，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。</p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf-300x166.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" /></a>
+<p>我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。</p>
+
+<p><span style="color: #ff0000;"><!--more-->以下来自<a href="http://dev.opennebula.org/projects/management-console/wiki">官方文档</a>：</span>
+<h3><span style="color: #0000ff;">要求:</span></h3>
+<ul>
+	<li>Apache or whatever webserver.</li>
+	<li>php5 (May work with php4 but not tested)</li>
+	<li>php-adodb<br />
+And you need a db driver for adodb: php-mysql or php-pgsql.</li>
+	<li>Mysql or postgresql database</li>
+	<li>php-curl</li>
+	<li>php-xmlrpc</li>
+	<li>php-pear: pecl install uploadprogress (Only if you want a nice upload progress bar)</li>
+</ul>
+如果你想查看更多资料，您可以去官网：<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>；如果你想在ubutun上安装OpenNebula Management Console，参照这篇文章：<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
+
+<p><span style="color: #ff0000;">以下为安装过程：</span>
+<h3><span style="color: #0000ff;">必要软件</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php mysql-server httpd mysql-connector-odbc mysql-devel libdbi-dbd-mysql</pre>
+<h3><span style="color: #ff0000; font-size: 15px;">安装php-adodb</span></h3>
+从<a href="http://sourceforge.net/projects/adodb/files/adodb-php5-only">http://sourceforge.net/projects/adodb/files/adodb-php5-only</a>下载
+<strong><span style="color: #ff0000;">注意：</span></strong>将adobd包解压拷贝到/var/www/html/onemc/include/，将文件名改为adobd
+<h3><span style="color: #0000ff;">安装php的扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-curl php-mysql</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">安装apache扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install httpd-manual mod_ssl mod_perl mod_auth_mysql</pre>
+<h3><span style="color: #ff0000;">修改配置文件权限</span></h3>
+<pre escaped="true" lang="shell"># chmod 644 /var/www/html/onemc/include/config.php</pre>
+我下载的是OpenNebula 2.2其中/config.php的权限很特别，如果你从浏览器访问onemc时候页面都是空白的，你可以看看日志（我使用的是httpd，日志在httpd.log），可以看到日志中提示没有权限访问/var/www/html/onemc/include/config.php
+<h3><span style="color: #0000ff;">下载 onemc</span></h3>
+下载和解压 onemc-1.0.0.tar.gz 后直接放在 apache 的默认目录里：
+<pre escaped="true" lang="shell"># cd /var/www/html
+# wget http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz
+# tar zxvf onemc-1.0.0.tar.gz
+# cd onemc</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">配置数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -uroot -p
+Enter password:
+mysql&gt; create database onemc;
+mysql&gt; create user 'oneadmin'@'localhost' identified by 'oneadmin';
+mysql&gt; grant all privileges on onemc.* to 'oneadmin'@'localhost';
+mysql&gt; \q</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">初始化数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -u oneadmin -p onemc &lt; /var/www/html/onemc/include/mysql.sql</pre>
+<h3><span style="color: #0000ff;">配置 onemc</span></h3>
+<pre escaped="true" lang="shell"># vi /var/www/html/onemc/include/config.php
+...
+// vmm: kvm or xen
+$vmm = "xen";
+...
+// ADODB settings
+$adodb_type = "mysql";
+$adodb_server = "localhost";
+$adodb_user = "oneadmin";
+$adodb_pass = "oneadmin";
+$adodb_name = "onemc";</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">登录</span></h3>
+如果系统设置了 http_proxy 环境变量的话一定要先关闭，然后重启 one 和 httpd：
+<pre escaped="true" lang="shell"># unset http_proxy
+# one stop; one start
+# /etc/init.d/httpd restar</pre>
+访问地址为http://localhost/onemc/index.php，用户名和密码在one_auth 中。
+<h3><span style="font-size: 15px;"><span style="color: #ff0000;">总结</span></span></h3>
+以上步骤最重要的是配置好centos的yum源，一次将php和mysql及相关组件安装成功，然后需要注意的是上面红色部分标出的部分。其实，除了红色那部分之外，其余和开头提到的那篇文章内容没什么差别。
+<h3><span style="color: #0000ff;">参考文章</span></h3>
+<a href="http://www.javachen.com/?page_id=2073#date=2011-06-29 12:00:00,mode=month" target="_blank">Centos上安装 OpenNebula Management Console</a>
+<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>
+<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
 </div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();</pre></p>
-
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。<br />
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-	Element root;
-	PDFColumn[][] columns;
-	PDFRow[] rows;
-	double[] widths;
-	private Boolean header = false;
-	private Boolean footer = false;
-	private String profile = "gray";
-	private double[] orientation = null;</pre></p>
-
-<p>	public void setXML(String xml) {<br />
-		SAXReader saxReader = new SAXReader();</p>
-
-<p>		Document document = null;<br />
-		try {<br />
-			document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));<br />
-		} catch (DocumentException e) {<br />
-			e.printStackTrace();<br />
-		}<br />
-		root = document.getRootElement();</p>
-
-<p>		if ((root.attributeValue("header") != null)<br />
-				&amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {<br />
-			header = true;<br />
-		}<br />
-		String footer_string = root.attributeValue("footer");<br />
-		if ((footer_string != null)<br />
-				&amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {<br />
-			footer = true;<br />
-		}<br />
-		String profile_string = root.attributeValue("profile");<br />
-		if (profile_string != null) {<br />
-			profile = profile_string;<br />
-		}</p>
-
-<p>		String orientation_string = root.attributeValue("orientation");<br />
-		if (orientation_string != null) {<br />
-			if (orientation_string.equalsIgnoreCase("landscape")) {<br />
-				orientation = A4.LANDSCAPE;<br />
-			} else {<br />
-				orientation = A4.PORTRAIT;<br />
-			}<br />
-		} else {<br />
-			orientation = Letter.PORTRAIT;<br />
-		}<br />
-	}</p>
-
-<p>	public PDFColumn[][] getColumnsInfo() {<br />
-		PDFColumn[] colLine = null;<br />
-		List n1 = root.element("head").elements("columns");<br />
-		if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {<br />
-			columns = new PDFColumn[n1.size()][];<br />
-			for (int i = 0; i &lt; n1.size(); i++) {<br />
-				Element cols = (Element) n1.get(i);<br />
-				List n2 = cols.elements("column");<br />
-				if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {<br />
-					colLine = new PDFColumn[n2.size()];<br />
-					for (int j = 0; j &lt; n2.size(); j++) {<br />
-						Element col_xml = (Element) n2.get(j);<br />
-						PDFColumn col = new PDFColumn();<br />
-						col.parse(col_xml);<br />
-						colLine[j] = col;<br />
-					}<br />
-				}<br />
-				columns[i] = colLine;<br />
-			}<br />
-		}<br />
-		createWidthsArray();<br />
-		optimizeColumns();<br />
-		return columns;<br />
-	}<br />
-        public PDFRow[] getGridContent() {<br />
-		List nodes = root.elements("row");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			rows = new PDFRow[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				rows[i] = new PDFRow();<br />
-				rows[i].parse((Element) nodes.get(i));<br />
-			}<br />
-		}<br />
-		return rows;</p>
-
-<p>	}</p>
-
-<p>       *****<br />
-}</p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</pre></p>
-
-<p>	private String[] cells;</p>
-
-<p>	public void parse(Element parent) {<br />
-		List nodes = ((Element) parent).elements("cell");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			cells = new String[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				cells[i] = ((Element) nodes.get(i)).getTextTrim();<br />
-			}<br />
-		}<br />
-	}</p>
-
-<p>	public String[] getCells() {<br />
-		return cells;<br />
-	}<br />
-}</p>
-
-<p>public class PDFColumn {</p>
-
-<p>	public void parse(Element parent) {<br />
-		colName = parent.getText();<br />
-		String width_string = parent.attributeValue("width");<br />
-		if (width_string!=null&&width_string.length() > 0) {<br />
-			width = Integer.parseInt(width_string);<br />
-		}<br />
-		type = parent.attributeValue("type");<br />
-		align = parent.attributeValue("align");<br />
-		String colspan_string = parent.attributeValue("colspan");<br />
-		if (colspan_string!=null&&colspan_string.length() > 0) {<br />
-			colspan = Integer.parseInt(colspan_string);<br />
-		}<br />
-		String rowspan_string = parent.attributeValue("rowspan");<br />
-		if (rowspan_string!=null&&rowspan_string.length() > 0) {<br />
-			rowspan= Integer.parseInt(rowspan_string);<br />
-		}<br />
-	}<br />
-}
-</p>
-
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf-300x134.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" /></a>
-</div></p>
-
-<p><h2>结论：</h2>
-<div class="note">
-1.导出pdf和导出Excel代码差不多，这里不做说明。<br />
-2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。<br />
-3.导出的pdf为多页显示，每页有表头<br />
-4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。
-</div></p>
-
-<p></p>
-</div>
-  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java-JavaChen Blog</a></div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/CloudComputing/2011/06/29/install-opennebula-management-console-in-centos5-6.html'>Centos上安装 OpenNebula Management Console-JavaChen Blog</a></div>
 </div>
 
 <!-- JiaThis Button BEGIN -->

@@ -15,7 +15,7 @@
     <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
     java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
 
-    <title>Export DhtmlxGrid to PDF in Java</title>
+    <title>使用DataStax Community Edition安装Cassandra单节点</title>
     <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
@@ -43,184 +43,160 @@
       </div>
       <div id='content'>
         <div class='post'>
-  <span class='date'>11 Aug 2011</span>
+  <span class='date'>06 Apr 2012</span>
   <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
-  <h1><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></h1>
-  <div class='body'><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+  <h1><a href='/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></h1>
+  <div class='body'><p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
 
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。<br />
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+<p><h1>检查java环境</h1>
+Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
+<h3>1.检查是否安装java:</h3>
+<pre>
+# java -version
+</pre>
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+<h3>2.安装jdk</h3>
+下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:
+<pre>
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+</pre>
+<!--more-->
+2）解压执行RPM文件,例如:
+<pre>
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+</pre>
+这样JRE会安装在/usr/java/<br />
+3）配置Oracle JRE取代OpenJDK JRE<br />
+可以使用alternatives命令添加一个链接到Oracle JRE.
+<pre>
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+</pre>
+4）确认是否安装JRE
+<pre>
+$ java -version
+  java version "1.6.0_25"
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+</pre>
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
+<pre>
+$ sudo alternatives --config java
+There are 2 programs which provide 'java'.</pre></p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf-300x166.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" /></a>
-</div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();</pre></p>
-
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。<br />
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-	Element root;
-	PDFColumn[][] columns;
-	PDFRow[] rows;
-	double[] widths;
-	private Boolean header = false;
-	private Boolean footer = false;
-	private String profile = "gray";
-	private double[] orientation = null;</pre></p>
-
-<p>	public void setXML(String xml) {<br />
-		SAXReader saxReader = new SAXReader();</p>
-
-<p>		Document document = null;<br />
-		try {<br />
-			document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));<br />
-		} catch (DocumentException e) {<br />
-			e.printStackTrace();<br />
-		}<br />
-		root = document.getRootElement();</p>
-
-<p>		if ((root.attributeValue("header") != null)<br />
-				&amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {<br />
-			header = true;<br />
-		}<br />
-		String footer_string = root.attributeValue("footer");<br />
-		if ((footer_string != null)<br />
-				&amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {<br />
-			footer = true;<br />
-		}<br />
-		String profile_string = root.attributeValue("profile");<br />
-		if (profile_string != null) {<br />
-			profile = profile_string;<br />
-		}</p>
-
-<p>		String orientation_string = root.attributeValue("orientation");<br />
-		if (orientation_string != null) {<br />
-			if (orientation_string.equalsIgnoreCase("landscape")) {<br />
-				orientation = A4.LANDSCAPE;<br />
-			} else {<br />
-				orientation = A4.PORTRAIT;<br />
-			}<br />
-		} else {<br />
-			orientation = Letter.PORTRAIT;<br />
-		}<br />
-	}</p>
-
-<p>	public PDFColumn[][] getColumnsInfo() {<br />
-		PDFColumn[] colLine = null;<br />
-		List n1 = root.element("head").elements("columns");<br />
-		if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {<br />
-			columns = new PDFColumn[n1.size()][];<br />
-			for (int i = 0; i &lt; n1.size(); i++) {<br />
-				Element cols = (Element) n1.get(i);<br />
-				List n2 = cols.elements("column");<br />
-				if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {<br />
-					colLine = new PDFColumn[n2.size()];<br />
-					for (int j = 0; j &lt; n2.size(); j++) {<br />
-						Element col_xml = (Element) n2.get(j);<br />
-						PDFColumn col = new PDFColumn();<br />
-						col.parse(col_xml);<br />
-						colLine[j] = col;<br />
-					}<br />
-				}<br />
-				columns[i] = colLine;<br />
-			}<br />
-		}<br />
-		createWidthsArray();<br />
-		optimizeColumns();<br />
-		return columns;<br />
-	}<br />
-        public PDFRow[] getGridContent() {<br />
-		List nodes = root.elements("row");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			rows = new PDFRow[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				rows[i] = new PDFRow();<br />
-				rows[i].parse((Element) nodes.get(i));<br />
-			}<br />
-		}<br />
-		return rows;</p>
-
-<p>	}</p>
-
-<p>       *****<br />
-}</p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</pre></p>
-
-<p>	private String[] cells;</p>
-
-<p>	public void parse(Element parent) {<br />
-		List nodes = ((Element) parent).elements("cell");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			cells = new String[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				cells[i] = ((Element) nodes.get(i)).getTextTrim();<br />
-			}<br />
-		}<br />
-	}</p>
-
-<p>	public String[] getCells() {<br />
-		return cells;<br />
-	}<br />
-}</p>
-
-<p>public class PDFColumn {</p>
-
-<p>	public void parse(Element parent) {<br />
-		colName = parent.getText();<br />
-		String width_string = parent.attributeValue("width");<br />
-		if (width_string!=null&&width_string.length() > 0) {<br />
-			width = Integer.parseInt(width_string);<br />
-		}<br />
-		type = parent.attributeValue("type");<br />
-		align = parent.attributeValue("align");<br />
-		String colspan_string = parent.attributeValue("colspan");<br />
-		if (colspan_string!=null&&colspan_string.length() > 0) {<br />
-			colspan = Integer.parseInt(colspan_string);<br />
-		}<br />
-		String rowspan_string = parent.attributeValue("rowspan");<br />
-		if (rowspan_string!=null&&rowspan_string.length() > 0) {<br />
-			rowspan= Integer.parseInt(rowspan_string);<br />
-		}<br />
-	}<br />
-}
+<p>Selection      Command<br />
+-----------------------------------------------<br />
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java<br />
+*+ 2           /usr/java/jre1.6.0_25/bin/java
 </p>
 
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf-300x134.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" /></a>
-</div></p>
+<p><h1>在Linux系统上安装DataStax Community二进制文件</h1>
+<h3>1.在用户目录创建一个目录,如datas</h3>
+<pre>
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+</pre>
+<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
+<pre>
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+</pre>
+<h3>3.解压</h3>
+<pre>
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+</pre>
+<h3>4.设置环境变量</h3>
+1)编辑 .bashrc 
+<pre>
+ vi $HOME/.bashrc
+</pre>
+2)添加以下代码
+<pre>
+export CASSANDRA_HOME=$HOME/datas/</pre><font color="red">dsc_package_name</font>
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager<br />
+export OPSC_HOME=$HOME/datas/<font color="red">opscenter_package_name</font>
+export PATH="$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin"
 
-<p><h2>结论：</h2>
-<div class="note">
-1.导出pdf和导出Excel代码差不多，这里不做说明。<br />
-2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。<br />
-3.导出的pdf为多页显示，每页有表头<br />
-4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。
-</div></p>
+注意替换<font color="red">dsc_package_name</font>和<font color="red">opscenter_package_name</font>
+3)保存退出<br />
+4)使该文件生效
+<pre>
+source $HOME/.bashrc
+</pre>
+<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
+<pre>
+$ mkdir $HOME/datas/cassandra-data
+</pre></p>
 
-<p></p>
+<p><h1>配置并启动单节点</h1>
+<h3>1.编辑配置环境</h3>
+修改$CASSANDRA_HOME/conf/cassandra.yaml
+<pre>
+$ sed -i -e "s,initial_token:,initial_token: 0," \
+  $CASSANDRA_HOME/conf/cassandra.yaml</pre></p>
+
+<p>$ sed -i -e "s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,saved_caches_directory: /var/lib/cassandra/saved_caches, \<br />
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches," \<br />
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e "s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \<br />
+  $HOME/datastax/cassandra-data/commitlog," $CASSANDRA_HOME/conf/cassandra.yaml
+
+<h3>2.设置日志文件位置</h3> <br />
+修改：$CASSANDRA_HOME/conf/log4j-server.properties
+<pre>
+$ sed -i -e "s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log," \
+  $CASSANDRA_HOME/conf/log4j-server.properties
+</pre>
+<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
+<pre>
+$ sed -i -e "s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>," \
+  $DSCDEMO_HOME/bin/pricer
+</dsc_package_name></pre>
+<h3>4.后台启动Cassandra</h3>
+<pre>
+$ cassandra
+</pre>
+<h3>5.检查cassandra环是否在运行</h3>
+<pre>
+$ nodetool ring -h localhost
+</pre>
+<h3>6.运行Portfolio Demo示例程序</h3>
+1)进入Portfolio目录
+<pre>
+$ cd $DSCDEMO_HOME
+</pre>
+2)运行 ./bin/pricer工具生成数据
+<pre>
+./bin/pricer --help
+</pre>
+下面代码生成100天的历史数据
+<pre>
+./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+</pre>
+3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)
+<pre>
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &
+</pre>
+4)浏览程序 http://localhost:8983/portfolio</p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></p>
 </div>
-  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java-JavaChen Blog</a></div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点-JavaChen Blog</a></div>
 </div>
 
 <!-- JiaThis Button BEGIN -->

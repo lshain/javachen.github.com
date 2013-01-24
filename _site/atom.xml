@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-01-24T09:51:37+08:00</updated>
+ <updated>2013-01-24T10:35:13+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -215,9 +215,9 @@ rake deploy
  
  <entry>
    <title>Kettle dependency management</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/04/13/kettle-dependency-management.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/04/13/kettle-dependency-management.html"/>
    <updated>2012-04-13T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/04/13/kettle-dependency-management</id>
+   <id>http://blog.javachen.com/Kettle/2012/04/13/kettle-dependency-management</id>
    <content type="html">&lt;p&gt;pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.&lt;br /&gt;
 使用ivy编译kettle的源代码却是非常容易的事情.&lt;/p&gt;
 
@@ -260,14 +260,14 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 &lt;a href=&quot;http://wiki.pentaho.com/display/EAI/Kettle+dependency+management&quot; target=&quot;_blank&quot;&gt;Kettle dependency management&lt;/a&gt;
 &lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></content>
  </entry>
  
  <entry>
    <title>Getting Started Using the Cassandra CLI</title>
-   <link href="http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html"/>
+   <link href="http://blog.javachen.com/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html"/>
    <updated>2012-04-09T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli</id>
+   <id>http://blog.javachen.com/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli</id>
    <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;br /&gt;
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
 
@@ -445,14 +445,14 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
 1.&lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;
 2.&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/BigData/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
  </entry>
  
  <entry>
    <title>使用DataStax Community Edition安装Cassandra单节点</title>
-   <link href="http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html"/>
+   <link href="http://blog.javachen.com/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html"/>
    <updated>2012-04-06T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio</id>
+   <id>http://blog.javachen.com/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio</id>
    <content type="html">&lt;p&gt;本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.&lt;/p&gt;
 
 &lt;p&gt;&lt;h1&gt;检查java环境&lt;/h1&gt;
@@ -602,7 +602,7 @@ $ java -jar start.jar &amp;
 
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
 1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/BigData/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
  </entry>
  
  <entry>
@@ -1185,9 +1185,9 @@ CREATE TABLE a1
  
  <entry>
    <title>使用kettle数据迁移添加主键和索引</title>
-   <link href="http://blog.javachen.com/Pentaho/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html"/>
+   <link href="http://blog.javachen.com/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html"/>
    <updated>2012-01-05T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Pentaho/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle</id>
+   <id>http://blog.javachen.com/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle</id>
    <content type="html">&lt;p&gt;Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于&lt;strong&gt;数据抽取、转换、装载&lt;/strong&gt;。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。&lt;/p&gt;
 
 &lt;p&gt;kettle的数据抽取主要在于抽取数据，而没有考虑数据库的&lt;strong&gt;函数、存储过程、视图、表结构以及索引、约束&lt;/strong&gt;等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。&lt;/p&gt;
@@ -1329,7 +1329,7 @@ CREATE TABLE a1
 &lt;p&gt;&lt;div class=&quot;infor&quot;&gt;说明：&lt;br /&gt;
 1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。&lt;br /&gt;
 2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的&lt;/div&gt;&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Pentaho/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html'>使用kettle数据迁移添加主键和索引</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html'>使用kettle数据迁移添加主键和索引</a></content>
  </entry>
  
  <entry>

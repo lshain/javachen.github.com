@@ -15,7 +15,7 @@
     <meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
     java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
 
-    <title>Export DhtmlxGrid to PDF in Java</title>
+    <title>Getting Started Using the Cassandra CLI</title>
     <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link type="text/css" rel="stylesheet" href="/javascripts/syntaxhighlighter/styles/shCoreMidnight.css"/>
@@ -43,184 +43,188 @@
       </div>
       <div id='content'>
         <div class='post'>
-  <span class='date'>11 Aug 2011</span>
+  <span class='date'>09 Apr 2012</span>
   <a href='#comments' title='分享文章、查看评论' style="float:right">Comments</a>
-  <h1><a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java</a></h1>
-  <div class='body'><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+  <h1><a href='/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></h1>
+  <div class='body'><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
+Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
 
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。<br />
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+<p><h1>Starting the CLI</h1>
+使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
+如果你有一个但节点的集群，则使用以下命令：
+<pre> 
+$ cassandra-cli -host localhost -port 9160
+</pre>
+如果想连接多节点集群中的一个节点，可以使用以下命令:
+<pre>
+$ cassandra-cli -host 110.123.4.5 -port 9160
+</pre>
+或者，可以直接执行以下命令：
+<pre>
+$ cassandra-cli
+</pre>
+登录成功之后，可以看到：
+<pre>
+Welcome to cassandra CLI.
+Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+</pre>
+你必须指定连接一个节点：
+<pre>
+[default@unknown]connect localhost/9160;
+</pre>
+<!--more-->
+<h1>Creating a Keyspace</h1>
+<pre>
+[default@unknown] CREATE KEYSPACE demo;
+</pre>
+下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
+<pre>
+[default@unknown] CREATE KEYSPACE demo with 
+        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
+        and strategy_options = [{replication_factor:1}];
+</pre>
+你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlxgrid-to-pdf-300x166.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" /></a>
+<p><h1>Use a keyspace</h1>
+<pre>
+[default@unknown] USE demo;
+</pre></p>
+
+<p><h1>Creating a Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</pre>
+我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
+下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
+<pre>
+[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</pre></p>
+
+<p><h1>Creating a Counter Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+          default_validation_class=CounterColumnType 
+          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</pre>
+插入一行和计数列：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
+</pre>
+增加计数：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
+</pre></p>
+
+<p><h1>Inserting Rows and Columns</h1>
+以下命令以一个特点的行key值插入列到users中
+<pre>
+[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
+[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
+[default@demo] SET users['bobbyjo']['state']='TX';
+[default@demo] SET users['bobbyjo']['gender']='M';
+[default@demo] SET users['bobbyjo']['birth_year']='1975';
+</pre>
+更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
+获取数据： get users['bobbyjo'];<br />
+get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
+查询数据： get users where gender= 'M';<br />
+下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
+<pre>
+[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
+</pre></p>
+
+<p><h1>Reading Rows and Columns</h1>
+使用List命令查询记录，默认查询100条记录
+<pre>
+[default@demo] LIST users;
+</pre>
+Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：
+<pre>
+[default@demo] GET users[utf8('bobby')][utf8('full_name')];
+</pre>
+你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
+<pre>
+[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</pre></p>
+
+<p><h1>Setting an Expiring Column</h1>
+例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
+<pre>
+[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
+</pre>
+自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<p><h1>Indexing a Column</h1>
+给birth_year添加一个二级索引：
+<pre>
+[default@demo] UPDATE COLUMN FAMILY users 
+            WITH comparator = UTF8Type AND column_metadata = 
+            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</pre>
+由于该列被索引了，所以可以直接通过该列查询：
+<pre>
+[default@demo] GET users WHERE birth_date = 1969;
+</pre></p>
+
+<p><h1>Deleting Rows and Columns</h1>
+删除yomama索引的coupon_code列：
+<pre>
+[default@demo] DEL users ['yomama']['coupon_code'];
+[default@demo] GET users ['yomama'];
+</pre>
+或者删除整行：
+<pre>
+[default@demo] DEL users ['yomama'];
+</pre></p>
+
+<p><h1>Dropping Column Families and Keyspaces</h1>
+<pre>
+[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</pre></p>
+
+<p><h1>For help</h1>
+<pre>
+[default@unknown]help;
+</pre>
+查看某一个命令的详细说明：
+<pre>
+[default@unknown] help SET;
+</pre></p>
+
+<p><h1>To Quit</h1>
+<pre>
+[default@unknown]quit;
+</pre></p>
+
+<p><h1>To Execute Script</h1>
+<pre>
+bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</pre></p>
+
+<p><h1>参考文章</h1>
+1.<a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
+2.<a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>
 </div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();</pre></p>
-
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。<br />
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-	Element root;
-	PDFColumn[][] columns;
-	PDFRow[] rows;
-	double[] widths;
-	private Boolean header = false;
-	private Boolean footer = false;
-	private String profile = "gray";
-	private double[] orientation = null;</pre></p>
-
-<p>	public void setXML(String xml) {<br />
-		SAXReader saxReader = new SAXReader();</p>
-
-<p>		Document document = null;<br />
-		try {<br />
-			document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));<br />
-		} catch (DocumentException e) {<br />
-			e.printStackTrace();<br />
-		}<br />
-		root = document.getRootElement();</p>
-
-<p>		if ((root.attributeValue("header") != null)<br />
-				&amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {<br />
-			header = true;<br />
-		}<br />
-		String footer_string = root.attributeValue("footer");<br />
-		if ((footer_string != null)<br />
-				&amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {<br />
-			footer = true;<br />
-		}<br />
-		String profile_string = root.attributeValue("profile");<br />
-		if (profile_string != null) {<br />
-			profile = profile_string;<br />
-		}</p>
-
-<p>		String orientation_string = root.attributeValue("orientation");<br />
-		if (orientation_string != null) {<br />
-			if (orientation_string.equalsIgnoreCase("landscape")) {<br />
-				orientation = A4.LANDSCAPE;<br />
-			} else {<br />
-				orientation = A4.PORTRAIT;<br />
-			}<br />
-		} else {<br />
-			orientation = Letter.PORTRAIT;<br />
-		}<br />
-	}</p>
-
-<p>	public PDFColumn[][] getColumnsInfo() {<br />
-		PDFColumn[] colLine = null;<br />
-		List n1 = root.element("head").elements("columns");<br />
-		if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {<br />
-			columns = new PDFColumn[n1.size()][];<br />
-			for (int i = 0; i &lt; n1.size(); i++) {<br />
-				Element cols = (Element) n1.get(i);<br />
-				List n2 = cols.elements("column");<br />
-				if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {<br />
-					colLine = new PDFColumn[n2.size()];<br />
-					for (int j = 0; j &lt; n2.size(); j++) {<br />
-						Element col_xml = (Element) n2.get(j);<br />
-						PDFColumn col = new PDFColumn();<br />
-						col.parse(col_xml);<br />
-						colLine[j] = col;<br />
-					}<br />
-				}<br />
-				columns[i] = colLine;<br />
-			}<br />
-		}<br />
-		createWidthsArray();<br />
-		optimizeColumns();<br />
-		return columns;<br />
-	}<br />
-        public PDFRow[] getGridContent() {<br />
-		List nodes = root.elements("row");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			rows = new PDFRow[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				rows[i] = new PDFRow();<br />
-				rows[i].parse((Element) nodes.get(i));<br />
-			}<br />
-		}<br />
-		return rows;</p>
-
-<p>	}</p>
-
-<p>       *****<br />
-}</p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</pre></p>
-
-<p>	private String[] cells;</p>
-
-<p>	public void parse(Element parent) {<br />
-		List nodes = ((Element) parent).elements("cell");<br />
-		if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {<br />
-			cells = new String[nodes.size()];<br />
-			for (int i = 0; i &lt; nodes.size(); i++) {<br />
-				cells[i] = ((Element) nodes.get(i)).getTextTrim();<br />
-			}<br />
-		}<br />
-	}</p>
-
-<p>	public String[] getCells() {<br />
-		return cells;<br />
-	}<br />
-}</p>
-
-<p>public class PDFColumn {</p>
-
-<p>	public void parse(Element parent) {<br />
-		colName = parent.getText();<br />
-		String width_string = parent.attributeValue("width");<br />
-		if (width_string!=null&&width_string.length() > 0) {<br />
-			width = Integer.parseInt(width_string);<br />
-		}<br />
-		type = parent.attributeValue("type");<br />
-		align = parent.attributeValue("align");<br />
-		String colspan_string = parent.attributeValue("colspan");<br />
-		if (colspan_string!=null&&colspan_string.length() > 0) {<br />
-			colspan = Integer.parseInt(colspan_string);<br />
-		}<br />
-		String rowspan_string = parent.attributeValue("rowspan");<br />
-		if (rowspan_string!=null&&rowspan_string.length() > 0) {<br />
-			rowspan= Integer.parseInt(rowspan_string);<br />
-		}<br />
-	}<br />
-}
-</p>
-
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf.png"><img src="http://blog.javachen.com/files/2011/08/export-dhtmlx-to-pdf-pdf-300x134.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" /></a>
-</div></p>
-
-<p><h2>结论：</h2>
-<div class="note">
-1.导出pdf和导出Excel代码差不多，这里不做说明。<br />
-2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。<br />
-3.导出的pdf为多页显示，每页有表头<br />
-4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。
-</div></p>
-
-<p></p>
-</div>
-  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html'>Export DhtmlxGrid to PDF in Java-JavaChen Blog</a></div>
+  <div class="original-post corner-all"><strong>原创文章，转载请注明：</strong>转载自：<a href='/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI-JavaChen Blog</a></div>
 </div>
 
 <!-- JiaThis Button BEGIN -->
