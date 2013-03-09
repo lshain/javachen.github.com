@@ -46,7 +46,7 @@ OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址�
 <p>&nbsp;
 <div class="infor">
 <h2>参考资料</h2>
-1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
-2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
-3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
+* 1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
+* 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
+* 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
 </div></p>

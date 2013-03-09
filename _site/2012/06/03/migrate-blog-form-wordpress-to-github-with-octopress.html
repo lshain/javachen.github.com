@@ -44,6 +44,8 @@
 		标签：
 		&emsp;&emsp;&emsp;&emsp;
 		<time date="2012-06-03 14:00:00 +0800">2012-06-03</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 
 	<h1>使用Octopress将博客从wordpress迁移到GitHub上</h1>
@@ -299,21 +301,22 @@ rake deploy
 	<hr/>
 </article>
 
-
-<!-- Duoshuo Comment BEGIN -->
 <div id="comment">
-	<div id="ds_thread"></div>
- 	<script type="text/javascript">
-      var duoshuoQuery = {short_name: "huaiyu2008"};
-      (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = 'http://static.duoshuo.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
-      })();
-      </script>
-</div>
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
 <!-- Duoshuo Comment END -->
+</div>
 
 <script src="/js/jquery-min.js"></script>
 <script src="/js/Fullscreen.js"></script>
