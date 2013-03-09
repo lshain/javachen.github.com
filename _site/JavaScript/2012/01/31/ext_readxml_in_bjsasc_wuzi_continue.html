@@ -11,7 +11,7 @@
 		<meta property="wb:webmaster" content="61eb31a6e636506d" />
     	<meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
     	<meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
-		<title>如何在kettle4.2上面实现cassandra的输入与输出</title>
+		<title>Ext读取xml文件生成动态表格和表单(续)</title>
 		
 		<link rel="stylesheet" href="/css/main.css" />
 		<link rel="stylesheet" href="/css/pygments_native.css" />
@@ -40,147 +40,50 @@
 	<div class="c9">
 		分类：
 			
-			<a href="/category.html#Kettle">Kettle</a>
+			<a href="/category.html#JavaScript">JavaScript</a>
 			
 			
 		&emsp;&emsp;&emsp;&emsp;
-		标签：cassandra, hadoop, Kettle, Pentaho
+		标签：Extjs
 		&emsp;&emsp;&emsp;&emsp;
-		<time date="2012-03-23 00:00:00 +0800">2012-03-23</time>
+		<time date="2012-01-31 00:00:00 +0800">2012-01-31</time>
 		&emsp;&emsp;&emsp;&emsp;
 		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 
-	<h1>如何在kettle4.2上面实现cassandra的输入与输出</h1>
+	<h1>Ext读取xml文件生成动态表格和表单(续)</h1>
 
-	<p>这是在QQ群里有人问到的一个问题.<br />
-如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+	<p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
 
-<p>在kettle中实现cassandra的输入与输出有以下两种方式:<br />
-第一种方式:自己编写cassandra输入输出组件<br />
-第二种方式:使用别人编写好的插件,将其集成进来</p>
+<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码</p>
 
-<p>当然还有第三种方法,直接使用4.3版本的pdi.<br />
-第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+<p>详细html和js代码见相关文件，这里先描述思路。</p>
 
-<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.<br />
-故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.<br />
-在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+<p><strong>首先</strong>
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC_MTRREPLACE_IMP.xml” .PC_MTRREPLACE_IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
 
-<pre>
-.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|-- kettle-gpload-plugin
-|-- kettle-hl7-plugin
-|-- kettle-palo-plugin
-|-- pentaho-big-data-plugin
-|-- repositories
-|-- spoon
-|-- steps
-`-- versioncheck
-</pre>
+<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue('xmlFile'))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
 
+<p><strong>然后</strong></p>
 
-<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
 
-<pre>
-.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|   `-- DummyJob
-|       |-- DPL.png
-|       |-- dummyjob.jar
-|       `-- plugin.xml
-|-- pentaho-big-data-plugin
-|   |-- lib
-|   |   |-- apache-cassandra-1.0.0.jar
-|   |   |-- apache-cassandra-thrift-1.0.0.jar
-|   |   |-- aws-java-sdk-1.0.008.jar
-|   |   |-- commons-cli-1.2.jar
-|   |   |-- guava-r08.jar
-|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
-|   |   |-- jline-0.9.94.jar
-|   |   |-- libthrift-0.6.jar
-|   |   |-- mongo-java-driver-2.7.2.jar
-|   |   |-- pig-0.8.1.jar
-|   |   |-- xpp3_min-1.1.4c.jar
-|   |   `-- xstream-1.3.1.jar
-|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
-|-- repositories
-|-- spoon
-|-- steps
-|   |-- DummyPlugin
-|   |   |-- DPL.png
-|   |   |-- dummy.jar
-|   |   `-- plugin.xml
-|   |-- S3CsvInput
-|   |   |-- jets3t-0.7.0.jar
-|   |   |-- plugin.xml
-|   |   |-- S3CIN.png
-|   |   `-- s3csvinput.jar
-|   `-- ShapeFileReader3
-|       |-- plugin.xml
-|       |-- SFR.png
-|       `-- shapefilereader3.jar
-`-- versioncheck
-    |-- kettle-version-checker-0.2.0.jar
-    `-- lib
-        `-- pentaho-versionchecker.jar
+<p><strong>最后</strong>
+相关文件打包见：
+<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
 
-13 directories, 29 files
-</pre>
+<p><strong>说明</strong>
+如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
 
 
-<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.</p>
-
-<div class="pic">
-<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
-<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
-</a>
-</div>
-
-
-<p><strong>获取pentaho-big-data-plugin源码</strong>
-如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?<br />
-你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
-
-<p>然后,需要在kettle-steps.xml中注册步骤节点<br />
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
-
-<pre>
-<step id="MongoDbInput">
-<description>i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
-<classname>org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
-<category>i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
-<tooltip>i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
-<iconfile>ui/images/mongodb-input.png
-</iconfile></tooltip></category></classname></description></step>
-</pre>
-
-
-
-
-<div class="note">
-<h>注意:<br />
-由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
-</h></div>
-
-
-<p><strong>扩展阅读:</strong></p>
-
-<ul>
-<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
-<li>pentaho-big-data-plugin ci
-<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
-<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
-</ul>
-
-
-
-	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>JavaChen Blog</a>-
+	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>JavaChen Blog</a>-
 		<br/>
 		<br/>
 		<!-- JiaThis Button BEGIN -->
@@ -228,10 +131,10 @@
 	<hr/>
 	<div class="page fix">
 		
-		<span class="prev"><a href="/Seam/2012/02/23/the-process-of-seam-initiation.html">← Seam的启动过程</a></span>
+		<span class="prev"><a href="/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html">← 使用kettle数据迁移添加主键和索引</a></span>
 		
 		
-		<span class="next"><a href="/Java/2012/03/26/hash-and-hash-functions.html">哈希表 →</a></span>
+		<span class="next"><a href="/JSF/2012/02/14/this-expression-of-jsf-el.html">JSF中EL表达式之this扩展 →</a></span>
 		
 	</div>
 	<hr/>

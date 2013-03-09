@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T20:07:09+08:00</updated>
+ <updated>2013-03-09T20:33:19+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -830,9 +830,9 @@ $ java -jar start.jar &amp;
  
  <entry>
    <title>哈希表</title>
-   <link href="http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions.html"/>
+   <link href="http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions.html"/>
    <updated>2012-03-26T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions</id>
+   <id>http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;定义 &lt;/strong&gt;
 一般的线性表、树，数据在结构中的相对位置是&lt;code&gt;随机&lt;/code&gt;的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。&lt;/p&gt;
 
@@ -1060,7 +1060,7 @@ Berkeley DB Hash、Btree、Queue、Recno选择&lt;a href=&quot; http://www.webzo
 Java Hashtable &lt;a href=&quot;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&quot; target=&quot;_blank&quot;&gt;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&lt;/a&gt;
 Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot; target=&quot;_blank&quot;&gt;http://kantery.iteye.com/blog/441755&lt;/a&gt;&lt;/p&gt;
 
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Java%20Core/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
  </entry>
  
  <entry>
@@ -1518,9 +1518,9 @@ CREATE TABLE a1
  
  <entry>
    <title>Ext读取xml文件生成动态表格和表单(续)</title>
-   <link href="http://blog.javachen.com/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html"/>
+   <link href="http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html"/>
    <updated>2012-01-31T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
+   <id>http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
    <content type="html">&lt;p&gt;很多人向我要《&lt;a href=&quot;http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi&quot; target=&quot;_blank&quot;&gt;Ext读取xml文件生成动态表格和表单&lt;/a&gt;》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。&lt;/p&gt;
 
 &lt;p&gt;《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
@@ -1549,7 +1549,7 @@ CREATE TABLE a1
 
 &lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;
 如果还有什么不懂，欢迎email：javachen.june#gmail.com&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></content>
  </entry>
  
  <entry>

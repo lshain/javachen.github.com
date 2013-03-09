@@ -25,7 +25,7 @@
 
 	/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html
 
-	/Java%20Core/2012/03/26/hash-and-hash-functions.html
+	/Java/2012/03/26/hash-and-hash-functions.html
 
 	/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html
 
@@ -39,7 +39,7 @@
 
 	/JSF/2012/02/14/this-expression-of-jsf-el.html
 
-	/Extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html
+	/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html
 
 	/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html
 

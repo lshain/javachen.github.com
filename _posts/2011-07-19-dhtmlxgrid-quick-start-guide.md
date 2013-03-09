@@ -192,6 +192,7 @@ o 删除指定行id的行</div>
         alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);
     }
     mygrid.attachEvent("onRowSelect",doOnRowSelected);</pre>
+
 <h2>Step 8 – Code</h2>
 最后的代码：
 <pre lang="javascript" line="1">
@@ -230,5 +231,5 @@ o 删除指定行id的行</div>
    < /script>
    < body onload="doInitGrid()">
       < div id="mygrid_container" style="width:600px;height:150px;">< /div>
-     < /body>
+   < /body>
 </pre>
