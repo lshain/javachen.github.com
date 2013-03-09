@@ -139,9 +139,9 @@ jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文�
 
 
 ## 参考文章
-[1]: [Octopress Setup](http://octopress.org/docs/setup/)
-[2]: [Octopress Deploying](http://octopress.org/docs/deploying/)
-[3]: [Blog = GitHub + Octopress](http://mrzhang.me/blog/blog-equals-github-plus-octopress.html) 
-[4]:     [从Wordpress迁移到Octopress](http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/)
-[5]:     [使用独立图床子域名](http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/) 
+* [Octopress Setup](http://octopress.org/docs/setup/)
+* [Octopress Deploying](http://octopress.org/docs/deploying/)
+* [Blog = GitHub + Octopress](http://mrzhang.me/blog/blog-equals-github-plus-octopress.html) 
+*  [从Wordpress迁移到Octopress](http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/)
+*  [使用独立图床子域名](http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/) 
 
