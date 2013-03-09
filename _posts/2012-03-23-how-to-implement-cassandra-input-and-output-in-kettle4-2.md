@@ -116,6 +116,7 @@ pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只�
 </h></div>
 
 <strong>扩展阅读:</strong>
+
 - Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a>
 - pentaho-big-data-plugin ci
 <a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a>

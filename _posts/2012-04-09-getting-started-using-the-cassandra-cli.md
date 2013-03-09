@@ -181,6 +181,7 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 bin/cassandra-cli -host localhost -port 9160 -f script.txt
 </pre></p>
 
-<p><h1>参考文章</h1>
+<h1>参考文章</h1>
+
 - <a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
 - <a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>

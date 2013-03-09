@@ -160,4 +160,5 @@ $ java -jar start.jar &
 4)浏览程序 http://localhost:8983/portfolio
 
 <h1>参考文章</h1>
+
 - 1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a>

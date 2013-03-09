@@ -139,6 +139,7 @@ jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文�
 
 
 ## 参考文章
+
 - Octopress Setup： http://octopress.org/docs/setup/
 - Octopress Deploying：http://octopress.org/docs/deploying/
 - Blog = GitHub + Octopress：http://mrzhang.me/blog/blog-equals-github-plus-octopress.html

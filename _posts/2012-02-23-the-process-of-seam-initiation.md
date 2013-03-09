@@ -27,6 +27,7 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 
 <strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。
+
 - 1.添加命名空间
 - 2.从“/WEB-INF/components.xml”加载组件
 - 3.从“/WEB-INF/events.xml”加载组件
@@ -37,6 +38,7 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 - 8.从system加载Properties
 
 <strong>第三步</strong>，seam初始化过程（Initialization的init方法）。
+
 - 1.ServletLifecycle开始初始化
 - 2.设置Application上下文
 - 3.添加Init组件
