@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    	<link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    	<link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/favicon.ico"/>
+		<meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
+		<meta name="description" content="javachen" />
+
+		<meta property="wb:webmaster" content="61eb31a6e636506d" />
+    	<meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    	<meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+		<title>Kettle运行作业之前的初始化过程</title>
+		
+		<link rel="stylesheet" href="/css/main.css" />
+		<link rel="stylesheet" href="/css/pygments_native.css" />
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+	</head>
+	<body>
+		<header id="header">
+			<div class="header-info fix">
+				<h1><a href="/">JavaChen Blog</a></h1>
+				<p class="describe">&lt; Dive into Java ... /&gt;</p>
+				<nav class="navigation">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
+						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
+						<li><a href="/about.html">About</a></li>
+						<li><a href="/atom.xml">RSS</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header><!--/header end-->
+
+		<section id="content" class="fix">
+			<article id="post">
+	<a href="#" class="icon-fullscreen r" title="点击全屏显示"></a>
+	<div class="c9">
+		分类：
+			
+			<a href="/category.html#Kettle">Kettle</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		标签：Kettle, Pentaho
+		&emsp;&emsp;&emsp;&emsp;
+		<time date="2012-02-22 00:00:00 +0800">2012-02-22</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+
+	<h1>Kettle运行作业之前的初始化过程</h1>
+
+	<p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
+
+<p>之前用英文写了一篇文章《<a href="http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
+
+<p>在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。</p>
+
+<pre lang="java">
+public void runFile() {
+    executeFile(true, false, false, false, false, null, false);
+}
+
+public void executeFile(boolean local, boolean remote, boolean cluster,
+        boolean preview, boolean debug, Date replayDate, boolean safe) {
+    TransMeta transMeta = getActiveTransformation();
+    if (transMeta != null)
+        executeTransformation(transMeta, local, remote, cluster, preview,
+                debug, replayDate, safe);
+
+    JobMeta jobMeta = getActiveJob();
+    if (jobMeta != null)
+        executeJob(jobMeta, local, remote, replayDate, safe, null, 0);
+}
+
+public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
+        Date replayDate, boolean safe, String startCopyName, int startCopyNr) {
+    try {
+        delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,
+                startCopyName, startCopyNr);
+    } catch (Exception e) {
+        new ErrorDialog(shell, "Execute job",
+                "There was an error during job execution", e);
+    }
+}
+</pre>
+
+
+<p>runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
+- local：是否本地运行
+- remote：是否远程运行
+- cluster：是否集群环境运行
+- preview：是否预览
+- debug：是否调试
+- replayDate：回放时间
+- safe：是否安全模式</p>
+
+<p>executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。</p>
+
+<p>executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。</p>
+
+<p>SpoonJobDelegate的executeJob方法主要完成以下操作：</p>
+
+<ul>
+<li>1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。</li>
+<li>2.获得当前Job对应的图形类JobGraph。</li>
+<li>3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。</li>
+<li>4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。</li>
+</ul>
+
+
+<p>JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。</p>
+
+<p>本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。</p>
+
+<p>JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：</p>
+
+<ul>
+<li>1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。</li>
+<li>2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。</li>
+<li>3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。</li>
+<li>4.Job对象添加JobEntry监听器、Job监听器。</li>
+<li>5.调用Job的start方法，启动线程开始执行一个job。</li>
+</ul>
+
+
+<p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
+
+
+	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/Kettle/2012/02/22/the-init-process-before-job-execution.html'>JavaChen Blog</a>-
+		<br/>
+		<br/>
+		<!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style_32x32">
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_tqq"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_twitter"></a>
+		<a class="jiathis_button_fb"></a>
+		<a class="jiathis_button_googleplus"></a>
+		<a class="jiathis_button_translate"></a>
+		<a class="jiathis_button_delicious"></a>
+		<a class="jiathis_button_sdonote"></a>
+		<a class="jiathis_button_ydnote"></a>
+		<a class="jiathis_button_qingbiji"></a>
+		<a class="jiathis_button_fav"></a>
+		<a class="jiathis_button_ishare"></a>
+		<a class="jiathis_button_copy"></a>
+		<a class="jiathis_button_email"></a>
+		<a class="jiathis_button_print"></a>
+		<a class="jiathis_button_printfriendly"></a>
+		<a class="jiathis_button_pdfonline"></a>
+		<a href="http://www.jiathis.com/share?uid=1709061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+		<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript" >
+		var jiathis_config={
+			data_track_clickback:true,
+			summary:"",
+			hideMore:false
+		}
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1709061" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+
+
+
+		<!-- UJian Button BEGIN -->
+		<div class="ujian-hook"></div>
+		<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1709061"></script>
+		<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+		<!-- UJian Button END -->
+	</div>
+	
+	<hr/>
+	<div class="page fix">
+		
+		<span class="prev"><a href="/Kettle/2012/02/21/the-execution-process-of-kettles-job.html">← The execution process of kettle’s job</a></span>
+		
+		
+		<span class="next"><a href="/Seam/2012/02/23/the-process-of-seam-initiation.html">Seam的启动过程 →</a></span>
+		
+	</div>
+	<hr/>
+</article>
+
+<div id="comment">
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</div>
+
+<script src="/js/jquery-min.js"></script>
+<script src="/js/Fullscreen.js"></script>
+<script type="text/javascript">
+$(function() {
+	// =============== 全屏显示 ==================
+	(function() {
+		var icon = $( 'a.icon-fullscreen' ),
+			fs, fsCallback;
+		
+		fsCallback = function(isFullscreen) {
+				if (isFullscreen) {
+					icon.addClass('expand').attr('title', 'ESC 退出全屏');
+				}
+				else {
+					icon.removeClass('expand').attr('title', '点击全屏显示');
+				}
+			};
+			
+		fs = new Fullscreen({
+				element: $('#post'),
+				noSafari: true,
+				callback: fsCallback
+			});
+
+		if (fs.fullscreenEnabled) {
+			icon.on('click', function() {
+				fs.toggleFullscreen();
+				return false;
+			});
+		}
+		else {
+			icon.hide();
+		}
+	})();
+
+
+	// ============== 目录提取 ===============
+	(function() {
+		// 设置无目录时，不显示
+		if (!parseInt('', 10)) {
+			return;
+		}
+
+		var dom = $('<fieldset id="catalogue"><legend>目录</legend></fieldset>'),
+			count = 0;
+		
+		$('#post').find('h2,h3,h4,h5').each(function() {
+			var name = 'catalogue_' + count++;
+			dom.append('<div class="txt_' + this.tagName + '">' +
+				'<a href="#' + name + '">' +
+					this.innerHTML +
+				'</a></div>');
+			this.id = name;
+		});
+
+		dom.appendTo('body');
+	})();
+});
+</script>
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+<!-- UJian Button END -->
+
+
+		</section><!--/content end-->
+
+		<footer id="footer">
+			<p class="l">
+				&copy; 2013 <a href="http://blog.javachen.com">JavaChen</a>. | Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://pages.github.com/">GitHub Pages</a>
+			</p>
+			<!--Templates from <a href='https://github.com/calefy/calefy.github.com' target='_blank'>calefy</a>.-->
+			<p class="r">
+				<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+			</p>
+			<p class="tac">
+				<small>『纸上得来终觉浅，绝知此事要躬行』</small>
+			</p>
+		</footer><!--/footer end-->
+
+
+
+	</body>
+</html>

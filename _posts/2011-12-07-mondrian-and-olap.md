@@ -17,7 +17,7 @@ comments: true
 
 <p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
 
-<p><a href="http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
 
 <p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
 

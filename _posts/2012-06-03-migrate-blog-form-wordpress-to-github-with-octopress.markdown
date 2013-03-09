@@ -3,7 +3,7 @@ layout: post
 title: "使用Octopress将博客从wordpress迁移到GitHub上"
 date: 2012-06-03 14:00
 comments: true
-categories: 
+categories: Github
 tags:
 summary: 首先，必须先在本机安装配置git和[Ruby,Octopress需要Ruby版本至少为1.9.2。你可以使用RVM或rbenv安装ruby，安装方法见Octopress官方文档
 
