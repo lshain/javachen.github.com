@@ -5,7 +5,7 @@ layout: default
 <article id="post">
 	<a href="#" class="icon-fullscreen r" title="点击全屏显示"></a>
 	<div class="c9">
-		分类：
+		Categories：
 			{%for cg in page.categories%}
 			<a href="/category.html#{{cg}}">{{cg}}</a>
 			{%if forloop.index < forloop.length %}
@@ -13,9 +13,9 @@ layout: default
 			{%endif%}
 			{%endfor%}
 		&emsp;&emsp;&emsp;&emsp;
-		标签：{{ page.tags | join: ', ' }}
+		Tages：{{ page.tags | join: ', ' }}
 		&emsp;&emsp;&emsp;&emsp;
-		<time date="{{ page.date }}">{{ page.date|date: "%Y-%m-%d"}}</time>
+		Time：<time date="{{ page.date }}">{{ page.date|date: "%Y-%m-%d %H:%m"}}</time>
 		&emsp;&emsp;&emsp;&emsp;
 		<a href='{{post.url}}#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
