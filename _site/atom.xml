@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T16:55:13+08:00</updated>
+ <updated>2013-03-09T17:19:10+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -17,11 +17,7 @@
    <link href="http://blog.javachen.com/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html"/>
    <updated>2012-06-03T14:00:00+08:00</updated>
    <id>http://blog.javachen.com/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</id>
-   <content type="html">&lt;h1&gt;使用Octopress将博客从wordpress迁移到GitHub上&lt;/h1&gt;
-
-&lt;p&gt;首先，必须先在本机安装配置git和[Ruby,Octopress需要Ruby版本至少为1.9.2。你可以使用RVM或rbenv安装ruby，安装方法见Octopress官方文档&lt;/p&gt;
-
-&lt;h2&gt;Step1 - 在本机安装Octopress&lt;/h2&gt;
+   <content type="html">&lt;h2&gt;Step1 - 在本机安装Octopress&lt;/h2&gt;
 
 &lt;p&gt;首先，必须先在本机安装配置&lt;a href=&quot;http://git-scm.com/&quot;&gt;Git&lt;/a&gt;和&lt;a href=&quot;https://rvm.beginrescueend.com/rvm/install/&quot;&gt;Ruby&lt;/a&gt;,Octopress需要Ruby版本至少为1.9.2。你可以使用&lt;a href=&quot;http://rvm.beginrescueend.com/&quot;&gt;RVM&lt;/a&gt;或&lt;a href=&quot;https://github.com/sstephenson/rbenv&quot;&gt;rbenv&lt;/a&gt;安装ruby，安装方法见Octopress官方文档：&lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;http://octopress.org/docs/setup/&lt;/a&gt;&lt;/p&gt;
 
@@ -216,16 +212,28 @@ rake deploy
    <content type="html">&lt;p&gt;pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.&lt;br /&gt;
 使用ivy编译kettle的源代码却是非常容易的事情.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的&lt;a href=&quot;http://wiki.pentaho.com/display/EAI/Kettle+dependency+management&quot; target=&quot;_blank&quot;&gt;Kettle dependency management&lt;/a&gt;,文章标题没作修改.&lt;br /&gt;
 编写此文,是为了记录编译kettle源码的方法和过程.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;以下是对原文的一个简单翻译.&lt;/strong&gt;
 将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
 &lt;!--more--&gt;
 &lt;strong&gt;关于Ivy&lt;/strong&gt;
 &lt;a href=&quot;http://ant.apache.org/ivy/&quot; target=&quot;_blank&quot;&gt;Apache Ivy™&lt;/a&gt;是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:&lt;a href=&quot;http://ant.apache.org/ivy/features.html&quot; target=&quot;_blank&quot;&gt;enterprise features&lt;/a&gt;, &lt;a href=&quot;http://ant.apache.org/ivy/testimonials.html&quot; target=&quot;_blank&quot;&gt;what people say about it&lt;/a&gt;, 以及 &lt;a href=&quot;http://ant.apache.org/ivy/history/latest-milestone/index.html&quot; target=&quot;_blank&quot;&gt;how it can improve your build system&lt;/a&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;在kettle中使用ivyIDE&lt;/strong&gt;
 首先,从svn上下载kettle的源代码:
@@ -235,6 +243,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 如果你想在Eclipse上使用&lt;a href=&quot;http://ant.apache.org/ivy/ivyde/download.cgi&quot; target=&quot;_blank&quot;&gt;ivyde plugin&lt;/a&gt;.&lt;br /&gt;
 请参考相关文章安装该插件.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.&lt;br /&gt;
 1.执行&lt;code&gt;ant resolve&lt;/code&gt;,这个命令将会创建一个叫做resolved-libs的文件夹.&lt;br /&gt;
 2.使用下面命令更新classpath &lt;br /&gt;
@@ -242,9 +253,15 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
   b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)&lt;br /&gt;
 注意:kettle项目中的构建脚本会自动安装ivy插件.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;构建Kettle&lt;/strong&gt;
 你可以下载kettle源代码然后立即执行&lt;code&gt;ant distrib&lt;/code&gt;命令&lt;br /&gt;
 或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;ivy中未完成的&lt;/strong&gt;
 &lt;strong&gt;pentaho-database-&lt;/strong&gt;这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
@@ -252,9 +269,13 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 &lt;strong&gt;library configurations-&lt;/strong&gt;每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
 &lt;strong&gt;checked-in plugins-&lt;/strong&gt;当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 &lt;a href=&quot;http://wiki.pentaho.com/display/EAI/Kettle+dependency+management&quot; target=&quot;_blank&quot;&gt;Kettle dependency management&lt;/a&gt;
 &lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></content>
  </entry>
  
@@ -265,6 +286,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
    <id>http://blog.javachen.com/2012/04/09/getting-started-using-the-cassandra-cli</id>
    <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;br /&gt;
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;Starting the CLI&lt;/h1&gt;
 使用&lt;code&gt;cassandra-cli&lt;/code&gt; &lt;code&gt;-host&lt;/code&gt; &lt;code&gt;-port&lt;/code&gt; 命令启动 Cassandra CLI，他将会连接&lt;code&gt;cassandra.yaml&lt;/code&gt;文件中定义的集群名称，默认为“&lt;em&gt;Test Cluster&lt;/em&gt;”。&lt;br /&gt;
@@ -302,10 +326,16 @@ Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
 &lt;/pre&gt;
 你可以使用&lt;code&gt;SHOW KEYSPACES&lt;/code&gt;来查看所有系统的和你创建的Keyspace&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;Use a keyspace&lt;/h1&gt;
 &lt;pre&gt;
 [default@unknown] USE demo;
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;Creating a Column Family&lt;/h1&gt;
 &lt;pre&gt;
@@ -326,6 +356,9 @@ AND column_metadata = [
 [default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;Creating a Counter Column Family&lt;/h1&gt;
 &lt;pre&gt;
 [default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
@@ -340,6 +373,9 @@ AND column_metadata = [
 &lt;pre&gt;
 [default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;Inserting Rows and Columns&lt;/h1&gt;
 以下命令以一个特点的行key值插入列到users中
@@ -358,6 +394,9 @@ get命令用法参考：&lt;a href=&quot;http://wiki.apache.org/cassandra/API#ge
 &lt;pre&gt;
 [default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;Reading Rows and Columns&lt;/h1&gt;
 使用List命令查询记录，默认查询100条记录
@@ -382,12 +421,18 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] ASSUME users VALIDATOR AS ascii;
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;Setting an Expiring Column&lt;/h1&gt;
 例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
 &lt;pre&gt;
 [default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
 &lt;/pre&gt;
 自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;Indexing a Column&lt;/h1&gt;
 给birth_year添加一个二级索引：
@@ -401,6 +446,9 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] GET users WHERE birth_date = 1969;
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;Deleting Rows and Columns&lt;/h1&gt;
 删除yomama索引的coupon_code列：
 &lt;pre&gt;
@@ -412,11 +460,17 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] DEL users ['yomama'];
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;Dropping Column Families and Keyspaces&lt;/h1&gt;
 &lt;pre&gt;
 [default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;For help&lt;/h1&gt;
 &lt;pre&gt;
@@ -427,19 +481,29 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@unknown] help SET;
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;To Quit&lt;/h1&gt;
 &lt;pre&gt;
 [default@unknown]quit;
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;To Execute Script&lt;/h1&gt;
 &lt;pre&gt;
 bin/cassandra-cli -host localhost -port 9160 -f script.txt
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
 1.&lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;
 2.&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
  </entry>
  
@@ -449,6 +513,9 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
    <updated>2012-04-06T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/2012/04/06/install_singlenode-with-datastax-community-editio</id>
    <content type="html">&lt;p&gt;本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;检查java环境&lt;/h1&gt;
 Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
@@ -487,11 +554,17 @@ $ java -version
 $ sudo alternatives --config java
 There are 2 programs which provide 'java'.&lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;Selection      Command&lt;br /&gt;
 -----------------------------------------------&lt;br /&gt;
    1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java&lt;br /&gt;
 *+ 2           /usr/java/jre1.6.0_25/bin/java
 &lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;h1&gt;在Linux系统上安装DataStax Community二进制文件&lt;/h1&gt;
 &lt;h3&gt;1.在用户目录创建一个目录,如datas&lt;/h3&gt;
@@ -536,6 +609,9 @@ source $HOME/.bashrc
 $ mkdir $HOME/datas/cassandra-data
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;配置并启动单节点&lt;/h1&gt;
 &lt;h3&gt;1.编辑配置环境&lt;/h3&gt;
 修改$CASSANDRA_HOME/conf/cassandra.yaml
@@ -543,12 +619,21 @@ $ mkdir $HOME/datas/cassandra-data
 $ sed -i -e &quot;s,initial_token:,initial_token: 0,&quot; \
   $CASSANDRA_HOME/conf/cassandra.yaml&lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \&lt;br /&gt;
   $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
+
+
+
 
 &lt;p&gt;$ sed -i -e &quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \&lt;br /&gt;
   saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&quot; \&lt;br /&gt;
   $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
+
+
+
 
 &lt;p&gt;$ sed -i -e &quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \&lt;br /&gt;
   $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
@@ -595,8 +680,12 @@ $ java -jar start.jar &amp;
 &lt;/pre&gt;
 4)浏览程序 http://localhost:8983/portfolio&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
 1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
  </entry>
  
@@ -608,12 +697,21 @@ $ java -jar start.jar &amp;
    <content type="html">&lt;p&gt;&lt;strong&gt;定义 &lt;/strong&gt;
 一般的线性表、树，数据在结构中的相对位置是&lt;code&gt;随机&lt;/code&gt;的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;code&gt;哈希表&lt;/code&gt;又称散列表。
 &lt;em&gt;哈希表存储的基本思想是&lt;/em&gt;：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即&lt;code&gt;数组空间&lt;/code&gt;）的单元地址（即&lt;code&gt;下标&lt;/code&gt;），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为&lt;code&gt;哈希表&lt;/code&gt;或&lt;code&gt;散列表&lt;/code&gt;。&lt;br /&gt;
 哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。&lt;br /&gt;
 哈希表是基于&lt;code&gt;数组结构&lt;/code&gt;实现的，所以它也存在一些&lt;em&gt;缺点&lt;/em&gt;： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即&lt;code&gt;冲突现象&lt;/code&gt;：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： &lt;em&gt;不需要有序遍历数据，并且可以提前预测数据量的大小&lt;/em&gt;。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;!--more--&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;冲突&lt;/strong&gt;
 理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。&lt;br /&gt;
@@ -621,6 +719,9 @@ $ java -jar start.jar &amp;
 对于哈希技术，主要研究两个问题：&lt;br /&gt;
 （1）如何设计哈希函数以使冲突尽可能少地发生。&lt;br /&gt;
 （2）发生冲突后如何解决。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;哈希函数的构造方法&lt;/strong&gt;
 构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。
@@ -630,7 +731,13 @@ $ java -jar start.jar &amp;
 H(k)=k+c (c≥0)&lt;br /&gt;
 这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;2．除留余数法&lt;/strong&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即：&lt;br /&gt;
 H(k)=k％m&lt;br /&gt;
@@ -638,21 +745,36 @@ H(k)=k％m&lt;br /&gt;
 这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。&lt;br /&gt;
 理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;3．平方取中法&lt;/strong&gt;
 取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。&lt;br /&gt;
 设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;4．折叠法&lt;/strong&gt;
 这种方法适合在关键字的位数较多，而地址区间较小的情况。&lt;br /&gt;
 将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。&lt;br /&gt;
 例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;5．数值分析法&lt;/strong&gt;
 若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。&lt;br /&gt;
 例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;6. 随机数法&lt;/strong&gt;
 选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;7. 斐波那契（Fibonacci）散列法&lt;/strong&gt;
 平方散列法的缺点是显而易见的，所以我们能不能找出一个理想的乘数，而不是拿value本身当作乘数呢？答案是肯定的。&lt;br /&gt;
@@ -664,6 +786,9 @@ H(k)=k％m&lt;br /&gt;
 index = (value * 2654435769) &amp;gt;&amp;gt; 28&lt;br /&gt;
 如果用这种斐波那契散列法的话，那我上面的图就变成这样了：&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;冲突的解决方法&lt;/strong&gt;
 假设哈希表的地址范围为0～m-l，当对给定的关键字k，由哈希函数H(k)算出的哈希地址为i（0≤i≤m-1）的位置上已存有记录，这种情况就是&lt;code&gt;冲突现象&lt;/code&gt;。 处理冲突就是为该关键字的记录找到另一个“空”的哈希地址。即通过一个新的哈希函数得到一个新的哈希地址。如果仍然发生冲突，则再求下一个，依次类推。直至新的哈希地址不再发生冲突为止。&lt;br /&gt;
 常用的处理冲突的方法有开放地址法、链地址法两大类
@@ -672,12 +797,18 @@ index = (value * 2654435769) &amp;gt;&amp;gt; 28&lt;br /&gt;
 如 Hi=(H(k)+d（i）) % m, i=1，2，…k (k 其中H(k)为哈希函数，m为哈希表长，d为增量函数，d(i)=dl，d2…dn-l。&lt;br /&gt;
 增量序列的取法不同，可得到不同的开放地址处理冲突探测方法。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;1）线性探测法&lt;/strong&gt;
 线性探测法是从发生冲突的地址（设为d）开始，依次探查d+l，d+2，…m-1（当达到表尾m-1时，又从0开始探查）等地址，直到找到一个空闲位置来存放冲突处的关键字。&lt;br /&gt;
 若整个地址都找遍仍无空地址，则产生溢出。&lt;br /&gt;
 线性探查法的数学递推描述公式为：&lt;br /&gt;
 d0=H(k)&lt;br /&gt;
 di=(di-1+1)% m (1≤i≤m-1)&lt;/p&gt;
+
+
+
 
 &lt;p&gt;【例】已知哈希表地址区间为0～10，给定关键字序列（20，30，70，15，8，12，18，63，19）。哈希函数为H(k)=k％ll，采用线性探测法处理冲突，则将以上关键字依次存储到哈希表中。试构造出该哈希表，并求出等概率情况下的平均查找长度。&lt;br /&gt;
 假设数组为A, 本题中各元素的存放过程如下：&lt;br /&gt;
@@ -692,10 +823,16 @@ d0=8&lt;br /&gt;
 d1=(8+1)%11=9，仍冲突；&lt;br /&gt;
 d2=(8+2)%11=10，将8放入到A[10]中。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;在等概率情况下成功的平均查找长度为：&lt;br /&gt;
 （1*5+2+3+4+6）/9 =20/9&lt;br /&gt;
 利用线性探查法处理冲突容易造成关键字的&lt;code&gt;堆积&lt;/code&gt;问题。这是因为当连续n个单元被占用后，再散列到这些单元上的关键字和直接散列到后面一个空闲单元上的关键字都要占用这个空闲单元，致使该空闲单元很容易被占用，从而发生非同义冲突。造成平均查找长度的增加。&lt;br /&gt;
 为了克服堆积现象的发生，可以用下面的方法替代线性探查法。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;（2）平方探查法&lt;/strong&gt;
 设发生冲突的地址为d，则平方探查法的探查序列为：d+12，d+22，…直到找到一个空闲位置为止。&lt;br /&gt;
@@ -708,20 +845,35 @@ di=(d0+i2) % m (1≤i≤m-1)&lt;br /&gt;
 例如，若表长m=13，假设在第3个位置发生冲突，则后面探查的位置依次为4、7、12、6、2、0，即可以探查到一半单元。&lt;br /&gt;
 若解决冲突时，探查到一半单元仍找不到一个空闲单元。则表明此哈希表太满，需重新建立哈希表。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;2．链地址法&lt;/strong&gt;
 用链地址法解决冲突的方法是：把所有关键字为同义词的记录存储在一个线性链表中，这个链表称为同义词链表。并将这些链表的表头指针放在数组中（下标从0到m-1）。这类似于图中的邻接表和树中孩子链表的结构。&lt;br /&gt;
 由于在各链表中的第一个元素的查找长度为l，第二个元素的查找长度为2，依此类推。因此，在等概率情况下成功的平均查找长度为：&lt;br /&gt;
 (1*5+2*2+3*l+4*1)／9=16／9&lt;/p&gt;
 
+
+
+
 &lt;p&gt;虽然链地址法要多费一些存储空间，但是彻底解决了“堆积”问题，大大提高了查找效率。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;3. 再哈希法&lt;/strong&gt;：&lt;br /&gt;
 Hi=R Hi(key)，&lt;br /&gt;
 R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另一个哈希函数地址，直到冲突不再发生。这种方法不易产生&lt;code&gt;聚集&lt;/code&gt;，但增加了计算的时间。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;4.建立一个公共溢出区&lt;/strong&gt;
 这也是处理冲突的一种方法。&lt;br /&gt;
 假设哈希函数的值域为[0，m-1]，则设向量HashTable[0…m-1]为基本表，每个分量存放一个记录，另设立向量OverTable[0．．v]为溢出表。所有关键字和基本表中关键字为同义词的记录，不管它们由哈希函数得到的哈希地址是什么，一旦发生冲突，都填入溢出表。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;哈希表的查找及性能分析&lt;/strong&gt;
 &lt;code&gt;哈希法&lt;/code&gt;是利用关键字进行计算后直接求出存储地址的。当哈希函数能得到均匀的地址分布时，不需要进行任何比较就可以直接找到所要查的记录。但实际上不可能完全避免冲突，因此查找时还需要进行探测比较。&lt;br /&gt;
@@ -734,13 +886,22 @@ R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另�
 &lt;strong&gt;第三:与解决冲突的哈希冲突函数有关&lt;/strong&gt;
 哈希冲突函数选择的好坏也将减少或增加发生冲突的可能性。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;思考&lt;/strong&gt;
 &lt;em&gt;哈希算法的基本思想是什么？&lt;/em&gt;
 &lt;em&gt;哈希算法的存储效率主要取决于什么？&lt;/em&gt;
 &lt;em&gt;哈希算法解决冲突的方式有哪些？&lt;/em&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;java 哈希表实现&lt;/strong&gt;
 java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap，也有其他公司实现的，如apache的FashHashmap,google的mapmarker,high-lib的NonBlockingHashMap,其中差别是：&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;hastable&lt;/strong&gt;:线程同步，比较慢
 &lt;strong&gt;hashmap&lt;/strong&gt;：线程不同步，不同步时候读写最快（但是不能保证读到最新数据），加同步修饰的时候， 读写比较慢
@@ -749,15 +910,22 @@ java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap�
 &lt;strong&gt;NoBlockingHashMap&lt;/strong&gt;： high_scale_lib实现写入慢，读取较快
 &lt;strong&gt;MiltigetHashMap&lt;/strong&gt;，MapMaker google collection，和CurrentHashMap性能相当，功能比较全，可以设置超时，重复的可以保存成list&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 &lt;a href=&quot;http://course.onlinesjtu.com/mod/page/view.php?id=423&quot; target=&quot;_blank&quot;&gt; http://course.onlinesjtu.com/mod/page/view.php?id=423&lt;/a&gt;
 &lt;a href=&quot;http://www.cnblogs.com/bigshuai/articles/2398116.html&quot; target=&quot;_blank&quot;&gt; http://www.cnblogs.com/bigshuai/articles/2398116.html&lt;/a&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;扩展阅读&lt;/strong&gt;
 Hash碰撞的拒绝式服务攻击 &lt;a href=&quot;http://blog.jobbole.com/11454/&quot; target=&quot;_blank&quot;&gt;http://blog.jobbole.com/11454/&lt;/a&gt;
 Berkeley DB Hash、Btree、Queue、Recno选择&lt;a href=&quot; http://www.webzone8.com/article/560.html&quot; target=&quot;_blank&quot;&gt; http://www.webzone8.com/article/560.html&lt;/a&gt;
 Java Hashtable &lt;a href=&quot;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&quot; target=&quot;_blank&quot;&gt;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&lt;/a&gt;
 Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot; target=&quot;_blank&quot;&gt;http://kantery.iteye.com/blog/441755&lt;/a&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
  </entry>
  
@@ -769,12 +937,21 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
    <content type="html">&lt;p&gt;这是在QQ群里有人问到的一个问题.&lt;br /&gt;
 如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?&lt;/p&gt;
 
+
+
+
 &lt;p&gt;在kettle中实现cassandra的输入与输出有以下两种方式:&lt;br /&gt;
 第一种方式:自己编写cassandra输入输出组件&lt;br /&gt;
 第二种方式:使用别人编写好的插件,将其集成进来&lt;/p&gt;
 
+
+
+
 &lt;p&gt;当然还有第三种方法,直接使用4.3版本的pdi.&lt;br /&gt;
 第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;在pdi-ce-big-data-4.3.0-preview&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;(下载页面&lt;/a&gt;)版本中可以看到kettle开始支持cassandra的输入和输出.&lt;br /&gt;
 故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.&lt;br /&gt;
@@ -794,6 +971,9 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 |-- steps
 `-- versioncheck
 &lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下
 &lt;pre&gt;
@@ -841,8 +1021,14 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
     `-- lib
         `-- pentaho-versionchecker.jar&lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;13 directories, 29 files
 &lt;/p&gt;
+
+
+
 
 &lt;p&gt;启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
 &lt;div class=&quot;pic&quot;&gt;
@@ -851,9 +1037,15 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 &lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;获取pentaho-big-data-plugin源码&lt;/strong&gt;
 如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?&lt;br /&gt;
 你可以从&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;然后,需要在kettle-steps.xml中注册步骤节点&lt;br /&gt;
 例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.
@@ -867,16 +1059,23 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 &lt;/iconfile&gt;&lt;/tooltip&gt;&lt;/category&gt;&lt;/classname&gt;&lt;/description&gt;&lt;/step&gt;
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;div class=&quot;note&quot;&gt;
 &lt;h&gt;注意:&lt;br /&gt;
 由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
 &lt;/h&gt;&lt;/div&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;扩展阅读:&lt;/strong&gt;
 Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&lt;/a&gt;
 pentaho-big-data-plugin ci
 &lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&lt;/a&gt;
 Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></content>
  </entry>
  
@@ -888,7 +1087,7 @@ Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.co
    <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
 &lt;pre lang=&quot;xml&quot;&gt;
 &lt; listener&gt;
-	&lt; listener-class&gt;org.jboss.seam.servlet.SeamListener&lt; /listener-class&gt;
+    &lt; listener-class&gt;org.jboss.seam.servlet.SeamListener&lt; /listener-class&gt;
 &lt; /listener&gt;
 &lt;/pre&gt;&lt;/p&gt;
 
@@ -929,6 +1128,7 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 
 &lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。
 &lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></content>
  </entry>
  
@@ -939,38 +1139,59 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
    <id>http://blog.javachen.com/2012/02/22/the-init-process-before-job-execution</id>
    <content type="html">&lt;p&gt;本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;之前用英文写了一篇文章《&lt;a href=&quot;http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/&quot; target=&quot;_blank&quot;&gt;The execution process of kettle’s job&lt;/a&gt;》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;pre lang=&quot;java&quot;&gt;
 public void runFile() {
-	executeFile(true, false, false, false, false, null, false);
+    executeFile(true, false, false, false, false, null, false);
 }&lt;/pre&gt;&lt;/p&gt;
 
-&lt;p&gt;public void executeFile(boolean local, boolean remote, boolean cluster,&lt;br /&gt;
-		boolean preview, boolean debug, Date replayDate, boolean safe) {&lt;br /&gt;
-	TransMeta transMeta = getActiveTransformation();&lt;br /&gt;
-	if (transMeta != null)&lt;br /&gt;
-		executeTransformation(transMeta, local, remote, cluster, preview,&lt;br /&gt;
-				debug, replayDate, safe);&lt;/p&gt;
 
-&lt;p&gt;	JobMeta jobMeta = getActiveJob();&lt;br /&gt;
-	if (jobMeta != null)&lt;br /&gt;
-		executeJob(jobMeta, local, remote, replayDate, safe, null, 0);&lt;br /&gt;
+
+
+&lt;p&gt;public void executeFile(boolean local, boolean remote, boolean cluster,&lt;br /&gt;
+        boolean preview, boolean debug, Date replayDate, boolean safe) {&lt;br /&gt;
+    TransMeta transMeta = getActiveTransformation();&lt;br /&gt;
+    if (transMeta != null)&lt;br /&gt;
+        executeTransformation(transMeta, local, remote, cluster, preview,&lt;br /&gt;
+                debug, replayDate, safe);&lt;/p&gt;
+
+
+
+
+&lt;p&gt; JobMeta jobMeta = getActiveJob();&lt;br /&gt;
+    if (jobMeta != null)&lt;br /&gt;
+        executeJob(jobMeta, local, remote, replayDate, safe, null, 0);&lt;br /&gt;
 }&lt;/p&gt;
 
+
+
+
 &lt;p&gt;public void executeJob(JobMeta jobMeta, boolean local, boolean remote,&lt;br /&gt;
-		Date replayDate, boolean safe, String startCopyName, int startCopyNr) {&lt;br /&gt;
-	try {&lt;br /&gt;
-		delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,&lt;br /&gt;
-				startCopyName, startCopyNr);&lt;br /&gt;
-	} catch (Exception e) {&lt;br /&gt;
-		new ErrorDialog(shell, &quot;Execute job&quot;,&lt;br /&gt;
-				&quot;There was an error during job execution&quot;, e);&lt;br /&gt;
-	}&lt;br /&gt;
+        Date replayDate, boolean safe, String startCopyName, int startCopyNr) {&lt;br /&gt;
+    try {&lt;br /&gt;
+        delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,&lt;br /&gt;
+                startCopyName, startCopyNr);&lt;br /&gt;
+    } catch (Exception e) {&lt;br /&gt;
+        new ErrorDialog(shell, &quot;Execute job&quot;,&lt;br /&gt;
+                &quot;There was an error during job execution&quot;, e);&lt;br /&gt;
+    }&lt;br /&gt;
 }
 &lt;/p&gt;
+
+
+
 
 &lt;p&gt;runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：&lt;br /&gt;
 local：是否本地运行&lt;br /&gt;
@@ -981,9 +1202,18 @@ debug：是否调试&lt;br /&gt;
 replayDate：回放时间&lt;br /&gt;
 safe：是否安全模式&lt;/p&gt;
 
+
+
+
 &lt;p&gt;executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;SpoonJobDelegate的executeJob方法主要完成以下操作：&lt;br /&gt;
 1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。&lt;br /&gt;
@@ -991,9 +1221,18 @@ safe：是否安全模式&lt;/p&gt;
 3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。&lt;br /&gt;
 4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：&lt;br /&gt;
 1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。&lt;br /&gt;
@@ -1002,7 +1241,11 @@ safe：是否安全模式&lt;/p&gt;
 4.Job对象添加JobEntry监听器、Job监听器。&lt;br /&gt;
 5.调用Job的start方法，启动线程开始执行一个job。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>
  </entry>
  
@@ -1013,15 +1256,28 @@ safe：是否安全模式&lt;/p&gt;
    <id>http://blog.javachen.com/2012/02/21/the-execution-process-of-kettles-job</id>
    <content type="html">&lt;p&gt;How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is &quot;org.pentaho.di.ui.spoon.Spoon.java&quot;.This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg&quot; alt=&quot;&quot; title=&quot;spoon execute sequence&quot; width=&quot;300&quot; height=&quot;180&quot; class=&quot;aligncenter size-medium wp-image-2511&quot; /&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;What is the detail process of job execution? You should look into the Job.run() method for detail information.&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></content>
  </entry>
  
@@ -1032,10 +1288,16 @@ safe：是否安全模式&lt;/p&gt;
    <id>http://blog.javachen.com/2012/02/17/step-error-handling-in-kettle</id>
    <content type="html">&lt;p&gt;在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img alt=&quot;&quot; src=&quot;http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wck3m7j.jpg&quot; class=&quot;alignnone&quot; width=&quot;600&quot; height=&quot;172&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;a1表结构如下：
 &lt;pre lang=&quot;sql&quot;&gt;
@@ -1048,22 +1310,37 @@ CREATE TABLE a1
 )
 &lt;/pre&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;从表结构可以看出，a1表中id为主键、唯一。
 &lt;!--more--&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;a0表数据预览：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img alt=&quot;&quot; src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wcr6c2j.jpg&quot; class=&quot;alignnone&quot; width=&quot;553&quot; height=&quot;403&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。&lt;br /&gt;
 再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。&lt;br /&gt;
 在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww3.sinaimg.cn/mw600/48e24b4cjw1dq56wd5ckwj.jpg&quot; alt=&quot;&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;相关字段说明：&lt;/strong&gt;
 目标步骤：指定处理错误的步骤&lt;br /&gt;
@@ -1076,30 +1353,49 @@ CREATE TABLE a1
 允许的最大错误百分比：&lt;br /&gt;
 在计算百分百前最少要读入的行数：&lt;/p&gt;
 
+
+
+
 &lt;p&gt;添加错误处理后的转换如下：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wdntipj.jpg&quot; alt=&quot;&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wdvk6uj.jpg&quot; alt=&quot;&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;记录的错误信息如下：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56we2sn2j.jpg&quot; alt=&quot;&quot; /&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;分析&lt;/strong&gt;
 可以看到,错误日志里只是记录了出错的行里面的信息，并没有记录当前行所在的表名称以及执行时间等等，如果能够对此进行扩展，则该错误日志表才能更有实际意义。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;
 1.错误日志的错误码含义（如：TOP001）含义见参考文章2.&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 1.&lt;a href=&quot;http://wiki.pentaho.com/display/EAI/.09+Transformation+Steps#.09TransformationSteps-StepErrorHandling&quot; target=&quot;_blank&quot;&gt;Step Error Handling&lt;/a&gt;
 2.&lt;a href=&quot;http://wiki.pentaho.com/display/COM/Step+error+handling+codes&quot; target=&quot;_blank&quot;&gt;Step error handling codes&lt;/a&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></content>
  </entry>
  
@@ -1110,17 +1406,26 @@ CREATE TABLE a1
    <id>http://blog.javachen.com/2012/02/14/this-expression-of-jsf-el</id>
    <content type="html">&lt;p&gt;本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;EL表达式this扩展&lt;/strong&gt;
 在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：&lt;br /&gt;
 1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能&lt;br /&gt;
 2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；&lt;br /&gt;
 3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;我们需要一种新的功能，实现：&lt;br /&gt;
 1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的&lt;br /&gt;
 2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法&lt;br /&gt;
 3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射&lt;br /&gt;
 4.兼容标准的EL表达式&lt;/p&gt;
+
+
+
 
 &lt;p&gt;我们将上述功能处理为“this”表达式。其功能模型为：
 &lt;div class=&quot;pic&quot;&gt;
@@ -1129,16 +1434,23 @@ CREATE TABLE a1
 页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
 &lt;!--more--&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;动作类和页面的一致性保证&lt;/strong&gt;
 为了有效实现this表达式，我们实现如下映射规则：&lt;br /&gt;
 1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写&lt;br /&gt;
 2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;“this”EL表达式算法&lt;/strong&gt;
 算法流程如下图：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg&quot;&gt;&lt;img src=&quot;http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg&quot; alt=&quot;&quot; title=&quot;this expression flow of el&quot; width=&quot;300&quot; height=&quot;226&quot; class=&quot;aligncenter size-medium wp-image-2497&quot; /&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/14/this-expression-of-jsf-el.html'>JSF中EL表达式之this扩展</a></content>
  </entry>
  
@@ -1149,6 +1461,9 @@ CREATE TABLE a1
    <id>http://blog.javachen.com/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
    <content type="html">&lt;p&gt;很多人向我要《&lt;a href=&quot;http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi&quot; target=&quot;_blank&quot;&gt;Ext读取xml文件生成动态表格和表单&lt;/a&gt;》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;《Ext读取xml文件生成动态表格和表单》一文需要的文件有：&lt;br /&gt;
 1.html文件，此处以SASC.search.MtrUse.html为例&lt;br /&gt;
 2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用&lt;br /&gt;
@@ -1156,25 +1471,47 @@ CREATE TABLE a1
 4.核心js类:SASC.extjs.search.MtrUse.js&lt;br /&gt;
 5.java代码&lt;/p&gt;
 
+
+
+
 &lt;p&gt;详细html和js代码见相关文件，这里先描述思路。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;首先&lt;/strong&gt;
 通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC_MTRREPLACE_IMP.xml” .PC_MTRREPLACE_IMP.xml文件的放置路径见DomUtils.js文件中的说明。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。&lt;br /&gt;
 进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue('xmlFile'))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。&lt;br /&gt;
 需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;然后&lt;/strong&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;最后&lt;/strong&gt;
 相关文件打包见：
 &lt;a href=&quot;http://vdisk.weibo.com/s/2enQS&quot; target=&quot;_blank&quot;&gt;http://vdisk.weibo.com/s/2enQS&lt;/a&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;
 如果还有什么不懂，欢迎email：javachen.june#gmail.com&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></content>
  </entry>
  
@@ -1185,7 +1522,13 @@ CREATE TABLE a1
    <id>http://blog.javachen.com/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle</id>
    <content type="html">&lt;p&gt;Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于&lt;strong&gt;数据抽取、转换、装载&lt;/strong&gt;。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;kettle的数据抽取主要在于抽取数据，而没有考虑数据库的&lt;strong&gt;函数、存储过程、视图、表结构以及索引、约束&lt;/strong&gt;等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，&lt;strong&gt;需要有主键和索引方便对比和加快查询速度&lt;/strong&gt;。
 &lt;p style=&quot;text-align: left;&quot;&gt;先来看看kettle中的一些组件。&lt;/p&gt;
@@ -1204,67 +1547,100 @@ CREATE TABLE a1
 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。&lt;/p&gt;
 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;如果现在想使用kettle实现&lt;strong&gt;异构数据库的数据以及主键和索引的迁移&lt;/strong&gt;，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
 &lt;strong&gt;1.&lt;/strong&gt;使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
 &lt;strong&gt;2.&lt;/strong&gt;针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
 &lt;strong&gt;3.&lt;/strong&gt;扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;下面是方案3的具体的实现。&lt;/strong&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。&lt;br /&gt;
 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：
 &lt;pre lang=&quot;java&quot;&gt;public void ripDBWizard(final int no) {
-	final List databases = spoon.getActiveDatabases();
-	if (databases.size() == 0)
-		return;&lt;/pre&gt;&lt;/p&gt;
+    final List databases = spoon.getActiveDatabases();
+    if (databases.size() == 0)
+        return;&lt;/pre&gt;&lt;/p&gt;
 
-&lt;p&gt;	final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,&lt;br /&gt;
-			databases);&lt;br /&gt;
-	final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);&lt;br /&gt;
-	final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,&lt;br /&gt;
-			spoon.getRepository());&lt;br /&gt;
-	Wizard wizard = new Wizard() {&lt;br /&gt;
-		public boolean performFinish() {&lt;br /&gt;
-			try {&lt;br /&gt;
-				JobMeta jobMeta = ripDBByNo(no, databases,&lt;br /&gt;
-					page3.getJobname(), page3.getRepositoryDirectory(),&lt;br /&gt;
-					page3.getDirectory(), page1.getSourceDatabase(),&lt;br /&gt;
-					page1.getTargetDatabase(), page2.getSelection());&lt;/p&gt;
 
-&lt;p&gt;				if (jobMeta == null)&lt;br /&gt;
-					return false;&lt;/p&gt;
 
-&lt;p&gt;				if (page3.getRepositoryDirectory() != null) {&lt;br /&gt;
-					spoon.saveToRepository(jobMeta, false);&lt;br /&gt;
-				} else {&lt;br /&gt;
-					spoon.saveToFile(jobMeta);&lt;br /&gt;
-				}&lt;/p&gt;
 
-&lt;p&gt;				addJobGraph(jobMeta);&lt;br /&gt;
-				return true;&lt;br /&gt;
-			} catch (Exception e) {&lt;br /&gt;
-				new ErrorDialog(spoon.getShell(), &quot;Error&quot;,&lt;br /&gt;
-						&quot;An unexpected error occurred!&quot;, e);&lt;br /&gt;
-				return false;&lt;br /&gt;
-			}&lt;br /&gt;
-		}&lt;/p&gt;
+&lt;p&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,&lt;br /&gt;
+            databases);&lt;br /&gt;
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);&lt;br /&gt;
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,&lt;br /&gt;
+            spoon.getRepository());&lt;br /&gt;
+    Wizard wizard = new Wizard() {&lt;br /&gt;
+        public boolean performFinish() {&lt;br /&gt;
+            try {&lt;br /&gt;
+                JobMeta jobMeta = ripDBByNo(no, databases,&lt;br /&gt;
+                    page3.getJobname(), page3.getRepositoryDirectory(),&lt;br /&gt;
+                    page3.getDirectory(), page1.getSourceDatabase(),&lt;br /&gt;
+                    page1.getTargetDatabase(), page2.getSelection());&lt;/p&gt;
 
-&lt;p&gt;		public boolean canFinish() {&lt;br /&gt;
-			return page3.canFinish();&lt;br /&gt;
-		}&lt;br /&gt;
-	};&lt;/p&gt;
 
-&lt;p&gt;	wizard.addPage(page1);&lt;br /&gt;
-	wizard.addPage(page2);&lt;br /&gt;
-	wizard.addPage(page3);&lt;/p&gt;
 
-&lt;p&gt;	WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);&lt;br /&gt;
-	WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());&lt;br /&gt;
-	wd.setMinimumPageSize(700, 400);&lt;br /&gt;
-	wd.updateSize();&lt;br /&gt;
-	wd.open();&lt;br /&gt;
+
+&lt;p&gt;             if (jobMeta == null)&lt;br /&gt;
+                    return false;&lt;/p&gt;
+
+
+
+
+&lt;p&gt;             if (page3.getRepositoryDirectory() != null) {&lt;br /&gt;
+                    spoon.saveToRepository(jobMeta, false);&lt;br /&gt;
+                } else {&lt;br /&gt;
+                    spoon.saveToFile(jobMeta);&lt;br /&gt;
+                }&lt;/p&gt;
+
+
+
+
+&lt;p&gt;             addJobGraph(jobMeta);&lt;br /&gt;
+                return true;&lt;br /&gt;
+            } catch (Exception e) {&lt;br /&gt;
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,&lt;br /&gt;
+                        &quot;An unexpected error occurred!&quot;, e);&lt;br /&gt;
+                return false;&lt;br /&gt;
+            }&lt;br /&gt;
+        }&lt;/p&gt;
+
+
+
+
+&lt;p&gt;     public boolean canFinish() {&lt;br /&gt;
+            return page3.canFinish();&lt;br /&gt;
+        }&lt;br /&gt;
+    };&lt;/p&gt;
+
+
+
+
+&lt;p&gt; wizard.addPage(page1);&lt;br /&gt;
+    wizard.addPage(page2);&lt;br /&gt;
+    wizard.addPage(page3);&lt;/p&gt;
+
+
+
+
+&lt;p&gt; WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);&lt;br /&gt;
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());&lt;br /&gt;
+    wd.setMinimumPageSize(700, 400);&lt;br /&gt;
+    wd.updateSize();&lt;br /&gt;
+    wd.open();&lt;br /&gt;
 }
 该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于&lt;strong&gt;选择数据库连接&lt;/strong&gt;：源数据库和目标数据库连接；第二个向导页用于&lt;strong&gt;选表&lt;/strong&gt;；第三个向导页用于&lt;strong&gt;指定作业保存路径&lt;/strong&gt;。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。&lt;br /&gt;
 创建Jobmeta的方法为：
@@ -1275,8 +1651,8 @@ CREATE TABLE a1
 }&lt;/pre&gt;
 该方法主要逻辑在下面代码内：
 &lt;pre lang=&quot;java&quot;&gt;IRunnableWithProgress op = new IRunnableWithProgress() {
-	public void run(IProgressMonitor monitor)
-	 throws InvocationTargetException, InterruptedException {
+    public void run(IProgressMonitor monitor)
+     throws InvocationTargetException, InterruptedException {
            //此处省略若干代码
         }
 }&lt;/pre&gt;
@@ -1287,43 +1663,59 @@ CREATE TABLE a1
 针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。&lt;br /&gt;
 这部分的代码如下：
 &lt;pre lang=&quot;java&quot;&gt;String pksql = JdbcDataMetaUtil.exportPkAndIndex(
-		sourceDbInfo, sourceCon, tables[i],
-		targetDbInfo, targetCon, tables[i]);&lt;/pre&gt;&lt;/p&gt;
+        sourceDbInfo, sourceCon, tables[i],
+        targetDbInfo, targetCon, tables[i]);&lt;/pre&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;if (!Const.isEmpty(pksql)) {&lt;br /&gt;
-	location.x += 300;&lt;br /&gt;
-	JobEntrySQL jesql = new JobEntrySQL(&lt;br /&gt;
-		BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)&lt;br /&gt;
-			+ tables[i] + &quot;]&quot;);&lt;br /&gt;
-	jesql.setDatabase(targetDbInfo);&lt;br /&gt;
-	jesql.setSQL(pksql);&lt;br /&gt;
-	jesql.setDescription(BaseMessages.getString(PKG,&lt;br /&gt;
-			&quot;Spoon.RipDB.AddPkAndIndex&quot;)&lt;br /&gt;
-			+ tables[i]&lt;br /&gt;
-			+ &quot;]&quot;);&lt;/p&gt;
+    location.x += 300;&lt;br /&gt;
+    JobEntrySQL jesql = new JobEntrySQL(&lt;br /&gt;
+        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)&lt;br /&gt;
+            + tables[i] + &quot;]&quot;);&lt;br /&gt;
+    jesql.setDatabase(targetDbInfo);&lt;br /&gt;
+    jesql.setSQL(pksql);&lt;br /&gt;
+    jesql.setDescription(BaseMessages.getString(PKG,&lt;br /&gt;
+            &quot;Spoon.RipDB.AddPkAndIndex&quot;)&lt;br /&gt;
+            + tables[i]&lt;br /&gt;
+            + &quot;]&quot;);&lt;/p&gt;
 
-&lt;p&gt;	JobEntryCopy jecsql = new JobEntryCopy();&lt;br /&gt;
-	jecsql.setEntry(jesql);&lt;br /&gt;
-	jecsql.setLocation(new Point(location.x, location.y));&lt;br /&gt;
-	jecsql.setDrawn();&lt;br /&gt;
-	jobMeta.addJobEntry(jecsql);&lt;/p&gt;
 
-&lt;p&gt;	// Add the hop too...&lt;br /&gt;
-	JobHopMeta jhi = new JobHopMeta(previous, jecsql);&lt;br /&gt;
-	jobMeta.addJobHop(jhi);&lt;br /&gt;
-	previous = jecsql;&lt;br /&gt;
+
+
+&lt;p&gt; JobEntryCopy jecsql = new JobEntryCopy();&lt;br /&gt;
+    jecsql.setEntry(jesql);&lt;br /&gt;
+    jecsql.setLocation(new Point(location.x, location.y));&lt;br /&gt;
+    jecsql.setDrawn();&lt;br /&gt;
+    jobMeta.addJobEntry(jecsql);&lt;/p&gt;
+
+
+
+
+&lt;p&gt; // Add the hop too...&lt;br /&gt;
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);&lt;br /&gt;
+    jobMeta.addJobHop(jhi);&lt;br /&gt;
+    previous = jecsql;&lt;br /&gt;
 }
 获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。&lt;br /&gt;
 该代码见：&lt;a href=&quot;https://gist.github.com/1564353.js&quot; target=&quot;_blank&quot;&gt;https://gist.github.com/1564353.js&lt;/a&gt;&lt;/p&gt;
+
+
+
 
 &lt;p&gt;最后的效果图如下：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes.png&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-2483&quot; title=&quot;kettle-add-primary-key-and-indexes&quot; src=&quot;http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes-300x79.png&quot; alt=&quot;&quot; width=&quot;300&quot; height=&quot;79&quot; /&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;div class=&quot;infor&quot;&gt;说明：&lt;br /&gt;
 1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。&lt;br /&gt;
 2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的&lt;/div&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html'>使用kettle数据迁移添加主键和索引</a></content>
  </entry>
  
@@ -1334,50 +1726,87 @@ CREATE TABLE a1
    <id>http://blog.javachen.com/2012/01/04/some-problems-about-migrating-database-datas-with-kettle</id>
    <content type="html">&lt;p&gt;使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;1. &lt;strong&gt;同时运行两个pdi程序&lt;/strong&gt;，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行
 &lt;strong&gt;原因：&lt;/strong&gt;从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。
 &lt;strong&gt;解决办法：&lt;/strong&gt;将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;2. 关键字的问题。&lt;/strong&gt;Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。
 &lt;strong&gt;解决办法：&lt;/strong&gt;出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;oracle中的字段名从中可以有#号，但是到mysql会报错
 &lt;strong&gt;解决办法：&lt;/strong&gt;字段改名称，去掉#号&lt;/p&gt;
+
+
+
 
 &lt;p&gt;3. &lt;strong&gt;Db2初始化到mysql或是postgres出错&lt;/strong&gt;
 &lt;strong&gt;原因：&lt;/strong&gt;1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母
 &lt;strong&gt;解决办法：&lt;/strong&gt;使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;4. Oracle到mysql和pg时日期类型数据值有偏差
 &lt;strong&gt;原因：&lt;/strong&gt;从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;5. 主键&lt;/strong&gt;从ORACLE导入不到MYSQL和POSTGRES
 &lt;strong&gt;原因：&lt;/strong&gt;pdi程序中没有对主键进行处理
 &lt;strong&gt;解决办法：&lt;/strong&gt;使用更新的pdi程序，执行Tools-Wizzard-Copy Tables Extension...功能添加主键；执行Tools-Wizzard-Copy Tables Data Only...功能可以只复制数据&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;6. Oracle中存在ascii字符导入到postgres时候报错&lt;/strong&gt;：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00
 &lt;strong&gt;原因：&lt;/strong&gt;PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。
 &lt;strong&gt;解决办法:&lt;/strong&gt;使用新的pdi程序。&lt;br /&gt;
 在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString&lt;/p&gt;
 
+
+
+
 &lt;p&gt;7. &lt;strong&gt;异构数据库之间的类型兼容问题&lt;/strong&gt;。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。
 &lt;strong&gt;原因：&lt;/strong&gt;Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。
 &lt;strong&gt;解决办法：&lt;/strong&gt;针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;8. Db2中没有主键的数据初始化到mysql和postgres需要添加&lt;strong&gt;索引&lt;/strong&gt;
 &lt;strong&gt;解决办法：&lt;/strong&gt;使用最新的pdi程序，最新的pdi程序会添加主键和索引。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;9. Db2中decimal（n,m）类型的数据初始化到postgres数据库被&lt;strong&gt;四舍五入&lt;/strong&gt;。
 &lt;strong&gt;原因：&lt;/strong&gt;Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。
 &lt;strong&gt;解决办法：&lt;/strong&gt;使用最新的pdi程序。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;10. 导数据中途时没有报错，直接软件退出
 &lt;strong&gt;原因：&lt;/strong&gt;1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误
 &lt;strong&gt;解决办法：&lt;/strong&gt;修改jvm参数&lt;/p&gt;
 
+
+
+
 &lt;p&gt;11.&lt;strong&gt;初次使用kettle做db2的初始化会报错&lt;/strong&gt;
 &lt;strong&gt;原因：&lt;/strong&gt;kettle中的db2的jdbc驱动与使用的db2版本不对应。
 &lt;strong&gt;解决办法：&lt;/strong&gt;从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html'>kettle进行数据迁移遇到的问题</a></content>
  </entry>
  
@@ -1388,26 +1817,51 @@ CREATE TABLE a1
    <id>http://blog.javachen.com/2011/12/07/mondrian-and-olap</id>
    <content type="html">&lt;p&gt;Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;Online Analytical Processing&lt;/span&gt;&lt;/strong&gt;
 联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-&lt;wbr&gt;Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。&lt;/wbr&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217.jpg&quot;&gt;&lt;img class=&quot;size-medium wp-image-2469 aligncenter&quot; title=&quot;olap_examples20111217&quot; src=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217-300x129.jpg&quot; alt=&quot;olap多维视图&quot; width=&quot;300&quot; height=&quot;129&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
+
+
+
 &lt;p&gt;行轴包括&quot;All products&quot;, &quot;Books&quot;,&quot;Fiction&quot;等等，并且列轴包括生产年份&quot;2000&quot;”和&quot;2001&quot;、&quot;Growth&quot;的计算值以及&quot;Unit sales&quot;和&quot;Dollar sales&quot;的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在&quot;2000&quot;和&quot;2001&quot;一行，&quot;Growth&quot;是一个计算出来的值，它引入一个公式从其他列计算当前列的值。&lt;/p&gt;
 
+
+
+
 &lt;p&gt;该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。&lt;/p&gt;
+
+
+
 
 &lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;结论&lt;/span&gt;&lt;/strong&gt;
 我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。&lt;br /&gt;
 现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php&lt;/p&gt;
 
+
+
+
 &lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;说明&lt;/span&gt;&lt;/strong&gt;
 &lt;div class=&quot;note&quot;&gt;
 这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。&lt;/div&gt;&lt;/p&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2011/12/07/mondrian-and-olap.html'>Mondrian and OLAP</a></content>
  </entry>
  

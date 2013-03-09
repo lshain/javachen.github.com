@@ -24,10 +24,10 @@
 				<p class="describe">&lt; Dive into Java ... /&gt;</p>
 				<nav class="navigation">
 					<ul>
-						<li><a href="/">首页</a></li>
-						<li><a href="/archive.html">列表</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
 						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
-						<li><a href="/about.html">关于作者</a></li>
+						<li><a href="/about.html">About</a></li>
 						<li><a href="/atom.xml">RSS</a></li>
 					</ul>
 				</nav>
@@ -49,10 +49,12 @@
 		<time date="2012-02-23 00:00:00 +0800">2012-02-23</time>
 	</div>
 
+	<h1>Seam的启动过程</h1>
+
 	<p>了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
 <pre lang="xml">
 < listener>
-	< listener-class>org.jboss.seam.servlet.SeamListener< /listener-class>
+    < listener-class>org.jboss.seam.servlet.SeamListener< /listener-class>
 < /listener>
 </pre></p>
 
@@ -93,6 +95,7 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 
 <p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。
 </p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/2012/02/23/the-process-of-seam-initiation.html'>JavaChen Blog</a>-

@@ -24,10 +24,10 @@
 				<p class="describe">&lt; Dive into Java ... /&gt;</p>
 				<nav class="navigation">
 					<ul>
-						<li><a href="/">首页</a></li>
-						<li><a href="/archive.html">列表</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
 						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
-						<li><a href="/about.html">关于作者</a></li>
+						<li><a href="/about.html">About</a></li>
 						<li><a href="/atom.xml">RSS</a></li>
 					</ul>
 				</nav>
@@ -49,37 +49,42 @@
 		<time date="2011-07-19 00:00:00 +0800">2011-07-19</time>
 	</div>
 
+	<h1>DhtmlxGrid Quick Start Guide</h1>
+
 	<p><span style="color: #ff0000;"><strong>说明:</strong></span>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+
+
 
 <p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
 <ul>
-	<li>跨浏览器</li>
-	<li>使用JavaScript API进行控制</li>
-	<li>Ajax支持</li>
-	<li>简单的JavaScript 或者XML 配置</li>
-	<li>与HTML集成</li>
-	<li>内建过滤、排序、查询、分组功能</li>
-	<li>表格 footer/header自动计算</li>
-	<li>行内编辑</li>
-	<li>准备使用大数据集解决方案：分页，动态加载，智能渲染</li>
-	<li>序列化为XML或CSV</li>
-	<li>从 XML或CSV加载</li>
-	<li>列锁定</li>
-	<li>剪贴板支持</li>
-	<li>简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)</li>
-	<li>支持子表格</li>
-	<li>列拖拽和移动</li>
-	<li>行或列拖拽</li>
-	<li>dhtmlxTree PRO Edition支持拖拽</li>
-	<li>可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)</li>
-	<li>组合框，日历以及更多的预定义eXcells</li>
-	<li>Cell支持数学方程式</li>
-	<li>不同的键盘映射</li>
-	<li>简单的CSS风格或是预定义的皮肤</li>
-	<li>对于rows/entire grid不可见的数据块 (用户数据)</li>
-	<li>客户端排序(string, integer, date, custom)</li>
-	<li>服务器端排序</li>
-	<li>广泛的事件处理</li>
+    <li>跨浏览器</li>
+    <li>使用JavaScript API进行控制</li>
+    <li>Ajax支持</li>
+    <li>简单的JavaScript 或者XML 配置</li>
+    <li>与HTML集成</li>
+    <li>内建过滤、排序、查询、分组功能</li>
+    <li>表格 footer/header自动计算</li>
+    <li>行内编辑</li>
+    <li>准备使用大数据集解决方案：分页，动态加载，智能渲染</li>
+    <li>序列化为XML或CSV</li>
+    <li>从 XML或CSV加载</li>
+    <li>列锁定</li>
+    <li>剪贴板支持</li>
+    <li>简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)</li>
+    <li>支持子表格</li>
+    <li>列拖拽和移动</li>
+    <li>行或列拖拽</li>
+    <li>dhtmlxTree PRO Edition支持拖拽</li>
+    <li>可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)</li>
+    <li>组合框，日历以及更多的预定义eXcells</li>
+    <li>Cell支持数学方程式</li>
+    <li>不同的键盘映射</li>
+    <li>简单的CSS风格或是预定义的皮肤</li>
+    <li>对于rows/entire grid不可见的数据块 (用户数据)</li>
+    <li>客户端排序(string, integer, date, custom)</li>
+    <li>服务器端排序</li>
+    <li>广泛的事件处理</li>
 </ul>
 <h2><!--more-->
 Step 1 – 引入文件</h2>
@@ -125,23 +130,23 @@ grid.init(); //显示调用初始化方法，必须的
 <div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
 说明：除了调用set方法之外，还可以如下风格定义：
 <pre lang="Javascript">mygrid = new dhtmlXGridObject({
-		parent:"a_grid",
-		image_path:"codebase/imgs",
-		columns:[
-			{ label: "Sales",           width:50, 	type:"ed" },
-			{ label:["Book title",
-				 "#text_filter"],   width:150, 	type:"ed" },
-			{ label:["Author",
-				 "#select_filter"], width:150, 	type:"ed" },
-			{ label: "Price",       width:50, 	type:"ed" },
-			{ label:"In store" , 	width:80, 	type:"ch" },
-			{ label:"Shipping" , 	width:50, 	type:"ed" },
-			{ label:"Bestseller" , 	width:50, 	type:"ed" },
-			{ label:"Date" , 	width:50, 	type:"ed" }
-		],</pre></p>
+        parent:"a_grid",
+        image_path:"codebase/imgs",
+        columns:[
+            { label: "Sales",           width:50,   type:"ed" },
+            { label:["Book title",
+                 "#text_filter"],   width:150,  type:"ed" },
+            { label:["Author",
+                 "#select_filter"], width:150,  type:"ed" },
+            { label: "Price",       width:50,   type:"ed" },
+            { label:"In store" ,    width:80,   type:"ch" },
+            { label:"Shipping" ,    width:50,   type:"ed" },
+            { label:"Bestseller" ,  width:50,   type:"ed" },
+            { label:"Date" ,    width:50,   type:"ed" }
+        ],</pre></p>
 
-<p>		xml:"data.xml"<br />
-	});
+<p>     xml:"data.xml"<br />
+    });
 <h2>Step 3 – 填充数据</h2>
 你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。<br />
 在上面的例子中每行有三列，故我们的json数据如下：
@@ -276,6 +281,7 @@ o 删除指定行id的行</div>
 <p>     < body onload="doInitGrid()">
       < div id="mygrid_container" style="width:600px;height:150px;">< /div>
      < /body></p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/2011/07/19/dhtmlxgrid-quick-start-guide.html'>JavaChen Blog</a>-

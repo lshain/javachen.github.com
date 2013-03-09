@@ -24,10 +24,10 @@
 				<p class="describe">&lt; Dive into Java ... /&gt;</p>
 				<nav class="navigation">
 					<ul>
-						<li><a href="/">首页</a></li>
-						<li><a href="/archive.html">列表</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
 						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
-						<li><a href="/about.html">关于作者</a></li>
+						<li><a href="/about.html">About</a></li>
 						<li><a href="/atom.xml">RSS</a></li>
 					</ul>
 				</nav>
@@ -49,8 +49,13 @@
 		<time date="2012-04-09 00:00:00 +0800">2012-04-09</time>
 	</div>
 
+	<h1>Getting Started Using the Cassandra CLI</h1>
+
 	<p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+
+
 
 <p><h1>Starting the CLI</h1>
 使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
@@ -88,10 +93,16 @@ Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
 </pre>
 你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
 
+
+
+
 <p><h1>Use a keyspace</h1>
 <pre>
 [default@unknown] USE demo;
 </pre></p>
+
+
+
 
 <p><h1>Creating a Column Family</h1>
 <pre>
@@ -112,6 +123,9 @@ AND column_metadata = [
 [default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 </pre></p>
 
+
+
+
 <p><h1>Creating a Counter Column Family</h1>
 <pre>
 [default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
@@ -126,6 +140,9 @@ AND column_metadata = [
 <pre>
 [default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
 </pre></p>
+
+
+
 
 <p><h1>Inserting Rows and Columns</h1>
 以下命令以一个特点的行key值插入列到users中
@@ -144,6 +161,9 @@ get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice"
 <pre>
 [default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
 </pre></p>
+
+
+
 
 <p><h1>Reading Rows and Columns</h1>
 使用List命令查询记录，默认查询100条记录
@@ -168,12 +188,18 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] ASSUME users VALIDATOR AS ascii;
 </pre></p>
 
+
+
+
 <p><h1>Setting an Expiring Column</h1>
 例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
 <pre>
 [default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
 </pre>
 自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+
+
 
 <p><h1>Indexing a Column</h1>
 给birth_year添加一个二级索引：
@@ -187,6 +213,9 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] GET users WHERE birth_date = 1969;
 </pre></p>
 
+
+
+
 <p><h1>Deleting Rows and Columns</h1>
 删除yomama索引的coupon_code列：
 <pre>
@@ -198,11 +227,17 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] DEL users ['yomama'];
 </pre></p>
 
+
+
+
 <p><h1>Dropping Column Families and Keyspaces</h1>
 <pre>
 [default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
 </pre></p>
+
+
+
 
 <p><h1>For help</h1>
 <pre>
@@ -213,19 +248,29 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@unknown] help SET;
 </pre></p>
 
+
+
+
 <p><h1>To Quit</h1>
 <pre>
 [default@unknown]quit;
 </pre></p>
+
+
+
 
 <p><h1>To Execute Script</h1>
 <pre>
 bin/cassandra-cli -host localhost -port 9160 -f script.txt
 </pre></p>
 
+
+
+
 <p><h1>参考文章</h1>
 1.<a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a>
 2.<a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/2012/04/09/getting-started-using-the-cassandra-cli.html'>JavaChen Blog</a>-

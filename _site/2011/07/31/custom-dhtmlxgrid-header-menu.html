@@ -24,10 +24,10 @@
 				<p class="describe">&lt; Dive into Java ... /&gt;</p>
 				<nav class="navigation">
 					<ul>
-						<li><a href="/">首页</a></li>
-						<li><a href="/archive.html">列表</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
 						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
-						<li><a href="/about.html">关于作者</a></li>
+						<li><a href="/about.html">About</a></li>
 						<li><a href="/atom.xml">RSS</a></li>
 					</ul>
 				</nav>
@@ -48,6 +48,8 @@
 		&emsp;&emsp;&emsp;&emsp;
 		<time date="2011-07-31 00:00:00 +0800">2011-07-31</time>
 	</div>
+
+	<h1>自定义dhtmlxGrid表头菜单</h1>
 
 	<p>dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。<br />
 以下是dhtmlxGrid的表头菜单效果：
@@ -97,6 +99,9 @@ menu.setIconsPath("../common/images/");
 menu.attachEvent("onClick", onButtonClick);
 menu.loadXML("../common/_context.xml");</pre></p>
 
+
+
+
 <p>mygrid = new dhtmlXGridObject('gridbox');<br />
 mygrid.setImagePath("../../codebase/imgs/");<br />
 mygrid.setHeader("Author,Title");<br />
@@ -110,6 +115,9 @@ mygrid.init();<br />
 mygrid.setSkin("dhx_skyblue");<br />
 mygrid.loadXML("../common/grid_links.xml");</p>
 
+
+
+
 <p>mygrid.hdr.id = "header_id";<br />
 var header_row = mygrid.hdr.rows[1];<br />
 for ( var i = 0; i &lt; header_row.cells.length; i++) {<br />
@@ -119,144 +127,193 @@ menu.addContextZone("header_id");
 上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。<br />
 剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：
 <pre lang="javascript">dhtmlxEvent(mygrid.hdr, "contextmenu", function(ev) {
-	ev = ev || event;
-	var el = ev.target || ev.srcElement;
-	var zel = el;
-	while (zel.tagName != "TABLE")
-		zel = zel.parentNode;
-	var grid = zel.grid;
-	if (!grid)
-		return;
-	grid.setActive();</pre></p>
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != "TABLE")
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();</pre></p>
 
-<p>	el = grid.getFirstParentOfType(el, "TD")</p>
 
-<p>	if ((grid) &amp;&amp; (!grid._colInMove)) {<br />
-		grid.resized = null;<br />
-		if ((!grid._mCols) || (grid._mCols[el._cellIndex] == "true"))<br />
-			colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引<br />
-	}</p>
 
-<p>	function mouseCoords(ev) {<br />
-		if (ev.pageX || ev.pageY) {<br />
-			return {<br />
-				x : ev.pageX,<br />
-				y : ev.pageY<br />
-			};<br />
-		}<br />
-		var d = _isIE &amp;&amp; document.compatMode != "BackCompat" ? <br />
+
+<p> el = grid.getFirstParentOfType(el, "TD")</p>
+
+
+
+
+<p> if ((grid) &amp;&amp; (!grid._colInMove)) {<br />
+        grid.resized = null;<br />
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == "true"))<br />
+            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引<br />
+    }</p>
+
+
+
+
+<p> function mouseCoords(ev) {<br />
+        if (ev.pageX || ev.pageY) {<br />
+            return {<br />
+                x : ev.pageX,<br />
+                y : ev.pageY<br />
+            };<br />
+        }<br />
+        var d = _isIE &amp;&amp; document.compatMode != "BackCompat" ? <br />
                     document.documentElement: document.body;<br />
-		return {<br />
-			x : ev.clientX + d.scrollLeft - d.clientLeft,<br />
-			y : ev.clientY + d.scrollTop - d.clientTop<br />
-		};<br />
-	}</p>
+        return {<br />
+            x : ev.clientX + d.scrollLeft - d.clientLeft,<br />
+            y : ev.clientY + d.scrollTop - d.clientTop<br />
+        };<br />
+    }</p>
 
-<p>	var coords = mouseCoords(ev);<br />
-	menu.addContextZone("header_id");<br />
-	menu.showContextMenu(coords.x, coords.y);//强制显示<br />
-	return true;<br />
+
+
+
+<p> var coords = mouseCoords(ev);<br />
+    menu.addContextZone("header_id");<br />
+    menu.showContextMenu(coords.x, coords.y);//强制显示<br />
+    return true;<br />
 });
 在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：
 <pre lang="javascript">function onButtonClick(menuitemId, type, e) {
-	mygrid.insertColumn(colId, "12", "ed", 80);
-	colId = 0;
-	return true;
+    mygrid.insertColumn(colId, "12", "ed", 80);
+    colId = 0;
+    return true;
 }</pre>
 然后，需要禁止掉表格数据区域的菜单显示：
 <pre lang="JavaScript">mygrid.attachEvent("onBeforeContextMenu", function(rid, cid, e) {
-	return false;//禁止数据区域菜单
+    return false;//禁止数据区域菜单
 });</pre>
 最后的最后，最后的代码如下：</p>
 
+
+
+
 <p><pre lang="javascript">
-	var mygrid, colId;</pre></p>
+    var mygrid, colId;</pre></p>
 
-<p>	function onButtonClick(menuitemId, type, e) {<br />
-		mygrid.insertColumn(colId, "12", "ed", 80);<br />
-		colId = 0;<br />
-		return true;<br />
-	}</p>
 
-<p>	menu = new dhtmlXMenuObject();<br />
-	menu.setIconsPath("../common/images/");<br />
-	menu.renderAsContextMenu();<br />
-	menu.attachEvent("onClick", onButtonClick);<br />
-	menu.loadXML("../common/_context.xml");<br />
-	menu.attachEvent("onBeforeContextMenu", function(zoneId, e) {<br />
-		var hdr = document.getElementById(zoneId)<br />
-		return true;<br />
-	});</p>
 
-<p>	mygrid = new dhtmlXGridObject('gridbox');<br />
-	mygrid.setImagePath("../codebase/imgs/");<br />
-	mygrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,<br />
+
+<p> function onButtonClick(menuitemId, type, e) {<br />
+        mygrid.insertColumn(colId, "12", "ed", 80);<br />
+        colId = 0;<br />
+        return true;<br />
+    }</p>
+
+
+
+
+<p> menu = new dhtmlXMenuObject();<br />
+    menu.setIconsPath("../common/images/");<br />
+    menu.renderAsContextMenu();<br />
+    menu.attachEvent("onClick", onButtonClick);<br />
+    menu.loadXML("../common/_context.xml");<br />
+    menu.attachEvent("onBeforeContextMenu", function(zoneId, e) {<br />
+        var hdr = document.getElementById(zoneId)<br />
+        return true;<br />
+    });</p>
+
+
+
+
+<p> mygrid = new dhtmlXGridObject('gridbox');<br />
+    mygrid.setImagePath("../codebase/imgs/");<br />
+    mygrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,<br />
               Date of Publication");<br />
-	mygrid.setInitWidths("50,150,100,80,80,80,80,200");<br />
-	mygrid.setColAlign("right,left,left,right,center,left,center,center");<br />
-	mygrid.setColTypes("dyn,edtxt,ed,price,ch,co,ra,ro");</p>
+    mygrid.setInitWidths("50,150,100,80,80,80,80,200");<br />
+    mygrid.setColAlign("right,left,left,right,center,left,center,center");<br />
+    mygrid.setColTypes("dyn,edtxt,ed,price,ch,co,ra,ro");</p>
 
-<p>	mygrid.init();<br />
-	mygrid.setSkin("dhx_skyblue");<br />
-	//mygrid.enableHeaderMenu();<br />
-	mygrid.enableColumnMove(true);<br />
-	mygrid.enableContextMenu(menu);<br />
-	dhtmlxEvent(mygrid.hdr, "contextmenu", function(ev) {<br />
-		ev = ev || event;<br />
-		var el = ev.target || ev.srcElement;<br />
-		var zel = el;<br />
-		while (zel.tagName != "TABLE")<br />
-			zel = zel.parentNode;<br />
-		var grid = zel.grid;<br />
-		if (!grid)<br />
-			return;<br />
-		grid.setActive();</p>
 
-<p>		el = grid.getFirstParentOfType(el, "TD")</p>
 
-<p>		if ((grid) &#038;& (!grid._colInMove)) {<br />
-			grid.resized = null;<br />
-			if ((!grid._mCols) || (grid._mCols[el._cellIndex] == "true"))<br />
+
+<p> mygrid.init();<br />
+    mygrid.setSkin("dhx_skyblue");<br />
+    //mygrid.enableHeaderMenu();<br />
+    mygrid.enableColumnMove(true);<br />
+    mygrid.enableContextMenu(menu);<br />
+    dhtmlxEvent(mygrid.hdr, "contextmenu", function(ev) {<br />
+        ev = ev || event;<br />
+        var el = ev.target || ev.srcElement;<br />
+        var zel = el;<br />
+        while (zel.tagName != "TABLE")<br />
+            zel = zel.parentNode;<br />
+        var grid = zel.grid;<br />
+        if (!grid)<br />
+            return;<br />
+        grid.setActive();</p>
+
+
+
+
+<p>     el = grid.getFirstParentOfType(el, "TD")</p>
+
+
+
+
+<p>     if ((grid) &#038;& (!grid._colInMove)) {<br />
+            grid.resized = null;<br />
+            if ((!grid._mCols) || (grid._mCols[el._cellIndex] == "true"))<br />
                                 //获得表头右键菜单焦点所在列索引<br />
-				colId = el._cellIndex + 1;<br />
-		}</p>
+                colId = el._cellIndex + 1;<br />
+        }</p>
 
-<p>		function mouseCoords(ev) {<br />
-			if (ev.pageX || ev.pageY) {<br />
-				return {<br />
-					x : ev.pageX,<br />
-					y : ev.pageY<br />
-				};<br />
-			}<br />
-			var d = _isIE &#038;& document.compatMode != "BackCompat" ? <br />
+
+
+
+<p>     function mouseCoords(ev) {<br />
+            if (ev.pageX || ev.pageY) {<br />
+                return {<br />
+                    x : ev.pageX,<br />
+                    y : ev.pageY<br />
+                };<br />
+            }<br />
+            var d = _isIE &#038;& document.compatMode != "BackCompat" ? <br />
                              document.documentElement: document.body;<br />
-			return {<br />
-				x : ev.clientX + d.scrollLeft - d.clientLeft,<br />
-				y : ev.clientY + d.scrollTop - d.clientTop<br />
-			};<br />
-		}</p>
+            return {<br />
+                x : ev.clientX + d.scrollLeft - d.clientLeft,<br />
+                y : ev.clientY + d.scrollTop - d.clientTop<br />
+            };<br />
+        }</p>
 
-<p>		var coords = mouseCoords(ev);<br />
-		menu.addContextZone("header_id");<br />
-		menu.showContextMenu(coords.x, coords.y);//强制显示<br />
-		return true;<br />
-	});</p>
 
-<p>	mygrid.attachEvent("onBeforeContextMenu", function(rid, cid, e) {<br />
-		return false;//禁止数据区域菜单<br />
-	});</p>
 
-<p>	mygrid.loadXML("../common/grid_ml_16_rows_columns_manipulations.xml");</p>
 
-<p>	mygrid.hdr.id = "header_id";<br />
-	var header_row = mygrid.hdr.rows[1];<br />
-	for ( var i = 0; i < header_row.cells.length; i++) {<br />
-		header_row.cells[i].id = "context_zone_" + i;<br />
-	}
+<p>     var coords = mouseCoords(ev);<br />
+        menu.addContextZone("header_id");<br />
+        menu.showContextMenu(coords.x, coords.y);//强制显示<br />
+        return true;<br />
+    });</p>
+
+
+
+
+<p> mygrid.attachEvent("onBeforeContextMenu", function(rid, cid, e) {<br />
+        return false;//禁止数据区域菜单<br />
+    });</p>
+
+
+
+
+<p> mygrid.loadXML("../common/grid_ml_16_rows_columns_manipulations.xml");</p>
+
+
+
+
+<p> mygrid.hdr.id = "header_id";<br />
+    var header_row = mygrid.hdr.rows[1];<br />
+    for ( var i = 0; i < header_row.cells.length; i++) {<br />
+        header_row.cells[i].id = "context_zone_" + i;<br />
+    }
 效果图如下;
 <div class="pic">
 <a href="http://blog.javachen.com/files/2011/07/dhtmlxgrid-custom-head-menu.jpg"><img src="http://blog.javachen.com/files/2011/07/dhtmlxgrid-custom-head-menu-300x154.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></a></div>
 </p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/2011/07/31/custom-dhtmlxgrid-header-menu.html'>JavaChen Blog</a>-

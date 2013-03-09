@@ -9,10 +9,6 @@ summary: 首先，必须先在本机安装配置git和[Ruby,Octopress需要Ruby�
 
 ---
 
-{{ page.title }}
-================
-
-{{page.summary}}
 
 ## Step1 - 在本机安装Octopress
 首先，必须先在本机安装配置[Git](http://git-scm.com/)和[Ruby](https://rvm.beginrescueend.com/rvm/install/),Octopress需要Ruby版本至少为1.9.2。你可以使用[RVM](http://rvm.beginrescueend.com/)或[rbenv](https://github.com/sstephenson/rbenv)安装ruby，安装方法见Octopress官方文档：<http://octopress.org/docs/setup/>
