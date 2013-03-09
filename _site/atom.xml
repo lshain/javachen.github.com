@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T18:40:49+08:00</updated>
+ <updated>2013-03-09T19:05:54+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -19,26 +19,26 @@
    <id>http://blog.javachen.com/2013/02/20/summary-of-the-work-in-2012</id>
    <content type="html">&lt;p&gt;2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。
 以下是2012年相对于2011年的一些变化。
-2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；
-2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；
-2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。
-2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；
-2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；
-2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；
-2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；
-2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；&lt;/p&gt;
-
-&lt;p&gt;2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；
-2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；
-2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。
-2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；
-2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；&lt;/p&gt;
+- 2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；
+- 2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；
+- 2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。
+- 2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；
+- 2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；
+- 2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；
+- 2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；
+- 2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；
+- 2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；
+- 2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；
+- 2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。
+- 2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；
+- 2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；&lt;/p&gt;
 
 &lt;p&gt;2012年参与了上海地震局JOPENS迁移、XXXX项目余票缓存所用gemfire、XXXX项目应用缓存改造、jboss datagrid测试及监控、公安实名制系统的开发及运维、XXXX项目压力测试、XXXX项目春运值班、公司CE培训等等项目，通过这些项目锻炼了自己独立解决问题的能力；熟悉了linux基本命令的操作以及shell脚本的编写；熟悉了XXXX项目互联网项目的整体运行情况、系统架构以及一些业务指示；了解到了如何编写文档、ppt和发送邮件；了解了分布式缓存、大数据的基本原理；当然发现了存在的不足：遗失了上海地震局JOPENS迁移项目的源代码；缺少项目运维、监控经验；有些工作都是自己一个人在做，其他人都没有帮上什么忙等等。
 2012年，公司也存在一些不足：上级对下级、项目经理对团队人员了解不足，不知道其工作上、生活上的内心想法以及遇到何种困难；多数情况下，团队自我要求低，积极性不高，没有生机与活力；对新人能力审核不够，对新人培养不够重视，对新人的存在感不够关注；在各个项目的人员安排及使用上、任务分配和工作计划上不合理，导致经常被动加班、熬夜等等。&lt;/p&gt;
 
-&lt;p&gt;2013年工作计划：
-1.通过CE考试，熟练掌握shell编程；
+&lt;h3&gt;2013年工作计划：&lt;/h3&gt;
+
+&lt;p&gt;1.通过CE考试，熟练掌握shell编程；
 2.做好项目管理者的角色，培养新人，提高团队人员编码、处理问题的能力；
 3.深入理解、学习cassandra源码、原理以及cassandra的运维；
 4.学习hadoop的安装、部署、原理、开发及运维，掌握kettle和nosql的集成，希望积累几个hadoop项目经验；
@@ -546,8 +546,8 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 
 
 &lt;p&gt;&lt;h1&gt;参考文章&lt;/h1&gt;
-* &lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;
-* &lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;
+- &lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;
+- &lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;
 
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
  </entry>
@@ -809,7 +809,10 @@ $ java -jar start.jar &amp;
 &lt;h1&gt;参考文章&lt;/h1&gt;
 
 
-&lt;p&gt;1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
  </entry>
  
@@ -1170,10 +1173,10 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 
 
 &lt;p&gt;&lt;strong&gt;扩展阅读:&lt;/strong&gt;
-* Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&lt;/a&gt;
-* pentaho-big-data-plugin ci
-&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;http://* * ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&lt;/a&gt;
-* Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/p&gt;
+- Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&lt;/a&gt;
+- pentaho-big-data-plugin ci
+&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&lt;/a&gt;
+- Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></content>
  </entry>
  
@@ -1205,27 +1208,27 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 
 &lt;p&gt;&lt;strong&gt;第二步&lt;/strong&gt;，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。
-* 1.添加命名空间
-* 2.从“/WEB-INF/components.xml”加载组件
-* 3.从“/WEB-INF/events.xml”加载组件
-* 4.从“META-INF/components.xml”加载组件
-* 5.从ServletContext初始化Properties
-* 6.从“/seam.properties”初始化Properties
-* 7.初始化jndi Properties
-* 8.从system加载Properties&lt;/p&gt;
+- 1.添加命名空间
+- 2.从“/WEB-INF/components.xml”加载组件
+- 3.从“/WEB-INF/events.xml”加载组件
+- 4.从“META-INF/components.xml”加载组件
+- 5.从ServletContext初始化Properties
+- 6.从“/seam.properties”初始化Properties
+- 7.初始化jndi Properties
+- 8.从system加载Properties&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;第三步&lt;/strong&gt;，seam初始化过程（Initialization的init方法）。
-* 1.ServletLifecycle开始初始化
-* 2.设置Application上下文
-* 3.添加Init组件
-* 4.通过standardDeploymentStrategy的注解和xml组件扫描组件
-* 5.判断jbpm是否安装
-* 6.检查默认拦截器
-* 7.添加特别组件
-* 8.添加war root部署、热部署
-* 9.安装组件
-* 10.导入命名空间
-* 11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/p&gt;
+- 1.ServletLifecycle开始初始化
+- 2.设置Application上下文
+- 3.添加Init组件
+- 4.通过standardDeploymentStrategy的注解和xml组件扫描组件
+- 5.判断jbpm是否安装
+- 6.检查默认拦截器
+- 7.添加特别组件
+- 8.添加war root部署、热部署
+- 9.安装组件
+- 10.导入命名空间
+- 11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/p&gt;
 
 &lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></content>
@@ -1273,34 +1276,34 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 
 
 &lt;p&gt;runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
-* local：是否本地运行
-* remote：是否远程运行
-* cluster：是否集群环境运行
-* preview：是否预览
-* debug：是否调试
-* replayDate：回放时间
-* safe：是否安全模式&lt;/p&gt;
+- local：是否本地运行
+- remote：是否远程运行
+- cluster：是否集群环境运行
+- preview：是否预览
+- debug：是否调试
+- replayDate：回放时间
+- safe：是否安全模式&lt;/p&gt;
 
 &lt;p&gt;executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。&lt;/p&gt;
 
 &lt;p&gt;executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。&lt;/p&gt;
 
 &lt;p&gt;SpoonJobDelegate的executeJob方法主要完成以下操作：
-* 1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。
-* 2.获得当前Job对应的图形类JobGraph。
-* 3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。
-* 4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。&lt;/p&gt;
+- 1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。
+- 2.获得当前Job对应的图形类JobGraph。
+- 3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。
+- 4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。&lt;/p&gt;
 
 &lt;p&gt;JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。&lt;/p&gt;
 
 &lt;p&gt;本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。&lt;/p&gt;
 
 &lt;p&gt;JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：
-* 1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。
-* 2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。
-* 3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。
-* 4.Job对象添加JobEntry监听器、Job监听器。
-* 5.调用Job的start方法，启动线程开始执行一个job。&lt;/p&gt;
+- 1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。
+- 2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。
+- 3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。
+- 4.Job对象添加JobEntry监听器、Job监听器。
+- 5.调用Job的start方法，启动线程开始执行一个job。&lt;/p&gt;
 
 &lt;p&gt;Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>

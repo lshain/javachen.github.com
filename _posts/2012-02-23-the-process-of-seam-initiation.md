@@ -27,27 +27,27 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 
 <strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。
-* 1.添加命名空间
-* 2.从“/WEB-INF/components.xml”加载组件
-* 3.从“/WEB-INF/events.xml”加载组件
-* 4.从“META-INF/components.xml”加载组件
-* 5.从ServletContext初始化Properties
-* 6.从“/seam.properties”初始化Properties
-* 7.初始化jndi Properties
-* 8.从system加载Properties
+- 1.添加命名空间
+- 2.从“/WEB-INF/components.xml”加载组件
+- 3.从“/WEB-INF/events.xml”加载组件
+- 4.从“META-INF/components.xml”加载组件
+- 5.从ServletContext初始化Properties
+- 6.从“/seam.properties”初始化Properties
+- 7.初始化jndi Properties
+- 8.从system加载Properties
 
 <strong>第三步</strong>，seam初始化过程（Initialization的init方法）。
-* 1.ServletLifecycle开始初始化
-* 2.设置Application上下文
-* 3.添加Init组件
-* 4.通过standardDeploymentStrategy的注解和xml组件扫描组件
-* 5.判断jbpm是否安装
-* 6.检查默认拦截器
-* 7.添加特别组件
-* 8.添加war root部署、热部署
-* 9.安装组件
-* 10.导入命名空间
-* 11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。
+- 1.ServletLifecycle开始初始化
+- 2.设置Application上下文
+- 3.添加Init组件
+- 4.通过standardDeploymentStrategy的注解和xml组件扫描组件
+- 5.判断jbpm是否安装
+- 6.检查默认拦截器
+- 7.添加特别组件
+- 8.添加war root部署、热部署
+- 9.安装组件
+- 10.导入命名空间
+- 11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。
 
 如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。
 
