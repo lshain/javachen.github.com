@@ -17,17 +17,17 @@ summary: 主要记录安装hadoop集群过程。
       * 设置每一个虚拟机的网络为Host-Only
       * 分别修改每个虚拟机的ip，DHCP或手动设置
 	
-     vim etc/sysconfig/network-scripts/ifcfg-eth0
-     vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
-     start_udev
+		vim etc/sysconfig/network-scripts/ifcfg-eth0
+		vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
+		start_udev
 
       * 修改主机名
-     vim /etc/sysconfig/network
+		vim /etc/sysconfig/network
       * 每个虚拟机中修改hosts：
 
-	   192.168.56.100 rhel-june
-	   192.168.56.101 rhel-june-1
-	   192.168.56.102 rhel-june-2
+		192.168.56.100 rhel-june
+		192.168.56.101 rhel-june-1
+		192.168.56.102 rhel-june-2
 
 最后机器列表为：
 

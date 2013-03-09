@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T21:06:41+08:00</updated>
+ <updated>2013-03-09T21:10:15+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -27,24 +27,20 @@
 
 &lt;ul&gt;
 &lt;li&gt;设置每一个虚拟机的网络为Host-Only&lt;/li&gt;
-&lt;li&gt;分别修改每个虚拟机的ip，DHCP或手动设置&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;分别修改每个虚拟机的ip，DHCP或手动设置&lt;/p&gt;
+
+&lt;p&gt;vim etc/sysconfig/network-scripts/ifcfg-eth0
+vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
+start_udev&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;修改主机名
+vim /etc/sysconfig/network&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;每个虚拟机中修改hosts：&lt;/p&gt;
+
+&lt;p&gt;192.168.56.100 rhel-june
+192.168.56.101 rhel-june-1
+192.168.56.102 rhel-june-2&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-
-&lt;p&gt; vim etc/sysconfig/network-scripts/ifcfg-eth0
- vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
- start_udev&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;修改主机名
-vim /etc/sysconfig/network&lt;/li&gt;
-&lt;li&gt;每个虚拟机中修改hosts：&lt;/li&gt;
-&lt;/ul&gt;
-
-
-&lt;p&gt;   192.168.56.100 rhel-june
-   192.168.56.101 rhel-june-1
-   192.168.56.102 rhel-june-2&lt;/p&gt;&lt;/li&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 
 
