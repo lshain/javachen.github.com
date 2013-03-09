@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T21:10:15+08:00</updated>
+ <updated>2013-03-09T21:11:15+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -15,7 +15,7 @@
  <entry>
    <title>【笔记】Hadoop安装部署</title>
    <link href="http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html"/>
-   <updated>2013-03-08T14:00:00+08:00</updated>
+   <updated>2013-03-08T21:00:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster</id>
    <content type="html">&lt;p&gt;﻿﻿### 安装虚拟机
    VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份&lt;/p&gt;
