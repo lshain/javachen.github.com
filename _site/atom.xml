@@ -4,13 +4,49 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T18:26:19+08:00</updated>
+ <updated>2013-03-09T18:40:49+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
    <email>june.chan@foxmail.com</email>
  </author>
  
+ 
+ <entry>
+   <title>2012年度总结</title>
+   <link href="http://blog.javachen.com/2013/02/20/summary-of-the-work-in-2012.html"/>
+   <updated>2013-02-20T14:00:00+08:00</updated>
+   <id>http://blog.javachen.com/2013/02/20/summary-of-the-work-in-2012</id>
+   <content type="html">&lt;p&gt;2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。
+以下是2012年相对于2011年的一些变化。
+2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；
+2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；
+2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。
+2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；
+2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；
+2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；
+2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；
+2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；&lt;/p&gt;
+
+&lt;p&gt;2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；
+2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；
+2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。
+2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；
+2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；&lt;/p&gt;
+
+&lt;p&gt;2012年参与了上海地震局JOPENS迁移、XXXX项目余票缓存所用gemfire、XXXX项目应用缓存改造、jboss datagrid测试及监控、公安实名制系统的开发及运维、XXXX项目压力测试、XXXX项目春运值班、公司CE培训等等项目，通过这些项目锻炼了自己独立解决问题的能力；熟悉了linux基本命令的操作以及shell脚本的编写；熟悉了XXXX项目互联网项目的整体运行情况、系统架构以及一些业务指示；了解到了如何编写文档、ppt和发送邮件；了解了分布式缓存、大数据的基本原理；当然发现了存在的不足：遗失了上海地震局JOPENS迁移项目的源代码；缺少项目运维、监控经验；有些工作都是自己一个人在做，其他人都没有帮上什么忙等等。
+2012年，公司也存在一些不足：上级对下级、项目经理对团队人员了解不足，不知道其工作上、生活上的内心想法以及遇到何种困难；多数情况下，团队自我要求低，积极性不高，没有生机与活力；对新人能力审核不够，对新人培养不够重视，对新人的存在感不够关注；在各个项目的人员安排及使用上、任务分配和工作计划上不合理，导致经常被动加班、熬夜等等。&lt;/p&gt;
+
+&lt;p&gt;2013年工作计划：
+1.通过CE考试，熟练掌握shell编程；
+2.做好项目管理者的角色，培养新人，提高团队人员编码、处理问题的能力；
+3.深入理解、学习cassandra源码、原理以及cassandra的运维；
+4.学习hadoop的安装、部署、原理、开发及运维，掌握kettle和nosql的集成，希望积累几个hadoop项目经验；
+5.学习分布式缓存理论知识，阅读源代码，完善缓存系统的监控及运维&lt;/p&gt;
+
+&lt;p&gt;在经历了2011年和2012年之后，2013年希望自己能够专注细节，深入理解，在技术、管理、交际方面有所成长；希望公司能够重视对团队的培养，能够规范各种规章制度，能够更上一层楼！&lt;/p&gt;
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2013/02/20/summary-of-the-work-in-2012.html'>2012年度总结</a></content>
+ </entry>
  
  <entry>
    <title>使用Octopress将博客从wordpress迁移到GitHub上</title>
@@ -203,11 +239,11 @@ rake deploy
 &lt;h2&gt;参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;Octopress Setup&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://octopress.org/docs/deploying/&quot;&gt;Octopress Deploying&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&quot;&gt;Blog = GitHub + Octopress&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&quot;&gt;从Wordpress迁移到Octopress&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://log4d.com/2012/05/image-host/%20http://log4d.com/2012/05/image-host/&quot;&gt;使用独立图床子域名&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Octopress Setup： http://octopress.org/docs/setup/&lt;/li&gt;
+&lt;li&gt;Octopress Deploying：http://octopress.org/docs/deploying/&lt;/li&gt;
+&lt;li&gt;Blog = GitHub + Octopress：http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&lt;/li&gt;
+&lt;li&gt;从Wordpress迁移到Octopress：http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&lt;/li&gt;
+&lt;li&gt;使用独立图床子域名：http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/&lt;/li&gt;
 &lt;/ul&gt;
 
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html'>使用Octopress将博客从wordpress迁移到GitHub上</a></content>
@@ -1745,61 +1781,6 @@ if (!Const.isEmpty(pksql)) {
 &lt;strong&gt;解决办法：&lt;/strong&gt;从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下&lt;/p&gt;
 
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html'>kettle进行数据迁移遇到的问题</a></content>
- </entry>
- 
- <entry>
-   <title>Mondrian and OLAP</title>
-   <link href="http://blog.javachen.com/2011/12/07/mondrian-and-olap.html"/>
-   <updated>2011-12-07T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2011/12/07/mondrian-and-olap</id>
-   <content type="html">&lt;p&gt;Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。&lt;/p&gt;
-
-
-
-
-&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;Online Analytical Processing&lt;/span&gt;&lt;/strong&gt;
-联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-&lt;wbr&gt;Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。&lt;/wbr&gt;&lt;/p&gt;
-
-
-
-
-&lt;p&gt;OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：&lt;/p&gt;
-
-
-
-
-&lt;p&gt;&lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217.jpg&quot;&gt;&lt;img class=&quot;size-medium wp-image-2469 aligncenter&quot; title=&quot;olap_examples20111217&quot; src=&quot;http://www.javachen.com/wp-content/uploads/2011/12/olap_examples20111217-300x129.jpg&quot; alt=&quot;olap多维视图&quot; width=&quot;300&quot; height=&quot;129&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-
-
-
-&lt;p&gt;行轴包括&quot;All products&quot;, &quot;Books&quot;,&quot;Fiction&quot;等等，并且列轴包括生产年份&quot;2000&quot;”和&quot;2001&quot;、&quot;Growth&quot;的计算值以及&quot;Unit sales&quot;和&quot;Dollar sales&quot;的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。&lt;/p&gt;
-
-
-
-
-&lt;p&gt;这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在&quot;2000&quot;和&quot;2001&quot;一行，&quot;Growth&quot;是一个计算出来的值，它引入一个公式从其他列计算当前列的值。&lt;/p&gt;
-
-
-
-
-&lt;p&gt;该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。&lt;/p&gt;
-
-
-
-
-&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;结论&lt;/span&gt;&lt;/strong&gt;
-我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。&lt;br /&gt;
-现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php&lt;/p&gt;
-
-
-
-
-&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;说明&lt;/span&gt;&lt;/strong&gt;
-&lt;div class=&quot;note&quot;&gt;
-这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。&lt;/div&gt;&lt;/p&gt;
-
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/2011/12/07/mondrian-and-olap.html'>Mondrian and OLAP</a></content>
  </entry>
  
  

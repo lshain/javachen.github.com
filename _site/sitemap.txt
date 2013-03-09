@@ -15,6 +15,8 @@
 
 
 
+/2013/02/20/summary-of-the-work-in-2012.html
+
 /2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html
 
 /2012/04/13/kettle-dependency-management.html
