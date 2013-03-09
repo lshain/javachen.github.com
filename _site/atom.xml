@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-09T21:11:15+08:00</updated>
+ <updated>2013-03-09T21:16:15+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -17,36 +17,38 @@
    <link href="http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html"/>
    <updated>2013-03-08T21:00:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster</id>
-   <content type="html">&lt;p&gt;﻿﻿### 安装虚拟机
-   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份&lt;/p&gt;
+   <content type="html">&lt;h3&gt;安装虚拟机&lt;/h3&gt;
 
-&lt;p&gt;﻿﻿### 配置网络&lt;/p&gt;
+&lt;p&gt;   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt; VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi
+&lt;h3&gt;配置网络&lt;/h3&gt;
 
-&lt;ul&gt;
-&lt;li&gt;设置每一个虚拟机的网络为Host-Only&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;分别修改每个虚拟机的ip，DHCP或手动设置&lt;/p&gt;
+&lt;p&gt;a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi&lt;/p&gt;
 
-&lt;p&gt;vim etc/sysconfig/network-scripts/ifcfg-eth0
-vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
-start_udev&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;修改主机名
-vim /etc/sysconfig/network&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;每个虚拟机中修改hosts：&lt;/p&gt;
+&lt;p&gt;b. 设置每一个虚拟机的网络为Host-Only&lt;/p&gt;
 
-&lt;p&gt;192.168.56.100 rhel-june
-192.168.56.101 rhel-june-1
-192.168.56.102 rhel-june-2&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;c.分别修改每个虚拟机的ip，DHCP或手动设置&lt;/p&gt;
 
+&lt;pre&gt;&lt;code&gt;    vim etc/sysconfig/network-scripts/ifcfg-eth0
+    vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+    start_udev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;d.修改主机名&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    vim /etc/sysconfig/network
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;e.每个虚拟机中修改hosts：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    192.168.56.100 rhel-june
+    192.168.56.101 rhel-june-1
+    192.168.56.102 rhel-june-2
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;最后机器列表为：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    rhel-june:    192.168.56.100
+&lt;pre&gt;&lt;code&gt;    rhel-june:   192.168.56.100
     rhel-june-1: 192.168.56.101
     rhel-june-2: 192.168.56.102
 &lt;/code&gt;&lt;/pre&gt;

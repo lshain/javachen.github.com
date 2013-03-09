@@ -53,36 +53,38 @@
 
 	<h1>【笔记】Hadoop安装部署</h1>
 
-	<p>﻿﻿### 安装虚拟机
-   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
+	<h3>安装虚拟机</h3>
 
-<p>﻿﻿### 配置网络</p>
+<p>   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
 
-<ul>
-<li> VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi
+<h3>配置网络</h3>
 
-<ul>
-<li>设置每一个虚拟机的网络为Host-Only</li>
-<li><p>分别修改每个虚拟机的ip，DHCP或手动设置</p>
+<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi</p>
 
-<p>vim etc/sysconfig/network-scripts/ifcfg-eth0
-vim /etc/udev/rules.d/70-persistent-net.rules  //删掉第一个，修改第二个名字为eth0
-start_udev</p></li>
-<li><p>修改主机名
-vim /etc/sysconfig/network</p></li>
-<li><p>每个虚拟机中修改hosts：</p>
+<p>b. 设置每一个虚拟机的网络为Host-Only</p>
 
-<p>192.168.56.100 rhel-june
-192.168.56.101 rhel-june-1
-192.168.56.102 rhel-june-2</p></li>
-</ul>
-</li>
-</ul>
+<p>c.分别修改每个虚拟机的ip，DHCP或手动设置</p>
 
+<pre><code>    vim etc/sysconfig/network-scripts/ifcfg-eth0
+    vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+    start_udev
+</code></pre>
+
+<p>d.修改主机名</p>
+
+<pre><code>    vim /etc/sysconfig/network
+</code></pre>
+
+<p>e.每个虚拟机中修改hosts：</p>
+
+<pre><code>    192.168.56.100 rhel-june
+    192.168.56.101 rhel-june-1
+    192.168.56.102 rhel-june-2
+</code></pre>
 
 <p>最后机器列表为：</p>
 
-<pre><code>    rhel-june:    192.168.56.100
+<pre><code>    rhel-june:   192.168.56.100
     rhel-june-1: 192.168.56.101
     rhel-june-2: 192.168.56.102
 </code></pre>
