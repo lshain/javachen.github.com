@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    	<link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    	<link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/favicon.ico"/>
+		<meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
+		<meta name="description" content="javachen" />
+
+		<meta property="wb:webmaster" content="61eb31a6e636506d" />
+    	<meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    	<meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+		<title>使用DataStax Community Edition安装Cassandra单节点</title>
+		
+		<link rel="stylesheet" href="/css/main.css" />
+		<link rel="stylesheet" href="/css/pygments_native.css" />
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+	</head>
+	<body>
+		<header id="header">
+			<div class="header-info fix">
+				<h1><a href="/">JavaChen Blog</a></h1>
+				<p class="describe">&lt; Dive into Java ... /&gt;</p>
+				<nav class="navigation">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
+						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
+						<li><a href="/about.html">About</a></li>
+						<li><a href="/atom.xml">RSS</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header><!--/header end-->
+
+		<section id="content" class="fix">
+			<article id="post">
+	<a href="#" class="icon-fullscreen r" title="点击全屏显示"></a>
+	<div class="c9">
+		Categories：
+			
+			<a href="/category.html#Cassandra">Cassandra</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Tages：cassandra, DataStax
+		&emsp;&emsp;&emsp;&emsp;
+		Time：<time date="2012-04-06 00:00:00 +0800">2012-04-06 00:04</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+
+	<h1>使用DataStax Community Edition安装Cassandra单节点</h1>
+
+	<p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
+
+<h1>检查java环境</h1>
+
+
+<p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.</p>
+
+<h3>1.检查是否安装java:</h3>
+
+
+<pre>
+# java -version
+</pre>
+
+
+<p>如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.</p>
+
+<h3>2.安装jdk</h3>
+
+
+<p>下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:</p>
+
+<pre>
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+</pre>
+
+
+<!--more-->
+
+
+<p>2）解压执行RPM文件,例如:</p>
+
+<pre>
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+</pre>
+
+
+<p>这样JRE会安装在/usr/java/
+3）配置Oracle JRE取代OpenJDK JRE
+可以使用alternatives命令添加一个链接到Oracle JRE.</p>
+
+<pre>
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+</pre>
+
+
+<p>4）确认是否安装JRE</p>
+
+<pre>
+$ java -version
+  java version "1.6.0_25"
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+</pre>
+
+
+<p>如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:</p>
+
+<pre>
+$ sudo alternatives --config java
+There are 2 programs which provide 'java'.
+
+Selection      Command
+-----------------------------------------------
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+</pre>
+
+
+
+
+<h1>在Linux系统上安装DataStax Community二进制文件</h1>
+
+
+<h3>1.在用户目录创建一个目录,如datas</h3>
+
+
+<pre>
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+</pre>
+
+
+<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
+
+
+<pre>
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+</pre>
+
+
+<h3>3.解压</h3>
+
+
+<pre>
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+</pre>
+
+
+<h3>4.设置环境变量</h3>
+
+
+<p>1)编辑 .bashrc</p>
+
+<pre>
+ vi $HOME/.bashrc
+</pre>
+
+
+<p>2)添加以下代码</p>
+
+<pre>
+export CASSANDRA_HOME=$HOME/datas/dsc_package_name
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
+export OPSC_HOME=$HOME/datas/opscenter_package_name
+export PATH="$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin"
+</pre>
+
+
+<p>注意替换<font color="red">dsc_package_name</font>和<font color="red">opscenter_package_name</font>
+3)保存退出
+4)使该文件生效</p>
+
+<pre>
+source $HOME/.bashrc
+</pre>
+
+
+<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
+
+
+<pre>
+$ mkdir $HOME/datas/cassandra-data
+</pre>
+
+
+
+
+<h1>配置并启动单节点</h1>
+
+
+<h3>1.编辑配置环境</h3>
+
+
+<p>修改$CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<pre>
+$ sed -i -e "s,initial_token:,initial_token: 0," \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+
+$ sed -i -e "s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data," \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+
+$ sed -i -e "s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches," \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+
+$ sed -i -e "s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
+  $HOME/datastax/cassandra-data/commitlog," $CASSANDRA_HOME/conf/cassandra.yaml
+</pre>
+
+
+
+
+<h3>2.设置日志文件位置</h3>
+
+
+<p>
+修改：$CASSANDRA_HOME/conf/log4j-server.properties</p>
+
+<pre>
+$ sed -i -e "s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log," \
+  $CASSANDRA_HOME/conf/log4j-server.properties
+</pre>
+
+
+<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
+
+
+<pre>
+$ sed -i -e "s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>," \
+  $DSCDEMO_HOME/bin/pricer
+</dsc_package_name>
+</pre>
+
+
+
+
+<h3>4.后台启动Cassandra</h3>
+
+
+<pre>
+$ cassandra
+</pre>
+
+
+<h3>5.检查cassandra环是否在运行</h3>
+
+
+<pre>
+$ nodetool ring -h localhost
+</pre>
+
+
+<h3>6.运行Portfolio Demo示例程序</h3>
+
+
+<p>1)进入Portfolio目录</p>
+
+<pre>
+$ cd $DSCDEMO_HOME
+</pre>
+
+
+<p>2)运行 ./bin/pricer工具生成数据</p>
+
+<pre>
+./bin/pricer --help
+</pre>
+
+
+<p>下面代码生成100天的历史数据</p>
+
+<pre>
+./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+</pre>
+
+
+<p>3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)</p>
+
+<pre>
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &
+</pre>
+
+
+<p>4)浏览程序 http://localhost:8983/portfolio</p>
+
+<h1>参考文章</h1>
+
+
+<ul>
+<li>1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></li>
+</ul>
+
+
+
+	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>JavaChen Blog</a>-
+		<br/>
+		<br/>
+		<!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style_32x32">
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_tqq"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_twitter"></a>
+		<a class="jiathis_button_fb"></a>
+		<a class="jiathis_button_googleplus"></a>
+		<a class="jiathis_button_translate"></a>
+		<a class="jiathis_button_delicious"></a>
+		<a class="jiathis_button_sdonote"></a>
+		<a class="jiathis_button_ydnote"></a>
+		<a class="jiathis_button_qingbiji"></a>
+		<a class="jiathis_button_fav"></a>
+		<a class="jiathis_button_ishare"></a>
+		<a class="jiathis_button_copy"></a>
+		<a class="jiathis_button_email"></a>
+		<a class="jiathis_button_print"></a>
+		<a class="jiathis_button_printfriendly"></a>
+		<a class="jiathis_button_pdfonline"></a>
+		<a href="http://www.jiathis.com/share?uid=1709061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+		<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript" >
+		var jiathis_config={
+			data_track_clickback:true,
+			summary:"",
+			hideMore:false
+		}
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1709061" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+
+
+
+		<!-- UJian Button BEGIN -->
+		<div class="ujian-hook"></div>
+		<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1709061"></script>
+		<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+		<!-- UJian Button END -->
+	</div>
+	
+	<hr/>
+	<div class="page fix">
+		
+		<span class="prev"><a href="/Java/2012/03/26/hash-and-hash-functions.html">← 哈希表</a></span>
+		
+		
+		<span class="next"><a href="/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html">Getting Started Using the Cassandra CLI →</a></span>
+		
+	</div>
+	<hr/>
+</article>
+
+<div id="comment">
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</div>
+
+<script src="/js/jquery-min.js"></script>
+<script src="/js/Fullscreen.js"></script>
+<script type="text/javascript">
+$(function() {
+	// =============== 全屏显示 ==================
+	(function() {
+		var icon = $( 'a.icon-fullscreen' ),
+			fs, fsCallback;
+		
+		fsCallback = function(isFullscreen) {
+				if (isFullscreen) {
+					icon.addClass('expand').attr('title', 'ESC 退出全屏');
+				}
+				else {
+					icon.removeClass('expand').attr('title', '点击全屏显示');
+				}
+			};
+			
+		fs = new Fullscreen({
+				element: $('#post'),
+				noSafari: true,
+				callback: fsCallback
+			});
+
+		if (fs.fullscreenEnabled) {
+			icon.on('click', function() {
+				fs.toggleFullscreen();
+				return false;
+			});
+		}
+		else {
+			icon.hide();
+		}
+	})();
+
+
+	// ============== 目录提取 ===============
+	(function() {
+		// 设置无目录时，不显示
+		if (!parseInt('', 10)) {
+			return;
+		}
+
+		var dom = $('<fieldset id="catalogue"><legend>目录</legend></fieldset>'),
+			count = 0;
+		
+		$('#post').find('h2,h3,h4,h5').each(function() {
+			var name = 'catalogue_' + count++;
+			dom.append('<div class="txt_' + this.tagName + '">' +
+				'<a href="#' + name + '">' +
+					this.innerHTML +
+				'</a></div>');
+			this.id = name;
+		});
+
+		dom.appendTo('body');
+	})();
+});
+</script>
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+<!-- UJian Button END -->
+
+
+		</section><!--/content end-->
+
+		<footer id="footer">
+			<p class="l">
+				&copy; 2013 <a href="http://blog.javachen.com">JavaChen</a>. | Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://pages.github.com/">GitHub Pages</a>
+			</p>
+			<!--Templates from <a href='https://github.com/calefy/calefy.github.com' target='_blank'>calefy</a>.-->
+			<p class="r">
+				<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+			</p>
+			<p class="tac">
+				<small>『纸上得来终觉浅，绝知此事要躬行』</small>
+			</p>
+		</footer><!--/footer end-->
+
+
+
+	</body>
+</html>

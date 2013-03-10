@@ -1,0 +1,85 @@
+
+	/about.html
+
+	/index.html
+
+	/archive.html
+
+	/404.html
+
+	/atom.xml
+
+	/category.html
+
+	/sitemap.txt
+
+
+
+	/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html
+
+	/Work/2013/02/20/summary-of-the-work-in-2012.html
+
+	/Github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html
+
+	/Kettle/2012/04/13/kettle-dependency-management.html
+
+	/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html
+
+	/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html
+
+	/Java/2012/03/26/hash-and-hash-functions.html
+
+	/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html
+
+	/Seam/2012/02/23/the-process-of-seam-initiation.html
+
+	/Kettle/2012/02/22/the-init-process-before-job-execution.html
+
+	/Kettle/2012/02/21/the-execution-process-of-kettles-job.html
+
+	/Kettle/2012/02/17/step-error-handling-in-kettle.html
+
+	/JSF/2012/02/14/this-expression-of-jsf-el.html
+
+	/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html
+
+	/Kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html
+
+	/Pentaho/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html
+
+	/Pentaho/2011/12/07/mondrian-and-olap.html
+
+	/Web/2011/11/25/xml-user-interface-language-introuction.html
+
+	/Pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html
+
+	/Pentaho/2011/09/26/resolved-pentaho-problems-9-16.html
+
+	/CloudComputing/2011/08/20/install-eucalyptus-on-fedora-15.html
+
+	/JavaScript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html
+
+	/JavaScript/2011/07/31/custom-dhtmlxgrid-header-menu.html
+
+	/JavaScript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column.html
+
+	/JavaScript/2011/07/19/dhtmlxgrid-quick-start-guide.html
+
+	/CloudComputing/2011/07/07/some-resources-about-openstack.html
+
+	/CloudComputing/2011/07/07/openstack-architecture-overview.html
+
+	/CloudComputing/2011/07/06/opennebula-architecture.html
+
+	/CloudComputing/2011/06/29/install-opennebula-management-console-in-centos5-6.html
+
+	/CloudComputing/2011/06/26/opennebula-2-2-features.html
+
+	/CloudComputing/2011/06/22/the-technology-used-in-eucalyptus.html
+
+	/CloudComputing/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions.html
+
+	/CloudComputing/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus.html
+
+	/JavaScript/2009/10/22/ext_readxml_in_bjsasc_wuzi.html
+
