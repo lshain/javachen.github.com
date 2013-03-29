@@ -164,6 +164,7 @@ desktop2
 ```
 
 4. slaves
+
 ```
 [root@desktop1 hadoop]# cat slaves 
 desktop3
@@ -315,16 +316,19 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 ```
 
 在desktop1上启动hdfs：
+
 ```
 [root@desktop1 hadoop]#start-dfs.sh
 ```
 
 在desktop1上启动mapreduce：
+
 ```
 [root@desktop1 hadoop]#start-yarn.sh
 ```
 
 在desktop1上启动historyserver：
+
 ```
 [root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
 ```
