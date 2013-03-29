@@ -208,17 +208,15 @@ desktop1
 desktop2
 </code></pre></div>
 <ol>
-<li>slaves
-<code>
-[root@desktop1 hadoop]# cat slaves 
+<li>slaves</li>
+</ol>
+<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat slaves 
 desktop3
 desktop4
 desktop6
 desktop7
 desktop8
-</code></li>
-</ol>
-
+</code></pre></div>
 <h4 id="toc_8">配置MapReduce</h4>
 
 <ol>
@@ -352,21 +350,15 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 <p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]hadoop namenode -format
 </code></pre></div>
-<p>在desktop1上启动hdfs：
-<code>
-[root@desktop1 hadoop]#start-dfs.sh
-</code></p>
-
-<p>在desktop1上启动mapreduce：
-<code>
-[root@desktop1 hadoop]#start-yarn.sh
-</code></p>
-
-<p>在desktop1上启动historyserver：
-<code>
-[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
-</code></p>
-
+<p>在desktop1上启动hdfs：</p>
+<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]#start-dfs.sh
+</code></pre></div>
+<p>在desktop1上启动mapreduce：</p>
+<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]#start-yarn.sh
+</code></pre></div>
+<p>在desktop1上启动historyserver：</p>
+<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
+</code></pre></div>
 <p>查看MapReduce：</p>
 <div class="highlight"><pre><code class="text">http://desktop1:8088/cluster
 </code></pre></div>

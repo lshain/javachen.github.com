@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T16:09:41+08:00</updated>
+ <updated>2013-03-29T16:12:58+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -172,17 +172,15 @@ desktop1
 desktop2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;slaves
-&lt;code&gt;
-[root@desktop1 hadoop]# cat slaves 
+&lt;li&gt;slaves&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat slaves 
 desktop3
 desktop4
 desktop6
 desktop7
 desktop8
-&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h4 id=&quot;toc_8&quot;&gt;配置MapReduce&lt;/h4&gt;
 
 &lt;ol&gt;
@@ -316,21 +314,15 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 &lt;p&gt;第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]hadoop namenode -format
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在desktop1上启动hdfs：
-&lt;code&gt;
-[root@desktop1 hadoop]#start-dfs.sh
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;在desktop1上启动mapreduce：
-&lt;code&gt;
-[root@desktop1 hadoop]#start-yarn.sh
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;在desktop1上启动historyserver：
-&lt;code&gt;
-[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;p&gt;在desktop1上启动hdfs：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]#start-dfs.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在desktop1上启动mapreduce：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]#start-yarn.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在desktop1上启动historyserver：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;查看MapReduce：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;http://desktop1:8088/cluster
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
