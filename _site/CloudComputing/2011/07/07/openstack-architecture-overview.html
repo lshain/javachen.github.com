@@ -73,12 +73,10 @@ OpenStack当前包括三个子项目，三个项目相会独立，可以单独�
 3. 允许开发商和开发人员启动、监控、停止虚拟机实例。<br />
 4. 允许操作人员配置和操作云基础设施。<!--more--></p>
 
-
-
-
 <p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
-在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
+
+<p>在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
 表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
 逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
 集成功能，大多数服务提供商已经有一个客户的身份和计费系统。任何云架构将需要与这些系统集成。<br />
@@ -94,73 +92,42 @@ OpenStack中还包含两个组件：消息队列服务和数据库。这两个�
  终端用户通过nova-api 接口与Openstack 计算交互。<br />
  OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
  OpenStack Glance是一个完全独立的基础上设施。
-<strong>各个组件的介绍：</strong></p>
-
-
-
+<strong>各个组件的介绍：</strong></p></p>
 
 <p><code><strong>nova-api</strong></code><code>：</code>是对外的接口。OpenStack 云计算的核心控制器（CloudController定义在trunk/nova/api/ec2/cloud.py）。它提供了一个为所有的API查询（OpenStack API或EC2 API）的端点，引发多数业务流程的活动（如运行一个实例），并实施一些政策（主要是配额检查）。</p>
 
-
-
-
 <p><code><strong>nova-schedule</strong></code><code><strong>：</strong></code>根据当前资源使用情况，决定计算节点分布到哪台计算节点上。目前实现很薄，目前已支持插件方式扩展，方便后面可能有采用更复杂算法。</p>
-
-
-
 
 <p><code><strong>nova-compute</strong></code><code><strong>：</strong></code>接收队列中的动作，然后执行一系列的系统命令（如启动KVM实例），同时更新数据库中的状态。</p>
 
-
-
-
 <p><code><strong>nova-volume</strong></code><code><strong>：</strong></code>给虚拟机分配额外持久化的存储，管理持久卷到计算实例的创建，连接和分离。</p>
-
-
-
 
 <p><code><strong>nova-network</strong></code><code><strong>：</strong></code>网络管理，给虚拟机分配网络和管理，使外部 PC 可以可直接访问。它接受队列中的网络任务，然后执行任务操纵网络（如设立桥接接口或更改iptables规则）。</p>
 
-
-
-
 <p><code><strong>queue</strong></code><code><strong>：</strong></code>提供了一个守护进程之间传递消息的中央枢纽。当前由 <a href="http://www.rabbitmq.com/" target="_top">RabbitMQ</a>实现，理论上可以是Python的ampqlib支持的任何AMPQ消息队列。</p>
 
-
-
-
 <p><code><strong>SQL database</strong></code><code><strong>：</strong></code>存储云基础设施的编译时和运行时的状态。这包括可用的实例类型，在使用中的实例，可用的网络和项目。</p>
-
-
-
 
 <p><code><strong>OpenStack Glance：</strong></code>OpenStack 单独的一个项目。
 <h2>Nova Conceptual Mapping</h2>
 <p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
-上面的功能模块对应上面模型的映射：
-<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p>
 
-
-
+<p>上面的功能模块对应上面模型的映射：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p></p>
 
 <p><h2>Service Architecture</h2>
 管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
 
-
-
-
 <p><h2>部署</h2>
 部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
-OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
+
+<p>OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
 <h2>镜像管理</h2>
 <p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />
-你可以使用Ubuntu的已有image (https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</p>
-<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p>
-
-
-
+你可以使用Ubuntu的已有image (<a href="https://help.ubuntu.com/community/UEC/)%EF%BC%8C%E6%88%96%E8%80%85%E7%9B%B4%E6%8E%A5%E9%87%8D%E6%96%B0%E8%87%AA%E5%B7%B1%E9%80%9A%E8%BF%87KVM%E5%AE%89%E8%A3%85%C2%A0%C2%A0%EF%BC%9A">https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</a></p>
+<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></a></p></p></p>
 
 <p><h2>网络模型</h2>
 Flat Network Manager, Flat DHCP Network Manager, VLAN Network Manager.<br />
@@ -173,7 +140,6 @@ OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880"
 nova code:<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a>
 openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
 </div></p>
-
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/CloudComputing/2011/07/07/openstack-architecture-overview.html'>JavaChen Blog</a>-

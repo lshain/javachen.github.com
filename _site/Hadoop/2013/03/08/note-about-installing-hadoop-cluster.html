@@ -53,103 +53,79 @@
 
 	<h1>【笔记】Hadoop安装部署</h1>
 
-	<h3>安装虚拟机</h3>
+	<h3 id="toc_0">安装虚拟机</h3>
 
-<p>   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
+<p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
 
-<h3>配置网络</h3>
+<h3 id="toc_1">配置网络</h3>
 
 <p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi</p>
 
 <p>b. 设置每一个虚拟机的网络为Host-Only</p>
 
-<p>c.分别修改每个虚拟机的ip，DHCP或手动设置</p>
+<p>c.分别修改每个虚拟机的ip，DHCP或手动设置
+        vim etc/sysconfig/network-scripts/ifcfg-eth0
+        vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+        start_udev</p>
 
-<pre><code>    vim etc/sysconfig/network-scripts/ifcfg-eth0
-    vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-    start_udev
-</code></pre>
+<p>d.修改主机名
+        vim /etc/sysconfig/network</p>
 
-<p>d.修改主机名</p>
+<p>e.每个虚拟机中修改hosts：
+        192.168.56.100 rhel-june
+        192.168.56.101 rhel-june-1
+        192.168.56.102 rhel-june-2</p>
 
-<pre><code>    vim /etc/sysconfig/network
-</code></pre>
+<p>最后机器列表为：
+        rhel-june:   192.168.56.100
+        rhel-june-1: 192.168.56.101
+        rhel-june-2: 192.168.56.102</p>
 
-<p>e.每个虚拟机中修改hosts：</p>
+<h3 id="toc_2">机群规划</h3>
 
-<pre><code>    192.168.56.100 rhel-june
-    192.168.56.101 rhel-june-1
-    192.168.56.102 rhel-june-2
-</code></pre>
-
-<p>最后机器列表为：</p>
-
-<pre><code>    rhel-june:   192.168.56.100
-    rhel-june-1: 192.168.56.101
-    rhel-june-2: 192.168.56.102
-</code></pre>
-
-<h3>机群规划</h3>
-
-<p>版本：</p>
-
-<pre><code>    hadoop:1.1.1
-    JDK:1.6.0_38
-</code></pre>
+<p>版本：
+        hadoop:1.1.1
+        JDK:1.6.0_38</p>
 
 <p>集群各节点：</p>
-
-<pre><code>    NameNode:192.168.56.100
+<div class="highlight"><pre><code class="text">    NameNode:192.168.56.100
     NameSecondary:192.168.56.100
     DataNode:192.168.56.101
     DataNode:192.168.56.102
-</code></pre>
+</code></pre></div>
+<h3 id="toc_3">安装过程</h3>
 
-<h3>安装过程</h3>
+<p>a.解压缩到/opt</p>
 
-<p>   a.解压缩到/opt</p>
+<p>b.设置配置文件：
+        core-site.xml
+        hdfs-site.sml<br>
+        mapred-site.xml</p>
 
-<p>   b.设置配置文件：</p>
+<p>c.设置master、slaves</p>
 
-<pre><code>    core-site.xml
-    hdfs-site.sml    
-    mapred-site.xml
-</code></pre>
+<p>d.设置环境变量</p>
 
-<p>   c.设置master、slaves</p>
+<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息
+        export JAVA_HOME=/opt/jdk1.6.0_38
+        export HADOOP_INSTALL=/opt/hadoop-1.1.1
+        export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin</p>
 
-<p>   d.设置环境变量</p>
+<p>e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
 
-<p>   方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
+<p>f.格式化namenode
+        hadoop namenode -format</p>
 
-<pre><code>    export JAVA_HOME=/opt/jdk1.6.0_38
-    export HADOOP_INSTALL=/opt/hadoop-1.1.1
-    export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
-</code></pre>
+<p>g.启动hdfs集群
+        sh /opt/hadoop-1.1.1/bin/start-all.sh</p>
 
-<p>   e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
+<p>h.查看节点进程
+        jps</p>
 
-<p>   f.格式化namenode</p>
-
-<pre><code>    hadoop namenode -format
-</code></pre>
-
-<p>   g.启动hdfs集群</p>
-
-<pre><code>    sh /opt/hadoop-1.1.1/bin/start-all.sh
-</code></pre>
-
-<p>   h.查看节点进程</p>
-
-<pre><code>    jps
-</code></pre>
-
-<h3>查看状态</h3>
-
-<pre><code>    http://rhel-june:50030/
+<h3 id="toc_4">查看状态</h3>
+<div class="highlight"><pre><code class="text">    http://rhel-june:50030/
     http://rhel-june:50070/
-</code></pre>
-
+</code></pre></div>
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html'>JavaChen Blog</a>-
 		<br/>
@@ -202,7 +178,7 @@
 		<span class="prev"><a href="/Work/2013/02/20/summary-of-the-work-in-2012.html">← 2012年度总结</a></span>
 		
 		
-		<span class="next"><a href="/Hadoop/2013/03/24/manual-install-hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4 →</a></span>
+		<span class="next"><a href="/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4 →</a></span>
 		
 	</div>
 	<hr/>

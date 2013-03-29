@@ -67,17 +67,12 @@
 3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
 4.兼容标准的EL表达式</p>
 
-<p>我们将上述功能处理为“this”表达式。其功能模型为：</p>
-
+<p>我们将上述功能处理为“this”表达式。其功能模型为：
 <div class="pic">
 <a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
 </div>
-
-
-<p>页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。</p>
-
-<!--more-->
-
+页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
+&lt;!--more--&gt;</p>
 
 <p><strong>动作类和页面的一致性保证</strong>
 为了有效实现this表达式，我们实现如下映射规则：
@@ -85,12 +80,10 @@
 2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
 
 <p><strong>“this”EL表达式算法</strong>
-算法流程如下图：</p>
-
+算法流程如下图：
 <div class="pic">
 <a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div>
-
+</div></p>
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/JSF/2012/02/14/this-expression-of-jsf-el.html'>JavaChen Blog</a>-

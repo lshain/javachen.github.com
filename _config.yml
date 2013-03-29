@@ -2,7 +2,7 @@ permalink: /:categories/:year/:month/:day/:title.html
 
 auto: false
 pygments: false
-markdown: rdiscount
+markdown: redcarpet
 
 #markdown: rdiscount
 #markdown: redcarpet

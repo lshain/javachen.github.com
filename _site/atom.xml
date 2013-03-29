@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T15:53:42+08:00</updated>
+ <updated>2013-03-29T16:02:50+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -14,18 +14,16 @@
  
  <entry>
    <title>手动安装Cloudera Hadoop CDH4</title>
-   <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-hadoop-CDH4.2.html"/>
-   <updated>2013-03-24T15:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-hadoop-CDH4.2</id>
-   <content type="html">&lt;h2&gt;安装版本&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;hadoop-2.0.0-cdh4.2.0
+   <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html"/>
+   <updated>2013-03-24T15:10:00+08:00</updated>
+   <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2</id>
+   <content type="html">&lt;h2 id=&quot;toc_0&quot;&gt;安装版本&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;hadoop-2.0.0-cdh4.2.0
 hbase-0.94.2-cdh4.2.0
 hive-0.10.0-cdh4.2.0
 jdk1.6.0_38
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;安装前说明&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_1&quot;&gt;安装前说明&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;安装目录为/opt&lt;/li&gt;
@@ -34,8 +32,7 @@ jdk1.6.0_38
 &lt;li&gt;设置时钟同步&lt;/li&gt;
 &lt;/ul&gt;
 
-
-&lt;h2&gt;使用说明&lt;/h2&gt;
+&lt;h2 id=&quot;toc_2&quot;&gt;使用说明&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;启动dfs和mapreduce
@@ -46,190 +43,138 @@ desktop3上执行start-hbase.xml&lt;/li&gt;
 desktop1上执行hive&lt;/li&gt;
 &lt;/ul&gt;
 
+&lt;h2 id=&quot;toc_3&quot;&gt;规划&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    192.168.0.1             NameNode、Hive、ResourceManager
+    192.168.0.2             SSNameNode
+    192.168.0.3             DataNode、HBase、NodeManager
+    192.168.0.4             DataNode、HBase、NodeManager
+    192.168.0.6             DataNode、HBase、NodeManager
+    192.168.0.7             DataNode、HBase、NodeManager
+    192.168.0.8             DataNode、HBase、NodeManager
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_4&quot;&gt;部署过程&lt;/h2&gt;
 
-&lt;h2&gt;规划&lt;/h2&gt;
-
-&lt;p&gt;```&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;192.168.0.1             NameNode、Hive、ResourceManager
-192.168.0.2             SSNameNode
-192.168.0.3             DataNode、HBase、NodeManager
-192.168.0.4             DataNode、HBase、NodeManager
-192.168.0.6             DataNode、HBase、NodeManager
-192.168.0.7             DataNode、HBase、NodeManager
-192.168.0.8             DataNode、HBase、NodeManager
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;```&lt;/p&gt;
-
-&lt;h2&gt;部署过程&lt;/h2&gt;
-
-&lt;h3&gt;系统和网络配置&lt;/h3&gt;
+&lt;h3 id=&quot;toc_5&quot;&gt;系统和网络配置&lt;/h3&gt;
 
 &lt;ol&gt;
-&lt;li&gt;修改每台机器的名称&lt;/li&gt;
-&lt;/ol&gt;
-
-
+&lt;li&gt;&lt;p&gt;修改每台机器的名称
 &lt;pre&gt;
-    [root@desktop1 ~]# cat /etc/sysconfig/network
-    NETWORKING=yes
-    HOSTNAME=desktop1
-&lt;/pre&gt;
-
-
-&lt;ol&gt;
-&lt;li&gt;在各个节点上修改/etc/hosts增加以下内容:&lt;/li&gt;
-&lt;/ol&gt;
-
-
+[root@desktop1 ~]# cat /etc/sysconfig/network
+NETWORKING=yes
+HOSTNAME=desktop1
+&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在各个节点上修改/etc/hosts增加以下内容:
 &lt;pre&gt;
-    [root@desktop1 ~]# cat /etc/hosts
-    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-    192.168.0.1     desktop1
-    192.168.0.2     desktop2
-    192.168.0.3     desktop3
-    192.168.0.4     desktop4
-    192.168.0.6     desktop6
-    192.168.0.7     desktop7
-    192.168.0.8     desktop8
-&lt;/pre&gt;
-
-
-&lt;ol&gt;
-&lt;li&gt;配置ssh无密码登陆&lt;/li&gt;
-&lt;/ol&gt;
-
-
+[root@desktop1 ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.0.1     desktop1
+192.168.0.2     desktop2
+192.168.0.3     desktop3
+192.168.0.4     desktop4
+192.168.0.6     desktop6
+192.168.0.7     desktop7
+192.168.0.8     desktop8
+&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置ssh无密码登陆
 &lt;pre&gt;
-    [root@desktop1 ~]# ssh-keygen
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-&lt;/pre&gt;
-
-
-&lt;ol&gt;
-&lt;li&gt;每台机器上关闭防火墙：&lt;/li&gt;
+[root@desktop1 ~]# ssh-keygen
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;每台机器上关闭防火墙：&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    [root@desktop1 ~]# service iptables stop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_6&quot;&gt;安装Hadoop&lt;/h3&gt;
 
-
-&lt;p&gt;```&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[root@desktop1 ~]# service iptables stop
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;```&lt;/p&gt;
-
-&lt;h3&gt;安装Hadoop&lt;/h3&gt;
-
-&lt;h4&gt;配置Hadoop&lt;/h4&gt;
+&lt;h4 id=&quot;toc_7&quot;&gt;配置Hadoop&lt;/h4&gt;
 
 &lt;p&gt;将jdk1.6.0_38.zip上传到/opt，并解压缩
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩&lt;/p&gt;
 
 &lt;p&gt;在NameNode上配置以下文件：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
 hdfs-site.xml 
     dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
     dfs.datanode.data.dir指定DataNode存储blocks的目录，
     dfs.namenode.secondary.http-address指定Secondary NameNode地址。
     开启WebHDFS。
 slaves 添加DataNode节点主机
-&lt;/code&gt;&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;core-site.xml&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;```
-[root@desktop1 hadoop]# pwd
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# pwd
 /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
-[root@desktop1 hadoop]# cat core-site.xml
-&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&amp;lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;&lt;/p&gt;
-
-&lt;!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) --&gt;
-
-
-&lt;p&gt;&lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
-     &amp;lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&amp;gt;
- &amp;lt;value&amp;gt;hdfs://desktop1&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-```&lt;/p&gt;
-
+[root@desktop1 hadoop]# cat core-site.xml 
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
+&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) --&amp;gt;
+&amp;lt;property&amp;gt;
+     &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+         &amp;lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&amp;gt;
+     &amp;lt;value&amp;gt;hdfs://desktop1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;fs.trash.interval&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;fs.trash.checkpoint.interval&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;hdfs-site.xml&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat hdfs-site.xml 
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
+&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/opt/data/hadoop-${user.name}&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;```
-[root@desktop1 hadoop]# cat hdfs-site.xml
-&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&amp;lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;dfs.replication&lt;/name&gt;
-  &lt;value&gt;1&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;desktop1:50070&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hadoop-${user.name}&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;desktop2:50090&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-&lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
-&lt;value&gt;desktop1:50070&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-&lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
-&lt;value&gt;desktop2:50090&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-&lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-```&lt;/p&gt;
-
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;masters&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop1 hadoop]# cat masters
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat masters 
 desktop1
 desktop2
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;slaves
 &lt;code&gt;
-[root@desktop1 hadoop]# cat slaves
+[root@desktop1 hadoop]# cat slaves 
 desktop3
 desktop4
 desktop6
@@ -238,201 +183,139 @@ desktop8
 &lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-
-&lt;h4&gt;配置MapReduce&lt;/h4&gt;
+&lt;h4 id=&quot;toc_8&quot;&gt;配置MapReduce&lt;/h4&gt;
 
 &lt;ol&gt;
 &lt;li&gt;mapred-site.xml&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat mapred-site.xml
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
+&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.jobhistory.address&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;desktop1:10020&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;```
-[root@desktop1 hadoop]# cat mapred-site.xml
-&amp;lt;?xml version=&quot;1.0&quot;?&gt;
-&amp;lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
- &lt;value&gt;desktop1:10020&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
- &lt;value&gt;desktop1:19888&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-```&lt;/p&gt;
-
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.jobhistory.webapp.address&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;desktop1:19888&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;yarn-site.xml&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat yarn-site.xml 
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.resourcemanager.resource-tracker.address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop1:8031&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.resourcemanager.address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop1:8032&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.resourcemanager.scheduler.address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop1:8030&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.resourcemanager.admin.address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop1:8033&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.resourcemanager.webapp.address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop1:8088&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;description&amp;gt;Classpath for typical applications.&amp;lt;/description&amp;gt;
+    &amp;lt;name&amp;gt;yarn.application.classpath&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
+    $HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
+    $HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
+    $YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
+    $YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;mapreduce.shuffle&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
 
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/yarn/local&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/yarn/logs&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;description&amp;gt;Where to aggregate logs&amp;lt;/description&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/yarn/logs&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
 
-&lt;p&gt;```
-[root@desktop1 hadoop]# cat yarn-site.xml
-&amp;lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;&lt;/p&gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
+ &amp;lt;/property&amp;gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.resourcemanager.resource-tracker.address&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop1:8031&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.resourcemanager.address&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop1:8032&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.resourcemanager.scheduler.address&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop1:8030&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.resourcemanager.admin.address&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop1:8033&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.resourcemanager.webapp.address&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop1:8088&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;description&amp;gt;Classpath for typical applications.&amp;lt;/description&amp;gt;
-&amp;lt;name&amp;gt;yarn.application.classpath&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
-$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
-$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
-$YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
-$YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;mapreduce.shuffle&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;/opt/data/yarn/local&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;/opt/data/yarn/logs&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;
-  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;description&amp;gt;Where to aggregate logs&amp;lt;/description&amp;gt;
-&amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;/opt/data/yarn/logs&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;  &lt;property&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt; &lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/configuration&gt;
-```&lt;/p&gt;
-
-&lt;h4&gt;同步配置文件&lt;/h4&gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;toc_9&quot;&gt;同步配置文件&lt;/h4&gt;
 
 &lt;p&gt;修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# cat .bashrc 
+# .bashrc
+alias rm=&amp;#39;rm -i&amp;#39;
+alias cp=&amp;#39;cp -i&amp;#39;
+alias mv=&amp;#39;mv -i&amp;#39;
 
-&lt;p&gt;```
-[root@desktop1 ~]# cat .bashrc&lt;/p&gt;
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+# User specific environment and startup programs
+export LANG=zh_CN.utf8
 
-&lt;h1&gt;.bashrc&lt;/h1&gt;
-
-&lt;p&gt;alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'&lt;/p&gt;
-
-&lt;h1&gt;Source global definitions&lt;/h1&gt;
-
-&lt;p&gt;if [ -f /etc/bashrc ]; then&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    . /etc/bashrc
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;fi&lt;/p&gt;
-
-&lt;h1&gt;User specific environment and startup programs&lt;/h1&gt;
-
-&lt;p&gt;export LANG=zh_CN.utf8&lt;/p&gt;
-
-&lt;p&gt;export JAVA_HOME=/opt/jdk1.6.0_38
+export JAVA_HOME=/opt/jdk1.6.0_38
 export JRE_HOME=$JAVA_HOME/jre
-export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar&lt;/p&gt;
+export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
 
-&lt;p&gt;export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
+export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
 export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
-export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0&lt;/p&gt;
+export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
 
-&lt;p&gt;export HADOOP_MAPRED_HOME=${HADOOP_HOME}
+export HADOOP_MAPRED_HOME=${HADOOP_HOME}
 export HADOOP_COMMON_HOME=${HADOOP_HOME}
 export HADOOP_HDFS_HOME=${HADOOP_HOME}
 export YARN_HOME=${HADOOP_HOME}
 export HADOOP_YARN_HOME=${HADOOP_HOME}
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop&lt;/p&gt;
+export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
-&lt;p&gt;export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
-```&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop1 ~]# source .bashrc
-&lt;/code&gt;&lt;/p&gt;
-
+export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# source .bashrc 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上&lt;/p&gt;
 
-&lt;h4&gt;启动脚本&lt;/h4&gt;
+&lt;h4 id=&quot;toc_10&quot;&gt;启动脚本&lt;/h4&gt;
 
 &lt;p&gt;第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop1 hadoop]hadoop namenode -format
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]hadoop namenode -format
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在desktop1上启动hdfs：
 &lt;code&gt;
 [root@desktop1 hadoop]#start-dfs.sh
@@ -449,91 +332,83 @@ export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop&lt;/p&gt;
 &lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;查看MapReduce：&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;
-http://desktop1:8088/cluster
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;http://desktop1:8088/cluster
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;查看节点：&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;
-http://desktop2:8042/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;http://desktop2:8042/
 http://desktop2:8042/node
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;h4&gt;检查集群进程&lt;/h4&gt;
-
-&lt;p&gt;```
-[root@desktop1 ~]# jps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;toc_11&quot;&gt;检查集群进程&lt;/h4&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# jps
 5389 NameNode
 5980 Jps
 5710 ResourceManager
-7032 JobHistoryServer&lt;/p&gt;
+7032 JobHistoryServer
 
-&lt;p&gt;[root@desktop2 ~]# jps
+[root@desktop2 ~]# jps
 3187 Jps
-3124 SecondaryNameNode&lt;/p&gt;
+3124 SecondaryNameNode
 
-&lt;p&gt;[root@desktop3 ~]# jps
+[root@desktop3 ~]# jps
 3187 Jps
 3124 DataNode
 5711 NodeManager
-```&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html'>手动安装Cloudera Hadoop CDH4</a></content>
+ </entry>
+ 
+ <entry>
+   <title>手动安装Cloudera HBase CDH4.2</title>
+   <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2.html"/>
+   <updated>2013-03-24T15:05:00+08:00</updated>
+   <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2</id>
+   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera HBase cdh4-2.0集群过程，环境设置及Hadoop安装过程见上篇文章。&lt;/p&gt;
 
-&lt;h3&gt;安装HBase&lt;/h3&gt;
+&lt;h3 id=&quot;toc_0&quot;&gt;安装HBase&lt;/h3&gt;
 
 &lt;p&gt;HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;上传文件
 上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;hbase-site.xml&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hbase-site.xml &lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;```
-[root@desktop3 conf]# pwd
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop3 conf]# pwd
 /opt/hbase-0.94.2-cdh4.2.0/conf
-[root@desktop3 conf]# cat hbase-site.xml
-&amp;lt;?xml version=&quot;1.0&quot;?&gt;
-&amp;lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.rootdir&lt;/name&gt;
-&lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+[root@desktop3 conf]# cat hbase-site.xml 
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
+&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;hdfs://desktop1/hbase-${user.name}&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.cluster.distributed&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-&lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-&lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;/opt/data/hbase-${user.name}&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-&lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-&lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;desktop3,desktop4,desktop6,desktop7,desktop8&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;/configuration&gt;
-```&lt;/p&gt;
-
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;regionservers&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop3 conf]# cat regionservers
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop3 conf]# cat regionservers 
 desktop3
 desktop4
 desktop6
 desktop7
 desktop8
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;环境变量
 参考hadoop中环境变量的设置&lt;/p&gt;&lt;/li&gt;
@@ -542,257 +417,221 @@ desktop8
 &lt;li&gt;&lt;p&gt;启动脚本
 可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop3 ~]# start-hbase.sh
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop3 ~]# start-hbase.sh 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;HBase&lt;/li&gt;
+&lt;li&gt;HBase &lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop3 ~]# hbase 
+HBase ; enter &amp;#39;help&amp;lt;RETURN&amp;gt;&amp;#39; for list of supported commands.
+Type &amp;quot;exit&amp;lt;RETURN&amp;gt;&amp;quot; to leave the HBase 
+Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013
 
+hbase(main):001:0&amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2.html'>手动安装Cloudera HBase CDH4.2</a></content>
+ </entry>
+ 
+ <entry>
+   <title>手动安装Cloudera Hive CDH4</title>
+   <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html"/>
+   <updated>2013-03-24T15:00:00+08:00</updated>
+   <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2</id>
+   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera Hive cdh4-2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。&lt;/p&gt;
 
-&lt;p&gt;```
-[root@desktop3 ~]# hbase
-HBase ; enter 'help&lt;RETURN&gt;' for list of supported commands.
-Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase
-Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013&lt;/p&gt;
-
-&lt;p&gt;hbase(main):001:0&gt;
-```&lt;/p&gt;
-
-&lt;h3&gt;安装hive&lt;/h3&gt;
+&lt;h3 id=&quot;toc_0&quot;&gt;安装hive&lt;/h3&gt;
 
 &lt;p&gt;hive安装在desktop1上&lt;/p&gt;
 
-&lt;h4&gt;上传文件&lt;/h4&gt;
+&lt;h4 id=&quot;toc_1&quot;&gt;上传文件&lt;/h4&gt;
 
 &lt;p&gt;上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩&lt;/p&gt;
 
-&lt;h4&gt;安装postgres&lt;/h4&gt;
+&lt;h4 id=&quot;toc_2&quot;&gt;安装postgres&lt;/h4&gt;
 
 &lt;ol&gt;
 &lt;li&gt;创建数据库&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;psql -U postgres
 
-
-&lt;p&gt;```
-psql -U postgres&lt;/p&gt;
-
-&lt;p&gt;CREATE DATABASE metastore;
+CREATE DATABASE metastore;
  \c metastore;
-CREATE USER hiveuser WITH PASSWORD 'password';
+CREATE USER hiveuser WITH PASSWORD &amp;#39;password&amp;#39;;
 GRANT ALL ON DATABASE metastore TO hiveuser;
 \q
-```&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;初始化数据库&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-psql  -U hiveuser -d metastore
- \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;psql  -U hiveuser -d metastore
+ \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;编辑配置文件&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf
 
+# IPv4 local connections:
+host    all             all             0.0.0.0/0            md5
 
-&lt;p&gt;```
-[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf&lt;/p&gt;
+[root@desktop1 ~]# vi postgresql.conf
 
-&lt;h1&gt;IPv4 local connections:&lt;/h1&gt;
-
-&lt;p&gt;host    all             all             0.0.0.0/0            md5&lt;/p&gt;
-
-&lt;p&gt;[root@desktop1 ~]# vi postgresql.conf&lt;/p&gt;
-
-&lt;p&gt;standard_conforming_strings = off
-```&lt;/p&gt;
-
+standard_conforming_strings = off
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;重起postgres&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postgres
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;su -c &amp;#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&amp;#39; postgres
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;拷贝postgres 的jdbc驱动到/opt/hive-0.10.0-cdh4.2.0/lib&lt;/li&gt;
 &lt;/ol&gt;
 
-
-&lt;h4&gt;修改配置文件&lt;/h4&gt;
+&lt;h4 id=&quot;toc_3&quot;&gt;修改配置文件&lt;/h4&gt;
 
 &lt;ol&gt;
-&lt;li&gt;hive-site.xml
+&lt;li&gt;hive-site.xml 
 注意修改下面配置文件中postgres数据库的密码&lt;/li&gt;
 &lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
+[root@desktop1 conf]# cat hive-site.xml 
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
+&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionURL&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;jdbc:postgresql://127.0.0.1/metastore&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;JDBC connect string for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionDriverName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;org.postgresql.Driver&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Driver class name for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;```
-[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
-[root@desktop1 conf]# cat hive-site.xml
-&amp;lt;?xml version=&quot;1.0&quot;?&gt;
-&amp;lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://127.0.0.1/metastore&lt;/value&gt;
-  &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionUserName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hiveuser&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;username to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-  &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionPassword&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;redhat&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;password to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-  &lt;description&gt;username to use against metastore database&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;desktop1:8031&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-  &lt;description&gt;password to use against metastore database&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;desktop1:8031&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.aux.jars.path&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,
+    file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
+    file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
+    file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.metastore.warehouse.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/opt/data/warehouse-${user.name}&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;location of default database for the warehouse&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.aux.jars.path&lt;/name&gt;
-  &lt;value&gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.exec.scratchdir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/opt/data/hive-${user.name}&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Scratch space for Hive jobs&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;pre&gt;&lt;code&gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
-file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
-file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&amp;lt;/value&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.querylog.location&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/opt/data/querylog-${user.name}&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;
+    Location of Hive run time structured log file
+  &amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.support.concurrency&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Enable Hive&amp;#39;s Table Lock Manager Service&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/warehouse-${user.name}&lt;/value&gt;
-  &lt;description&gt;location of default database for the warehouse&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.zookeeper.quorum&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Zookeeper quorum used by Hive&amp;#39;s Table Lock Manager&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;desktop3,desktop4,desktop6,desktop7,desktop8&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.exec.scratchdir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hive-${user.name}&lt;/value&gt;
-  &lt;description&gt;Scratch space for Hive jobs&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.host&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;desktop1&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the host address the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.querylog.location&lt;/name&gt;
-  &lt;value&gt;/opt/data/querylog-${user.name}&lt;/value&gt;
-  &lt;description&gt;&lt;/p&gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.port&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;9999&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the port the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-&lt;pre&gt;&lt;code&gt;Location of Hive run time structured log file
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;  &lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;description&gt;Enable Hive's Table Lock Manager Service&lt;/description&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;description&gt;Zookeeper quorum used by Hive's Table Lock Manager&lt;/description&gt;
-  &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;desktop1&lt;/value&gt;
-  &lt;description&gt;This is the host address the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-  &lt;description&gt;This is the port the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-  &lt;description&gt;This is the WAR file with the jsp content for Hive Web Interface&lt;/description&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-```&lt;/p&gt;
-
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.war.file&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the WAR file with the jsp content for Hive Web Interface&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;环境变量
 参考hadoop中环境变量的设置&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;启动脚本&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;
-[root@desktop1 ~] hive
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~] hive
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;hive与hbase集成
 在hive-site.xml中配置hive.aux.jars.path
 在环境变量中配置hadoop、mapreduce的环境变量&lt;/li&gt;
 &lt;/ol&gt;
 
-
-&lt;h3&gt;异常说明&lt;/h3&gt;
+&lt;h3 id=&quot;toc_4&quot;&gt;异常说明&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper&lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;hadoop配置文件没有zk&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL_NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS_DATABASE_NAME&quot; ON &quot;THIS&quot;.&quot;DB_ID&quot; = &quot;THIS_DATABASE_NAME&quot;.&quot;DB_ID&quot; WHERE &quot;THIS_DATABASE_NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL_NAME&quot;) LIKE ? ESCAPE '\' ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..&lt;/li&gt;
+&lt;li&gt;FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &amp;quot;SELECT &amp;quot;THIS&amp;quot;.&amp;quot;TBL_NAME&amp;quot; AS NUCORDER0 FROM &amp;quot;TBLS&amp;quot; &amp;quot;THIS&amp;quot; LEFT OUTER JOIN &amp;quot;DBS&amp;quot; &amp;quot;THIS_DATABASE_NAME&amp;quot; ON &amp;quot;THIS&amp;quot;.&amp;quot;DB_ID&amp;quot; = &amp;quot;THIS_DATABASE_NAME&amp;quot;.&amp;quot;DB_ID&amp;quot; WHERE &amp;quot;THIS_DATABASE_NAME&amp;quot;.&amp;quot;NAME&amp;quot; = ? AND (LOWER(&amp;quot;THIS&amp;quot;.&amp;quot;TBL_NAME&amp;quot;) LIKE ? ESCAPE &amp;#39;\&amp;#39; ) ORDER BY NUCORDER0 &amp;quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..&lt;/li&gt;
 &lt;/ul&gt;
 
-
-&lt;p&gt;https://issues.apache.org/jira/browse/HIVE-3994&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-3994&quot;&gt;https://issues.apache.org/jira/browse/HIVE-3994&lt;/a&gt;&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;hive&gt; select count(*) from hive_userinfo; 没反应&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hive&amp;gt; select count(*) from hive_userinfo; 没反应&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;hive中没有设置zk&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
+&lt;li&gt;&lt;p&gt;Exception in thread &amp;quot;main&amp;quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
 Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.MRAppMaster&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;检查环境变量以及yarn的classpath&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-hadoop-CDH4.2.html'>手动安装Cloudera Hadoop CDH4</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html'>手动安装Cloudera Hive CDH4</a></content>
  </entry>
  
  <entry>
@@ -800,103 +639,79 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.
    <link href="http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html"/>
    <updated>2013-03-08T21:00:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster</id>
-   <content type="html">&lt;h3&gt;安装虚拟机&lt;/h3&gt;
+   <content type="html">&lt;h3 id=&quot;toc_0&quot;&gt;安装虚拟机&lt;/h3&gt;
 
-&lt;p&gt;   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份&lt;/p&gt;
+&lt;p&gt;VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份&lt;/p&gt;
 
-&lt;h3&gt;配置网络&lt;/h3&gt;
+&lt;h3 id=&quot;toc_1&quot;&gt;配置网络&lt;/h3&gt;
 
 &lt;p&gt;a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi&lt;/p&gt;
 
 &lt;p&gt;b. 设置每一个虚拟机的网络为Host-Only&lt;/p&gt;
 
-&lt;p&gt;c.分别修改每个虚拟机的ip，DHCP或手动设置&lt;/p&gt;
+&lt;p&gt;c.分别修改每个虚拟机的ip，DHCP或手动设置
+        vim etc/sysconfig/network-scripts/ifcfg-eth0
+        vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+        start_udev&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    vim etc/sysconfig/network-scripts/ifcfg-eth0
-    vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-    start_udev
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;d.修改主机名
+        vim /etc/sysconfig/network&lt;/p&gt;
 
-&lt;p&gt;d.修改主机名&lt;/p&gt;
+&lt;p&gt;e.每个虚拟机中修改hosts：
+        192.168.56.100 rhel-june
+        192.168.56.101 rhel-june-1
+        192.168.56.102 rhel-june-2&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    vim /etc/sysconfig/network
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最后机器列表为：
+        rhel-june:   192.168.56.100
+        rhel-june-1: 192.168.56.101
+        rhel-june-2: 192.168.56.102&lt;/p&gt;
 
-&lt;p&gt;e.每个虚拟机中修改hosts：&lt;/p&gt;
+&lt;h3 id=&quot;toc_2&quot;&gt;机群规划&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code&gt;    192.168.56.100 rhel-june
-    192.168.56.101 rhel-june-1
-    192.168.56.102 rhel-june-2
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;最后机器列表为：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    rhel-june:   192.168.56.100
-    rhel-june-1: 192.168.56.101
-    rhel-june-2: 192.168.56.102
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3&gt;机群规划&lt;/h3&gt;
-
-&lt;p&gt;版本：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    hadoop:1.1.1
-    JDK:1.6.0_38
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;版本：
+        hadoop:1.1.1
+        JDK:1.6.0_38&lt;/p&gt;
 
 &lt;p&gt;集群各节点：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    NameNode:192.168.56.100
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    NameNode:192.168.56.100
     NameSecondary:192.168.56.100
     DataNode:192.168.56.101
     DataNode:192.168.56.102
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_3&quot;&gt;安装过程&lt;/h3&gt;
 
-&lt;h3&gt;安装过程&lt;/h3&gt;
+&lt;p&gt;a.解压缩到/opt&lt;/p&gt;
 
-&lt;p&gt;   a.解压缩到/opt&lt;/p&gt;
+&lt;p&gt;b.设置配置文件：
+        core-site.xml
+        hdfs-site.sml&lt;br&gt;
+        mapred-site.xml&lt;/p&gt;
 
-&lt;p&gt;   b.设置配置文件：&lt;/p&gt;
+&lt;p&gt;c.设置master、slaves&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    core-site.xml
-    hdfs-site.sml    
-    mapred-site.xml
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;d.设置环境变量&lt;/p&gt;
 
-&lt;p&gt;   c.设置master、slaves&lt;/p&gt;
+&lt;p&gt;方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息
+        export JAVA_HOME=/opt/jdk1.6.0_38
+        export HADOOP_INSTALL=/opt/hadoop-1.1.1
+        export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin&lt;/p&gt;
 
-&lt;p&gt;   d.设置环境变量&lt;/p&gt;
+&lt;p&gt;e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh&lt;/p&gt;
 
-&lt;p&gt;   方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息&lt;/p&gt;
+&lt;p&gt;f.格式化namenode
+        hadoop namenode -format&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    export JAVA_HOME=/opt/jdk1.6.0_38
-    export HADOOP_INSTALL=/opt/hadoop-1.1.1
-    export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;g.启动hdfs集群
+        sh /opt/hadoop-1.1.1/bin/start-all.sh&lt;/p&gt;
 
-&lt;p&gt;   e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh&lt;/p&gt;
+&lt;p&gt;h.查看节点进程
+        jps&lt;/p&gt;
 
-&lt;p&gt;   f.格式化namenode&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    hadoop namenode -format
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;   g.启动hdfs集群&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    sh /opt/hadoop-1.1.1/bin/start-all.sh
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;   h.查看节点进程&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    jps
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3&gt;查看状态&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;    http://rhel-june:50030/
+&lt;h3 id=&quot;toc_4&quot;&gt;查看状态&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    http://rhel-june:50030/
     http://rhel-june:50070/
-&lt;/code&gt;&lt;/pre&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html'>【笔记】Hadoop安装部署</a></content>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/08/note-about-installing-hadoop-cluster.html'>【笔记】Hadoop安装部署</a></content>
  </entry>
  
  <entry>
@@ -908,27 +723,26 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.
 以下是2012年相对于2011年的一些变化。&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；&lt;/li&gt;
-&lt;li&gt;2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；&lt;/li&gt;
-&lt;li&gt;2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。&lt;/li&gt;
-&lt;li&gt;2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；&lt;/li&gt;
-&lt;li&gt;2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；&lt;/li&gt;
-&lt;li&gt;2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；&lt;/li&gt;
-&lt;li&gt;2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；&lt;/li&gt;
-&lt;li&gt;2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；&lt;/li&gt;
-&lt;li&gt;2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；&lt;/li&gt;
-&lt;li&gt;2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；&lt;/li&gt;
-&lt;li&gt;2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。&lt;/li&gt;
-&lt;li&gt;2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；&lt;/li&gt;
-&lt;li&gt;2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；&lt;/li&gt;
+&lt;li&gt; 2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；&lt;/li&gt;
+&lt;li&gt;  2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；&lt;/li&gt;
+&lt;li&gt;  2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。&lt;/li&gt;
+&lt;li&gt;  2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；&lt;/li&gt;
+&lt;li&gt;  2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；&lt;/li&gt;
+&lt;li&gt;  2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；&lt;/li&gt;
+&lt;li&gt;  2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；&lt;/li&gt;
+&lt;li&gt;  2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；&lt;/li&gt;
+&lt;li&gt;  2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；&lt;/li&gt;
+&lt;li&gt;  2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；&lt;/li&gt;
+&lt;li&gt;  2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。&lt;/li&gt;
+&lt;li&gt;  2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；&lt;/li&gt;
+&lt;li&gt;  2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；&lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;2012年参与了XXXXX项目、cassandra项目，。。。。。。此处省略314.15926个字。&lt;/p&gt;
 
 &lt;p&gt;2012年，公司也存在一些不足：上级对下级、项目经理对团队人员了解不足，不知道其工作上、生活上的内心想法以及遇到何种困难；多数情况下，团队自我要求低，积极性不高，没有生机与活力；对新人能力审核不够，对新人培养不够重视，对新人的存在感不够关注；在各个项目的人员安排及使用上、任务分配和工作计划上不合理，导致经常被动加班、熬夜等等。&lt;/p&gt;
 
-&lt;h3&gt;2013年工作计划：&lt;/h3&gt;
+&lt;h3 id=&quot;toc_0&quot;&gt;2013年工作计划：&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;通过CE考试，熟练掌握shell编程；&lt;/li&gt;
@@ -937,7 +751,6 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.
 &lt;li&gt;学习hadoop的安装、部署、原理、开发及运维，掌握kettle和nosql的集成，希望积累几个hadoop项目经验；&lt;/li&gt;
 &lt;li&gt;学习分布式缓存理论知识，阅读源代码，完善缓存系统的监控及运维&lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;在经历了2011年和2012年之后，2013年希望自己能够专注细节，深入理解，在技术、管理、交际方面有所成长；希望公司能够重视对团队的培养，能够规范各种规章制度，能够更上一层楼！&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Work/2013/02/20/summary-of-the-work-in-2012.html'>2012年度总结</a></content>
@@ -948,107 +761,76 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.
    <link href="http://blog.javachen.com/Github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html"/>
    <updated>2012-06-03T14:00:00+08:00</updated>
    <id>http://blog.javachen.com/Github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</id>
-   <content type="html">&lt;h2&gt;Step1 - 在本机安装Octopress&lt;/h2&gt;
+   <content type="html">&lt;h2 id=&quot;toc_0&quot;&gt;Step1 - 在本机安装Octopress&lt;/h2&gt;
 
 &lt;p&gt;首先，必须先在本机安装配置&lt;a href=&quot;http://git-scm.com/&quot;&gt;Git&lt;/a&gt;和&lt;a href=&quot;https://rvm.beginrescueend.com/rvm/install/&quot;&gt;Ruby&lt;/a&gt;,Octopress需要Ruby版本至少为1.9.2。你可以使用&lt;a href=&quot;http://rvm.beginrescueend.com/&quot;&gt;RVM&lt;/a&gt;或&lt;a href=&quot;https://github.com/sstephenson/rbenv&quot;&gt;rbenv&lt;/a&gt;安装ruby，安装方法见Octopress官方文档：&lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;http://octopress.org/docs/setup/&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;我使用rvm安装：&lt;/p&gt;
+&lt;p&gt;我使用rvm安装：
+    rvm install 1.9.2 &amp;amp;&amp;amp; rvm use 1.9.2
+安装完之后可以查看ruby版本：
+    ruby --version
+结果为：
+    ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;rvm install 1.9.2 &amp;amp;&amp;amp; rvm use 1.9.2
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后需要从github下载Octopress：
+    git clone git://github.com/imathis/octopress.git octopress&lt;/p&gt;
 
-&lt;p&gt;安装完之后可以查看ruby版本：&lt;/p&gt;
+&lt;p&gt;因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：
+    git clone &lt;a href=&quot;mailto:git@github.com&quot;&gt;git@github.com&lt;/a&gt;:javachen/octopress.git
+运行上面的代码后，你会看到：
+    Cloning into &amp;#39;octopress&amp;#39;...
+    remote: Counting objects: 6579, done.
+    remote: Compressing objects: 100% (2361/2361), done.
+    remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
+    Receiving objects: 100% (6579/6579), 1.34 MiB | 35 KiB/s, done.
+    Resolving deltas: 100% (3773/3773), done.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;ruby --version
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来进入octopress：
+    cd octopress&lt;/p&gt;
 
-&lt;p&gt;结果为：&lt;/p&gt;
+&lt;p&gt;接下来安装依赖：
+    gem install bundler
+    rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+    bundle install&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装Octopress默认的主题：
+    rake install&lt;/p&gt;
 
-&lt;p&gt;然后需要从github下载Octopress：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git clone git://github.com/imathis/octopress.git octopress
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git clone git@github.com:javachen/octopress.git
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;运行上面的代码后，你会看到：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Cloning into 'octopress'...
-remote: Counting objects: 6579, done.
-remote: Compressing objects: 100% (2361/2361), done.
-remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
-Receiving objects: 100% (6579/6579), 1.34 MiB | 35 KiB/s, done.
-Resolving deltas: 100% (3773/3773), done.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;接下来进入octopress：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;cd octopress
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;接下来安装依赖：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;gem install bundler
-rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-bundle install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;安装Octopress默认的主题：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rake install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;你也可以安装自定义的主题，blog为主题名称：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rake install['blog']
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你也可以安装自定义的主题，blog为主题名称：
+    rake install[&amp;#39;blog&amp;#39;]&lt;/p&gt;
 
 &lt;p&gt;至此，Octopress所需的环境已经搭建成功。&lt;/p&gt;
 
-&lt;h2&gt;Step2 - 连接GitHub Pages&lt;/h2&gt;
+&lt;h2 id=&quot;toc_1&quot;&gt;Step2 - 连接GitHub Pages&lt;/h2&gt;
 
 &lt;p&gt;首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为&lt;code&gt;你的帐号.github.com&lt;/code&gt;，并且，部署的时候会占用你的master分支。&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Tips：&lt;/em&gt;
 如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
-如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；&lt;/p&gt;
+如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；
+    echo &amp;#39;your-domain.com&amp;#39; &amp;gt;&amp;gt; source/CNAME
+如果用GitHub提供的二级域名，记得把source/CNAME删掉。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;echo 'your-domain.com' &amp;gt;&amp;gt; source/CNAME
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;完成上述准备工作后，运行：
+    rake setup_github_pages
+它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：&lt;a href=&quot;https://github.com/javachen/javachen.github.com.git%EF%BC%8Cjavachen.github.com%E6%98%AF%E6%88%91%E7%9A%84Repository%E7%9A%84%E5%90%8D%E7%A7%B0%E3%80%82&quot;&gt;https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;如果用GitHub提供的二级域名，记得把source/CNAME删掉。&lt;/p&gt;
+&lt;h2 id=&quot;toc_2&quot;&gt;Step3 - 配置你的博客&lt;/h2&gt;
 
-&lt;p&gt;完成上述准备工作后，运行：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rake setup_github_pages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。&lt;/p&gt;
-
-&lt;h2&gt;Step3 - 配置你的博客&lt;/h2&gt;
-
-&lt;p&gt;需要配置博客url、名称、作者、rss等信息。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;url: http://javachen.github.com
-title: JavaChen on Java
-subtitle: Just some random thoughts about technology,Java and life.
-author: javachen
-simple_search: http://google.com/search
-description:
-
-date_format: &quot;%Y年%m月%d日&quot;
+&lt;p&gt;需要配置博客url、名称、作者、rss等信息。
+    url: &lt;a href=&quot;http://javachen.github.com&quot;&gt;http://javachen.github.com&lt;/a&gt;
+    title: JavaChen on Java
+    subtitle: Just some random thoughts about technology,Java and life.
+    author: javachen
+    simple_search: &lt;a href=&quot;http://google.com/search&quot;&gt;http://google.com/search&lt;/a&gt;
+    description:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;date_format: &amp;quot;%Y年%m月%d日&amp;quot;
 
 subscribe_rss: /atom.xml
 subscribe_email:
 email:
 
-# 如果你使用的是一个子目录，如http://site.com/project，则设置为'root: /project'
+# 如果你使用的是一个子目录，如http://site.com/project，则设置为&amp;#39;root: /project&amp;#39;
 root: /
 # 文章标题格式
 permalink: /:year/:month/:day/:title/
@@ -1060,87 +842,72 @@ code_dir: downloads/code
 category_dir: categories
 markdown: rdiscount
 pygments: false # default python pygments have been replaced by pygments.rb
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_3&quot;&gt;Step4 - 部署&lt;/h2&gt;
 
-&lt;h2&gt;Step4 - 部署&lt;/h2&gt;
-
-&lt;p&gt;先把整个项目静态化，然后再部署到GitHub：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;rake generate
-rake deploy
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!&lt;/p&gt;
+&lt;p&gt;先把整个项目静态化，然后再部署到GitHub：
+    rake generate
+    rake deploy
+当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Tips：&lt;/em&gt;
 Octopress提供的所有rake方法，可以运行&lt;code&gt;rake -T&lt;/code&gt;查看。
 如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。&lt;/p&gt;
 
-&lt;h2&gt;Step5 - 从Wordpress迁移到Octopress&lt;/h2&gt;
+&lt;h2 id=&quot;toc_4&quot;&gt;Step5 - 从Wordpress迁移到Octopress&lt;/h2&gt;
 
-&lt;h3&gt;备份&lt;/h3&gt;
+&lt;h3 id=&quot;toc_5&quot;&gt;备份&lt;/h3&gt;
 
-&lt;h4&gt;备份评论内容&lt;/h4&gt;
+&lt;h4 id=&quot;toc_6&quot;&gt;备份评论内容&lt;/h4&gt;
 
 &lt;p&gt;Octopress由于是纯静态，所以没有办法存储用户评论了，我们可以使用DISQUS提供的“云评论”服务。首先安装DISQUS的WordPress插件，在插件设置中我们可以将现有的评论内容导入到DISQUS中。DISQUS处理导入数据的时间比较长，往往需要24小时甚至以上的时间。&lt;/p&gt;
 
-&lt;h4&gt;备份文章内容&lt;/h4&gt;
+&lt;h4 id=&quot;toc_7&quot;&gt;备份文章内容&lt;/h4&gt;
 
 &lt;p&gt;在WordPress后台我们可以将整站数据备份成一个.xml文件下载下来。同时，我原先文章中的图片都是直接在Wordpress后台上传的，所以要把服务器上&lt;code&gt;wp-content/uploads&lt;/code&gt;下的所有文件备份下来。&lt;/p&gt;
 
-&lt;h3&gt;迁移&lt;/h3&gt;
+&lt;h3 id=&quot;toc_8&quot;&gt;迁移&lt;/h3&gt;
 
-&lt;h4&gt;迁移文章&lt;/h4&gt;
+&lt;h4 id=&quot;toc_9&quot;&gt;迁移文章&lt;/h4&gt;
 
-&lt;p&gt;jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：&lt;/p&gt;
+&lt;p&gt;jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：
+    ruby -r &amp;quot;./utils/wordpressdotcom.rb&amp;quot; -e &amp;quot;Jekyll::WordpressDotCom.process&amp;quot;
+于是转换好的文章都放进source目录了。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;ruby -r &quot;./utils/wordpressdotcom.rb&quot; -e &quot;Jekyll::WordpressDotCom.process&quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;于是转换好的文章都放进source目录了。&lt;/p&gt;
-
-&lt;h4&gt;迁移URL&lt;/h4&gt;
+&lt;h4 id=&quot;toc_10&quot;&gt;迁移URL&lt;/h4&gt;
 
 &lt;p&gt;迁移URL，便是要保证以前的文章链接能够自动重定向到新的链接上。这样既能保证搜索引擎的索引不受影响，也是一项对读者负责任的行为是吧。不过这是一项挺麻烦的事情。&lt;/p&gt;
 
-&lt;p&gt;幸好我当初建立WordPress的时候就留下了后路。原先网站的链接是这样的：&lt;/p&gt;
+&lt;p&gt;幸好我当初建立WordPress的时候就留下了后路。原先网站的链接是这样的：
+    &lt;a href=&quot;http://XXXXXXXXX.com/%5Byear%5D/%5Bmonth%5D/%5Bthe-long-long-title%5D.html&quot;&gt;http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html&lt;/a&gt;
+    &lt;a href=&quot;http://XXXXXXXXX.com/page/xx/&quot;&gt;http://XXXXXXXXX.com/page/xx/&lt;/a&gt;
+    &lt;a href=&quot;http://XXXXXXXXX.com/category/%5Bcategory-name%5D/&quot;&gt;http://XXXXXXXXX.com/category/[category-name]/&lt;/a&gt;
+这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
+    permalink: /:year/:month/:title/
+    category_dir: category
+    pagination_dir:  # 留空&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html
-http://XXXXXXXXX.com/page/xx/
-http://XXXXXXXXX.com/category/[category-name]/
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;permalink: /:year/:month/:title/
-category_dir: category
-pagination_dir:  # 留空
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4&gt;迁移评论&lt;/h4&gt;
+&lt;h4 id=&quot;toc_11&quot;&gt;迁移评论&lt;/h4&gt;
 
 &lt;p&gt;既然做好了301，那么迁移评论就显得非常简单了。登录DISQUS后台，进入站点管理后台的“Migrate Threads”栏目，那里有一个“Redirect Crawler”的功能，便是自动跟随301重定向，将评论指向新的网址。点一下那个按钮就大功告成。&lt;/p&gt;
 
-&lt;h4&gt;迁移图片&lt;/h4&gt;
+&lt;h4 id=&quot;toc_12&quot;&gt;迁移图片&lt;/h4&gt;
 
 &lt;p&gt;可以参考&lt;a href=&quot;http://log4d.com/2012/05/image-host/&quot;&gt;使用独立图床子域名&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2&gt;Step6 - 再次部署&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;rake generate
+&lt;h2 id=&quot;toc_13&quot;&gt;Step6 - 再次部署&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;rake generate
 rake deploy
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;参考文章&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_14&quot;&gt;参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Octopress Setup： http://octopress.org/docs/setup/&lt;/li&gt;
-&lt;li&gt;Octopress Deploying：http://octopress.org/docs/deploying/&lt;/li&gt;
-&lt;li&gt;Blog = GitHub + Octopress：http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&lt;/li&gt;
-&lt;li&gt;从Wordpress迁移到Octopress：http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&lt;/li&gt;
-&lt;li&gt;使用独立图床子域名：http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/&lt;/li&gt;
+&lt;li&gt;Octopress Setup： &lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;http://octopress.org/docs/setup/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Octopress Deploying：&lt;a href=&quot;http://octopress.org/docs/deploying/&quot;&gt;http://octopress.org/docs/deploying/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Blog = GitHub + Octopress：&lt;a href=&quot;http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&quot;&gt;http://mrzhang.me/blog/blog-equals-github-plus-octopress.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;从Wordpress迁移到Octopress：&lt;a href=&quot;http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&quot;&gt;http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;使用独立图床子域名：&lt;a href=&quot;http://log4d.com/2012/05/image-host/&quot;&gt;http://log4d.com/2012/05/image-host/&lt;/a&gt; &lt;a href=&quot;http://log4d.com/2012/05/image-host/&quot;&gt;http://log4d.com/2012/05/image-host/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html'>使用Octopress将博客从wordpress迁移到GitHub上</a></content>
  </entry>
  
@@ -1152,28 +919,16 @@ rake deploy
    <content type="html">&lt;p&gt;pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.&lt;br /&gt;
 使用ivy编译kettle的源代码却是非常容易的事情.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的&lt;a href=&quot;http://wiki.pentaho.com/display/EAI/Kettle+dependency+management&quot; target=&quot;_blank&quot;&gt;Kettle dependency management&lt;/a&gt;,文章标题没作修改.&lt;br /&gt;
 编写此文,是为了记录编译kettle源码的方法和过程.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;以下是对原文的一个简单翻译.&lt;/strong&gt;
 将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.&lt;/p&gt;
-
-
-
 
 &lt;p&gt;pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
 &lt;!--more--&gt;
 &lt;strong&gt;关于Ivy&lt;/strong&gt;
 &lt;a href=&quot;http://ant.apache.org/ivy/&quot; target=&quot;_blank&quot;&gt;Apache Ivy™&lt;/a&gt;是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:&lt;a href=&quot;http://ant.apache.org/ivy/features.html&quot; target=&quot;_blank&quot;&gt;enterprise features&lt;/a&gt;, &lt;a href=&quot;http://ant.apache.org/ivy/testimonials.html&quot; target=&quot;_blank&quot;&gt;what people say about it&lt;/a&gt;, 以及 &lt;a href=&quot;http://ant.apache.org/ivy/history/latest-milestone/index.html&quot; target=&quot;_blank&quot;&gt;how it can improve your build system&lt;/a&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;在kettle中使用ivyIDE&lt;/strong&gt;
 首先,从svn上下载kettle的源代码:
@@ -1183,9 +938,6 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 如果你想在Eclipse上使用&lt;a href=&quot;http://ant.apache.org/ivy/ivyde/download.cgi&quot; target=&quot;_blank&quot;&gt;ivyde plugin&lt;/a&gt;.&lt;br /&gt;
 请参考相关文章安装该插件.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.&lt;br /&gt;
 1.执行&lt;code&gt;ant resolve&lt;/code&gt;,这个命令将会创建一个叫做resolved-libs的文件夹.&lt;br /&gt;
 2.使用下面命令更新classpath &lt;br /&gt;
@@ -1193,15 +945,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
   b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)&lt;br /&gt;
 注意:kettle项目中的构建脚本会自动安装ivy插件.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;构建Kettle&lt;/strong&gt;
 你可以下载kettle源代码然后立即执行&lt;code&gt;ant distrib&lt;/code&gt;命令&lt;br /&gt;
 或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;ivy中未完成的&lt;/strong&gt;
 &lt;strong&gt;pentaho-database-&lt;/strong&gt;这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
@@ -1209,13 +955,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 &lt;strong&gt;library configurations-&lt;/strong&gt;每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
 &lt;strong&gt;checked-in plugins-&lt;/strong&gt;当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 &lt;a href=&quot;http://wiki.pentaho.com/display/EAI/Kettle+dependency+management&quot; target=&quot;_blank&quot;&gt;Kettle dependency management&lt;/a&gt;
 &lt;/p&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/04/13/kettle-dependency-management.html'>Kettle dependency management</a></content>
  </entry>
  
@@ -1226,9 +968,6 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
    <id>http://blog.javachen.com/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli</id>
    <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;br /&gt;
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;Starting the CLI&lt;/h1&gt;
 使用&lt;code&gt;cassandra-cli&lt;/code&gt; &lt;code&gt;-host&lt;/code&gt; &lt;code&gt;-port&lt;/code&gt; 命令启动 Cassandra CLI，他将会连接&lt;code&gt;cassandra.yaml&lt;/code&gt;文件中定义的集群名称，默认为“&lt;em&gt;Test Cluster&lt;/em&gt;”。&lt;br /&gt;
@@ -1266,16 +1005,10 @@ Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
 &lt;/pre&gt;
 你可以使用&lt;code&gt;SHOW KEYSPACES&lt;/code&gt;来查看所有系统的和你创建的Keyspace&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;Use a keyspace&lt;/h1&gt;
 &lt;pre&gt;
 [default@unknown] USE demo;
 &lt;/pre&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;Creating a Column Family&lt;/h1&gt;
 &lt;pre&gt;
@@ -1296,9 +1029,6 @@ AND column_metadata = [
 [default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;Creating a Counter Column Family&lt;/h1&gt;
 &lt;pre&gt;
 [default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
@@ -1313,9 +1043,6 @@ AND column_metadata = [
 &lt;pre&gt;
 [default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
 &lt;/pre&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;Inserting Rows and Columns&lt;/h1&gt;
 以下命令以一个特点的行key值插入列到users中
@@ -1334,9 +1061,6 @@ get命令用法参考：&lt;a href=&quot;http://wiki.apache.org/cassandra/API#ge
 &lt;pre&gt;
 [default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
 &lt;/pre&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;Reading Rows and Columns&lt;/h1&gt;
 使用List命令查询记录，默认查询100条记录
@@ -1361,18 +1085,12 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] ASSUME users VALIDATOR AS ascii;
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;Setting an Expiring Column&lt;/h1&gt;
 例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
 &lt;pre&gt;
 [default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
 &lt;/pre&gt;
 自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;Indexing a Column&lt;/h1&gt;
 给birth_year添加一个二级索引：
@@ -1386,9 +1104,6 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] GET users WHERE birth_date = 1969;
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;Deleting Rows and Columns&lt;/h1&gt;
 删除yomama索引的coupon_code列：
 &lt;pre&gt;
@@ -1400,17 +1115,11 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] DEL users ['yomama'];
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;Dropping Column Families and Keyspaces&lt;/h1&gt;
 &lt;pre&gt;
 [default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
 &lt;/pre&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;For help&lt;/h1&gt;
 &lt;pre&gt;
@@ -1421,33 +1130,22 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@unknown] help SET;
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;h1&gt;To Quit&lt;/h1&gt;
 &lt;pre&gt;
 [default@unknown]quit;
 &lt;/pre&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;h1&gt;To Execute Script&lt;/h1&gt;
 &lt;pre&gt;
 bin/cassandra-cli -host localhost -port 9160 -f script.txt
 &lt;/pre&gt;&lt;/p&gt;
 
-
-
-
 &lt;h1&gt;参考文章&lt;/h1&gt;
-
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html'>Getting Started Using the Cassandra CLI</a></content>
  </entry>
  
@@ -1460,80 +1158,53 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 
 &lt;h1&gt;检查java环境&lt;/h1&gt;
 
-
-&lt;p&gt;Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.&lt;/p&gt;
-
+&lt;p&gt;Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
 &lt;h3&gt;1.检查是否安装java:&lt;/h3&gt;
+&lt;pre&gt;&lt;/p&gt;
 
+&lt;h1 id=&quot;toc_0&quot;&gt;java -version&lt;/h1&gt;
 
-&lt;pre&gt;
-# java -version
-&lt;/pre&gt;
-
-
-&lt;p&gt;如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.&lt;/p&gt;
-
+&lt;p&gt;&lt;/pre&gt;
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
 &lt;h3&gt;2.安装jdk&lt;/h3&gt;
-
-
-&lt;p&gt;下载&lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/index.html&quot; target=&quot;_blank&quot;&gt;Oracle JRE&lt;/a&gt;
-1）修改执行权限:&lt;/p&gt;
-
+下载&lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/index.html&quot; target=&quot;_blank&quot;&gt;Oracle JRE&lt;/a&gt;
+1）修改执行权限:
 &lt;pre&gt;
 $ cd /tmp
 $ chmod a+x jre-6u25-linux-x64-rpm.bin
 &lt;/pre&gt;
-
-
-&lt;!--more--&gt;
-
-
-&lt;p&gt;2）解压执行RPM文件,例如:&lt;/p&gt;
-
+&amp;lt;!--more--&amp;gt;
+2）解压执行RPM文件,例如:
 &lt;pre&gt;
 $ sudo ./jre-6u25-linux-x64-rpm.bin
 &lt;/pre&gt;
-
-
-&lt;p&gt;这样JRE会安装在/usr/java/
+这样JRE会安装在/usr/java/
 3）配置Oracle JRE取代OpenJDK JRE
-可以使用alternatives命令添加一个链接到Oracle JRE.&lt;/p&gt;
-
+可以使用alternatives命令添加一个链接到Oracle JRE.
 &lt;pre&gt;
 $ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
 &lt;/pre&gt;
-
-
-&lt;p&gt;4）确认是否安装JRE&lt;/p&gt;
-
+4）确认是否安装JRE
 &lt;pre&gt;
 $ java -version
-  java version &quot;1.6.0_25&quot;
+  java version &amp;quot;1.6.0_25&amp;quot;
   Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
   Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
 &lt;/pre&gt;
-
-
-&lt;p&gt;如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:&lt;/p&gt;
-
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
 &lt;pre&gt;
 $ sudo alternatives --config java
-There are 2 programs which provide 'java'.
+There are 2 programs which provide &amp;#39;java&amp;#39;.&lt;/p&gt;
 
-Selection      Command
------------------------------------------------
-   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
+&lt;h2 id=&quot;toc_1&quot;&gt;Selection      Command&lt;/h2&gt;
+
+&lt;p&gt;1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
 *+ 2           /usr/java/jre1.6.0_25/bin/java
-&lt;/pre&gt;
-
-
-
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;h1&gt;在Linux系统上安装DataStax Community二进制文件&lt;/h1&gt;
 
-
 &lt;h3&gt;1.在用户目录创建一个目录,如datas&lt;/h3&gt;
-
 
 &lt;pre&gt;
 $ cd $HOME
@@ -1541,9 +1212,7 @@ $ mkdir datas
 $ cd datas
 &lt;/pre&gt;
 
-
 &lt;h3&gt;2.下载cassandra(必须的)和OpsCenter包(可选的)&lt;/h3&gt;
-
 
 &lt;pre&gt;
 $ wget http://downloads.datastax.com/community/dsc.tar.gz
@@ -1551,9 +1220,7 @@ $ wget http://downloads.datastax.com/community/opscenter.tar.gz
 $ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
 &lt;/pre&gt;
 
-
 &lt;h3&gt;3.解压&lt;/h3&gt;
-
 
 &lt;pre&gt;
 $ tar -xzvf dsc.tar.gz
@@ -1562,156 +1229,106 @@ $ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
 $ rm *.tar.gz
 &lt;/pre&gt;
 
-
 &lt;h3&gt;4.设置环境变量&lt;/h3&gt;
 
-
-&lt;p&gt;1)编辑 .bashrc&lt;/p&gt;
-
+&lt;p&gt;1)编辑 .bashrc 
 &lt;pre&gt;
  vi $HOME/.bashrc
 &lt;/pre&gt;
-
-
-&lt;p&gt;2)添加以下代码&lt;/p&gt;
-
+2)添加以下代码
 &lt;pre&gt;
 export CASSANDRA_HOME=$HOME/datas/dsc_package_name
 export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
 export OPSC_HOME=$HOME/datas/opscenter_package_name
-export PATH=&quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&quot;
-&lt;/pre&gt;
-
+export PATH=&amp;quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&amp;quot;
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;注意替换&lt;font color=&quot;red&quot;&gt;dsc_package_name&lt;/font&gt;和&lt;font color=&quot;red&quot;&gt;opscenter_package_name&lt;/font&gt;
 3)保存退出
-4)使该文件生效&lt;/p&gt;
-
+4)使该文件生效
 &lt;pre&gt;
 source $HOME/.bashrc
 &lt;/pre&gt;
-
-
 &lt;h3&gt;5.创建保存Cassandra数据的文件和日志目录&lt;/h3&gt;
-
-
 &lt;pre&gt;
 $ mkdir $HOME/datas/cassandra-data
-&lt;/pre&gt;
-
-
-
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;h1&gt;配置并启动单节点&lt;/h1&gt;
 
-
 &lt;h3&gt;1.编辑配置环境&lt;/h3&gt;
 
-
-&lt;p&gt;修改$CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
-
+&lt;p&gt;修改$CASSANDRA_HOME/conf/cassandra.yaml
 &lt;pre&gt;
-$ sed -i -e &quot;s,initial_token:,initial_token: 0,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &amp;quot;s,initial_token:,initial_token: 0,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
 
-$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+&lt;p&gt;$ sed -i -e &amp;quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
 
-$ sed -i -e &quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
-  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+&lt;p&gt;$ sed -i -e &amp;quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
 
-$ sed -i -e &quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
-  $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
-&lt;/pre&gt;
+&lt;p&gt;$ sed -i -e &amp;quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
+  $HOME/datastax/cassandra-data/commitlog,&amp;quot; $CASSANDRA_HOME/conf/cassandra.yaml
+&lt;/pre&gt;&lt;/p&gt;
 
+&lt;h3&gt;2.设置日志文件位置&lt;/h3&gt; 
 
-
-
-&lt;h3&gt;2.设置日志文件位置&lt;/h3&gt;
-
-
-&lt;p&gt;
-修改：$CASSANDRA_HOME/conf/log4j-server.properties&lt;/p&gt;
-
+&lt;p&gt;修改：$CASSANDRA_HOME/conf/log4j-server.properties
 &lt;pre&gt;
-$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
-  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
+$ sed -i -e &amp;quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&amp;quot; \
   $CASSANDRA_HOME/conf/log4j-server.properties
 &lt;/pre&gt;
-
-
 &lt;h3&gt;3.配置DataStax示例程序指向Cassandra的安装位置&lt;/h3&gt;
-
-
 &lt;pre&gt;
-$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/&lt;dsc_package_name&gt;,&quot; \
+$ sed -i -e &amp;quot;s,/usr/share/cassandra,$HOME/datastax/&lt;dsc_package_name&gt;,&amp;quot; \
   $DSCDEMO_HOME/bin/pricer
 &lt;/dsc_package_name&gt;
-&lt;/pre&gt;
-
-
-
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;h3&gt;4.后台启动Cassandra&lt;/h3&gt;
-
 
 &lt;pre&gt;
 $ cassandra
 &lt;/pre&gt;
 
-
 &lt;h3&gt;5.检查cassandra环是否在运行&lt;/h3&gt;
-
 
 &lt;pre&gt;
 $ nodetool ring -h localhost
 &lt;/pre&gt;
 
-
 &lt;h3&gt;6.运行Portfolio Demo示例程序&lt;/h3&gt;
 
-
-&lt;p&gt;1)进入Portfolio目录&lt;/p&gt;
-
+&lt;p&gt;1)进入Portfolio目录
 &lt;pre&gt;
 $ cd $DSCDEMO_HOME
 &lt;/pre&gt;
-
-
-&lt;p&gt;2)运行 ./bin/pricer工具生成数据&lt;/p&gt;
-
+2)运行 ./bin/pricer工具生成数据
 &lt;pre&gt;
 ./bin/pricer --help
 &lt;/pre&gt;
-
-
-&lt;p&gt;下面代码生成100天的历史数据&lt;/p&gt;
-
+下面代码生成100天的历史数据
 &lt;pre&gt;
 ./bin/pricer -o INSERT_PRICES
 ./bin/pricer -o UPDATE_PORTFOLIOS
 ./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
 &lt;/pre&gt;
-
-
-&lt;p&gt;3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)&lt;/p&gt;
-
+3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)
 &lt;pre&gt;
 $ cd $DSCDEMO_HOME/website
-$ java -jar start.jar &amp;
+$ java -jar start.jar &amp;amp;
 &lt;/pre&gt;
-
-
-&lt;p&gt;4)浏览程序 http://localhost:8983/portfolio&lt;/p&gt;
+4)浏览程序 http://localhost:8983/portfolio&lt;/p&gt;
 
 &lt;h1&gt;参考文章&lt;/h1&gt;
-
 
 &lt;ul&gt;
 &lt;li&gt;1.&lt;a href=&quot;http://www.datastax.com/docs/1.0/getting_started/install_singlenode&quot; target=&quot;_blank&quot;&gt;Installing a Single-Node Instance of Cassandra&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html'>使用DataStax Community Edition安装Cassandra单节点</a></content>
  </entry>
  
@@ -1723,16 +1340,10 @@ $ java -jar start.jar &amp;
    <content type="html">&lt;p&gt;&lt;strong&gt;定义 &lt;/strong&gt;
 一般的线性表、树，数据在结构中的相对位置是&lt;code&gt;随机&lt;/code&gt;的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;code&gt;哈希表&lt;/code&gt;又称散列表。
 &lt;em&gt;哈希表存储的基本思想是&lt;/em&gt;：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即&lt;code&gt;数组空间&lt;/code&gt;）的单元地址（即&lt;code&gt;下标&lt;/code&gt;），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为&lt;code&gt;哈希表&lt;/code&gt;或&lt;code&gt;散列表&lt;/code&gt;。&lt;br /&gt;
 哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。&lt;br /&gt;
 哈希表是基于&lt;code&gt;数组结构&lt;/code&gt;实现的，所以它也存在一些&lt;em&gt;缺点&lt;/em&gt;： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即&lt;code&gt;冲突现象&lt;/code&gt;：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： &lt;em&gt;不需要有序遍历数据，并且可以提前预测数据量的大小&lt;/em&gt;。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;冲突&lt;/strong&gt;
 理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。&lt;br /&gt;
@@ -1740,9 +1351,6 @@ $ java -jar start.jar &amp;
 对于哈希技术，主要研究两个问题：&lt;br /&gt;
 （1）如何设计哈希函数以使冲突尽可能少地发生。&lt;br /&gt;
 （2）发生冲突后如何解决。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;哈希函数的构造方法&lt;/strong&gt;
 构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。
@@ -1752,13 +1360,7 @@ $ java -jar start.jar &amp;
 H(k)=k+c (c≥0)&lt;br /&gt;
 这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;2．除留余数法&lt;/strong&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即：&lt;br /&gt;
 H(k)=k％m&lt;br /&gt;
@@ -1766,36 +1368,21 @@ H(k)=k％m&lt;br /&gt;
 这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。&lt;br /&gt;
 理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;3．平方取中法&lt;/strong&gt;
 取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。&lt;br /&gt;
 设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;4．折叠法&lt;/strong&gt;
 这种方法适合在关键字的位数较多，而地址区间较小的情况。&lt;br /&gt;
 将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。&lt;br /&gt;
 例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;5．数值分析法&lt;/strong&gt;
 若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。&lt;br /&gt;
 例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;6. 随机数法&lt;/strong&gt;
 选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;7. 斐波那契（Fibonacci）散列法&lt;/strong&gt;
 平方散列法的缺点是显而易见的，所以我们能不能找出一个理想的乘数，而不是拿value本身当作乘数呢？答案是肯定的。&lt;br /&gt;
@@ -1807,9 +1394,6 @@ H(k)=k％m&lt;br /&gt;
 index = (value * 2654435769) &amp;gt;&amp;gt; 28&lt;br /&gt;
 如果用这种斐波那契散列法的话，那我上面的图就变成这样了：&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;冲突的解决方法&lt;/strong&gt;
 假设哈希表的地址范围为0～m-l，当对给定的关键字k，由哈希函数H(k)算出的哈希地址为i（0≤i≤m-1）的位置上已存有记录，这种情况就是&lt;code&gt;冲突现象&lt;/code&gt;。 处理冲突就是为该关键字的记录找到另一个“空”的哈希地址。即通过一个新的哈希函数得到一个新的哈希地址。如果仍然发生冲突，则再求下一个，依次类推。直至新的哈希地址不再发生冲突为止。&lt;br /&gt;
 常用的处理冲突的方法有开放地址法、链地址法两大类
@@ -1818,18 +1402,12 @@ index = (value * 2654435769) &amp;gt;&amp;gt; 28&lt;br /&gt;
 如 Hi=(H(k)+d（i）) % m, i=1，2，…k (k 其中H(k)为哈希函数，m为哈希表长，d为增量函数，d(i)=dl，d2…dn-l。&lt;br /&gt;
 增量序列的取法不同，可得到不同的开放地址处理冲突探测方法。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;1）线性探测法&lt;/strong&gt;
 线性探测法是从发生冲突的地址（设为d）开始，依次探查d+l，d+2，…m-1（当达到表尾m-1时，又从0开始探查）等地址，直到找到一个空闲位置来存放冲突处的关键字。&lt;br /&gt;
 若整个地址都找遍仍无空地址，则产生溢出。&lt;br /&gt;
 线性探查法的数学递推描述公式为：&lt;br /&gt;
 d0=H(k)&lt;br /&gt;
 di=(di-1+1)% m (1≤i≤m-1)&lt;/p&gt;
-
-
-
 
 &lt;p&gt;【例】已知哈希表地址区间为0～10，给定关键字序列（20，30，70，15，8，12，18，63，19）。哈希函数为H(k)=k％ll，采用线性探测法处理冲突，则将以上关键字依次存储到哈希表中。试构造出该哈希表，并求出等概率情况下的平均查找长度。&lt;br /&gt;
 假设数组为A, 本题中各元素的存放过程如下：&lt;br /&gt;
@@ -1844,16 +1422,10 @@ d0=8&lt;br /&gt;
 d1=(8+1)%11=9，仍冲突；&lt;br /&gt;
 d2=(8+2)%11=10，将8放入到A[10]中。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;在等概率情况下成功的平均查找长度为：&lt;br /&gt;
 （1*5+2+3+4+6）/9 =20/9&lt;br /&gt;
 利用线性探查法处理冲突容易造成关键字的&lt;code&gt;堆积&lt;/code&gt;问题。这是因为当连续n个单元被占用后，再散列到这些单元上的关键字和直接散列到后面一个空闲单元上的关键字都要占用这个空闲单元，致使该空闲单元很容易被占用，从而发生非同义冲突。造成平均查找长度的增加。&lt;br /&gt;
 为了克服堆积现象的发生，可以用下面的方法替代线性探查法。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;（2）平方探查法&lt;/strong&gt;
 设发生冲突的地址为d，则平方探查法的探查序列为：d+12，d+22，…直到找到一个空闲位置为止。&lt;br /&gt;
@@ -1866,35 +1438,20 @@ di=(d0+i2) % m (1≤i≤m-1)&lt;br /&gt;
 例如，若表长m=13，假设在第3个位置发生冲突，则后面探查的位置依次为4、7、12、6、2、0，即可以探查到一半单元。&lt;br /&gt;
 若解决冲突时，探查到一半单元仍找不到一个空闲单元。则表明此哈希表太满，需重新建立哈希表。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;2．链地址法&lt;/strong&gt;
 用链地址法解决冲突的方法是：把所有关键字为同义词的记录存储在一个线性链表中，这个链表称为同义词链表。并将这些链表的表头指针放在数组中（下标从0到m-1）。这类似于图中的邻接表和树中孩子链表的结构。&lt;br /&gt;
 由于在各链表中的第一个元素的查找长度为l，第二个元素的查找长度为2，依此类推。因此，在等概率情况下成功的平均查找长度为：&lt;br /&gt;
 (1*5+2*2+3*l+4*1)／9=16／9&lt;/p&gt;
 
-
-
-
 &lt;p&gt;虽然链地址法要多费一些存储空间，但是彻底解决了“堆积”问题，大大提高了查找效率。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;3. 再哈希法&lt;/strong&gt;：&lt;br /&gt;
 Hi=R Hi(key)，&lt;br /&gt;
 R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另一个哈希函数地址，直到冲突不再发生。这种方法不易产生&lt;code&gt;聚集&lt;/code&gt;，但增加了计算的时间。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;4.建立一个公共溢出区&lt;/strong&gt;
 这也是处理冲突的一种方法。&lt;br /&gt;
 假设哈希函数的值域为[0，m-1]，则设向量HashTable[0…m-1]为基本表，每个分量存放一个记录，另设立向量OverTable[0．．v]为溢出表。所有关键字和基本表中关键字为同义词的记录，不管它们由哈希函数得到的哈希地址是什么，一旦发生冲突，都填入溢出表。&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;哈希表的查找及性能分析&lt;/strong&gt;
 &lt;code&gt;哈希法&lt;/code&gt;是利用关键字进行计算后直接求出存储地址的。当哈希函数能得到均匀的地址分布时，不需要进行任何比较就可以直接找到所要查的记录。但实际上不可能完全避免冲突，因此查找时还需要进行探测比较。&lt;br /&gt;
@@ -1907,22 +1464,13 @@ R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另�
 &lt;strong&gt;第三:与解决冲突的哈希冲突函数有关&lt;/strong&gt;
 哈希冲突函数选择的好坏也将减少或增加发生冲突的可能性。&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;思考&lt;/strong&gt;
 &lt;em&gt;哈希算法的基本思想是什么？&lt;/em&gt;
 &lt;em&gt;哈希算法的存储效率主要取决于什么？&lt;/em&gt;
 &lt;em&gt;哈希算法解决冲突的方式有哪些？&lt;/em&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;java 哈希表实现&lt;/strong&gt;
 java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap，也有其他公司实现的，如apache的FashHashmap,google的mapmarker,high-lib的NonBlockingHashMap,其中差别是：&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;hastable&lt;/strong&gt;:线程同步，比较慢
 &lt;strong&gt;hashmap&lt;/strong&gt;：线程不同步，不同步时候读写最快（但是不能保证读到最新数据），加同步修饰的时候， 读写比较慢
@@ -1931,22 +1479,15 @@ java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap�
 &lt;strong&gt;NoBlockingHashMap&lt;/strong&gt;： high_scale_lib实现写入慢，读取较快
 &lt;strong&gt;MiltigetHashMap&lt;/strong&gt;，MapMaker google collection，和CurrentHashMap性能相当，功能比较全，可以设置超时，重复的可以保存成list&lt;/p&gt;
 
-
-
-
 &lt;p&gt;&lt;strong&gt;参考文章&lt;/strong&gt;
 &lt;a href=&quot;http://course.onlinesjtu.com/mod/page/view.php?id=423&quot; target=&quot;_blank&quot;&gt; http://course.onlinesjtu.com/mod/page/view.php?id=423&lt;/a&gt;
 &lt;a href=&quot;http://www.cnblogs.com/bigshuai/articles/2398116.html&quot; target=&quot;_blank&quot;&gt; http://www.cnblogs.com/bigshuai/articles/2398116.html&lt;/a&gt;&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;strong&gt;扩展阅读&lt;/strong&gt;
 Hash碰撞的拒绝式服务攻击 &lt;a href=&quot;http://blog.jobbole.com/11454/&quot; target=&quot;_blank&quot;&gt;http://blog.jobbole.com/11454/&lt;/a&gt;
 Berkeley DB Hash、Btree、Queue、Recno选择&lt;a href=&quot; http://www.webzone8.com/article/560.html&quot; target=&quot;_blank&quot;&gt; http://www.webzone8.com/article/560.html&lt;/a&gt;
 Java Hashtable &lt;a href=&quot;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&quot; target=&quot;_blank&quot;&gt;http://javapapers.com/core-java/java-hashtable/#&amp;amp;slider1=1&lt;/a&gt;
 Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot; target=&quot;_blank&quot;&gt;http://kantery.iteye.com/blog/441755&lt;/a&gt;&lt;/p&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Java/2012/03/26/hash-and-hash-functions.html'>哈希表</a></content>
  </entry>
  
@@ -1967,8 +1508,7 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 
 &lt;p&gt;在pdi-ce-big-data-4.3.0-preview&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;(下载页面&lt;/a&gt;)版本中可以看到kettle开始支持cassandra的输入和输出.&lt;br /&gt;
 故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.&lt;br /&gt;
-在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:&lt;/p&gt;
-
+在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:
 &lt;pre&gt;
 .
 |-- databases
@@ -1982,20 +1522,18 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 |-- spoon
 |-- steps
 `-- versioncheck
-&lt;/pre&gt;
+&lt;/pre&gt;&lt;/p&gt;
 
-
-&lt;p&gt;pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下&lt;/p&gt;
-
+&lt;p&gt;pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下
 &lt;pre&gt;
 .
 |-- databases
 |-- hour-partitioner.jar
 |-- jobentries
-|   `-- DummyJob
+|   &lt;code&gt;-- DummyJob
 |       |-- DPL.png
 |       |-- dummyjob.jar
-|       `-- plugin.xml
+|&lt;/code&gt;-- plugin.xml
 |-- pentaho-big-data-plugin
 |   |-- lib
 |   |   |-- apache-cassandra-1.0.0.jar
@@ -2009,49 +1547,45 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 |   |   |-- mongo-java-driver-2.7.2.jar
 |   |   |-- pig-0.8.1.jar
 |   |   |-- xpp3_min-1.1.4c.jar
-|   |   `-- xstream-1.3.1.jar
-|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|   |   &lt;code&gt;-- xstream-1.3.1.jar
+|&lt;/code&gt;-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
 |-- repositories
 |-- spoon
 |-- steps
 |   |-- DummyPlugin
 |   |   |-- DPL.png
 |   |   |-- dummy.jar
-|   |   `-- plugin.xml
+|   |   &lt;code&gt;-- plugin.xml
 |   |-- S3CsvInput
 |   |   |-- jets3t-0.7.0.jar
 |   |   |-- plugin.xml
 |   |   |-- S3CIN.png
-|   |   `-- s3csvinput.jar
-|   `-- ShapeFileReader3
+|   |&lt;/code&gt;-- s3csvinput.jar
+|   &lt;code&gt;-- ShapeFileReader3
 |       |-- plugin.xml
 |       |-- SFR.png
-|       `-- shapefilereader3.jar
-`-- versioncheck
+|&lt;/code&gt;-- shapefilereader3.jar
+&lt;code&gt;-- versioncheck
     |-- kettle-version-checker-0.2.0.jar
-    `-- lib
-        `-- pentaho-versionchecker.jar
+&lt;/code&gt;-- lib
+        `-- pentaho-versionchecker.jar&lt;/p&gt;
 
-13 directories, 29 files
-&lt;/pre&gt;
+&lt;p&gt;13 directories, 29 files
+&lt;/pre&gt;&lt;/p&gt;
 
-
-&lt;p&gt;启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.&lt;/p&gt;
-
+&lt;p&gt;启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
 &lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg&quot; target=&quot;_blank&quot;&gt;
 &lt;img alt=&quot;&quot; src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg&quot; title=&quot;pdi big data plugin in kette 4.2&quot; class=&quot;aligncenter&quot; width=&quot;600&quot; height=&quot;375&quot; /&gt;
 &lt;/a&gt;
-&lt;/div&gt;
-
+&lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;获取pentaho-big-data-plugin源码&lt;/strong&gt;
 如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?&lt;br /&gt;
 你可以从&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.&lt;/p&gt;
 
 &lt;p&gt;然后,需要在kettle-steps.xml中注册步骤节点&lt;br /&gt;
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.&lt;/p&gt;
-
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.
 &lt;pre&gt;
 &lt;step id=&quot;MongoDbInput&quot;&gt;
 &lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
@@ -2060,26 +1594,21 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 &lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
 &lt;iconfile&gt;ui/images/mongodb-input.png
 &lt;/iconfile&gt;&lt;/tooltip&gt;&lt;/category&gt;&lt;/classname&gt;&lt;/description&gt;&lt;/step&gt;
-&lt;/pre&gt;
-
-
-
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;div class=&quot;note&quot;&gt;
 &lt;h&gt;注意:&lt;br /&gt;
 由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
 &lt;/h&gt;&lt;/div&gt;
 
-
 &lt;p&gt;&lt;strong&gt;扩展阅读:&lt;/strong&gt;&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Pentaho Big Data Plugin &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot; target=&quot;_blank&quot;&gt;&lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&quot;&gt;http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers&lt;/a&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;pentaho-big-data-plugin ci
 &lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Pentaho Community Edition (CE) downloads &lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot; target=&quot;_blank&quot;&gt;&lt;a href=&quot;http://wiki.pentaho.com/display/BAD/Downloads&quot;&gt;http://wiki.pentaho.com/display/BAD/Downloads&lt;/a&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html'>如何在kettle4.2上面实现cassandra的输入与输出</a></content>
  </entry>
  
@@ -2088,19 +1617,15 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
    <link href="http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation.html"/>
    <updated>2012-02-23T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation</id>
-   <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.&lt;/p&gt;
-
+   <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
 &lt;pre lang=&quot;xml&quot;&gt;
-&lt; listener&gt;
-    &lt; listener-class&gt;org.jboss.seam.servlet.SeamListener&lt; /listener-class&gt;
-&lt; /listener&gt;
-&lt;/pre&gt;
+&amp;lt; listener&amp;gt;
+    &amp;lt; listener-class&amp;gt;org.jboss.seam.servlet.SeamListener&amp;lt; /listener-class&amp;gt;
+&amp;lt; /listener&amp;gt;
+&lt;/pre&gt;&lt;/p&gt;
 
-
-&lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。&lt;/p&gt;
-
-&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.&lt;/blockquote&gt;
-
+&lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。
+&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.&lt;/blockquote&gt;&lt;/p&gt;
 
 &lt;p&gt;从描述中可以知道
 SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。&lt;/p&gt;
@@ -2123,7 +1648,6 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 &lt;li&gt;8.从system加载Properties&lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;&lt;strong&gt;第三步&lt;/strong&gt;，seam初始化过程（Initialization的init方法）。&lt;/p&gt;
 
 &lt;ul&gt;
@@ -2139,7 +1663,6 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 &lt;li&gt;10.导入命名空间&lt;/li&gt;
 &lt;li&gt;11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/li&gt;
 &lt;/ul&gt;
-
 
 &lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Seam/2012/02/23/the-process-of-seam-initiation.html'>Seam的启动过程</a></content>
@@ -2185,7 +1708,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 }
 &lt;/pre&gt;
 
-
 &lt;p&gt;runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
 - local：是否本地运行
 - remote：是否远程运行
@@ -2208,7 +1730,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 &lt;li&gt;4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。&lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。&lt;/p&gt;
 
 &lt;p&gt;本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。&lt;/p&gt;
@@ -2223,7 +1744,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 &lt;li&gt;5.调用Job的start方法，启动线程开始执行一个job。&lt;/li&gt;
 &lt;/ul&gt;
 
-
 &lt;p&gt;Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>
  </entry>
@@ -2235,28 +1755,15 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
    <id>http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job</id>
    <content type="html">&lt;p&gt;How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is &quot;org.pentaho.di.ui.spoon.Spoon.java&quot;.This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.&lt;/p&gt;
 
-
-
-
 &lt;p&gt;This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.&lt;/p&gt;
-
-
-
 
 &lt;p&gt;&lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg&quot; alt=&quot;&quot; title=&quot;spoon execute sequence&quot; width=&quot;300&quot; height=&quot;180&quot; class=&quot;aligncenter size-medium wp-image-2511&quot; /&gt;&lt;/a&gt;
 &lt;/div&gt;&lt;/p&gt;
 
-
-
-
 &lt;p&gt;What is the detail process of job execution? You should look into the Job.run() method for detail information.&lt;/p&gt;
-
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></content>
  </entry>
  
@@ -2267,15 +1774,12 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
    <id>http://blog.javachen.com/Kettle/2012/02/17/step-error-handling-in-kettle</id>
    <content type="html">&lt;p&gt;在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。&lt;/p&gt;
 
-&lt;p&gt;下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：&lt;/p&gt;
-
+&lt;p&gt;下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img alt=&quot;&quot; src=&quot;http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wck3m7j.jpg&quot; class=&quot;alignnone&quot; width=&quot;600&quot; height=&quot;172&quot; /&gt;
-&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
 
-
-&lt;p&gt;a1表结构如下：&lt;/p&gt;
-
+&lt;p&gt;a1表结构如下：
 &lt;pre lang=&quot;sql&quot;&gt;
 CREATE TABLE a1
 (
@@ -2284,28 +1788,23 @@ CREATE TABLE a1
   CONSTRAINT id_pk PRIMARY KEY (id ),
   CONSTRAINT id_unin UNIQUE (id )
 )
-&lt;/pre&gt;
-
+&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;从表结构可以看出，a1表中id为主键、唯一。&lt;/p&gt;
 
-&lt;p&gt;a0表数据预览：&lt;/p&gt;
-
+&lt;p&gt;a0表数据预览：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img alt=&quot;&quot; src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wcr6c2j.jpg&quot; class=&quot;alignnone&quot; width=&quot;553&quot; height=&quot;403&quot; /&gt;
-&lt;/div&gt;
-
+&lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。
 再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。&lt;/p&gt;
 
 &lt;p&gt;现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。
-在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。&lt;/p&gt;
-
+在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww3.sinaimg.cn/mw600/48e24b4cjw1dq56wd5ckwj.jpg&quot; alt=&quot;&quot; /&gt;
-&lt;/div&gt;
-
+&lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;相关字段说明：&lt;/strong&gt;&lt;/p&gt;
 
@@ -2321,27 +1820,20 @@ CREATE TABLE a1
 &lt;li&gt;在计算百分百前最少要读入的行数：&lt;/li&gt;
 &lt;/ul&gt;
 
-
-&lt;p&gt;添加错误处理后的转换如下：&lt;/p&gt;
-
+&lt;p&gt;添加错误处理后的转换如下：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wdntipj.jpg&quot; alt=&quot;&quot; /&gt;
-&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
 
-
-&lt;p&gt;记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。&lt;/p&gt;
-
+&lt;p&gt;记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wdvk6uj.jpg&quot; alt=&quot;&quot; /&gt;
-&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
 
-
-&lt;p&gt;记录的错误信息如下：&lt;/p&gt;
-
+&lt;p&gt;记录的错误信息如下：
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56we2sn2j.jpg&quot; alt=&quot;&quot; /&gt;
-&lt;/div&gt;
-
+&lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;分析&lt;/strong&gt;
 可以看到,错误日志里只是记录了出错的行里面的信息，并没有记录当前行所在的表名称以及执行时间等等，如果能够对此进行扩展，则该错误日志表才能更有实际意义。&lt;/p&gt;
@@ -2355,88 +1847,6 @@ CREATE TABLE a1
 &lt;li&gt;&lt;a href=&quot;http://wiki.pentaho.com/display/COM/Step+error+handling+codes&quot; target=&quot;_blank&quot;&gt;Step error handling codes&lt;/a&gt;
 &lt;/li&gt;&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/17/step-error-handling-in-kettle.html'>kettle中定义错误处理</a></content>
- </entry>
- 
- <entry>
-   <title>JSF中EL表达式之this扩展</title>
-   <link href="http://blog.javachen.com/JSF/2012/02/14/this-expression-of-jsf-el.html"/>
-   <updated>2012-02-14T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/JSF/2012/02/14/this-expression-of-jsf-el</id>
-   <content type="html">&lt;p&gt;本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;EL表达式this扩展&lt;/strong&gt;
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。&lt;/p&gt;
-
-&lt;p&gt;我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式&lt;/p&gt;
-
-&lt;p&gt;我们将上述功能处理为“this”表达式。其功能模型为：&lt;/p&gt;
-
-&lt;div class=&quot;pic&quot;&gt;
-&lt;a href=&quot;http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg&quot;&gt;&lt;img src=&quot;http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg&quot; alt=&quot;&quot; title=&quot;this expression of el&quot; width=&quot;300&quot; height=&quot;168&quot; class=&quot;aligncenter size-medium wp-image-2496&quot; /&gt;&lt;/a&gt;
-&lt;/div&gt;
-
-
-&lt;p&gt;页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-
-&lt;p&gt;&lt;strong&gt;动作类和页面的一致性保证&lt;/strong&gt;
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;“this”EL表达式算法&lt;/strong&gt;
-算法流程如下图：&lt;/p&gt;
-
-&lt;div class=&quot;pic&quot;&gt;
-&lt;a href=&quot;http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg&quot;&gt;&lt;img src=&quot;http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg&quot; alt=&quot;&quot; title=&quot;this expression flow of el&quot; width=&quot;300&quot; height=&quot;226&quot; class=&quot;aligncenter size-medium wp-image-2497&quot; /&gt;&lt;/a&gt;
-&lt;/div&gt;
-
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/JSF/2012/02/14/this-expression-of-jsf-el.html'>JSF中EL表达式之this扩展</a></content>
- </entry>
- 
- <entry>
-   <title>Ext读取xml文件生成动态表格和表单(续)</title>
-   <link href="http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html"/>
-   <updated>2012-01-31T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
-   <content type="html">&lt;p&gt;很多人向我要《&lt;a href=&quot;http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi&quot; target=&quot;_blank&quot;&gt;Ext读取xml文件生成动态表格和表单&lt;/a&gt;》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。&lt;/p&gt;
-
-&lt;p&gt;《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
-1.html文件，此处以SASC.search.MtrUse.html为例
-2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
-3.工具类，DomUtils.js
-4.核心js类:SASC.extjs.search.MtrUse.js
-5.java代码&lt;/p&gt;
-
-&lt;p&gt;详细html和js代码见相关文件，这里先描述思路。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;首先&lt;/strong&gt;
-通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC_MTRREPLACE_IMP.xml” .PC_MTRREPLACE_IMP.xml文件的放置路径见DomUtils.js文件中的说明。&lt;/p&gt;
-
-&lt;p&gt;在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue('xmlFile'))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
-需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;然后&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;最后&lt;/strong&gt;
-相关文件打包见：
-&lt;a href=&quot;http://vdisk.weibo.com/s/2enQS&quot; target=&quot;_blank&quot;&gt;http://vdisk.weibo.com/s/2enQS&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;
-如果还有什么不懂，欢迎email：javachen.june#gmail.com&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/JavaScript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html'>Ext读取xml文件生成动态表格和表单(续)</a></content>
  </entry>
  
  
