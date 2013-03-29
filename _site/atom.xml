@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T16:02:50+08:00</updated>
+ <updated>2013-03-29T16:09:41+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -13,7 +13,7 @@
  
  
  <entry>
-   <title>手动安装Cloudera Hadoop CDH4</title>
+   <title>手动安装Cloudera Hadoop CDH4.2</title>
    <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html"/>
    <updated>2013-03-24T15:10:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2</id>
@@ -353,7 +353,7 @@ http://desktop2:8042/node
 3187 Jps
 3124 DataNode
 5711 NodeManager
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html'>手动安装Cloudera Hadoop CDH4</a></content>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html'>手动安装Cloudera Hadoop CDH4.2</a></content>
  </entry>
  
  <entry>
@@ -361,7 +361,7 @@ http://desktop2:8042/node
    <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2.html"/>
    <updated>2013-03-24T15:05:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2</id>
-   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera HBase cdh4-2.0集群过程，环境设置及Hadoop安装过程见上篇文章。&lt;/p&gt;
+   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。&lt;/p&gt;
 
 &lt;h3 id=&quot;toc_0&quot;&gt;安装HBase&lt;/h3&gt;
 
@@ -432,11 +432,11 @@ hbase(main):001:0&amp;gt;
  </entry>
  
  <entry>
-   <title>手动安装Cloudera Hive CDH4</title>
+   <title>手动安装Cloudera Hive CDH4.2</title>
    <link href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html"/>
    <updated>2013-03-24T15:00:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2</id>
-   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera Hive cdh4-2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。&lt;/p&gt;
+   <content type="html">&lt;p&gt;本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。&lt;/p&gt;
 
 &lt;h3 id=&quot;toc_0&quot;&gt;安装hive&lt;/h3&gt;
 
@@ -631,7 +631,7 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.
 &lt;/ul&gt;
 
 &lt;p&gt;检查环境变量以及yarn的classpath&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html'>手动安装Cloudera Hive CDH4</a></content>
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html'>手动安装Cloudera Hive CDH4.2</a></content>
  </entry>
  
  <entry>
