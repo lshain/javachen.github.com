@@ -22,6 +22,8 @@ summary: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包括�
 * 设置时钟同步
 
 ## 使用说明
+安装hadoop、hbase、hive成功之后启动方式为：
+
 * 启动dfs和mapreduce
 desktop1上执行start-dfs.sh和start-yarn.sh
 * 启动hbase
@@ -64,6 +66,8 @@ desktop1上执行hive
 </pre>
 
 3. 配置ssh无密码登陆
+以下是设置desktop1上可以无密码登陆到其他机器上。
+
 <pre>
 	[root@desktop1 ~]# ssh-keygen
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
@@ -82,8 +86,8 @@ desktop1上执行hive
 
 ### 安装Hadoop
 #### 配置Hadoop
-将jdk1.6.0_38.zip上传到/opt，并解压缩
-将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩
+将jdk1.6.0_38.zip上传到/opt，并解压缩。
+将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。
 
 在NameNode上配置以下文件：
 
@@ -96,6 +100,7 @@ desktop1上执行hive
 	slaves 添加DataNode节点主机
 
 1. core-site.xml
+该文件指定fs.defaultFS连接desktop1，即NameNode节点。
 
 ```
 [root@desktop1 hadoop]# pwd
@@ -122,6 +127,7 @@ desktop1上执行hive
 ```
 
 2. hdfs-site.xml
+该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。
 
 ```
 [root@desktop1 hadoop]# cat hdfs-site.xml 
@@ -156,6 +162,7 @@ desktop1上执行hive
 ```
 
 3. masters
+设置namenode和secondary namenode节点。
 
 ```
 [root@desktop1 hadoop]# cat masters 
@@ -164,6 +171,7 @@ desktop2
 ```
 
 4. slaves
+设置哪些机器上安装datanode节点。
 
 ```
 [root@desktop1 hadoop]# cat slaves 
@@ -176,6 +184,7 @@ desktop8
 
 #### 配置MapReduce
 1. mapred-site.xml
+配置使用yarn计算框架，以及jobhistory的地址。
 
 ```
 [root@desktop1 hadoop]# cat mapred-site.xml
@@ -200,6 +209,7 @@ desktop8
 ```
 
 2. yarn-site.xml
+主要配置resourcemanager地址以及`yarn.application.classpath`（这个路径很重要，要不然集成hive时候会提示找不到class）
 
 ```
 [root@desktop1 hadoop]# cat yarn-site.xml 
@@ -301,6 +311,8 @@ export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
 ```
+
+修改配置文件之后，使其生效。
 
 ```
 [root@desktop1 ~]# source .bashrc 

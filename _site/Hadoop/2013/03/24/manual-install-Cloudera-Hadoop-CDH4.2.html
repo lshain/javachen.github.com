@@ -70,6 +70,8 @@ jdk1.6.0_38
 
 <h2 id="toc_2">使用说明</h2>
 
+<p>安装hadoop、hbase、hive成功之后启动方式为：</p>
+
 <ul>
 <li>启动dfs和mapreduce
 desktop1上执行start-dfs.sh和start-yarn.sh</li>
@@ -113,16 +115,21 @@ HOSTNAME=desktop1
 192.168.0.8     desktop8
 </pre></p></li>
 <li><p>配置ssh无密码登陆
+以下是设置desktop1上可以无密码登陆到其他机器上。</p></li>
+</ol>
+
 <pre>
-[root@desktop1 ~]# ssh-keygen
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-</pre></p></li>
-<li><p>每台机器上关闭防火墙：</p></li>
+    [root@desktop1 ~]# ssh-keygen
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+</pre>
+
+<ol>
+<li>每台机器上关闭防火墙：</li>
 </ol>
 <div class="highlight"><pre><code class="text">    [root@desktop1 ~]# service iptables stop
 </code></pre></div>
@@ -130,8 +137,8 @@ HOSTNAME=desktop1
 
 <h4 id="toc_7">配置Hadoop</h4>
 
-<p>将jdk1.6.0_38.zip上传到/opt，并解压缩
-将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩</p>
+<p>将jdk1.6.0_38.zip上传到/opt，并解压缩。
+将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。</p>
 
 <p>在NameNode上配置以下文件：</p>
 <div class="highlight"><pre><code class="text">core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
@@ -143,7 +150,8 @@ hdfs-site.xml
 slaves 添加DataNode节点主机
 </code></pre></div>
 <ol>
-<li>core-site.xml</li>
+<li>core-site.xml
+该文件指定fs.defaultFS连接desktop1，即NameNode节点。</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# pwd
 /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
@@ -168,7 +176,8 @@ slaves 添加DataNode节点主机
 &lt;/configuration&gt;
 </code></pre></div>
 <ol>
-<li>hdfs-site.xml</li>
+<li>hdfs-site.xml
+该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat hdfs-site.xml 
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -201,14 +210,16 @@ slaves 添加DataNode节点主机
 &lt;/configuration&gt;
 </code></pre></div>
 <ol>
-<li>masters</li>
+<li>masters
+设置namenode和secondary namenode节点。</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat masters 
 desktop1
 desktop2
 </code></pre></div>
 <ol>
-<li>slaves</li>
+<li>slaves
+设置哪些机器上安装datanode节点。</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat slaves 
 desktop3
@@ -220,7 +231,8 @@ desktop8
 <h4 id="toc_8">配置MapReduce</h4>
 
 <ol>
-<li>mapred-site.xml</li>
+<li>mapred-site.xml
+配置使用yarn计算框架，以及jobhistory的地址。</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat mapred-site.xml
 &lt;?xml version=&quot;1.0&quot;?&gt;
@@ -243,7 +255,8 @@ desktop8
 &lt;/configuration&gt;
 </code></pre></div>
 <ol>
-<li>yarn-site.xml</li>
+<li>yarn-site.xml
+主要配置resourcemanager地址以及<code>yarn.application.classpath</code>（这个路径很重要，要不然集成hive时候会提示找不到class）</li>
 </ol>
 <div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat yarn-site.xml 
 &lt;?xml version=&quot;1.0&quot;?&gt;
@@ -341,7 +354,9 @@ export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
-</code></pre></div><div class="highlight"><pre><code class="text">[root@desktop1 ~]# source .bashrc 
+</code></pre></div>
+<p>修改配置文件之后，使其生效。</p>
+<div class="highlight"><pre><code class="text">[root@desktop1 ~]# source .bashrc 
 </code></pre></div>
 <p>将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上</p>
 

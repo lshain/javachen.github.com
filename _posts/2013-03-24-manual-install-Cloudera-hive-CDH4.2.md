@@ -10,32 +10,34 @@ summary: 主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设�
 本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
 
 ### 安装hive
-hive安装在desktop1上
+hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。
 
 ####  上传文件
-上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩
+上传`hive-0.10.0-cdh4.2.0.tar`到desktop1的`/opt`，并解压缩
 
 #### 安装postgres
-1. 创建数据库
+* 创建数据库
+
+这里创建数据库metastore并创建hiveuser用户，其密码为redhat。
 
 ```
 psql -U postgres
 
 CREATE DATABASE metastore;
  \c metastore;
-CREATE USER hiveuser WITH PASSWORD 'password';
+CREATE USER hiveuser WITH PASSWORD 'redhat';
 GRANT ALL ON DATABASE metastore TO hiveuser;
 \q
 ```
 
-2. 初始化数据库
+* 初始化数据库
 
 ```
 psql  -U hiveuser -d metastore
  \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
 ```
 
-3. 编辑配置文件
+* 编辑postgresql配置文件，修改访问权限
 
 ```
 [root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf
@@ -48,17 +50,17 @@ host    all             all             0.0.0.0/0            md5
 standard_conforming_strings = off
 ```
 
-4. 重起postgres
+* 重起postgres
 
 ```
 su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postgres
 ```
 
-5. 拷贝postgres 的jdbc驱动到/opt/hive-0.10.0-cdh4.2.0/lib
+* 拷贝postgres 的jdbc驱动到`/opt/hive-0.10.0-cdh4.2.0/lib`
 
 ####  修改配置文件
-1. hive-site.xml 
-注意修改下面配置文件中postgres数据库的密码
+* hive-site.xml 
+注意修改下面配置文件中postgres数据库的密码，注意配置`hive.aux.jars.path`，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。
 
 ```
 [root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
@@ -160,40 +162,45 @@ su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postg
 </configuration>
 ```
 
-2. 环境变量
+* 环境变量
+
 参考hadoop中环境变量的设置
 
-3. 启动脚本
+* 启动脚本
+
+在启动完之后，执行一些sql语句可能会提示错误，如何解决错误可以参考[Hive安装与配置](http://kicklinux.com/hive-deploy/)。
 
 ```
 [root@desktop1 ~] hive
 ```
 
-4. hive与hbase集成
-在hive-site.xml中配置hive.aux.jars.path
-在环境变量中配置hadoop、mapreduce的环境变量
+* hive与hbase集成
+在`hive-site.xml`中配置`hive.aux.jars.path`,在环境变量中配置hadoop、mapreduce的环境变量
 
 
 ### 异常说明
 * FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
 
-hadoop配置文件没有zk
+原因：hadoop配置文件没有zk
 
 * FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query "SELECT "THIS"."TBL_NAME" AS NUCORDER0 FROM "TBLS" "THIS" LEFT OUTER JOIN "DBS" "THIS_DATABASE_NAME" ON "THIS"."DB_ID" = "THIS_DATABASE_NAME"."DB_ID" WHERE "THIS_DATABASE_NAME"."NAME" = ? AND (LOWER("THIS"."TBL_NAME") LIKE ? ESCAPE '\\' ) ORDER BY NUCORDER0 " : ERROR: invalid escape string 建议：Escape string must be empty or one character..
 
-https://issues.apache.org/jira/browse/HIVE-3994
+参考：https://issues.apache.org/jira/browse/HIVE-3994
 
 * hive> select count(*) from hive_userinfo; 没反应
 
 * zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)
 
-hive中没有设置zk
+原因：hive中没有设置zk
 
 * hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 
+原因：cloudera hadoop lib中没有hadoop的native jar
+
 * Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
-Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.MRAppMaster
 
-检查环境变量以及yarn的classpath
+原因：classpath没有配置正确，检查环境变量以及yarn的classpath
 
-
+### 参考文章
+* [Hive安装与配置](http://kicklinux.com/hive-deploy/)
+* [Hive Installation](https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation)

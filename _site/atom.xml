@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T16:49:15+08:00</updated>
+ <updated>2013-03-29T17:16:50+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -177,6 +177,8 @@ jdk1.6.0_38
 
 &lt;h2 id=&quot;toc_2&quot;&gt;使用说明&lt;/h2&gt;
 
+&lt;p&gt;安装hadoop、hbase、hive成功之后启动方式为：&lt;/p&gt;
+
 &lt;ul&gt;
 &lt;li&gt;启动dfs和mapreduce
 desktop1上执行start-dfs.sh和start-yarn.sh&lt;/li&gt;
@@ -220,16 +222,21 @@ HOSTNAME=desktop1
 192.168.0.8     desktop8
 &lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;配置ssh无密码登陆
+以下是设置desktop1上可以无密码登陆到其他机器上。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
 &lt;pre&gt;
-[root@desktop1 ~]# ssh-keygen
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;每台机器上关闭防火墙：&lt;/p&gt;&lt;/li&gt;
+    [root@desktop1 ~]# ssh-keygen
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;每台机器上关闭防火墙：&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    [root@desktop1 ~]# service iptables stop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -237,8 +244,8 @@ HOSTNAME=desktop1
 
 &lt;h4 id=&quot;toc_7&quot;&gt;配置Hadoop&lt;/h4&gt;
 
-&lt;p&gt;将jdk1.6.0_38.zip上传到/opt，并解压缩
-将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩&lt;/p&gt;
+&lt;p&gt;将jdk1.6.0_38.zip上传到/opt，并解压缩。
+将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。&lt;/p&gt;
 
 &lt;p&gt;在NameNode上配置以下文件：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
@@ -250,7 +257,8 @@ hdfs-site.xml
 slaves 添加DataNode节点主机
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;core-site.xml&lt;/li&gt;
+&lt;li&gt;core-site.xml
+该文件指定fs.defaultFS连接desktop1，即NameNode节点。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# pwd
 /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
@@ -275,7 +283,8 @@ slaves 添加DataNode节点主机
 &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;hdfs-site.xml&lt;/li&gt;
+&lt;li&gt;hdfs-site.xml
+该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat hdfs-site.xml 
 &amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
@@ -308,14 +317,16 @@ slaves 添加DataNode节点主机
 &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;masters&lt;/li&gt;
+&lt;li&gt;masters
+设置namenode和secondary namenode节点。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat masters 
 desktop1
 desktop2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;slaves&lt;/li&gt;
+&lt;li&gt;slaves
+设置哪些机器上安装datanode节点。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat slaves 
 desktop3
@@ -327,7 +338,8 @@ desktop8
 &lt;h4 id=&quot;toc_8&quot;&gt;配置MapReduce&lt;/h4&gt;
 
 &lt;ol&gt;
-&lt;li&gt;mapred-site.xml&lt;/li&gt;
+&lt;li&gt;mapred-site.xml
+配置使用yarn计算框架，以及jobhistory的地址。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat mapred-site.xml
 &amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
@@ -350,7 +362,8 @@ desktop8
 &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
-&lt;li&gt;yarn-site.xml&lt;/li&gt;
+&lt;li&gt;yarn-site.xml
+主要配置resourcemanager地址以及&lt;code&gt;yarn.application.classpath&lt;/code&gt;（这个路径很重要，要不然集成hive时候会提示找不到class）&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 hadoop]# cat yarn-site.xml 
 &amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
@@ -448,7 +461,9 @@ export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# source .bashrc 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;修改配置文件之后，使其生效。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# source .bashrc 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上&lt;/p&gt;
 
@@ -575,34 +590,36 @@ hbase(main):001:0&amp;gt;
 
 &lt;h3 id=&quot;toc_0&quot;&gt;安装hive&lt;/h3&gt;
 
-&lt;p&gt;hive安装在desktop1上&lt;/p&gt;
+&lt;p&gt;hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。&lt;/p&gt;
 
 &lt;h4 id=&quot;toc_1&quot;&gt;上传文件&lt;/h4&gt;
 
-&lt;p&gt;上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩&lt;/p&gt;
+&lt;p&gt;上传&lt;code&gt;hive-0.10.0-cdh4.2.0.tar&lt;/code&gt;到desktop1的&lt;code&gt;/opt&lt;/code&gt;，并解压缩&lt;/p&gt;
 
 &lt;h4 id=&quot;toc_2&quot;&gt;安装postgres&lt;/h4&gt;
 
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;创建数据库&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里创建数据库metastore并创建hiveuser用户，其密码为redhat。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;psql -U postgres
 
 CREATE DATABASE metastore;
  \c metastore;
-CREATE USER hiveuser WITH PASSWORD &amp;#39;password&amp;#39;;
+CREATE USER hiveuser WITH PASSWORD &amp;#39;redhat&amp;#39;;
 GRANT ALL ON DATABASE metastore TO hiveuser;
 \q
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;初始化数据库&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;psql  -U hiveuser -d metastore
  \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;编辑配置文件&lt;/li&gt;
-&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;编辑postgresql配置文件，修改访问权限&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf
 
 # IPv4 local connections:
@@ -612,21 +629,21 @@ host    all             all             0.0.0.0/0            md5
 
 standard_conforming_strings = off
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;重起postgres&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;su -c &amp;#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&amp;#39; postgres
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;拷贝postgres 的jdbc驱动到/opt/hive-0.10.0-cdh4.2.0/lib&lt;/li&gt;
-&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;拷贝postgres 的jdbc驱动到&lt;code&gt;/opt/hive-0.10.0-cdh4.2.0/lib&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h4 id=&quot;toc_3&quot;&gt;修改配置文件&lt;/h4&gt;
 
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;hive-site.xml 
-注意修改下面配置文件中postgres数据库的密码&lt;/li&gt;
-&lt;/ol&gt;
+注意修改下面配置文件中postgres数据库的密码，注意配置&lt;code&gt;hive.aux.jars.path&lt;/code&gt;，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
 [root@desktop1 conf]# cat hive-site.xml 
 &amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
@@ -725,18 +742,23 @@ standard_conforming_strings = off
 &amp;lt;/property&amp;gt;
 &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;环境变量
-参考hadoop中环境变量的设置&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;启动脚本&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;环境变量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;参考hadoop中环境变量的设置&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;启动脚本&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在启动完之后，执行一些sql语句可能会提示错误，如何解决错误可以参考&lt;a href=&quot;http://kicklinux.com/hive-deploy/&quot;&gt;Hive安装与配置&lt;/a&gt;。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@desktop1 ~] hive
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
+&lt;ul&gt;
 &lt;li&gt;hive与hbase集成
-在hive-site.xml中配置hive.aux.jars.path
-在环境变量中配置hadoop、mapreduce的环境变量&lt;/li&gt;
-&lt;/ol&gt;
+在&lt;code&gt;hive-site.xml&lt;/code&gt;中配置&lt;code&gt;hive.aux.jars.path&lt;/code&gt;,在环境变量中配置hadoop、mapreduce的环境变量&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h3 id=&quot;toc_4&quot;&gt;异常说明&lt;/h3&gt;
 
@@ -744,28 +766,39 @@ standard_conforming_strings = off
 &lt;li&gt;FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;hadoop配置文件没有zk&lt;/p&gt;
+&lt;p&gt;原因：hadoop配置文件没有zk&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &amp;quot;SELECT &amp;quot;THIS&amp;quot;.&amp;quot;TBL_NAME&amp;quot; AS NUCORDER0 FROM &amp;quot;TBLS&amp;quot; &amp;quot;THIS&amp;quot; LEFT OUTER JOIN &amp;quot;DBS&amp;quot; &amp;quot;THIS_DATABASE_NAME&amp;quot; ON &amp;quot;THIS&amp;quot;.&amp;quot;DB_ID&amp;quot; = &amp;quot;THIS_DATABASE_NAME&amp;quot;.&amp;quot;DB_ID&amp;quot; WHERE &amp;quot;THIS_DATABASE_NAME&amp;quot;.&amp;quot;NAME&amp;quot; = ? AND (LOWER(&amp;quot;THIS&amp;quot;.&amp;quot;TBL_NAME&amp;quot;) LIKE ? ESCAPE &amp;#39;\&amp;#39; ) ORDER BY NUCORDER0 &amp;quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-3994&quot;&gt;https://issues.apache.org/jira/browse/HIVE-3994&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;参考：&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-3994&quot;&gt;https://issues.apache.org/jira/browse/HIVE-3994&lt;/a&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;hive&amp;gt; select count(*) from hive_userinfo; 没反应&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;hive中没有设置zk&lt;/p&gt;
+&lt;p&gt;原因：hive中没有设置zk&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Exception in thread &amp;quot;main&amp;quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
-Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.MRAppMaster&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;检查环境变量以及yarn的classpath&lt;/p&gt;
+&lt;p&gt;原因：cloudera hadoop lib中没有hadoop的native jar&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Exception in thread &amp;quot;main&amp;quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;原因：classpath没有配置正确，检查环境变量以及yarn的classpath&lt;/p&gt;
+
+&lt;h3 id=&quot;toc_5&quot;&gt;参考文章&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://kicklinux.com/hive-deploy/&quot;&gt;Hive安装与配置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation&quot;&gt;Hive Installation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html'>手动安装Cloudera Hive CDH4.2</a></content>
  </entry>
  
