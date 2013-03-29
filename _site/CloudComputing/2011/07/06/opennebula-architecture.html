@@ -54,22 +54,19 @@
 	<h1>OpenNebula的架构</h1>
 
 	<p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
-
 <p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
-
 <p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
-
 <p align="center">图1  OpenNebula总体架构图</p>
-
 <p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
+
+
+
 
 <p><h2>私有云</h2>
 私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
-
 <p align="center">图2 私有云</p>
-
-<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
 <p align="center">图3 私有云内用户视图</p>
 &nbsp;
@@ -91,9 +88,15 @@
 <p align="center">图7 前端节点和集群节点之间交互</p>
 &nbsp;
 <h2>网络架构</h2>
-OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p>
+
+
+
 
 <p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
+
+
+
 
 <p>&nbsp;
 <div class="infor">
@@ -102,6 +105,7 @@ OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址�
 * 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
 * 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
 </div></p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/CloudComputing/2011/07/06/opennebula-architecture.html'>JavaChen Blog</a>-

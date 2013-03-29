@@ -57,60 +57,70 @@
 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
 首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
-上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：</p>
+
 <pre escaped="true" lang="javascript" line="1">function maf() {
     return false;
 }
-tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
+tree = new dhtmlXTreeObject("treeboxbox_tree", "100%", "100%", 0);
 
-<p>tree.setSkin(&#39;dhx_skyblue&#39;);
-tree.setImagePath(&quot;../../codebase/imgs/csh_yellowbooks/&quot;);
+tree.setSkin('dhx_skyblue');
+tree.setImagePath("../../codebase/imgs/csh_yellowbooks/");
 tree.enableDragAndDrop(true);
 tree.setDragHandler(maf);
 tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../common/tree_05_drag_n_drop.xml&quot;);</p>
+tree.loadXML("../common/tree_05_drag_n_drop.xml");
 
-<p>function s_control() {
+function s_control() {
     this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.style.backgroundColor = "";
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
     this._dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        htmlObject.style.backgroundColor = "#fffacd";
         return htmlObject;
     }
     this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
+        htmlObject.style.backgroundColor = "";
         return this;
     }
 }
-var sinput = document.getElementById(&#39;sInput&#39;);
+var sinput = document.getElementById('sInput');
 tree.dragger.addDragLanding(sinput, new s_control);
-</pre></p>
+</pre>
 
-<p>为了使tree支持拖拽功能，必须添加以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
 
-<p>为了实现自定义拖拽的输出，添加了以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
+<p>为了使tree支持拖拽功能，必须添加以下代码：</p>
 
-<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre>
+
+
+<p>为了实现自定义拖拽的输出，添加了以下代码：</p>
+
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre>
+
+
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：</p>
+
 <pre escaped="true" lang="javascript" line="1">    this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.style.backgroundColor = "";
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
     this._dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        htmlObject.style.backgroundColor = "#fffacd";
         return htmlObject;
     }
     this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
+        htmlObject.style.backgroundColor = "";
         return this;
     }
-</pre></p>
+</pre>
 
-<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
+
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：</p>
+
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre>
+
 
 <p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
 
@@ -139,79 +149,86 @@ tree.dragger.addDragLanding(sinput, new s_control);
 }
 </pre>
 
-<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
+
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。</p>
+
 <div class="pic">
 <img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
-</div></p>
+</div>
 
-<p>本例最后的代码：
+
+<p>本例最后的代码：</p>
+
 <pre escaped="true" lang="javascript" line="1">
     var mygrid;
     function maf() {
         return false;
-    }</p>
-<div class="highlight"><pre><code class="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
-tree.setSkin(&#39;dhx_skyblue&#39;);
-tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
-tree.enableDragAndDrop(true);
-//tree.setDragHandler(maf);
-tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
-tree.openAllItems(0);
-
-function s_control() {
-    var insertId;
-    this._drag = function(sourceHtmlObject, dhtmlObject,
-            targetHtmlObject, e) {
-        var zel = e;
-        while (zel.tagName != &quot;TABLE&quot;)
-            zel = zel.parentNode;
-        var grid = zel.grid;
-        if (!grid)
-            return;
-        grid.setActive();
-        if (!grid._mCol || e.button == 2)
-            return;
-        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
-
-        if ((grid) &amp;&amp; (!grid._colInMove)) {
-            grid.resized = null;
-            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
-                insertId = e._cellIndex + 1;
-        }
-
-        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
     }
-}
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-          Date of Publication&quot;);
-mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
-mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
-mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
-mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-mygrid.enableHeaderMenu();
-mygrid.enableColumnMove(true);
-mygrid.setColumnHidden(2, true);
-mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
-});
-mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
-tree.dragger.addDragLanding(mygrid.hdr, new s_control);
-</code></pre></div>
-<p></pre>
-本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
+
+    tree = new dhtmlXTreeObject("treeboxbox_tree", "100%", "100%", 0);
+    tree.setSkin('dhx_skyblue');
+    tree.setImagePath("../../dhtmlxTree/codebase/imgs/csh_yellowbooks/");
+    tree.enableDragAndDrop(true);
+    //tree.setDragHandler(maf);
+    tree.enableSmartXMLParsing(true);
+    tree.loadXML("../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml")
+    tree.openAllItems(0);
+
+    function s_control() {
+        var insertId;
+        this._drag = function(sourceHtmlObject, dhtmlObject,
+                targetHtmlObject, e) {
+            var zel = e;
+            while (zel.tagName != "TABLE")
+                zel = zel.parentNode;
+            var grid = zel.grid;
+            if (!grid)
+                return;
+            grid.setActive();
+            if (!grid._mCol || e.button == 2)
+                return;
+            e = grid.getFirstParentOfType(e, "TD")
+
+            if ((grid) && (!grid._colInMove)) {
+                grid.resized = null;
+                if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
+                    insertId = e._cellIndex + 1;
+            }
+
+            mygrid.insertColumn(insertId, "12", "ed", 80);
+        }
+    }
+    mygrid = new dhtmlXGridObject('gridbox');
+    mygrid.setImagePath("../codebase/imgs/");
+    mygrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+              Date of Publication");
+    mygrid.setInitWidths("50,150,100,80,80,80,80,200");
+    mygrid.setColAlign("right,left,left,right,center,left,center,center");
+    mygrid.setColTypes("dyn,edtxt,ed,price,ch,co,ra,ro");
+    mygrid.enableDragAndDrop("temporary_disabled", true);
+    mygrid.init();
+    mygrid.setSkin("dhx_skyblue");
+    mygrid.enableHeaderMenu();
+    mygrid.enableColumnMove(true);
+    mygrid.setColumnHidden(2, true);
+    mygrid.attachEvent("onHeaderClick", function(ind, obj) {
+    });
+    mygrid.loadXML("../common/grid_ml_16_rows_columns_manipulations.xml");
+    tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</pre>
+
+
+<p>本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
 
 <h2>参考文章</h2>
 
+
 <p><li>
-Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank"><a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html</a></a>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html</a>
 </li>
-<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank"><a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a></a>
+<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
 </li>
-<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank"><a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a></a>
+<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
 </li></p>
 
 

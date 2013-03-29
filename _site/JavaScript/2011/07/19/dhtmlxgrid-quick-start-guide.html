@@ -55,6 +55,9 @@
 
 	<p><span style="color: #ff0000;"><strong>说明:</strong></span>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
 
+
+
+
 <p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
 <ul>
     <li>跨浏览器</li>
@@ -189,7 +192,7 @@ Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或
 mygrid.setColTypes("ed,ed,price");
 </pre> </p>
 
-<p><p>Excells格式化有以下几种：
+<p>Excells格式化有以下几种：
 <div class="note"> link：超链接<br />
  img：图片<br />
  price：价格<br />
@@ -216,7 +219,7 @@ o sub_row_grid – 允许创建一个子表作为一个子行的内容</div>
 <h2>Step 6 – 行操作方法</h2>
 <pre lang="javascript" line="1">    function addRow(){
         var newId = (new Date()).valueOf()
-        mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+        mygrid.addRow(newId,"",mygrid.getRowsNum())
         mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
     }
     function removeRow(){
@@ -232,39 +235,38 @@ o 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选�
 o 删除指定行id的行</div>
 <h2>Step 7 – 事件</h2>
 添加事件调用attachEvent 方法，如下行选中事件：
-<pre lang="javascript" line="1"><br>
+<pre lang="javascript" line="1">   
     function doOnRowSelected(rowID,celInd){
-        alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+        alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);
     }
-    mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);</pre></p>
+    mygrid.attachEvent("onRowSelect",doOnRowSelected);</pre>
 
 <h2>Step 8 – Code</h2>
-
-<p>最后的代码：
+最后的代码：
 <pre lang="javascript" line="1">
- &lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
-     &lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
-     &lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
-     &lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
-     &lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
-     &lt; script&gt;
+ < title>dhtmlxGrid Sample Page< /title>
+     < link rel="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
+     < script src="codebase/dhtmlxcommon.js">< /script>
+     < script src="codebase/dhtmlxgrid.js">< /script>
+     < script src="codebase/dhtmlxgridcell.js">< /script>
+     < script>
       var mygrid;<br />
       function doInitGrid(){<br />
-       mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);<br />
-       mygrid.setImagePath(&quot;codebase/imgs/&quot;);<br />
-       mygrid.setHeader(&quot;Model,Qty,Price&quot;);<br />
-       mygrid.setInitWidths(&quot;*,150,150&quot;);<br />
-       mygrid.setColAlign(&quot;left,right,right&quot;)<br />
-       mygrid.setSkin(&quot;light&quot;);<br />
-       mygrid.setColSorting(&quot;str,int,int&quot;);<br />
-       mygrid.setColTypes(&quot;ed,ed,price&quot;);<br />
-       mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);<br />
+       mygrid = new dhtmlXGridObject('mygrid_container');<br />
+       mygrid.setImagePath("codebase/imgs/");<br />
+       mygrid.setHeader("Model,Qty,Price");<br />
+       mygrid.setInitWidths("*,150,150");<br />
+       mygrid.setColAlign("left,right,right")<br />
+       mygrid.setSkin("light");<br />
+       mygrid.setColSorting("str,int,int");<br />
+       mygrid.setColTypes("ed,ed,price");<br />
+       mygrid.attachEvent("onRowSelect",doOnRowSelected);<br />
        mygrid.init();<br />
-       mygrid.load (&quot;data.json&quot;,&quot;json&quot;);<br />
+       mygrid.load ("data.json","json");<br />
       }
      function addRow(){<br />
        var newId = (new Date()).valueOf()<br />
-       mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())<br />
+       mygrid.addRow(newId,"",mygrid.getRowsNum())<br />
        mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);<br />
       }<br />
       function removeRow(){<br />
@@ -272,13 +274,14 @@ o 删除指定行id的行</div>
        mygrid.deleteRow(selId);<br />
       }
      function doOnRowSelected(rowID,celInd){<br />
-       alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);<br />
+       alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);<br />
       }
-   &lt; /script&gt;
-   &lt; body onload=&quot;doInitGrid()&quot;&gt;
-      &lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
-   &lt; /body&gt;
-</pre></p>
+   < /script>
+   < body onload="doInitGrid()">
+      < div id="mygrid_container" style="width:600px;height:150px;">< /div>
+   < /body>
+</pre>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/JavaScript/2011/07/19/dhtmlxgrid-quick-start-guide.html'>JavaChen Blog</a>-

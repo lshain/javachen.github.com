@@ -64,6 +64,9 @@ Elastic Utility Computing Architecture for Linking Your Programs To Useful Syste
 <h2>架构</h2>
 Eucalyptus 包含五个主要组件，它们能相互协作共同提供所需的云服务。这些组件使用具有 WS-Security 的 SOAP 消息传递安全地相互通信。</p>
 
+
+
+
 <p><strong>Cloud Controller (CLC)</strong>
 在 Eucalyptus 云内，这是主要的控制器组件，负责管理整个系统。它是所有用户和管理员进入 Eucalyptus 云的主要入口。所有客户机通过基于 SOAP 或 REST 的 API 只与 CLC 通信。由 CLC 负责将请求传递给正确的组件、收集它们并将来自这些组件的响应发送回至该客户机。这是 Eucalyptus 云的对外 “窗口”。
 <strong>Cluster Controller (CC)</strong>
@@ -92,6 +95,7 @@ Installing Eucalyptus (2.0) on Fedora 12
 <li>ubuntu 9.04 (server)下 eucalyptus 安装（推荐）：
 <a href="http://bbs.chinacloud.cn/archiver/showtopic-230.aspx">http://bbs.chinacloud.cn/archiver/showtopic-230.aspx</a></div></p>
 
+
 <p></li></p>
 
 <p>
@@ -99,9 +103,16 @@ Installing Eucalyptus (2.0) on Fedora 12
 在安装过程中，我把Eucalyptus的java源代码（eucalyptus-2.0.3-src-offline.tar.gz）下下来了，并按照<a href="http://open.eucalyptus.com/participate/sourcecode">http://open.eucalyptus.com/participate/sourcecode</a>的说明好不容易把java代码通过ant编译然后手动复制粘贴导入eclipse了，现在这些代码能够通过编译了，并能够清楚的看到Eucalyptus的java代码部分的实现方式。<br />
 以下是两个截图：</p>
 
+
+
+
 <p><a href="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-01.png"><img class="size-medium wp-image-2097 alignleft" title="eucalyptus-2.0.3-src-01" src="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-01-300x258.png" alt="eucalyptus-2.0.3-src-01" width="300" height="258" /></a></p>
 
+
+
+
 <p><a href="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-02.jpg"><img class="size-medium wp-image-2099 alignleft" title="eucalyptus-2.0.3-src-02" src="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-02-214x300.jpg" alt="eucalyptus-2.0.3-src-02" width="214" height="300" /></a></p>
+
 
 
 	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/CloudComputing/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus.html'>JavaChen Blog</a>-

@@ -53,13 +53,15 @@
 
 	<h1>手动安装Cloudera Hadoop CDH4</h1>
 
-	<h2 id="toc_0">安装版本</h2>
-<div class="highlight"><pre><code class="text">hadoop-2.0.0-cdh4.2.0
+	<h2>安装版本</h2>
+
+<pre><code>hadoop-2.0.0-cdh4.2.0
 hbase-0.94.2-cdh4.2.0
 hive-0.10.0-cdh4.2.0
 jdk1.6.0_38
-</code></pre></div>
-<h2 id="toc_1">安装前说明</h2>
+</code></pre>
+
+<h2>安装前说明</h2>
 
 <ul>
 <li>安装目录为/opt</li>
@@ -68,7 +70,8 @@ jdk1.6.0_38
 <li>设置时钟同步</li>
 </ul>
 
-<h2 id="toc_2">使用说明</h2>
+
+<h2>使用说明</h2>
 
 <ul>
 <li>启动dfs和mapreduce
@@ -79,138 +82,190 @@ desktop3上执行start-hbase.xml</li>
 desktop1上执行hive</li>
 </ul>
 
-<h2 id="toc_3">规划</h2>
-<div class="highlight"><pre><code class="text">    192.168.0.1             NameNode、Hive、ResourceManager
-    192.168.0.2             SSNameNode
-    192.168.0.3             DataNode、HBase、NodeManager
-    192.168.0.4             DataNode、HBase、NodeManager
-    192.168.0.6             DataNode、HBase、NodeManager
-    192.168.0.7             DataNode、HBase、NodeManager
-    192.168.0.8             DataNode、HBase、NodeManager
-</code></pre></div>
-<h2 id="toc_4">部署过程</h2>
 
-<h3 id="toc_5">系统和网络配置</h3>
+<h2>规划</h2>
+
+<p>```</p>
+
+<pre><code>192.168.0.1             NameNode、Hive、ResourceManager
+192.168.0.2             SSNameNode
+192.168.0.3             DataNode、HBase、NodeManager
+192.168.0.4             DataNode、HBase、NodeManager
+192.168.0.6             DataNode、HBase、NodeManager
+192.168.0.7             DataNode、HBase、NodeManager
+192.168.0.8             DataNode、HBase、NodeManager
+</code></pre>
+
+<p>```</p>
+
+<h2>部署过程</h2>
+
+<h3>系统和网络配置</h3>
 
 <ol>
-<li><p>修改每台机器的名称
-<pre>
-[root@desktop1 ~]# cat /etc/sysconfig/network
-NETWORKING=yes
-HOSTNAME=desktop1
-</pre></p></li>
-<li><p>在各个节点上修改/etc/hosts增加以下内容:
-<pre>
-[root@desktop1 ~]# cat /etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-192.168.0.1     desktop1
-192.168.0.2     desktop2
-192.168.0.3     desktop3
-192.168.0.4     desktop4
-192.168.0.6     desktop6
-192.168.0.7     desktop7
-192.168.0.8     desktop8
-</pre></p></li>
-<li><p>配置ssh无密码登陆
-<pre>
-[root@desktop1 ~]# ssh-keygen
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-</pre></p></li>
-<li><p>每台机器上关闭防火墙：</p></li>
+<li>修改每台机器的名称</li>
 </ol>
-<div class="highlight"><pre><code class="text">    [root@desktop1 ~]# service iptables stop
-</code></pre></div>
-<h3 id="toc_6">安装Hadoop</h3>
 
-<h4 id="toc_7">配置Hadoop</h4>
+
+<pre>
+    [root@desktop1 ~]# cat /etc/sysconfig/network
+    NETWORKING=yes
+    HOSTNAME=desktop1
+</pre>
+
+
+<ol>
+<li>在各个节点上修改/etc/hosts增加以下内容:</li>
+</ol>
+
+
+<pre>
+    [root@desktop1 ~]# cat /etc/hosts
+    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+    192.168.0.1     desktop1
+    192.168.0.2     desktop2
+    192.168.0.3     desktop3
+    192.168.0.4     desktop4
+    192.168.0.6     desktop6
+    192.168.0.7     desktop7
+    192.168.0.8     desktop8
+</pre>
+
+
+<ol>
+<li>配置ssh无密码登陆</li>
+</ol>
+
+
+<pre>
+    [root@desktop1 ~]# ssh-keygen
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+</pre>
+
+
+<ol>
+<li>每台机器上关闭防火墙：</li>
+</ol>
+
+
+<p>```</p>
+
+<pre><code>[root@desktop1 ~]# service iptables stop
+</code></pre>
+
+<p>```</p>
+
+<h3>安装Hadoop</h3>
+
+<h4>配置Hadoop</h4>
 
 <p>将jdk1.6.0_38.zip上传到/opt，并解压缩
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩</p>
 
 <p>在NameNode上配置以下文件：</p>
-<div class="highlight"><pre><code class="text">core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
+
+<pre><code>core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
 hdfs-site.xml 
     dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
     dfs.datanode.data.dir指定DataNode存储blocks的目录，
     dfs.namenode.secondary.http-address指定Secondary NameNode地址。
     开启WebHDFS。
 slaves 添加DataNode节点主机
-</code></pre></div>
+</code></pre>
+
 <ol>
 <li>core-site.xml</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# pwd
+
+
+<p>```
+[root@desktop1 hadoop]# pwd
 /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
-[root@desktop1 hadoop]# cat core-site.xml 
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) --&gt;
-&lt;property&gt;
-     &lt;name&gt;fs.defaultFS&lt;/name&gt;
-         &lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&gt;
-     &lt;value&gt;hdfs://desktop1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
+[root@desktop1 hadoop]# cat core-site.xml
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration></p>
+
+<!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) -->
+
+
+<p><property></p>
+
+<pre><code> &lt;name&gt;fs.defaultFS&lt;/name&gt;
+     &lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&gt;
+ &lt;value&gt;hdfs://desktop1&lt;/value&gt;
+</code></pre>
+
+<p></property>
+<property>
+<name>fs.trash.interval</name>
+<value>10080</value>
+</property>
+<property>
+<name>fs.trash.checkpoint.interval</name>
+<value>10080</value>
+</property>
+</configuration>
+```</p>
+
 <ol>
 <li>hdfs-site.xml</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat hdfs-site.xml 
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;dfs.replication&lt;/name&gt;
-  &lt;value&gt;1&lt;/value&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
-  &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hadoop-${user.name}&lt;/value&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
-&lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
-&lt;value&gt;desktop1:50070&lt;/value&gt;
-&lt;/property&gt;
+<p>```
+[root@desktop1 hadoop]# cat hdfs-site.xml
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+</property></p>
 
-&lt;property&gt;
-&lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
-&lt;value&gt;desktop2:50090&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+  <name>hadoop.tmp.dir</name>
+  <value>/opt/data/hadoop-${user.name}</value>
+</property></p>
 
-&lt;property&gt;
-&lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
+<p><property>
+<name>dfs.namenode.http-address</name>
+<value>desktop1:50070</value>
+</property></p>
+
+<p><property>
+<name>dfs.namenode.secondary.http-address</name>
+<value>desktop2:50090</value>
+</property></p>
+
+<p><property>
+<name>dfs.webhdfs.enabled</name>
+<value>true</value>
+</property>
+</configuration>
+```</p>
+
 <ol>
 <li>masters</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat masters 
+
+
+<p><code>
+[root@desktop1 hadoop]# cat masters
 desktop1
 desktop2
-</code></pre></div>
+</code></p>
+
 <ol>
 <li>slaves
 <code>
-[root@desktop1 hadoop]# cat slaves 
+[root@desktop1 hadoop]# cat slaves
 desktop3
 desktop4
 desktop6
@@ -219,139 +274,201 @@ desktop8
 </code></li>
 </ol>
 
-<h4 id="toc_8">配置MapReduce</h4>
+
+<h4>配置MapReduce</h4>
 
 <ol>
 <li>mapred-site.xml</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat mapred-site.xml
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
- &lt;value&gt;desktop1:10020&lt;/value&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
- &lt;value&gt;desktop1:19888&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
+<p>```
+[root@desktop1 hadoop]# cat mapred-site.xml
+&lt;?xml version="1.0"?>
+&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+<property>
+ <name>mapreduce.framework.name</name>
+ <value>yarn</value>
+</property></p>
+
+<p><property>
+ <name>mapreduce.jobhistory.address</name>
+ <value>desktop1:10020</value>
+</property></p>
+
+<p><property>
+ <name>mapreduce.jobhistory.webapp.address</name>
+ <value>desktop1:19888</value>
+</property>
+</configuration>
+```</p>
+
 <ol>
 <li>yarn-site.xml</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]# cat yarn-site.xml 
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8031&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8032&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8030&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8033&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8088&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
-    &lt;name&gt;yarn.application.classpath&lt;/name&gt;
-    &lt;value&gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
-    $HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
-    $HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
-    $YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
-    $YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
-    &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
-    &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
-  &lt;/property&gt;
 
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/local&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;description&gt;Where to aggregate logs&lt;/description&gt;
-    &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
-  &lt;/property&gt;
 
-  &lt;property&gt;
-    &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
-    &lt;value&gt;/user&lt;/value&gt;
- &lt;/property&gt;
+<p>```
+[root@desktop1 hadoop]# cat yarn-site.xml
+&lt;?xml version="1.0"?>
+<configuration>
+<property></p>
 
-&lt;/configuration&gt;
-</code></pre></div>
-<h4 id="toc_9">同步配置文件</h4>
+<pre><code>&lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+&lt;value&gt;desktop1:8031&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+&lt;value&gt;desktop1:8032&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+&lt;value&gt;desktop1:8030&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
+&lt;value&gt;desktop1:8033&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
+&lt;value&gt;desktop1:8088&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;description&gt;Classpath for typical applications.&lt;/description&gt;
+&lt;name&gt;yarn.application.classpath&lt;/name&gt;
+&lt;value&gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
+$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
+$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
+$YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
+$YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+&lt;value&gt;mapreduce.shuffle&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+&lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+</code></pre>
+
+<p>  </property></p>
+
+<p>  <property></p>
+
+<pre><code>&lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
+&lt;value&gt;/opt/data/yarn/local&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
+&lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
+</code></pre>
+
+<p>  </property>
+  <property></p>
+
+<pre><code>&lt;description&gt;Where to aggregate logs&lt;/description&gt;
+&lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
+&lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
+</code></pre>
+
+<p>  </property></p>
+
+<p>  <property></p>
+
+<pre><code>&lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
+&lt;value&gt;/user&lt;/value&gt;
+</code></pre>
+
+<p> </property></p>
+
+<p></configuration>
+```</p>
+
+<h4>同步配置文件</h4>
 
 <p>修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc</p>
-<div class="highlight"><pre><code class="text">[root@desktop1 ~]# cat .bashrc 
-# .bashrc
-alias rm=&#39;rm -i&#39;
-alias cp=&#39;cp -i&#39;
-alias mv=&#39;mv -i&#39;
 
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-        . /etc/bashrc
-fi
-# User specific environment and startup programs
-export LANG=zh_CN.utf8
+<p>```
+[root@desktop1 ~]# cat .bashrc</p>
 
-export JAVA_HOME=/opt/jdk1.6.0_38
+<h1>.bashrc</h1>
+
+<p>alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'</p>
+
+<h1>Source global definitions</h1>
+
+<p>if [ -f /etc/bashrc ]; then</p>
+
+<pre><code>    . /etc/bashrc
+</code></pre>
+
+<p>fi</p>
+
+<h1>User specific environment and startup programs</h1>
+
+<p>export LANG=zh_CN.utf8</p>
+
+<p>export JAVA_HOME=/opt/jdk1.6.0_38
 export JRE_HOME=$JAVA_HOME/jre
-export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
+export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar</p>
 
-export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
+<p>export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
 export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
-export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
+export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0</p>
 
-export HADOOP_MAPRED_HOME=${HADOOP_HOME}
+<p>export HADOOP_MAPRED_HOME=${HADOOP_HOME}
 export HADOOP_COMMON_HOME=${HADOOP_HOME}
 export HADOOP_HDFS_HOME=${HADOOP_HOME}
 export YARN_HOME=${HADOOP_HOME}
 export HADOOP_YARN_HOME=${HADOOP_HOME}
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop</p>
 
-export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
-</code></pre></div><div class="highlight"><pre><code class="text">[root@desktop1 ~]# source .bashrc 
-</code></pre></div>
+<p>export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
+```</p>
+
+<p><code>
+[root@desktop1 ~]# source .bashrc
+</code></p>
+
 <p>将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上</p>
 
-<h4 id="toc_10">启动脚本</h4>
+<h4>启动脚本</h4>
 
 <p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
-<div class="highlight"><pre><code class="text">[root@desktop1 hadoop]hadoop namenode -format
-</code></pre></div>
+
+<p><code>
+[root@desktop1 hadoop]hadoop namenode -format
+</code></p>
+
 <p>在desktop1上启动hdfs：
 <code>
 [root@desktop1 hadoop]#start-dfs.sh
@@ -368,74 +485,91 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 </code></p>
 
 <p>查看MapReduce：</p>
-<div class="highlight"><pre><code class="text">http://desktop1:8088/cluster
-</code></pre></div>
+
+<p><code>
+http://desktop1:8088/cluster
+</code></p>
+
 <p>查看节点：</p>
-<div class="highlight"><pre><code class="text">http://desktop2:8042/
+
+<p><code>
+http://desktop2:8042/
 http://desktop2:8042/node
-</code></pre></div>
-<h4 id="toc_11">检查集群进程</h4>
-<div class="highlight"><pre><code class="text">[root@desktop1 ~]# jps
+</code></p>
+
+<h4>检查集群进程</h4>
+
+<p>```
+[root@desktop1 ~]# jps
 5389 NameNode
 5980 Jps
 5710 ResourceManager
-7032 JobHistoryServer
+7032 JobHistoryServer</p>
 
-[root@desktop2 ~]# jps
+<p>[root@desktop2 ~]# jps
 3187 Jps
-3124 SecondaryNameNode
+3124 SecondaryNameNode</p>
 
-[root@desktop3 ~]# jps
+<p>[root@desktop3 ~]# jps
 3187 Jps
 3124 DataNode
 5711 NodeManager
-</code></pre></div>
-<h3 id="toc_12">安装HBase</h3>
+```</p>
+
+<h3>安装HBase</h3>
 
 <p>HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。</p>
 
 <ol>
 <li><p>上传文件
 上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。</p></li>
-<li><p>hbase-site.xml </p></li>
+<li><p>hbase-site.xml</p></li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop3 conf]# pwd
+
+
+<p>```
+[root@desktop3 conf]# pwd
 /opt/hbase-0.94.2-cdh4.2.0/conf
-[root@desktop3 conf]# cat hbase-site.xml 
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.rootdir&lt;/name&gt;
-&lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
+[root@desktop3 conf]# cat hbase-site.xml
+&lt;?xml version="1.0"?>
+&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+<property>
+<name>hbase.rootdir</name>
+<value>hdfs://desktop1/hbase-${user.name}</value>
+</property>
+<property>
+<name>hbase.cluster.distributed</name>
+<value>true</value>
+</property></p>
 
-&lt;property&gt;
-&lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-&lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+<name>hbase.tmp.dir</name>
+<value>/opt/data/hbase-${user.name}</value>
+</property></p>
 
-&lt;property&gt;
-&lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-&lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+<name>hbase.zookeeper.quorum</name>
+<value>desktop3,desktop4,desktop6,desktop7,desktop8</value>
+</property></p>
 
-&lt;/configuration&gt;
-</code></pre></div>
+<p></configuration>
+```</p>
+
 <ol>
 <li>regionservers</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop3 conf]# cat regionservers 
+
+
+<p><code>
+[root@desktop3 conf]# cat regionservers
 desktop3
 desktop4
 desktop6
 desktop7
 desktop8
-</code></pre></div>
+</code></p>
+
 <ol>
 <li><p>环境变量
 参考hadoop中环境变量的设置</p></li>
@@ -444,209 +578,254 @@ desktop8
 <li><p>启动脚本
 可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p></li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop3 ~]# start-hbase.sh 
-</code></pre></div>
-<ol>
-<li>HBase </li>
-</ol>
-<div class="highlight"><pre><code class="text">[root@desktop3 ~]# hbase 
-HBase ; enter &#39;help&lt;RETURN&gt;&#39; for list of supported commands.
-Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase 
-Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013
 
-hbase(main):001:0&gt; 
-</code></pre></div>
-<h3 id="toc_13">安装hive</h3>
+
+<p><code>
+[root@desktop3 ~]# start-hbase.sh
+</code></p>
+
+<ol>
+<li>HBase</li>
+</ol>
+
+
+<p>```
+[root@desktop3 ~]# hbase
+HBase ; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase
+Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013</p>
+
+<p>hbase(main):001:0>
+```</p>
+
+<h3>安装hive</h3>
 
 <p>hive安装在desktop1上</p>
 
-<h4 id="toc_14">上传文件</h4>
+<h4>上传文件</h4>
 
 <p>上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩</p>
 
-<h4 id="toc_15">安装postgres</h4>
+<h4>安装postgres</h4>
 
 <ol>
 <li>创建数据库</li>
 </ol>
-<div class="highlight"><pre><code class="text">psql -U postgres
 
-CREATE DATABASE metastore;
+
+<p>```
+psql -U postgres</p>
+
+<p>CREATE DATABASE metastore;
  \c metastore;
-CREATE USER hiveuser WITH PASSWORD &#39;password&#39;;
+CREATE USER hiveuser WITH PASSWORD 'password';
 GRANT ALL ON DATABASE metastore TO hiveuser;
 \q
-</code></pre></div>
+```</p>
+
 <ol>
 <li>初始化数据库</li>
 </ol>
-<div class="highlight"><pre><code class="text">psql  -U hiveuser -d metastore
- \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
-</code></pre></div>
+
+
+<p><code>
+psql  -U hiveuser -d metastore
+ \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
+</code></p>
+
 <ol>
 <li>编辑配置文件</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf
 
-# IPv4 local connections:
-host    all             all             0.0.0.0/0            md5
 
-[root@desktop1 ~]# vi postgresql.conf
+<p>```
+[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf</p>
 
-standard_conforming_strings = off
-</code></pre></div>
+<h1>IPv4 local connections:</h1>
+
+<p>host    all             all             0.0.0.0/0            md5</p>
+
+<p>[root@desktop1 ~]# vi postgresql.conf</p>
+
+<p>standard_conforming_strings = off
+```</p>
+
 <ol>
 <li>重起postgres</li>
 </ol>
-<div class="highlight"><pre><code class="text">su -c &#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&#39; postgres
-</code></pre></div>
+
+
+<p><code>
+su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postgres
+</code></p>
+
 <ol>
 <li>拷贝postgres 的jdbc驱动到/opt/hive-0.10.0-cdh4.2.0/lib</li>
 </ol>
 
-<h4 id="toc_16">修改配置文件</h4>
+
+<h4>修改配置文件</h4>
 
 <ol>
-<li>hive-site.xml 
+<li>hive-site.xml
 注意修改下面配置文件中postgres数据库的密码</li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
-[root@desktop1 conf]# cat hive-site.xml 
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://127.0.0.1/metastore&lt;/value&gt;
-  &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-  &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
 
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-  &lt;description&gt;username to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
+<p>```
+[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
+[root@desktop1 conf]# cat hive-site.xml
+&lt;?xml version="1.0"?>
+&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+<property>
+  <name>javax.jdo.option.ConnectionURL</name>
+  <value>jdbc:postgresql://127.0.0.1/metastore</value>
+  <description>JDBC connect string for a JDBC metastore</description>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-  &lt;description&gt;password to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
+<p><property>
+  <name>javax.jdo.option.ConnectionDriverName</name>
+  <value>org.postgresql.Driver</value>
+  <description>Driver class name for a JDBC metastore</description>
+</property></p>
 
-&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;desktop1:8031&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+  <name>javax.jdo.option.ConnectionUserName</name>
+  <value>hiveuser</value>
+  <description>username to use against metastore database</description>
+</property></p>
 
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+  <name>javax.jdo.option.ConnectionPassword</name>
+  <value>redhat</value>
+  <description>password to use against metastore database</description>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.aux.jars.path&lt;/name&gt;
-  &lt;value&gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+ <name>mapred.job.tracker</name>
+ <value>desktop1:8031</value>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/warehouse-${user.name}&lt;/value&gt;
-  &lt;description&gt;location of default database for the warehouse&lt;/description&gt;
-&lt;/property&gt;
+<p><property>
+ <name>mapreduce.framework.name</name>
+ <value>yarn</value>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.exec.scratchdir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hive-${user.name}&lt;/value&gt;
-  &lt;description&gt;Scratch space for Hive jobs&lt;/description&gt;
-&lt;/property&gt;
+<p><property>
+  <name>hive.aux.jars.path</name>
+  <value>file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,</p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.querylog.location&lt;/name&gt;
-  &lt;value&gt;/opt/data/querylog-${user.name}&lt;/value&gt;
-  &lt;description&gt;
-    Location of Hive run time structured log file
-  &lt;/description&gt;
-&lt;/property&gt;
+<pre><code>file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
+file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
+file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&lt;/value&gt;
+</code></pre>
 
-&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;description&gt;Enable Hive&#39;s Table Lock Manager Service&lt;/description&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
+<p></property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;description&gt;Zookeeper quorum used by Hive&#39;s Table Lock Manager&lt;/description&gt;
-  &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
+<p><property>
+  <name>hive.metastore.warehouse.dir</name>
+  <value>/opt/data/warehouse-${user.name}</value>
+  <description>location of default database for the warehouse</description>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;desktop1&lt;/value&gt;
-  &lt;description&gt;This is the host address the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
+<p><property>
+  <name>hive.exec.scratchdir</name>
+  <value>/opt/data/hive-${user.name}</value>
+  <description>Scratch space for Hive jobs</description>
+</property></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-  &lt;description&gt;This is the port the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
+<p><property>
+  <name>hive.querylog.location</name>
+  <value>/opt/data/querylog-${user.name}</value>
+  <description></p>
 
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-  &lt;description&gt;This is the WAR file with the jsp content for Hive Web Interface&lt;/description&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
+<pre><code>Location of Hive run time structured log file
+</code></pre>
+
+<p>  </description>
+</property></p>
+
+<p><property>
+  <name>hive.support.concurrency</name>
+  <description>Enable Hive's Table Lock Manager Service</description>
+  <value>true</value>
+</property></p>
+
+<p><property>
+  <name>hive.zookeeper.quorum</name>
+  <description>Zookeeper quorum used by Hive's Table Lock Manager</description>
+  <value>desktop3,desktop4,desktop6,desktop7,desktop8</value>
+</property></p>
+
+<p><property>
+  <name>hive.hwi.listen.host</name>
+  <value>desktop1</value>
+  <description>This is the host address the Hive Web Interface will listen on</description>
+</property></p>
+
+<p><property>
+  <name>hive.hwi.listen.port</name>
+  <value>9999</value>
+  <description>This is the port the Hive Web Interface will listen on</description>
+</property></p>
+
+<p><property>
+  <name>hive.hwi.war.file</name>
+  <value>lib/hive-hwi-0.10.0-cdh4.2.0.war</value>
+  <description>This is the WAR file with the jsp content for Hive Web Interface</description>
+</property>
+</configuration>
+```</p>
+
 <ol>
 <li><p>环境变量
 参考hadoop中环境变量的设置</p></li>
 <li><p>启动脚本</p></li>
 </ol>
-<div class="highlight"><pre><code class="text">[root@desktop1 ~] hive
-</code></pre></div>
+
+
+<p><code>
+[root@desktop1 ~] hive
+</code></p>
+
 <ol>
 <li>hive与hbase集成
 在hive-site.xml中配置hive.aux.jars.path
 在环境变量中配置hadoop、mapreduce的环境变量</li>
 </ol>
 
-<h3 id="toc_17">异常说明</h3>
+
+<h3>异常说明</h3>
 
 <ul>
 <li>FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper</li>
 </ul>
 
+
 <p>hadoop配置文件没有zk</p>
 
 <ul>
-<li>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL_NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS_DATABASE_NAME&quot; ON &quot;THIS&quot;.&quot;DB_ID&quot; = &quot;THIS_DATABASE_NAME&quot;.&quot;DB_ID&quot; WHERE &quot;THIS_DATABASE_NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL_NAME&quot;) LIKE ? ESCAPE &#39;\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..</li>
+<li>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query "SELECT "THIS"."TBL_NAME" AS NUCORDER0 FROM "TBLS" "THIS" LEFT OUTER JOIN "DBS" "THIS_DATABASE_NAME" ON "THIS"."DB_ID" = "THIS_DATABASE_NAME"."DB_ID" WHERE "THIS_DATABASE_NAME"."NAME" = ? AND (LOWER("THIS"."TBL_NAME") LIKE ? ESCAPE '\' ) ORDER BY NUCORDER0 " : ERROR: invalid escape string 建议：Escape string must be empty or one character..</li>
 </ul>
 
-<p><a href="https://issues.apache.org/jira/browse/HIVE-3994">https://issues.apache.org/jira/browse/HIVE-3994</a></p>
+
+<p>https://issues.apache.org/jira/browse/HIVE-3994</p>
 
 <ul>
-<li><p>hive&gt; select count(*) from hive_userinfo; 没反应</p></li>
+<li><p>hive> select count(*) from hive_userinfo; 没反应</p></li>
 <li><p>zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)</p></li>
 </ul>
+
 
 <p>hive中没有设置zk</p>
 
 <ul>
 <li><p>hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</p></li>
-<li><p>Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
+<li><p>Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
 Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapreduce.v2.app.MRAppMaster</p></li>
 </ul>
+
 
 <p>检查环境变量以及yarn的classpath</p>
 
