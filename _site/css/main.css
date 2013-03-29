@@ -67,7 +67,7 @@ ul{list-style:circle;}
 .article-list{float:left;width:630px;}
 .article-list li{border-bottom:0px dashed #dedede;}
 .article-list h3 a{color:#353535;}
-.aside{float:left;padding-left:40px;width:230px;}
+.aside{float:left;padding-left:10px;width:320px;}
 .aside h3{font-size:1.2em;padding-left:20px;}
 .aside ul{margin:0;padding-left:2.6em;}
 
