@@ -3,7 +3,7 @@ layout: post
 title: 手动安装Cloudera Hive CDH4.2
 date: 2013-03-24 15:00
 categories: Hadoop
-tags: hadoop
+tags: hadoop,hive,cloudera
 summary: 主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
 ---
 

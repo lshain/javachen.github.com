@@ -3,7 +3,7 @@ layout: post
 title: 手动安装Cloudera Hadoop CDH4.2
 date: 2013-03-24 15:10
 categories: Hadoop
-tags: hadoop
+tags: hadoop,hadfs,mapreduce
 summary: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包括安装版本的说明、集群环境规划、安装过程等等。
 ---
 

@@ -3,7 +3,7 @@ layout: post
 title: 手动安装Cloudera HBase CDH4.2
 date: 2013-03-24 15:05
 categories: Hadoop
-tags: hadoop
+tags: hadoop,hbase,cloudera
 summary: 主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
 ---
 
