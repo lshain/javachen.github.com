@@ -1,0 +1,6 @@
+---
+layout: index 
+title: Home - JavaChen...
+---
+
+{% for post in site.posts %}

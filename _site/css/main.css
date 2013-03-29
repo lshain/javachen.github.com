@@ -20,7 +20,7 @@ h1{font-size:2em;margin:0.8em 0;}
 h2{font-size:1.6em;margin:0.5em 0;}
 h3{font-size:1.3em;margin:0.2em 0;}
 h4{font-size:1.05em;margin:0;}
-p{margin:1em 0;}
+p{margin:0 0;}
 blockquote{border-left:3px solid #ccc;margin:1em 0.5em;padding-left:0.3em;}
 ul{list-style:circle;}
 
@@ -65,7 +65,7 @@ ul{list-style:circle;}
 /* 首页主体 */
 #content{padding-top:20px;}
 .article-list{float:left;width:630px;}
-.article-list li{border-bottom:1px dashed #dedede;}
+.article-list li{border-bottom:0px dashed #dedede;}
 .article-list h3 a{color:#353535;}
 .aside{float:left;padding-left:40px;width:230px;}
 .aside h3{font-size:1.2em;padding-left:20px;}

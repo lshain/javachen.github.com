@@ -4,10 +4,5 @@ title: Home - JavaChen...
 ---
 
 {% for post in site.posts %}
-### [{{ post.title }}]({{ post.url }}) <time>{{ post.date | date: '%Y-%m-%d'}}</time>
-
-  {{post.summary}}
-
-  [Read More &raquo;]({{ post.url }})
+<li>{{ post.date | date: '%Y-%m-%d'}} » [{{ post.title }}]({{ post.url }}) </li>
 {% endfor %}
-
