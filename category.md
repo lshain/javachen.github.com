@@ -1,18 +1,16 @@
 ---
 layout: index
-title : 文章分类
+title : Categories
 ---
 
 
-文章列表
+Categories
 --------
-
-
 {% for category in site.categories %}
 
 <a id="{{category[0]}}"></a>
 
-####{{category[0]}} ({{category[1] | size}})
+### {{category[0]}} ({{category[1] | size}}) ###
 
 {% for post in category[1] %}
 
