@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "手动安装Cloudera Hadoop CDH4"
+title: 手动安装Cloudera Hadoop CDH4
 date: 2013-03-24 15:00
 categories: Hadoop
 tags: hadoop
