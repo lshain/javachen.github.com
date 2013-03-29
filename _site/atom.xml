@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T17:16:50+08:00</updated>
+ <updated>2013-03-29T17:22:19+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -25,7 +25,12 @@
 
 &lt;h3 id=&quot;toc_1&quot;&gt;安装过程&lt;/h3&gt;
 
-&lt;p&gt;安装前提：先安装好hadoop集群以及hive。&lt;/p&gt;
+&lt;p&gt;安装前提：先安装好hadoop集群以及hive，可以参考我的文章：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html&quot;&gt;手动安装Cloudera Hadoop CDH4.2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html&quot;&gt;手动安装Cloudera Hive CDH4.2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;ol&gt;
 &lt;li&gt;DataNode节点&lt;/li&gt;
@@ -142,15 +147,17 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 
 &lt;ol&gt;
 &lt;li&gt;如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到&lt;code&gt;/usr/lib/impala/lib&lt;/code&gt;目录下&lt;/li&gt;
-&lt;li&gt;E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010
-可能是已经启动了statestored进程&lt;/li&gt;
+&lt;li&gt;E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010&lt;/li&gt;
 &lt;/ol&gt;
+
+&lt;p&gt;可能是已经启动了statestored进程&lt;/p&gt;
 
 &lt;h3 id=&quot;toc_10&quot;&gt;参考文章&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://yuntai.1kapp.com/?p=904&quot;&gt;Impala安装文档完整版&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://tech.uc.cn/?p=817&quot;&gt;Impala入门笔记&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala&quot;&gt;Installing and Using Cloudera Impala&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/03/29/install-impala.html'>安装impala过程</a></content>
  </entry>

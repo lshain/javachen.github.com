@@ -13,7 +13,10 @@ tags: hadoop,impala,cloudera
 下载 impala，目前最新版本为0.6-1，[下载地址](http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/)。
 
 ### 安装过程
-安装前提：先安装好hadoop集群以及hive。
+安装前提：先安装好hadoop集群以及hive，可以参考我的文章：
+
+* [手动安装Cloudera Hadoop CDH4.2](http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
+* [手动安装Cloudera Hive CDH4.2](http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
 
 1. DataNode节点
 
@@ -151,8 +154,10 @@ HADOOP_CONF_DIR="/usr/lib/impala/conf" nohup impalad -state_store_host=desktop1 
 ### 注意：
 1. 如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到`/usr/lib/impala/lib`目录下
 2. E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010
- 可能是已经启动了statestored进程
+ 
+可能是已经启动了statestored进程
 
 ### 参考文章
 * [Impala安装文档完整版](http://yuntai.1kapp.com/?p=904)
 * [Impala入门笔记](http://tech.uc.cn/?p=817)
+* [Installing and Using Cloudera Impala](https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala)

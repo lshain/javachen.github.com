@@ -61,7 +61,12 @@
 
 <h3 id="toc_1">安装过程</h3>
 
-<p>安装前提：先安装好hadoop集群以及hive。</p>
+<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
+
+<ul>
+<li><a href="http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
+<li><a href="http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
+</ul>
 
 <ol>
 <li>DataNode节点</li>
@@ -178,15 +183,17 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 
 <ol>
 <li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
-<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010
-可能是已经启动了statestored进程</li>
+<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
 </ol>
+
+<p>可能是已经启动了statestored进程</p>
 
 <h3 id="toc_10">参考文章</h3>
 
 <ul>
 <li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
 <li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
+<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
 </ul>
 
 
