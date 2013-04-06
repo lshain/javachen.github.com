@@ -8,7 +8,17 @@ tags: hadoop,impala,cloudera
 
 记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 
-## 1. install jdk
+## 目录
+1. 安装jdk
+2. 设置yum源
+3. 安装HDFS
+4. 配置hadoop
+5. 安装YARN
+6. 安装zookeeper
+7. 安装HBase
+8. 参考文章
+
+## 1. 安装jdk
 安装jdk并设置环境变量
 
 	export JAVA_HOME=<jdk-install-dir>
@@ -23,10 +33,10 @@ tags: hadoop,impala,cloudera
 	vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 
-## 2. Set yum
-从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz 下载压缩包解压并设置本地或ftp yum源
+## 2. 设置yum源
+从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 
-## 3. Install HDFS
+## 3. 安装HDFS
 ### install NameNode
 
 	yum list hadoop
@@ -46,7 +56,7 @@ tags: hadoop,impala,cloudera
 	yum install hadoop-debuginfo
 
 
-## 4. config
+## 4. 配置hadoop
 ### Copying the Hadoop Configuration
 
 	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
@@ -180,7 +190,7 @@ my set:
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 
 
-## 5. Instal YARN
+## 5. 安装YARN
 1. mapred-site.xml:
 
 ```
@@ -306,7 +316,7 @@ my set:
 ### Configure the Hadoop Daemons to Start at Boot Time
 https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices
 
-## 6. Install Zookeeper
+## 6. 安装Zookeeper
 安装zookeeper
 
 	yum install zookeeper*
@@ -340,7 +350,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	service zookeeper-server init --myid=n
 	service zookeeper-server restart
  
-## 7. Install HBase
+## 7. 安装HBase
 
 	yum install hbase*
 

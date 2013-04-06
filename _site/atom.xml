@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-04-06T18:11:37+08:00</updated>
+ <updated>2013-04-06T18:16:35+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -19,7 +19,20 @@
    <id>http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</id>
    <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_0&quot;&gt;1. install jdk&lt;/h2&gt;
+&lt;h2 id=&quot;toc_0&quot;&gt;目录&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;安装jdk&lt;/li&gt;
+&lt;li&gt;设置yum源&lt;/li&gt;
+&lt;li&gt;安装HDFS&lt;/li&gt;
+&lt;li&gt;配置hadoop&lt;/li&gt;
+&lt;li&gt;安装YARN&lt;/li&gt;
+&lt;li&gt;安装zookeeper&lt;/li&gt;
+&lt;li&gt;安装HBase&lt;/li&gt;
+&lt;li&gt;参考文章&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;toc_1&quot;&gt;1. 安装jdk&lt;/h2&gt;
 
 &lt;p&gt;安装jdk并设置环境变量&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;export JAVA_HOME=&amp;lt;jdk-install-dir&amp;gt;
@@ -32,20 +45,20 @@ export PATH=$JAVA_HOME/bin:$PATH
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;vi /etc/sudoers
 Defaults env_keep+=JAVA_HOME
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_1&quot;&gt;2. Set yum&lt;/h2&gt;
+&lt;h2 id=&quot;toc_2&quot;&gt;2. 设置yum源&lt;/h2&gt;
 
-&lt;p&gt;从&lt;a href=&quot;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&quot;&gt;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&lt;/a&gt; 下载压缩包解压并设置本地或ftp yum源&lt;/p&gt;
+&lt;p&gt;从&lt;a href=&quot;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&quot;&gt;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&lt;/a&gt; 下载压缩包解压并设置本地或ftp yum源，可以参考&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_2&quot;&gt;3. Install HDFS&lt;/h2&gt;
+&lt;h2 id=&quot;toc_3&quot;&gt;3. 安装HDFS&lt;/h2&gt;
 
-&lt;h3 id=&quot;toc_3&quot;&gt;install NameNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_4&quot;&gt;install NameNode&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
 yum install hadoop-hdfs-namenode
 yum install hadoop-hdfs-secondarynamenode
 yum install hadoop-yarn-resourcemanager
 yum install hadoop-mapreduce-historyserver
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_4&quot;&gt;install DataNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_5&quot;&gt;install DataNode&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
 yum install hadoop-hdfs-datanode
 yum install hadoop-yarn-nodemanager
@@ -54,14 +67,14 @@ yum install zookeeper-server
 yum install hadoop-httpfs
 yum install hadoop-debuginfo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_5&quot;&gt;4. config&lt;/h2&gt;
+&lt;h2 id=&quot;toc_6&quot;&gt;4. 配置hadoop&lt;/h2&gt;
 
-&lt;h3 id=&quot;toc_6&quot;&gt;Copying the Hadoop Configuration&lt;/h3&gt;
+&lt;h3 id=&quot;toc_7&quot;&gt;Copying the Hadoop Configuration&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
 sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
 sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_7&quot;&gt;Customizing Configuration Files&lt;/h3&gt;
+&lt;h3 id=&quot;toc_8&quot;&gt;Customizing Configuration Files&lt;/h3&gt;
 
 &lt;ol&gt;
 &lt;li&gt;core-site.xml:&lt;/li&gt;
@@ -107,11 +120,11 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
         &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_8&quot;&gt;NameNode HA&lt;/h3&gt;
+&lt;h3 id=&quot;toc_9&quot;&gt;NameNode HA&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;toc_9&quot;&gt;Secondary NameNode Parameters&lt;/h3&gt;
+&lt;h3 id=&quot;toc_10&quot;&gt;Secondary NameNode Parameters&lt;/h3&gt;
 
 &lt;p&gt;在hdfs-site.xml中可以配置以下参数：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;dfs.namenode.checkpoint.check.period
@@ -120,11 +133,11 @@ dfs.namenode.checkpoint.dir
 dfs.namenode.checkpoint.edits.dir
 dfs.namenode.num.checkpoints.retained
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h4 id=&quot;toc_10&quot;&gt;multi-host-secondarynamenode-configuration&lt;/h4&gt;
+&lt;h4 id=&quot;toc_11&quot;&gt;multi-host-secondarynamenode-configuration&lt;/h4&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&quot;&gt;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&quot;toc_11&quot;&gt;Config list&lt;/h3&gt;
+&lt;h3 id=&quot;toc_12&quot;&gt;Config list&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;Directory                           Owner       Permissions Default Path
 hadoop.tmp.dir                      hdfs:hdfs   drwx------  /var/hadoop
 dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
@@ -143,7 +156,7 @@ yarn.nodemanager.local-dirs         /opt/data/yarn/local
 yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
 yarn.nodemanager.remote-app-log-dir /var/log/hadoop-yarn/app
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_12&quot;&gt;Create the data Directory in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_13&quot;&gt;Create the data Directory in the Cluster&lt;/h3&gt;
 
 &lt;p&gt;创建namenode的name目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/name
@@ -165,20 +178,20 @@ chmod 700 /opt/data/hadoop/dfs/namesecondary
 chown -R yarn:yarn /opt/data/hadoop/yarn/local
 chmod 700 /opt/data/hadoop/yarn/local
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_13&quot;&gt;Deploy your custom Configuration to your Entire Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_14&quot;&gt;Deploy your custom Configuration to your Entire Cluster&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo scp -r /etc/hadoop/conf.cluster root@nodeX:/etc/hadoop/conf.cluster
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_14&quot;&gt;To manually set the configuration on Red Hat-compatible systems&lt;/h3&gt;
+&lt;h3 id=&quot;toc_15&quot;&gt;To manually set the configuration on Red Hat-compatible systems&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
 sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_15&quot;&gt;Format the NameNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_16&quot;&gt;Format the NameNode&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hdfs namenode -format
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_16&quot;&gt;Start HDFS on Every Node in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_17&quot;&gt;Start HDFS on Every Node in the Cluster&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_17&quot;&gt;5. Instal YARN&lt;/h2&gt;
+&lt;h2 id=&quot;toc_18&quot;&gt;5. 安装YARN&lt;/h2&gt;
 
 &lt;ol&gt;
 &lt;li&gt;mapred-site.xml:&lt;/li&gt;
@@ -259,18 +272,18 @@ sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
         &amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_18&quot;&gt;Create the HDFS /tmp Directory&lt;/h3&gt;
+&lt;h3 id=&quot;toc_19&quot;&gt;Create the HDFS /tmp Directory&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /tmp
 sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_19&quot;&gt;Create Staging and Log Directories&lt;/h3&gt;
+&lt;h3 id=&quot;toc_20&quot;&gt;Create Staging and Log Directories&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/history
 sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_20&quot;&gt;Verify the HDFS File Structure&lt;/h3&gt;
+&lt;h3 id=&quot;toc_21&quot;&gt;Verify the HDFS File Structure&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
 drwxr-xr-x   - hdfs supergroup          0 2012-05-31 10:26 /user
@@ -279,24 +292,24 @@ drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
 drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
 drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_21&quot;&gt;Start mapred-historyserver on ResourceNode in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_22&quot;&gt;Start mapred-historyserver on ResourceNode in the Cluster&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;/etc/init.d/hadoop-mapreduce-historyserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_22&quot;&gt;Start YARN on Every Node in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_23&quot;&gt;Start YARN on Every Node in the Cluster&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_23&quot;&gt;Create a Home Directory for each MapReduce User&lt;/h3&gt;
+&lt;h3 id=&quot;toc_24&quot;&gt;Create a Home Directory for each MapReduce User&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_24&quot;&gt;Set HADOOP_MAPRED_HOME&lt;/h3&gt;
+&lt;h3 id=&quot;toc_25&quot;&gt;Set HADOOP_MAPRED_HOME&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_25&quot;&gt;Configure the Hadoop Daemons to Start at Boot Time&lt;/h3&gt;
+&lt;h3 id=&quot;toc_26&quot;&gt;Configure the Hadoop Daemons to Start at Boot Time&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_26&quot;&gt;6. Install Zookeeper&lt;/h2&gt;
+&lt;h2 id=&quot;toc_27&quot;&gt;6. 安装Zookeeper&lt;/h2&gt;
 
 &lt;p&gt;安装zookeeper&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install zookeeper*
@@ -326,7 +339,7 @@ server.3=node3:2888:3888
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service zookeeper-server init --myid=n
 service zookeeper-server restart
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_27&quot;&gt;7. Install HBase&lt;/h2&gt;
+&lt;h2 id=&quot;toc_28&quot;&gt;7. 安装HBase&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install hbase*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在hdfs中创建/hbase&lt;/p&gt;
@@ -346,7 +359,7 @@ chown -R hbase:hbase /opt/data/hbase
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service hbase-master start
 service hbase-regionserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_28&quot;&gt;8. 参考文章&lt;/h2&gt;
+&lt;h2 id=&quot;toc_29&quot;&gt;8. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
