@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    	<link rel="alternate" type="application/rss+xml" title="RSS 2.0 - all posts" href="http://blog.javachen.com/atom.xml" />
+    	<link REL="SHORTCUT ICON" HREF="http://blog.javachen.com/favicon.ico"/>
+		<meta name="keywords" content="html,xhtml,css,js,javascript,ajax,jQuery,java,struts,struts2,hibernate,spring,jpa,maven,ant,git,github,jekyll,markdown,wiki,
+    java,jboss,JDG,EDS,bi,pentaho,kettle,nosql,cassandra,hadoop,bigdata,cloud,opensource,openstack" />
+		<meta name="description" content="javachen" />
+
+		<meta property="wb:webmaster" content="61eb31a6e636506d" />
+    	<meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    	<meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+		<title>从yum安装Cloudera CDH4.2</title>
+		
+		<link rel="stylesheet" href="/css/main.css" />
+		<link rel="stylesheet" href="/css/pygments_native.css" />
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+	</head>
+	<body>
+		<header id="header">
+			<div class="header-info fix">
+				<h1><a href="/">JavaChen Blog</a></h1>
+				<p class="describe">&lt; Dive into Java ... /&gt;</p>
+				<nav class="navigation">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/archive.html">Archive</a></li>
+						<!--<li><a href="/sitemap.txt">网站地图</a></li>-->
+						<li><a href="/about.html">About</a></li>
+						<li><a href="/atom.xml">RSS</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header><!--/header end-->
+
+		<section id="content" class="fix">
+			<article id="post">
+	<a href="#" class="icon-fullscreen r" title="点击全屏显示"></a>
+	<div class="c9">
+		Categories：
+			
+			<a href="/category.html#Hadoop">Hadoop</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Tages：hadoop,impala,cloudera
+		&emsp;&emsp;&emsp;&emsp;
+		Time：<time date="2013-04-06 17:00:00 +0800">2013-04-06 17:04</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+
+	<h1>从yum安装Cloudera CDH4.2</h1>
+
+	<p>记录使用yum通过rpm方式安装Cloudera CDH4.2，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+
+<h2 id="toc_0">1. install jdk</h2>
+
+<p>安装jdk并设置环境变量</p>
+<div class="highlight"><pre><code class="text">export JAVA_HOME=&lt;jdk-install-dir&gt;
+export PATH=$JAVA_HOME/bin:$PATH
+</code></pre></div>
+<p>检查环境变量中是否有设置JAVA_HOME</p>
+<div class="highlight"><pre><code class="text">sudo env | grep JAVA_HOME
+</code></pre></div>
+<p>如果env中没有JAVA_HOME变量，则修改/etc/sudoers文件</p>
+<div class="highlight"><pre><code class="text">vi /etc/sudoers
+Defaults env_keep+=JAVA_HOME
+</code></pre></div>
+<h2 id="toc_1">Set yum</h2>
+
+<p>从<a href="http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz%E4%B8%8B%E8%BD%BD%E5%8E%8B%E7%BC%A9%E5%8C%85%E8%A7%A3%E5%8E%8B%E5%B9%B6%E8%AE%BE%E7%BD%AE%E6%9C%AC%E5%9C%B0%E6%88%96ftp">http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz下载压缩包解压并设置本地或ftp</a> yum源</p>
+
+<h2 id="toc_2">2. Install HDFS</h2>
+
+<h3 id="toc_3">install NameNode</h3>
+<div class="highlight"><pre><code class="text">yum list hadoop
+yum install hadoop-hdfs-namenode
+yum install hadoop-hdfs-secondarynamenode
+yum install hadoop-yarn-resourcemanager
+yum install hadoop-mapreduce-historyserver
+</code></pre></div>
+<h3 id="toc_4">install DataNode</h3>
+<div class="highlight"><pre><code class="text">yum list hadoop
+yum install hadoop-hdfs-datanode
+yum install hadoop-yarn-nodemanager
+yum install hadoop-mapreduce
+yum install zookeeper-server
+yum install hadoop-httpfs
+yum install hadoop-debuginfo
+</code></pre></div>
+<h2 id="toc_5">3. config</h2>
+
+<h3 id="toc_6">Copying the Hadoop Configuration</h3>
+<div class="highlight"><pre><code class="text">sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
+sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
+sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
+</code></pre></div>
+<h3 id="toc_7">Customizing Configuration Files</h3>
+
+<ol>
+<li>core-site.xml:</li>
+</ol>
+<div class="highlight"><pre><code class="text">    &lt;property&gt;
+        &lt;name&gt;fs.defaultFS&lt;/name&gt;
+        &lt;value&gt;hdfs://node1:9000&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;fs.trash.interval&lt;/name&gt;
+        &lt;value&gt;10080&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
+        &lt;value&gt;10080&lt;/value&gt;
+    &lt;/property&gt;
+</code></pre></div>
+<ol>
+<li>hdfs-site.xml:</li>
+</ol>
+<div class="highlight"><pre><code class="text">    &lt;property&gt;
+      &lt;name&gt;dfs.replication&lt;/name&gt;
+      &lt;value&gt;1&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+      &lt;value&gt;/opt/data/hadoop&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.block.size&lt;/name&gt;
+        &lt;value&gt;134217728&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
+        &lt;value&gt;node1:50070&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+        &lt;value&gt;node1:50090&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+        &lt;value&gt;true&lt;/value&gt;
+    &lt;/property&gt;
+</code></pre></div>
+<h3 id="toc_8">NameNode HA</h3>
+
+<p><a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability</a></p>
+
+<h3 id="toc_9">Secondary NameNode Parameters</h3>
+
+<p>在hdfs-site.xml中可以配置以下参数：</p>
+<div class="highlight"><pre><code class="text">dfs.namenode.checkpoint.check.period
+dfs.namenode.checkpoint.txns
+dfs.namenode.checkpoint.dir
+dfs.namenode.checkpoint.edits.dir
+dfs.namenode.num.checkpoints.retained
+</code></pre></div>
+<h4 id="toc_10">multi-host-secondarynamenode-configuration</h4>
+
+<p><a href="http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/">http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/</a>.</p>
+
+<h3 id="toc_11">Config list</h3>
+<div class="highlight"><pre><code class="text">Directory                           Owner       Permissions Default Path
+hadoop.tmp.dir                      hdfs:hdfs   drwx------  /var/hadoop
+dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
+dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
+dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
+yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
+yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
+yarn.nodemanager.remote-app-log-dir                         /tmp/logs
+</code></pre></div>
+<p>my set:</p>
+<div class="highlight"><pre><code class="text">hadoop.tmp.dir                      /opt/data/hadoop
+dfs.namenode.name.dir               ${hadoop.tmp.dir}/dfs/name
+dfs.datanode.data.dir               ${hadoop.tmp.dir}/dfs/data
+dfs.namenode.checkpoint.dir         ${hadoop.tmp.dir}/dfs/namesecondary
+yarn.nodemanager.local-dirs         /opt/data/yarn/local
+yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
+yarn.nodemanager.remote-app-log-dir /var/log/hadoop-yarn/app
+</code></pre></div>
+<h3 id="toc_12">Create the data Directory in the Cluster</h3>
+
+<p>创建namenode的name目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/hadoop/dfs/name
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
+chmod 700 /opt/data/hadoop/dfs/name
+</code></pre></div>
+<p>创建namenode的data目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/hadoop/dfs/data
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
+chmod 700 /opt/data/hadoop/dfs/data
+</code></pre></div>
+<p>创建namesecondary目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/hadoop/dfs/namesecondary
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/namesecondary
+chmod 700 /opt/data/hadoop/dfs/namesecondary
+</code></pre></div>
+<p>创建yarn的local目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/hadoop/yarn/local
+chown -R yarn:yarn /opt/data/hadoop/yarn/local
+chmod 700 /opt/data/hadoop/yarn/local
+</code></pre></div>
+<h3 id="toc_13">Deploy your custom Configuration to your Entire Cluster</h3>
+<div class="highlight"><pre><code class="text">sudo scp -r /etc/hadoop/conf.cluster root@nodeX:/etc/hadoop/conf.cluster
+</code></pre></div>
+<h3 id="toc_14">To manually set the configuration on Red Hat-compatible systems</h3>
+<div class="highlight"><pre><code class="text">sudo update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
+sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
+</code></pre></div>
+<h3 id="toc_15">Format the NameNode</h3>
+<div class="highlight"><pre><code class="text">sudo -u hdfs hdfs namenode -format
+</code></pre></div>
+<h3 id="toc_16">Start HDFS on Every Node in the Cluster</h3>
+<div class="highlight"><pre><code class="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
+</code></pre></div>
+<h2 id="toc_17">4. Instal YARN</h2>
+
+<ol>
+<li>mapred-site.xml:</li>
+</ol>
+<div class="highlight"><pre><code class="text">    &lt;property&gt;
+        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+        &lt;value&gt;yarn&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+        &lt;value&gt;node1:10020&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+        &lt;value&gt;node1:19888&lt;/value&gt;
+    &lt;/property&gt;
+</code></pre></div>
+<ol>
+<li>yarn-site.xml:</li>
+</ol>
+<div class="highlight"><pre><code class="text">    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+        &lt;value&gt;node1:8031&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+        &lt;value&gt;node1:8032&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+        &lt;value&gt;node1:8030&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
+        &lt;value&gt;node1:8033&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
+        &lt;value&gt;node1:8088&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
+        &lt;value&gt;/opt/hadoop/yarn/local&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
+        &lt;value&gt;/var/log/hadoop-yarn/logs&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
+        &lt;value&gt;/var/log/hadoop-yarn/apps&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
+        &lt;value&gt;/user&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+        &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+        &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.log-aggregation-enable&lt;/name&gt;
+        &lt;value&gt;true&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
+        &lt;name&gt;yarn.application.classpath&lt;/name&gt;
+        &lt;value&gt;
+        $HADOOP_CONF_DIR,
+        $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
+        $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
+        $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
+        $YARN_HOME/*,$YARN_HOME/lib/*
+        &lt;/value&gt;
+    &lt;/property&gt;
+</code></pre></div>
+<h3 id="toc_18">Create the HDFS /tmp Directory</h3>
+<div class="highlight"><pre><code class="text">sudo -u hdfs hadoop fs -mkdir /tmp
+sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
+</code></pre></div>
+<h3 id="toc_19">Create Staging and Log Directories</h3>
+<div class="highlight"><pre><code class="text">sudo -u hdfs hadoop fs -mkdir /user/history
+sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+sudo -u hdfs hadoop fs -chown yarn /user/history
+sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
+sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
+</code></pre></div>
+<h3 id="toc_20">Verify the HDFS File Structure</h3>
+<div class="highlight"><pre><code class="text">[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
+drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
+drwxr-xr-x   - hdfs supergroup          0 2012-05-31 10:26 /user
+drwxrwxrwt   - yarn supergroup          0 2012-04-19 14:31 /user/history
+drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
+drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
+drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
+</code></pre></div>
+<h3 id="toc_21">Start mapred-historyserver on ResourceNode in the Cluster</h3>
+<div class="highlight"><pre><code class="text">/etc/init.d/hadoop-mapreduce-historyserver start
+</code></pre></div>
+<h3 id="toc_22">Start YARN on Every Node in the Cluster</h3>
+<div class="highlight"><pre><code class="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
+</code></pre></div>
+<h3 id="toc_23">Create a Home Directory for each MapReduce User</h3>
+<div class="highlight"><pre><code class="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
+sudo -u hdfs hadoop fs -chown $USER /user/$USER
+</code></pre></div>
+<h3 id="toc_24">Set HADOOP_MAPRED_HOME</h3>
+<div class="highlight"><pre><code class="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+</code></pre></div>
+<h3 id="toc_25">Configure the Hadoop Daemons to Start at Boot Time</h3>
+
+<p><a href="https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices">https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices</a></p>
+
+<h2 id="toc_26">5. Install Zookeeper</h2>
+
+<p>安装zookeeper</p>
+<div class="highlight"><pre><code class="text">yum install zookeeper*
+</code></pre></div>
+<p>设置crontab</p>
+<div class="highlight"><pre><code class="text">crontab -e
+15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
+/usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
+/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
+org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
+</code></pre></div>
+<p>创建zookeeper的目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/zookeeper
+chown -R zookeeper:zookeeper /opt/data/zookeeper
+</code></pre></div>
+<p>设置zookeeper配置</p>
+<div class="highlight"><pre><code class="text">tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/opt/data/zookeeper
+clientPort=2181
+server.1=node1:2888:3888
+server.2=node2:2888:3888
+server.3=node3:2888:3888
+</code></pre></div>
+<p>初始化并启动zookeeper</p>
+<div class="highlight"><pre><code class="text">service zookeeper-server init --myid=n
+service zookeeper-server restart
+</code></pre></div>
+<h2 id="toc_27">6. Install HBase</h2>
+<div class="highlight"><pre><code class="text">yum install hbase*
+</code></pre></div>
+<p>在hdfs中创建/hbase</p>
+<div class="highlight"><pre><code class="text">hadoop fs -mkdir /hbase
+hadoop fs -chown hbase:hbase /hbase
+</code></pre></div>
+<p>设置crontab：</p>
+<div class="highlight"><pre><code class="text">crontab -e
+* 10 * * * cd /var/log/hbase/; rm -rf\
+`ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
+</code></pre></div>
+<p>创建hbase目录</p>
+<div class="highlight"><pre><code class="text">mkdir -p /opt/data/hbase
+chown -R hbase:hbase /opt/data/hbase
+</code></pre></div>
+<h2 id="toc_28">7. 参考文章</h2>
+
+<ul>
+<li><a href="https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster">Deploying HDFS on a Cluster</a></li>
+<li><a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
+</ul>
+
+
+	<div class="eof">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html'>JavaChen Blog</a>-
+		<br/>
+		<br/>
+		<!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style_32x32">
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_tqq"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_twitter"></a>
+		<a class="jiathis_button_fb"></a>
+		<a class="jiathis_button_googleplus"></a>
+		<a class="jiathis_button_translate"></a>
+		<a class="jiathis_button_delicious"></a>
+		<a class="jiathis_button_sdonote"></a>
+		<a class="jiathis_button_ydnote"></a>
+		<a class="jiathis_button_qingbiji"></a>
+		<a class="jiathis_button_fav"></a>
+		<a class="jiathis_button_ishare"></a>
+		<a class="jiathis_button_copy"></a>
+		<a class="jiathis_button_email"></a>
+		<a class="jiathis_button_print"></a>
+		<a class="jiathis_button_printfriendly"></a>
+		<a class="jiathis_button_pdfonline"></a>
+		<a href="http://www.jiathis.com/share?uid=1709061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+		<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript" >
+		var jiathis_config={
+			data_track_clickback:true,
+			summary:"",
+			hideMore:false
+		}
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1709061" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+
+
+
+		<!-- UJian Button BEGIN -->
+		<div class="ujian-hook"></div>
+		<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1709061"></script>
+		<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+		<!-- UJian Button END -->
+	</div>
+	
+	<hr/>
+	<div class="page fix">
+		
+		<span class="prev"><a href="/Hadoop/2013/03/29/install-impala.html">← 安装impala过程</a></span>
+		
+		
+	</div>
+	<hr/>
+</article>
+
+<div id="comment">
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</div>
+
+<script src="/js/jquery-min.js"></script>
+<script src="/js/Fullscreen.js"></script>
+<script type="text/javascript">
+$(function() {
+	// =============== 全屏显示 ==================
+	(function() {
+		var icon = $( 'a.icon-fullscreen' ),
+			fs, fsCallback;
+		
+		fsCallback = function(isFullscreen) {
+				if (isFullscreen) {
+					icon.addClass('expand').attr('title', 'ESC 退出全屏');
+				}
+				else {
+					icon.removeClass('expand').attr('title', '点击全屏显示');
+				}
+			};
+			
+		fs = new Fullscreen({
+				element: $('#post'),
+				noSafari: true,
+				callback: fsCallback
+			});
+
+		if (fs.fullscreenEnabled) {
+			icon.on('click', function() {
+				fs.toggleFullscreen();
+				return false;
+			});
+		}
+		else {
+			icon.hide();
+		}
+	})();
+
+
+	// ============== 目录提取 ===============
+	(function() {
+		// 设置无目录时，不显示
+		if (!parseInt('', 10)) {
+			return;
+		}
+
+		var dom = $('<fieldset id="catalogue"><legend>目录</legend></fieldset>'),
+			count = 0;
+		
+		$('#post').find('h2,h3,h4,h5').each(function() {
+			var name = 'catalogue_' + count++;
+			dom.append('<div class="txt_' + this.tagName + '">' +
+				'<a href="#' + name + '">' +
+					this.innerHTML +
+				'</a></div>');
+			this.id = name;
+		});
+
+		dom.appendTo('body');
+	})();
+});
+</script>
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+<!-- UJian Button END -->
+
+
+		</section><!--/content end-->
+
+		<footer id="footer">
+			<p class="l">
+				&copy; 2013 <a href="http://blog.javachen.com">JavaChen</a>. | Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://pages.github.com/">GitHub Pages</a>
+			</p>
+			<!--Templates from <a href='https://github.com/calefy/calefy.github.com' target='_blank'>calefy</a>.-->
+			<p class="r">
+				<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+			</p>
+			<p class="tac">
+				<small>『纸上得来终觉浅，绝知此事要躬行』</small>
+			</p>
+		</footer><!--/footer end-->
+
+
+
+	</body>
+</html>

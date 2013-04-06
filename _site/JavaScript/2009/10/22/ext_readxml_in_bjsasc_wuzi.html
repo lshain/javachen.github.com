@@ -150,32 +150,31 @@ function ForDight(Dight, How) {
 }
 </pre></p>
 
-<p>xml文件格式：
-<pre lang="xml" line="1">
-&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
-<dictionary>
-    <title>领用出库-物资选择</title>
-    <sql>
+<p>xml文件格式：</p>
+<div class="highlight"><pre><code class="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
+&lt; dictionary&gt;
+    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
+    &lt;sql&gt;
     select V_stores_list.* 
-    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39; AND CANUSEQTY&gt;0 AND ??? and isblock=0
-    </sql>
-    <fromtable>V_stores_list</fromtable>
-    <targettable>BO_IC_EXPORT_S</targettable>
-    <line>20</line>
+    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
+        AND CANUSEQTY&gt;0 AND ??? and isblock=0
+    &lt;/sql&gt;
+    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
+    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
+    &lt;line&gt;20&lt;/line&gt;
     &lt;!-- 条件区开始--&gt;
-    <condition>
-        <fieldname>MTRNAME</fieldname>
-        <fieldtitle>物资名称</fieldtitle>
-        <fieldtype>文本</fieldtype>
-        <comparetype>&lt; ![CDATA[like
+    &lt;condition&gt;
+        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
+        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
+        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
+        &lt;comparetype&gt;&lt; ![CDATA[like
         MTRNAME
         单行
-        &lt; ![CDATA[]]&gt;<br>
-    </comparetype>
-</condition>
-</dictionary>
-</pre></p>
-
+        &lt; ![CDATA[]]&gt;       
+        &lt;/comparetype&gt;
+    &lt;/ condition&gt;
+&lt;/ dictionary&gt;
+</code></pre></div>
 <p>然后，弹出窗口页面Ext入口代码：
 <pre>
 // 全局变量

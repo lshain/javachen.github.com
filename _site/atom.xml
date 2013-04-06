@@ -4,13 +4,352 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-03-29T17:36:59+08:00</updated>
+ <updated>2013-04-06T18:00:07+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
    <email>june.chan@foxmail.com</email>
  </author>
  
+ 
+ <entry>
+   <title>从yum安装Cloudera CDH4.2</title>
+   <link href="http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html"/>
+   <updated>2013-04-06T17:00:00+08:00</updated>
+   <id>http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</id>
+   <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH4.2，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
+
+&lt;h2 id=&quot;toc_0&quot;&gt;1. install jdk&lt;/h2&gt;
+
+&lt;p&gt;安装jdk并设置环境变量&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;export JAVA_HOME=&amp;lt;jdk-install-dir&amp;gt;
+export PATH=$JAVA_HOME/bin:$PATH
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;检查环境变量中是否有设置JAVA_HOME&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo env | grep JAVA_HOME
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果env中没有JAVA_HOME变量，则修改/etc/sudoers文件&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;vi /etc/sudoers
+Defaults env_keep+=JAVA_HOME
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_1&quot;&gt;Set yum&lt;/h2&gt;
+
+&lt;p&gt;从&lt;a href=&quot;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz%E4%B8%8B%E8%BD%BD%E5%8E%8B%E7%BC%A9%E5%8C%85%E8%A7%A3%E5%8E%8B%E5%B9%B6%E8%AE%BE%E7%BD%AE%E6%9C%AC%E5%9C%B0%E6%88%96ftp&quot;&gt;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz下载压缩包解压并设置本地或ftp&lt;/a&gt; yum源&lt;/p&gt;
+
+&lt;h2 id=&quot;toc_2&quot;&gt;2. Install HDFS&lt;/h2&gt;
+
+&lt;h3 id=&quot;toc_3&quot;&gt;install NameNode&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
+yum install hadoop-hdfs-namenode
+yum install hadoop-hdfs-secondarynamenode
+yum install hadoop-yarn-resourcemanager
+yum install hadoop-mapreduce-historyserver
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_4&quot;&gt;install DataNode&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
+yum install hadoop-hdfs-datanode
+yum install hadoop-yarn-nodemanager
+yum install hadoop-mapreduce
+yum install zookeeper-server
+yum install hadoop-httpfs
+yum install hadoop-debuginfo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_5&quot;&gt;3. config&lt;/h2&gt;
+
+&lt;h3 id=&quot;toc_6&quot;&gt;Copying the Hadoop Configuration&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
+sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
+sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_7&quot;&gt;Customizing Configuration Files&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;core-site.xml:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;hdfs://node1:9000&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;fs.trash.interval&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;fs.trash.checkpoint.interval&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;hdfs-site.xml:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;1&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;/opt/data/hadoop&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;dfs.block.size&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;134217728&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:50070&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:50090&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_8&quot;&gt;NameNode HA&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;toc_9&quot;&gt;Secondary NameNode Parameters&lt;/h3&gt;
+
+&lt;p&gt;在hdfs-site.xml中可以配置以下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;dfs.namenode.checkpoint.check.period
+dfs.namenode.checkpoint.txns
+dfs.namenode.checkpoint.dir
+dfs.namenode.checkpoint.edits.dir
+dfs.namenode.num.checkpoints.retained
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;toc_10&quot;&gt;multi-host-secondarynamenode-configuration&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&quot;&gt;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;toc_11&quot;&gt;Config list&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;Directory                           Owner       Permissions Default Path
+hadoop.tmp.dir                      hdfs:hdfs   drwx------  /var/hadoop
+dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
+dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
+dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
+yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
+yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
+yarn.nodemanager.remote-app-log-dir                         /tmp/logs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;my set:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;hadoop.tmp.dir                      /opt/data/hadoop
+dfs.namenode.name.dir               ${hadoop.tmp.dir}/dfs/name
+dfs.datanode.data.dir               ${hadoop.tmp.dir}/dfs/data
+dfs.namenode.checkpoint.dir         ${hadoop.tmp.dir}/dfs/namesecondary
+yarn.nodemanager.local-dirs         /opt/data/yarn/local
+yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
+yarn.nodemanager.remote-app-log-dir /var/log/hadoop-yarn/app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_12&quot;&gt;Create the data Directory in the Cluster&lt;/h3&gt;
+
+&lt;p&gt;创建namenode的name目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/name
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
+chmod 700 /opt/data/hadoop/dfs/name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建namenode的data目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/data
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
+chmod 700 /opt/data/hadoop/dfs/data
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建namesecondary目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/namesecondary
+chown -R hdfs:hdfs /opt/data/hadoop/dfs/namesecondary
+chmod 700 /opt/data/hadoop/dfs/namesecondary
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建yarn的local目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/yarn/local
+chown -R yarn:yarn /opt/data/hadoop/yarn/local
+chmod 700 /opt/data/hadoop/yarn/local
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_13&quot;&gt;Deploy your custom Configuration to your Entire Cluster&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo scp -r /etc/hadoop/conf.cluster root@nodeX:/etc/hadoop/conf.cluster
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_14&quot;&gt;To manually set the configuration on Red Hat-compatible systems&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
+sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_15&quot;&gt;Format the NameNode&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hdfs namenode -format
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_16&quot;&gt;Start HDFS on Every Node in the Cluster&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_17&quot;&gt;4. Instal YARN&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;mapred-site.xml:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;mapreduce.jobhistory.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:10020&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;mapreduce.jobhistory.webapp.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:19888&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;yarn-site.xml:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.resourcemanager.resource-tracker.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:8031&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.resourcemanager.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:8032&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.resourcemanager.scheduler.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:8030&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.resourcemanager.admin.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:8033&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.resourcemanager.webapp.address&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;node1:8088&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/opt/hadoop/yarn/local&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/logs&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/apps&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;mapreduce.shuffle&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.log-aggregation-enable&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;description&amp;gt;Classpath for typical applications.&amp;lt;/description&amp;gt;
+        &amp;lt;name&amp;gt;yarn.application.classpath&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;
+        $HADOOP_CONF_DIR,
+        $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
+        $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
+        $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
+        $YARN_HOME/*,$YARN_HOME/lib/*
+        &amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_18&quot;&gt;Create the HDFS /tmp Directory&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /tmp
+sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_19&quot;&gt;Create Staging and Log Directories&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/history
+sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+sudo -u hdfs hadoop fs -chown yarn /user/history
+sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
+sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_20&quot;&gt;Verify the HDFS File Structure&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
+drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
+drwxr-xr-x   - hdfs supergroup          0 2012-05-31 10:26 /user
+drwxrwxrwt   - yarn supergroup          0 2012-04-19 14:31 /user/history
+drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
+drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
+drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_21&quot;&gt;Start mapred-historyserver on ResourceNode in the Cluster&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;/etc/init.d/hadoop-mapreduce-historyserver start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_22&quot;&gt;Start YARN on Every Node in the Cluster&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_23&quot;&gt;Create a Home Directory for each MapReduce User&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/$USER
+sudo -u hdfs hadoop fs -chown $USER /user/$USER
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_24&quot;&gt;Set HADOOP_MAPRED_HOME&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_25&quot;&gt;Configure the Hadoop Daemons to Start at Boot Time&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;toc_26&quot;&gt;5. Install Zookeeper&lt;/h2&gt;
+
+&lt;p&gt;安装zookeeper&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install zookeeper*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;设置crontab&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;crontab -e
+15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
+/usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
+/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
+org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建zookeeper的目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/zookeeper
+chown -R zookeeper:zookeeper /opt/data/zookeeper
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;设置zookeeper配置&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/opt/data/zookeeper
+clientPort=2181
+server.1=node1:2888:3888
+server.2=node2:2888:3888
+server.3=node3:2888:3888
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;初始化并启动zookeeper&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service zookeeper-server init --myid=n
+service zookeeper-server restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_27&quot;&gt;6. Install HBase&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install hbase*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在hdfs中创建/hbase&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;hadoop fs -mkdir /hbase
+hadoop fs -chown hbase:hbase /hbase
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;设置crontab：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;crontab -e
+* 10 * * * cd /var/log/hbase/; rm -rf\
+`ls /var/log/hbase/|grep -P &amp;#39;hbase\-hbase\-.+\.log\.[0-9]&amp;#39;\`&amp;gt;&amp;gt; /dev/null &amp;amp;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建hbase目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hbase
+chown -R hbase:hbase /opt/data/hbase
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_28&quot;&gt;7. 参考文章&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://roserouge.iteye.com/blog/1558498&quot;&gt;hadoop cdh 安装笔记&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html'>从yum安装Cloudera CDH4.2</a></content>
+ </entry>
  
  <entry>
    <title>安装impala过程</title>
@@ -28,8 +367,8 @@
 &lt;p&gt;安装前提：先安装好hadoop集群以及hive，可以参考我的文章：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html&quot;&gt;手动安装Cloudera Hadoop CDH4.2&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html&quot;&gt;手动安装Cloudera Hive CDH4.2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html&quot;&gt;手动安装Cloudera Hadoop CDH4.2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html&quot;&gt;手动安装Cloudera Hive CDH4.2&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;ol&gt;
@@ -1921,25 +2260,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 
 &lt;p&gt;Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/22/the-init-process-before-job-execution.html'>Kettle运行作业之前的初始化过程</a></content>
- </entry>
- 
- <entry>
-   <title>The execution process of kettle’s job</title>
-   <link href="http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job.html"/>
-   <updated>2012-02-21T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job</id>
-   <content type="html">&lt;p&gt;How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is &quot;org.pentaho.di.ui.spoon.Spoon.java&quot;.This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.&lt;/p&gt;
-
-&lt;p&gt;When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.&lt;/p&gt;
-
-&lt;p&gt;This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.&lt;/p&gt;
-
-&lt;p&gt;&lt;div class=&quot;pic&quot;&gt;
-&lt;a href=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg&quot; alt=&quot;&quot; title=&quot;spoon execute sequence&quot; width=&quot;300&quot; height=&quot;180&quot; class=&quot;aligncenter size-medium wp-image-2511&quot; /&gt;&lt;/a&gt;
-&lt;/div&gt;&lt;/p&gt;
-
-&lt;p&gt;What is the detail process of job execution? You should look into the Job.run() method for detail information.&lt;/p&gt;
-<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Kettle/2012/02/21/the-execution-process-of-kettles-job.html'>The execution process of kettle’s job</a></content>
  </entry>
  
  

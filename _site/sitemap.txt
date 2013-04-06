@@ -15,6 +15,8 @@
 
 
 
+	/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html
+
 	/Hadoop/2013/03/29/install-impala.html
 
 	/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html
