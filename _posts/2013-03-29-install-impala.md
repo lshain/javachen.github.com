@@ -15,8 +15,8 @@ tags: hadoop,impala,cloudera
 ### 安装过程
 安装前提：先安装好hadoop集群以及hive，可以参考我的文章：
 
-* [手动安装Cloudera Hadoop CDH4.2](http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
-* [手动安装Cloudera Hive CDH4.2](http://localhost:4000/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
+* [手动安装Cloudera Hadoop CDH4.2](http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
+* [手动安装Cloudera Hive CDH4.2](http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
 
 1. DataNode节点
 
