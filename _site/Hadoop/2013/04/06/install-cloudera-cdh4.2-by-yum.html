@@ -361,7 +361,7 @@ org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 <div class="highlight"><pre><code class="text">mkdir -p /opt/data/zookeeper
 chown -R zookeeper:zookeeper /opt/data/zookeeper
 </code></pre></div>
-<p>设置zookeeper配置</p>
+<p>设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器</p>
 <div class="highlight"><pre><code class="text">tickTime=2000
 initLimit=10
 syncLimit=5
@@ -371,7 +371,7 @@ server.1=node1:2888:3888
 server.2=node2:2888:3888
 server.3=node3:2888:3888
 </code></pre></div>
-<p>初始化并启动zookeeper</p>
+<p>在每个节点上初始化并启动zookeeper，注意修改n值</p>
 <div class="highlight"><pre><code class="text">service zookeeper-server init --myid=n
 service zookeeper-server restart
 </code></pre></div>

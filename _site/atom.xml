@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-04-06T18:16:35+08:00</updated>
+ <updated>2013-04-06T18:19:44+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -325,7 +325,7 @@ org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/zookeeper
 chown -R zookeeper:zookeeper /opt/data/zookeeper
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;设置zookeeper配置&lt;/p&gt;
+&lt;p&gt;设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;tickTime=2000
 initLimit=10
 syncLimit=5
@@ -335,7 +335,7 @@ server.1=node1:2888:3888
 server.2=node2:2888:3888
 server.3=node3:2888:3888
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;初始化并启动zookeeper&lt;/p&gt;
+&lt;p&gt;在每个节点上初始化并启动zookeeper，注意修改n值&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service zookeeper-server init --myid=n
 service zookeeper-server restart
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;

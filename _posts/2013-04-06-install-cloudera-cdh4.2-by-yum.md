@@ -334,7 +334,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	mkdir -p /opt/data/zookeeper
 	chown -R zookeeper:zookeeper /opt/data/zookeeper
 
-设置zookeeper配置
+设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器
 
 	tickTime=2000
 	initLimit=10
@@ -345,7 +345,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	server.2=node2:2888:3888
 	server.3=node3:2888:3888
 
-初始化并启动zookeeper
+在每个节点上初始化并启动zookeeper，注意修改n值
  
 	service zookeeper-server init --myid=n
 	service zookeeper-server restart
