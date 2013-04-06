@@ -53,7 +53,7 @@
 
 	<h1>从yum安装Cloudera CDH4.2</h1>
 
-	<p>记录使用yum通过rpm方式安装Cloudera CDH4.2，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+	<p>记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
 
 <h2 id="toc_0">1. install jdk</h2>
 
@@ -374,14 +374,22 @@ hadoop fs -chown hbase:hbase /hbase
 * 10 * * * cd /var/log/hbase/; rm -rf\
 `ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
 </code></pre></div>
-<p>创建hbase目录</p>
+<p>创建HBase目录</p>
 <div class="highlight"><pre><code class="text">mkdir -p /opt/data/hbase
 chown -R hbase:hbase /opt/data/hbase
+</code></pre></div>
+<p>启动HBase</p>
+<div class="highlight"><pre><code class="text">service hbase-master start
+service hbase-regionserver start
 </code></pre></div>
 <h2 id="toc_28">7. 参考文章</h2>
 
 <ul>
+<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
+<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html">Java Development Kit Installation</a></li>
 <li><a href="https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster">Deploying HDFS on a Cluster</a></li>
+<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html">HBase Installation</a></li>
+<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html">ZooKeeper Installation</a></li>
 <li><a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
 </ul>
 

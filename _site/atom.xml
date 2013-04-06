@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-04-06T18:00:07+08:00</updated>
+ <updated>2013-04-06T18:09:44+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -17,7 +17,7 @@
    <link href="http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html"/>
    <updated>2013-04-06T17:00:00+08:00</updated>
    <id>http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</id>
-   <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH4.2，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
+   <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
 
 &lt;h2 id=&quot;toc_0&quot;&gt;1. install jdk&lt;/h2&gt;
 
@@ -338,14 +338,22 @@ hadoop fs -chown hbase:hbase /hbase
 * 10 * * * cd /var/log/hbase/; rm -rf\
 `ls /var/log/hbase/|grep -P &amp;#39;hbase\-hbase\-.+\.log\.[0-9]&amp;#39;\`&amp;gt;&amp;gt; /dev/null &amp;amp;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建hbase目录&lt;/p&gt;
+&lt;p&gt;创建HBase目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hbase
 chown -R hbase:hbase /opt/data/hbase
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;启动HBase&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service hbase-master start
+service hbase-regionserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2 id=&quot;toc_28&quot;&gt;7. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html&quot;&gt;Java Development Kit Installation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html&quot;&gt;HBase Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html&quot;&gt;ZooKeeper Installation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://roserouge.iteye.com/blog/1558498&quot;&gt;hadoop cdh 安装笔记&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/Hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html'>从yum安装Cloudera CDH4.2</a></content>

@@ -367,5 +367,9 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 ## 7. 参考文章
 
+* [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
+* [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)
 * [Deploying HDFS on a Cluster](https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster)
+* [HBase Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html)
+* [ZooKeeper Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html)
 * [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)
