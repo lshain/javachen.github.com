@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-04-06T18:09:44+08:00</updated>
+ <updated>2013-04-06T18:11:37+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -32,11 +32,11 @@ export PATH=$JAVA_HOME/bin:$PATH
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;vi /etc/sudoers
 Defaults env_keep+=JAVA_HOME
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_1&quot;&gt;Set yum&lt;/h2&gt;
+&lt;h2 id=&quot;toc_1&quot;&gt;2. Set yum&lt;/h2&gt;
 
-&lt;p&gt;从&lt;a href=&quot;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz%E4%B8%8B%E8%BD%BD%E5%8E%8B%E7%BC%A9%E5%8C%85%E8%A7%A3%E5%8E%8B%E5%B9%B6%E8%AE%BE%E7%BD%AE%E6%9C%AC%E5%9C%B0%E6%88%96ftp&quot;&gt;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz下载压缩包解压并设置本地或ftp&lt;/a&gt; yum源&lt;/p&gt;
+&lt;p&gt;从&lt;a href=&quot;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&quot;&gt;http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz&lt;/a&gt; 下载压缩包解压并设置本地或ftp yum源&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_2&quot;&gt;2. Install HDFS&lt;/h2&gt;
+&lt;h2 id=&quot;toc_2&quot;&gt;3. Install HDFS&lt;/h2&gt;
 
 &lt;h3 id=&quot;toc_3&quot;&gt;install NameNode&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
@@ -54,7 +54,7 @@ yum install zookeeper-server
 yum install hadoop-httpfs
 yum install hadoop-debuginfo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_5&quot;&gt;3. config&lt;/h2&gt;
+&lt;h2 id=&quot;toc_5&quot;&gt;4. config&lt;/h2&gt;
 
 &lt;h3 id=&quot;toc_6&quot;&gt;Copying the Hadoop Configuration&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
@@ -178,7 +178,7 @@ sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
 &lt;h3 id=&quot;toc_16&quot;&gt;Start HDFS on Every Node in the Cluster&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_17&quot;&gt;4. Instal YARN&lt;/h2&gt;
+&lt;h2 id=&quot;toc_17&quot;&gt;5. Instal YARN&lt;/h2&gt;
 
 &lt;ol&gt;
 &lt;li&gt;mapred-site.xml:&lt;/li&gt;
@@ -296,7 +296,7 @@ sudo -u hdfs hadoop fs -chown $USER /user/$USER
 
 &lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_26&quot;&gt;5. Install Zookeeper&lt;/h2&gt;
+&lt;h2 id=&quot;toc_26&quot;&gt;6. Install Zookeeper&lt;/h2&gt;
 
 &lt;p&gt;安装zookeeper&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install zookeeper*
@@ -326,7 +326,7 @@ server.3=node3:2888:3888
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service zookeeper-server init --myid=n
 service zookeeper-server restart
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_27&quot;&gt;6. Install HBase&lt;/h2&gt;
+&lt;h2 id=&quot;toc_27&quot;&gt;7. Install HBase&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install hbase*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在hdfs中创建/hbase&lt;/p&gt;
@@ -346,7 +346,7 @@ chown -R hbase:hbase /opt/data/hbase
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service hbase-master start
 service hbase-regionserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_28&quot;&gt;7. 参考文章&lt;/h2&gt;
+&lt;h2 id=&quot;toc_28&quot;&gt;8. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;

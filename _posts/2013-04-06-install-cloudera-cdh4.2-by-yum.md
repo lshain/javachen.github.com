@@ -23,10 +23,10 @@ tags: hadoop,impala,cloudera
 	vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 
-## Set yum
-从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz下载压缩包解压并设置本地或ftp yum源
+## 2. Set yum
+从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz 下载压缩包解压并设置本地或ftp yum源
 
-## 2. Install HDFS
+## 3. Install HDFS
 ### install NameNode
 
 	yum list hadoop
@@ -46,7 +46,7 @@ tags: hadoop,impala,cloudera
 	yum install hadoop-debuginfo
 
 
-## 3. config
+## 4. config
 ### Copying the Hadoop Configuration
 
 	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
@@ -180,7 +180,7 @@ my set:
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 
 
-## 4. Instal YARN
+## 5. Instal YARN
 1. mapred-site.xml:
 
 ```
@@ -306,7 +306,7 @@ my set:
 ### Configure the Hadoop Daemons to Start at Boot Time
 https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices
 
-## 5. Install Zookeeper
+## 6. Install Zookeeper
 安装zookeeper
 
 	yum install zookeeper*
@@ -340,7 +340,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	service zookeeper-server init --myid=n
 	service zookeeper-server restart
  
-## 6. Install HBase
+## 7. Install HBase
 
 	yum install hbase*
 
@@ -365,7 +365,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	service hbase-master start
 	service hbase-regionserver start
 
-## 7. 参考文章
+## 8. 参考文章
 
 * [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 * [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)
