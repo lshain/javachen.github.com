@@ -69,7 +69,7 @@ tags: hadoop,impala,cloudera
 ```
 	<property>
 	    <name>fs.defaultFS</name>
-	    <value>hdfs://node1:9000</value>
+	    <value>hdfs://node1</value>
 	</property>
 	<property>
 		<name>fs.trash.interval</name>
@@ -154,7 +154,7 @@ my set:
 	chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
 	chmod 700 /opt/data/hadoop/dfs/name
 
-创建namenode的data目录
+创建datanode的data目录
 
 	mkdir -p /opt/data/hadoop/dfs/data
 	chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
@@ -356,8 +356,8 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 在hdfs中创建/hbase
 
-	hadoop fs -mkdir /hbase
-	hadoop fs -chown hbase:hbase /hbase
+	sudo -u hdfs hadoop fs -mkdir /hbase
+	sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
  
 设置crontab：
 
@@ -369,6 +369,28 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	
 	mkdir -p /opt/data/hbase
 	chown -R hbase:hbase /opt/data/hbase
+
+修改配置文件：
+	
+	vi /etc/hbase/conf/hbase-site.xml
+	<configuration>
+		<property>
+		    <name>hbase.cluster.distributed</name>
+		    <value>true</value>
+		</property>
+		<property>
+		    <name>hbase.rootdir</name>
+		    <value>hdfs://node1:8020/hbase</value>
+		</property>
+		<property>
+		    <name>hbase.tmp.dir</name>
+		    <value>/opt/data/hbase</value>
+		</property>
+		<property>
+		    <name>hbase.zookeeper.quorum</name>
+		    <value>node1,node2,node3</value>
+		</property>
+	</configuration>
 
 启动HBase
 
