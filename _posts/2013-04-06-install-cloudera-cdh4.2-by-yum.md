@@ -58,27 +58,28 @@ tags: hadoop,impala,cloudera
 
 ## 4. 配置hadoop
 ### Copying the Hadoop Configuration
-
-	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
-	sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
-	sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
+hadoop的默认配置文件在/etc/hadoop/conf
 
 ### Customizing Configuration Files
 1. core-site.xml:
 
 ```
-	<property>
-	    <name>fs.defaultFS</name>
-	    <value>hdfs://node1</value>
-	</property>
-	<property>
-		<name>fs.trash.interval</name>
-		<value>10080</value>
-	</property>
-	<property>
-		<name>fs.trash.checkpoint.interval</name>
-		<value>10080</value>
-	</property>
+<property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://node1</value>
+</property>
+<property>
+	<name>fs.trash.interval</name>
+	<value>10080</value>
+</property>
+<property>
+	<name>fs.trash.checkpoint.interval</name>
+	<value>10080</value>
+</property>
+<property>
+  <name>io.bytes.per.checksum</name>
+  <value>4096</value>
+</property>
 ```
 
 2. hdfs-site.xml:
@@ -86,7 +87,7 @@ tags: hadoop,impala,cloudera
 ```
 	<property>
 	  <name>dfs.replication</name>
-	  <value>1</value>
+	  <value>3</value>
 	</property>
 	<property>
 	  <name>hadoop.tmp.dir</name>
@@ -94,7 +95,31 @@ tags: hadoop,impala,cloudera
 	</property>
 	<property>
 	    <name>dfs.block.size</name>
-	    <value>134217728</value>
+	    <value>268435456</value>
+	</property>
+	<property>
+	  <name>dfs.permissions.superusergroup</name>
+	  <value>supergroup</value>
+	  <description>The name of the group of super-users.</description>
+	</property>
+	<property>
+	  <name>dfs.namenode.handler.count</name>
+	  <value>100</value>
+	  <description>The number of server threads for the namenode.</description>
+	</property>
+	<property>
+	  <name>dfs.datanode.handler.count</name>
+	  <value>100</value>
+	  <description>The number of server threads for the datanode.</description>
+	</property>
+	<property>
+	  <name>dfs.datanode.balance.bandwidthPerSec</name>
+	  <value>1048576</value>
+	  <description>
+		Specifies the maximum amount of bandwidth that each datanode
+		can utilize for the balancing purpose in term of
+		the number of bytes per second.
+	  </description>
 	</property>
 	<property>
 		<name>dfs.namenode.http-address</name>
@@ -109,6 +134,8 @@ tags: hadoop,impala,cloudera
 		<value>true</value>
 	</property>
  ```
+
+3. 修改master和slaves文件
 
 ### NameNode HA
 https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability
@@ -148,49 +175,46 @@ my set:
 
 
 ### Create the data Directory in the Cluster
-创建namenode的name目录
+在namenode节点创建name目录
 
 	mkdir -p /opt/data/hadoop/dfs/name
 	chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
 	chmod 700 /opt/data/hadoop/dfs/name
 
-创建datanode的data目录
+在所有datanode节点创建data目录
 
 	mkdir -p /opt/data/hadoop/dfs/data
 	chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
 	chmod 700 /opt/data/hadoop/dfs/data
 
-创建namesecondary目录
+在secondarynode节点创建namesecondary目录
 
 	mkdir -p /opt/data/hadoop/dfs/namesecondary
 	chown -R hdfs:hdfs /opt/data/hadoop/dfs/namesecondary
 	chmod 700 /opt/data/hadoop/dfs/namesecondary
 
-创建yarn的local目录
+在所有datanode节点创建yarn的local目录
 
 	mkdir -p /opt/data/hadoop/yarn/local
 	chown -R yarn:yarn /opt/data/hadoop/yarn/local
 	chmod 700 /opt/data/hadoop/yarn/local
 
-### Deploy your custom Configuration to your Entire Cluster
+### 同步配置文件到整个集群
 
-	sudo scp -r /etc/hadoop/conf.cluster root@nodeX:/etc/hadoop/conf.cluster
+	sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
 
-### To manually set the configuration on Red Hat-compatible systems
-
-	sudo update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
-	sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
-
-### Format the NameNode
+### 格式化NameNode
 
 	sudo -u hdfs hdfs namenode -format
 
-### Start HDFS on Every Node in the Cluster
+### 在每个节点启动hdfs
 
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 
 
 ## 5. 安装YARN
+先在一台机器上配置好，然后在做同步。
+
 1. mapred-site.xml:
 
 ```
@@ -206,6 +230,51 @@ my set:
 	 	<name>mapreduce.jobhistory.webapp.address</name>
 	 	<value>node1:19888</value>
 	</property>
+	<property>
+	  <name>mapreduce.task.io.sort.factor</name>
+	  <value>100</value>
+	  <description>The number of streams to merge at once while sorting
+	  files.  This determines the number of open file handles.</description>
+	</property>
+	<property>
+	  <name>mapreduce.task.io.sort.mb</name>
+	  <value>200</value>
+	  <description>The total amount of buffer memory to use while sorting 
+	  files, in megabytes.  By default, gives each merge stream 1MB, which
+	  should minimize seeks.</description>
+	</property>
+	<property>
+	  <name>mapreduce.reduce.shuffle.parallelcopies</name>
+	  <value>16</value>
+	   <!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数-->
+	  <description>The default number of parallel transfers run by reduce
+	  during the copy(shuffle) phase.
+	  </description>
+	</property>
+	<property>
+	  <name>mapreduce.task.timeout</name>
+	  <value>1800000</value>
+	  <description>The number of milliseconds before a task will be
+	  terminated if it neither reads an input, writes an output, nor
+	  updates its status string.  A value of 0 disables the timeout.
+	  </description>
+	</property>
+	<property>
+	  <name>mapreduce.tasktracker.map.tasks.maximum</name>
+	  <value>4</value>
+	  <description>The maximum number of map tasks that will be run
+	  simultaneously by a task tracker.
+	  </description>
+	</property>
+
+	<property>
+	  <name>mapreduce.tasktracker.reduce.tasks.maximum</name>
+	  <value>2</value>
+	  <description>The maximum number of reduce tasks that will be run
+	  simultaneously by a task tracker.
+	  </description>
+	</property>
+
 ```
 
 2. yarn-site.xml:
@@ -272,12 +341,12 @@ my set:
 	</property>
 ```
 
-### Create the HDFS /tmp Directory
+### HDFS创建临时目录
 
 	sudo -u hdfs hadoop fs -mkdir /tmp
 	sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 
-### Create Staging and Log Directories
+### 创建日志目录
 
 	sudo -u hdfs hadoop fs -mkdir /user/history
 	sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
@@ -285,7 +354,7 @@ my set:
 	sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 	sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
 
-### Verify the HDFS File Structure
+### 验证hdfs结构是否正确
 
 	[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 	drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
@@ -296,15 +365,15 @@ my set:
 	drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
-### Start mapred-historyserver on ResourceNode in the Cluster
+### 启动mapred-historyserver 
 
 	/etc/init.d/hadoop-mapreduce-historyserver start
 
-### Start YARN on Every Node in the Cluster
+### 在每个节点启动YARN
 
 	for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 
-### Create a Home Directory for each MapReduce User
+### 为每个MapReduce用户创建主目录
 
 	sudo -u hdfs hadoop fs -mkdir /user/$USER
 	sudo -u hdfs hadoop fs -chown $USER /user/$USER
@@ -329,7 +398,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
 	org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 
-创建zookeeper的目录
+在每个需要安装zookeeper的节点上创建zookeeper的目录
 
 	mkdir -p /opt/data/zookeeper
 	chown -R zookeeper:zookeeper /opt/data/zookeeper
@@ -370,12 +439,12 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	mkdir -p /opt/data/hbase
 	chown -R hbase:hbase /opt/data/hbase
 
-修改配置文件：
+修改配置文件并同步到其他机器：
 	
 	vi /etc/hbase/conf/hbase-site.xml
 	<configuration>
 		<property>
-		    <name>hbase.cluster.distributed</name>
+		    <name>hbase.distributed</name>
 		    <value>true</value>
 		</property>
 		<property>
@@ -390,7 +459,98 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 		    <name>hbase.zookeeper.quorum</name>
 		    <value>node1,node2,node3</value>
 		</property>
+		<property>
+		    <name>hbase.hregion.max.filesize</name>
+		    <value>3758096384</value>
+		    <description>
+		    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
+		    grown to exceed this value, the hosting HRegion is split in two.
+		    Default: 10G.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.hregion.memstore.flush.size</name>
+		    <value>67108864</value>
+		    <description>
+		    Memstore will be flushed to disk if size of the memstore
+		    exceeds this number of bytes.  Value is checked by a thread that runs
+		    every hbase.server.thread.wakefrequency.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.regionserver.lease.period</name>
+		    <value>600000</value>
+		    <description>HRegion server lease period in milliseconds. Default is
+		    60 seconds. Clients must report in within this period else they are
+		    considered dead.</description>
+		  </property>
+		  <property>
+		    <name>hbase.client.retries.number</name>
+		    <value>3</value>
+		    <description>Maximum retries.  Used as maximum for all retryable
+		    operations such as fetching of the root region from root region
+		    server, getting a cell's value, starting a row update, etc.
+		    Default: 10.
+		    </description>
+		  </property> 
+		  <property>
+		    <name>hbase.regionserver.handler.count</name>
+		    <value>100</value>
+		    <description>Count of RPC Listener instances spun up on RegionServers.
+		    Same property is used by the Master for count of master handlers.
+		    Default is 10.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.zookeeper.property.maxClientCnxns</name>
+		    <value>2000</value>
+		    <description>Property from ZooKeeper's config zoo.cfg.
+		    Limit on number of concurrent connections (at the socket level) that a
+		    single client, identified by IP address, may make to a single member of
+		    the ZooKeeper ensemble. Set high to avoid zk connection issues running
+		    standalone and pseudo-distributed.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hfile.block.cache.size</name>
+		    <value>0.1</value>
+		    <description>
+			Percentage of maximum heap (-Xmx setting) to allocate to block cache
+			used by HFile/StoreFile. Default of 0.25 means allocate 25%.
+			Set to 0 to disable but it's not recommended.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.regions.slop</name>
+		    <value>0</value>
+		    <description>Rebalance if any regionserver has average + (average * slop) regions.
+		    Default is 20% slop.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.hstore.compactionThreshold</name>
+		    <value>10</value>
+		    <description>
+		    If more than this number of HStoreFiles in any one HStore
+		    (one HStoreFile is written per flush of memstore) then a compaction
+		    is run to rewrite all HStoreFiles files as one.  Larger numbers
+		    put off compaction but when it runs, it takes longer to complete.
+		    </description>
+		  </property>
+		  <property>
+		    <name>hbase.hstore.blockingStoreFiles</name>
+		    <value>30</value>
+		    <description>
+		    If more than this number of StoreFiles in any one Store
+		    (one StoreFile is written per flush of MemStore) then updates are
+		    blocked for this HRegion until a compaction is completed, or
+		    until hbase.hstore.blockingWaitTime has been exceeded.
+		    </description>
+		  </property>
 	</configuration>
+
+修改regionserver文件
+
 
 启动HBase
 
