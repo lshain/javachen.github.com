@@ -16,7 +16,8 @@ tags: hadoop,impala,cloudera
 5. 安装YARN
 6. 安装zookeeper
 7. 安装HBase
-8. 参考文章
+8. 安装Hive
+9. 参考文章
 
 ## 1. 安装jdk
 安装jdk并设置环境变量
@@ -37,7 +38,7 @@ tags: hadoop,impala,cloudera
 从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 
 ## 3. 安装HDFS
-### install NameNode
+### 在NameNode节点yum安装
 
 	yum list hadoop
 	yum install hadoop-hdfs-namenode
@@ -45,7 +46,7 @@ tags: hadoop,impala,cloudera
 	yum install hadoop-yarn-resourcemanager
 	yum install hadoop-mapreduce-historyserver
 
-### install DataNode
+### 在DataNode节点yum安装 
 
 	yum list hadoop
 	yum install hadoop-hdfs-datanode
@@ -57,10 +58,9 @@ tags: hadoop,impala,cloudera
 
 
 ## 4. 配置hadoop
-### Copying the Hadoop Configuration
+### 修改配置文件
 hadoop的默认配置文件在/etc/hadoop/conf
 
-### Customizing Configuration Files
 1. core-site.xml:
 
 ```
@@ -85,54 +85,51 @@ hadoop的默认配置文件在/etc/hadoop/conf
 2. hdfs-site.xml:
 
 ```
-	<property>
-	  <name>dfs.replication</name>
-	  <value>3</value>
-	</property>
-	<property>
-	  <name>hadoop.tmp.dir</name>
-	  <value>/opt/data/hadoop</value>
-	</property>
-	<property>
-	    <name>dfs.block.size</name>
-	    <value>268435456</value>
-	</property>
-	<property>
-	  <name>dfs.permissions.superusergroup</name>
-	  <value>supergroup</value>
-	  <description>The name of the group of super-users.</description>
-	</property>
-	<property>
-	  <name>dfs.namenode.handler.count</name>
-	  <value>100</value>
-	  <description>The number of server threads for the namenode.</description>
-	</property>
-	<property>
-	  <name>dfs.datanode.handler.count</name>
-	  <value>100</value>
-	  <description>The number of server threads for the datanode.</description>
-	</property>
-	<property>
-	  <name>dfs.datanode.balance.bandwidthPerSec</name>
-	  <value>1048576</value>
-	  <description>
-		Specifies the maximum amount of bandwidth that each datanode
-		can utilize for the balancing purpose in term of
-		the number of bytes per second.
-	  </description>
-	</property>
-	<property>
-		<name>dfs.namenode.http-address</name>
-		<value>node1:50070</value>
-	</property>
-	<property>
-		<name>dfs.namenode.secondary.http-address</name>
-		<value>node1:50090</value>
-	</property>
-	<property>
-		<name>dfs.webhdfs.enabled</name>
-		<value>true</value>
-	</property>
+<property>
+  <name>dfs.replication</name>
+  <value>3</value>
+</property>
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>/opt/data/hadoop</value>
+</property>
+<property>
+    <name>dfs.block.size</name>
+    <value>268435456</value>
+</property>
+<property>
+  <name>dfs.permissions.superusergroup</name>
+  <value>hadoop</value>
+</property>
+<property>
+  <name>dfs.namenode.handler.count</name>
+  <value>100</value>
+</property>
+<property>
+  <name>dfs.datanode.handler.count</name>
+  <value>100</value>
+</property>
+<property>
+  <name>dfs.datanode.balance.bandwidthPerSec</name>
+  <value>1048576</value>
+  <description>
+	Specifies the maximum amount of bandwidth that each datanode
+	can utilize for the balancing purpose in term of
+	the number of bytes per second.
+  </description>
+</property>
+<property>
+	<name>dfs.namenode.http-address</name>
+	<value>node1:50070</value>
+</property>
+<property>
+	<name>dfs.namenode.secondary.http-address</name>
+	<value>node1:50090</value>
+</property>
+<property>
+	<name>dfs.webhdfs.enabled</name>
+	<value>true</value>
+</property>
  ```
 
 3. 修改master和slaves文件
@@ -254,25 +251,14 @@ my set:
 	<property>
 	  <name>mapreduce.task.timeout</name>
 	  <value>1800000</value>
-	  <description>The number of milliseconds before a task will be
-	  terminated if it neither reads an input, writes an output, nor
-	  updates its status string.  A value of 0 disables the timeout.
-	  </description>
 	</property>
 	<property>
 	  <name>mapreduce.tasktracker.map.tasks.maximum</name>
 	  <value>4</value>
-	  <description>The maximum number of map tasks that will be run
-	  simultaneously by a task tracker.
-	  </description>
 	</property>
-
 	<property>
 	  <name>mapreduce.tasktracker.reduce.tasks.maximum</name>
 	  <value>2</value>
-	  <description>The maximum number of reduce tasks that will be run
-	  simultaneously by a task tracker.
-	  </description>
 	</property>
 
 ```
@@ -301,22 +287,6 @@ my set:
 	    <value>node1:8088</value>
 	</property>
 	<property>
-	    <name>yarn.nodemanager.local-dirs</name>
-	    <value>/opt/hadoop/yarn/local</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.log-dirs</name>
-	    <value>/var/log/hadoop-yarn/logs</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.remote-app-log-dir</name>
-	    <value>/var/log/hadoop-yarn/apps</value>
-	</property>
-	<property>
-	    <name>yarn.app.mapreduce.am.staging-dir</name>
-	    <value>/user</value>
-	</property>
-	<property>
 	    <name>yarn.nodemanager.aux-services</name>
 	    <value>mapreduce.shuffle</value>
 	</property>
@@ -339,6 +309,22 @@ my set:
 		$YARN_HOME/*,$YARN_HOME/lib/*
 	    </value>
 	</property>
+	<property>
+	    <name>yarn.nodemanager.local-dirs</name>
+	    <value>/opt/hadoop/yarn/local</value>
+	</property>
+	<property>
+	    <name>yarn.nodemanager.log-dirs</name>
+	    <value>/var/log/hadoop-yarn/logs</value>
+	</property>
+	<property>
+	    <name>yarn.nodemanager.remote-app-log-dir</name>
+	    <value>/var/log/hadoop-yarn/apps</value>
+	</property>
+	<property>
+	    <name>yarn.app.mapreduce.am.staging-dir</name>
+	    <value>/user</value>
+	</property>
 ```
 
 ### HDFS创建临时目录
@@ -352,7 +338,7 @@ my set:
 	sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 	sudo -u hdfs hadoop fs -chown yarn /user/history
 	sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
-	sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
+	sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 
 ### 验证hdfs结构是否正确
 
@@ -362,7 +348,7 @@ my set:
 	drwxrwxrwt   - yarn supergroup          0 2012-04-19 14:31 /user/history
 	drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
 	drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
-	drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
+	drwxr-xr-x   - yarn   mapred        	0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
 ### 启动mapred-historyserver 
@@ -423,145 +409,240 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 	yum install hbase*
 
-在hdfs中创建/hbase
+### 在hdfs中创建/hbase
 
 	sudo -u hdfs hadoop fs -mkdir /hbase
 	sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
  
-设置crontab：
+### 设置crontab：
 
 	crontab -e
 	* 10 * * * cd /var/log/hbase/; rm -rf\
 	`ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
 
-创建HBase目录
-	
-	mkdir -p /opt/data/hbase
-	chown -R hbase:hbase /opt/data/hbase
 
-修改配置文件并同步到其他机器：
-	
-	vi /etc/hbase/conf/hbase-site.xml
-	<configuration>
-		<property>
-		    <name>hbase.distributed</name>
-		    <value>true</value>
-		</property>
-		<property>
-		    <name>hbase.rootdir</name>
-		    <value>hdfs://node1:8020/hbase</value>
-		</property>
-		<property>
-		    <name>hbase.tmp.dir</name>
-		    <value>/opt/data/hbase</value>
-		</property>
-		<property>
-		    <name>hbase.zookeeper.quorum</name>
-		    <value>node1,node2,node3</value>
-		</property>
-		<property>
-		    <name>hbase.hregion.max.filesize</name>
-		    <value>3758096384</value>
-		    <description>
-		    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
-		    grown to exceed this value, the hosting HRegion is split in two.
-		    Default: 10G.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.hregion.memstore.flush.size</name>
-		    <value>67108864</value>
-		    <description>
-		    Memstore will be flushed to disk if size of the memstore
-		    exceeds this number of bytes.  Value is checked by a thread that runs
-		    every hbase.server.thread.wakefrequency.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.regionserver.lease.period</name>
-		    <value>600000</value>
-		    <description>HRegion server lease period in milliseconds. Default is
-		    60 seconds. Clients must report in within this period else they are
-		    considered dead.</description>
-		  </property>
-		  <property>
-		    <name>hbase.client.retries.number</name>
-		    <value>3</value>
-		    <description>Maximum retries.  Used as maximum for all retryable
-		    operations such as fetching of the root region from root region
-		    server, getting a cell's value, starting a row update, etc.
-		    Default: 10.
-		    </description>
-		  </property> 
-		  <property>
-		    <name>hbase.regionserver.handler.count</name>
-		    <value>100</value>
-		    <description>Count of RPC Listener instances spun up on RegionServers.
-		    Same property is used by the Master for count of master handlers.
-		    Default is 10.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.zookeeper.property.maxClientCnxns</name>
-		    <value>2000</value>
-		    <description>Property from ZooKeeper's config zoo.cfg.
-		    Limit on number of concurrent connections (at the socket level) that a
-		    single client, identified by IP address, may make to a single member of
-		    the ZooKeeper ensemble. Set high to avoid zk connection issues running
-		    standalone and pseudo-distributed.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hfile.block.cache.size</name>
-		    <value>0.1</value>
-		    <description>
-			Percentage of maximum heap (-Xmx setting) to allocate to block cache
-			used by HFile/StoreFile. Default of 0.25 means allocate 25%.
-			Set to 0 to disable but it's not recommended.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.regions.slop</name>
-		    <value>0</value>
-		    <description>Rebalance if any regionserver has average + (average * slop) regions.
-		    Default is 20% slop.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.hstore.compactionThreshold</name>
-		    <value>10</value>
-		    <description>
-		    If more than this number of HStoreFiles in any one HStore
-		    (one HStoreFile is written per flush of memstore) then a compaction
-		    is run to rewrite all HStoreFiles files as one.  Larger numbers
-		    put off compaction but when it runs, it takes longer to complete.
-		    </description>
-		  </property>
-		  <property>
-		    <name>hbase.hstore.blockingStoreFiles</name>
-		    <value>30</value>
-		    <description>
-		    If more than this number of StoreFiles in any one Store
-		    (one StoreFile is written per flush of MemStore) then updates are
-		    blocked for this HRegion until a compaction is completed, or
-		    until hbase.hstore.blockingWaitTime has been exceeded.
-		    </description>
-		  </property>
-	</configuration>
+### 修改配置文件并同步到其他机器：
 
-修改regionserver文件
+```	
+<configuration>
+<property>
+    <name>hbase.distributed</name>
+    <value>true</value>
+</property>
+<property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://node1:8020/hbase</value>
+</property>
+<property>
+    <name>hbase.tmp.dir</name>
+    <value>/opt/data/hbase</value>
+</property>
+<property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>node1,node2,node3</value>
+</property>
+<property>
+    <name>hbase.hregion.max.filesize</name>
+    <value>536870912</value>
+    <description>
+    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
+    grown to exceed this value, the hosting HRegion is split in two.
+    Default: 10G.
+    </description>
+  </property>
+  <property>
+    <name>hbase.hregion.memstore.flush.size</name>
+    <value>67108864</value>
+    <description>
+    Memstore will be flushed to disk if size of the memstore
+    exceeds this number of bytes.  Value is checked by a thread that runs
+    every hbase.server.thread.wakefrequency.
+    </description>
+  </property>
+  <property>
+    <name>hbase.regionserver.lease.period</name>
+    <value>600000</value>
+    <description>HRegion server lease period in milliseconds. Default is
+    60 seconds. Clients must report in within this period else they are
+    considered dead.</description>
+  </property>
+  <property>
+    <name>hbase.client.retries.number</name>
+    <value>3</value>
+  </property> 
+  <property>
+    <name>hbase.regionserver.handler.count</name>
+    <value>100</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.maxClientCnxns</name>
+    <value>2000</value>
+  </property>
+  <property>
+    <name>hfile.block.cache.size</name>
+    <value>0.1</value>
+    <description>
+	Percentage of maximum heap (-Xmx setting) to allocate to block cache
+	used by HFile/StoreFile. Default of 0.25 means allocate 25%.
+	Set to 0 to disable but it's not recommended.
+    </description>
+  </property>
+  <property>
+    <name>hbase.regions.slop</name>
+    <value>0</value>
+    <description>Rebalance if any regionserver has average + (average * slop) regions.
+    Default is 20% slop.
+    </description>
+  </property>
+  <property>
+    <name>hbase.hstore.compactionThreshold</name>
+    <value>10</value>
+  </property>
+  <property>
+    <name>hbase.hstore.blockingStoreFiles</name>
+    <value>30</value>
+  </property>
+</configuration>
+```
+
+### 修改regionserver文件
 
 
-启动HBase
+### 启动HBase
 
 	service hbase-master start
 	service hbase-regionserver start
 
-## 8. 参考文章
+## 8. 安装hive
+### 在一个节点上安装hive
+
+	sudo yum install hive*
+
+
+### 安装metastore
+
+### 修改配置文件
+
+```
+<configuration>
+<property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://node1:8020</value>
+</property>
+
+<property>
+  <name>javax.jdo.option.ConnectionURL</name>
+  <value>jdbc:postgresql://node1/metastore</value>
+  <description>JDBC connect string for a JDBC metastore</description>
+</property>
+
+<property>
+  <name>javax.jdo.option.ConnectionDriverName</name>
+  <value>org.postgresql.Driver</value>
+  <description>Driver class name for a JDBC metastore</description>
+</property>
+
+<property>
+  <name>javax.jdo.option.ConnectionUserName</name>
+  <value>hiveuser</value>
+  <description>username to use against metastore database</description>
+</property>
+
+<property>
+  <name>javax.jdo.option.ConnectionPassword</name>
+  <value>redhat</value>
+  <description>password to use against metastore database</description>
+</property>
+
+<property>
+ <name>mapred.job.tracker</name>
+ <value>node1:8031</value>
+</property>
+
+<property>
+ <name>mapreduce.framework.name</name>
+ <value>yarn</value>
+</property>
+
+<property>
+    <name>datanucleus.autoCreateSchema</name>
+    <value>false</value>
+</property>
+
+<property>
+    <name>datanucleus.fixedDatastore</name>
+    <value>true</value>
+</property>
+
+<property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>/user/hive/warehouse</value>
+</property>
+
+<property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://node1:9083</value>
+</property>
+
+<property>
+    <name>hive.metastore.local</name>
+    <value>false</value>
+</property>
+<property>
+  <name>hive.support.concurrency</name>
+  <description>Enable Hive's Table Lock Manager Service</description>
+  <value>true</value>
+</property>
+
+<property>
+  <name>hive.zookeeper.quorum</name>
+  <description>Zookeeper quorum used by Hive's Table Lock Manager</description>
+  <value>node2,node3,node1</value>
+</property>
+
+<property>
+  <name>hive.hwi.listen.host</name>
+  <value>node1</value>
+  <description>This is the host address the Hive Web Interface will listen on</description>
+</property>
+
+<property>
+  <name>hive.hwi.listen.port</name>
+  <value>9999</value>
+  <description>This is the port the Hive Web Interface will listen on</description>
+</property>
+
+<property>
+  <name>hive.hwi.war.file</name>
+  <value>lib/hive-hwi-0.10.0-cdh4.2.0.war</value>
+  <description>This is the WAR file with the jsp content for Hive Web Interface</description>
+</property>
+
+<property>
+  <name>hive.merge.mapredfiles</name>
+  <value>true</value>
+  <description>Merge small files at the end of a map-reduce job</description>
+</property>
+</configuration>
+```
+
+### 在hdfs中创建hive数据仓库目录
+
+```
+sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
+sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
+```
+
+### 启动hive
+
+	service hive-metastore start
+	service hive-server start
+
+## 9. 参考文章
 
 * [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 * [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)
-* [Deploying HDFS on a Cluster](https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster)
+* [Deploying HDFS on a Cluster](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html)
 * [HBase Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html)
 * [ZooKeeper Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html)
 * [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)

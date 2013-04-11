@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-04-07T22:12:22+08:00</updated>
+ <updated>2013-04-11T16:49:25+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -61,6 +61,7 @@
 &lt;li&gt;安装YARN&lt;/li&gt;
 &lt;li&gt;安装zookeeper&lt;/li&gt;
 &lt;li&gt;安装HBase&lt;/li&gt;
+&lt;li&gt;安装Hive&lt;/li&gt;
 &lt;li&gt;参考文章&lt;/li&gt;
 &lt;/ol&gt;
 
@@ -83,14 +84,14 @@ Defaults env_keep+=JAVA_HOME
 
 &lt;h2 id=&quot;toc_3&quot;&gt;3. 安装HDFS&lt;/h2&gt;
 
-&lt;h3 id=&quot;toc_4&quot;&gt;install NameNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_4&quot;&gt;在NameNode节点yum安装&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
 yum install hadoop-hdfs-namenode
 yum install hadoop-hdfs-secondarynamenode
 yum install hadoop-yarn-resourcemanager
 yum install hadoop-mapreduce-historyserver
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_5&quot;&gt;install DataNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_5&quot;&gt;在DataNode节点yum安装&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum list hadoop
 yum install hadoop-hdfs-datanode
 yum install hadoop-yarn-nodemanager
@@ -101,62 +102,88 @@ yum install hadoop-debuginfo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2 id=&quot;toc_6&quot;&gt;4. 配置hadoop&lt;/h2&gt;
 
-&lt;h3 id=&quot;toc_7&quot;&gt;Copying the Hadoop Configuration&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.cluster
-sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
-sudo alternatives --set hadoop-conf /etc/hadoop/conf.cluster
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_8&quot;&gt;Customizing Configuration Files&lt;/h3&gt;
+&lt;h3 id=&quot;toc_7&quot;&gt;修改配置文件&lt;/h3&gt;
+
+&lt;p&gt;hadoop的默认配置文件在/etc/hadoop/conf&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;core-site.xml:&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;hdfs://node1:9000&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.trash.interval&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.trash.checkpoint.interval&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://node1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;fs.trash.interval&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;fs.trash.checkpoint.interval&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;io.bytes.per.checksum&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;4096&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
 &lt;li&gt;hdfs-site.xml:&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;1&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;/opt/data/hadoop&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.block.size&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;134217728&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:50070&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:50090&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;3&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/opt/data/hadoop&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;dfs.block.size&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;268435456&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.permissions.superusergroup&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hadoop&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.namenode.handler.count&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.datanode.handler.count&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.datanode.balance.bandwidthPerSec&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;1048576&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;
+    Specifies the maximum amount of bandwidth that each datanode
+    can utilize for the balancing purpose in term of
+    the number of bytes per second.
+  &amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;node1:50070&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;node1:50090&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_9&quot;&gt;NameNode HA&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;修改master和slaves文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;toc_8&quot;&gt;NameNode HA&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;toc_10&quot;&gt;Secondary NameNode Parameters&lt;/h3&gt;
+&lt;h3 id=&quot;toc_9&quot;&gt;Secondary NameNode Parameters&lt;/h3&gt;
 
 &lt;p&gt;在hdfs-site.xml中可以配置以下参数：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;dfs.namenode.checkpoint.check.period
@@ -165,11 +192,11 @@ dfs.namenode.checkpoint.dir
 dfs.namenode.checkpoint.edits.dir
 dfs.namenode.num.checkpoints.retained
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h4 id=&quot;toc_11&quot;&gt;multi-host-secondarynamenode-configuration&lt;/h4&gt;
+&lt;h4 id=&quot;toc_10&quot;&gt;multi-host-secondarynamenode-configuration&lt;/h4&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&quot;&gt;http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&quot;toc_12&quot;&gt;Config list&lt;/h3&gt;
+&lt;h3 id=&quot;toc_11&quot;&gt;Config list&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;Directory                           Owner       Permissions Default Path
 hadoop.tmp.dir                      hdfs:hdfs   drwx------  /var/hadoop
 dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
@@ -188,42 +215,40 @@ yarn.nodemanager.local-dirs         /opt/data/yarn/local
 yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
 yarn.nodemanager.remote-app-log-dir /var/log/hadoop-yarn/app
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_13&quot;&gt;Create the data Directory in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_12&quot;&gt;Create the data Directory in the Cluster&lt;/h3&gt;
 
-&lt;p&gt;创建namenode的name目录&lt;/p&gt;
+&lt;p&gt;在namenode节点创建name目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/name
 chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
 chmod 700 /opt/data/hadoop/dfs/name
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建namenode的data目录&lt;/p&gt;
+&lt;p&gt;在所有datanode节点创建data目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/data
 chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
 chmod 700 /opt/data/hadoop/dfs/data
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建namesecondary目录&lt;/p&gt;
+&lt;p&gt;在secondarynode节点创建namesecondary目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/dfs/namesecondary
 chown -R hdfs:hdfs /opt/data/hadoop/dfs/namesecondary
 chmod 700 /opt/data/hadoop/dfs/namesecondary
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建yarn的local目录&lt;/p&gt;
+&lt;p&gt;在所有datanode节点创建yarn的local目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hadoop/yarn/local
 chown -R yarn:yarn /opt/data/hadoop/yarn/local
 chmod 700 /opt/data/hadoop/yarn/local
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_14&quot;&gt;Deploy your custom Configuration to your Entire Cluster&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo scp -r /etc/hadoop/conf.cluster root@nodeX:/etc/hadoop/conf.cluster
+&lt;h3 id=&quot;toc_13&quot;&gt;同步配置文件到整个集群&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_15&quot;&gt;To manually set the configuration on Red Hat-compatible systems&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 50
-sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_16&quot;&gt;Format the NameNode&lt;/h3&gt;
+&lt;h3 id=&quot;toc_14&quot;&gt;格式化NameNode&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hdfs namenode -format
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_17&quot;&gt;Start HDFS on Every Node in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_15&quot;&gt;在每个节点启动hdfs&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_18&quot;&gt;5. 安装YARN&lt;/h2&gt;
+&lt;h2 id=&quot;toc_16&quot;&gt;5. 安装YARN&lt;/h2&gt;
+
+&lt;p&gt;先在一台机器上配置好，然后在做同步。&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;mapred-site.xml:&lt;/li&gt;
@@ -239,6 +264,39 @@ sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
     &amp;lt;property&amp;gt;
         &amp;lt;name&amp;gt;mapreduce.jobhistory.webapp.address&amp;lt;/name&amp;gt;
         &amp;lt;value&amp;gt;node1:19888&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.task.io.sort.factor&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
+      &amp;lt;description&amp;gt;The number of streams to merge at once while sorting
+      files.  This determines the number of open file handles.&amp;lt;/description&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.task.io.sort.mb&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;200&amp;lt;/value&amp;gt;
+      &amp;lt;description&amp;gt;The total amount of buffer memory to use while sorting 
+      files, in megabytes.  By default, gives each merge stream 1MB, which
+      should minimize seeks.&amp;lt;/description&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.reduce.shuffle.parallelcopies&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;16&amp;lt;/value&amp;gt;
+       &amp;lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&amp;gt;
+      &amp;lt;description&amp;gt;The default number of parallel transfers run by reduce
+      during the copy(shuffle) phase.
+      &amp;lt;/description&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.task.timeout&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;1800000&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.tasktracker.map.tasks.maximum&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;4&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;mapreduce.tasktracker.reduce.tasks.maximum&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;2&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol&gt;
@@ -265,22 +323,6 @@ sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
         &amp;lt;value&amp;gt;node1:8088&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/opt/hadoop/yarn/local&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/logs&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/apps&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
         &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
         &amp;lt;value&amp;gt;mapreduce.shuffle&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
@@ -303,45 +345,61 @@ sudo update-alternatives --set hadoop-conf /etc/hadoop/conf.cluster
         $YARN_HOME/*,$YARN_HOME/lib/*
         &amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/opt/hadoop/yarn/local&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/logs&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/apps&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
+        &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
+        &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_19&quot;&gt;Create the HDFS /tmp Directory&lt;/h3&gt;
+&lt;h3 id=&quot;toc_17&quot;&gt;HDFS创建临时目录&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /tmp
 sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_20&quot;&gt;Create Staging and Log Directories&lt;/h3&gt;
+&lt;h3 id=&quot;toc_18&quot;&gt;创建日志目录&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/history
 sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
-sudo -u hdfs hadoop fs -chown yarn:supergroup /var/log/hadoop-yarn
+sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_21&quot;&gt;Verify the HDFS File Structure&lt;/h3&gt;
+&lt;h3 id=&quot;toc_19&quot;&gt;验证hdfs结构是否正确&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
 drwxr-xr-x   - hdfs supergroup          0 2012-05-31 10:26 /user
 drwxrwxrwt   - yarn supergroup          0 2012-04-19 14:31 /user/history
 drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
 drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   supergroup        0 2012-05-31 15:31 /var/log/hadoop-yarn
+drwxr-xr-x   - yarn   mapred            0 2012-05-31 15:31 /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_22&quot;&gt;Start mapred-historyserver on ResourceNode in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_20&quot;&gt;启动mapred-historyserver&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;/etc/init.d/hadoop-mapreduce-historyserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_23&quot;&gt;Start YARN on Every Node in the Cluster&lt;/h3&gt;
+&lt;h3 id=&quot;toc_21&quot;&gt;在每个节点启动YARN&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_24&quot;&gt;Create a Home Directory for each MapReduce User&lt;/h3&gt;
+&lt;h3 id=&quot;toc_22&quot;&gt;为每个MapReduce用户创建主目录&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_25&quot;&gt;Set HADOOP_MAPRED_HOME&lt;/h3&gt;
+&lt;h3 id=&quot;toc_23&quot;&gt;Set HADOOP_MAPRED_HOME&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3 id=&quot;toc_26&quot;&gt;Configure the Hadoop Daemons to Start at Boot Time&lt;/h3&gt;
+&lt;h3 id=&quot;toc_24&quot;&gt;Configure the Hadoop Daemons to Start at Boot Time&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&quot;&gt;https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;toc_27&quot;&gt;6. 安装Zookeeper&lt;/h2&gt;
+&lt;h2 id=&quot;toc_25&quot;&gt;6. 安装Zookeeper&lt;/h2&gt;
 
 &lt;p&gt;安装zookeeper&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install zookeeper*
@@ -353,7 +411,7 @@ sudo -u hdfs hadoop fs -chown $USER /user/$USER
 /usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
 org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建zookeeper的目录&lt;/p&gt;
+&lt;p&gt;在每个需要安装zookeeper的节点上创建zookeeper的目录&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/zookeeper
 chown -R zookeeper:zookeeper /opt/data/zookeeper
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -371,32 +429,228 @@ server.3=node3:2888:3888
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service zookeeper-server init --myid=n
 service zookeeper-server restart
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_28&quot;&gt;7. 安装HBase&lt;/h2&gt;
+&lt;h2 id=&quot;toc_26&quot;&gt;7. 安装HBase&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;yum install hbase*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在hdfs中创建/hbase&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;hadoop fs -mkdir /hbase
-hadoop fs -chown hbase:hbase /hbase
+&lt;h3 id=&quot;toc_27&quot;&gt;在hdfs中创建/hbase&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /hbase
+sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;设置crontab：&lt;/p&gt;
+&lt;h3 id=&quot;toc_28&quot;&gt;设置crontab：&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;crontab -e
 * 10 * * * cd /var/log/hbase/; rm -rf\
 `ls /var/log/hbase/|grep -P &amp;#39;hbase\-hbase\-.+\.log\.[0-9]&amp;#39;\`&amp;gt;&amp;gt; /dev/null &amp;amp;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建HBase目录&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;mkdir -p /opt/data/hbase
-chown -R hbase:hbase /opt/data/hbase
+&lt;h3 id=&quot;toc_29&quot;&gt;修改配置文件并同步到其他机器：&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.distributed&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://node1:8020/hbase&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/hbase&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;node1,node2,node3&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hregion.max.filesize&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;536870912&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Maximum HStoreFile size. If any one of a column families&amp;#39; HStoreFiles has
+    grown to exceed this value, the hosting HRegion is split in two.
+    Default: 10G.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hregion.memstore.flush.size&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;67108864&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Memstore will be flushed to disk if size of the memstore
+    exceeds this number of bytes.  Value is checked by a thread that runs
+    every hbase.server.thread.wakefrequency.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regionserver.lease.period&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;600000&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;HRegion server lease period in milliseconds. Default is
+    60 seconds. Clients must report in within this period else they are
+    considered dead.&amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.client.retries.number&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;3&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt; 
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regionserver.handler.count&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.zookeeper.property.maxClientCnxns&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;2000&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hfile.block.cache.size&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;0.1&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Percentage of maximum heap (-Xmx setting) to allocate to block cache
+    used by HFile/StoreFile. Default of 0.25 means allocate 25%.
+    Set to 0 to disable but it&amp;#39;s not recommended.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regions.slop&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;0&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;Rebalance if any regionserver has average + (average * slop) regions.
+    Default is 20% slop.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hstore.compactionThreshold&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;10&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hstore.blockingStoreFiles&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;30&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;启动HBase&lt;/p&gt;
+&lt;h3 id=&quot;toc_30&quot;&gt;修改regionserver文件&lt;/h3&gt;
+
+&lt;h3 id=&quot;toc_31&quot;&gt;启动HBase&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service hbase-master start
 service hbase-regionserver start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;toc_29&quot;&gt;8. 参考文章&lt;/h2&gt;
+&lt;h2 id=&quot;toc_32&quot;&gt;8. 安装hive&lt;/h2&gt;
+
+&lt;h3 id=&quot;toc_33&quot;&gt;在一个节点上安装hive&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo yum install hive*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_34&quot;&gt;安装metastore&lt;/h3&gt;
+
+&lt;h3 id=&quot;toc_35&quot;&gt;修改配置文件&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://node1:8020&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionURL&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;jdbc:postgresql://node1/metastore&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;JDBC connect string for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionDriverName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;org.postgresql.Driver&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Driver class name for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionUserName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hiveuser&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;username to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionPassword&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;redhat&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;password to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;node1:8031&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;datanucleus.autoCreateSchema&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;datanucleus.fixedDatastore&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.warehouse.dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/user/hive/warehouse&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.uris&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;thrift://node1:9083&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.local&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.support.concurrency&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Enable Hive&amp;#39;s Table Lock Manager Service&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.zookeeper.quorum&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Zookeeper quorum used by Hive&amp;#39;s Table Lock Manager&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;node2,node3,node1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.host&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;node1&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the host address the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.port&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;9999&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the port the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.war.file&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the WAR file with the jsp content for Hive Web Interface&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.merge.mapredfiles&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Merge small files at the end of a map-reduce job&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_36&quot;&gt;在hdfs中创建hive数据仓库目录&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
+sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;toc_37&quot;&gt;启动hive&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;service hive-metastore start
+service hive-server start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;toc_38&quot;&gt;9. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html&quot;&gt;Java Development Kit Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Deploying+HDFS+on+a+Cluster&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html&quot;&gt;HBase Installation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html&quot;&gt;ZooKeeper Installation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://roserouge.iteye.com/blog/1558498&quot;&gt;hadoop cdh 安装笔记&lt;/a&gt;&lt;/li&gt;
