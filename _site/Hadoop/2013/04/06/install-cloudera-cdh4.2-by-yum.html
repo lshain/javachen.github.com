@@ -642,14 +642,43 @@ service hbase-regionserver start
 &lt;/configuration&gt;
 </code></pre></div>
 <h3 id="toc_36">在hdfs中创建hive数据仓库目录</h3>
+
+<ul>
+<li>hive的数据仓库在hdfs中默认为<code>/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
+<li>每一个查询hive的用户都必须有一个hdfs的home目录(/user目录下，如root用户的为/user/root)</li>
+<li>hive所在节点的 /tmp必须是world-writable权限的。</li>
+</ul>
 <div class="highlight"><pre><code class="text">sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
 sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 </code></pre></div>
 <h3 id="toc_37">启动hive</h3>
 <div class="highlight"><pre><code class="text">service hive-metastore start
 service hive-server start
+service hive-server2 start
 </code></pre></div>
-<h2 id="toc_38">9. 参考文章</h2>
+<h3 id="toc_38">访问beeline</h3>
+<div class="highlight"><pre><code class="text">$ /usr/lib/hive/bin/beeline
+beeline&gt; !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
+0: jdbc:hive2://localhost:10000&gt; SHOW TABLES;
+show tables;
++-----------+
+| tab_name  |
++-----------+
++-----------+
+No rows selected (0.238 seconds)
+0: jdbc:hive2://localhost:10000&gt; 
+</code></pre></div>
+<p>其 sql语法参考<a href="http://sqlline.sourceforge.net/">SQLLine CLI</a>，在这里，你不能使用HiveServer的sql语句</p>
+
+<h3 id="toc_39">与hbase集成</h3>
+
+<p>需要在hive里添加以下jar包：</p>
+<div class="highlight"><pre><code class="text">ADD JAR /usr/lib/hive/lib/zookeeper.jar;
+ADD JAR /usr/lib/hive/lib/hbase.jar;
+ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
+ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
+</code></pre></div>
+<h2 id="toc_40">9. 参考文章</h2>
 
 <ul>
 <li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>

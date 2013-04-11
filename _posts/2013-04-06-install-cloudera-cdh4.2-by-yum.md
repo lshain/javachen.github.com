@@ -628,6 +628,10 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 ### 在hdfs中创建hive数据仓库目录
 
+* hive的数据仓库在hdfs中默认为`/user/hive/warehouse`,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。
+* 每一个查询hive的用户都必须有一个hdfs的home目录(/user目录下，如root用户的为/user/root)
+* hive所在节点的 /tmp必须是world-writable权限的。
+
 ```
 sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
 sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
@@ -637,6 +641,31 @@ sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 
 	service hive-metastore start
 	service hive-server start
+	service hive-server2 start
+
+### 访问beeline
+
+	$ /usr/lib/hive/bin/beeline
+	beeline> !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
+	0: jdbc:hive2://localhost:10000> SHOW TABLES;
+	show tables;
+	+-----------+
+	| tab_name  |
+	+-----------+
+	+-----------+
+	No rows selected (0.238 seconds)
+	0: jdbc:hive2://localhost:10000> 
+
+其 sql语法参考[SQLLine CLI](http://sqlline.sourceforge.net/)，在这里，你不能使用HiveServer的sql语句
+
+### 与hbase集成
+需要在hive里添加以下jar包：
+
+	ADD JAR /usr/lib/hive/lib/zookeeper.jar;
+	ADD JAR /usr/lib/hive/lib/hbase.jar;
+	ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
+	ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
+
 
 ## 9. 参考文章
 
