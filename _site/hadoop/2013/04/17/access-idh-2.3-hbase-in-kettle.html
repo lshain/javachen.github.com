@@ -11,7 +11,7 @@
 		<meta property="wb:webmaster" content="61eb31a6e636506d" />
     	<meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
     	<meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
-		<title>kettle访问IDH-2.3中的HBase</title>
+		<title>kettle访问IDH2.3中的HBase</title>
 		
 		<link rel="stylesheet" href="/css/main.css" />
 		<link rel="stylesheet" href="/css/pygments_native.css" />
@@ -51,9 +51,11 @@
 		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 
-	<h1>kettle访问IDH-2.3中的HBase</h1>
+	<h1>kettle访问IDH2.3中的HBase</h1>
 
-	<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。截至目前，kettle的版本为4.4.1，big-data-plugin插件支持cloudera CDH3u4、CDH4.1，暂不支持Intel的hadoop发行版本IDH。本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
+	<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
+
+<p>截至目前，kettle的版本为4.4.1，big-data-plugin插件支持cloudera CDH3u4、CDH4.1，暂不支持Intel的hadoop发行版本IDH。本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
 
 <p>假设你已经安装好IDH-2.3的集群，并已经拷贝出/usr/lib/下的hadoop、hbase、zookeeper目录。</p>
 
@@ -89,13 +91,16 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 </code></pre></div>
 <p>修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。</p>
 
-<p>验证是否可以访问IDH-2.3中的hbase。
-1. 打开hbase output组件，配置zookeeper的host和port</p>
+<h3 id="toc_0">验证是否可以访问IDH2.3中的hbase。</h3>
+
+<ol>
+<li>打开hbase output组件，配置zookeeper的host和port</li>
+</ol>
 
 <p><img src="/files/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
 
 <ol>
-<li>再<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常：</li>
+<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
 </ol>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">13/04/17 10:22:13 INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
 retrying after sleep of 1000

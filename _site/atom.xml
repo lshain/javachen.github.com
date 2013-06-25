@@ -4,7 +4,7 @@
  <title>JavaChen Blog RSS</title>
  <link href="blog.javachen.com/atom.xml" rel="self"/>
  <link href="blog.javachen.com/"/>
- <updated>2013-06-25T13:17:28+08:00</updated>
+ <updated>2013-06-25T13:22:48+08:00</updated>
  <id>http://blog.javachen.com/</id>
  <author>
    <name>javachen</name>
@@ -46,16 +46,18 @@ yum install -y cloudera-manager-server-db
 /etc/init.d/cloudera-scm-server start
 /etc/init.d/cloudera-scm-server-db start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;知道了上面这点之后，就可以在本的yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。&lt;/p&gt;
+&lt;p&gt;知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。&lt;/p&gt;
 <strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager.html'>通过Cloudera Manager安装CDH</a></content>
  </entry>
  
  <entry>
-   <title>kettle访问IDH-2.3中的HBase</title>
+   <title>kettle访问IDH2.3中的HBase</title>
    <link href="http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle.html"/>
    <updated>2013-04-17T21:00:00+08:00</updated>
    <id>http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle</id>
-   <content type="html">&lt;p&gt;Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。&lt;a href=&quot;https://github.com/pentaho/big-data-plugin&quot;&gt;big-data-plugin&lt;/a&gt;是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。截至目前，kettle的版本为4.4.1，big-data-plugin插件支持cloudera CDH3u4、CDH4.1，暂不支持Intel的hadoop发行版本IDH。本文主要介绍如何让kettle支持IDH的hadoop版本。&lt;/p&gt;
+   <content type="html">&lt;p&gt;Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。&lt;a href=&quot;https://github.com/pentaho/big-data-plugin&quot;&gt;big-data-plugin&lt;/a&gt;是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。&lt;/p&gt;
+
+&lt;p&gt;截至目前，kettle的版本为4.4.1，big-data-plugin插件支持cloudera CDH3u4、CDH4.1，暂不支持Intel的hadoop发行版本IDH。本文主要介绍如何让kettle支持IDH的hadoop版本。&lt;/p&gt;
 
 &lt;p&gt;假设你已经安装好IDH-2.3的集群，并已经拷贝出/usr/lib/下的hadoop、hbase、zookeeper目录。&lt;/p&gt;
 
@@ -91,13 +93,16 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。&lt;/p&gt;
 
-&lt;p&gt;验证是否可以访问IDH-2.3中的hbase。
-1. 打开hbase output组件，配置zookeeper的host和port&lt;/p&gt;
+&lt;h3 id=&quot;toc_0&quot;&gt;验证是否可以访问IDH2.3中的hbase。&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;打开hbase output组件，配置zookeeper的host和port&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;img src=&quot;/files/2013/hbase-output-setup-for-idh-2.3.png&quot; alt=&quot;hbase-output-setup-for-idh-2.3&quot;&gt;&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;再&lt;code&gt;Create/Edit mappings&lt;/code&gt; tab页点击&lt;code&gt;Get table names&lt;/code&gt;，发现该组件卡住，kettle控制台提示异常：&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;Create/Edit mappings&lt;/code&gt; tab页点击&lt;code&gt;Get table names&lt;/code&gt;，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;13/04/17 10:22:13 INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
 retrying after sleep of 1000
@@ -117,7 +122,7 @@ Caused by: java.io.EOFException
     at java.io.DataInputStream.readInt(DataInputStream.java:375)
     at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
     at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle.html'>kettle访问IDH-2.3中的HBase</a></content>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;<strong>原创文章，转载请注明：</strong>转载自：<a href='http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle.html'>kettle访问IDH2.3中的HBase</a></content>
  </entry>
  
  <entry>
