@@ -1,0 +1,101 @@
+
+	/404.html
+
+	/index.html
+
+	/archive.html
+
+	/about.html
+
+	/category.html
+
+	/atom.xml
+
+	/sitemap.txt
+
+
+
+	/hadoop/2013/06/24/install-cdh-by-cloudera-manager.html
+
+	/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle.html
+
+	/kettle/2013/04/07/add-a-field-from-paramter-to-output.html
+
+	/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum.html
+
+	/hadoop/2013/03/29/install-impala.html
+
+	/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html
+
+	/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2.html
+
+	/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html
+
+	/hadoop/2013/03/08/note-about-installing-hadoop-cluster.html
+
+	/work/2013/02/20/summary-of-the-work-in-2012.html
+
+	/github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress.html
+
+	/kettle/2012/04/13/kettle-dependency-management.html
+
+	/cassandra/2012/04/09/getting-started-using-the-cassandra-cli.html
+
+	/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio.html
+
+	/java/2012/03/26/hash-and-hash-functions.html
+
+	/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2.html
+
+	/seam/2012/02/23/the-process-of-seam-initiation.html
+
+	/kettle/2012/02/22/the-init-process-before-job-execution.html
+
+	/kettle/2012/02/21/the-execution-process-of-kettles-job.html
+
+	/kettle/2012/02/17/step-error-handling-in-kettle.html
+
+	/jsf/2012/02/14/this-expression-of-jsf-el.html
+
+	/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue.html
+
+	/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle.html
+
+	/pentaho/2012/01/04/some-problems-about-migrating-database-datas-with-kettle.html
+
+	/pentaho/2011/12/07/mondrian-and-olap.html
+
+	/web/2011/11/25/xml-user-interface-language-introuction.html
+
+	/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse.html
+
+	/pentaho/2011/09/26/resolved-pentaho-problems-9-16.html
+
+	/cloudcomputing/2011/08/20/install-eucalyptus-on-fedora-15.html
+
+	/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java.html
+
+	/javascript/2011/07/31/custom-dhtmlxgrid-header-menu.html
+
+	/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column.html
+
+	/javascript/2011/07/19/dhtmlxgrid-quick-start-guide.html
+
+	/cloudcomputing/2011/07/07/some-resources-about-openstack.html
+
+	/cloudcomputing/2011/07/07/openstack-architecture-overview.html
+
+	/cloudcomputing/2011/07/06/opennebula-architecture.html
+
+	/cloudcomputing/2011/06/29/install-opennebula-management-console-in-centos5-6.html
+
+	/cloudcomputing/2011/06/26/opennebula-2-2-features.html
+
+	/cloudcomputing/2011/06/22/the-technology-used-in-eucalyptus.html
+
+	/cloudcomputing/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions.html
+
+	/cloudcomputing/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus.html
+
+	/javascript/2009/10/22/ext_readxml_in_bjsasc_wuzi.html
+
