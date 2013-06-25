@@ -5,13 +5,6 @@ tagline:
 {% include JB/setup %}
 
 
-<div class="subnav page-launcher">
-  <ul class="nav nav-pills">{% for post in paginator.posts %}
-    <li><a href="#{{ post.url | replace:'/',''}}" title="{{ post.title }}">{{ post.title | truncatewords:2 }}</a></li>{% endfor %}
-  </ul>
-</div>
-
-
 <div class="row">
   <div class="span8">
   {% for post in paginator.posts %}
@@ -19,8 +12,28 @@ tagline:
   <section id="{{ post.url | replace:'/',''}}">
     <article>
       <header>
-      <h1><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></h1>
-      <div class="date">{{ site.author.name }} 发表于 <span>{{ post.date | date:"%Y-%m-%d" }}</span></div>
+      <h3><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></h3>
+      <div class="c9">
+     		Author: {{ site.author.name }}
+     		&emsp;&emsp;
+		Categories：
+			{%for cg in post.categories%}
+			<a href="/categories.html#{{cg}}">{{cg}}</a>
+			{%if forloop.index < forloop.length %}
+			,
+			{%endif%}
+			{%endfor%}
+		&emsp;&emsp;
+		Tags：
+			{%for cg in post.tags%}
+			<a href="/tags.html#{{cg}}-ref">{{cg}}</a>
+			{%if forloop.index < forloop.length %}
+			,
+			{%endif%}
+			{%endfor%}
+		&emsp;&emsp;
+		<a href='{{post.url}}#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
     </header>
     <div class="content">{{ content }}</div>
     </article>
@@ -28,17 +41,23 @@ tagline:
   {% endfor %}
   <div class="pagination">
       <ul>{% if paginator.previous_page %}
-        <li class="next"><a href='{% if paginator.previous_page > 1 %}/page{{ paginator.previous_page}}{% else %}/{% endif %}'>&larr; 上一页</a></li>{% endif %}
-        <li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">归档</a></li>{% if paginator.next_page %}
-        <li class="prev"><a href='/page{{ paginator.next_page }}'>下一页 &rarr;</a></li>{% endif %}
+        <li class="next"><a href='{% if paginator.previous_page > 1 %}/page{{ paginator.previous_page}}{% else %}/{% endif %}'>&larr; Previous</a></li>{% endif %}
+        <li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">Archive</a></li>{% if paginator.next_page %}
+        <li class="prev"><a href='/page{{ paginator.next_page }}'>Next &rarr;</a></li>{% endif %}
       </ul>
   </div>
   </div>
 
   <aside class="span4">
+    <section>
+   	 <h4>TODO</h4>
+   	 <ul style="margin-top: -3px">
+		<li>hadoop权威指南</li>
+       </ul>
+    </section>
 
     <section>
-    <h4>最近发表</h4>
+    <h4>Recent Posts</h4>
     <ul id="recent_posts">{% for rpost in site.posts limit: 10 %}
       <li class="post">
         <a href="{{ BASE_PATH }}{{ rpost.url }}">{{ rpost.title }}</a>
@@ -46,13 +65,59 @@ tagline:
     </ul>
     </section>
     
-  {% unless site.categories == empty %}
-    <h4>分类</h4>
-    <ul class="tag_box">
-      {% assign categories_list = site.categories %}
-      {% include JB/categories_list %}
-    </ul>
-  {% endunless %}
+    <section>
+   	 <h4>WeiBo</h4>
+   	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+    </section>
+    
+    <section>
+	  {% unless site.categories == empty %}
+	    <h4>Categories</h4>
+	    <ul class="tag_box">
+	      {% assign categories_list = site.categories %}
+	      {% include JB/categories_list %}
+	    </ul>
+	  {% endunless %}
+     </section>
+       <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
 
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
   </aside>
 </div>
