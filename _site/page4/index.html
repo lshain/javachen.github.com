@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>JavaChen Blog</title>
+    <meta name="author" content="JavaChen">
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/pages.html">Page</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+
+<div class="row">
+  <div class="span8">
+  
+  
+  <section id="kettle20120323how-to-implement-cassandra-input-and-output-in-kettle4-2">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#pentaho-ref">pentaho</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>这是在QQ群里有人问到的一个问题.<br />
+如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+
+<p>在kettle中实现cassandra的输入与输出有以下两种方式:<br />
+第一种方式:自己编写cassandra输入输出组件<br />
+第二种方式:使用别人编写好的插件,将其集成进来</p>
+
+<p>当然还有第三种方法,直接使用4.3版本的pdi.<br />
+第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.<br />
+故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.<br />
+在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+
+<pre>
+.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|-- kettle-gpload-plugin
+|-- kettle-hl7-plugin
+|-- kettle-palo-plugin
+|-- pentaho-big-data-plugin
+|-- repositories
+|-- spoon
+|-- steps
+`-- versioncheck
+</pre>
+
+
+<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+
+<pre>
+.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|   `-- DummyJob
+|       |-- DPL.png
+|       |-- dummyjob.jar
+|       `-- plugin.xml
+|-- pentaho-big-data-plugin
+|   |-- lib
+|   |   |-- apache-cassandra-1.0.0.jar
+|   |   |-- apache-cassandra-thrift-1.0.0.jar
+|   |   |-- aws-java-sdk-1.0.008.jar
+|   |   |-- commons-cli-1.2.jar
+|   |   |-- guava-r08.jar
+|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
+|   |   |-- jline-0.9.94.jar
+|   |   |-- libthrift-0.6.jar
+|   |   |-- mongo-java-driver-2.7.2.jar
+|   |   |-- pig-0.8.1.jar
+|   |   |-- xpp3_min-1.1.4c.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|-- repositories
+|-- spoon
+|-- steps
+|   |-- DummyPlugin
+|   |   |-- DPL.png
+|   |   |-- dummy.jar
+|   |   `-- plugin.xml
+|   |-- S3CsvInput
+|   |   |-- jets3t-0.7.0.jar
+|   |   |-- plugin.xml
+|   |   |-- S3CIN.png
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
+|       |-- plugin.xml
+|       |-- SFR.png
+|       `-- shapefilereader3.jar
+`-- versioncheck
+    |-- kettle-version-checker-0.2.0.jar
+    `-- lib
+        `-- pentaho-versionchecker.jar
+
+13 directories, 29 files
+</pre>
+
+
+<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.</p>
+
+<div class="pic">
+<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
+<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
+</a>
+</div>
+
+
+<p><strong>获取pentaho-big-data-plugin源码</strong>
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?<br />
+你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
+
+<p>然后,需要在kettle-steps.xml中注册步骤节点<br />
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
+
+<pre>
+<step id="MongoDbInput">
+<description>i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+<classname>org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+<category>i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+<tooltip>i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+<iconfile>ui/images/mongodb-input.png
+</iconfile></tooltip></category></classname></description></step>
+</pre>
+
+
+
+
+<div class="note">
+<h>注意:<br />
+由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
+</h></div>
+
+
+<p><strong>扩展阅读:</strong></p>
+
+<ul>
+<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
+<li>pentaho-big-data-plugin ci
+<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
+<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
+</ul>
+
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="seam20120223the-process-of-seam-initiation">
+    <article>
+      <header>
+      <h3><a href="/seam/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#seam">seam</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#seam-ref">seam</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/seam/2012/02/23/the-process-of-seam-initiation#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.</p>
+
+<pre lang="xml">
+< listener>
+    < listener-class>org.jboss.seam.servlet.SeamListener< /listener-class>
+< /listener>
+</pre>
+
+
+<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+
+<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.</blockquote>
+
+
+<p>从描述中可以知道
+SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+
+<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。
+该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。
+<strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+
+<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
+其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+
+<ul>
+<li>1.添加命名空间</li>
+<li>2.从“/WEB-INF/components.xml”加载组件</li>
+<li>3.从“/WEB-INF/events.xml”加载组件</li>
+<li>4.从“META-INF/components.xml”加载组件</li>
+<li>5.从ServletContext初始化Properties</li>
+<li>6.从“/seam.properties”初始化Properties</li>
+<li>7.初始化jndi Properties</li>
+<li>8.从system加载Properties</li>
+</ul>
+
+
+<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
+
+<ul>
+<li>1.ServletLifecycle开始初始化</li>
+<li>2.设置Application上下文</li>
+<li>3.添加Init组件</li>
+<li>4.通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
+<li>5.判断jbpm是否安装</li>
+<li>6.检查默认拦截器</li>
+<li>7.添加特别组件</li>
+<li>8.添加war root部署、热部署</li>
+<li>9.安装组件</li>
+<li>10.导入命名空间</li>
+<li>11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
+</ul>
+
+
+<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。</p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120222the-init-process-before-job-execution">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/02/22/the-init-process-before-job-execution#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
+
+<p>之前用英文写了一篇文章《<a href="http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
+
+<p>在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。</p>
+
+<pre lang="java">
+public void runFile() {
+    executeFile(true, false, false, false, false, null, false);
+}
+
+public void executeFile(boolean local, boolean remote, boolean cluster,
+        boolean preview, boolean debug, Date replayDate, boolean safe) {
+    TransMeta transMeta = getActiveTransformation();
+    if (transMeta != null)
+        executeTransformation(transMeta, local, remote, cluster, preview,
+                debug, replayDate, safe);
+
+    JobMeta jobMeta = getActiveJob();
+    if (jobMeta != null)
+        executeJob(jobMeta, local, remote, replayDate, safe, null, 0);
+}
+
+public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
+        Date replayDate, boolean safe, String startCopyName, int startCopyNr) {
+    try {
+        delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,
+                startCopyName, startCopyNr);
+    } catch (Exception e) {
+        new ErrorDialog(shell, "Execute job",
+                "There was an error during job execution", e);
+    }
+}
+</pre>
+
+
+<p>runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
+- local：是否本地运行
+- remote：是否远程运行
+- cluster：是否集群环境运行
+- preview：是否预览
+- debug：是否调试
+- replayDate：回放时间
+- safe：是否安全模式</p>
+
+<p>executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。</p>
+
+<p>executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。</p>
+
+<p>SpoonJobDelegate的executeJob方法主要完成以下操作：</p>
+
+<ul>
+<li>1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。</li>
+<li>2.获得当前Job对应的图形类JobGraph。</li>
+<li>3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。</li>
+<li>4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。</li>
+</ul>
+
+
+<p>JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。</p>
+
+<p>本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。</p>
+
+<p>JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：</p>
+
+<ul>
+<li>1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。</li>
+<li>2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。</li>
+<li>3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。</li>
+<li>4.Job对象添加JobEntry监听器、Job监听器。</li>
+<li>5.调用Job的start方法，启动线程开始执行一个job。</li>
+</ul>
+
+
+<p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120221the-execution-process-of-kettles-job">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/02/21/the-execution-process-of-kettles-job#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.</p>
+
+
+
+
+<p>When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.</p>
+
+
+
+
+<p>This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.</p>
+
+
+
+
+<p><div class="pic">
+<a href="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg" target="_blank"><img src="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg" alt="" title="spoon execute sequence" width="300" height="180" class="aligncenter size-medium wp-image-2511" /></a>
+</div></p>
+
+
+
+
+<p>What is the detail process of job execution? You should look into the Job.run() method for detail information.</p>
+
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120217step-error-handling-in-kettle">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/02/17/step-error-handling-in-kettle#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。</p>
+
+<p>下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：</p>
+
+<div class="pic">
+<img alt="" src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wck3m7j.jpg" class="alignnone" width="600" height="172" />
+</div>
+
+
+<p>a1表结构如下：</p>
+
+<pre lang="sql">
+CREATE TABLE a1
+(
+  a double precision,
+  id integer NOT NULL,
+  CONSTRAINT id_pk PRIMARY KEY (id ),
+  CONSTRAINT id_unin UNIQUE (id )
+)
+</pre>
+
+
+<p>从表结构可以看出，a1表中id为主键、唯一。</p>
+
+<p>a0表数据预览：</p>
+
+<div class="pic">
+<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wcr6c2j.jpg" class="alignnone" width="553" height="403" />
+</div>
+
+
+<p>现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。
+再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。</p>
+
+<p>现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。
+在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。</p>
+
+<div class="pic">
+<img src="http://ww3.sinaimg.cn/mw600/48e24b4cjw1dq56wd5ckwj.jpg" alt="" />
+</div>
+
+
+<p><strong>相关字段说明：</strong></p>
+
+<ul>
+<li>目标步骤：指定处理错误的步骤</li>
+<li>启用错误处理？：设置是否启用错误处理</li>
+<li>错误数列名：出错的记录个数</li>
+<li>错误描述列名：描述错误信息的列名称</li>
+<li>错误列的列名：出错列的名称</li>
+<li>错误编码列名：描述错误的代码的列名</li>
+<li>允许的最大错误数：允许的最大错误数，超过此数，不在处理错误</li>
+<li>允许的最大错误百分比：</li>
+<li>在计算百分百前最少要读入的行数：</li>
+</ul>
+
+
+<p>添加错误处理后的转换如下：</p>
+
+<div class="pic">
+<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wdntipj.jpg" alt="" />
+</div>
+
+
+<p>记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。</p>
+
+<div class="pic">
+<img src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wdvk6uj.jpg" alt="" />
+</div>
+
+
+<p>记录的错误信息如下：</p>
+
+<div class="pic">
+<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56we2sn2j.jpg" alt="" />
+</div>
+
+
+<p><strong>分析</strong>
+可以看到,错误日志里只是记录了出错的行里面的信息，并没有记录当前行所在的表名称以及执行时间等等，如果能够对此进行扩展，则该错误日志表才能更有实际意义。</p>
+
+<p><strong>说明</strong>
+1.错误日志的错误码含义（如：TOP001）含义见参考文章2.</p>
+
+<p><strong>参考文章</strong>
+<li><a href="http://wiki.pentaho.com/display/EAI/.09+Transformation+Steps#.09TransformationSteps-StepErrorHandling" target="_blank">Step Error Handling</a>
+</li>
+<li><a href="http://wiki.pentaho.com/display/COM/Step+error+handling+codes" target="_blank">Step error handling codes</a>
+</li></p>
+</div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li class="next"><a href='/page3'>&larr; Previous</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li class="prev"><a href='/page5'>Next &rarr;</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span4">
+    <section>
+   	 <h4>TODO</h4>
+   	 <ul style="margin-top: -3px">
+		<li>hadoop权威指南</li>
+       </ul>
+    </section>
+
+    <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH4.2</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2">手动安装Cloudera Hadoop CDH4.2</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2">手动安装Cloudera HBase CDH4.2</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2">手动安装Cloudera Hive CDH4.2</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
+      </li>
+      <li class="post">
+        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
+      </li>
+    </ul>
+    </section>
+    
+    <section>
+   	 <h4>WeiBo</h4>
+   	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+    </section>
+    
+    <section>
+	  
+	    <h4>Categories</h4>
+	    <ul class="tag_box">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>9</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>4</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#extjs-ref">
+    		extjs <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#xml-ref">
+    		xml <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#mondrian-ref">
+    		mondrian <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#jsf-ref">
+    		jsf <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#seam-ref">
+    		seam <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#github-ref">
+    		github <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>8</span>
+    	</a></li>
+    
+  
+
+
+	    </ul>
+	  
+     </section>
+       <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+
