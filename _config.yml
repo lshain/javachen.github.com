@@ -11,6 +11,7 @@ pygments: true
 #
 title : JavaChen Blog
 tagline: Site Tagline
+paginate: 5
 author :
   name : javachen
   email : june.chan@foxmail.com
