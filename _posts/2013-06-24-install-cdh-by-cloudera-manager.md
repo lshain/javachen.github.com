@@ -44,4 +44,4 @@ yum install -y cloudera-manager-server-db
 /etc/init.d/cloudera-scm-server-db start
 ```
 
-知道了上面这点之后，就可以在本的yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。
+知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。
