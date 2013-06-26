@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-06-26T01:37:12+08:00</updated>
+ <updated>2013-06-26T10:01:48+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -247,89 +247,79 @@ yum install hadoop-debuginfo
 &lt;p&gt;hadoop的默认配置文件在/etc/hadoop/conf&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;core-site.xml:&lt;/li&gt;
-&lt;/ol&gt;
+&lt;li&gt;&lt;p&gt;core-site.xml:&lt;/p&gt;
 
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;fs.defaultFS&lt;/name&gt;
+     &lt;value&gt;hdfs://node1&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;hdfs://node1&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;fs.trash.interval&lt;/name&gt;
+     &lt;value&gt;10080&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.trash.interval&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
+     &lt;value&gt;10080&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.trash.checkpoint.interval&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;10080&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;io.bytes.per.checksum&lt;/name&gt;
+   &lt;value&gt;4096&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hdfs-site.xml:&lt;/p&gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;io.bytes.per.checksum&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;4096&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;dfs.replication&lt;/name&gt;
+   &lt;value&gt;3&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-&lt;ol&gt;
-&lt;li&gt;hdfs-site.xml:&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+   &lt;value&gt;/opt/data/hadoop&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;dfs.block.size&lt;/name&gt;
+     &lt;value&gt;268435456&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;3&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;dfs.permissions.superusergroup&lt;/name&gt;
+   &lt;value&gt;hadoop&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;/opt/data/hadoop&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.block.size&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;268435456&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.permissions.superusergroup&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;hadoop&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.namenode.handler.count&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.datanode.handler.count&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;dfs.datanode.balance.bandwidthPerSec&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;1048576&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;
-        Specifies the maximum amount of bandwidth that each datanode
-        can utilize for the balancing purpose in term of
-        the number of bytes per second.
-      &amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:50070&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:50090&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ol&gt;
-&lt;li&gt;修改master和slaves文件&lt;/li&gt;
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;dfs.namenode.handler.count&lt;/name&gt;
+   &lt;value&gt;100&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;dfs.datanode.handler.count&lt;/name&gt;
+   &lt;value&gt;100&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;dfs.datanode.balance.bandwidthPerSec&lt;/name&gt;
+   &lt;value&gt;1048576&lt;/value&gt;
+   &lt;description&gt;
+     Specifies the maximum amount of bandwidth that each datanode
+     can utilize for the balancing purpose in term of
+     the number of bytes per second.
+   &lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
+     &lt;value&gt;node1:50070&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+     &lt;value&gt;node1:50090&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+     &lt;value&gt;true&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;修改master和slaves文件&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 
@@ -425,125 +415,119 @@ chmod 700 /opt/data/hadoop/yarn/local
 &lt;p&gt;先在一台机器上配置好，然后在做同步。&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;mapred-site.xml:&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;mapred-site.xml:&lt;/p&gt;
+
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+     &lt;value&gt;yarn&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+     &lt;value&gt;node1:10020&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+     &lt;value&gt;node1:19888&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;property&gt;
+   &lt;name&gt;mapreduce.task.io.sort.factor&lt;/name&gt;
+   &lt;value&gt;100&lt;/value&gt;
+   &lt;description&gt;The number of streams to merge at once while sorting
+   files.  This determines the number of open file handles.&lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;mapreduce.task.io.sort.mb&lt;/name&gt;
+   &lt;value&gt;200&lt;/value&gt;
+   &lt;description&gt;The total amount of buffer memory to use while sorting
+   files, in megabytes.  By default, gives each merge stream 1MB, which
+   should minimize seeks.&lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;mapreduce.reduce.shuffle.parallelcopies&lt;/name&gt;
+   &lt;value&gt;16&lt;/value&gt;
+    &lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;
+   &lt;description&gt;The default number of parallel transfers run by reduce
+   during the copy(shuffle) phase.
+   &lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;mapreduce.task.timeout&lt;/name&gt;
+   &lt;value&gt;1800000&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;mapreduce.tasktracker.map.tasks.maximum&lt;/name&gt;
+   &lt;value&gt;4&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+   &lt;name&gt;mapreduce.tasktracker.reduce.tasks.maximum&lt;/name&gt;
+   &lt;value&gt;2&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;yarn-site.xml:&lt;/p&gt;
+
+&lt;p&gt; &lt;property&gt;
+     &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+     &lt;value&gt;node1:8031&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+     &lt;value&gt;node1:8032&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+     &lt;value&gt;node1:8030&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
+     &lt;value&gt;node1:8033&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
+     &lt;value&gt;node1:8088&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+     &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+     &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.log-aggregation-enable&lt;/name&gt;
+     &lt;value&gt;true&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
+     &lt;name&gt;yarn.application.classpath&lt;/name&gt;
+     &lt;value&gt;
+     $HADOOP_CONF_DIR,
+     $HADOOP_COMMON_HOME/&lt;em&gt;,$HADOOP_COMMON_HOME/lib/&lt;/em&gt;,
+     $HADOOP_HDFS_HOME/&lt;em&gt;,$HADOOP_HDFS_HOME/lib/&lt;/em&gt;,
+     $HADOOP_MAPRED_HOME/&lt;em&gt;,$HADOOP_MAPRED_HOME/lib/&lt;/em&gt;,
+     $YARN_HOME/&lt;em&gt;,$YARN_HOME/lib/&lt;/em&gt;
+     &lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
+     &lt;value&gt;/opt/hadoop/yarn/local&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
+     &lt;value&gt;/var/log/hadoop-yarn/logs&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
+     &lt;value&gt;/var/log/hadoop-yarn/apps&lt;/value&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+     &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
+     &lt;value&gt;/user&lt;/value&gt;
+ &lt;/property&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-
-&lt;pre&gt;&lt;code&gt;    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;mapreduce.jobhistory.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:10020&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;mapreduce.jobhistory.webapp.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:19888&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.task.io.sort.factor&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;The number of streams to merge at once while sorting
-      files.  This determines the number of open file handles.&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.task.io.sort.mb&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;200&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;The total amount of buffer memory to use while sorting 
-      files, in megabytes.  By default, gives each merge stream 1MB, which
-      should minimize seeks.&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.reduce.shuffle.parallelcopies&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;16&amp;lt;/value&amp;gt;
-       &amp;lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&amp;gt;
-      &amp;lt;description&amp;gt;The default number of parallel transfers run by reduce
-      during the copy(shuffle) phase.
-      &amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.task.timeout&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;1800000&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.tasktracker.map.tasks.maximum&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;4&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;mapreduce.tasktracker.reduce.tasks.maximum&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;2&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ol&gt;
-&lt;li&gt;yarn-site.xml:&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;pre&gt;&lt;code&gt;    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.resourcemanager.resource-tracker.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:8031&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.resourcemanager.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:8032&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.resourcemanager.scheduler.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:8030&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.resourcemanager.admin.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:8033&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.resourcemanager.webapp.address&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1:8088&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;mapreduce.shuffle&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.log-aggregation-enable&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;description&amp;gt;Classpath for typical applications.&amp;lt;/description&amp;gt;
-        &amp;lt;name&amp;gt;yarn.application.classpath&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;
-        $HADOOP_CONF_DIR,
-        $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
-        $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
-        $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
-        $YARN_HOME/*,$YARN_HOME/lib/*
-        &amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/opt/hadoop/yarn/local&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.log-dirs&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/logs&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/var/log/hadoop-yarn/apps&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3&gt;HDFS创建临时目录&lt;/h3&gt;
 
@@ -656,85 +640,85 @@ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 
 &lt;h3&gt;修改配置文件并同步到其他机器：&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code&gt;    &amp;lt;configuration&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.distributed&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;hdfs://node1:8020/hbase&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/opt/data/hbase&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;node1,node2,node3&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.hregion.max.filesize&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;536870912&amp;lt;/value&amp;gt;
-        &amp;lt;description&amp;gt;
-        Maximum HStoreFile size. If any one of a column families' HStoreFiles has
-        grown to exceed this value, the hosting HRegion is split in two.
-        Default: 10G.
-        &amp;lt;/description&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.hregion.memstore.flush.size&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;67108864&amp;lt;/value&amp;gt;
-        &amp;lt;description&amp;gt;
-        Memstore will be flushed to disk if size of the memstore
-        exceeds this number of bytes.  Value is checked by a thread that runs
-        every hbase.server.thread.wakefrequency.
-        &amp;lt;/description&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.regionserver.lease.period&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;600000&amp;lt;/value&amp;gt;
-        &amp;lt;description&amp;gt;HRegion server lease period in milliseconds. Default is
-        60 seconds. Clients must report in within this period else they are
-        considered dead.&amp;lt;/description&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.client.retries.number&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;3&amp;lt;/value&amp;gt;
-      &amp;lt;/property&amp;gt; 
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.regionserver.handler.count&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.zookeeper.property.maxClientCnxns&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;2000&amp;lt;/value&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hfile.block.cache.size&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;0.1&amp;lt;/value&amp;gt;
-        &amp;lt;description&amp;gt;
-        Percentage of maximum heap (-Xmx setting) to allocate to block cache
-        used by HFile/StoreFile. Default of 0.25 means allocate 25%.
-        Set to 0 to disable but it's not recommended.
-        &amp;lt;/description&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.regions.slop&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;0&amp;lt;/value&amp;gt;
-        &amp;lt;description&amp;gt;Rebalance if any regionserver has average + (average * slop) regions.
-        Default is 20% slop.
-        &amp;lt;/description&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.hstore.compactionThreshold&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;10&amp;lt;/value&amp;gt;
-      &amp;lt;/property&amp;gt;
-      &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hbase.hstore.blockingStoreFiles&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;30&amp;lt;/value&amp;gt;
-      &amp;lt;/property&amp;gt;
-    &amp;lt;/configuration&amp;gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.distributed&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://node1:8020/hbase&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/hbase&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;node1,node2,node3&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hregion.max.filesize&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;536870912&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
+    grown to exceed this value, the hosting HRegion is split in two.
+    Default: 10G.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hregion.memstore.flush.size&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;67108864&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Memstore will be flushed to disk if size of the memstore
+    exceeds this number of bytes.  Value is checked by a thread that runs
+    every hbase.server.thread.wakefrequency.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regionserver.lease.period&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;600000&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;HRegion server lease period in milliseconds. Default is
+    60 seconds. Clients must report in within this period else they are
+    considered dead.&amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.client.retries.number&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;3&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt; 
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regionserver.handler.count&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.zookeeper.property.maxClientCnxns&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;2000&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hfile.block.cache.size&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;0.1&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;
+    Percentage of maximum heap (-Xmx setting) to allocate to block cache
+    used by HFile/StoreFile. Default of 0.25 means allocate 25%.
+    Set to 0 to disable but it's not recommended.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.regions.slop&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;0&amp;lt;/value&amp;gt;
+    &amp;lt;description&amp;gt;Rebalance if any regionserver has average + (average * slop) regions.
+    Default is 20% slop.
+    &amp;lt;/description&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hstore.compactionThreshold&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;10&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+  &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hstore.blockingStoreFiles&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;30&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3&gt;修改regionserver文件&lt;/h3&gt;
@@ -756,106 +740,106 @@ service hbase-regionserver start
 
 &lt;h3&gt;修改配置文件&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code&gt;    &amp;lt;configuration&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;hdfs://node1:8020&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://node1:8020&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;javax.jdo.option.ConnectionURL&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;jdbc:postgresql://node1/metastore&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;JDBC connect string for a JDBC metastore&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionURL&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;jdbc:postgresql://node1/metastore&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;JDBC connect string for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;javax.jdo.option.ConnectionDriverName&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;org.postgresql.Driver&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;Driver class name for a JDBC metastore&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionDriverName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;org.postgresql.Driver&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Driver class name for a JDBC metastore&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;javax.jdo.option.ConnectionUserName&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;hiveuser&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;username to use against metastore database&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionUserName&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hiveuser&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;username to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;javax.jdo.option.ConnectionPassword&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;redhat&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;password to use against metastore database&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;javax.jdo.option.ConnectionPassword&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;redhat&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;password to use against metastore database&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-     &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
-     &amp;lt;value&amp;gt;node1:8031&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;node1:8031&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-     &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
-     &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+ &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+ &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;datanucleus.autoCreateSchema&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;datanucleus.autoCreateSchema&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;datanucleus.fixedDatastore&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;datanucleus.fixedDatastore&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hive.metastore.warehouse.dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/user/hive/warehouse&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.warehouse.dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/user/hive/warehouse&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hive.metastore.uris&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;thrift://node1:9083&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.uris&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;thrift://node1:9083&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;hive.metastore.local&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.support.concurrency&amp;lt;/name&amp;gt;
-      &amp;lt;description&amp;gt;Enable Hive's Table Lock Manager Service&amp;lt;/description&amp;gt;
-      &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hive.metastore.local&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.support.concurrency&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Enable Hive's Table Lock Manager Service&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.zookeeper.quorum&amp;lt;/name&amp;gt;
-      &amp;lt;description&amp;gt;Zookeeper quorum used by Hive's Table Lock Manager&amp;lt;/description&amp;gt;
-      &amp;lt;value&amp;gt;node2,node3,node1&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.zookeeper.quorum&amp;lt;/name&amp;gt;
+  &amp;lt;description&amp;gt;Zookeeper quorum used by Hive's Table Lock Manager&amp;lt;/description&amp;gt;
+  &amp;lt;value&amp;gt;node2,node3,node1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.hwi.listen.host&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;node1&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;This is the host address the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.host&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;node1&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the host address the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.hwi.listen.port&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;9999&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;This is the port the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.listen.port&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;9999&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the port the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.hwi.war.file&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;This is the WAR file with the jsp content for Hive Web Interface&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.hwi.war.file&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;This is the WAR file with the jsp content for Hive Web Interface&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
 
-    &amp;lt;property&amp;gt;
-      &amp;lt;name&amp;gt;hive.merge.mapredfiles&amp;lt;/name&amp;gt;
-      &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;Merge small files at the end of a map-reduce job&amp;lt;/description&amp;gt;
-    &amp;lt;/property&amp;gt;
-    &amp;lt;/configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hive.merge.mapredfiles&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+  &amp;lt;description&amp;gt;Merge small files at the end of a map-reduce job&amp;lt;/description&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3&gt;在hdfs中创建hive数据仓库目录&lt;/h3&gt;

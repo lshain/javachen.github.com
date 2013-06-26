@@ -65,7 +65,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 
 1. core-site.xml:
 
-```
+
 	<property>
 	    <name>fs.defaultFS</name>
 	    <value>hdfs://node1</value>
@@ -85,11 +85,11 @@ hadoop的默认配置文件在/etc/hadoop/conf
 	  <name>io.bytes.per.checksum</name>
 	  <value>4096</value>
 	</property>
-```
+
 
 2. hdfs-site.xml:
 
-```
+
 	<property>
 	  <name>dfs.replication</name>
 	  <value>3</value>
@@ -139,7 +139,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 		<name>dfs.webhdfs.enabled</name>
 		<value>true</value>
 	</property>
-```
+
 
 3. 修改master和slaves文件
 
@@ -223,7 +223,7 @@ my set:
 
 1. mapred-site.xml:
 
-```
+
 	<property>
 	    <name>mapreduce.framework.name</name>
 	    <value>yarn</value>
@@ -272,11 +272,11 @@ my set:
 	  <name>mapreduce.tasktracker.reduce.tasks.maximum</name>
 	  <value>2</value>
 	</property>
-```
+
 
 2. yarn-site.xml:
 
-```
+
 	<property>
 	    <name>yarn.resourcemanager.resource-tracker.address</name>
 	    <value>node1:8031</value>
@@ -336,7 +336,7 @@ my set:
 	    <name>yarn.app.mapreduce.am.staging-dir</name>
 	    <value>/user</value>
 	</property>
-```
+
 
 ### HDFS创建临时目录
 
@@ -434,7 +434,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 ### 修改配置文件并同步到其他机器：
 
-```
+
 	<configuration>
 	<property>
 	    <name>hbase.distributed</name>
@@ -514,7 +514,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	    <value>30</value>
 	  </property>
 	</configuration>
-```
+
 
 ### 修改regionserver文件
 
@@ -534,7 +534,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 ### 修改配置文件
 
-```
+
 	<configuration>
 	<property>
 	    <name>fs.defaultFS</name>
@@ -635,7 +635,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	  <description>Merge small files at the end of a map-reduce job</description>
 	</property>
 	</configuration>
-```
+
 
 ### 在hdfs中创建hive数据仓库目录
 
