@@ -106,15 +106,11 @@
 <p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
 需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：</p>
-
+<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
 <div class="pic">
 <img src="/files/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
 </div>
-
-
-<p>点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。</p>
-
+点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
 <pre lang="java">
 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
 DocumentBuilder db = dbf.newDocumentBuilder();
@@ -127,12 +123,10 @@ try {
      ioe.printStackTrace();
 }
 root = dom.getDocumentElement();
-</pre>
-
+</pre></p>
 
 <p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：</p>
-
+为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
 <pre lang="java">
 public class PDFXMLParser {
     Element root;
@@ -141,144 +135,136 @@ public class PDFXMLParser {
     double[] widths;
     private Boolean header = false;
     private Boolean footer = false;
-    private String profile = "gray";
-    private double[] orientation = null;
+    private String profile = &quot;gray&quot;;
+    private double[] orientation = null;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
+    SAXReader saxReader = new SAXReader();
 
-    public void setXML(String xml) {
-        SAXReader saxReader = new SAXReader();
+    Document document = null;
+    try {
+        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+    } catch (DocumentException e) {
+        e.printStackTrace();
+    }
+    root = document.getRootElement();
 
-        Document document = null;
-        try {
-            document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
-        root = document.getRootElement();
+    if ((root.attributeValue(&quot;header&quot;) != null)
+            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
+        header = true;
+    }
+    String footer_string = root.attributeValue(&quot;footer&quot;);
+    if ((footer_string != null)
+            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
+        footer = true;
+    }
+    String profile_string = root.attributeValue(&quot;profile&quot;);
+    if (profile_string != null) {
+        profile = profile_string;
+    }
 
-        if ((root.attributeValue("header") != null)
-                &amp;&amp; (root.attributeValue("header").equalsIgnoreCase("true") == true)) {
-            header = true;
-        }
-        String footer_string = root.attributeValue("footer");
-        if ((footer_string != null)
-                &amp;&amp; (footer_string.equalsIgnoreCase("true") == true)) {
-            footer = true;
-        }
-        String profile_string = root.attributeValue("profile");
-        if (profile_string != null) {
-            profile = profile_string;
-        }
-
-        String orientation_string = root.attributeValue("orientation");
-        if (orientation_string != null) {
-            if (orientation_string.equalsIgnoreCase("landscape")) {
-                orientation = A4.LANDSCAPE;
-            } else {
-                orientation = A4.PORTRAIT;
-            }
+    String orientation_string = root.attributeValue(&quot;orientation&quot;);
+    if (orientation_string != null) {
+        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
+            orientation = A4.LANDSCAPE;
         } else {
-            orientation = Letter.PORTRAIT;
+            orientation = A4.PORTRAIT;
         }
+    } else {
+        orientation = Letter.PORTRAIT;
     }
+}
 
-    public PDFColumn[][] getColumnsInfo() {
-        PDFColumn[] colLine = null;
-        List n1 = root.element("head").elements("columns");
-        if ((n1 != null) &amp;&amp; (n1.size() &gt; 0)) {
-            columns = new PDFColumn[n1.size()][];
-            for (int i = 0; i &lt; n1.size(); i++) {
-                Element cols = (Element) n1.get(i);
-                List n2 = cols.elements("column");
-                if ((n2 != null) &amp;&amp; (n2.size() &gt; 0)) {
-                    colLine = new PDFColumn[n2.size()];
-                    for (int j = 0; j &lt; n2.size(); j++) {
-                        Element col_xml = (Element) n2.get(j);
-                        PDFColumn col = new PDFColumn();
-                        col.parse(col_xml);
-                        colLine[j] = col;
-                    }
+public PDFColumn[][] getColumnsInfo() {
+    PDFColumn[] colLine = null;
+    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
+    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
+        columns = new PDFColumn[n1.size()][];
+        for (int i = 0; i &amp;lt; n1.size(); i++) {
+            Element cols = (Element) n1.get(i);
+            List n2 = cols.elements(&quot;column&quot;);
+            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
+                colLine = new PDFColumn[n2.size()];
+                for (int j = 0; j &amp;lt; n2.size(); j++) {
+                    Element col_xml = (Element) n2.get(j);
+                    PDFColumn col = new PDFColumn();
+                    col.parse(col_xml);
+                    colLine[j] = col;
                 }
-                columns[i] = colLine;
             }
+            columns[i] = colLine;
         }
-        createWidthsArray();
-        optimizeColumns();
-        return columns;
     }
-        public PDFRow[] getGridContent() {
-        List nodes = root.elements("row");
-        if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {
-            rows = new PDFRow[nodes.size()];
-            for (int i = 0; i &lt; nodes.size(); i++) {
-                rows[i] = new PDFRow();
-                rows[i].parse((Element) nodes.get(i));
-            }
-        }
-        return rows;
-
-    }
-
-       *****
+    createWidthsArray();
+    optimizeColumns();
+    return columns;
 }
-</pre>
+    public PDFRow[] getGridContent() {
+    List nodes = root.elements(&quot;row&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        rows = new PDFRow[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            rows[i] = new PDFRow();
+            rows[i].parse((Element) nodes.get(i));
+        }
+    }
+    return rows;
 
+}
 
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。</p>
+   *****
+</code></pre></div>
+<p>}
+</pre></p>
 
+<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
 <pre lang="java">
-public class PDFRow {
+public class PDFRow {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
 
-    private String[] cells;
-
-    public void parse(Element parent) {
-        List nodes = ((Element) parent).elements("cell");
-        if ((nodes != null) &amp;&amp; (nodes.size() &gt; 0)) {
-            cells = new String[nodes.size()];
-            for (int i = 0; i &lt; nodes.size(); i++) {
-                cells[i] = ((Element) nodes.get(i)).getTextTrim();
-            }
-        }
-    }
-
-    public String[] getCells() {
-        return cells;
-    }
-}
-
-public class PDFColumn {
-
-    public void parse(Element parent) {
-        colName = parent.getText();
-        String width_string = parent.attributeValue("width");
-        if (width_string!=null&&width_string.length() > 0) {
-            width = Integer.parseInt(width_string);
-        }
-        type = parent.attributeValue("type");
-        align = parent.attributeValue("align");
-        String colspan_string = parent.attributeValue("colspan");
-        if (colspan_string!=null&&colspan_string.length() > 0) {
-            colspan = Integer.parseInt(colspan_string);
-        }
-        String rowspan_string = parent.attributeValue("rowspan");
-        if (rowspan_string!=null&&rowspan_string.length() > 0) {
-            rowspan= Integer.parseInt(rowspan_string);
+public void parse(Element parent) {
+    List nodes = ((Element) parent).elements(&quot;cell&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        cells = new String[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            cells[i] = ((Element) nodes.get(i)).getTextTrim();
         }
     }
 }
-</pre>
 
+public String[] getCells() {
+    return cells;
+}
+</code></pre></div>
+<p>}</p>
 
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：</p>
+<p>public class PDFColumn {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
+    colName = parent.getText();
+    String width_string = parent.attributeValue(&quot;width&quot;);
+    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
+        width = Integer.parseInt(width_string);
+    }
+    type = parent.attributeValue(&quot;type&quot;);
+    align = parent.attributeValue(&quot;align&quot;);
+    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
+    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
+        colspan = Integer.parseInt(colspan_string);
+    }
+    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
+    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
+        rowspan= Integer.parseInt(rowspan_string);
+    }
+}
+</code></pre></div>
+<p>}
+</pre></p>
 
+<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
 <div class="pic">
 <img src="/files/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
-</div>
-
-
-
+</div></p>
 
 <h2>结论：</h2>
-
 
 <ul>
 <li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
@@ -286,7 +272,6 @@ public class PDFColumn {
 <li>3.导出的pdf为多页显示，每页有表头</li>
 <li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
 </ul>
-
 </div>
     </article>
   </section>
@@ -325,151 +310,132 @@ public class PDFColumn {
 	</div>
     </header>
     <div class="content"><p>dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。
-以下是dhtmlxGrid的表头菜单效果：</p>
-
+以下是dhtmlxGrid的表头菜单效果：
 <div class="pic"><img class="aligncenter size-medium wp-image-2287" title="dhtmlxgrid-head-menu" src="/files/2011/07/dhtmlxgrid-head-menu.jpg" alt="" width="300" height="174" /></div>
-
-
-<p>其功能过于单一，以下是表格右键菜单效果：</p>
-
+其功能过于单一，以下是表格右键菜单效果：
 <div class="pic"><img class="aligncenter size-medium wp-image-2288" title="dhtmlxgrid-context-menu" src="/files/2011/07/dhtmlxgrid-context-menu.jpg" alt="" width="300" height="126" /></div>
-
-
-<p>如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
-如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？<!--more-->
-首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：</p>
-
+如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
+如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt;
+首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：
 <pre lang="javascript">
 function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split("_");
-    //rowId_colInd;
-    mygrid.setRowTextStyle(data[0], "color:" + menuitemId.split("_")[1]);
+    var data = mygrid.contextID.split(&quot;<em>&quot;);
+    //rowId</em>colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;<em>&quot;)[1]);
     return true;
 }
 menu = new dhtmlXMenuObject();
-menu.setIconsPath("../common/images/");
+menu.setIconsPath(&quot;../common/images/&quot;);
 menu.renderAsContextMenu();
-menu.attachEvent("onClick", onButtonClick);
-menu.loadXML("../common/_context.xml");
-mygrid = new dhtmlXGridObject('gridbox');
-mygrid.setImagePath("../../codebase/imgs/");
-mygrid.setHeader("Author,Title");
-mygrid.setInitWidths("250,250");
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/</em>context.xml&quot;);
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
 mygrid.enableAutoWidth(true);
-mygrid.setColAlign("left,left");
-mygrid.setColTypes("ro,link");
-mygrid.setColSorting("str,str");
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
 mygrid.enableContextMenu(menu);
 mygrid.init();
-mygrid.setSkin("dhx_skyblue");
-mygrid.loadXML("../common/grid_links.xml");</pre>
+mygrid.setSkin(&quot;dhx<em>skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid</em>links.xml&quot;);</pre></p>
 
-
-<p>上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：</p>
-
+<p>上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：
 <pre lang="JavaScript">menu.renderAsContextMenu();
 mygrid.enableContextMenu(menu);
-</pre>
-
+</pre></p>
 
 <p>上面对于context menu提供的方法太少，这时候可以看看dhtmlxMenu api，看看有没有设置context menu生效位置的方法（指定context menu在哪片区域有效）。在dhtmlxMenu API Methods里没有找到需要的方法，这时候在官网论坛搜搜，也许可以找到点什么。
-在论坛里可以找到一个例子，大致代码如下：</p>
-
+在论坛里可以找到一个例子，大致代码如下：
 <pre lang="javascript">function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split("_");
-    //rowId_colInd;
-    mygrid.setRowTextStyle(data[0], "color:" + menuitemId.split("_")[1]);
+    var data = mygrid.contextID.split(&quot;<em>&quot;);
+    //rowId</em>colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;<em>&quot;)[1]);
     return true;
 }
 menu = new dhtmlXMenuObject();
-menu.setIconsPath("../common/images/");
-menu.attachEvent("onClick", onButtonClick);
-menu.loadXML("../common/_context.xml");
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/</em>context.xml&quot;);</p>
 
-mygrid = new dhtmlXGridObject('gridbox');
-mygrid.setImagePath("../../codebase/imgs/");
-mygrid.setHeader("Author,Title");
-mygrid.setInitWidths("250,250");
+<p>mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
 mygrid.enableAutoWidth(true);
-mygrid.setColAlign("left,left");
-mygrid.setColTypes("ro,link");
-mygrid.setColSorting("str,str");
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
 //mygrid.enableContextMenu(menu); //使其失效
 mygrid.init();
-mygrid.setSkin("dhx_skyblue");
-mygrid.loadXML("../common/grid_links.xml");
+mygrid.setSkin(&quot;dhx<em>skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid</em>links.xml&quot;);</p>
 
-mygrid.hdr.id = "header_id";
-var header_row = mygrid.hdr.rows[1];
-for ( var i = 0; i &lt; header_row.cells.length; i++) {
-   header_row.cells[i].id = "context_zone_" + i;
+<p>mygrid.hdr.id = &quot;header<em>id&quot;;
+var header</em>row = mygrid.hdr.rows[1];
+for ( var i = 0; i &lt; header<em>row.cells.length; i++) {
+   header</em>row.cells[i].id = &quot;context<em>zone</em>&quot; + i;
 }
-menu.addContextZone("header_id");
-</pre>
-
+menu.addContextZone(&quot;header_id&quot;);
+</pre></p>
 
 <p>上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。
-剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：</p>
-
-<pre lang="javascript">dhtmlxEvent(mygrid.hdr, "contextmenu", function(ev) {
+剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：
+<pre lang="javascript">dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
     ev = ev || event;
     var el = ev.target || ev.srcElement;
     var zel = el;
-    while (zel.tagName != "TABLE")
+    while (zel.tagName != &quot;TABLE&quot;)
         zel = zel.parentNode;
     var grid = zel.grid;
     if (!grid)
         return;
-    grid.setActive();
+    grid.setActive();</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">el = grid.getFirstParentOfType(el, &quot;TD&quot;)
 
-    el = grid.getFirstParentOfType(el, "TD")
+if ((grid) &amp;amp;&amp;amp; (!grid._colInMove)) {
+    grid.resized = null;
+    if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
+        colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
+}
 
-    if ((grid) &amp;&amp; (!grid._colInMove)) {
-        grid.resized = null;
-        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == "true"))
-            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
-    }
-
-    function mouseCoords(ev) {
-        if (ev.pageX || ev.pageY) {
-            return {
-                x : ev.pageX,
-                y : ev.pageY
-            };
-        }
-        var d = _isIE &amp;&amp; document.compatMode != "BackCompat" ? 
-                    document.documentElement: document.body;
+function mouseCoords(ev) {
+    if (ev.pageX || ev.pageY) {
         return {
-            x : ev.clientX + d.scrollLeft - d.clientLeft,
-            y : ev.clientY + d.scrollTop - d.clientTop
+            x : ev.pageX,
+            y : ev.pageY
         };
     }
+    var d = _isIE &amp;amp;&amp;amp; document.compatMode != &quot;BackCompat&quot; ? 
+                document.documentElement: document.body;
+    return {
+        x : ev.clientX + d.scrollLeft - d.clientLeft,
+        y : ev.clientY + d.scrollTop - d.clientTop
+    };
+}
 
-    var coords = mouseCoords(ev);
-    menu.addContextZone("header_id");
-    menu.showContextMenu(coords.x, coords.y);//强制显示
-    return true;
-});
-</pre>
+var coords = mouseCoords(ev);
+menu.addContextZone(&quot;header_id&quot;);
+menu.showContextMenu(coords.x, coords.y);//强制显示
+return true;
+</code></pre></div>
+<p>});
+</pre></p>
 
-
-<p>在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：</p>
-
+<p>在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：
 <pre lang="javascript">function onButtonClick(menuitemId, type, e) {
-    mygrid.insertColumn(colId, "12", "ed", 80);
+    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
     colId = 0;
     return true;
-}</pre>
+}</pre></p>
 
-
-<p>然后，需要禁止掉表格数据区域的菜单显示：</p>
-
-<pre lang="JavaScript">mygrid.attachEvent("onBeforeContextMenu", function(rid, cid, e) {
+<p>然后，需要禁止掉表格数据区域的菜单显示：
+<pre lang="JavaScript">mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
     return false;//禁止数据区域菜单
 });</pre>
-
-
-<p>最后的最后，最后的代码如下：</p>
+最后的最后，最后的代码如下：</p>
 
 <pre lang="javascript">
     var mygrid, colId;
@@ -557,14 +523,9 @@ menu.addContextZone("header_id");
     }
 </pre>
 
-
-<p>效果图如下;</p>
-
+<p>效果图如下;
 <div class="pic">
-<img src="/files/2011/07/dhtmlxgrid-custom-head-menu.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></div>
-
-
-
+<img src="/files/2011/07/dhtmlxgrid-custom-head-menu.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></div></p>
 </div>
     </article>
   </section>
@@ -606,70 +567,60 @@ menu.addContextZone("header_id");
 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
 首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
-上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：</p>
-
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
 <pre escaped="true" lang="javascript" line="1">function maf() {
     return false;
 }
-tree = new dhtmlXTreeObject("treeboxbox_tree", "100%", "100%", 0);
+tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
 
-tree.setSkin('dhx_skyblue');
-tree.setImagePath("../../codebase/imgs/csh_yellowbooks/");
+<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
 tree.enableDragAndDrop(true);
 tree.setDragHandler(maf);
 tree.enableSmartXMLParsing(true);
-tree.loadXML("../common/tree_05_drag_n_drop.xml");
+tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
 
-function s_control() {
-    this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = "";
+<p>function s<em>control() {
+    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this._dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = "#fffacd";
+    this.<em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
-    this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = "";
+    this.</em>dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
         return this;
     }
 }
-var sinput = document.getElementById('sInput');
+var sinput = document.getElementById(&#39;sInput&#39;);
 tree.dragger.addDragLanding(sinput, new s_control);
-</pre>
+</pre></p>
 
+<p>为了使tree支持拖拽功能，必须添加以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
 
-<p>为了使tree支持拖拽功能，必须添加以下代码：</p>
+<p>为了实现自定义拖拽的输出，添加了以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
 
-<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre>
-
-
-<p>为了实现自定义拖拽的输出，添加了以下代码：</p>
-
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre>
-
-
-<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：</p>
-
-<pre escaped="true" lang="javascript" line="1">    this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = "";
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this._dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = "#fffacd";
+    this.</em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
     this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = "";
+        htmlObject.style.backgroundColor = &quot;&quot;;
         return this;
     }
-</pre>
+</pre></p>
 
-
-<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：</p>
-
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre>
-
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
 
 <p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
 
@@ -698,82 +649,75 @@ tree.dragger.addDragLanding(sinput, new s_control);
 }
 </pre>
 
-
-<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。</p>
-
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
 <div class="pic">
 <img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
-</div>
+</div></p>
 
-
-<p>本例最后的代码：</p>
-
+<p>本例最后的代码：
 <pre escaped="true" lang="javascript" line="1">
     var mygrid;
     function maf() {
         return false;
-    }
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
+tree.setSkin(&#39;dhx_skyblue&#39;);
+tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+//tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
+tree.openAllItems(0);
 
-    tree = new dhtmlXTreeObject("treeboxbox_tree", "100%", "100%", 0);
-    tree.setSkin('dhx_skyblue');
-    tree.setImagePath("../../dhtmlxTree/codebase/imgs/csh_yellowbooks/");
-    tree.enableDragAndDrop(true);
-    //tree.setDragHandler(maf);
-    tree.enableSmartXMLParsing(true);
-    tree.loadXML("../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml")
-    tree.openAllItems(0);
+function s_control() {
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+            targetHtmlObject, e) {
+        var zel = e;
+        while (zel.tagName != &quot;TABLE&quot;)
+            zel = zel.parentNode;
+        var grid = zel.grid;
+        if (!grid)
+            return;
+        grid.setActive();
+        if (!grid._mCol || e.button == 2)
+            return;
+        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
 
-    function s_control() {
-        var insertId;
-        this._drag = function(sourceHtmlObject, dhtmlObject,
-                targetHtmlObject, e) {
-            var zel = e;
-            while (zel.tagName != "TABLE")
-                zel = zel.parentNode;
-            var grid = zel.grid;
-            if (!grid)
-                return;
-            grid.setActive();
-            if (!grid._mCol || e.button == 2)
-                return;
-            e = grid.getFirstParentOfType(e, "TD")
-
-            if ((grid) && (!grid._colInMove)) {
-                grid.resized = null;
-                if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
-                    insertId = e._cellIndex + 1;
-            }
-
-            mygrid.insertColumn(insertId, "12", "ed", 80);
+        if ((grid) &amp;&amp; (!grid._colInMove)) {
+            grid.resized = null;
+            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
+                insertId = e._cellIndex + 1;
         }
+
+        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
     }
-    mygrid = new dhtmlXGridObject('gridbox');
-    mygrid.setImagePath("../codebase/imgs/");
-    mygrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-              Date of Publication");
-    mygrid.setInitWidths("50,150,100,80,80,80,80,200");
-    mygrid.setColAlign("right,left,left,right,center,left,center,center");
-    mygrid.setColTypes("dyn,edtxt,ed,price,ch,co,ra,ro");
-    mygrid.enableDragAndDrop("temporary_disabled", true);
-    mygrid.init();
-    mygrid.setSkin("dhx_skyblue");
-    mygrid.enableHeaderMenu();
-    mygrid.enableColumnMove(true);
-    mygrid.setColumnHidden(2, true);
-    mygrid.attachEvent("onHeaderClick", function(ind, obj) {
-    });
-    mygrid.loadXML("../common/grid_ml_16_rows_columns_manipulations.xml");
-    tree.dragger.addDragLanding(mygrid.hdr, new s_control);
-</pre>
-
-
-<p>本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
+}
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.setColumnHidden(2, true);
+mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
+});
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</code></pre></div>
+<p></pre>
+本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
 
 <h2>参考文章</h2>
 
-
 <p><li>
-Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html</a>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
 </li>
 <li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
 </li>
@@ -818,10 +762,7 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
     </header>
     <div class="content"><p><span style="color: #ff0000;"><strong>说明:</strong></span>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
 
-
-
-
-<p><p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
 <ul>
     <li>跨浏览器</li>
     <li>使用JavaScript API进行控制</li>
@@ -853,21 +794,21 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
 </ul>
 <h2><!--more-->
 Step 1 – 引入文件</h2>
-<pre lang="html" line="1">
-&lt; link rel ="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
-&lt; script src="codebase/dhtmlxcommon.js">&lt; /script>
-&lt; script src="codebase/dhtmlxgrid.js">&lt; /script>
-&lt; script src="codebase/dhtmlxgridcell.js">&lt; /script>
-&lt; script>
+<pre lang="html" line="1"> 
+< link rel ="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
+< script src="codebase/dhtmlxcommon.js">< /script>
+< script src="codebase/dhtmlxgrid.js">< /script>
+< script src="codebase/dhtmlxgridcell.js">< /script>
+< script>
     //we'll write script commands here
-&lt; /script>
-</pre></p></p>
+< /script>
+</pre></p>
 
-<p><p><h2>Step 2 – 放置gird</h2>
+<p><h2>Step 2 – 放置gird</h2>
 有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：
-<pre>  &lt; div id="mygrid_container" style="width:600px;height:150px;">&lt; /div></pre>
+<pre>  < div id="mygrid_container" style="width:600px;height:150px;">< /div></pre>
 下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：
-<pre>
+<pre> 
  var mygrid;
  function doInitGrid(){
  }
@@ -880,7 +821,7 @@ o 使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)�
 o 定义一个列的水平对其方式。 Numeric values is better to align right;<br />
 o 使用setSkin方法设置皮肤；<br />
 o 最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。目前，doInitGrid方法如下：
-<pre>
+<pre> 
 mygrid = new dhtmlXGridObject('mygrid_container');
 mygrid.setImagePath("codebase/imgs/"); //指定图片路径
 mygrid.setHeader("Model,Qty,Price"); //设置表头显示
@@ -890,7 +831,7 @@ mygrid.setSkin("light"); //设置皮肤
 grid.init(); //显示调用初始化方法，必须的
 </pre>
 现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：
-<pre>&lt; body onload="doInitGrid();">&lt; /body></pre>
+<pre>< body onload="doInitGrid();">< /body></pre>
 这样在该页面初始化之后会显示如下：
 <div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
 说明：除了调用set方法之外，还可以如下风格定义：
@@ -908,9 +849,9 @@ grid.init(); //显示调用初始化方法，必须的
             { label:"Shipping" ,    width:50,   type:"ed" },
             { label:"Bestseller" ,  width:50,   type:"ed" },
             { label:"Date" ,    width:50,   type:"ed" }
-        ],</pre></p></p>
+        ],</pre></p>
 
-<p><p>     xml:"data.xml"<br />
+<p>     xml:"data.xml"<br />
     });
 <h2>Step 3 – 填充数据</h2>
 你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。<br />
@@ -940,20 +881,20 @@ id: "b",
 o str – 作为字符串排序<br />
 o int - 以Integer值排序 (通常可以是任何数字);<br />
 o date – 以日期排序<br />
-o custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</p></p>
+o custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</p>
 
-<p><p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。
 <pre lang="javascript">mygrid.setColSorting("str,int,int");</pre>
 这时候单击最后一列表头，结果如下：
 <div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div>
 <h2>Step 5 – 单元格格式化和编辑</h2>
-Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p></p>
+Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
 
-<p><p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。<br />
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。<br />
 默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：
-<pre lang="javascript" line="1">
+<pre lang="javascript" line="1"> 
 mygrid.setColTypes("ed,ed,price");
-</pre> </p></p>
+</pre> </p>
 
 <p><p>Excells格式化有以下几种：
 <div class="note"> link：超链接<br />
@@ -973,16 +914,16 @@ Excell 复杂编辑器有以下几种：
  context：使用dhtmlxmenu<br />
  combo：使用dhtmlxCombo</div>
 Excells特别用途
-<div class="note">sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。<br />
+<div class="note">sub<em>row：允许单元格作为一个可展开的子单元格，就想查看明细一样。<br />
 两个扩展<br />
-o sub_row_ajax – 单元格数据被认为是ajax请求的url<br />
-o sub_row_grid – 允许创建一个子表作为一个子行的内容</div>
+o sub</em>row<em>ajax – 单元格数据被认为是ajax请求的url<br />
+o sub</em>row<em>grid – 允许创建一个子表作为一个子行的内容</div>
 现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div>
+<div class="pic">&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step</em>5.png&quot; alt=&quot;&quot; /&gt;</div>
 <h2>Step 6 – 行操作方法</h2>
 <pre lang="javascript" line="1">    function addRow(){
         var newId = (new Date()).valueOf()
-        mygrid.addRow(newId,"",mygrid.getRowsNum())
+        mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
         mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
     }
     function removeRow(){
@@ -998,38 +939,39 @@ o 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选�
 o 删除指定行id的行</div>
 <h2>Step 7 – 事件</h2>
 添加事件调用attachEvent 方法，如下行选中事件：
-<pre lang="javascript" line="1"> <br/>
+<pre lang="javascript" line="1"><br>
     function doOnRowSelected(rowID,celInd){
-        alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);
+        alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
     }
-    mygrid.attachEvent("onRowSelect",doOnRowSelected);</pre></p>
+    mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);</pre></p>
 
-<p><h2>Step 8 – Code</h2>
-最后的代码：
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：
 <pre lang="javascript" line="1">
- &lt; title>dhtmlxGrid Sample Page&lt; /title>
-     &lt; link rel="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
-     &lt; script src="codebase/dhtmlxcommon.js">&lt; /script>
-     &lt; script src="codebase/dhtmlxgrid.js">&lt; /script>
-     &lt; script src="codebase/dhtmlxgridcell.js">&lt; /script>
-     &lt; script>
+ &lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+     &lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+     &lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+     &lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+     &lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+     &lt; script&gt;
       var mygrid;<br />
       function doInitGrid(){<br />
-       mygrid = new dhtmlXGridObject('mygrid_container');<br />
-       mygrid.setImagePath("codebase/imgs/");<br />
-       mygrid.setHeader("Model,Qty,Price");<br />
-       mygrid.setInitWidths("*,150,150");<br />
-       mygrid.setColAlign("left,right,right")<br />
-       mygrid.setSkin("light");<br />
-       mygrid.setColSorting("str,int,int");<br />
-       mygrid.setColTypes("ed,ed,price");<br />
-       mygrid.attachEvent("onRowSelect",doOnRowSelected);<br />
+       mygrid = new dhtmlXGridObject(&#39;mygrid<em>container&#39;);<br />
+       mygrid.setImagePath(&quot;codebase/imgs/&quot;);<br />
+       mygrid.setHeader(&quot;Model,Qty,Price&quot;);<br />
+       mygrid.setInitWidths(&quot;*,150,150&quot;);<br />
+       mygrid.setColAlign(&quot;left,right,right&quot;)<br />
+       mygrid.setSkin(&quot;light&quot;);<br />
+       mygrid.setColSorting(&quot;str,int,int&quot;);<br />
+       mygrid.setColTypes(&quot;ed,ed,price&quot;);<br />
+       mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);<br />
        mygrid.init();<br />
-       mygrid.load ("data.json","json");<br />
+       mygrid.load (&quot;data.json&quot;,&quot;json&quot;);<br />
       }
      function addRow(){<br />
        var newId = (new Date()).valueOf()<br />
-       mygrid.addRow(newId,"",mygrid.getRowsNum())<br />
+       mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())<br />
        mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);<br />
       }<br />
       function removeRow(){<br />
@@ -1037,12 +979,12 @@ o 删除指定行id的行</div>
        mygrid.deleteRow(selId);<br />
       }
      function doOnRowSelected(rowID,celInd){<br />
-       alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);<br />
+       alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);<br />
       }
-   &lt; /script>
-   &lt; body onload="doInitGrid()">
-      &lt; div id="mygrid_container" style="width:600px;height:150px;">&lt; /div>
-   &lt; /body>
+   &lt; /script&gt;
+   &lt; body onload=&quot;doInitGrid()&quot;&gt;
+      &lt; div id=&quot;mygrid</em>container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+   &lt; /body&gt;
 </pre></p>
 </div>
     </article>
@@ -1087,9 +1029,9 @@ o 删除指定行id的行</div>
 <li>
 OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
 </li>
-<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html</a>
+<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
 </li>
-<li>OpenStack 中国门户：<a href="http://blu001068.chinaw3.com/bbs/portal.php" target="_blank">http://blu001068.chinaw3.com/bbs/portal.php</a>
+<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
 </li>
 <li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
 </li>
@@ -1097,19 +1039,19 @@ OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://p
 </li>
 <li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
 </li>
-<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733</a>
+<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
 </li>
 <li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
 </li>
 <li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
 </li>
-<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html</a>
+<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
 </li>
-<li>Swift 技术验证简单报告 :<a href="http://www.douban.com/group/topic/17621229/" target="_blank">http://www.douban.com/group/topic/17621229/</a>
+<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
 </li>
-<li>新浪上openstack_object_storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist_1805154091_2_1.html</a>
+<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
 </li>
-<li>豆瓣上OpenStack收集资源：<a href="http://www.douban.com/group/openstack/" target="_blank">http://www.douban.com/group/openstack/</a>
+<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
 </li>
 <li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
 </li>

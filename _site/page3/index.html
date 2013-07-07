@@ -115,7 +115,7 @@
 <p>因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：
     git clone git@github.com:javachen/octopress.git
 运行上面的代码后，你会看到：
-    Cloning into 'octopress'...
+    Cloning into &#39;octopress&#39;...
     remote: Counting objects: 6579, done.
     remote: Compressing objects: 100% (2361/2361), done.
     remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
@@ -134,7 +134,7 @@
     rake install</p>
 
 <p>你也可以安装自定义的主题，blog为主题名称：
-    rake install['blog']</p>
+    rake install[&#39;blog&#39;]</p>
 
 <p>至此，Octopress所需的环境已经搭建成功。</p>
 
@@ -142,14 +142,14 @@
 
 <p>首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为<code>你的帐号.github.com</code>，并且，部署的时候会占用你的master分支。</p>
 
-<p>*Tips：*
+<p><em>Tips：</em>
 如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
 如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；
-    echo 'your-domain.com' >> source/CNAME
+    echo &#39;your-domain.com&#39; &gt;&gt; source/CNAME
 如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
 
 <p>完成上述准备工作后，运行：
-    rake setup_github_pages
+    rake setup<em>github</em>pages
 它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</p>
 
 <h2>Step3 - 配置你的博客</h2>
@@ -161,14 +161,13 @@
     author: javachen
     simple_search: http://google.com/search
     description:</p>
-
-<pre><code>date_format: "%Y年%m月%d日"
+<div class="highlight"><pre><code class="text language-text" data-lang="text">date_format: &quot;%Y年%m月%d日&quot;
 
 subscribe_rss: /atom.xml
 subscribe_email:
 email:
 
-# 如果你使用的是一个子目录，如http://site.com/project，则设置为'root: /project'
+# 如果你使用的是一个子目录，如http://site.com/project，则设置为&#39;root: /project&#39;
 root: /
 # 文章标题格式
 permalink: /:year/:month/:day/:title/
@@ -180,8 +179,7 @@ code_dir: downloads/code
 category_dir: categories
 markdown: rdiscount
 pygments: false # default python pygments have been replaced by pygments.rb
-</code></pre>
-
+</code></pre></div>
 <h2>Step4 - 部署</h2>
 
 <p>先把整个项目静态化，然后再部署到GitHub：
@@ -189,7 +187,7 @@ pygments: false # default python pygments have been replaced by pygments.rb
     rake deploy
 当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!</p>
 
-<p>*Tips：*
+<p><em>Tips：</em>
 Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。</p>
 
@@ -210,7 +208,7 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 <h4>迁移文章</h4>
 
 <p>jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：
-    ruby -r "./utils/wordpressdotcom.rb" -e "Jekyll::WordpressDotCom.process"
+    ruby -r &quot;./utils/wordpressdotcom.rb&quot; -e &quot;Jekyll::WordpressDotCom.process&quot;
 于是转换好的文章都放进source目录了。</p>
 
 <h4>迁移URL</h4>
@@ -221,9 +219,9 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
     http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html
     http://XXXXXXXXX.com/page/xx/
     http://XXXXXXXXX.com/category/[category-name]/
-这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
+这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到<em>config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
     permalink: /:year/:month/:title/
-    category_dir: category
+    category</em>dir: category
     pagination_dir:  # 留空</p>
 
 <h4>迁移评论</h4>
@@ -235,11 +233,9 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 <p>可以参考<a href="http://log4d.com/2012/05/image-host/">使用独立图床子域名</a></p>
 
 <h2>Step6 - 再次部署</h2>
-
-<pre><code>rake generate
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rake generate
 rake deploy
-</code></pre>
-
+</code></pre></div>
 <h2>参考文章</h2>
 
 <ul>
@@ -249,7 +245,6 @@ rake deploy
 <li>从Wordpress迁移到Octopress：http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/</li>
 <li>使用独立图床子域名：http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/</li>
 </ul>
-
 </div>
     </article>
   </section>
@@ -285,28 +280,16 @@ rake deploy
     <div class="content"><p>pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.<br />
 使用ivy编译kettle的源代码却是非常容易的事情.</p>
 
-
-
-
 <p>该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>,文章标题没作修改.<br />
 编写此文,是为了记录编译kettle源码的方法和过程.</p>
 
-
-
-
 <p><strong>以下是对原文的一个简单翻译.</strong>
 将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.</p>
-
-
-
 
 <p>pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
 <!--more-->
 <strong>关于Ivy</strong>
 <a href="http://ant.apache.org/ivy/" target="_blank">Apache Ivy™</a>是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:<a href="http://ant.apache.org/ivy/features.html" target="_blank">enterprise features</a>, <a href="http://ant.apache.org/ivy/testimonials.html" target="_blank">what people say about it</a>, 以及 <a href="http://ant.apache.org/ivy/history/latest-milestone/index.html" target="_blank">how it can improve your build system</a></p>
-
-
-
 
 <p><strong>在kettle中使用ivyIDE</strong>
 首先,从svn上下载kettle的源代码:
@@ -316,9 +299,6 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 如果你想在Eclipse上使用<a href="http://ant.apache.org/ivy/ivyde/download.cgi" target="_blank">ivyde plugin</a>.<br />
 请参考相关文章安装该插件.</p>
 
-
-
-
 <p>如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.<br />
 1.执行<code>ant resolve</code>,这个命令将会创建一个叫做resolved-libs的文件夹.<br />
 2.使用下面命令更新classpath <br />
@@ -326,15 +306,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
   b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)<br />
 注意:kettle项目中的构建脚本会自动安装ivy插件.</p>
 
-
-
-
 <p><strong>构建Kettle</strong>
 你可以下载kettle源代码然后立即执行<code>ant distrib</code>命令<br />
 或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.</p>
-
-
-
 
 <p><strong>ivy中未完成的</strong>
 <strong>pentaho-database-</strong>这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
@@ -342,13 +316,9 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 <strong>library configurations-</strong>每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
 <strong>checked-in plugins-</strong>当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.</p>
 
-
-
-
 <p><strong>参考文章</strong>
 <a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>
 </p>
-
 </div>
     </article>
   </section>
@@ -383,9 +353,6 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
     </header>
     <div class="content"><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
-
-
-
 
 <p><h1>Starting the CLI</h1>
 使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
@@ -423,16 +390,10 @@ Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
 </pre>
 你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
 
-
-
-
 <p><h1>Use a keyspace</h1>
 <pre>
 [default@unknown] USE demo;
 </pre></p>
-
-
-
 
 <p><h1>Creating a Column Family</h1>
 <pre>
@@ -453,9 +414,6 @@ AND column_metadata = [
 [default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 </pre></p>
 
-
-
-
 <p><h1>Creating a Counter Column Family</h1>
 <pre>
 [default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
@@ -470,9 +428,6 @@ AND column_metadata = [
 <pre>
 [default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
 </pre></p>
-
-
-
 
 <p><h1>Inserting Rows and Columns</h1>
 以下命令以一个特点的行key值插入列到users中
@@ -491,9 +446,6 @@ get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice"
 <pre>
 [default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
 </pre></p>
-
-
-
 
 <p><h1>Reading Rows and Columns</h1>
 使用List命令查询记录，默认查询100条记录
@@ -518,18 +470,12 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] ASSUME users VALIDATOR AS ascii;
 </pre></p>
 
-
-
-
 <p><h1>Setting an Expiring Column</h1>
 例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
 <pre>
 [default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
 </pre>
 自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
-
-
-
 
 <p><h1>Indexing a Column</h1>
 给birth_year添加一个二级索引：
@@ -543,9 +489,6 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] GET users WHERE birth_date = 1969;
 </pre></p>
 
-
-
-
 <p><h1>Deleting Rows and Columns</h1>
 删除yomama索引的coupon_code列：
 <pre>
@@ -557,17 +500,11 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@demo] DEL users ['yomama'];
 </pre></p>
 
-
-
-
 <p><h1>Dropping Column Families and Keyspaces</h1>
 <pre>
 [default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
 </pre></p>
-
-
-
 
 <p><h1>For help</h1>
 <pre>
@@ -578,33 +515,22 @@ Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数�
 [default@unknown] help SET;
 </pre></p>
 
-
-
-
 <p><h1>To Quit</h1>
 <pre>
 [default@unknown]quit;
 </pre></p>
-
-
-
 
 <p><h1>To Execute Script</h1>
 <pre>
 bin/cassandra-cli -host localhost -port 9160 -f script.txt
 </pre></p>
 
-
-
-
 <h1>参考文章</h1>
-
 
 <ul>
 <li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
 <li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p></li>
 </ul>
-
 </div>
     </article>
   </section>
@@ -641,80 +567,53 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 
 <h1>检查java环境</h1>
 
-
-<p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.</p>
-
+<p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
 <h3>1.检查是否安装java:</h3>
+<pre></p>
 
+<h1>java -version</h1>
 
-<pre>
-# java -version
-</pre>
-
-
-<p>如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.</p>
-
+<p></pre>
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
 <h3>2.安装jdk</h3>
-
-
-<p>下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
-1）修改执行权限:</p>
-
+下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:
 <pre>
 $ cd /tmp
 $ chmod a+x jre-6u25-linux-x64-rpm.bin
 </pre>
-
-
-<!--more-->
-
-
-<p>2）解压执行RPM文件,例如:</p>
-
+&lt;!--more--&gt;
+2）解压执行RPM文件,例如:
 <pre>
 $ sudo ./jre-6u25-linux-x64-rpm.bin
 </pre>
-
-
-<p>这样JRE会安装在/usr/java/
+这样JRE会安装在/usr/java/
 3）配置Oracle JRE取代OpenJDK JRE
-可以使用alternatives命令添加一个链接到Oracle JRE.</p>
-
+可以使用alternatives命令添加一个链接到Oracle JRE.
 <pre>
-$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0<em>25/bin/java 20000
 </pre>
-
-
-<p>4）确认是否安装JRE</p>
-
+4）确认是否安装JRE
 <pre>
 $ java -version
-  java version "1.6.0_25"
+  java version &quot;1.6.0</em>25&quot;
   Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
   Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
 </pre>
-
-
-<p>如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:</p>
-
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
 <pre>
 $ sudo alternatives --config java
-There are 2 programs which provide 'java'.
+There are 2 programs which provide &#39;java&#39;.</p>
 
-Selection      Command
------------------------------------------------
-   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
-*+ 2           /usr/java/jre1.6.0_25/bin/java
-</pre>
+<h2>Selection      Command</h2>
 
-
-
+<p>1           /usr/lib/jvm/jre-1.6.0-openjdk.x86<em>64/bin/java
+*+ 2           /usr/java/jre1.6.0</em>25/bin/java
+</pre></p>
 
 <h1>在Linux系统上安装DataStax Community二进制文件</h1>
 
-
 <h3>1.在用户目录创建一个目录,如datas</h3>
-
 
 <pre>
 $ cd $HOME
@@ -722,9 +621,7 @@ $ mkdir datas
 $ cd datas
 </pre>
 
-
 <h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
-
 
 <pre>
 $ wget http://downloads.datastax.com/community/dsc.tar.gz
@@ -732,9 +629,7 @@ $ wget http://downloads.datastax.com/community/opscenter.tar.gz
 $ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
 </pre>
 
-
 <h3>3.解压</h3>
-
 
 <pre>
 $ tar -xzvf dsc.tar.gz
@@ -743,156 +638,106 @@ $ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
 $ rm *.tar.gz
 </pre>
 
-
 <h3>4.设置环境变量</h3>
 
-
-<p>1)编辑 .bashrc</p>
-
+<p>1)编辑 .bashrc 
 <pre>
  vi $HOME/.bashrc
 </pre>
-
-
-<p>2)添加以下代码</p>
-
+2)添加以下代码
 <pre>
-export CASSANDRA_HOME=$HOME/datas/dsc_package_name
-export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
-export OPSC_HOME=$HOME/datas/opscenter_package_name
-export PATH="$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin"
-</pre>
+export CASSANDRA<em>HOME=$HOME/datas/dsc</em>package<em>name
+export DSCDEMO</em>HOME=$HOME/datas/dsc-1.0.1/demos/portfolio<em>manager
+export OPSC</em>HOME=$HOME/datas/opscenter<em>package</em>name
+export PATH=&quot;$PATH:$CASSANDRA<em>HOME/bin:$DSCDEMO</em>HOME/bin:$OPSC_HOME/bin&quot;
+</pre></p>
 
-
-<p>注意替换<font color="red">dsc_package_name</font>和<font color="red">opscenter_package_name</font>
+<p>注意替换<font color="red">dsc<em>package</em>name</font>和<font color="red">opscenter<em>package</em>name</font>
 3)保存退出
-4)使该文件生效</p>
-
+4)使该文件生效
 <pre>
 source $HOME/.bashrc
 </pre>
-
-
 <h3>5.创建保存Cassandra数据的文件和日志目录</h3>
-
-
 <pre>
 $ mkdir $HOME/datas/cassandra-data
-</pre>
-
-
-
+</pre></p>
 
 <h1>配置并启动单节点</h1>
 
-
 <h3>1.编辑配置环境</h3>
 
-
-<p>修改$CASSANDRA_HOME/conf/cassandra.yaml</p>
-
+<p>修改$CASSANDRA<em>HOME/conf/cassandra.yaml
 <pre>
-$ sed -i -e "s,initial_token:,initial_token: 0," \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &quot;s,initial</em>token:,initial<em>token: 0,&quot; \
+  $CASSANDRA</em>HOME/conf/cassandra.yaml</p>
 
-$ sed -i -e "s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data," \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+<p>$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
 
-$ sed -i -e "s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
-  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches," \
-  $CASSANDRA_HOME/conf/cassandra.yaml
+<p>$ sed -i -e &quot;s,saved<em>caches</em>directory: /var/lib/cassandra/saved<em>caches, \
+  saved</em>caches<em>directory: $HOME/datastax/cassandra-data/saved</em>caches,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
 
-$ sed -i -e "s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
-  $HOME/datastax/cassandra-data/commitlog," $CASSANDRA_HOME/conf/cassandra.yaml
-</pre>
+<p>$ sed -i -e &quot;s,commitlog<em>directory: /var/lib/cassandra/commitlog,commitlog</em>directory: \
+  $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
+</pre></p>
 
+<h3>2.设置日志文件位置</h3> 
 
-
-
-<h3>2.设置日志文件位置</h3>
-
-
-<p>
-修改：$CASSANDRA_HOME/conf/log4j-server.properties</p>
-
+<p>修改：$CASSANDRA<em>HOME/conf/log4j-server.properties
 <pre>
-$ sed -i -e "s,log4j.appender.R.File=/var/log/cassandra/system.log, \
-  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log," \
-  $CASSANDRA_HOME/conf/log4j-server.properties
+$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
+  $CASSANDRA</em>HOME/conf/log4j-server.properties
 </pre>
-
-
 <h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
-
-
 <pre>
-$ sed -i -e "s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>," \
-  $DSCDEMO_HOME/bin/pricer
-</dsc_package_name>
-</pre>
-
-
-
+$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>,&quot; \
+  $DSCDEMO<em>HOME/bin/pricer
+&lt;/dsc</em>package_name&gt;
+</pre></p>
 
 <h3>4.后台启动Cassandra</h3>
-
 
 <pre>
 $ cassandra
 </pre>
 
-
 <h3>5.检查cassandra环是否在运行</h3>
-
 
 <pre>
 $ nodetool ring -h localhost
 </pre>
 
-
 <h3>6.运行Portfolio Demo示例程序</h3>
 
-
-<p>1)进入Portfolio目录</p>
-
+<p>1)进入Portfolio目录
 <pre>
-$ cd $DSCDEMO_HOME
+$ cd $DSCDEMO<em>HOME
 </pre>
-
-
-<p>2)运行 ./bin/pricer工具生成数据</p>
-
+2)运行 ./bin/pricer工具生成数据
 <pre>
 ./bin/pricer --help
 </pre>
-
-
-<p>下面代码生成100天的历史数据</p>
-
+下面代码生成100天的历史数据
 <pre>
-./bin/pricer -o INSERT_PRICES
-./bin/pricer -o UPDATE_PORTFOLIOS
-./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+./bin/pricer -o INSERT</em>PRICES
+./bin/pricer -o UPDATE<em>PORTFOLIOS
+./bin/pricer -o INSERT</em>HISTORICAL<em>PRICES -n 100
 </pre>
-
-
-<p>3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)</p>
-
+3)启动服务(必须在$DSCDEMO</em>HOME/website目录下启动)
 <pre>
 $ cd $DSCDEMO_HOME/website
-$ java -jar start.jar &
+$ java -jar start.jar &amp;
 </pre>
-
-
-<p>4)浏览程序 http://localhost:8983/portfolio</p>
+4)浏览程序 http://localhost:8983/portfolio</p>
 
 <h1>参考文章</h1>
-
 
 <ul>
 <li>1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></li>
 </ul>
-
 </div>
     </article>
   </section>
@@ -933,16 +778,10 @@ $ java -jar start.jar &
     <div class="content"><p><strong>定义 </strong>
 一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。</p>
 
-
-
-
 <p><code>哈希表</code>又称散列表。
 <em>哈希表存储的基本思想是</em>：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即<code>数组空间</code>）的单元地址（即<code>下标</code>），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为<code>哈希表</code>或<code>散列表</code>。<br />
 哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。<br />
 哈希表是基于<code>数组结构</code>实现的，所以它也存在一些<em>缺点</em>： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即<code>冲突现象</code>：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： <em>不需要有序遍历数据，并且可以提前预测数据量的大小</em>。</p>
-
-
-
 
 <p><strong>冲突</strong>
 理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。<br />
@@ -950,9 +789,6 @@ $ java -jar start.jar &
 对于哈希技术，主要研究两个问题：<br />
 （1）如何设计哈希函数以使冲突尽可能少地发生。<br />
 （2）发生冲突后如何解决。</p>
-
-
-
 
 <p><strong>哈希函数的构造方法</strong>
 构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。
@@ -962,13 +798,7 @@ $ java -jar start.jar &
 H(k)=k+c (c≥0)<br />
 这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费</p>
 
-
-
-
 <p><strong>2．除留余数法</strong></p>
-
-
-
 
 <p>取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即：<br />
 H(k)=k％m<br />
@@ -976,36 +806,21 @@ H(k)=k％m<br />
 这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。<br />
 理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。</p>
 
-
-
-
 <p><strong>3．平方取中法</strong>
 取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。<br />
 设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。</p>
-
-
-
 
 <p><strong>4．折叠法</strong>
 这种方法适合在关键字的位数较多，而地址区间较小的情况。<br />
 将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。<br />
 例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。</p>
 
-
-
-
 <p><strong>5．数值分析法</strong>
 若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。<br />
 例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。</p>
 
-
-
-
 <p><strong>6. 随机数法</strong>
 选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。</p>
-
-
-
 
 <p><strong>7. 斐波那契（Fibonacci）散列法</strong>
 平方散列法的缺点是显而易见的，所以我们能不能找出一个理想的乘数，而不是拿value本身当作乘数呢？答案是肯定的。<br />
@@ -1017,9 +832,6 @@ H(k)=k％m<br />
 index = (value * 2654435769) &gt;&gt; 28<br />
 如果用这种斐波那契散列法的话，那我上面的图就变成这样了：</p>
 
-
-
-
 <p><strong>冲突的解决方法</strong>
 假设哈希表的地址范围为0～m-l，当对给定的关键字k，由哈希函数H(k)算出的哈希地址为i（0≤i≤m-1）的位置上已存有记录，这种情况就是<code>冲突现象</code>。 处理冲突就是为该关键字的记录找到另一个“空”的哈希地址。即通过一个新的哈希函数得到一个新的哈希地址。如果仍然发生冲突，则再求下一个，依次类推。直至新的哈希地址不再发生冲突为止。<br />
 常用的处理冲突的方法有开放地址法、链地址法两大类
@@ -1028,18 +840,12 @@ index = (value * 2654435769) &gt;&gt; 28<br />
 如 Hi=(H(k)+d（i）) % m, i=1，2，…k (k 其中H(k)为哈希函数，m为哈希表长，d为增量函数，d(i)=dl，d2…dn-l。<br />
 增量序列的取法不同，可得到不同的开放地址处理冲突探测方法。</p>
 
-
-
-
 <p><strong>1）线性探测法</strong>
 线性探测法是从发生冲突的地址（设为d）开始，依次探查d+l，d+2，…m-1（当达到表尾m-1时，又从0开始探查）等地址，直到找到一个空闲位置来存放冲突处的关键字。<br />
 若整个地址都找遍仍无空地址，则产生溢出。<br />
 线性探查法的数学递推描述公式为：<br />
 d0=H(k)<br />
 di=(di-1+1)% m (1≤i≤m-1)</p>
-
-
-
 
 <p>【例】已知哈希表地址区间为0～10，给定关键字序列（20，30，70，15，8，12，18，63，19）。哈希函数为H(k)=k％ll，采用线性探测法处理冲突，则将以上关键字依次存储到哈希表中。试构造出该哈希表，并求出等概率情况下的平均查找长度。<br />
 假设数组为A, 本题中各元素的存放过程如下：<br />
@@ -1054,16 +860,10 @@ d0=8<br />
 d1=(8+1)%11=9，仍冲突；<br />
 d2=(8+2)%11=10，将8放入到A[10]中。</p>
 
-
-
-
 <p>在等概率情况下成功的平均查找长度为：<br />
 （1*5+2+3+4+6）/9 =20/9<br />
 利用线性探查法处理冲突容易造成关键字的<code>堆积</code>问题。这是因为当连续n个单元被占用后，再散列到这些单元上的关键字和直接散列到后面一个空闲单元上的关键字都要占用这个空闲单元，致使该空闲单元很容易被占用，从而发生非同义冲突。造成平均查找长度的增加。<br />
 为了克服堆积现象的发生，可以用下面的方法替代线性探查法。</p>
-
-
-
 
 <p><strong>（2）平方探查法</strong>
 设发生冲突的地址为d，则平方探查法的探查序列为：d+12，d+22，…直到找到一个空闲位置为止。<br />
@@ -1076,35 +876,20 @@ di=(d0+i2) % m (1≤i≤m-1)<br />
 例如，若表长m=13，假设在第3个位置发生冲突，则后面探查的位置依次为4、7、12、6、2、0，即可以探查到一半单元。<br />
 若解决冲突时，探查到一半单元仍找不到一个空闲单元。则表明此哈希表太满，需重新建立哈希表。</p>
 
-
-
-
 <p><strong>2．链地址法</strong>
 用链地址法解决冲突的方法是：把所有关键字为同义词的记录存储在一个线性链表中，这个链表称为同义词链表。并将这些链表的表头指针放在数组中（下标从0到m-1）。这类似于图中的邻接表和树中孩子链表的结构。<br />
 由于在各链表中的第一个元素的查找长度为l，第二个元素的查找长度为2，依此类推。因此，在等概率情况下成功的平均查找长度为：<br />
 (1*5+2*2+3*l+4*1)／9=16／9</p>
 
-
-
-
 <p>虽然链地址法要多费一些存储空间，但是彻底解决了“堆积”问题，大大提高了查找效率。</p>
-
-
-
 
 <p><strong>3. 再哈希法</strong>：<br />
 Hi=R Hi(key)，<br />
 R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另一个哈希函数地址，直到冲突不再发生。这种方法不易产生<code>聚集</code>，但增加了计算的时间。</p>
 
-
-
-
 <p><strong>4.建立一个公共溢出区</strong>
 这也是处理冲突的一种方法。<br />
 假设哈希函数的值域为[0，m-1]，则设向量HashTable[0…m-1]为基本表，每个分量存放一个记录，另设立向量OverTable[0．．v]为溢出表。所有关键字和基本表中关键字为同义词的记录，不管它们由哈希函数得到的哈希地址是什么，一旦发生冲突，都填入溢出表。</p>
-
-
-
 
 <p><strong>哈希表的查找及性能分析</strong>
 <code>哈希法</code>是利用关键字进行计算后直接求出存储地址的。当哈希函数能得到均匀的地址分布时，不需要进行任何比较就可以直接找到所要查的记录。但实际上不可能完全避免冲突，因此查找时还需要进行探测比较。<br />
@@ -1117,22 +902,13 @@ R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另�
 <strong>第三:与解决冲突的哈希冲突函数有关</strong>
 哈希冲突函数选择的好坏也将减少或增加发生冲突的可能性。</p>
 
-
-
-
 <p><strong>思考</strong>
 <em>哈希算法的基本思想是什么？</em>
 <em>哈希算法的存储效率主要取决于什么？</em>
 <em>哈希算法解决冲突的方式有哪些？</em></p>
 
-
-
-
 <p><strong>java 哈希表实现</strong>
 java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap，也有其他公司实现的，如apache的FashHashmap,google的mapmarker,high-lib的NonBlockingHashMap,其中差别是：</p>
-
-
-
 
 <p><strong>hastable</strong>:线程同步，比较慢
 <strong>hashmap</strong>：线程不同步，不同步时候读写最快（但是不能保证读到最新数据），加同步修饰的时候， 读写比较慢
@@ -1141,22 +917,15 @@ java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap�
 <strong>NoBlockingHashMap</strong>： high_scale_lib实现写入慢，读取较快
 <strong>MiltigetHashMap</strong>，MapMaker google collection，和CurrentHashMap性能相当，功能比较全，可以设置超时，重复的可以保存成list</p>
 
-
-
-
 <p><strong>参考文章</strong>
 <a href="http://course.onlinesjtu.com/mod/page/view.php?id=423" target="_blank"> http://course.onlinesjtu.com/mod/page/view.php?id=423</a>
 <a href="http://www.cnblogs.com/bigshuai/articles/2398116.html" target="_blank"> http://www.cnblogs.com/bigshuai/articles/2398116.html</a></p>
-
-
-
 
 <p><strong>扩展阅读</strong>
 Hash碰撞的拒绝式服务攻击 <a href="http://blog.jobbole.com/11454/" target="_blank">http://blog.jobbole.com/11454/</a>
 Berkeley DB Hash、Btree、Queue、Recno选择<a href=" http://www.webzone8.com/article/560.html" target="_blank"> http://www.webzone8.com/article/560.html</a>
 Java Hashtable <a href="http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1" target="_blank">http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1</a>
 Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_blank">http://kantery.iteye.com/blog/441755</a></p>
-
 </div>
     </article>
   </section>

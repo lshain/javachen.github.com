@@ -107,10 +107,7 @@
     
     <p><span style="color: #ff0000;"><strong>说明:</strong></span>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
 
-
-
-
-<p><p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
 <ul>
     <li>跨浏览器</li>
     <li>使用JavaScript API进行控制</li>
@@ -142,21 +139,21 @@
 </ul>
 <h2><!--more-->
 Step 1 – 引入文件</h2>
-<pre lang="html" line="1">
-&lt; link rel ="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
-&lt; script src="codebase/dhtmlxcommon.js">&lt; /script>
-&lt; script src="codebase/dhtmlxgrid.js">&lt; /script>
-&lt; script src="codebase/dhtmlxgridcell.js">&lt; /script>
-&lt; script>
+<pre lang="html" line="1"> 
+< link rel ="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
+< script src="codebase/dhtmlxcommon.js">< /script>
+< script src="codebase/dhtmlxgrid.js">< /script>
+< script src="codebase/dhtmlxgridcell.js">< /script>
+< script>
     //we'll write script commands here
-&lt; /script>
-</pre></p></p>
+< /script>
+</pre></p>
 
-<p><p><h2>Step 2 – 放置gird</h2>
+<p><h2>Step 2 – 放置gird</h2>
 有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：
-<pre>  &lt; div id="mygrid_container" style="width:600px;height:150px;">&lt; /div></pre>
+<pre>  < div id="mygrid_container" style="width:600px;height:150px;">< /div></pre>
 下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：
-<pre>
+<pre> 
  var mygrid;
  function doInitGrid(){
  }
@@ -169,7 +166,7 @@ o 使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)�
 o 定义一个列的水平对其方式。 Numeric values is better to align right;<br />
 o 使用setSkin方法设置皮肤；<br />
 o 最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。目前，doInitGrid方法如下：
-<pre>
+<pre> 
 mygrid = new dhtmlXGridObject('mygrid_container');
 mygrid.setImagePath("codebase/imgs/"); //指定图片路径
 mygrid.setHeader("Model,Qty,Price"); //设置表头显示
@@ -179,7 +176,7 @@ mygrid.setSkin("light"); //设置皮肤
 grid.init(); //显示调用初始化方法，必须的
 </pre>
 现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：
-<pre>&lt; body onload="doInitGrid();">&lt; /body></pre>
+<pre>< body onload="doInitGrid();">< /body></pre>
 这样在该页面初始化之后会显示如下：
 <div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
 说明：除了调用set方法之外，还可以如下风格定义：
@@ -197,9 +194,9 @@ grid.init(); //显示调用初始化方法，必须的
             { label:"Shipping" ,    width:50,   type:"ed" },
             { label:"Bestseller" ,  width:50,   type:"ed" },
             { label:"Date" ,    width:50,   type:"ed" }
-        ],</pre></p></p>
+        ],</pre></p>
 
-<p><p>     xml:"data.xml"<br />
+<p>     xml:"data.xml"<br />
     });
 <h2>Step 3 – 填充数据</h2>
 你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。<br />
@@ -229,20 +226,20 @@ id: "b",
 o str – 作为字符串排序<br />
 o int - 以Integer值排序 (通常可以是任何数字);<br />
 o date – 以日期排序<br />
-o custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</p></p>
+o custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</p>
 
-<p><p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。
 <pre lang="javascript">mygrid.setColSorting("str,int,int");</pre>
 这时候单击最后一列表头，结果如下：
 <div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div>
 <h2>Step 5 – 单元格格式化和编辑</h2>
-Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p></p>
+Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
 
-<p><p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。<br />
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。<br />
 默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：
-<pre lang="javascript" line="1">
+<pre lang="javascript" line="1"> 
 mygrid.setColTypes("ed,ed,price");
-</pre> </p></p>
+</pre> </p>
 
 <p><p>Excells格式化有以下几种：
 <div class="note"> link：超链接<br />
@@ -262,16 +259,16 @@ Excell 复杂编辑器有以下几种：
  context：使用dhtmlxmenu<br />
  combo：使用dhtmlxCombo</div>
 Excells特别用途
-<div class="note">sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。<br />
+<div class="note">sub<em>row：允许单元格作为一个可展开的子单元格，就想查看明细一样。<br />
 两个扩展<br />
-o sub_row_ajax – 单元格数据被认为是ajax请求的url<br />
-o sub_row_grid – 允许创建一个子表作为一个子行的内容</div>
+o sub</em>row<em>ajax – 单元格数据被认为是ajax请求的url<br />
+o sub</em>row<em>grid – 允许创建一个子表作为一个子行的内容</div>
 现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div>
+<div class="pic">&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step</em>5.png&quot; alt=&quot;&quot; /&gt;</div>
 <h2>Step 6 – 行操作方法</h2>
 <pre lang="javascript" line="1">    function addRow(){
         var newId = (new Date()).valueOf()
-        mygrid.addRow(newId,"",mygrid.getRowsNum())
+        mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
         mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
     }
     function removeRow(){
@@ -287,38 +284,39 @@ o 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选�
 o 删除指定行id的行</div>
 <h2>Step 7 – 事件</h2>
 添加事件调用attachEvent 方法，如下行选中事件：
-<pre lang="javascript" line="1"> <br/>
+<pre lang="javascript" line="1"><br>
     function doOnRowSelected(rowID,celInd){
-        alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);
+        alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
     }
-    mygrid.attachEvent("onRowSelect",doOnRowSelected);</pre></p>
+    mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);</pre></p>
 
-<p><h2>Step 8 – Code</h2>
-最后的代码：
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：
 <pre lang="javascript" line="1">
- &lt; title>dhtmlxGrid Sample Page&lt; /title>
-     &lt; link rel="STYLESHEET" type="text/css" href="codebase/dhtmlxgrid.css" />
-     &lt; script src="codebase/dhtmlxcommon.js">&lt; /script>
-     &lt; script src="codebase/dhtmlxgrid.js">&lt; /script>
-     &lt; script src="codebase/dhtmlxgridcell.js">&lt; /script>
-     &lt; script>
+ &lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+     &lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+     &lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+     &lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+     &lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+     &lt; script&gt;
       var mygrid;<br />
       function doInitGrid(){<br />
-       mygrid = new dhtmlXGridObject('mygrid_container');<br />
-       mygrid.setImagePath("codebase/imgs/");<br />
-       mygrid.setHeader("Model,Qty,Price");<br />
-       mygrid.setInitWidths("*,150,150");<br />
-       mygrid.setColAlign("left,right,right")<br />
-       mygrid.setSkin("light");<br />
-       mygrid.setColSorting("str,int,int");<br />
-       mygrid.setColTypes("ed,ed,price");<br />
-       mygrid.attachEvent("onRowSelect",doOnRowSelected);<br />
+       mygrid = new dhtmlXGridObject(&#39;mygrid<em>container&#39;);<br />
+       mygrid.setImagePath(&quot;codebase/imgs/&quot;);<br />
+       mygrid.setHeader(&quot;Model,Qty,Price&quot;);<br />
+       mygrid.setInitWidths(&quot;*,150,150&quot;);<br />
+       mygrid.setColAlign(&quot;left,right,right&quot;)<br />
+       mygrid.setSkin(&quot;light&quot;);<br />
+       mygrid.setColSorting(&quot;str,int,int&quot;);<br />
+       mygrid.setColTypes(&quot;ed,ed,price&quot;);<br />
+       mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);<br />
        mygrid.init();<br />
-       mygrid.load ("data.json","json");<br />
+       mygrid.load (&quot;data.json&quot;,&quot;json&quot;);<br />
       }
      function addRow(){<br />
        var newId = (new Date()).valueOf()<br />
-       mygrid.addRow(newId,"",mygrid.getRowsNum())<br />
+       mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())<br />
        mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);<br />
       }<br />
       function removeRow(){<br />
@@ -326,12 +324,12 @@ o 删除指定行id的行</div>
        mygrid.deleteRow(selId);<br />
       }
      function doOnRowSelected(rowID,celInd){<br />
-       alert("Selected row ID is "+rowID+"\nUser clicked cell with index "+celInd);<br />
+       alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);<br />
       }
-   &lt; /script>
-   &lt; body onload="doInitGrid()">
-      &lt; div id="mygrid_container" style="width:600px;height:150px;">&lt; /div>
-   &lt; /body>
+   &lt; /script&gt;
+   &lt; body onload=&quot;doInitGrid()&quot;&gt;
+      &lt; div id=&quot;mygrid</em>container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+   &lt; /body&gt;
 </pre></p>
 
     

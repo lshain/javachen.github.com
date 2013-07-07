@@ -63,28 +63,33 @@ description: 从yum安装Cloudera CDH4.2
 ### 修改配置文件
 hadoop的默认配置文件在/etc/hadoop/conf
 
-1. core-site.xml:
+1. core-site.xml配置:
 
+```
+	<configuration>
 	<property>
-	    <name>fs.defaultFS</name>
-	    <value>hdfs://node1</value>
+	  <name>fs.defaultFS</name>
+	  <value>hdfs://node1</value>
 	</property>
 	<property>
-		<name>fs.trash.interval</name>
-		<value>10080</value>
+	  <name>fs.trash.interval</name>
+	  <value>10080</value>
 	</property>
 	<property>
-		<name>fs.trash.checkpoint.interval</name>
-		<value>10080</value>
+	  <name>fs.trash.checkpoint.interval</name>
+	  <value>10080</value>
 	</property>
 	<property>
 	  <name>io.bytes.per.checksum</name>
 	  <value>4096</value>
 	</property>
+	</configuration>
+```
 
 2. hdfs-site.xml:
 
 
+	<configuration>
 	<property>
 	  <name>dfs.replication</name>
 	  <value>3</value>
@@ -130,7 +135,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 		<name>dfs.webhdfs.enabled</name>
 		<value>true</value>
 	</property>
-
+	</configuration>
 
 3. 修改master和slaves文件
 
@@ -215,6 +220,7 @@ my set:
 1. mapred-site.xml:
 
 
+	<configuration>
 	<property>
 	    <name>mapreduce.framework.name</name>
 	    <value>yarn</value>
@@ -260,11 +266,12 @@ my set:
 	  <name>mapreduce.tasktracker.reduce.tasks.maximum</name>
 	  <value>2</value>
 	</property>
-
+	</configuration>
 
 2. yarn-site.xml:
 
 
+	<configuration>
 	<property>
 	    <name>yarn.resourcemanager.resource-tracker.address</name>
 	    <value>node1:8031</value>
@@ -324,7 +331,7 @@ my set:
 	    <name>yarn.app.mapreduce.am.staging-dir</name>
 	    <value>/user</value>
 	</property>
-
+	</configuration>
 
 ### HDFS创建临时目录
 

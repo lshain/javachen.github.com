@@ -130,7 +130,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 }
 </pre>
 
-
 <p>runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
 - local：是否本地运行
 - remote：是否远程运行
@@ -153,7 +152,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 <li>4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。</li>
 </ul>
 
-
 <p>JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。</p>
 
 <p>本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。</p>
@@ -167,7 +165,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 <li>4.Job对象添加JobEntry监听器、Job监听器。</li>
 <li>5.调用Job的start方法，启动线程开始执行一个job。</li>
 </ul>
-
 
 <p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
 

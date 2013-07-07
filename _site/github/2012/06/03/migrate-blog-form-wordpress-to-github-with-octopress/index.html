@@ -121,7 +121,7 @@
 <p>因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：
     git clone git@github.com:javachen/octopress.git
 运行上面的代码后，你会看到：
-    Cloning into 'octopress'...
+    Cloning into &#39;octopress&#39;...
     remote: Counting objects: 6579, done.
     remote: Compressing objects: 100% (2361/2361), done.
     remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
@@ -140,7 +140,7 @@
     rake install</p>
 
 <p>你也可以安装自定义的主题，blog为主题名称：
-    rake install['blog']</p>
+    rake install[&#39;blog&#39;]</p>
 
 <p>至此，Octopress所需的环境已经搭建成功。</p>
 
@@ -148,14 +148,14 @@
 
 <p>首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为<code>你的帐号.github.com</code>，并且，部署的时候会占用你的master分支。</p>
 
-<p>*Tips：*
+<p><em>Tips：</em>
 如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
 如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；
-    echo 'your-domain.com' >> source/CNAME
+    echo &#39;your-domain.com&#39; &gt;&gt; source/CNAME
 如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
 
 <p>完成上述准备工作后，运行：
-    rake setup_github_pages
+    rake setup<em>github</em>pages
 它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</p>
 
 <h2>Step3 - 配置你的博客</h2>
@@ -167,14 +167,13 @@
     author: javachen
     simple_search: http://google.com/search
     description:</p>
-
-<pre><code>date_format: "%Y年%m月%d日"
+<div class="highlight"><pre><code class="text language-text" data-lang="text">date_format: &quot;%Y年%m月%d日&quot;
 
 subscribe_rss: /atom.xml
 subscribe_email:
 email:
 
-# 如果你使用的是一个子目录，如http://site.com/project，则设置为'root: /project'
+# 如果你使用的是一个子目录，如http://site.com/project，则设置为&#39;root: /project&#39;
 root: /
 # 文章标题格式
 permalink: /:year/:month/:day/:title/
@@ -186,8 +185,7 @@ code_dir: downloads/code
 category_dir: categories
 markdown: rdiscount
 pygments: false # default python pygments have been replaced by pygments.rb
-</code></pre>
-
+</code></pre></div>
 <h2>Step4 - 部署</h2>
 
 <p>先把整个项目静态化，然后再部署到GitHub：
@@ -195,7 +193,7 @@ pygments: false # default python pygments have been replaced by pygments.rb
     rake deploy
 当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!</p>
 
-<p>*Tips：*
+<p><em>Tips：</em>
 Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。</p>
 
@@ -216,7 +214,7 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 <h4>迁移文章</h4>
 
 <p>jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：
-    ruby -r "./utils/wordpressdotcom.rb" -e "Jekyll::WordpressDotCom.process"
+    ruby -r &quot;./utils/wordpressdotcom.rb&quot; -e &quot;Jekyll::WordpressDotCom.process&quot;
 于是转换好的文章都放进source目录了。</p>
 
 <h4>迁移URL</h4>
@@ -227,9 +225,9 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
     http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html
     http://XXXXXXXXX.com/page/xx/
     http://XXXXXXXXX.com/category/[category-name]/
-这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
+这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到<em>config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
     permalink: /:year/:month/:title/
-    category_dir: category
+    category</em>dir: category
     pagination_dir:  # 留空</p>
 
 <h4>迁移评论</h4>
@@ -241,11 +239,9 @@ Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
 <p>可以参考<a href="http://log4d.com/2012/05/image-host/">使用独立图床子域名</a></p>
 
 <h2>Step6 - 再次部署</h2>
-
-<pre><code>rake generate
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rake generate
 rake deploy
-</code></pre>
-
+</code></pre></div>
 <h2>参考文章</h2>
 
 <ul>
@@ -255,7 +251,6 @@ rake deploy
 <li>从Wordpress迁移到Octopress：http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/</li>
 <li>使用独立图床子域名：http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/</li>
 </ul>
-
 
     
     <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress'>JavaChen Blog</a>-

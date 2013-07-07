@@ -108,33 +108,27 @@
 <p>这里还有一种方法，就是手动下载<code>Cloudera Manager</code>的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使<code>archive.cloudera.com</code>域名映射到本地ip。</p>
 
 <p>出于好奇，想破解<code>cloudera-manager-installer.bin</code>，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：</p>
-
-<pre><code>[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
 [june@june-fedora cdh]$ unzip cloudera-manager-installer.zip 
-</code></pre>
-
+</code></pre></div>
 <p>解压之后的目录如下：</p>
-
-<pre><code>[june@june-fedora cloudera-manager-installer]$ ll
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cloudera-manager-installer]$ ll
 总用量 512
 -rwxrwxr-x. 1 june june 501698 5月  25 09:53 cloudera-manager-installer.zip
 drwxr-xr-x. 2 june june   4096 5月  23 03:05 data
 drwxr-xr-x. 2 june june   4096 5月  22 21:48 guis
 drwxr-xr-x. 2 june june   4096 5月  22 21:48 meta
 drwxr-xr-x. 2 june june   4096 5月  22 21:48 scripts
-</code></pre>
-
+</code></pre></div>
 <p>查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从scripts/config.lua脚本中大概可以看出安装脚本的执行过程。</p>
 
 <p>整理下该脚本逻辑，主要是做了以下操作：</p>
-
-<pre><code>yum install -y jdk.x86_64 
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y jdk.x86_64 
 yum install -y cloudera-manager-server 
 yum install -y cloudera-manager-server-db
 /etc/init.d/cloudera-scm-server start
 /etc/init.d/cloudera-scm-server-db start
-</code></pre>
-
+</code></pre></div>
 <p>知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。</p>
 
     

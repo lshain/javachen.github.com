@@ -108,12 +108,10 @@ OpenStack当前包括三个子项目，三个项目相会独立，可以单独�
 3. 允许开发商和开发人员启动、监控、停止虚拟机实例。<br />
 4. 允许操作人员配置和操作云基础设施。<!--more--></p>
 
-
-
-
 <p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
-在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
+
+<p>在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
 表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
 逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
 集成功能，大多数服务提供商已经有一个客户的身份和计费系统。任何云架构将需要与这些系统集成。<br />
@@ -129,73 +127,42 @@ OpenStack中还包含两个组件：消息队列服务和数据库。这两个�
  终端用户通过nova-api 接口与Openstack 计算交互。<br />
  OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
  OpenStack Glance是一个完全独立的基础上设施。
-<strong>各个组件的介绍：</strong></p>
-
-
-
+<strong>各个组件的介绍：</strong></p></p>
 
 <p><code><strong>nova-api</strong></code><code>：</code>是对外的接口。OpenStack 云计算的核心控制器（CloudController定义在trunk/nova/api/ec2/cloud.py）。它提供了一个为所有的API查询（OpenStack API或EC2 API）的端点，引发多数业务流程的活动（如运行一个实例），并实施一些政策（主要是配额检查）。</p>
 
-
-
-
 <p><code><strong>nova-schedule</strong></code><code><strong>：</strong></code>根据当前资源使用情况，决定计算节点分布到哪台计算节点上。目前实现很薄，目前已支持插件方式扩展，方便后面可能有采用更复杂算法。</p>
-
-
-
 
 <p><code><strong>nova-compute</strong></code><code><strong>：</strong></code>接收队列中的动作，然后执行一系列的系统命令（如启动KVM实例），同时更新数据库中的状态。</p>
 
-
-
-
 <p><code><strong>nova-volume</strong></code><code><strong>：</strong></code>给虚拟机分配额外持久化的存储，管理持久卷到计算实例的创建，连接和分离。</p>
-
-
-
 
 <p><code><strong>nova-network</strong></code><code><strong>：</strong></code>网络管理，给虚拟机分配网络和管理，使外部 PC 可以可直接访问。它接受队列中的网络任务，然后执行任务操纵网络（如设立桥接接口或更改iptables规则）。</p>
 
-
-
-
 <p><code><strong>queue</strong></code><code><strong>：</strong></code>提供了一个守护进程之间传递消息的中央枢纽。当前由 <a href="http://www.rabbitmq.com/" target="_top">RabbitMQ</a>实现，理论上可以是Python的ampqlib支持的任何AMPQ消息队列。</p>
 
-
-
-
 <p><code><strong>SQL database</strong></code><code><strong>：</strong></code>存储云基础设施的编译时和运行时的状态。这包括可用的实例类型，在使用中的实例，可用的网络和项目。</p>
-
-
-
 
 <p><code><strong>OpenStack Glance：</strong></code>OpenStack 单独的一个项目。
 <h2>Nova Conceptual Mapping</h2>
 <p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
-上面的功能模块对应上面模型的映射：
-<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p>
 
-
-
+<p>上面的功能模块对应上面模型的映射：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p></p>
 
 <p><h2>Service Architecture</h2>
 管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
 
-
-
-
 <p><h2>部署</h2>
 部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
-OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
+
+<p>OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
 <h2>镜像管理</h2>
 <p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />
 你可以使用Ubuntu的已有image (https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</p>
-<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p>
-
-
-
+<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p></p>
 
 <p><h2>网络模型</h2>
 Flat Network Manager, Flat DHCP Network Manager, VLAN Network Manager.<br />
@@ -208,7 +175,6 @@ OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880"
 nova code:<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a>
 openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
 </div></p>
-
 </div>
     </article>
   </section>
@@ -237,19 +203,22 @@ openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/
 	</div>
     </header>
     <div class="content"><p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
+
 <p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
+
 <p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
+
 <p align="center">图1  OpenNebula总体架构图</p>
+
 <p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
-
-
-
 
 <p><h2>私有云</h2>
 私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
+
 <p align="center">图2 私有云</p>
-一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+
+<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
 <p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
 <p align="center">图3 私有云内用户视图</p>
 &nbsp;
@@ -271,15 +240,9 @@ openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/
 <p align="center">图7 前端节点和集群节点之间交互</p>
 &nbsp;
 <h2>网络架构</h2>
-OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p>
-
-
-
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
 
 <p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
-
-
-
 
 <p>&nbsp;
 <div class="infor">
@@ -288,7 +251,6 @@ OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址�
 * 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
 * 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
 </div></p>
-
 </div>
     </article>
   </section>
@@ -318,19 +280,10 @@ OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址�
     </header>
     <div class="content"><p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
 
-
-
-
 <p>OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章：<br />
 《<a href="http://www.vpsee.com/2011/03/install-opennebula-management-console-on-centos/" target="_blank">安装 OpenNebula 基于 Web 的管理控制台》</a>，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。</p>
 
-
-
-
 <p>我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。</p>
-
-
-
 
 <p><span style="color: #ff0000;"><!--more-->以下来自<a href="http://dev.opennebula.org/projects/management-console/wiki">官方文档</a>：</span>
 <h3><span style="color: #0000ff;">要求:</span></h3>
@@ -345,9 +298,6 @@ And you need a db driver for adodb: php-mysql or php-pgsql.</li>
     <li>php-pear: pecl install uploadprogress (Only if you want a nice upload progress bar)</li>
 </ul>
 如果你想查看更多资料，您可以去官网：<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>；如果你想在ubutun上安装OpenNebula Management Console，参照这篇文章：<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
-
-
-
 
 <p><span style="color: #ff0000;">以下为安装过程：</span>
 <h3><span style="color: #0000ff;">必要软件</span></h3>
@@ -408,9 +358,6 @@ $adodb_name = "onemc";</pre>
 <li><a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a>
 </li>
 </p>
-
-
-
 </div>
     </article>
   </section>
@@ -440,20 +387,11 @@ $adodb_name = "onemc";</pre>
     </header>
     <div class="content"><p>以下这篇文章由<a title="OpenNebula 2.2 Features" href="http://opennebula.org/documentation:features">OpenNebula 2.2 Features</a>翻译而来。</p>
 
-
-
-
 <p>OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
-
-
-
 
 <p>目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。
 <h2>主要特点和优势</h2>
 <strong>私有云计算</strong><strong> </strong></p>
-
-
-
 
 <p>为私有数据中心或集群（管理功能<strong>私有云计算</strong>）上运行<strong>的</strong><strong>Xen</strong>，<strong>KVM</strong>和<strong>VMware</strong><strong>的</strong>。
 <table width="100%">
@@ -510,13 +448,7 @@ $adodb_name = "onemc";</pre>
 </table>
 <!--more--></p>
 
-
-
-
 <p><strong>混合云计算</strong></p>
-
-
-
 
 <p>本地基础设施与远程云资源的扩展（<strong>混合云计算</strong>）
 <table width="100%">
@@ -537,13 +469,7 @@ $adodb_name = "onemc";</pre>
 </table>
 &nbsp;</p>
 
-
-
-
 <p><strong>公共云计算</strong></p>
-
-
-
 
 <p>暴露云接口给私有的基础设施功能（<strong>公共云计算</strong>）
 <table width="100%">
@@ -637,7 +563,6 @@ $adodb_name = "onemc";</pre>
 </tr>
 </tbody>
 </table></p>
-
 </div>
     </article>
   </section>
@@ -726,11 +651,7 @@ LVM是 Logical Volume Manager(逻辑卷管理)的简写，它是Linux环境下�
 </ul>
 Jetty 是一个开源的servlet容器，它为基于Java的web内容，例如JSP和servlet提供运行环境。Jetty是使用<a href="http://baike.baidu.com/view/229611.htm" target="_blank">Java语言</a>编写的，它的API以一组JAR包的形式发布。开发人员可以将Jetty容器实例化成一个对象，可以迅速为一些独立运行（stand-alone）的Java应用提供网络和web连接。</p>
 
-
-
-
 <p>&nbsp;</p>
-
 </div>
     </article>
   </section>

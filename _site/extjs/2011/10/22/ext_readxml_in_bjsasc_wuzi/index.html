@@ -96,22 +96,21 @@
     </div>
     
     <p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
-获取弹出窗口url后的参数方法：</p>
-
+获取弹出窗口url后的参数方法：
 <pre lang="javascript" line="1">
 // 获取url后的参数值
 function getQueryStringValue(name) {
     var url = window.location.search;
-    if (url.indexOf('?') < 0) {
+    if (url.indexOf(&#39;?&#39;) &lt; 0) {
         return null
     }
-    var index = url.indexOf(name + "=");
-    if (index < 0) {
+    var index = url.indexOf(name + &quot;=&quot;);
+    if (index &lt; 0) {
         return null
     }
-    var args = url.indexOf('&', index);
+    var args = url.indexOf(&#39;&amp;&#39;, index);
     var value;
-    if (args > 0) {
+    if (args &gt; 0) {
         value = url.substring(index + name.length + 1, args);
     } else {
         value = url.substring(index + name.length + 1, url.length);
@@ -120,20 +119,17 @@ function getQueryStringValue(name) {
 }
 // 获取xml的服务器路径
 function getXmlUrl(xmlFile) {
-    return '../bjsasc_dictionary/' + getQueryStringValue('xmlFile');
+    return &#39;../bjsasc<em>dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
 }
 </pre>
-
-
-<p>用到的一些辅助方法：</p>
-
+用到的一些辅助方法：
 <pre lang="javascript" line="1">
 // 去掉Dom节点中的空白字符
 function cleanWhitespaces(elem) {
     var elem = elem || document;
     var childElem = elem.childNodes;
     var childElemArray = new Array;
-    for (var i = 0; i < childElem.length; i++) {
+    for (var i = 0; i &lt; childElem.length; i++) {
         if (childElem[i].nodeType == 1) {
             childElemArray.push(childElem[i]);
         }
@@ -142,15 +138,15 @@ function cleanWhitespaces(elem) {
 }
 // 取得父窗口表单中键值对
 function getParentFormValues() {
-    var formObj = window.opener.document.forms["frmMain"].elements;
-    var formValues = "";
-    for (var i = 0; i < formObj.elements.length; i++) {
+    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
+    var formValues = &quot;&quot;;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
         if (formObj.elements[i].value != null
-                && formObj.elements[i].value != ""
-                && formObj.elements[i].value.length != 0) {
-            formValues += '_' + formObj.elements[i].name.toUpperCase() + '{'
-                    + formObj.elements[i].value.toUpperCase() + '}'
-                    + formObj.elements[i].name.toUpperCase() + '_ ';
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            formValues += &#39;</em>&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
+                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
+                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
         }
     }
     formValues += opener.getBindValue(formObj.elements);
@@ -158,53 +154,51 @@ function getParentFormValues() {
 }
 // 取得过滤条件表单的键值对
 function getCondictionValues() {
-    var condictionString = "";
+    var condictionString = &quot;&quot;;
     var formObj = form.getForm().getEl().dom;
-    for (var i = 0; i < formObj.elements.length; i++) {
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
         if (formObj.elements[i].value != null
-                && formObj.elements[i].value != ""
-                && formObj.elements[i].value.length != 0) {
-            condictionString += '_' + formObj.elements[i].name + '{'
-                    + formObj.elements[i].value + '}'
-                    + formObj.elements[i].name + '_ ';
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            condictionString += &#39;<em>&#39; + formObj.elements[i].name + &#39;{&#39;
+                    + formObj.elements[i].value + &#39;}&#39;
+                    + formObj.elements[i].name + &#39;</em> &#39;;
         }
     }
-    // alert("condictionString"+condictionString);
+    // alert(&quot;condictionString&quot;+condictionString);
     return condictionString;
-}
+}</p>
 
-// 判读Ext表单是否有输入
+<p>// 判读Ext表单是否有输入
 function isFormInputed(ExtForm) {
     var flag = false;
     var formObj = ExtForm.getEl().dom;
-    for (var i = 0; i < formObj.elements.length; i++) {
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
         if (formObj.elements[i].value != null
-                && formObj.elements[i].value != ""
-                && formObj.elements[i].value.length != 0) {
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
             flag = true;
             break;
         }
     }
     return flag;
-}
+}</p>
 
-// 将计算得到的结果四舍五入
+<p>// 将计算得到的结果四舍五入
 /* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
 function ForDight(Dight, How) {
     var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
     return Dight;
 }
-</pre>
-
+</pre></p>
 
 <p>xml文件格式：</p>
-
-<pre><code>&lt; ?xml version="1.0" encoding="gb2312"?&gt;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
 &lt; dictionary&gt;
     &lt;title&gt;领用出库-物资选择&lt;/title&gt;
     &lt;sql&gt;
     select V_stores_list.* 
-    from V_stores_list where WHID='+$getform(WHID)+' AND PROJECTNO='+$getform(PROJECTNO)+'
+    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
         AND CANUSEQTY&gt;0 AND ??? and isblock=0
     &lt;/sql&gt;
     &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
@@ -222,10 +216,8 @@ function ForDight(Dight, How) {
         &lt;/comparetype&gt;
     &lt;/ condition&gt;
 &lt;/ dictionary&gt;
-</code></pre>
-
-<p>然后，弹出窗口页面Ext入口代码：</p>
-
+</code></pre></div>
+<p>然后，弹出窗口页面Ext入口代码：
 <pre>
 // 全局变量
 var result = {};
@@ -242,12 +234,12 @@ var flag = 1;
 // 程序入口
 Ext.onReady(function() {
     Ext.QuickTips.init();// 初始化
-    Ext.form.Field.prototype.msgTarget = 'qtip';// 统一指定错误信息提示方式
-    Ext.util.CSS    .swapStyleSheet('theme', '../aws_js/extjs2/css/xtheme-gray.css');// 更换皮肤
-    Ext.BLANK_IMAGE_URL = '../aws_js/extjs2/images/default/s.gif';
+    Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
+    Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
+    Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
     Ext.Ajax.request({
-        url : getXmlUrl(getQueryStringValue('xmlFile')), // 访问数据字典
-        method : 'post',
+        url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
+        method : &#39;post&#39;,
         success : function(res, opt) {
             var xmlObj = res.responseXML;
             initStoreData(xmlObj); // 访问成功后执行后续工作
@@ -256,217 +248,215 @@ Ext.onReady(function() {
 });
 function initStoreData(xmlObj) {
     getInitData(xmlObj);
-    document.title = result.winTitle;
+    document.title = result.winTitle;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+// 获取表格数据部分
+store = new Ext.data.Store({
+    idProperty : &#39;ID&#39;,
+    proxy : new Ext.data.HttpProxy({
+        url : &#39;../search.do?method=findAll&#39;,
+        failure : function() {
+            // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
+        },
+        success : function(response) {
+            // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
+        }
+    }),
 
-    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
-    // 获取表格数据部分
-    store = new Ext.data.Store({
-        idProperty : 'ID',
-        proxy : new Ext.data.HttpProxy({
-            url : '../search.do?method=findAll',
-            failure : function() {
-                // Ext.Msg.alert("Notice", "网路问题");
-            },
-            success : function(response) {
-                // Ext.Msg.alert("Notice", response.responseText);
-            }
-        }),
-
-        // baseParams : {
-        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
-        // xmlFile : getQueryStringValue('xmlFile')
-        // // cmd:'search'
-        // },
-        reader : new Ext.data.JsonReader({
-            totalProperty : 'totalCount',
-            root : 'data'
-        }, dataRecorder)
-    });
-    // 要分页，第一次加载数据必须传start和limit两参数
-    // store.load({
-    // params : {
-    // start : 0,
-    // limit : result.limit
-    // }
-    // });
-    initViewport();
-}
+    // baseParams : {
+    // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+    // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+    // // cmd:&#39;search&#39;
+    // },
+    reader : new Ext.data.JsonReader({
+        totalProperty : &#39;totalCount&#39;,
+        root : &#39;data&#39;
+    }, dataRecorder)
+});
+// 要分页，第一次加载数据必须传start和limit两参数
+// store.load({
+// params : {
+// start : 0,
+// limit : result.limit
+// }
+// });
+initViewport();
+</code></pre></div>
+<p>}
 // 获得界面初始化的一些数据
 function getInitData(xmlObj) {
     // result.formItems = {};
     result.columnHeaders = [];
     result.gridRecords = [];
     result.dbFilterRecords = [];
-    result.winTitle = xmlObj.getElementsByTagName("title")[0].firstChild.nodeValue; // 窗口title名称
-    result.limit = xmlObj.getElementsByTagName("line")[0].firstChild.nodeValue;// 分页数据
-    result.fromTable = xmlObj.getElementsByTagName("fromTable")[0].firstChild.nodeValue;// 来自哪个表
+    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
+    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
+    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
     // 获取过滤条件表单的界面数据
-    var conections = xmlObj.getElementsByTagName("condition");
+    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
     var row = ForDight(conections.length / 3, 0);
-    for (var i = 0; i < conections.length; i++) {
+    for (var i = 0; i &lt; conections.length; i++) {
         var item = {};
         var condition = cleanWhitespaces(conections[i]);
         item.id = condition[0].firstChild.nodeValue;
         item.fieldLabel = condition[1].firstChild.nodeValue;
         item.name = condition[4].firstChild.nodeValue;
-        item.anchor = '95%';
-        if (condition[6].firstChild.nodeValue == '单行') {
-            item.xtype = 'textfield';
-        } else if (condition[6].firstChild.nodeValue == '日期') {
-            item.xtype = 'datefield';
-            item.format = 'Y-m-d';
-        } else if (condition[6].firstChild.nodeValue == '数值') {
-            item.xtype = 'numberfield';
+        item.anchor = &#39;95%&#39;;
+        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
+            item.xtype = &#39;textfield&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
+            item.xtype = &#39;datefield&#39;;
+            item.format = &#39;Y-m-d&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
+            item.xtype = &#39;numberfield&#39;;
             item.minValue = 0;
-            item.minText = '请输入有效的数字';
+            item.minText = &#39;请输入有效的数字&#39;;
             item.decimalPrecision = 6;
-        } else if (condition[6].firstChild.nodeValue == '自动填充') {
+        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
             var autoStore = new Ext.data.SimpleStore({
                 proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
-                    url : '../ajax/autoComplete.do?method=autoComplete',
+                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
                     failure : function() {
-                        Ext.Msg.alert("Notice", "no records");
+                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
                     }
                 }),
-                fields : ['property'],
+                fields : [&#39;property&#39;],
                 baseParams : {
-                    'sqlString' : condition[4].firstChild.nodeValue + ' | '
+                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
                             + result.fromTable
                 }
             });
-            item.xtype = 'combo';
+            item.xtype = &#39;combo&#39;;
             item.store = autoStore;
-            item.displayField = 'property';
+            item.displayField = &#39;property&#39;;
             item.typeAhead = true;
-            item.allQuery = 'all';// 查询信息的查询字符串
-            item.queryParam = 'keyword';// 查询的名字
-            item.mode = 'remote';
+            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
+            item.queryParam = &#39;keyword&#39;;// 查询的名字
+            item.mode = &#39;remote&#39;;
             item.minChars = 3;// 默认最少输入4
             item.forceSelection = true;
             item.queryDelay = 0;// 查询延迟时间
-            item.triggerAction = 'all';
-            item.emptyText = '';
+            item.triggerAction = &#39;all&#39;;
+            item.emptyText = &#39;&#39;;
             item.resizable = true;
             item.selectOnFocus = true;
         }
-        if (i / row < 1) {
+        if (i / row &lt; 1) {
             tempItems1.push(item);
         }
-        if (i / row < 2 && i / row >= 1) {
+        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
             tempItems2.push(item);
-        } else if (i / row >= 2) {
+        } else if (i / row &gt;= 2) {
             tempItems3.push(item);
         }
     }
-    // alert(Ext.util.JSON.encode(result));
-
-    // 获取表格表头的界面数据和rcord记录的数据格式
-    var fields = xmlObj.getElementsByTagName("field");
-    result.columnHeaders.push(sm);// 插入多选框
-    result.columnHeaders.push(new Ext.grid.RowNumberer({
-        width : 20
-    }));// 插入行号
-    for (var i = 0; i < fields.length; i++) {
-        var item = {};
-        var record = {};
-        var array = [];
-        var field = cleanWhitespaces(fields[i]);
-        var renderDate = function(value) {
-            return value ? value.dateFormat('Y-m-d') : '';
-        }
-        // 生成grid表格中store数据记录
-        record.name = field[0].firstChild.nodeValue;
-        record.mapping = field[0].firstChild.nodeValue;
-        if (field[1].firstChild.nodeValue == '日期') {
-            record.type = 'date';
-            record.dateFormat = 'Y-m-d';
-            item.renderer = Ext.util.Format.dateRenderer('Y-m-d')
-        } else if (field[1].firstChild.nodeValue == '数值') {
-            record.type = 'auto';
-        } else {
-            record.type = 'string';
-        }
-        result.gridRecords.push(record);
-
-        // 生成grid表格表头数据记录
-        item.dataIndex = field[0].firstChild.nodeValue;
-        item.header = field[2].firstChild.nodeValue;
-        // item.width=field[3].firstChild.nodeValue;
-        item.sortable = true;
-        if (field.length == 7
-                && field[5].firstChild.nodeValue.toUpperCase() == 'TRUE') {
-            item.hidden = true;
-            // item.hideable=false;
-        }
-        if (field.length == 6) {
-            item.hidden = false;
-        }
-        result.columnHeaders.push(item);
-
-        // 生成模糊过滤store的记录
-        if (field[4].firstChild.nodeValue.toUpperCase() == 'TRUE') {
-            array.push(field[2].firstChild.nodeValue);// fieldName
-            array.push(field[0].firstChild.nodeValue);// fieldValue
-        }
-        result.dbFilterRecords.push(array);
+    // alert(Ext.util.JSON.encode(result));</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取表格表头的界面数据和rcord记录的数据格式
+var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
+result.columnHeaders.push(sm);// 插入多选框
+result.columnHeaders.push(new Ext.grid.RowNumberer({
+    width : 20
+}));// 插入行号
+for (var i = 0; i &lt; fields.length; i++) {
+    var item = {};
+    var record = {};
+    var array = [];
+    var field = cleanWhitespaces(fields[i]);
+    var renderDate = function(value) {
+        return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
     }
-    return result;
-};
-</pre>
+    // 生成grid表格中store数据记录
+    record.name = field[0].firstChild.nodeValue;
+    record.mapping = field[0].firstChild.nodeValue;
+    if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
+        record.type = &#39;date&#39;;
+        record.dateFormat = &#39;Y-m-d&#39;;
+        item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
+    } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
+        record.type = &#39;auto&#39;;
+    } else {
+        record.type = &#39;string&#39;;
+    }
+    result.gridRecords.push(record);
 
+    // 生成grid表格表头数据记录
+    item.dataIndex = field[0].firstChild.nodeValue;
+    item.header = field[2].firstChild.nodeValue;
+    // item.width=field[3].firstChild.nodeValue;
+    item.sortable = true;
+    if (field.length == 7
+            &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+        item.hidden = true;
+        // item.hideable=false;
+    }
+    if (field.length == 6) {
+        item.hidden = false;
+    }
+    result.columnHeaders.push(item);
 
-<p>渲染Ext界面代码：</p>
+    // 生成模糊过滤store的记录
+    if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+        array.push(field[2].firstChild.nodeValue);// fieldName
+        array.push(field[0].firstChild.nodeValue);// fieldValue
+    }
+    result.dbFilterRecords.push(array);
+}
+return result;
+</code></pre></div>
+<p>};
+</pre></p>
 
+<p>渲染Ext界面代码：
 <pre>
 function initViewport() {
     if (!form) {
         form = getInsertForm();
-    }
-
-    if (!grid) {
-        grid = getInsertGrid();
-    }
-
-    if (!viewport) {
-        var formPanel = new Ext.Panel({
-            title : '查询条件',
-            region : 'north',
-            split : true,
-            frame : true,
-            border : true,
-            layout : 'fit',
-            height : 280,
-            collapsible : true,
-            items : [form]
-
-        });
-        viewport = new Ext.Viewport({
-            layout : 'border',
-            modal : true,// 是否为模式窗口
-            border : false,
-            items : [formPanel, grid]
-        });
-    }
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if (!grid) {
+    grid = getInsertGrid();
 }
 
-function searchByFilter() {
-    var dbfilter = Ext.get("dbFilter").getValue();
-    var fieldMame = Ext.get("search-type").getValue();
-    if (dbfilter == null || dbfilter == "") {
-        alert("请输入一个关键字");
-        Ext.get("dbFilter").focus();
-    } else if (fieldMame == "==选择过滤字段==") {
-        alert("请选择一个过滤字段");
-        Ext.get("search-type").focus();
+if (!viewport) {
+    var formPanel = new Ext.Panel({
+        title : &#39;查询条件&#39;,
+        region : &#39;north&#39;,
+        split : true,
+        frame : true,
+        border : true,
+        layout : &#39;fit&#39;,
+        height : 280,
+        collapsible : true,
+        items : [form]
+
+    });
+    viewport = new Ext.Viewport({
+        layout : &#39;border&#39;,
+        modal : true,// 是否为模式窗口
+        border : false,
+        items : [formPanel, grid]
+    });
+}
+</code></pre></div>
+<p>}</p>
+
+<p>function searchByFilter() {
+    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
+    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
+    if (dbfilter == null || dbfilter == &quot;&quot;) {
+        alert(&quot;请输入一个关键字&quot;);
+        Ext.get(&quot;dbFilter&quot;).focus();
+    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
+        alert(&quot;请选择一个过滤字段&quot;);
+        Ext.get(&quot;search-type&quot;).focus();
     } else {
         form.getForm().reset();
         if (flag == 1) {
             store.baseParams = {
                 dbfilter : dbfilter,
                 parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get("hiddenValue").dom.value,
-                xmlFile : getQueryStringValue('xmlFile'),
-                cmd : 'filter'
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
             };
             store.load({
                 params : {
@@ -480,49 +470,49 @@ function searchByFilter() {
             store.baseParams = {
                 dbfilter : dbfilter,
                 parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get("hiddenValue").dom.value,
-                xmlFile : getQueryStringValue('xmlFile'),
-                cmd : 'filter'
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
             };
-            store.reload();
-
-        }
-        Ext.get("dbFilter").dom.value = "";
-    }
+            store.reload();</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    }
+    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
 }
+</code></pre></div>
+<p>}
 // 获取过滤条件部分的表单控件
 function getInsertForm() {
     form = new Ext.form.FormPanel({
-        name : 'frmMain',
+        name : &#39;frmMain&#39;,
         height : 260,
-        labelAlign : 'left',
+        labelAlign : &#39;left&#39;,
         labelWidth : 110,
-        layout : 'fit',
+        layout : &#39;fit&#39;,
         waitMsgTarget : true,
         items : [{
-            xtype : 'fieldset',
+            xtype : &#39;fieldset&#39;,
             frame : true,
-            title : '高级查询',
+            title : &#39;高级查询&#39;,
             autoHeight : true,
-            layout : 'column',
+            layout : &#39;column&#39;,
             items : [{
                 columnWidth : .333,
-                layout : 'form',
+                layout : &#39;form&#39;,
                 items : tempItems1
             }, {
                 columnWidth : .333,
-                layout : 'form',
+                layout : &#39;form&#39;,
                 items : tempItems2
             }, {
                 columnWidth : .333,
-                layout : 'form',
+                layout : &#39;form&#39;,
                 items : tempItems3
             }]
         }],
-        tbar : ['请输入模糊值: ', ' ', {
-            xtype : 'textfield',
+        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
+            xtype : &#39;textfield&#39;,
             width : 200,
-            id : 'dbFilter',
+            id : &#39;dbFilter&#39;,
             listeners : {
                 specialkey : function(field, e) {
                     if (e.getKey() == Ext.EventObject.ENTER) {
@@ -530,142 +520,141 @@ function getInsertForm() {
                     }
                 }
             }
-        }, '-', {
-            xtype : 'combo',
-            id : 'search-type',
-            anchor : '60%',
-            hiddenName : 'hiddenValue',
+        }, &#39;-&#39;, {
+            xtype : &#39;combo&#39;,
+            id : &#39;search-type&#39;,
+            anchor : &#39;60%&#39;,
+            hiddenName : &#39;hiddenValue&#39;,
             width : 120,
-            triggerAction : 'all',// 单击触发按钮显示全部数据
+            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
             store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
-                fields : ['fieldName', 'fieldValue'],
+                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
                 data : result.dbFilterRecords
             }),// 设置数据源
-            displayField : 'fieldName',// 定义要显示的字段
-            valueField : 'fieldValue',// 定义值字段
-            mode : 'local',// 本地模式
+            displayField : &#39;fieldName&#39;,// 定义要显示的字段
+            valueField : &#39;fieldValue&#39;,// 定义值字段
+            mode : &#39;local&#39;,// 本地模式
             forceSelection : true,// 要求输入值必须在列表中存在
             typeAhead : true,// 允许自动选择匹配的剩余部分文本
-            // value : '==选择过滤字段==',
-            value : '==选择过滤字段==',
+            // value : &#39;==选择过滤字段==&#39;,
+            value : &#39;==选择过滤字段==&#39;,
             handleHeight : 10
                 // 下拉列表中拖动手柄的高度
-                }, '-', {
-                    xtype : 'button',
-                    text : '筛选',
-                    tooltip : '先选择查询条件，再输入模糊值',
-                    iconCls : 'find',
+                }, &#39;-&#39;, {
+                    xtype : &#39;button&#39;,
+                    text : &#39;筛选&#39;,
+                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
+                    iconCls : &#39;find&#39;,
                     handler : searchByFilter
-                }, '->', {
+                }, &#39;-&gt;&#39;, {
                     pressed : true,
-                    xtype : 'button',
-                    text : '确认插入',
+                    xtype : &#39;button&#39;,
+                    text : &#39;确认插入&#39;,
                     enableToggle : true,
-                    tooltip : '请选中一行或多行记录，再选择确认插入',
+                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
                     handler : function() {
                         if (sm.hasSelection()) {
                             var records = sm.getSelections();
-                            var jsonObj = "{data:[";
-                            for (var i = 0; i < records.length; i++) {
+                            var jsonObj = &quot;{data:[&quot;;
+                            for (var i = 0; i &lt; records.length; i++) {
                                 jsonObj += Ext.encode(records[i].data);
                                 if (i != records.length - 1) {
-                                    jsonObj += ",";
+                                    jsonObj += &quot;,&quot;;
                                 }
                             }
-                            jsonObj += "]}"
+                            jsonObj += &quot;]}&quot;
                             Ext.Ajax.request({
-                                url : '../search.do?method=insertChoices',
-                                method : 'post',
+                                url : &#39;../search.do?method=insertChoices&#39;,
+                                method : &#39;post&#39;,
                                 params : {
-                                    xmlFile : getQueryStringValue('xmlFile')
+                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
                                             .toString(),
                                     jsonObj : jsonObj,
                                     parentFormValues : getParentFormValues()
                                 },
                                 callback : function(options, success, response) {
-                                    if (response.responseText == "success") {
-
-                                        Ext.Msg.alert("提示", "插入成功", function() {
-                                            window.close();
-                                            // opener.location.reload();
-                                            opener.saveForm();
-                                        });
-                                    } else {
-                                        Ext.Msg.alert("提示", "插入失败");
-                                    }
+                                    if (response.responseText == &quot;success&quot;) {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">                                    Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
+                                        window.close();
+                                        // opener.location.reload();
+                                        opener.saveForm();
+                                    });
+                                } else {
+                                    Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
                                 }
-                            })
-
-                        } else {
-                            alert("请选择一行或多行数据");
-                        }
-                    },
-                    scope : this
-                }, '-', {
-                    pressed : true,
-                    xtype : 'button',
-                    text : '取消',
-                    tooltip : '取消选择，直接退出',
-                    handler : function() {
-                        Ext.Msg.confirm('Notice', '确认退出？', function(id) {
-                            if (id == "yes")
-                                window.close();
-                        });
-                    },
-                    scope : this
-                }],
-        buttons : [{
-            text : '执行查询条件',
-            handler : function() {
-                var connections = getCondictionValues();
-                if (!form.getForm().isValid()) {
-                    return;
-                };
-                if (isFormInputed(form.getForm()) == false) {
-                    alert("请输入查询条件");
-                    form.getForm().focus();
-                    return;
-                } else {
-                    Ext.get("dbFilter").dom.value = "";
-                    if (flag == 1) {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue('xmlFile'),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : 'search'
-                        };
-                        store.load({
-                            params : {
-                                start : 0,
-                                limit : result.limit
                             }
-                        });
-                        form.getForm().reset();
-                        flag = 0;
-                    } else {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue('xmlFile'),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : 'search'
-                        };
-                        store.reload();
-                    }
+                        })
 
+                    } else {
+                        alert(&quot;请选择一行或多行数据&quot;);
+                    }
+                },
+                scope : this
+            }, &#39;-&#39;, {
+                pressed : true,
+                xtype : &#39;button&#39;,
+                text : &#39;取消&#39;,
+                tooltip : &#39;取消选择，直接退出&#39;,
+                handler : function() {
+                    Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
+                        if (id == &quot;yes&quot;)
+                            window.close();
+                    });
+                },
+                scope : this
+            }],
+    buttons : [{
+        text : &#39;执行查询条件&#39;,
+        handler : function() {
+            var connections = getCondictionValues();
+            if (!form.getForm().isValid()) {
+                return;
+            };
+            if (isFormInputed(form.getForm()) == false) {
+                alert(&quot;请输入查询条件&quot;);
+                form.getForm().focus();
+                return;
+            } else {
+                Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+                if (flag == 1) {
+                    store.baseParams = {
+                        xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                        condictions : connections,
+                        parentFormValues : getParentFormValues(),
+                        cmd : &#39;search&#39;
+                    };
+                    store.load({
+                        params : {
+                            start : 0,
+                            limit : result.limit
+                        }
+                    });
                     form.getForm().reset();
+                    flag = 0;
+                } else {
+                    store.baseParams = {
+                        xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                        condictions : connections,
+                        parentFormValues : getParentFormValues(),
+                        cmd : &#39;search&#39;
+                    };
+                    store.reload();
                 }
-            }
-        }, {
-            text : '重置',
-            handler : function() {
+
                 form.getForm().reset();
             }
-        }]
-    });
-    return form;
-}
-</pre>
-
+        }
+    }, {
+        text : &#39;重置&#39;,
+        handler : function() {
+            form.getForm().reset();
+        }
+    }]
+});
+return form;
+</code></pre></div>
+<p>}
+</pre></p>
 
     
     <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi'>JavaChen Blog</a>-

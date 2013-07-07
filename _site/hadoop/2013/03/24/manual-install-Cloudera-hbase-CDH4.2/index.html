@@ -109,15 +109,13 @@
 <ol>
 <li><p>上传文件
 上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。</p></li>
-<li><p>hbase-site.xml</p></li>
+<li><p>hbase-site.xml </p></li>
 </ol>
-
-
-<pre><code>[root@desktop3 conf]# pwd
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop3 conf]# pwd
 /opt/hbase-0.94.2-cdh4.2.0/conf
 [root@desktop3 conf]# cat hbase-site.xml 
-&lt;?xml version="1.0"?&gt;
-&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
 &lt;configuration&gt;
 &lt;property&gt;
 &lt;name&gt;hbase.rootdir&lt;/name&gt;
@@ -139,21 +137,17 @@
 &lt;/property&gt;
 
 &lt;/configuration&gt;
-</code></pre>
-
+</code></pre></div>
 <ol>
 <li>regionservers</li>
 </ol>
-
-
-<pre><code>[root@desktop3 conf]# cat regionservers 
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop3 conf]# cat regionservers 
 desktop3
 desktop4
 desktop6
 desktop7
 desktop8
-</code></pre>
-
+</code></pre></div>
 <ol>
 <li><p>环境变量
 参考hadoop中环境变量的设置</p></li>
@@ -162,24 +156,18 @@ desktop8
 <li><p>启动脚本
 可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p></li>
 </ol>
-
-
-<pre><code>[root@desktop3 ~]# start-hbase.sh 
-</code></pre>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop3 ~]# start-hbase.sh 
+</code></pre></div>
 <ol>
-<li>HBase</li>
+<li>HBase </li>
 </ol>
-
-
-<pre><code>[root@desktop3 ~]# hbase 
-HBase ; enter 'help&lt;RETURN&gt;' for list of supported commands.
-Type "exit&lt;RETURN&gt;" to leave the HBase 
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop3 ~]# hbase 
+HBase ; enter &#39;help&lt;RETURN&gt;&#39; for list of supported commands.
+Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase 
 Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013
 
 hbase(main):001:0&gt; 
-</code></pre>
-
+</code></pre></div>
     
     <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2'>JavaChen Blog</a>-
 		<br/>
