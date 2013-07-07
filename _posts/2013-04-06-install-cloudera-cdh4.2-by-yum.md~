@@ -88,7 +88,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 
 2. hdfs-site.xml:
 
-
+```
 	<configuration>
 	<property>
 	  <name>dfs.replication</name>
@@ -136,6 +136,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 		<value>true</value>
 	</property>
 	</configuration>
+```
 
 3. 修改master和slaves文件
 
@@ -219,7 +220,7 @@ my set:
 
 1. mapred-site.xml:
 
-
+```
 	<configuration>
 	<property>
 	    <name>mapreduce.framework.name</name>
@@ -267,6 +268,7 @@ my set:
 	  <value>2</value>
 	</property>
 	</configuration>
+```
 
 2. yarn-site.xml:
 

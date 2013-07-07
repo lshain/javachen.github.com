@@ -220,7 +220,7 @@ my set:
 
 1. mapred-site.xml:
 
-
+```
 	<configuration>
 	<property>
 	    <name>mapreduce.framework.name</name>
@@ -268,10 +268,11 @@ my set:
 	  <value>2</value>
 	</property>
 	</configuration>
+```
 
 2. yarn-site.xml:
 
-
+```
 	<configuration>
 	<property>
 	    <name>yarn.resourcemanager.resource-tracker.address</name>
@@ -333,6 +334,7 @@ my set:
 	    <value>/user</value>
 	</property>
 	</configuration>
+```
 
 ### HDFS创建临时目录
 
