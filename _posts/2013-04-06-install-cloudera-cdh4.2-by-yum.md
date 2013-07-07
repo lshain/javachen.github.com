@@ -65,7 +65,6 @@ hadoop的默认配置文件在/etc/hadoop/conf
 
 1. core-site.xml:
 
-
 	<property>
 	    <name>fs.defaultFS</name>
 	    <value>hdfs://node1</value>
@@ -83,9 +82,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 	  <value>4096</value>
 	</property>
 
-
 2. hdfs-site.xml:
-
 
 	<property>
 	  <name>dfs.replication</name>
@@ -132,7 +129,6 @@ hadoop的默认配置文件在/etc/hadoop/conf
 		<name>dfs.webhdfs.enabled</name>
 		<value>true</value>
 	</property>
-
 
 3. 修改master和slaves文件
 
