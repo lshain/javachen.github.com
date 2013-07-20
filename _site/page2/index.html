@@ -66,6 +66,184 @@
   <div class="span8">
   
   
+  <section id="hadoop20130329install-impala">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#hadoop">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#impala-ref">impala</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cloudera-ref">cloudera</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/hadoop/2013/03/29/install-impala#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
+
+<h3>install</h3>
+
+<p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
+
+<h3>安装过程</h3>
+
+<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
+
+<ul>
+<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
+<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
+</ul>
+
+<ol>
+<li><p>DataNode节点</p>
+
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
+<li><p>在hive节点上</p>
+
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm \
+impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm \
+libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
+</ol>
+
+<h3>配置Impala</h3>
+
+<h4>查看安装路径</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
+/var/run/impala
+/var/lib/alternatives/impala
+/var/log/impala
+/usr/lib/impala
+/etc/alternatives/impala
+/etc/default/impala
+/etc/impala
+</code></pre></div>
+<h4>添加配置文件</h4>
+
+<p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
+
+<p>在节点desktop1上 拷贝<code>hive-site.xml</code>、<code>core-site.xml</code>、<code>hdfs-site.xml</code>至<code>/usr/lib/impala/conf</code>目录下:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
+</code></pre></div>
+<p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
+    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<p>同步以上文件到其他节点</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
+</code></pre></div>
+<h4>hadoop中添加native包</h4>
+
+<p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
+</code></pre></div>
+<h4>创建socket path</h4>
+
+<p>在每个节点上创建/var/run/hadoop-hdfs:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
+</code></pre></div>
+<p>拷贝postgres jdbc jar：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
+</code></pre></div>
+<h3>启动服务</h3>
+
+<ol>
+<li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
+
+<p>GLOG<em>v=1 nohup statestored -state</em>store_port=24000 &amp;</p></li>
+</ol>
+
+<p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
+
+<ol>
+<li><p>在所有impalad节点上：</p>
+
+<p>HADOOP<em>CONF</em>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<em>store</em>host=desktop1 -nn=desktop1 \
+    -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
+</ol>
+
+<p>注意： 其中的<code>-hostname</code>和<code>-ipaddress</code>表示当前启动impalad实例所在机器的主机名和ip地址。</p>
+
+<p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
+
+<h3>使用shell</h3>
+
+<p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
+[Not connected] &gt;connect desktop3:21000
+[desktop3:21000] &gt;refresh
+[desktop3:21000] &gt;connect desktop4:21000
+[desktop4:21000] &gt;refresh
+</code></pre></div>
+<h3>注意：</h3>
+
+<ol>
+<li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
+<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
+</ol>
+
+<p>可能是已经启动了statestored进程</p>
+
+<h3>参考文章</h3>
+
+<ul>
+<li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
+<li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
+<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="hadoop20130324manual-install-Cloudera-Hadoop-CDH4.2">
     <article>
       <header>
@@ -893,67 +1071,6 @@ standard_conforming_strings = off
     </article>
   </section>
   
-  
-  <section id="work20130220summary-of-the-work-in-2012">
-    <article>
-      <header>
-      <h3><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#work">work</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#work-ref">work</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/work/2013/02/20/summary-of-the-work-in-2012#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。
-以下是2012年相对于2011年的一些变化。</p>
-
-<ul>
-<li> 2011年，在调研云计算产品过程中，深刻的意识到自身在linux方面存在的不足；2012年，熟悉了基本的linux命令，能够读懂并编写简单shell脚本；</li>
-<li>  2011年，工作环境是win7+fedora；2012年，一直使用fedora操作系统工作、编码；</li>
-<li>  2011年，较多的时间花在编写代码、完成开发任务上；2012年，更多的时间花在学习架构的设计、系统的运维、项目的管理上，视野不再局限于开发、精力不再局限于编码。</li>
-<li>  2011年，在工作中没有及时提交项目周报，没有及时的跟踪、检查分配下去的任务完成情况，对新人的指导不够；2012年，没有写过项目周报，做到了及是跟踪、检查分配下去的任务完成情况；</li>
-<li>  2011年，博客文章篇数较少，平时的总结与分享不够积极；2012年，很少有时间写技术方面的博客；</li>
-<li>  2011年，在与客户的交流中底气不足、表达能力不够；2012年，还是发现自己与客户交流中胆怯、没有底气；</li>
-<li>  2011年，希望能够将Pentaho的咨询服务工作更多交给其他人完成；2012年，发现大部分的工作还是落在自己身上一个人去完成，没有发挥其他人员的作用；</li>
-<li>  2011年，希望2012年能够深入理解Spring、Jboss、Pentaho、缓存、云计算、架构等技术；2012年，了解gemfire、infinispan、jboss cache、cassandra等分布式缓存的实现及原理，但每一个方面都没有时间去深入研究和学习；</li>
-<li>  2011年，公司在代码复查方面做的不够；2012年，这方面还是做的不够；</li>
-<li>  2011年，项目开发方面没有形成一套成型的开发框架；2012年，还是没有看到一个成熟、易用、简单的开发框架以及相配套开发文档；</li>
-<li>  2011年，项目于项目之间在一些同时使用的相关技术上面的沟通于交流做的不够；2012年，团队在项目上还是缺少沟通交流，尤其体现在XXXX项目网站开发上。</li>
-<li>  2011年，花了一些时间在Pentaho上，并希望2012年能够创建一个Pentaho社区、一个QQ分享群；2012年，Pentaho方面基本上没有投入；</li>
-<li>  2011年，编写文档时候，没有可参考的模版，导致文档编写不规范；2012年，每次写文档时都要去找文档模版；</li>
-</ul>
-
-<p>2012年参与了XXXXX项目、cassandra项目，。。。。。。此处省略314.15926个字。</p>
-
-<p>2012年，公司也存在一些不足：上级对下级、项目经理对团队人员了解不足，不知道其工作上、生活上的内心想法以及遇到何种困难；多数情况下，团队自我要求低，积极性不高，没有生机与活力；对新人能力审核不够，对新人培养不够重视，对新人的存在感不够关注；在各个项目的人员安排及使用上、任务分配和工作计划上不合理，导致经常被动加班、熬夜等等。</p>
-
-<h3>2013年工作计划：</h3>
-
-<ul>
-<li>通过CE考试，熟练掌握shell编程；</li>
-<li>做好项目管理者的角色，培养新人，提高团队人员编码、处理问题的能力；</li>
-<li>深入理解、学习cassandra源码、原理以及cassandra的运维；</li>
-<li>学习hadoop的安装、部署、原理、开发及运维，掌握kettle和nosql的集成，希望积累几个hadoop项目经验；</li>
-<li>学习分布式缓存理论知识，阅读源代码，完善缓存系统的监控及运维</li>
-</ul>
-
-<p>在经历了2011年和2012年之后，2013年希望自己能够专注细节，深入理解，在技术、管理、交际方面有所成长；希望公司能够重视对团队的培养，能够规范各种规章制度，能够更上一层楼！</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/'>&larr; Previous</a></li>
@@ -974,6 +1091,9 @@ standard_conforming_strings = off
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
       </li>
@@ -1000,9 +1120,6 @@ standard_conforming_strings = off
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
-      </li>
-      <li class="post">
-        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
     </ul>
     </section>
@@ -1099,7 +1216,7 @@ standard_conforming_strings = off
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>8</span>
+    		hadoop <span>9</span>
     	</a></li>
     
   

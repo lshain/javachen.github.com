@@ -129,6 +129,13 @@
 
 
 	<url>
+		<loc>http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop</loc>
+		<lastmod>2013-07-20</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
 		<loc>http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager</loc>
 		<lastmod>2013-06-24</lastmod>
 		<changefreq>hourly</changefreq>

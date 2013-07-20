@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-07-20T13:55:44+08:00</updated>
+ <updated>2013-07-20T14:50:52+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -13,11 +13,98 @@
 
  
  <entry>
+   <title>安装RHadoop</title>
+   <link href="http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop"/>
+   <updated>2013-07-20T15:10:00+08:00</updated>
+   <id>http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop</id>
+   <content type="html">&lt;h2&gt;安装R&lt;/h2&gt;
+
+&lt;h3&gt;安装相关依赖&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;YUM安装：R&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;编译安装：R-3.0.1&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf R-3.0.1 #./configure #make #make install #R运行
+export HADOOP_CMD=/usr/bin/hadoop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;排错&lt;/h3&gt;
+
+&lt;p&gt;1、error: --with-readline=yes (default) &lt;/p&gt;
+
+&lt;p&gt;安装yum install readline*&lt;/p&gt;
+
+&lt;p&gt;2、error: No F77 compiler found &lt;/p&gt;
+
+&lt;p&gt;安装gfortran&lt;/p&gt;
+
+&lt;p&gt;3、error: –with-x=yes (default) and X11 headers/libs are not available &lt;/p&gt;
+
+&lt;p&gt;安装yum install libXt*&lt;/p&gt;
+
+&lt;p&gt;4、error: C++ preprocessor &amp;quot;/lib/cpp&amp;quot; fails sanity check &lt;/p&gt;
+
+&lt;p&gt;安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）&lt;/p&gt;
+
+&lt;h3&gt;安装Rhadoop&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd Rhadoop/
+R CMD javareconf
+R CMD INSTALL &amp;#39;plyr_1.8.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;stringr_0.6.2.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;reshape2_1.2.2.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;digest_0.6.3.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;functional_0.4.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;iterators_1.0.6.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;itertools_0.1-1.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;Rcpp_0.10.3.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;rJava_0.9-4.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;RJSONIO_1.0-3.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;reshape2_1.2.2.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;rhdfs_1.0.5.tar.gz&amp;#39;
+R CMD INSTALL &amp;#39;rmr2_2.2.0.tar.gz&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;R library(rhdfs)检查是否能正常工作&lt;/p&gt;
+
+&lt;h2&gt;安装rhbase    thrift-0.9.0&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install boost*
+yum install openssl*
+tar -zxvf thrift-0.9.0.tar.gz
+./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
+make
+make install
+
+
+yum install openssl*
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
+pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;启动hbase：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/usr/lib/hbase/bin/hbase-daemon.sh  start  thrift 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;使用jps查看thrift进程&lt;/p&gt;
+
+&lt;p&gt;安装rhbase&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;R CMD INSTALL &amp;#39;rhbase_1.1.1.tar.gz&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;R载入 library(rhbase) 检查rhbase是否可用&lt;/p&gt;
+
+&lt;h2&gt;验证并测试&lt;/h2&gt;
+
+&lt;p&gt;在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>通过Cloudera Manager安装CDH</title>
    <link href="http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager"/>
    <updated>2013-06-24T15:10:00+08:00</updated>
    <id>http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager</id>
-   <content type="html">&lt;p&gt;你可以从&lt;a href=&quot;https://ccp.cloudera.com/display/SUPPORT/Downloads&quot;&gt;https://ccp.cloudera.com/display/SUPPORT/Downloads&lt;/a&gt;下载cloudera-manager-installer.bin，然后修改执行权限并执行该脚本。
+   <content type="html">&lt;p&gt;你可以从&lt;a href=&quot;https://ccp.cloudera.com/display/SUPPORT/Downloads&quot;&gt;https://ccp.cloudera.com/display/SUPPORT/Downloads&lt;/a&gt;下载&lt;code&gt;cloudera-manager-installer.bin&lt;/code&gt;，然后修改执行权限并执行该脚本。
 该脚本中配置的rhel6的yum源为：&lt;a href=&quot;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&quot;&gt;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&lt;/a&gt;，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。&lt;/p&gt;
 
 &lt;p&gt;因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：&lt;a href=&quot;http://dreamyue.com/post/41090075449/cloudera-manager-hadoop&quot;&gt;通过cloudera-manager来安装hadoop&lt;/a&gt;。&lt;/p&gt;
@@ -37,7 +124,7 @@ drwxr-xr-x. 2 june june   4096 5月  22 21:48 guis
 drwxr-xr-x. 2 june june   4096 5月  22 21:48 meta
 drwxr-xr-x. 2 june june   4096 5月  22 21:48 scripts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从scripts/config.lua脚本中大概可以看出安装脚本的执行过程。&lt;/p&gt;
+&lt;p&gt;查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从&lt;code&gt;scripts/config.lua&lt;/code&gt;脚本中大概可以看出安装脚本的执行过程。&lt;/p&gt;
 
 &lt;p&gt;整理下该脚本逻辑，主要是做了以下操作：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install -y jdk.x86_64 
@@ -46,7 +133,10 @@ yum install -y cloudera-manager-server-db
 /etc/init.d/cloudera-scm-server start
 /etc/init.d/cloudera-scm-server-db start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。&lt;/p&gt;
+&lt;p&gt;知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后查看7180端口是否打开：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;netstat -na| grep 7180
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;通过浏览器访问&lt;code&gt;http://IP:7180&lt;/code&gt;登录cloudera manager界面：用户名/密码：&lt;code&gt;admin/admin&lt;/code&gt;,按照界面提示完成hadoop集群安装。&lt;/p&gt;
 </content>
  </entry>
  
