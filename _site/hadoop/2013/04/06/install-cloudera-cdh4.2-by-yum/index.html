@@ -3,10 +3,12 @@
 <html lang="zh-CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
     <title>从yum安装Cloudera CDH4.2 - JavaChen Blog</title>
     <meta name="keywords" content="yum, cdh, hadoop, hbase, hive, zookeeper, cloudera" />
     <meta name="description" content="从yum安装Cloudera CDH4.2" />
     <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
     <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
     <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
@@ -121,22 +123,58 @@
 <p>hadoop的配置文件<code>core-site.xml</code>、<code>mapred-site.xml</code>和<code>yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
 
 <p>2.关闭防火墙</p>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">setenforce 0
+vim /etc/sysconfig/selinux
+</code></pre></div>
 <p>3.清空iptables <code>iptables -F</code></p>
 
 <p>4.检查每个节点上的<code>/tmp</code>目录权限是否为<code>1777</code>，如果不是请修改。</p>
 
 <p>5.设置时钟同步服务</p>
 
+<p>在所有节点安装ntp</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install ntp
+</code></pre></div>
+<p>设置开机启动</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig ntpd on
+</code></pre></div>
+<p>在所有节点启动ntp</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/ntpd start
+</code></pre></div>
+<p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">server $LOCAL_SERVER_IP OR HOSTNAME
+</code></pre></div>
 <h2>1. 安装jdk</h2>
 
-<p>安装jdk</p>
+<p>检查jdk版本</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
+</code></pre></div>
+<p>如果其版本低于v1.6 update 31，则将其卸载</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -qa | grep java
+yum remove {java-1.*}
+</code></pre></div>
+<p>验证没人的jdk是否被卸载</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">which java
+</code></pre></div>
+<p>安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：<a href="http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR">这里</a></p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install jdk -y
+</code></pre></div>
+<p>创建符号连接</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -s XXXXX/jdk1.6.0_31 /usr/java/default
+ln -s /usr/java/default/bin/java /usr/bin/java
 </code></pre></div>
 <p>设置环境变量:</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;/root/.bashrc
 echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; /root/.bashrc
 source /root/.bashrc
+</code></pre></div>
+<p>验证版本</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
+</code></pre></div>
+<p>你将看到以下输出：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java version &quot;1.6.0_31&quot;
+Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 </code></pre></div>
 <p>检查环境变量中是否有设置<code>JAVA_HOME</code></p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo env | grep JAVA_HOME
@@ -246,6 +284,11 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 </code></pre></div>
 <p>修改master和slaves文件</p>
 
+<p>注意：</p>
+
+<p>The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
+To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
+
 <h3>配置NameNode HA</h3>
 
 <p>请参考<a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">Introduction to HDFS High Availability</a></p>
@@ -327,6 +370,12 @@ fi
 <h3>在每个节点启动hdfs</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 </code></pre></div>
+<h3>验证测试</h3>
+
+<ul>
+<li>打开浏览器访问：http://node1:50070 </li>
+</ul>
+
 <h2>5. 安装YARN</h2>
 
 <p>先在一台机器上配置好，然后在做同步。</p>
@@ -469,6 +518,13 @@ drwxr-xr-x   - yarn   mapred                 0 2012-05-31 15:31 /var/log/hadoop-
 <h3>在每个节点启动YARN</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 </code></pre></div>
+<h3>验证</h3>
+
+<ul>
+<li>打开浏览器：http://node1:8088/</li>
+<li>运行测试程序</li>
+</ul>
+
 <h3>为每个MapReduce用户创建主目录</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
@@ -763,7 +819,22 @@ ADD JAR /usr/lib/hive/lib/hbase.jar;
 ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
 ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 </code></pre></div>
-<h2>9. 参考文章</h2>
+<h2>9. 其他</h2>
+
+<h3>安装Snappy</h3>
+
+<p>在每个节点安装Snappy</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install snappy snappy-devel
+</code></pre></div>
+<p>使snappy对hadoop可用</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
+</code></pre></div>
+<h3>安装LZO</h3>
+
+<p>在每个节点安装：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
+</code></pre></div>
+<h2>10. 参考文章</h2>
 
 <ul>
 <li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>

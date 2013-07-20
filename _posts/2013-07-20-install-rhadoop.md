@@ -21,7 +21,10 @@ description: 安装RHadoop
 
 ### 编译安装：R-3.0.1
 
-	tar -zxvf R-3.0.1 #./configure #make #make install #R运行
+	tar -zxvf R-3.0.1 
+	./configure 	
+	make 
+	make install #R运行
 	export HADOOP_CMD=/usr/bin/hadoop
 
 ### 排错
@@ -42,7 +45,29 @@ description: 安装RHadoop
 
 安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）
 
-### 安装Rhadoop
+### 验证是否安张成功
+
+	[root@node1 bin]# R
+
+	R version 3.0.1 (2013-05-16) -- "Good Sport"
+	Copyright (C) 2013 The R Foundation for Statistical Computing
+	Platform: x86_64-unknown-linux-gnu (64-bit)
+
+	R是自由软件，不带任何担保。
+	在某些条件下你可以将其自由散布。
+	用'license()'或'licence()'来看散布的详细条件。
+
+	R是个合作计划，有许多人为之做出了贡献.
+	用'contributors()'来看合作者的详细情况
+	用'citation()'会告诉你如何在出版物中正确地引用R或R程序包。
+
+	用'demo()'来看一些示范程序，用'help()'来阅读在线帮助文件，或
+	用'help.start()'通过HTML浏览器来看帮助文件。
+	用'q()'退出R.
+
+	>
+
+## 安装Rhadoop
 
 	cd Rhadoop/
 	R CMD javareconf

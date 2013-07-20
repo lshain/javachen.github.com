@@ -26,23 +26,73 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 
 2.关闭防火墙
 
+	setenforce 0
+	vim /etc/sysconfig/selinux
+	
+
+
 3.清空iptables `iptables -F`
 
 4.检查每个节点上的`/tmp`目录权限是否为`1777`，如果不是请修改。
 
 5.设置时钟同步服务
 
+在所有节点安装ntp
+	
+	yum install ntp
+
+设置开机启动
+
+	chkconfig ntpd on
+
+在所有节点启动ntp
+
+	/etc/init.d/ntpd start
+
+是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：
+
+	server $LOCAL_SERVER_IP OR HOSTNAME
+
+
 
 ## 1. 安装jdk
-安装jdk
+检查jdk版本
+	
+	java -version
+
+如果其版本低于v1.6 update 31，则将其卸载
+
+	rpm -qa | grep java
+	yum remove {java-1.*}
+
+验证没人的jdk是否被卸载
+
+	which java
+
+安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：[这里](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR)
 	
 	yum install jdk -y
+
+创建符号连接
+
+	ln -s XXXXX/jdk1.6.0_31 /usr/java/default
+	ln -s /usr/java/default/bin/java /usr/bin/java
 
 设置环境变量:
 
 	echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
 	echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
 	source /root/.bashrc
+
+验证版本
+
+	java -version
+
+你将看到以下输出：
+
+	java version "1.6.0_31"
+	Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+	Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 
 检查环境变量中是否有设置`JAVA_HOME`
 
@@ -160,6 +210,11 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 修改master和slaves文件
 
+注意：
+
+The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
+To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.
+
 ### 配置NameNode HA
 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
 
@@ -245,6 +300,9 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 ### 在每个节点启动hdfs
 
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
+
+### 验证测试
+* 打开浏览器访问：http://node1:50070 
 
 
 ## 5. 安装YARN
@@ -399,6 +457,10 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 ### 在每个节点启动YARN
 
 	for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
+
+### 验证
+* 打开浏览器：http://node1:8088/
+* 运行测试程序
 
 ### 为每个MapReduce用户创建主目录
 
@@ -721,7 +783,25 @@ yum方式安装：
 	ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
 
-## 9. 参考文章
+## 9. 其他
+### 安装Snappy
+
+在每个节点安装Snappy
+
+	yum install snappy snappy-devel
+
+使snappy对hadoop可用
+	
+	ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
+
+### 安装LZO
+在每个节点安装：
+
+	yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
+
+
+
+## 10. 参考文章
 
 * [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 * [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)

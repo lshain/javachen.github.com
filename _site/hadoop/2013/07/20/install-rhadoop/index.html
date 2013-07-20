@@ -3,10 +3,12 @@
 <html lang="zh-CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
     <title>安装RHadoop - JavaChen Blog</title>
     <meta name="keywords" content="hadoop, rhadoop" />
     <meta name="description" content="安装RHadoop" />
     <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
     <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
     <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
@@ -76,6 +78,11 @@
 			
 			<a href="/tags.html#R-ref">R</a>
 			
+			,
+			
+			
+			<a href="/tags.html#rhadoop-ref">rhadoop</a>
+			
 			
 		&emsp;&emsp;&emsp;&emsp;
 		Time：<time date="2013-07-20 15:10:00 +0800">2013-07-20 15:07</time>
@@ -105,13 +112,16 @@
 <h3>安装相关依赖</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
 </code></pre></div>
-<h3>YUM安装：R</h3>
+<h3>安装R</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 </code></pre></div>
 <h3>编译安装：R-3.0.1</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 #./configure #make #make install #R运行
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
+./configure     
+make 
+make install #R运行
 export HADOOP_CMD=/usr/bin/hadoop
 </code></pre></div>
 <h3>排错</h3>
@@ -132,7 +142,28 @@ export HADOOP_CMD=/usr/bin/hadoop
 
 <p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
 
-<h3>安装Rhadoop</h3>
+<h3>验证是否安张成功</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
+
+R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R是自由软件，不带任何担保。
+在某些条件下你可以将其自由散布。
+用&#39;license()&#39;或&#39;licence()&#39;来看散布的详细条件。
+
+R是个合作计划，有许多人为之做出了贡献.
+用&#39;contributors()&#39;来看合作者的详细情况
+用&#39;citation()&#39;会告诉你如何在出版物中正确地引用R或R程序包。
+
+用&#39;demo()&#39;来看一些示范程序，用&#39;help()&#39;来阅读在线帮助文件，或
+用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
+用&#39;q()&#39;退出R.
+
+&gt;
+</code></pre></div>
+<h2>安装Rhadoop</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
 R CMD javareconf
 R CMD INSTALL &#39;plyr_1.8.tar.gz&#39;
@@ -252,6 +283,8 @@ cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
     	<li><a href="/tags.html#hadoop-ref">hadoop <span>9</span></a></li>
      
     	<li><a href="/tags.html#R-ref">R <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#rhadoop-ref">rhadoop <span>1</span></a></li>
     
   
 

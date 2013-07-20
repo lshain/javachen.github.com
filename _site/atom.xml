@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-07-20T14:50:52+08:00</updated>
+ <updated>2013-07-20T16:34:51+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -22,13 +22,16 @@
 &lt;h3&gt;安装相关依赖&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;YUM安装：R&lt;/h3&gt;
+&lt;h3&gt;安装R&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;编译安装：R-3.0.1&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf R-3.0.1 #./configure #make #make install #R运行
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf R-3.0.1 
+./configure     
+make 
+make install #R运行
 export HADOOP_CMD=/usr/bin/hadoop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;排错&lt;/h3&gt;
@@ -49,7 +52,28 @@ export HADOOP_CMD=/usr/bin/hadoop
 
 &lt;p&gt;安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）&lt;/p&gt;
 
-&lt;h3&gt;安装Rhadoop&lt;/h3&gt;
+&lt;h3&gt;验证是否安张成功&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 bin]# R
+
+R version 3.0.1 (2013-05-16) -- &amp;quot;Good Sport&amp;quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R是自由软件，不带任何担保。
+在某些条件下你可以将其自由散布。
+用&amp;#39;license()&amp;#39;或&amp;#39;licence()&amp;#39;来看散布的详细条件。
+
+R是个合作计划，有许多人为之做出了贡献.
+用&amp;#39;contributors()&amp;#39;来看合作者的详细情况
+用&amp;#39;citation()&amp;#39;会告诉你如何在出版物中正确地引用R或R程序包。
+
+用&amp;#39;demo()&amp;#39;来看一些示范程序，用&amp;#39;help()&amp;#39;来阅读在线帮助文件，或
+用&amp;#39;help.start()&amp;#39;通过HTML浏览器来看帮助文件。
+用&amp;#39;q()&amp;#39;退出R.
+
+&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;安装Rhadoop&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd Rhadoop/
 R CMD javareconf
 R CMD INSTALL &amp;#39;plyr_1.8.tar.gz&amp;#39;
@@ -269,22 +293,58 @@ Caused by: java.io.EOFException
 &lt;p&gt;hadoop的配置文件&lt;code&gt;core-site.xml&lt;/code&gt;、&lt;code&gt;mapred-site.xml&lt;/code&gt;和&lt;code&gt;yarn-site.xml&lt;/code&gt;配置节点时，请使用hostname和不是ip&lt;/p&gt;
 
 &lt;p&gt;2.关闭防火墙&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;setenforce 0
+vim /etc/sysconfig/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;3.清空iptables &lt;code&gt;iptables -F&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;4.检查每个节点上的&lt;code&gt;/tmp&lt;/code&gt;目录权限是否为&lt;code&gt;1777&lt;/code&gt;，如果不是请修改。&lt;/p&gt;
 
 &lt;p&gt;5.设置时钟同步服务&lt;/p&gt;
 
+&lt;p&gt;在所有节点安装ntp&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install ntp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;设置开机启动&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chkconfig ntpd on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在所有节点启动ntp&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/ntpd start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;server $LOCAL_SERVER_IP OR HOSTNAME
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;1. 安装jdk&lt;/h2&gt;
 
-&lt;p&gt;安装jdk&lt;/p&gt;
+&lt;p&gt;检查jdk版本&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果其版本低于v1.6 update 31，则将其卸载&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -qa | grep java
+yum remove {java-1.*}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;验证没人的jdk是否被卸载&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;which java
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：&lt;a href=&quot;http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR&quot;&gt;这里&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install jdk -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建符号连接&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ln -s XXXXX/jdk1.6.0_31 /usr/java/default
+ln -s /usr/java/default/bin/java /usr/bin/java
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;设置环境变量:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;echo &amp;quot;export JAVA_HOME=/usr/java/latest&amp;quot; &amp;gt;&amp;gt;/root/.bashrc
 echo &amp;quot;export PATH=\$JAVA_HOME/bin:\$PATH&amp;quot; &amp;gt;&amp;gt; /root/.bashrc
 source /root/.bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;验证版本&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你将看到以下输出：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java version &amp;quot;1.6.0_31&amp;quot;
+Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;检查环境变量中是否有设置&lt;code&gt;JAVA_HOME&lt;/code&gt;&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo env | grep JAVA_HOME
@@ -394,6 +454,11 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;修改master和slaves文件&lt;/p&gt;
 
+&lt;p&gt;注意：&lt;/p&gt;
+
+&lt;p&gt;The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
+To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.&lt;/p&gt;
+
 &lt;h3&gt;配置NameNode HA&lt;/h3&gt;
 
 &lt;p&gt;请参考&lt;a href=&quot;https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability&quot;&gt;Introduction to HDFS High Availability&lt;/a&gt;&lt;/p&gt;
@@ -475,6 +540,12 @@ fi
 &lt;h3&gt;在每个节点启动hdfs&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;验证测试&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;打开浏览器访问：http://node1:50070 &lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h2&gt;5. 安装YARN&lt;/h2&gt;
 
 &lt;p&gt;先在一台机器上配置好，然后在做同步。&lt;/p&gt;
@@ -617,6 +688,13 @@ drwxr-xr-x   - yarn   mapred                 0 2012-05-31 15:31 /var/log/hadoop-
 &lt;h3&gt;在每个节点启动YARN&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;验证&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;打开浏览器：http://node1:8088/&lt;/li&gt;
+&lt;li&gt;运行测试程序&lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h3&gt;为每个MapReduce用户创建主目录&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
@@ -911,7 +989,22 @@ ADD JAR /usr/lib/hive/lib/hbase.jar;
 ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
 ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;9. 参考文章&lt;/h2&gt;
+&lt;h2&gt;9. 其他&lt;/h2&gt;
+
+&lt;h3&gt;安装Snappy&lt;/h3&gt;
+
+&lt;p&gt;在每个节点安装Snappy&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install snappy snappy-devel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;使snappy对hadoop可用&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;安装LZO&lt;/h3&gt;
+
+&lt;p&gt;在每个节点安装：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;10. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
