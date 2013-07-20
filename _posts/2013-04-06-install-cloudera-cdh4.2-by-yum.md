@@ -10,34 +10,51 @@ description: 从yum安装Cloudera CDH4.2
 
 记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 
-## 目录
-1. 安装jdk
-2. 设置yum源
-3. 安装HDFS
-4. 配置hadoop
-5. 安装YARN
-6. 安装zookeeper
-7. 安装HBase
-8. 安装Hive
-9. 参考文章
+## 0.环境准备
+ 1.设置hosts
+临时设置hostname，以node1为例
+	
+	 sudo hostname node1
+
+确保`/etc/hosts`中包含ip和FQDN，如果你在使用DNS，保存这些信息到`/etc/hosts`不是必要的，却是最佳实践。
+确保`/etc/sysconfig/network`中包含hostname=node1
+检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。
+
+	host -v -t A `hostname` 
+
+hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置节点时，请使用hostname和不是ip
+
+2.关闭防火墙
+
+3.清空iptables `iptables -F`
+
+4.检查每个节点上的`/tmp`目录权限是否为`1777`，如果不是请修改。
+
+5.设置时钟同步服务
+
 
 ## 1. 安装jdk
-安装jdk并设置环境变量
+安装jdk
+	
+	yum install jdk -y
 
-	export JAVA_HOME=< jdk-install-dir>
-	export PATH=$JAVA_HOME/bin:$PATH
+设置环境变量:
 
-检查环境变量中是否有设置JAVA_HOME
+	echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
+	echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
+	source /root/.bashrc
+
+检查环境变量中是否有设置`JAVA_HOME`
 
 	sudo env | grep JAVA_HOME
 
-如果env中没有JAVA_HOME变量，则修改/etc/sudoers文件
+如果env中没有`JAVA_HOM`E变量，则修改`/etc/sudoers`文件
 	
 	vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 
 ## 2. 设置yum源
-从http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
+从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz) 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 
 ## 3. 安装HDFS
 ### 在NameNode节点yum安装
@@ -60,10 +77,18 @@ description: 从yum安装Cloudera CDH4.2
 
 
 ## 4. 配置hadoop
-### 修改配置文件
-hadoop的默认配置文件在/etc/hadoop/conf
+### 自定义hadoop配置文件
 
-1. core-site.xml配置:
+	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
+	sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
+	sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+
+hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配置之后，`/etc/hadoop/conf`会软连接到`/etc/hadoop/conf.my_cluster`目录
+
+### 修改配置文件
+进入/etc/hadoop/conf编辑配置文件。
+
+修改core-site.xml配置:
 
 ```
 	<configuration>
@@ -86,7 +111,7 @@ hadoop的默认配置文件在/etc/hadoop/conf
 	</configuration>
 ```
 
-2. hdfs-site.xml:
+修改hdfs-site.xml:
 
 ```
 	<configuration>
@@ -117,11 +142,6 @@ hadoop的默认配置文件在/etc/hadoop/conf
 	<property>
 	  <name>dfs.datanode.balance.bandwidthPerSec</name>
 	  <value>1048576</value>
-	  <description>
-		Specifies the maximum amount of bandwidth that each datanode
-		can utilize for the balancing purpose in term of
-		the number of bytes per second.
-	  </description>
 	</property>
 	<property>
 		<name>dfs.namenode.http-address</name>
@@ -138,12 +158,12 @@ hadoop的默认配置文件在/etc/hadoop/conf
 	</configuration>
 ```
 
-3. 修改master和slaves文件
+修改master和slaves文件
 
-### NameNode HA
-https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability
+### 配置NameNode HA
+请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
 
-### Secondary NameNode Parameters
+### 配置Secondary NameNode
 在hdfs-site.xml中可以配置以下参数：
 
 	dfs.namenode.checkpoint.check.period
@@ -152,12 +172,13 @@ https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability
 	dfs.namenode.checkpoint.edits.dir
 	dfs.namenode.num.checkpoints.retained
 
-#### multi-host-secondarynamenode-configuration
-http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/.
+#### 多个secondarynamenode的配置
+设置多个secondarynamenode，请参考[multi-host-secondarynamenode-configuration](http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/).
 
-### Config list
+### 文件路径配置清单
+在hadoop中默认的文件路径以及权限要求如下：
 
-	Directory						Owner		Permissions	Default Path
+	目录							所有者		权限		默认路径
 	hadoop.tmp.dir					hdfs:hdfs	drwx------	/var/hadoop
 	dfs.namenode.name.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/name
 	dfs.datanode.data.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/data
@@ -166,7 +187,7 @@ http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration
 	yarn.nodemanager.log-dirs			yarn:yarn	drwxr-xr-x	${yarn.log.dir}/userlogs
 	yarn.nodemanager.remote-app-log-dir						/tmp/logs
 
-my set:
+我的配置如下:
 
 	hadoop.tmp.dir					/opt/data/hadoop
 	dfs.namenode.name.dir				${hadoop.tmp.dir}/dfs/name
@@ -176,24 +197,28 @@ my set:
 	yarn.nodemanager.log-dirs			/var/log/hadoop-yarn/logs
 	yarn.nodemanager.remote-app-log-dir 		/var/log/hadoop-yarn/app
 
+在hadoop中`dfs.permissions.superusergroup`默认为hdfs，我的`hdfs-site.xml`配置文件将其修改为了hadoop。
 
-### Create the data Directory in the Cluster
+### 配置CDH4组件端口
+请参考[Configuring Ports for CDH4](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html)
+
+### 创建数据目录
 在namenode节点创建name目录
 
 	mkdir -p /opt/data/hadoop/dfs/name
-	chown -R hdfs:hdfs /opt/data/hadoop/dfs/name
+	chown -R hdfs:hadoop /opt/data/hadoop/dfs/name
 	chmod 700 /opt/data/hadoop/dfs/name
 
 在所有datanode节点创建data目录
 
 	mkdir -p /opt/data/hadoop/dfs/data
-	chown -R hdfs:hdfs /opt/data/hadoop/dfs/data
+	chown -R hdfs:hadoop /opt/data/hadoop/dfs/data
 	chmod 700 /opt/data/hadoop/dfs/data
 
 在secondarynode节点创建namesecondary目录
 
 	mkdir -p /opt/data/hadoop/dfs/namesecondary
-	chown -R hdfs:hdfs /opt/data/hadoop/dfs/namesecondary
+	chown -R hdfs:hadoop /opt/data/hadoop/dfs/namesecondary
 	chmod 700 /opt/data/hadoop/dfs/namesecondary
 
 在所有datanode节点创建yarn的local目录
@@ -210,6 +235,13 @@ my set:
 
 	sudo -u hdfs hdfs namenode -format
 
+### 定期检查datanode状态
+
+	#!/bin/bash
+	if ! jps | grep -q DataNode ; then
+	 echo ERROR: datanode not up
+	fi
+
 ### 在每个节点启动hdfs
 
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
@@ -218,7 +250,7 @@ my set:
 ## 5. 安装YARN
 先在一台机器上配置好，然后在做同步。
 
-1. mapred-site.xml:
+修改mapred-site.xml文件:
 
 ```
 	<configuration>
@@ -270,7 +302,7 @@ my set:
 	</configuration>
 ```
 
-2. yarn-site.xml:
+修改yarn-site.xml文件:
 
 ```
 	<configuration>
@@ -352,12 +384,12 @@ my set:
 ### 验证hdfs结构是否正确
 
 	[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-	drwxrwxrwt   - hdfs supergroup          0 2012-04-19 14:31 /tmp
-	drwxr-xr-x   - hdfs supergroup          0 2012-05-31 10:26 /user
-	drwxrwxrwt   - yarn supergroup          0 2012-04-19 14:31 /user/history
-	drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var
-	drwxr-xr-x   - hdfs   supergroup        0 2012-05-31 15:31 /var/log
-	drwxr-xr-x   - yarn   mapred        	0 2012-05-31 15:31 /var/log/hadoop-yarn
+	drwxrwxrwt   - hdfs   supergroup          0 2012-04-19 14:31 /tmp
+	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 10:26 /user
+	drwxrwxrwt   - yarn   supergroup          0 2012-04-19 14:31 /user/history
+	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var
+	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var/log
+	drwxr-xr-x   - yarn   mapred        	     0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
 ### 启动mapred-historyserver 
@@ -377,8 +409,20 @@ my set:
 
 	export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 
-### Configure the Hadoop Daemons to Start at Boot Time
-https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#MaintenanceTasksandNotes-ConfiguringinittoStartCoreHadoopSystemServices
+### 设置开机启动
+
+	sudo chkconfig hadoop-hdfs-namenode on
+	sudo chkconfig hadoop-hdfs-datanode on
+	sudo chkconfig hadoop-hdfs-secondarynamenode on
+	sudo chkconfig hadoop-yarn-resourcemanager on
+	sudo chkconfig hadoop-yarn-nodemanager on
+	sudo chkconfig hadoop-mapreduce-historyserver on
+	sudo chkconfig hbase-master on
+	sudo chkconfig hbase-regionserver on
+	sudo chkconfig hive-metastore  on
+	sudo chkconfig hive-server2 on
+	sudo chkconfig zookeeper-server on
+	sudo chkconfig hadoop-httpfs on
 
 ## 6. 安装Zookeeper
 安装zookeeper
@@ -431,7 +475,7 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 
 ### 修改配置文件并同步到其他机器：
-
+修改hbase-site.xml文件：
 
 	<configuration>
 	<property>
@@ -453,27 +497,14 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	<property>
 	    <name>hbase.hregion.max.filesize</name>
 	    <value>536870912</value>
-	    <description>
-	    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
-	    grown to exceed this value, the hosting HRegion is split in two.
-	    Default: 10G.
-	    </description>
 	  </property>
 	  <property>
 	    <name>hbase.hregion.memstore.flush.size</name>
 	    <value>67108864</value>
-	    <description>
-	    Memstore will be flushed to disk if size of the memstore
-	    exceeds this number of bytes.  Value is checked by a thread that runs
-	    every hbase.server.thread.wakefrequency.
-	    </description>
 	  </property>
 	  <property>
 	    <name>hbase.regionserver.lease.period</name>
 	    <value>600000</value>
-	    <description>HRegion server lease period in milliseconds. Default is
-	    60 seconds. Clients must report in within this period else they are
-	    considered dead.</description>
 	  </property>
 	  <property>
 	    <name>hbase.client.retries.number</name>
@@ -490,18 +521,10 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	  <property>
 	    <name>hfile.block.cache.size</name>
 	    <value>0.1</value>
-	    <description>
-		Percentage of maximum heap (-Xmx setting) to allocate to block cache
-		used by HFile/StoreFile. Default of 0.25 means allocate 25%.
-		Set to 0 to disable but it's not recommended.
-	    </description>
 	  </property>
 	  <property>
 	    <name>hbase.regions.slop</name>
 	    <value>0</value>
-	    <description>Rebalance if any regionserver has average + (average * slop) regions.
-	    Default is 20% slop.
-	    </description>
 	  </property>
 	  <property>
 	    <name>hbase.hstore.compactionThreshold</name>
@@ -527,11 +550,57 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 
 	sudo yum install hive*
 
+### 安装postgresql
+手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH4.2](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2/)
 
-### 安装metastore
+yum方式安装：
+
+	sudo yum install postgresql-server
+
+初始化数据库：
+
+	 sudo service postgresql initdb
+
+修改配置文件postgresql.conf，修改完后内容如下：
+
+	sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
+	listen_addresses = '*'
+	standard_conforming_strings = off
+
+修改 pg_hba.conf，添加以下一行内容：
+
+	host    all         all         0.0.0.0         0.0.0.0               md5
+
+启动数据库
+
+	sudo service postgresql start
+
+配置开启启动
+
+	chkconfig postgresql on
+
+安装jdbc驱动
+
+	sudo yum install postgresql-jdbc
+	ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
+
+创建数据库和用户
+
+	bash# sudo –u postgres psql
+	bash$ psql
+	postgres=# CREATE USER hiveuser WITH PASSWORD 'mypassword';
+	postgres=# CREATE DATABASE metastore;
+	postgres=# \c metastore;
+	You are now connected to database 'metastore'.
+	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
+	SET
+	SET
+	..
+
+
 
 ### 修改配置文件
-
+修改hive-site.xml文件：
 
 	<configuration>
 	<property>
@@ -541,22 +610,18 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	<property>
 	  <name>javax.jdo.option.ConnectionURL</name>
 	  <value>jdbc:postgresql://node1/metastore</value>
-	  <description>JDBC connect string for a JDBC metastore</description>
 	</property>
 	<property>
 	  <name>javax.jdo.option.ConnectionDriverName</name>
 	  <value>org.postgresql.Driver</value>
-	  <description>Driver class name for a JDBC metastore</description>
 	</property>
 	<property>
 	  <name>javax.jdo.option.ConnectionUserName</name>
 	  <value>hiveuser</value>
-	  <description>username to use against metastore database</description>
 	</property>
 	<property>
 	  <name>javax.jdo.option.ConnectionPassword</name>
 	  <value>redhat</value>
-	  <description>password to use against metastore database</description>
 	</property>
 	<property>
 	 <name>mapred.job.tracker</name>
@@ -588,33 +653,27 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 	</property>
 	<property>
 	  <name>hive.support.concurrency</name>
-	  <description>Enable Hive's Table Lock Manager Service</description>
 	  <value>true</value>
 	</property>
 	<property>
 	  <name>hive.zookeeper.quorum</name>
-	  <description>Zookeeper quorum used by Hive's Table Lock Manager</description>
 	  <value>node2,node3,node1</value>
 	</property>
 	<property>
 	  <name>hive.hwi.listen.host</name>
 	  <value>node1</value>
-	  <description>This is the host address the Hive Web Interface will listen on</description>
 	</property>
 	<property>
 	  <name>hive.hwi.listen.port</name>
 	  <value>9999</value>
-	  <description>This is the port the Hive Web Interface will listen on</description>
 	</property>
 	<property>
 	  <name>hive.hwi.war.file</name>
 	  <value>lib/hive-hwi-0.10.0-cdh4.2.0.war</value>
-	  <description>This is the WAR file with the jsp content for Hive Web Interface</description>
 	</property>
 	<property>
 	  <name>hive.merge.mapredfiles</name>
 	  <value>true</value>
-	  <description>Merge small files at the end of a map-reduce job</description>
 	</property>
 	</configuration>
 
@@ -622,13 +681,17 @@ https://ccp.cloudera.com/display/CDH4DOC/Maintenance+Tasks+and+Notes#Maintenance
 ### 在hdfs中创建hive数据仓库目录
 
 * hive的数据仓库在hdfs中默认为`/user/hive/warehouse`,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。
-* 每一个查询hive的用户都必须有一个hdfs的home目录(/user目录下，如root用户的为`/user/root`)
-* hive所在节点的 /tmp必须是world-writable权限的。
+* 每一个查询hive的用户都必须有一个hdfs的home目录(`/user`目录下，如root用户的为`/user/root`)
+* hive所在节点的 `/tmp`必须是world-writable权限的。
+
+创建目录并设置权限：
 
 	sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
+	sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
 	sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 
-### 启动hive
+
+### 启动hive-server和metastore
 
 	service hive-metastore start
 	service hive-server start

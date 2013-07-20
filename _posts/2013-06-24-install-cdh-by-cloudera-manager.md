@@ -8,7 +8,7 @@ keywords: hadoop, cdh, cloudera manager
 description: 通过Cloudera Manager安装CDH
 ---
 
-你可以从[https://ccp.cloudera.com/display/SUPPORT/Downloads](https://ccp.cloudera.com/display/SUPPORT/Downloads)下载cloudera-manager-installer.bin，然后修改执行权限并执行该脚本。
+你可以从[https://ccp.cloudera.com/display/SUPPORT/Downloads](https://ccp.cloudera.com/display/SUPPORT/Downloads)下载`cloudera-manager-installer.bin`，然后修改执行权限并执行该脚本。
 该脚本中配置的rhel6的yum源为：[http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/](http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/)，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。
 
 因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：[通过cloudera-manager来安装hadoop](http://dreamyue.com/post/41090075449/cloudera-manager-hadoop)。
@@ -31,7 +31,7 @@ description: 通过Cloudera Manager安装CDH
 	drwxr-xr-x. 2 june june   4096 5月  22 21:48 meta
 	drwxr-xr-x. 2 june june   4096 5月  22 21:48 scripts
 
-查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从scripts/config.lua脚本中大概可以看出安装脚本的执行过程。
+查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从`scripts/config.lua`脚本中大概可以看出安装脚本的执行过程。
 
 整理下该脚本逻辑，主要是做了以下操作：
 
@@ -41,4 +41,8 @@ description: 通过Cloudera Manager安装CDH
 	/etc/init.d/cloudera-scm-server start
 	/etc/init.d/cloudera-scm-server-db start
 
-知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后即可以访问web界面。
+知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后查看7180端口是否打开：
+
+	netstat -na| grep 7180
+
+通过浏览器访问`http://IP:7180`登录cloudera manager界面：用户名/密码：`admin/admin`,按照界面提示完成hadoop集群安装。
