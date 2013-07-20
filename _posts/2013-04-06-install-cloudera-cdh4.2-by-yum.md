@@ -1,14 +1,14 @@
 ---
 layout: post
-title:  从yum安装Cloudera CDH4.2
+title:  从yum安装Cloudera CDH集群
 date:  2013-04-06 17:00
 category: hadoop
 tags: [hadoop, impala, cloudera]
 keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera
-description: 从yum安装Cloudera CDH4.2
+description: 从yum安装Cloudera CDH集群，包括hadoop、yarn、HBase
 ---
 
-记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
+记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 
 ## 0.环境准备
  1.设置hosts
@@ -27,7 +27,7 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 2.关闭防火墙
 
 	setenforce 0
-	vim /etc/sysconfig/selinux
+	vim /etc/sysconfig/selinux #修改SELINUX=disabled
 	
 
 

@@ -4,9 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <title>从yum安装Cloudera CDH4.2 - JavaChen Blog</title>
+    <title>从yum安装Cloudera CDH集群 - JavaChen Blog</title>
     <meta name="keywords" content="yum, cdh, hadoop, hbase, hive, zookeeper, cloudera" />
-    <meta name="description" content="从yum安装Cloudera CDH4.2" />
+    <meta name="description" content="从yum安装Cloudera CDH集群，包括hadoop、yarn、HBase" />
     <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
@@ -61,7 +61,7 @@
         
 
 <div class="page-header">
-  	<h2>从yum安装Cloudera CDH4.2 </h2>
+  	<h2>从yum安装Cloudera CDH集群 </h2>
 	<div class="c9">
 		Categories：
 			
@@ -107,7 +107,7 @@
       </ul>
     </div>
     
-    <p>记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+    <p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
 
 <h2>0.环境准备</h2>
 
@@ -124,7 +124,7 @@
 
 <p>2.关闭防火墙</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">setenforce 0
-vim /etc/sysconfig/selinux
+vim /etc/sysconfig/selinux #修改SELINUX=disabled
 </code></pre></div>
 <p>3.清空iptables <code>iptables -F</code></p>
 
@@ -949,7 +949,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
       </li>
     
       <li class="post" >
-        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH4.2</a>
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH集群</a>
       </li>
     
       <li class="post" >

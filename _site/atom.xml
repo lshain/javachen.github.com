@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-07-20T16:34:51+08:00</updated>
+ <updated>2013-07-20T16:40:55+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -273,11 +273,11 @@ Caused by: java.io.EOFException
  </entry>
  
  <entry>
-   <title>从yum安装Cloudera CDH4.2</title>
+   <title>从yum安装Cloudera CDH集群</title>
    <link href="http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum"/>
    <updated>2013-04-06T17:00:00+08:00</updated>
    <id>http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</id>
-   <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
+   <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
 
 &lt;h2&gt;0.环境准备&lt;/h2&gt;
 
@@ -294,7 +294,7 @@ Caused by: java.io.EOFException
 
 &lt;p&gt;2.关闭防火墙&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;setenforce 0
-vim /etc/sysconfig/selinux
+vim /etc/sysconfig/selinux #修改SELINUX=disabled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;3.清空iptables &lt;code&gt;iptables -F&lt;/code&gt;&lt;/p&gt;
 

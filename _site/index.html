@@ -442,7 +442,7 @@ Caused by: java.io.EOFException
   <section id="hadoop20130406install-cloudera-cdh4.2-by-yum">
     <article>
       <header>
-      <h3><a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH4.2</a></h3>
+      <h3><a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH集群</a></h3>
       <div class="c9">
      		Author: JavaChen
      		&emsp;&emsp;
@@ -471,7 +471,7 @@ Caused by: java.io.EOFException
 		<a href='/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
-    <div class="content"><p>记录使用yum通过rpm方式安装Cloudera CDH4.2中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+    <div class="content"><p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
 
 <h2>0.环境准备</h2>
 
@@ -488,7 +488,7 @@ Caused by: java.io.EOFException
 
 <p>2.关闭防火墙</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">setenforce 0
-vim /etc/sysconfig/selinux
+vim /etc/sysconfig/selinux #修改SELINUX=disabled
 </code></pre></div>
 <p>3.清空iptables <code>iptables -F</code></p>
 
@@ -1244,7 +1244,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
       </li>
       <li class="post">
-        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH4.2</a>
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH集群</a>
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
