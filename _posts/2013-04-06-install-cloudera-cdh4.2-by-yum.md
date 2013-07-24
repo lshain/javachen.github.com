@@ -313,9 +313,13 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 ```
 	<configuration>
 	<property>
-	    <name>mapreduce.framework.name</name>
-	    <value>yarn</value>
+	    	<name>mapreduce.framework.name</name>
+	    	<value>yarn</value>
 	</property>
+      <property>
+          	<name>mapreduce.jobtracker.staging.root.dir</name>
+          	<value>/user</value>
+      </property>
 	<property>
 	 	<name>mapreduce.jobhistory.address</name>
 	 	<value>node1:10020</value>
@@ -324,26 +328,22 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 	 	<name>mapreduce.jobhistory.webapp.address</name>
 	 	<value>node1:19888</value>
 	</property>
+ 	<property>
+    		<name>mapred.child.java.opts</name>
+    		<value>-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1</value>
+  	</property>
 	<property>
 	  <name>mapreduce.task.io.sort.factor</name>
 	  <value>100</value>
-	  <description>The number of streams to merge at once while sorting
-	  files.  This determines the number of open file handles.</description>
 	</property>
 	<property>
 	  <name>mapreduce.task.io.sort.mb</name>
 	  <value>200</value>
-	  <description>The total amount of buffer memory to use while sorting 
-	  files, in megabytes.  By default, gives each merge stream 1MB, which
-	  should minimize seeks.</description>
 	</property>
 	<property>
 	  <name>mapreduce.reduce.shuffle.parallelcopies</name>
 	  <value>16</value>
 	   <!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数-->
-	  <description>The default number of parallel transfers run by reduce
-	  during the copy(shuffle) phase.
-	  </description>
 	</property>
 	<property>
 	  <name>mapreduce.task.timeout</name>
@@ -397,7 +397,6 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 	    <value>true</value>
 	</property>
 	<property>
-	    <description>Classpath for typical applications.</description>
 	    <name>yarn.application.classpath</name>
 	    <value>
 		$HADOOP_CONF_DIR,
@@ -419,10 +418,6 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 	    <name>yarn.nodemanager.remote-app-log-dir</name>
 	    <value>/var/log/hadoop-yarn/apps</value>
 	</property>
-	<property>
-	    <name>yarn.app.mapreduce.am.staging-dir</name>
-	    <value>/user</value>
-	</property>
 	</configuration>
 ```
 
@@ -434,20 +429,24 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 ### 创建日志目录
 
 	sudo -u hdfs hadoop fs -mkdir /user/history
-	sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+	sudo -u hdfs hadoop fs -chmod 1777 /user/history
 	sudo -u hdfs hadoop fs -chown yarn /user/history
+	sudo -u hdfs hadoop fs -mkdir /user/history/done
+	sudo -u hdfs hadoop fs -chmod 777 /user/history/done
+	sudo -u hdfs hadoop fs -chown yarn /user/history/done
 	sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 	sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 
 ### 验证hdfs结构是否正确
 
 	[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-	drwxrwxrwt   - hdfs   supergroup          0 2012-04-19 14:31 /tmp
-	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 10:26 /user
-	drwxrwxrwt   - yarn   supergroup          0 2012-04-19 14:31 /user/history
-	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var
-	drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var/log
-	drwxr-xr-x   - yarn   mapred        	     0 2012-05-31 15:31 /var/log/hadoop-yarn
+	drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
+	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
+	drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
+	drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
+	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
+	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
+	drwxr-xr-x   - yarn   mapred        	 0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
 ### 启动mapred-historyserver 
@@ -650,10 +649,11 @@ yum方式安装：
 
 	bash# sudo –u postgres psql
 	bash$ psql
-	postgres=# CREATE USER hiveuser WITH PASSWORD 'mypassword';
-	postgres=# CREATE DATABASE metastore;
-	postgres=# \c metastore;
-	You are now connected to database 'metastore'.
+	postgres=# CREATE USER hiveuser WITH PASSWORD 'redhat';
+	postgres=# CREATE DATABASE metastore owner=hiveuser;
+	postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+	postgres=# \q;
+	bash$ psql  -U hiveuser -d metastore
 	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
 	SET
 	SET

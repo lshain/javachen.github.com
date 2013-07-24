@@ -22,13 +22,12 @@ hive安装在desktop1上，注意hive默认是使用derby数据库保存元数�
 这里创建数据库metastore并创建hiveuser用户，其密码为redhat。
 
 ```
-psql -U postgres
-
-CREATE DATABASE metastore;
- \c metastore;
-CREATE USER hiveuser WITH PASSWORD 'redhat';
-GRANT ALL ON DATABASE metastore TO hiveuser;
-\q
+	bash# sudo –u postgres psql
+	bash$ psql
+	postgres=# CREATE USER hiveuser WITH PASSWORD 'redhat';
+	postgres=# CREATE DATABASE metastore owner=hiveuser;
+	postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+	postgres=# \q;
 ```
 
 * 初始化数据库
