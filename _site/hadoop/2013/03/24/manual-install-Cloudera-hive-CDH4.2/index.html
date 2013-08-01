@@ -124,13 +124,12 @@
 </ul>
 
 <p>这里创建数据库metastore并创建hiveuser用户，其密码为redhat。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">psql -U postgres
-
-CREATE DATABASE metastore;
- \c metastore;
-CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
-GRANT ALL ON DATABASE metastore TO hiveuser;
-\q
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    bash# sudo –u postgres psql
+    bash$ psql
+    postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
+    postgres=# CREATE DATABASE metastore owner=hiveuser;
+    postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+    postgres=# \q;
 </code></pre></div>
 <ul>
 <li>初始化数据库</li>
@@ -390,11 +389,11 @@ standard_conforming_strings = off
 
   
      
-    	<li><a href="/tags.html#hadoop-ref">hadoop <span>9</span></a></li>
+    	<li><a href="/tags.html#hadoop-ref">hadoop <span>10</span></a></li>
      
     	<li><a href="/tags.html#cdh-ref">cdh <span>5</span></a></li>
      
-    	<li><a href="/tags.html#hive-ref">hive <span>1</span></a></li>
+    	<li><a href="/tags.html#hive-ref">hive <span>2</span></a></li>
     
   
 
@@ -407,6 +406,10 @@ standard_conforming_strings = off
   <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
     
       <li class="post" >
         <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
@@ -442,10 +445,6 @@ standard_conforming_strings = off
     
       <li class="post" >
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2">手动安装Cloudera Hive CDH4.2</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
       </li>
     
     </ul>

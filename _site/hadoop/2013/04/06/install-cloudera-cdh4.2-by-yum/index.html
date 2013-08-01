@@ -383,9 +383,13 @@ fi
 <p>修改mapred-site.xml文件:</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
     &lt;property&gt;
-        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
-        &lt;value&gt;yarn&lt;/value&gt;
+            &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+            &lt;value&gt;yarn&lt;/value&gt;
     &lt;/property&gt;
+      &lt;property&gt;
+            &lt;name&gt;mapreduce.jobtracker.staging.root.dir&lt;/name&gt;
+            &lt;value&gt;/user&lt;/value&gt;
+      &lt;/property&gt;
     &lt;property&gt;
         &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
         &lt;value&gt;node1:10020&lt;/value&gt;
@@ -395,25 +399,21 @@ fi
         &lt;value&gt;node1:19888&lt;/value&gt;
     &lt;/property&gt;
     &lt;property&gt;
+            &lt;name&gt;mapred.child.java.opts&lt;/name&gt;
+            &lt;value&gt;-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
       &lt;name&gt;mapreduce.task.io.sort.factor&lt;/name&gt;
       &lt;value&gt;100&lt;/value&gt;
-      &lt;description&gt;The number of streams to merge at once while sorting
-      files.  This determines the number of open file handles.&lt;/description&gt;
     &lt;/property&gt;
     &lt;property&gt;
       &lt;name&gt;mapreduce.task.io.sort.mb&lt;/name&gt;
       &lt;value&gt;200&lt;/value&gt;
-      &lt;description&gt;The total amount of buffer memory to use while sorting 
-      files, in megabytes.  By default, gives each merge stream 1MB, which
-      should minimize seeks.&lt;/description&gt;
     &lt;/property&gt;
     &lt;property&gt;
       &lt;name&gt;mapreduce.reduce.shuffle.parallelcopies&lt;/name&gt;
       &lt;value&gt;16&lt;/value&gt;
        &lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;
-      &lt;description&gt;The default number of parallel transfers run by reduce
-      during the copy(shuffle) phase.
-      &lt;/description&gt;
     &lt;/property&gt;
     &lt;property&gt;
       &lt;name&gt;mapreduce.task.timeout&lt;/name&gt;
@@ -464,7 +464,6 @@ fi
         &lt;value&gt;true&lt;/value&gt;
     &lt;/property&gt;
     &lt;property&gt;
-        &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
         &lt;name&gt;yarn.application.classpath&lt;/name&gt;
         &lt;value&gt;
         $HADOOP_CONF_DIR,
@@ -486,10 +485,6 @@ fi
         &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
         &lt;value&gt;/var/log/hadoop-yarn/apps&lt;/value&gt;
     &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
-        &lt;value&gt;/user&lt;/value&gt;
-    &lt;/property&gt;
     &lt;/configuration&gt;
 </code></pre></div>
 <h3>HDFS创建临时目录</h3>
@@ -498,19 +493,23 @@ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 </code></pre></div>
 <h3>创建日志目录</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/history
-sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+sudo -u hdfs hadoop fs -chmod 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
+sudo -u hdfs hadoop fs -mkdir /user/history/done
+sudo -u hdfs hadoop fs -chmod 777 /user/history/done
+sudo -u hdfs hadoop fs -chown yarn /user/history/done
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 </code></pre></div>
 <h3>验证hdfs结构是否正确</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-drwxrwxrwt   - hdfs   supergroup          0 2012-04-19 14:31 /tmp
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 10:26 /user
-drwxrwxrwt   - yarn   supergroup          0 2012-04-19 14:31 /user/history
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred                 0 2012-05-31 15:31 /var/log/hadoop-yarn
+drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
+drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
+drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
+drwxr-xr-x   - yarn   mapred             0 2012-05-31 15:31 /var/log/hadoop-yarn
 </code></pre></div>
 <h3>启动mapred-historyserver</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
@@ -692,10 +691,11 @@ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
 <p>创建数据库和用户</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">bash# sudo –u postgres psql
 bash$ psql
-postgres=# CREATE USER hiveuser WITH PASSWORD &#39;mypassword&#39;;
-postgres=# CREATE DATABASE metastore;
-postgres=# \c metastore;
-You are now connected to database &#39;metastore&#39;.
+postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
+postgres=# CREATE DATABASE metastore owner=hiveuser;
+postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+postgres=# \q;
+bash$ psql  -U hiveuser -d metastore
 postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
 SET
 SET
@@ -914,7 +914,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
   
      
-    	<li><a href="/tags.html#hadoop-ref">hadoop <span>9</span></a></li>
+    	<li><a href="/tags.html#hadoop-ref">hadoop <span>10</span></a></li>
      
     	<li><a href="/tags.html#impala-ref">impala <span>2</span></a></li>
      
@@ -931,6 +931,10 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
     
       <li class="post" >
         <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
@@ -966,10 +970,6 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
     
       <li class="post" >
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2">手动安装Cloudera Hive CDH4.2</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
       </li>
     
     </ul>

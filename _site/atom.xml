@@ -4,13 +4,158 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-07-20T16:40:55+08:00</updated>
+ <updated>2013-08-01T23:36:47+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
    <email>june.chan@foxmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>远程调试hadoop各组件</title>
+   <link href="http://blog.javachen.com/hadoop/2013/08/01/remote-debug-hadoop"/>
+   <updated>2013-08-01T13:14:00+08:00</updated>
+   <id>http://blog.javachen.com/hadoop/2013/08/01/remote-debug-hadoop</id>
+   <content type="html">&lt;p&gt;远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。&lt;/p&gt;
+
+&lt;p&gt;为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。&lt;/p&gt;
+
+&lt;h2&gt;JPDA 简介&lt;/h2&gt;
+
+&lt;p&gt;Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。JPDA 不仅能够用于桌面系统，而且能够在嵌入式系统上很好地工作。&lt;/p&gt;
+
+&lt;p&gt;更详细的介绍，您可以参考&lt;a href=&quot;http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/&quot;&gt;使用 Eclipse 远程调试 Java 应用程序&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;JPDA 设置&lt;/h2&gt;
+
+&lt;p&gt;JVM本身就支持远程调试，只需要在各模块的JVM启动时加载以下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;各参数的含义：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Xdebug
+启用调试特性
+-Xrunjdwp
+启用JDWP实现，包含若干子选项：
+transport=dt_socket
+JPDA front-end和back-end之间的传输方法。dt_socket表示使用套接字传输。
+address=8000
+JVM在8000端口上监听请求，这个设定为一个不冲突的端口即可。
+server=y
+y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试器。
+suspend=y
+y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;配置hbase远程调试&lt;/h2&gt;
+
+&lt;p&gt;打开&lt;code&gt;/etc/hbase/conf/hbase-env.sh&lt;/code&gt;，找到以下内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;# Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
+# export HBASE_MASTER_OPTS=&amp;quot;$HBASE_MASTER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8070&amp;quot;
+# export HBASE_REGIONSERVER_OPTS=&amp;quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&amp;quot;
+# export HBASE_THRIFT_OPTS=&amp;quot;$HBASE_THRIFT_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8072&amp;quot;
+# export HBASE_ZOOKEEPER_OPTS=&amp;quot;$HBASE_ZOOKEEPER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8073&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果想远程调式hbase-master进程，请去掉对&lt;code&gt;HBASE_MASTER_OPTS&lt;/code&gt;的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。&lt;/p&gt;
+
+&lt;h2&gt;配置hive远程调试&lt;/h2&gt;
+
+&lt;p&gt;停止hive-server2进程，然后以下面命令启动hive-server2&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive --service hiveserver --debug
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;进程会监听在8000端口等待调试连接。如果想更改监听端口，可以修改配置文件:&lt;code&gt;${HIVE_HOME}bin/ext/debug.sh&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;如果Hadoop是0.23以上版本，debug模式启动Cli会报错：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ERROR: Cannot load this JVM TI agent twice, check your java command line for duplicate jdwp options.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;打开&lt;code&gt;${Hadoop_HOME}/bin/hadoop&lt;/code&gt;，注释掉以下代码&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;# Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
+HADOOP_OPTS=&amp;quot;$HADOOP_OPTS $HADOOP_CLIENT_OPTS&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;配置yarn远程调试&lt;/h2&gt;
+
+&lt;p&gt;请在以下代码添加调试参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;if [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;classpath&amp;quot; ] ; then
+if $cygwin; then
+CLASSPATH=`cygpath -p -w &amp;quot;$CLASSPATH&amp;quot;`
+fi
+echo $CLASSPATH
+exit
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;rmadmin&amp;quot; ] ; then
+CLASS=&amp;#39;org.apache.hadoop.yarn.client.RMAdmin&amp;#39;
+YARN_OPTS=&amp;quot;$YARN_OPTS $YARN_CLIENT_OPTS&amp;quot;
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;application&amp;quot; ] ; then
+class=&amp;quot;org&amp;quot;.apache.hadoop.yarn.client.cli.ApplicationCLI
+YARN_OPTS=&amp;quot;$YARN_OPTS $YARN_CLIENT_OPTS&amp;quot;
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;node&amp;quot; ] ; then
+class=&amp;quot;org&amp;quot;.apache.hadoop.yarn.client.cli.NodeCLI
+YARN_OPTS=&amp;quot;$YARN_OPTS $YARN_CLIENT_OPTS&amp;quot;
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;resourcemanager&amp;quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/rm-config/log4j.properties
+CLASS=&amp;#39;org.apache.hadoop.yarn.server.resourcemanager.ResourceManager&amp;#39;
+YARN_OPTS=&amp;quot;$YARN_OPTS $YARN_RESOURCEMANAGER_OPTS&amp;quot;
+if [ &amp;quot;$YARN_RESOURCEMANAGER_HEAPSIZE&amp;quot; != &amp;quot;&amp;quot; ]; then
+JAVA_HEAP_MAX=&amp;quot;-Xmx&amp;quot;&amp;quot;$YARN_RESOURCEMANAGER_HEAPSIZE&amp;quot;&amp;quot;m&amp;quot;
+fi
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;nodemanager&amp;quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/nm-config/log4j.properties
+CLASS=&amp;#39;org.apache.hadoop.yarn.server.nodemanager.NodeManager&amp;#39;
+YARN_OPTS=&amp;quot;$YARN_OPTS -server $YARN_NODEMANAGER_OPTS&amp;quot;
+if [ &amp;quot;$YARN_NODEMANAGER_HEAPSIZE&amp;quot; != &amp;quot;&amp;quot; ]; then
+JAVA_HEAP_MAX=&amp;quot;-Xmx&amp;quot;&amp;quot;$YARN_NODEMANAGER_HEAPSIZE&amp;quot;&amp;quot;m&amp;quot;
+fi
+elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;proxyserver&amp;quot; ] ; then
+CLASS=&amp;#39;org.apache.hadoop.yarn.server.webproxy.WebAppProxyServer&amp;#39;
+YARN_OPTS=&amp;quot;$YARN_OPTS $YARN_PROXYSERVER_OPTS&amp;quot;
+if [ &amp;quot;$YARN_PROXYSERVER_HEAPSIZE&amp;quot; != &amp;quot;&amp;quot; ]; then
+JAVA_HEAP_MAX=&amp;quot;-Xmx&amp;quot;&amp;quot;$YARN_PROXYSERVER_HEAPSIZE&amp;quot;&amp;quot;m&amp;quot;
+fi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;例如：
+如果你想调试resourcemanager代码，请在&lt;code&gt;elif [ &amp;quot;$COMMAND&amp;quot; = &amp;quot;resourcemanager&amp;quot; ]&lt;/code&gt; 分支内添加如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;YARN_RESOURCEMANAGER_OPTS=&amp;quot;$YARN_RESOURCEMANAGER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6001&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;其他进程，参照上面即可。&lt;/p&gt;
+
+&lt;p&gt;注意：端口不要冲突。&lt;/p&gt;
+
+&lt;h2&gt;配置mapreduce远程调试&lt;/h2&gt;
+
+&lt;p&gt;如果想要调试Map 或Reduce Task，则修改&lt;code&gt;bin/hadoop&lt;/code&gt;已经没用了，因为&lt;code&gt;bin/hadoop&lt;/code&gt;中没有Map Task的启动参数。&lt;/p&gt;
+
+&lt;p&gt;此时需要修改mapred-site.xml&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;property&amp;gt; 
+    &amp;lt;name&amp;gt;mapred.child.java.opts&amp;lt;/name&amp;gt; 
+    &amp;lt;value&amp;gt;-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000&amp;lt;/value&amp;gt; 
+&amp;lt;/property
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在一个TaskTracker上，只能启动一个Map Task或一个Reduce Task，否则启动时会有端口冲突。因此要修改所有TaskTracker上的&lt;code&gt;conf/hadoop-site.xml&lt;/code&gt;中的配置项：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;mapred.tasktracker.map.tasks.maximum&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;1&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;mapred.tasktracker.reduce.tasks.maximum&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;0&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;在Eclipse中使用方法：&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;打开eclipse，找到&lt;code&gt;Debug Configurations...&lt;/code&gt;，添加一个Remout Java Application:&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在source中可以关联到hive的源代码,然后，单击Debug按钮进入远程debug模式。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编写个jdbc的测试类，运行代码，这时候因为hive-server2端没有设置端点，故程序可以正常运行直到结束。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在hive代码中设置一个断点，如&lt;code&gt;ExecDriver.java&lt;/code&gt;的&lt;code&gt;execute&lt;/code&gt;方法中设置断点，然后再运行jdbc测试类。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;参考文章&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;http://zhangjie.me/eclipse-debug-hadoop/&quot;&gt;在Eclipse中远程调试Hadoop&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://long-xie.iteye.com/blog/1779072&quot;&gt;hive远程调试&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/&quot;&gt;使用 Eclipse 远程调试 Java 应用程序&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+ </entry>
  
  <entry>
    <title>安装RHadoop</title>
@@ -553,9 +698,13 @@ fi
 &lt;p&gt;修改mapred-site.xml文件:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    &amp;lt;configuration&amp;gt;
     &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+            &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+            &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
+      &amp;lt;property&amp;gt;
+            &amp;lt;name&amp;gt;mapreduce.jobtracker.staging.root.dir&amp;lt;/name&amp;gt;
+            &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
+      &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
         &amp;lt;name&amp;gt;mapreduce.jobhistory.address&amp;lt;/name&amp;gt;
         &amp;lt;value&amp;gt;node1:10020&amp;lt;/value&amp;gt;
@@ -565,25 +714,21 @@ fi
         &amp;lt;value&amp;gt;node1:19888&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
+            &amp;lt;name&amp;gt;mapred.child.java.opts&amp;lt;/name&amp;gt;
+            &amp;lt;value&amp;gt;-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property&amp;gt;
       &amp;lt;name&amp;gt;mapreduce.task.io.sort.factor&amp;lt;/name&amp;gt;
       &amp;lt;value&amp;gt;100&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;The number of streams to merge at once while sorting
-      files.  This determines the number of open file handles.&amp;lt;/description&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
       &amp;lt;name&amp;gt;mapreduce.task.io.sort.mb&amp;lt;/name&amp;gt;
       &amp;lt;value&amp;gt;200&amp;lt;/value&amp;gt;
-      &amp;lt;description&amp;gt;The total amount of buffer memory to use while sorting 
-      files, in megabytes.  By default, gives each merge stream 1MB, which
-      should minimize seeks.&amp;lt;/description&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
       &amp;lt;name&amp;gt;mapreduce.reduce.shuffle.parallelcopies&amp;lt;/name&amp;gt;
       &amp;lt;value&amp;gt;16&amp;lt;/value&amp;gt;
        &amp;lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&amp;gt;
-      &amp;lt;description&amp;gt;The default number of parallel transfers run by reduce
-      during the copy(shuffle) phase.
-      &amp;lt;/description&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
       &amp;lt;name&amp;gt;mapreduce.task.timeout&amp;lt;/name&amp;gt;
@@ -634,7 +779,6 @@ fi
         &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
     &amp;lt;property&amp;gt;
-        &amp;lt;description&amp;gt;Classpath for typical applications.&amp;lt;/description&amp;gt;
         &amp;lt;name&amp;gt;yarn.application.classpath&amp;lt;/name&amp;gt;
         &amp;lt;value&amp;gt;
         $HADOOP_CONF_DIR,
@@ -656,10 +800,6 @@ fi
         &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
         &amp;lt;value&amp;gt;/var/log/hadoop-yarn/apps&amp;lt;/value&amp;gt;
     &amp;lt;/property&amp;gt;
-    &amp;lt;property&amp;gt;
-        &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
-        &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
-    &amp;lt;/property&amp;gt;
     &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;HDFS创建临时目录&lt;/h3&gt;
@@ -668,19 +808,23 @@ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;创建日志目录&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo -u hdfs hadoop fs -mkdir /user/history
-sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+sudo -u hdfs hadoop fs -chmod 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
+sudo -u hdfs hadoop fs -mkdir /user/history/done
+sudo -u hdfs hadoop fs -chmod 777 /user/history/done
+sudo -u hdfs hadoop fs -chown yarn /user/history/done
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;验证hdfs结构是否正确&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-drwxrwxrwt   - hdfs   supergroup          0 2012-04-19 14:31 /tmp
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 10:26 /user
-drwxrwxrwt   - yarn   supergroup          0 2012-04-19 14:31 /user/history
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var
-drwxr-xr-x   - hdfs   supergroup          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred                 0 2012-05-31 15:31 /var/log/hadoop-yarn
+drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
+drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
+drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
+drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
+drwxr-xr-x   - yarn   mapred             0 2012-05-31 15:31 /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;启动mapred-historyserver&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/hadoop-mapreduce-historyserver start
@@ -862,10 +1006,11 @@ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
 &lt;p&gt;创建数据库和用户&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;bash# sudo –u postgres psql
 bash$ psql
-postgres=# CREATE USER hiveuser WITH PASSWORD &amp;#39;mypassword&amp;#39;;
-postgres=# CREATE DATABASE metastore;
-postgres=# \c metastore;
-You are now connected to database &amp;#39;metastore&amp;#39;.
+postgres=# CREATE USER hiveuser WITH PASSWORD &amp;#39;redhat&amp;#39;;
+postgres=# CREATE DATABASE metastore owner=hiveuser;
+postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+postgres=# \q;
+bash$ psql  -U hiveuser -d metastore
 postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
 SET
 SET
@@ -1614,13 +1759,12 @@ hbase(main):001:0&amp;gt;
 &lt;/ul&gt;
 
 &lt;p&gt;这里创建数据库metastore并创建hiveuser用户，其密码为redhat。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;psql -U postgres
-
-CREATE DATABASE metastore;
- \c metastore;
-CREATE USER hiveuser WITH PASSWORD &amp;#39;redhat&amp;#39;;
-GRANT ALL ON DATABASE metastore TO hiveuser;
-\q
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    bash# sudo –u postgres psql
+    bash$ psql
+    postgres=# CREATE USER hiveuser WITH PASSWORD &amp;#39;redhat&amp;#39;;
+    postgres=# CREATE DATABASE metastore owner=hiveuser;
+    postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+    postgres=# \q;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;初始化数据库&lt;/li&gt;

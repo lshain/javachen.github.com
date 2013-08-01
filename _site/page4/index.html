@@ -63,9 +63,215 @@
   <div class="span12">
     
 
-
 <div class="row">
   <div class="span8">
+  
+  
+  <section id="cassandra20120406install_singlenode-with-datastax-community-editio">
+    <article>
+      <header>
+      <h3><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#cassandra">cassandra</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dataStax-ref">dataStax</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
+
+<h1>检查java环境</h1>
+
+<p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
+<h3>1.检查是否安装java:</h3>
+<pre></p>
+
+<h1>java -version</h1>
+
+<p></pre>
+如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+<h3>2.安装jdk</h3>
+下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
+1）修改执行权限:
+<pre>
+$ cd /tmp
+$ chmod a+x jre-6u25-linux-x64-rpm.bin
+</pre>
+&lt;!--more--&gt;
+2）解压执行RPM文件,例如:
+<pre>
+$ sudo ./jre-6u25-linux-x64-rpm.bin
+</pre>
+这样JRE会安装在/usr/java/
+3）配置Oracle JRE取代OpenJDK JRE
+可以使用alternatives命令添加一个链接到Oracle JRE.
+<pre>
+$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0<em>25/bin/java 20000
+</pre>
+4）确认是否安装JRE
+<pre>
+$ java -version
+  java version &quot;1.6.0</em>25&quot;
+  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
+  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
+</pre>
+如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
+<pre>
+$ sudo alternatives --config java
+There are 2 programs which provide &#39;java&#39;.</p>
+
+<h2>Selection      Command</h2>
+
+<p>1           /usr/lib/jvm/jre-1.6.0-openjdk.x86<em>64/bin/java
+*+ 2           /usr/java/jre1.6.0</em>25/bin/java
+</pre></p>
+
+<h1>在Linux系统上安装DataStax Community二进制文件</h1>
+
+<h3>1.在用户目录创建一个目录,如datas</h3>
+
+<pre>
+$ cd $HOME
+$ mkdir datas
+$ cd datas
+</pre>
+
+<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
+
+<pre>
+$ wget http://downloads.datastax.com/community/dsc.tar.gz
+$ wget http://downloads.datastax.com/community/opscenter.tar.gz
+$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
+</pre>
+
+<h3>3.解压</h3>
+
+<pre>
+$ tar -xzvf dsc.tar.gz
+$ tar -xzvf opscenter.tar.gz
+$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
+$ rm *.tar.gz
+</pre>
+
+<h3>4.设置环境变量</h3>
+
+<p>1)编辑 .bashrc 
+<pre>
+ vi $HOME/.bashrc
+</pre>
+2)添加以下代码
+<pre>
+export CASSANDRA<em>HOME=$HOME/datas/dsc</em>package<em>name
+export DSCDEMO</em>HOME=$HOME/datas/dsc-1.0.1/demos/portfolio<em>manager
+export OPSC</em>HOME=$HOME/datas/opscenter<em>package</em>name
+export PATH=&quot;$PATH:$CASSANDRA<em>HOME/bin:$DSCDEMO</em>HOME/bin:$OPSC_HOME/bin&quot;
+</pre></p>
+
+<p>注意替换<font color="red">dsc<em>package</em>name</font>和<font color="red">opscenter<em>package</em>name</font>
+3)保存退出
+4)使该文件生效
+<pre>
+source $HOME/.bashrc
+</pre>
+<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
+<pre>
+$ mkdir $HOME/datas/cassandra-data
+</pre></p>
+
+<h1>配置并启动单节点</h1>
+
+<h3>1.编辑配置环境</h3>
+
+<p>修改$CASSANDRA<em>HOME/conf/cassandra.yaml
+<pre>
+$ sed -i -e &quot;s,initial</em>token:,initial<em>token: 0,&quot; \
+  $CASSANDRA</em>HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e &quot;s,saved<em>caches</em>directory: /var/lib/cassandra/saved<em>caches, \
+  saved</em>caches<em>directory: $HOME/datastax/cassandra-data/saved</em>caches,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml</p>
+
+<p>$ sed -i -e &quot;s,commitlog<em>directory: /var/lib/cassandra/commitlog,commitlog</em>directory: \
+  $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
+</pre></p>
+
+<h3>2.设置日志文件位置</h3> 
+
+<p>修改：$CASSANDRA<em>HOME/conf/log4j-server.properties
+<pre>
+$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
+  $CASSANDRA</em>HOME/conf/log4j-server.properties
+</pre>
+<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
+<pre>
+$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>,&quot; \
+  $DSCDEMO<em>HOME/bin/pricer
+&lt;/dsc</em>package_name&gt;
+</pre></p>
+
+<h3>4.后台启动Cassandra</h3>
+
+<pre>
+$ cassandra
+</pre>
+
+<h3>5.检查cassandra环是否在运行</h3>
+
+<pre>
+$ nodetool ring -h localhost
+</pre>
+
+<h3>6.运行Portfolio Demo示例程序</h3>
+
+<p>1)进入Portfolio目录
+<pre>
+$ cd $DSCDEMO<em>HOME
+</pre>
+2)运行 ./bin/pricer工具生成数据
+<pre>
+./bin/pricer --help
+</pre>
+下面代码生成100天的历史数据
+<pre>
+./bin/pricer -o INSERT</em>PRICES
+./bin/pricer -o UPDATE<em>PORTFOLIOS
+./bin/pricer -o INSERT</em>HISTORICAL<em>PRICES -n 100
+</pre>
+3)启动服务(必须在$DSCDEMO</em>HOME/website目录下启动)
+<pre>
+$ cd $DSCDEMO_HOME/website
+$ java -jar start.jar &amp;
+</pre>
+4)浏览程序 http://localhost:8983/portfolio</p>
+
+<h1>参考文章</h1>
+
+<ul>
+<li>1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></li>
+</ul>
+</div>
+    </article>
+  </section>
   
   
   <section id="java20120326hash-and-hash-functions">
@@ -584,44 +790,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     </article>
   </section>
   
-  
-  <section id="kettle20120221the-execution-process-of-kettles-job">
-    <article>
-      <header>
-      <h3><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#kettle">kettle</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/kettle/2012/02/21/the-execution-process-of-kettles-job#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.</p>
-
-<p>When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.</p>
-
-<p>This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.</p>
-
-<p><div class="pic">
-<a href="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg" target="_blank"><img src="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg" alt="" title="spoon execute sequence" width="300" height="180" class="aligncenter size-medium wp-image-2511" /></a>
-</div></p>
-
-<p>What is the detail process of job execution? You should look into the Job.run() method for detail information.</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page3'>&larr; Previous</a></li>
@@ -642,6 +810,9 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
       </li>
@@ -668,9 +839,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2">手动安装Cloudera Hive CDH4.2</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
       </li>
     </ul>
     </section>
@@ -767,7 +935,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>9</span>
+    		hadoop <span>10</span>
     	</a></li>
     
   

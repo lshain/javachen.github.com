@@ -18,6 +18,7 @@ http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
 
+http://blog.javachen.com/hadoop/2013/08/01/remote-debug-hadoop
 http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop
 http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager
 http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle
