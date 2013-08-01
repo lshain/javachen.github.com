@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-02T00:15:18+08:00</updated>
+ <updated>2013-08-02T00:19:24+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -419,9 +419,9 @@ Caused by: java.io.EOFException
  
  <entry>
    <title>从yum安装Cloudera CDH集群</title>
-   <link href="http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum"/>
+   <link href="http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum"/>
    <updated>2013-04-06T17:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</id>
+   <id>http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum</id>
    <content type="html">&lt;p&gt;记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。&lt;/p&gt;
 
 &lt;h2&gt;0.环境准备&lt;/h2&gt;
@@ -1312,10 +1312,10 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
  </entry>
  
  <entry>
-   <title>手动安装Cloudera Hadoop CDH4.2</title>
-   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2"/>
+   <title>手动安装Cloudera Hadoop CDH</title>
+   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH"/>
    <updated>2013-03-24T15:10:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2</id>
+   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH</id>
    <content type="html">&lt;h2&gt;安装版本&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hadoop-2.0.0-cdh4.2.0
 hbase-0.94.2-cdh4.2.0
@@ -1663,10 +1663,10 @@ http://desktop2:8042/node
  </entry>
  
  <entry>
-   <title>手动安装Cloudera HBase CDH4.2</title>
-   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2"/>
+   <title>手动安装Cloudera HBase CDH</title>
+   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH"/>
    <updated>2013-03-24T15:05:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2</id>
+   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH</id>
    <content type="html">&lt;p&gt;本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。&lt;/p&gt;
 
 &lt;h3&gt;安装HBase&lt;/h3&gt;
@@ -1738,10 +1738,10 @@ hbase(main):001:0&amp;gt;
  </entry>
  
  <entry>
-   <title>手动安装Cloudera Hive CDH4.2</title>
-   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2"/>
+   <title>手动安装Cloudera Hive CDH</title>
+   <link href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH"/>
    <updated>2013-03-24T15:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2</id>
+   <id>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH</id>
    <content type="html">&lt;p&gt;本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。&lt;/p&gt;
 
 &lt;h3&gt;安装hive&lt;/h3&gt;

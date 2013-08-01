@@ -164,7 +164,7 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum</loc>
+		<loc>http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum</loc>
 		<lastmod>2013-04-06</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
@@ -178,21 +178,21 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2</loc>
+		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH</loc>
 		<lastmod>2013-03-24</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2</loc>
+		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH</loc>
 		<lastmod>2013-03-24</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2</loc>
+		<loc>http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH</loc>
 		<lastmod>2013-03-24</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
