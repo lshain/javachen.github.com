@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Getting Started Using the Cassandra CLI - JavaChen Blog</title>
+    <meta name="keywords" content="cassandra, cli" />
+    <meta name="description" content="这仅仅是一个Cassandra CLI使用方法的清单" />
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/about.html">About me</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  	<h2>Getting Started Using the Cassandra CLI </h2>
+	<div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cassandra">cassandra</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cli-ref">cli</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Time：<time date="2012-04-09 00:00:00 +0800">2012-04-09 00:04</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio" title="使用DataStax Community Edition安装Cassandra单节点">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/kettle/2012/04/13/kettle-dependency-management" title="Kettle dependency management">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    
+    <p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
+Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<p><h1>Starting the CLI</h1>
+使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
+如果你有一个但节点的集群，则使用以下命令：
+<pre> 
+$ cassandra-cli -host localhost -port 9160
+</pre>
+如果想连接多节点集群中的一个节点，可以使用以下命令:
+<pre>
+$ cassandra-cli -host 110.123.4.5 -port 9160
+</pre>
+或者，可以直接执行以下命令：
+<pre>
+$ cassandra-cli
+</pre>
+登录成功之后，可以看到：
+<pre>
+Welcome to cassandra CLI.
+Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+</pre>
+你必须指定连接一个节点：
+<pre>
+[default@unknown]connect localhost/9160;
+</pre>
+<!--more-->
+<h1>Creating a Keyspace</h1>
+<pre>
+[default@unknown] CREATE KEYSPACE demo;
+</pre>
+下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
+<pre>
+[default@unknown] CREATE KEYSPACE demo with 
+        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
+        and strategy_options = [{replication_factor:1}];
+</pre>
+你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<p><h1>Use a keyspace</h1>
+<pre>
+[default@unknown] USE demo;
+</pre></p>
+
+<p><h1>Creating a Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</pre>
+我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
+下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
+<pre>
+[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</pre></p>
+
+<p><h1>Creating a Counter Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+          default_validation_class=CounterColumnType 
+          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</pre>
+插入一行和计数列：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
+</pre>
+增加计数：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
+</pre></p>
+
+<p><h1>Inserting Rows and Columns</h1>
+以下命令以一个特点的行key值插入列到users中
+<pre>
+[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
+[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
+[default@demo] SET users['bobbyjo']['state']='TX';
+[default@demo] SET users['bobbyjo']['gender']='M';
+[default@demo] SET users['bobbyjo']['birth_year']='1975';
+</pre>
+更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
+获取数据： get users['bobbyjo'];<br />
+get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
+查询数据： get users where gender= 'M';<br />
+下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
+<pre>
+[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
+</pre></p>
+
+<p><h1>Reading Rows and Columns</h1>
+使用List命令查询记录，默认查询100条记录
+<pre>
+[default@demo] LIST users;
+</pre>
+Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：
+<pre>
+[default@demo] GET users[utf8('bobby')][utf8('full_name')];
+</pre>
+你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
+<pre>
+[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</pre></p>
+
+<p><h1>Setting an Expiring Column</h1>
+例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
+<pre>
+[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
+</pre>
+自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<p><h1>Indexing a Column</h1>
+给birth_year添加一个二级索引：
+<pre>
+[default@demo] UPDATE COLUMN FAMILY users 
+            WITH comparator = UTF8Type AND column_metadata = 
+            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</pre>
+由于该列被索引了，所以可以直接通过该列查询：
+<pre>
+[default@demo] GET users WHERE birth_date = 1969;
+</pre></p>
+
+<p><h1>Deleting Rows and Columns</h1>
+删除yomama索引的coupon_code列：
+<pre>
+[default@demo] DEL users ['yomama']['coupon_code'];
+[default@demo] GET users ['yomama'];
+</pre>
+或者删除整行：
+<pre>
+[default@demo] DEL users ['yomama'];
+</pre></p>
+
+<p><h1>Dropping Column Families and Keyspaces</h1>
+<pre>
+[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</pre></p>
+
+<p><h1>For help</h1>
+<pre>
+[default@unknown]help;
+</pre>
+查看某一个命令的详细说明：
+<pre>
+[default@unknown] help SET;
+</pre></p>
+
+<p><h1>To Quit</h1>
+<pre>
+[default@unknown]quit;
+</pre></p>
+
+<p><h1>To Execute Script</h1>
+<pre>
+bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</pre></p>
+
+<h1>参考文章</h1>
+
+<ul>
+<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
+<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p></li>
+</ul>
+
+    
+    <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli'>JavaChen Blog</a>-
+		<br/>
+		<br/>
+		<!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style_32x32">
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_tqq"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_twitter"></a>
+		<a class="jiathis_button_fb"></a>
+		<a class="jiathis_button_googleplus"></a>
+		<a class="jiathis_button_translate"></a>
+		<a class="jiathis_button_delicious"></a>
+		<a class="jiathis_button_sdonote"></a>
+		<a class="jiathis_button_ydnote"></a>
+		<a class="jiathis_button_qingbiji"></a>
+		<a class="jiathis_button_fav"></a>
+		<a class="jiathis_button_ishare"></a>
+		<a class="jiathis_button_copy"></a>
+		<a class="jiathis_button_email"></a>
+		<a href="http://www.jiathis.com/share?uid=1709061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+		<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript" >
+		var jiathis_config={
+			data_track_clickback:true,
+			summary:"",
+			hideMore:false
+		}
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1709061" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+
+
+
+		<!-- UJian Button BEGIN -->
+		<div class="ujian-hook"></div>
+		<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1709061"></script>
+		<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+		<!-- UJian Button END -->
+	</div>
+	
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio" title="使用DataStax Community Edition安装Cassandra单节点">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/kettle/2012/04/13/kettle-dependency-management" title="Kettle dependency management">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+  </div>
+  <div class="span4">
+  <section>
+  
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#cassandra-ref">cassandra <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#cli-ref">cli <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+  
+  </section>  
+  
+  <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh4.2-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2">手动安装Cloudera Hadoop CDH4.2</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH4.2">手动安装Cloudera HBase CDH4.2</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2">手动安装Cloudera Hive CDH4.2</a>
+      </li>
+    
+    </ul>
+  </section>
+  
+  <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </div>
+</div>
+
+<div id="comment">
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</div>
+
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+<!-- UJian Button END -->
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+
