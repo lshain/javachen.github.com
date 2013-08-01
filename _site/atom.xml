@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-02T00:01:51+08:00</updated>
+ <updated>2013-08-02T00:04:42+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -23,13 +23,13 @@
 
 &lt;h2&gt;JPDA 简介&lt;/h2&gt;
 
-&lt;p&gt;Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。JPDA 不仅能够用于桌面系统，而且能够在嵌入式系统上很好地工作。&lt;/p&gt;
+&lt;p&gt;Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。&lt;/p&gt;
 
 &lt;p&gt;更详细的介绍，您可以参考&lt;a href=&quot;http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/&quot;&gt;使用 Eclipse 远程调试 Java 应用程序&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2&gt;JPDA 设置&lt;/h2&gt;
+&lt;h2&gt;JDWP 设置&lt;/h2&gt;
 
-&lt;p&gt;JVM本身就支持远程调试，只需要在各模块的JVM启动时加载以下参数：&lt;/p&gt;
+&lt;p&gt;JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;各参数的含义：&lt;/p&gt;

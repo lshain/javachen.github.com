@@ -118,13 +118,13 @@
 
 <h2>JPDA 简介</h2>
 
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。JPDA 不仅能够用于桌面系统，而且能够在嵌入式系统上很好地工作。</p>
+<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
 
 <p>更详细的介绍，您可以参考<a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></p>
 
-<h2>JPDA 设置</h2>
+<h2>JDWP 设置</h2>
 
-<p>JVM本身就支持远程调试，只需要在各模块的JVM启动时加载以下参数：</p>
+<p>JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
 </code></pre></div>
 <p>各参数的含义：</p>
