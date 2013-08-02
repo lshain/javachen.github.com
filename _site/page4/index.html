@@ -67,6 +67,218 @@
   <div class="span8">
   
   
+  <section id="cassandra20120409getting-started-using-the-cassandra-cli">
+    <article>
+      <header>
+      <h3><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#cassandra">cassandra</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cli-ref">cli</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
+Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<p><h1>Starting the CLI</h1>
+使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
+如果你有一个但节点的集群，则使用以下命令：
+<pre> 
+$ cassandra-cli -host localhost -port 9160
+</pre>
+如果想连接多节点集群中的一个节点，可以使用以下命令:
+<pre>
+$ cassandra-cli -host 110.123.4.5 -port 9160
+</pre>
+或者，可以直接执行以下命令：
+<pre>
+$ cassandra-cli
+</pre>
+登录成功之后，可以看到：
+<pre>
+Welcome to cassandra CLI.
+Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
+</pre>
+你必须指定连接一个节点：
+<pre>
+[default@unknown]connect localhost/9160;
+</pre>
+<!--more-->
+<h1>Creating a Keyspace</h1>
+<pre>
+[default@unknown] CREATE KEYSPACE demo;
+</pre>
+下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
+<pre>
+[default@unknown] CREATE KEYSPACE demo with 
+        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
+        and strategy_options = [{replication_factor:1}];
+</pre>
+你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<p><h1>Use a keyspace</h1>
+<pre>
+[default@unknown] USE demo;
+</pre></p>
+
+<p><h1>Creating a Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</pre>
+我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
+下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
+<pre>
+[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</pre></p>
+
+<p><h1>Creating a Counter Column Family</h1>
+<pre>
+[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+          default_validation_class=CounterColumnType 
+          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</pre>
+插入一行和计数列：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
+</pre>
+增加计数：
+<pre>
+[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
+</pre></p>
+
+<p><h1>Inserting Rows and Columns</h1>
+以下命令以一个特点的行key值插入列到users中
+<pre>
+[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
+[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
+[default@demo] SET users['bobbyjo']['state']='TX';
+[default@demo] SET users['bobbyjo']['gender']='M';
+[default@demo] SET users['bobbyjo']['birth_year']='1975';
+</pre>
+更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
+获取数据： get users['bobbyjo'];<br />
+get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
+查询数据： get users where gender= 'M';<br />
+下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
+<pre>
+[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
+</pre></p>
+
+<p><h1>Reading Rows and Columns</h1>
+使用List命令查询记录，默认查询100条记录
+<pre>
+[default@demo] LIST users;
+</pre>
+Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：
+<pre>
+[default@demo] GET users[utf8('bobby')][utf8('full_name')];
+</pre>
+你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
+<pre>
+[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</pre></p>
+
+<p><h1>Setting an Expiring Column</h1>
+例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
+<pre>
+[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
+</pre>
+自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<p><h1>Indexing a Column</h1>
+给birth_year添加一个二级索引：
+<pre>
+[default@demo] UPDATE COLUMN FAMILY users 
+            WITH comparator = UTF8Type AND column_metadata = 
+            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</pre>
+由于该列被索引了，所以可以直接通过该列查询：
+<pre>
+[default@demo] GET users WHERE birth_date = 1969;
+</pre></p>
+
+<p><h1>Deleting Rows and Columns</h1>
+删除yomama索引的coupon_code列：
+<pre>
+[default@demo] DEL users ['yomama']['coupon_code'];
+[default@demo] GET users ['yomama'];
+</pre>
+或者删除整行：
+<pre>
+[default@demo] DEL users ['yomama'];
+</pre></p>
+
+<p><h1>Dropping Column Families and Keyspaces</h1>
+<pre>
+[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</pre></p>
+
+<p><h1>For help</h1>
+<pre>
+[default@unknown]help;
+</pre>
+查看某一个命令的详细说明：
+<pre>
+[default@unknown] help SET;
+</pre></p>
+
+<p><h1>To Quit</h1>
+<pre>
+[default@unknown]quit;
+</pre></p>
+
+<p><h1>To Execute Script</h1>
+<pre>
+bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</pre></p>
+
+<h1>参考文章</h1>
+
+<ul>
+<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
+<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="cassandra20120406install_singlenode-with-datastax-community-editio">
     <article>
       <header>
@@ -691,105 +903,6 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
     </article>
   </section>
   
-  
-  <section id="kettle20120222the-init-process-before-job-execution">
-    <article>
-      <header>
-      <h3><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#kettle">kettle</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/kettle/2012/02/22/the-init-process-before-job-execution#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
-
-<p>之前用英文写了一篇文章《<a href="http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
-
-<p>在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。</p>
-
-<pre lang="java">
-public void runFile() {
-    executeFile(true, false, false, false, false, null, false);
-}
-
-public void executeFile(boolean local, boolean remote, boolean cluster,
-        boolean preview, boolean debug, Date replayDate, boolean safe) {
-    TransMeta transMeta = getActiveTransformation();
-    if (transMeta != null)
-        executeTransformation(transMeta, local, remote, cluster, preview,
-                debug, replayDate, safe);
-
-    JobMeta jobMeta = getActiveJob();
-    if (jobMeta != null)
-        executeJob(jobMeta, local, remote, replayDate, safe, null, 0);
-}
-
-public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
-        Date replayDate, boolean safe, String startCopyName, int startCopyNr) {
-    try {
-        delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,
-                startCopyName, startCopyNr);
-    } catch (Exception e) {
-        new ErrorDialog(shell, "Execute job",
-                "There was an error during job execution", e);
-    }
-}
-</pre>
-
-<p>runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
-- local：是否本地运行
-- remote：是否远程运行
-- cluster：是否集群环境运行
-- preview：是否预览
-- debug：是否调试
-- replayDate：回放时间
-- safe：是否安全模式</p>
-
-<p>executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。</p>
-
-<p>executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。</p>
-
-<p>SpoonJobDelegate的executeJob方法主要完成以下操作：</p>
-
-<ul>
-<li>1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。</li>
-<li>2.获得当前Job对应的图形类JobGraph。</li>
-<li>3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。</li>
-<li>4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。</li>
-</ul>
-
-<p>JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。</p>
-
-<p>本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。</p>
-
-<p>JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：</p>
-
-<ul>
-<li>1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。</li>
-<li>2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。</li>
-<li>3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。</li>
-<li>4.Job对象添加JobEntry监听器、Job监听器。</li>
-<li>5.调用Job的start方法，启动线程开始执行一个job。</li>
-</ul>
-
-<p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page3'>&larr; Previous</a></li>
@@ -810,6 +923,9 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
       </li>
@@ -836,9 +952,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
       </li>
     </ul>
     </section>
@@ -935,7 +1048,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>10</span>
+    		hadoop <span>11</span>
     	</a></li>
     
   

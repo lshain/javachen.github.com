@@ -67,6 +67,203 @@
   <div class="span8">
   
   
+  <section id="javascript20110724drag-an-item-to-dhtmlxgrid-and-add-a-column">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#javascript">javascript</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
+现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
+如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
+首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
+<pre escaped="true" lang="javascript" line="1">function maf() {
+    return false;
+}
+tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
+
+<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
+
+<p>function s<em>control() {
+    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.<em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this.</em>dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+}
+var sinput = document.getElementById(&#39;sInput&#39;);
+tree.dragger.addDragLanding(sinput, new s_control);
+</pre></p>
+
+<p>为了使tree支持拖拽功能，必须添加以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
+
+<p>为了实现自定义拖拽的输出，添加了以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
+
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.</em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this._dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+</pre></p>
+
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
+
+<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
+
+<pre escaped="true" lang="javascript" line="1">
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+        targetHtmlObject, e) {
+    var zel = e;
+    while (zel.tagName != "TABLE")
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+    if (!grid._mCol || e.button == 2)
+        return;
+    e = grid.getFirstParentOfType(e, "TD")
+
+    if ((grid) &amp;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
+            insertId = e._cellIndex + 1;
+    }
+
+    mygrid.insertColumn(insertId, "12", "ed", 80);
+}
+</pre>
+
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
+<div class="pic">
+<img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
+</div></p>
+
+<p>本例最后的代码：
+<pre escaped="true" lang="javascript" line="1">
+    var mygrid;
+    function maf() {
+        return false;
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
+tree.setSkin(&#39;dhx_skyblue&#39;);
+tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+//tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
+tree.openAllItems(0);
+
+function s_control() {
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+            targetHtmlObject, e) {
+        var zel = e;
+        while (zel.tagName != &quot;TABLE&quot;)
+            zel = zel.parentNode;
+        var grid = zel.grid;
+        if (!grid)
+            return;
+        grid.setActive();
+        if (!grid._mCol || e.button == 2)
+            return;
+        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
+
+        if ((grid) &amp;&amp; (!grid._colInMove)) {
+            grid.resized = null;
+            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
+                insertId = e._cellIndex + 1;
+        }
+
+        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
+    }
+}
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.setColumnHidden(2, true);
+mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
+});
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</code></pre></div>
+<p></pre>
+本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
+
+<h2>参考文章</h2>
+
+<p><li>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
+</li>
+<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
+</li>
+<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
+</li></p>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="javascript20110719dhtmlxgrid-quick-start-guide">
     <article>
       <header>
@@ -616,113 +813,6 @@ OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址�
     </article>
   </section>
   
-  
-  <section id="cloud20110629install-opennebula-management-console-in-centos5-6">
-    <article>
-      <header>
-      <h3><a href="/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6">Centos上安装 OpenNebula Management Console</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#cloud">cloud</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#openNebula-ref">openNebula</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
-
-<p>OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章：<br />
-《<a href="http://www.vpsee.com/2011/03/install-opennebula-management-console-on-centos/" target="_blank">安装 OpenNebula 基于 Web 的管理控制台》</a>，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。</p>
-
-<p>我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。</p>
-
-<p><span style="color: #ff0000;"><!--more-->以下来自<a href="http://dev.opennebula.org/projects/management-console/wiki">官方文档</a>：</span>
-<h3><span style="color: #0000ff;">要求:</span></h3>
-<ul>
-    <li>Apache or whatever webserver.</li>
-    <li>php5 (May work with php4 but not tested)</li>
-    <li>php-adodb<br />
-And you need a db driver for adodb: php-mysql or php-pgsql.</li>
-    <li>Mysql or postgresql database</li>
-    <li>php-curl</li>
-    <li>php-xmlrpc</li>
-    <li>php-pear: pecl install uploadprogress (Only if you want a nice upload progress bar)</li>
-</ul>
-如果你想查看更多资料，您可以去官网：<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>；如果你想在ubutun上安装OpenNebula Management Console，参照这篇文章：<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
-
-<p><span style="color: #ff0000;">以下为安装过程：</span>
-<h3><span style="color: #0000ff;">必要软件</span></h3>
-<pre escaped="true" lang="shell"># yum -y install php mysql-server httpd mysql-connector-odbc mysql-devel libdbi-dbd-mysql</pre>
-<h3><span style="color: #ff0000; font-size: 15px;">安装php-adodb</span></h3>
-从<a href="http://sourceforge.net/projects/adodb/files/adodb-php5-only">http://sourceforge.net/projects/adodb/files/adodb-php5-only</a>下载
-<strong><span style="color: #ff0000;">注意：</span></strong>将adobd包解压拷贝到/var/www/html/onemc/include/，将文件名改为adobd
-<h3><span style="color: #0000ff;">安装php的扩展</span></h3>
-<pre escaped="true" lang="shell"># yum -y install php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-curl php-mysql</pre>
-<h3><span style="color: #0000ff; font-size: 15px;">安装apache扩展</span></h3>
-<pre escaped="true" lang="shell"># yum -y install httpd-manual mod_ssl mod_perl mod_auth_mysql</pre>
-<h3><span style="color: #ff0000;">修改配置文件权限</span></h3>
-<pre escaped="true" lang="shell"># chmod 644 /var/www/html/onemc/include/config.php</pre>
-我下载的是OpenNebula 2.2其中/config.php的权限很特别，如果你从浏览器访问onemc时候页面都是空白的，你可以看看日志（我使用的是httpd，日志在httpd.log），可以看到日志中提示没有权限访问/var/www/html/onemc/include/config.php
-<h3><span style="color: #0000ff;">下载 onemc</span></h3>
-下载和解压 onemc-1.0.0.tar.gz 后直接放在 apache 的默认目录里：
-<pre escaped="true" lang="shell"># cd /var/www/html
-# wget http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz
-# tar zxvf onemc-1.0.0.tar.gz
-# cd onemc</pre>
-<h3><span style="color: #0000ff; font-size: 15px;">配置数据库</span></h3>
-<pre escaped="true" lang="shell"># mysql -uroot -p
-Enter password:
-mysql&gt; create database onemc;
-mysql&gt; create user 'oneadmin'@'localhost' identified by 'oneadmin';
-mysql&gt; grant all privileges on onemc.* to 'oneadmin'@'localhost';
-mysql&gt; \q</pre>
-<h3><span style="color: #0000ff; font-size: 15px;">初始化数据库</span></h3>
-<pre escaped="true" lang="shell"># mysql -u oneadmin -p onemc &lt; /var/www/html/onemc/include/mysql.sql</pre>
-<h3><span style="color: #0000ff;">配置 onemc</span></h3>
-<pre escaped="true" lang="shell"># vi /var/www/html/onemc/include/config.php
-...
-// vmm: kvm or xen
-$vmm = "xen";
-...
-// ADODB settings
-$adodb_type = "mysql";
-$adodb_server = "localhost";
-$adodb_user = "oneadmin";
-$adodb_pass = "oneadmin";
-$adodb_name = "onemc";</pre>
-<h3><span style="color: #0000ff; font-size: 15px;">登录</span></h3>
-如果系统设置了 http_proxy 环境变量的话一定要先关闭，然后重启 one 和 httpd：
-<pre escaped="true" lang="shell"># unset http_proxy
-# one stop; one start
-# /etc/init.d/httpd restar
-</pre>
-访问地址为http://localhost/onemc/index.php，用户名和密码在one_auth 中。
-<h3><span style="font-size: 15px;"><span style="color: #ff0000;">总结</span></span></h3>
-以上步骤最重要的是配置好centos的yum源，一次将php和mysql及相关组件安装成功，然后需要注意的是上面红色部分标出的部分。其实，除了红色那部分之外，其余和开头提到的那篇文章内容没什么差别。
-<h3><span style="color: #0000ff;">参考文章</span></h3>
-<li>
-<a href="http://www.javachen.com/?page_id=2073#date=2011-06-29 12:00:00,mode=month" target="_blank">Centos上安装 OpenNebula Management Console</a>
-</li>
-<li>
-<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>
-</li>
-<li><a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a>
-</li>
-</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page7'>&larr; Previous</a></li>
@@ -743,6 +833,9 @@ $adodb_name = "onemc";</pre>
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
       </li>
@@ -769,9 +862,6 @@ $adodb_name = "onemc";</pre>
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
       </li>
     </ul>
     </section>
@@ -868,7 +958,7 @@ $adodb_name = "onemc";</pre>
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>10</span>
+    		hadoop <span>11</span>
     	</a></li>
     
   
