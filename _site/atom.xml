@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-02T15:28:18+08:00</updated>
+ <updated>2013-08-03T14:12:03+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -37,7 +37,7 @@
 
 &lt;h2&gt;hadoop-install&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前完成了自动安装hdfs、hive和yarn。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前只完成了hdfs、hive和yarn的自动安装。&lt;/p&gt;
 
 &lt;p&gt;需要说明的是：&lt;/p&gt;
 
@@ -151,7 +151,7 @@ su -c &amp;quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&a
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;总结&lt;/h2&gt;
 
-&lt;p&gt;更多脚本，请关注github：&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;，你可以下载并修改其中代码！&lt;/p&gt;
+&lt;p&gt;更多脚本，请关注github：&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;，你可以下载、使用并修改其中代码！&lt;/p&gt;
 </content>
  </entry>
  
@@ -317,32 +317,37 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;编译安装：R-3.0.1&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf R-3.0.1 
-./configure     
+./configure
 make 
 make install #R运行
 export HADOOP_CMD=/usr/bin/hadoop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;排错&lt;/h3&gt;
 
-&lt;p&gt;1、error: --with-readline=yes (default) &lt;/p&gt;
-
-&lt;p&gt;安装yum install readline*&lt;/p&gt;
-
-&lt;p&gt;2、error: No F77 compiler found &lt;/p&gt;
-
+&lt;p&gt;1、错误1&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;error: --with-readline=yes (default) 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装readline &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install readline*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2、错误2&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;error: No F77 compiler found 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;安装gfortran&lt;/p&gt;
 
-&lt;p&gt;3、error: –with-x=yes (default) and X11 headers/libs are not available &lt;/p&gt;
-
-&lt;p&gt;安装yum install libXt*&lt;/p&gt;
-
-&lt;p&gt;4、error: C++ preprocessor &amp;quot;/lib/cpp&amp;quot; fails sanity check &lt;/p&gt;
-
+&lt;p&gt;3、错误3&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;error: –with-x=yes (default) and X11 headers/libs are not available 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install libXt*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;4、错误4&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;error: C++ preprocessor &amp;quot;/lib/cpp&amp;quot; fails sanity check 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）&lt;/p&gt;
 
 &lt;h3&gt;验证是否安张成功&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 bin]# R
-
 R version 3.0.1 (2013-05-16) -- &amp;quot;Good Sport&amp;quot;
 Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
@@ -358,8 +363,6 @@ R是个合作计划，有许多人为之做出了贡献.
 用&amp;#39;demo()&amp;#39;来看一些示范程序，用&amp;#39;help()&amp;#39;来阅读在线帮助文件，或
 用&amp;#39;help.start()&amp;#39;通过HTML浏览器来看帮助文件。
 用&amp;#39;q()&amp;#39;退出R.
-
-&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;安装Rhadoop&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd Rhadoop/
@@ -504,28 +507,27 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 &lt;p&gt;&lt;img src=&quot;/files/2013/hbase-output-setup-for-idh-2.3.png&quot; alt=&quot;hbase-output-setup-for-idh-2.3&quot;&gt;&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;在&lt;code&gt;Create/Edit mappings&lt;/code&gt; tab页点击&lt;code&gt;Get table names&lt;/code&gt;，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：&lt;/p&gt;
-
-&lt;p&gt;13/04/17 10:22:13 INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
+&lt;li&gt;在&lt;code&gt;Create/Edit mappings&lt;/code&gt; tab页点击&lt;code&gt;Get table names&lt;/code&gt;，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
 retrying after sleep of 1000
 java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
-    at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
-    at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
-    at $Proxy5.getProtocolVersion(Unknown Source)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
-    at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
-    at org.apache.hadoop.hbase.client.HBaseAdmin.&amp;lt; init&amp;gt;(HBaseAdmin.java:141)
-    at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
+at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
+at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
+at $Proxy5.getProtocolVersion(Unknown Source)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
+at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
+at org.apache.hadoop.hbase.client.HBaseAdmin.&amp;lt; init&amp;gt;(HBaseAdmin.java:141)
+at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
 Caused by: java.io.EOFException
-    at java.io.DataInputStream.readInt(DataInputStream.java:375)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-</content>
+at java.io.DataInputStream.readInt(DataInputStream.java:375)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>
@@ -1479,12 +1481,9 @@ jdk1.6.0_38
 &lt;p&gt;安装hadoop、hbase、hive成功之后启动方式为：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;启动dfs和mapreduce
-desktop1上执行start-dfs.sh和start-yarn.sh&lt;/li&gt;
-&lt;li&gt;启动hbase
-desktop3上执行start-hbase.xml&lt;/li&gt;
-&lt;li&gt;启动hive
-desktop1上执行hive&lt;/li&gt;
+&lt;li&gt;启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh&lt;/li&gt;
+&lt;li&gt;启动hbase: desktop3上执行start-hbase.xml&lt;/li&gt;
+&lt;li&gt;启动hive: desktop1上执行hive&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2&gt;规划&lt;/h2&gt;
@@ -1501,15 +1500,14 @@ desktop1上执行hive&lt;/li&gt;
 &lt;h3&gt;系统和网络配置&lt;/h3&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;修改每台机器的名称
-&lt;pre&gt;
-[root@desktop1 ~]# cat /etc/sysconfig/network
+&lt;li&gt;&lt;p&gt;修改每台机器的名称&lt;/p&gt;
+
+&lt;p&gt;[root@desktop1 ~]# cat /etc/sysconfig/network
 NETWORKING=yes
-HOSTNAME=desktop1
-&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;在各个节点上修改/etc/hosts增加以下内容:
-&lt;pre&gt;
-[root@desktop1 ~]# cat /etc/hosts
+HOSTNAME=desktop1&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在各个节点上修改/etc/hosts增加以下内容:&lt;/p&gt;
+
+&lt;p&gt;[root@desktop1 ~]# cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 192.168.0.1     desktop1
@@ -1518,24 +1516,18 @@ HOSTNAME=desktop1
 192.168.0.4     desktop4
 192.168.0.6     desktop6
 192.168.0.7     desktop7
-192.168.0.8     desktop8
-&lt;/pre&gt;&lt;/p&gt;&lt;/li&gt;
+192.168.0.8     desktop8&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;配置ssh无密码登陆
-以下是设置desktop1上可以无密码登陆到其他机器上。&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
+以下是设置desktop1上可以无密码登陆到其他机器上。&lt;/p&gt;
 
-&lt;pre&gt;
-    [root@desktop1 ~]# ssh-keygen
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-&lt;/pre&gt;
-
-&lt;ol&gt;
-&lt;li&gt;每台机器上关闭防火墙：&lt;/li&gt;
+&lt;p&gt;[root@desktop1 ~]# ssh-keygen
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;em&gt;rsa.pub desktop2
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;/em&gt;rsa.pub desktop3
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;em&gt;rsa.pub desktop4
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;/em&gt;rsa.pub desktop6
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;em&gt;rsa.pub desktop7
+[root@desktop1 ~]# ssh-copy-id -i .ssh/id&lt;/em&gt;rsa.pub desktop8&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;每台机器上关闭防火墙：&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    [root@desktop1 ~]# service iptables stop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -1593,22 +1585,18 @@ slaves 添加DataNode节点主机
   &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;1&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;/opt/data/hadoop-${user.name}&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
 &amp;lt;name&amp;gt;dfs.namenode.http-address&amp;lt;/name&amp;gt;
 &amp;lt;value&amp;gt;desktop1:50070&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
 &amp;lt;name&amp;gt;dfs.namenode.secondary.http-address&amp;lt;/name&amp;gt;
 &amp;lt;value&amp;gt;desktop2:50090&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
 &amp;lt;name&amp;gt;dfs.webhdfs.enabled&amp;lt;/name&amp;gt;
 &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
@@ -1648,12 +1636,10 @@ desktop8
  &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
  &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
  &amp;lt;name&amp;gt;mapreduce.jobhistory.address&amp;lt;/name&amp;gt;
  &amp;lt;value&amp;gt;desktop1:10020&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
  &amp;lt;name&amp;gt;mapreduce.jobhistory.webapp.address&amp;lt;/name&amp;gt;
  &amp;lt;value&amp;gt;desktop1:19888&amp;lt;/value&amp;gt;
@@ -1704,7 +1690,6 @@ desktop8
     &amp;lt;name&amp;gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
     &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
   &amp;lt;/property&amp;gt;
-
   &amp;lt;property&amp;gt;
     &amp;lt;name&amp;gt;yarn.nodemanager.local-dirs&amp;lt;/name&amp;gt;
     &amp;lt;value&amp;gt;/opt/data/yarn/local&amp;lt;/value&amp;gt;
@@ -1718,38 +1703,32 @@ desktop8
     &amp;lt;name&amp;gt;yarn.nodemanager.remote-app-log-dir&amp;lt;/name&amp;gt;
     &amp;lt;value&amp;gt;/opt/data/yarn/logs&amp;lt;/value&amp;gt;
   &amp;lt;/property&amp;gt;
-
   &amp;lt;property&amp;gt;
     &amp;lt;name&amp;gt;yarn.app.mapreduce.am.staging-dir&amp;lt;/name&amp;gt;
     &amp;lt;value&amp;gt;/user&amp;lt;/value&amp;gt;
  &amp;lt;/property&amp;gt;
-
 &amp;lt;/configuration&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h4&gt;同步配置文件&lt;/h4&gt;
 
 &lt;p&gt;修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop1 ~]# cat .bashrc 
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop1 ~] # cat .bashrc 
 # .bashrc
 alias rm=&amp;#39;rm -i&amp;#39;
 alias cp=&amp;#39;cp -i&amp;#39;
 alias mv=&amp;#39;mv -i&amp;#39;
-
 # Source global definitions
 if [ -f /etc/bashrc ]; then
         . /etc/bashrc
 fi
 # User specific environment and startup programs
 export LANG=zh_CN.utf8
-
 export JAVA_HOME=/opt/jdk1.6.0_38
 export JRE_HOME=$JAVA_HOME/jre
 export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
-
 export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
 export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
 export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
-
 export HADOOP_MAPRED_HOME=${HADOOP_HOME}
 export HADOOP_COMMON_HOME=${HADOOP_HOME}
 export HADOOP_HDFS_HOME=${HADOOP_HOME}
@@ -1758,7 +1737,6 @@ export HADOOP_YARN_HOME=${HADOOP_HOME}
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;修改配置文件之后，使其生效。&lt;/p&gt;
@@ -1793,11 +1771,9 @@ http://desktop2:8042/node
 5980 Jps
 5710 ResourceManager
 7032 JobHistoryServer
-
 [root@desktop2 ~]# jps
 3187 Jps
 3124 SecondaryNameNode
-
 [root@desktop3 ~]# jps
 3187 Jps
 3124 DataNode
@@ -1819,65 +1795,53 @@ http://desktop2:8042/node
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;上传文件
 上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;hbase-site.xml &lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop3 conf]# pwd
-/opt/hbase-0.94.2-cdh4.2.0/conf
-[root@desktop3 conf]# cat hbase-site.xml 
-&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
+&lt;li&gt;&lt;p&gt;hbase-site.xml &lt;/p&gt;
+
+&lt;h1&gt;pwd&lt;/h1&gt;
+
+&lt;p&gt;/opt/hbase-0.94.2-cdh4.2.0/conf&lt;/p&gt;
+
+&lt;h1&gt;cat hbase-site.xml&lt;/h1&gt;
+
+&lt;p&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
 &amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
-&amp;lt;configuration&amp;gt;
-&amp;lt;property&amp;gt;
-&amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;hdfs://desktop1/hbase-${user.name}&amp;lt;/value&amp;gt;
-&amp;lt;/property&amp;gt;
-&amp;lt;property&amp;gt;
-&amp;lt;name&amp;gt;hbase.cluster.distributed&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
-&amp;lt;/property&amp;gt;
+&lt;configuration&gt;
+&lt;property&gt;
+&lt;name&gt;hbase.rootdir&lt;/name&gt;
+&lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
+&lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;hbase.tmp.dir&lt;/name&gt;
+&lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
+&lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;regionservers&lt;/p&gt;
 
-&amp;lt;property&amp;gt;
-&amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;/opt/data/hbase-${user.name}&amp;lt;/value&amp;gt;
-&amp;lt;/property&amp;gt;
+&lt;h1&gt;cat regionservers&lt;/h1&gt;
 
-&amp;lt;property&amp;gt;
-&amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
-&amp;lt;value&amp;gt;desktop3,desktop4,desktop6,desktop7,desktop8&amp;lt;/value&amp;gt;
-&amp;lt;/property&amp;gt;
-
-&amp;lt;/configuration&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;regionservers&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop3 conf]# cat regionservers 
-desktop3
+&lt;p&gt;desktop3
 desktop4
 desktop6
 desktop7
-desktop8
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
+desktop8&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;环境变量
 参考hadoop中环境变量的设置&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;同步文件
 同步文件到其他4台机器上&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;启动脚本
-可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop3 ~]# start-hbase.sh 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;HBase &lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop3 ~]# hbase 
-HBase ; enter &amp;#39;help&amp;lt;RETURN&amp;gt;&amp;#39; for list of supported commands.
-Type &amp;quot;exit&amp;lt;RETURN&amp;gt;&amp;quot; to leave the HBase 
-Version 0.94.2-cdh4.2.0, r, Fri Feb 15 11:37:00 PST 2013
+可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase&lt;/p&gt;
 
-hbase(main):001:0&amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+&lt;h1&gt;start-hbase.sh&lt;/h1&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
  </entry>
  
  <entry>
@@ -1916,16 +1880,12 @@ hbase(main):001:0&amp;gt;
  \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;编辑postgresql配置文件，修改访问权限&lt;/li&gt;
+&lt;li&gt;编辑postgresql配置文件(&lt;code&gt;/opt/PostgreSQL/9.1/data/pg_hba.conf&lt;/code&gt;)，修改访问权限&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop1 ~]# vi /opt/PostgreSQL/9.1/data/pg_hba.conf
-
-# IPv4 local connections:
-host    all             all             0.0.0.0/0            md5
-
-[root@desktop1 ~]# vi postgresql.conf
-
-standard_conforming_strings = off
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;host    all             all             0.0.0.0/0            md5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;修改postgresql.conf&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;standard_conforming_strings = of
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;重起postgres&lt;/li&gt;
@@ -1933,7 +1893,7 @@ standard_conforming_strings = off
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su -c &amp;#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&amp;#39; postgres
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;拷贝postgres 的jdbc驱动到&lt;code&gt;/opt/hive-0.10.0-cdh4.2.0/lib&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;拷贝postgres的jdbc驱动到&lt;code&gt;/opt/hive-0.10.0-cdh4.2.0/lib&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h4&gt;修改配置文件&lt;/h4&gt;
@@ -1942,45 +1902,37 @@ standard_conforming_strings = off
 &lt;li&gt;hive-site.xml 
 注意修改下面配置文件中postgres数据库的密码，注意配置&lt;code&gt;hive.aux.jars.path&lt;/code&gt;，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop1 ~]# cd /opt/hive-0.10.0-cdh4.2.0/conf/
-[root@desktop1 conf]# cat hive-site.xml 
-&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
-&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
-&amp;lt;configuration&amp;gt;
+
+&lt;p&gt;hive-site.xml文件内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;configuration&amp;gt;
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;javax.jdo.option.ConnectionURL&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;jdbc:postgresql://127.0.0.1/metastore&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;JDBC connect string for a JDBC metastore&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;javax.jdo.option.ConnectionDriverName&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;org.postgresql.Driver&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;Driver class name for a JDBC metastore&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;javax.jdo.option.ConnectionUserName&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;hiveuser&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;username to use against metastore database&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;javax.jdo.option.ConnectionPassword&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;redhat&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;password to use against metastore database&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
  &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
  &amp;lt;value&amp;gt;desktop1:8031&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
  &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
  &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.aux.jars.path&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,
@@ -1988,19 +1940,16 @@ standard_conforming_strings = off
     file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
     file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.metastore.warehouse.dir&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;/opt/data/warehouse-${user.name}&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;location of default database for the warehouse&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.exec.scratchdir&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;/opt/data/hive-${user.name}&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;Scratch space for Hive jobs&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.querylog.location&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;/opt/data/querylog-${user.name}&amp;lt;/value&amp;gt;
@@ -2008,31 +1957,26 @@ standard_conforming_strings = off
     Location of Hive run time structured log file
   &amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.support.concurrency&amp;lt;/name&amp;gt;
   &amp;lt;description&amp;gt;Enable Hive&amp;#39;s Table Lock Manager Service&amp;lt;/description&amp;gt;
   &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.zookeeper.quorum&amp;lt;/name&amp;gt;
   &amp;lt;description&amp;gt;Zookeeper quorum used by Hive&amp;#39;s Table Lock Manager&amp;lt;/description&amp;gt;
   &amp;lt;value&amp;gt;desktop3,desktop4,desktop6,desktop7,desktop8&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.hwi.listen.host&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;desktop1&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;This is the host address the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.hwi.listen.port&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;9999&amp;lt;/value&amp;gt;
   &amp;lt;description&amp;gt;This is the port the Hive Web Interface will listen on&amp;lt;/description&amp;gt;
 &amp;lt;/property&amp;gt;
-
 &amp;lt;property&amp;gt;
   &amp;lt;name&amp;gt;hive.hwi.war.file&amp;lt;/name&amp;gt;
   &amp;lt;value&amp;gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&amp;lt;/value&amp;gt;
@@ -2051,8 +1995,7 @@ standard_conforming_strings = off
 &lt;/ul&gt;
 
 &lt;p&gt;在启动完之后，执行一些sql语句可能会提示错误，如何解决错误可以参考&lt;a href=&quot;http://kicklinux.com/hive-deploy/&quot;&gt;Hive安装与配置&lt;/a&gt;。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop1 ~] hive
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;ul&gt;
 &lt;li&gt;hive与hbase集成
 在&lt;code&gt;hive-site.xml&lt;/code&gt;中配置&lt;code&gt;hive.aux.jars.path&lt;/code&gt;,在环境变量中配置hadoop、mapreduce的环境变量&lt;/li&gt;
@@ -2061,32 +2004,45 @@ standard_conforming_strings = off
 &lt;h3&gt;异常说明&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;异常1：&lt;/p&gt;
+
+&lt;p&gt;FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;原因：hadoop配置文件没有zk&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &amp;quot;SELECT &amp;quot;THIS&amp;quot;.&amp;quot;TBL&lt;em&gt;NAME&amp;quot; AS NUCORDER0 FROM &amp;quot;TBLS&amp;quot; &amp;quot;THIS&amp;quot; LEFT OUTER JOIN &amp;quot;DBS&amp;quot; &amp;quot;THIS&lt;/em&gt;DATABASE&lt;em&gt;NAME&amp;quot; ON &amp;quot;THIS&amp;quot;.&amp;quot;DB&lt;/em&gt;ID&amp;quot; = &amp;quot;THIS&lt;em&gt;DATABASE&lt;/em&gt;NAME&amp;quot;.&amp;quot;DB&lt;em&gt;ID&amp;quot; WHERE &amp;quot;THIS&lt;/em&gt;DATABASE&lt;em&gt;NAME&amp;quot;.&amp;quot;NAME&amp;quot; = ? AND (LOWER(&amp;quot;THIS&amp;quot;.&amp;quot;TBL&lt;/em&gt;NAME&amp;quot;) LIKE ? ESCAPE &amp;#39;\&amp;#39; ) ORDER BY NUCORDER0 &amp;quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;异常2&lt;/p&gt;
+
+&lt;p&gt;FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &amp;quot;SELECT &amp;quot;THIS&amp;quot;.&amp;quot;TBL&lt;em&gt;NAME&amp;quot; AS NUCORDER0 FROM &amp;quot;TBLS&amp;quot; &amp;quot;THIS&amp;quot; LEFT OUTER JOIN &amp;quot;DBS&amp;quot; &amp;quot;THIS&lt;/em&gt;DATABASE&lt;em&gt;NAME&amp;quot; ON &amp;quot;THIS&amp;quot;.&amp;quot;DB&lt;/em&gt;ID&amp;quot; = &amp;quot;THIS&lt;em&gt;DATABASE&lt;/em&gt;NAME&amp;quot;.&amp;quot;DB&lt;em&gt;ID&amp;quot; WHERE &amp;quot;THIS&lt;/em&gt;DATABASE&lt;em&gt;NAME&amp;quot;.&amp;quot;NAME&amp;quot; = ? AND (LOWER(&amp;quot;THIS&amp;quot;.&amp;quot;TBL&lt;/em&gt;NAME&amp;quot;) LIKE ? ESCAPE &amp;#39;\&amp;#39; ) ORDER BY NUCORDER0 &amp;quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;参考：https://issues.apache.org/jira/browse/HIVE-3994&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;hive&amp;gt; select count(*) from hive_userinfo; 没反应&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;异常3，以下语句没反应
+&lt;code&gt;
+select count(*) from hive_userinfo
+&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;异常4&lt;/p&gt;
+
+&lt;p&gt;zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;原因：hive中没有设置zk&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;异常5&lt;/p&gt;
+
+&lt;p&gt;hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;原因：cloudera hadoop lib中没有hadoop的native jar&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Exception in thread &amp;quot;main&amp;quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;异常6&lt;/p&gt;
+
+&lt;p&gt;Exception in thread &amp;quot;main&amp;quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;原因：classpath没有配置正确，检查环境变量以及yarn的classpath&lt;/p&gt;
@@ -2432,53 +2388,44 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
    <link href="http://blog.javachen.com/cassandra/2012/04/09/getting-started-using-the-cassandra-cli"/>
    <updated>2012-04-09T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/cassandra/2012/04/09/getting-started-using-the-cassandra-cli</id>
-   <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;br /&gt;
-Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
+   <content type="html">&lt;p&gt;这仅仅是一个Cassandra CLI使用方法的清单。&lt;/p&gt;
 
-&lt;p&gt;&lt;h1&gt;Starting the CLI&lt;/h1&gt;
-使用&lt;code&gt;cassandra-cli&lt;/code&gt; &lt;code&gt;-host&lt;/code&gt; &lt;code&gt;-port&lt;/code&gt; 命令启动 Cassandra CLI，他将会连接&lt;code&gt;cassandra.yaml&lt;/code&gt;文件中定义的集群名称，默认为“&lt;em&gt;Test Cluster&lt;/em&gt;”。&lt;br /&gt;
-如果你有一个但节点的集群，则使用以下命令：
-&lt;pre&gt; 
-$ cassandra-cli -host localhost -port 9160
-&lt;/pre&gt;
-如果想连接多节点集群中的一个节点，可以使用以下命令:
-&lt;pre&gt;
-$ cassandra-cli -host 110.123.4.5 -port 9160
-&lt;/pre&gt;
-或者，可以直接执行以下命令：
-&lt;pre&gt;
-$ cassandra-cli
-&lt;/pre&gt;
-登录成功之后，可以看到：
-&lt;pre&gt;
-Welcome to cassandra CLI.
-Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
-&lt;/pre&gt;
-你必须指定连接一个节点：
-&lt;pre&gt;
-[default@unknown]connect localhost/9160;
-&lt;/pre&gt;
-&lt;!--more--&gt;
+&lt;p&gt;Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于&lt;code&gt;/usr/bin/cassandra-cli&lt;/code&gt;，如果是试用包安装，或者是&lt;code&gt;$CASSANDRA_HOME/bin/cassandra-cli&lt;/code&gt;，如果使用二进制文件安装。&lt;/p&gt;
+
+&lt;h1&gt;Starting the CLI&lt;/h1&gt;
+
+&lt;p&gt;使用&lt;code&gt;cassandra-cli&lt;/code&gt; &lt;code&gt;-host&lt;/code&gt; &lt;code&gt;-port&lt;/code&gt; 命令启动 Cassandra CLI，他将会连接&lt;code&gt;cassandra.yaml&lt;/code&gt;文件中定义的集群名称，默认为“&lt;em&gt;Test Cluster&lt;/em&gt;”。
+如果你有一个但节点的集群，则使用以下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cassandra-cli -host localhost -port 9160
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果想连接多节点集群中的一个节点，可以使用以下命令:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cassandra-cli -host 110.123.4.5 -port 9160
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;或者，可以直接执行以下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cassandra-cli
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;登录成功之后，可以看到：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to cassandra CLI.
+Type &amp;#39;help;&amp;#39; or &amp;#39;?&amp;#39; for help. Type &amp;#39;quit;&amp;#39; or &amp;#39;exit;&amp;#39; to quit.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你必须指定连接一个节点：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown]connect localhost/9160;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;Creating a Keyspace&lt;/h1&gt;
-&lt;pre&gt;
-[default@unknown] CREATE KEYSPACE demo;
-&lt;/pre&gt;
-下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用&lt;code&gt;SimpleStrategy&lt;/code&gt;复制替换策略。
-&lt;pre&gt;
-[default@unknown] CREATE KEYSPACE demo with 
-        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
-        and strategy_options = [{replication_factor:1}];
-&lt;/pre&gt;
-你可以使用&lt;code&gt;SHOW KEYSPACES&lt;/code&gt;来查看所有系统的和你创建的Keyspace&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown] CREATE KEYSPACE demo;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用&lt;code&gt;SimpleStrategy&lt;/code&gt;复制替换策略。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown] CREATE KEYSPACE demo with 
+    placement_strategy =&amp;#39;org.apache.cassandra.locator.SimpleStrategy&amp;#39; 
+    and strategy_options = [{replication_factor:1}];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你可以使用&lt;code&gt;SHOW KEYSPACES&lt;/code&gt;来查看所有系统的和你创建的Keyspace&lt;/p&gt;
 
-&lt;p&gt;&lt;h1&gt;Use a keyspace&lt;/h1&gt;
-&lt;pre&gt;
-[default@unknown] USE demo;
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h1&gt;Creating a Column Family&lt;/h1&gt;
-&lt;pre&gt;
-[default@demo] CREATE COLUMN FAMILY users
+&lt;h1&gt;Use a keyspace&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown] USE demo;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Creating a Column Family&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] CREATE COLUMN FAMILY users
 WITH comparator = UTF8Type
 AND key_validation_class=UTF8Type
 AND column_metadata = [
@@ -2488,129 +2435,112 @@ AND column_metadata = [
 {column_name: gender, validation_class: UTF8Type}
 {column_name: birth_year, validation_class: LongType}
 ];
-&lt;/pre&gt;
-我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。&lt;br /&gt;
-下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
-&lt;pre&gt;
-[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full&lt;em&gt;name，email,state,gender,birth&lt;/em&gt;year.comparator, key&lt;em&gt;validation&lt;/em&gt;class和validation&lt;em&gt;class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog&lt;/em&gt;entry的动态column family，我们不需要定义列，而由应用程序稍后定义。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Creating a Counter Column Family&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+      default_validation_class=CounterColumnType 
+      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;插入一行和计数列：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] INCR page_view_counts[&amp;#39;www.datastax.com&amp;#39;][home] BY 0;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;增加计数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] INCR page_view_counts[&amp;#39;www.datastax.com&amp;#39;][home] BY 1;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Inserting Rows and Columns&lt;/h1&gt;
 
-&lt;p&gt;&lt;h1&gt;Creating a Counter Column Family&lt;/h1&gt;
-&lt;pre&gt;
-[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
-          default_validation_class=CounterColumnType 
-          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
-&lt;/pre&gt;
-插入一行和计数列：
-&lt;pre&gt;
-[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
-&lt;/pre&gt;
-增加计数：
-&lt;pre&gt;
-[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;以下命令以一个特点的行key值插入列到users中&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;full_name&amp;#39;]=&amp;#39;Robert Jones&amp;#39;;
+[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;email&amp;#39;]=&amp;#39;bobjones@gmail.com&amp;#39;;
+[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;state&amp;#39;]=&amp;#39;TX&amp;#39;;
+[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;gender&amp;#39;]=&amp;#39;M&amp;#39;;
+[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;birth_year&amp;#39;]=&amp;#39;1975&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;更新数据： &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;set users[&amp;#39;bobbyjo&amp;#39;][&amp;#39;full_name&amp;#39;] = &amp;#39;Jack&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;获取数据： &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;get users[&amp;#39;bobbyjo&amp;#39;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;get命令用法参考：&lt;a href=&quot;http://wiki.apache.org/cassandra/API#get_slice&quot; target=&quot;_blank&quot;&gt;API#get_slice&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;h1&gt;Inserting Rows and Columns&lt;/h1&gt;
-以下命令以一个特点的行key值插入列到users中
-&lt;pre&gt;
-[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
-[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
-[default@demo] SET users['bobbyjo']['state']='TX';
-[default@demo] SET users['bobbyjo']['gender']='M';
-[default@demo] SET users['bobbyjo']['birth_year']='1975';
-&lt;/pre&gt;
-更新数据： set users['bobbyjo']['full_name'] = 'Jack';&lt;br /&gt;
-获取数据： get users['bobbyjo'];&lt;br /&gt;
-get命令用法参考：&lt;a href=&quot;http://wiki.apache.org/cassandra/API#get_slice&quot; target=&quot;_blank&quot;&gt;API#get_slice&lt;/a&gt;
-查询数据： get users where gender= 'M';&lt;br /&gt;
-下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
-&lt;pre&gt;
-[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
-&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;查询数据： &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;get users where gender= &amp;#39;M&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &amp;#39;I love my new shoes!&amp;#39;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] SET blog_entry[&amp;#39;yomama&amp;#39;][timeuuid()] = &amp;#39;I love my new shoes!&amp;#39;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Reading Rows and Columns&lt;/h1&gt;
 
-&lt;p&gt;&lt;h1&gt;Reading Rows and Columns&lt;/h1&gt;
-使用List命令查询记录，默认查询100条记录
-&lt;pre&gt;
-[default@demo] LIST users;
-&lt;/pre&gt;
-Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+&lt;p&gt;使用List命令查询记录，默认查询100条记录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] LIST users;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
 &lt;li&gt;ascii&lt;/li&gt;
 &lt;li&gt;bytes&lt;/li&gt;
 &lt;li&gt;integer (a generic variable-length integer type)&lt;/li&gt;
 &lt;li&gt;lexicalUUID&lt;/li&gt;
 &lt;li&gt;long&lt;/li&gt;
 &lt;li&gt;utf8&lt;/li&gt;
-例如：
-&lt;pre&gt;
-[default@demo] GET users[utf8('bobby')][utf8('full_name')];
-&lt;/pre&gt;
-你也可以使用&lt;code&gt;ASSUME&lt;/code&gt;命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
-&lt;pre&gt;
-[default@demo] ASSUME users KEYS AS ascii;
+例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] GET users[utf8(&amp;#39;bobby&amp;#39;)][utf8(&amp;#39;full_name&amp;#39;)];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你也可以使用&lt;code&gt;ASSUME&lt;/code&gt;命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] ASSUME users KEYS AS ascii;
 [default@demo] ASSUME users COMPARATOR AS ascii;
 [default@demo] ASSUME users VALIDATOR AS ascii;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Setting an Expiring Column&lt;/h1&gt;
 
-&lt;p&gt;&lt;h1&gt;Setting an Expiring Column&lt;/h1&gt;
-例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
-&lt;pre&gt;
-[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
-&lt;/pre&gt;
-自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。&lt;/p&gt;
+&lt;p&gt;例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] SET users[&amp;#39;bobbyjo&amp;#39;] [utf8(&amp;#39;coupon_code&amp;#39;)] = utf8(&amp;#39;SAVE20&amp;#39;) WITH ttl=864000;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。&lt;/p&gt;
 
-&lt;p&gt;&lt;h1&gt;Indexing a Column&lt;/h1&gt;
-给birth_year添加一个二级索引：
-&lt;pre&gt;
-[default@demo] UPDATE COLUMN FAMILY users 
-            WITH comparator = UTF8Type AND column_metadata = 
-            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
-&lt;/pre&gt;
-由于该列被索引了，所以可以直接通过该列查询：
-&lt;pre&gt;
-[default@demo] GET users WHERE birth_date = 1969;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;h1&gt;Indexing a Column&lt;/h1&gt;
 
-&lt;p&gt;&lt;h1&gt;Deleting Rows and Columns&lt;/h1&gt;
-删除yomama索引的coupon_code列：
-&lt;pre&gt;
-[default@demo] DEL users ['yomama']['coupon_code'];
-[default@demo] GET users ['yomama'];
-&lt;/pre&gt;
-或者删除整行：
-&lt;pre&gt;
-[default@demo] DEL users ['yomama'];
-&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;给birth_year添加一个二级索引：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] UPDATE COLUMN FAMILY users 
+        WITH comparator = UTF8Type AND column_metadata = 
+        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;由于该列被索引了，所以可以直接通过该列查询：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] GET users WHERE birth_date = 1969;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Deleting Rows and Columns&lt;/h1&gt;
 
-&lt;p&gt;&lt;h1&gt;Dropping Column Families and Keyspaces&lt;/h1&gt;
-&lt;pre&gt;
-[default@demo] DROP COLUMN FAMILY users;
+&lt;p&gt;删除yomama索引的coupon_code列：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] DEL users [&amp;#39;yomama&amp;#39;][&amp;#39;coupon_code&amp;#39;];
+[default@demo] GET users [&amp;#39;yomama&amp;#39;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;或者删除整行：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] DEL users [&amp;#39;yomama&amp;#39;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Dropping Column Families and Keyspaces&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h1&gt;For help&lt;/h1&gt;
-&lt;pre&gt;
-[default@unknown]help;
-&lt;/pre&gt;
-查看某一个命令的详细说明：
-&lt;pre&gt;
-[default@unknown] help SET;
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h1&gt;To Quit&lt;/h1&gt;
-&lt;pre&gt;
-[default@unknown]quit;
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h1&gt;To Execute Script&lt;/h1&gt;
-&lt;pre&gt;
-bin/cassandra-cli -host localhost -port 9160 -f script.txt
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;For help&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown]help;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;查看某一个命令的详细说明：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown] help SET;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;To Quit&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[default@unknown]quit;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;To Execute Script&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;bin/cassandra-cli -host localhost -port 9160 -f script.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;参考文章&lt;/h1&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.datastax.com/docs/0.8/dml/using_cli&quot; target=&quot;_blank&quot;&gt;Getting Started Using the Cassandra CLI&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://wiki.apache.org/cassandra/CassandraCli&quot; target=&quot;_blank&quot;&gt;CassandraCli&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
@@ -2625,170 +2555,128 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 &lt;h1&gt;检查java环境&lt;/h1&gt;
 
 &lt;p&gt;Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
-&lt;h3&gt;1.检查是否安装java:&lt;/h3&gt;
-&lt;pre&gt;&lt;/p&gt;
-
-&lt;h1&gt;java -version&lt;/h1&gt;
-
-&lt;p&gt;&lt;/pre&gt;
-如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+&lt;h3&gt;1.检查是否安装java:&lt;/h3&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
 &lt;h3&gt;2.安装jdk&lt;/h3&gt;
 下载&lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/index.html&quot; target=&quot;_blank&quot;&gt;Oracle JRE&lt;/a&gt;
-1）修改执行权限:
-&lt;pre&gt;
-$ cd /tmp
+1）修改执行权限:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd /tmp
 $ chmod a+x jre-6u25-linux-x64-rpm.bin
-&lt;/pre&gt;
-&amp;lt;!--more--&amp;gt;
-2）解压执行RPM文件,例如:
-&lt;pre&gt;
-$ sudo ./jre-6u25-linux-x64-rpm.bin
-&lt;/pre&gt;
-这样JRE会安装在/usr/java/
-3）配置Oracle JRE取代OpenJDK JRE
-可以使用alternatives命令添加一个链接到Oracle JRE.
-&lt;pre&gt;
-$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0&lt;em&gt;25/bin/java 20000
-&lt;/pre&gt;
-4）确认是否安装JRE
-&lt;pre&gt;
-$ java -version
-  java version &amp;quot;1.6.0&lt;/em&gt;25&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2）解压执行RPM文件,例如:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sudo ./jre-6u25-linux-x64-rpm.bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样JRE会安装在/usr/java/&lt;/p&gt;
+
+&lt;p&gt;3）配置Oracle JRE取代OpenJDK JRE
+可以使用alternatives命令添加一个链接到Oracle JRE.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;4）确认是否安装JRE&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -version
+  java version &amp;quot;1.6.0_25&amp;quot;
   Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
   Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
-&lt;/pre&gt;
-如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
-&lt;pre&gt;
-$ sudo alternatives --config java
-There are 2 programs which provide &amp;#39;java&amp;#39;.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sudo alternatives --config java
+There are 2 programs which provide &amp;#39;java&amp;#39;.
 
-&lt;h2&gt;Selection      Command&lt;/h2&gt;
-
-&lt;p&gt;1           /usr/lib/jvm/jre-1.6.0-openjdk.x86&lt;em&gt;64/bin/java
-*+ 2           /usr/java/jre1.6.0&lt;/em&gt;25/bin/java
-&lt;/pre&gt;&lt;/p&gt;
-
+Selection      Command
+-----------------------------------------------
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;在Linux系统上安装DataStax Community二进制文件&lt;/h1&gt;
 
 &lt;h3&gt;1.在用户目录创建一个目录,如datas&lt;/h3&gt;
-
-&lt;pre&gt;
-$ cd $HOME
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd $HOME
 $ mkdir datas
 $ cd datas
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;2.下载cassandra(必须的)和OpsCenter包(可选的)&lt;/h3&gt;
-
-&lt;pre&gt;
-$ wget http://downloads.datastax.com/community/dsc.tar.gz
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ wget http://downloads.datastax.com/community/dsc.tar.gz
 $ wget http://downloads.datastax.com/community/opscenter.tar.gz
 $ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;3.解压&lt;/h3&gt;
-
-&lt;pre&gt;
-$ tar -xzvf dsc.tar.gz
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ tar -xzvf dsc.tar.gz
 $ tar -xzvf opscenter.tar.gz
 $ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
 $ rm *.tar.gz
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;4.设置环境变量&lt;/h3&gt;
 
-&lt;p&gt;1)编辑 .bashrc 
-&lt;pre&gt;
- vi $HOME/.bashrc
-&lt;/pre&gt;
-2)添加以下代码
-&lt;pre&gt;
-export CASSANDRA&lt;em&gt;HOME=$HOME/datas/dsc&lt;/em&gt;package&lt;em&gt;name
-export DSCDEMO&lt;/em&gt;HOME=$HOME/datas/dsc-1.0.1/demos/portfolio&lt;em&gt;manager
-export OPSC&lt;/em&gt;HOME=$HOME/datas/opscenter&lt;em&gt;package&lt;/em&gt;name
-export PATH=&amp;quot;$PATH:$CASSANDRA&lt;em&gt;HOME/bin:$DSCDEMO&lt;/em&gt;HOME/bin:$OPSC_HOME/bin&amp;quot;
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;p&gt;1)编辑 .bashrc &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vi $HOME/.bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2)添加以下代码&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export CASSANDRA_HOME=$HOME/datas/dsc_package_name
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
+export OPSC_HOME=$HOME/datas/opscenter_package_name
+export PATH=&amp;quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;注意替换&lt;font color=&quot;red&quot;&gt;dsc&lt;em&gt;package&lt;/em&gt;name&lt;/font&gt;和&lt;font color=&quot;red&quot;&gt;opscenter&lt;em&gt;package&lt;/em&gt;name&lt;/font&gt;
 3)保存退出
-4)使该文件生效
-&lt;pre&gt;
-source $HOME/.bashrc
-&lt;/pre&gt;
+4)使该文件生效&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;source $HOME/.bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;5.创建保存Cassandra数据的文件和日志目录&lt;/h3&gt;
-&lt;pre&gt;
-$ mkdir $HOME/datas/cassandra-data
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir $HOME/datas/cassandra-data
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;配置并启动单节点&lt;/h1&gt;
 
 &lt;h3&gt;1.编辑配置环境&lt;/h3&gt;
 
-&lt;p&gt;修改$CASSANDRA&lt;em&gt;HOME/conf/cassandra.yaml
-&lt;pre&gt;
-$ sed -i -e &amp;quot;s,initial&lt;/em&gt;token:,initial&lt;em&gt;token: 0,&amp;quot; \
-  $CASSANDRA&lt;/em&gt;HOME/conf/cassandra.yaml&lt;/p&gt;
-
-&lt;p&gt;$ sed -i -e &amp;quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&amp;quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
-
-&lt;p&gt;$ sed -i -e &amp;quot;s,saved&lt;em&gt;caches&lt;/em&gt;directory: /var/lib/cassandra/saved&lt;em&gt;caches, \
-  saved&lt;/em&gt;caches&lt;em&gt;directory: $HOME/datastax/cassandra-data/saved&lt;/em&gt;caches,&amp;quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
-
-&lt;p&gt;$ sed -i -e &amp;quot;s,commitlog&lt;em&gt;directory: /var/lib/cassandra/commitlog,commitlog&lt;/em&gt;directory: \
+&lt;p&gt;修改$CASSANDRA_HOME/conf/cassandra.yaml&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sed -i -e &amp;quot;s,initial_token:,initial_token: 0,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &amp;quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &amp;quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&amp;quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &amp;quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
   $HOME/datastax/cassandra-data/commitlog,&amp;quot; $CASSANDRA_HOME/conf/cassandra.yaml
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;2.设置日志文件位置&lt;/h3&gt; 
 
-&lt;p&gt;修改：$CASSANDRA&lt;em&gt;HOME/conf/log4j-server.properties
-&lt;pre&gt;
-$ sed -i -e &amp;quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+&lt;p&gt;修改：$CASSANDRA_HOME/conf/log4j-server.properties&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sed -i -e &amp;quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
   log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&amp;quot; \
-  $CASSANDRA&lt;/em&gt;HOME/conf/log4j-server.properties
-&lt;/pre&gt;
+  $CASSANDRA_HOME/conf/log4j-server.properties
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;3.配置DataStax示例程序指向Cassandra的安装位置&lt;/h3&gt;
-&lt;pre&gt;
-$ sed -i -e &amp;quot;s,/usr/share/cassandra,$HOME/datastax/&lt;dsc_package_name&gt;,&amp;quot; \
-  $DSCDEMO&lt;em&gt;HOME/bin/pricer
-&amp;lt;/dsc&lt;/em&gt;package_name&amp;gt;
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sed -i -e &amp;quot;s,/usr/share/cassandra,$HOME/datastax/dsc_package_name,&amp;quot; \
+  $DSCDEMO_HOME/bin/pricer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;4.后台启动Cassandra&lt;/h3&gt;
 
-&lt;pre&gt;
-$ cassandra
-&lt;/pre&gt;
+&lt;p&gt;$ cassandra&lt;/p&gt;
 
 &lt;h3&gt;5.检查cassandra环是否在运行&lt;/h3&gt;
-
-&lt;pre&gt;
-$ nodetool ring -h localhost
-&lt;/pre&gt;
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ nodetool ring -h localhost
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;6.运行Portfolio Demo示例程序&lt;/h3&gt;
 
-&lt;p&gt;1)进入Portfolio目录
-&lt;pre&gt;
-$ cd $DSCDEMO&lt;em&gt;HOME
-&lt;/pre&gt;
-2)运行 ./bin/pricer工具生成数据
-&lt;pre&gt;
-./bin/pricer --help
-&lt;/pre&gt;
-下面代码生成100天的历史数据
-&lt;pre&gt;
-./bin/pricer -o INSERT&lt;/em&gt;PRICES
-./bin/pricer -o UPDATE&lt;em&gt;PORTFOLIOS
-./bin/pricer -o INSERT&lt;/em&gt;HISTORICAL&lt;em&gt;PRICES -n 100
-&lt;/pre&gt;
-3)启动服务(必须在$DSCDEMO&lt;/em&gt;HOME/website目录下启动)
-&lt;pre&gt;
-$ cd $DSCDEMO_HOME/website
+&lt;p&gt;1)进入Portfolio目录&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd $DSCDEMO_HOME
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2)运行 ./bin/pricer工具生成数据&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;./bin/pricer --help
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下面代码生成100天的历史数据&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd $DSCDEMO_HOME/website
 $ java -jar start.jar &amp;amp;
-&lt;/pre&gt;
-4)浏览程序 http://localhost:8983/portfolio&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;4)浏览程序 &lt;code&gt;http://localhost:8983/portfolio&lt;/code&gt;&lt;/p&gt;
 
 &lt;h1&gt;参考文章&lt;/h1&gt;
 
@@ -2962,21 +2850,27 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
    <link href="http://blog.javachen.com/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2"/>
    <updated>2012-03-23T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2</id>
-   <content type="html">&lt;p&gt;这是在QQ群里有人问到的一个问题.&lt;br /&gt;
-如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?&lt;/p&gt;
+   <content type="html">&lt;p&gt;这是在QQ群里有人问到的一个问题.&lt;/p&gt;
 
-&lt;p&gt;在kettle中实现cassandra的输入与输出有以下两种方式:&lt;br /&gt;
-第一种方式:自己编写cassandra输入输出组件&lt;br /&gt;
-第二种方式:使用别人编写好的插件,将其集成进来&lt;/p&gt;
+&lt;p&gt;如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?&lt;/p&gt;
 
-&lt;p&gt;当然还有第三种方法,直接使用4.3版本的pdi.&lt;br /&gt;
-第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.&lt;/p&gt;
+&lt;p&gt;在kettle中实现cassandra的输入与输出有以下两种方式:&lt;/p&gt;
 
-&lt;p&gt;在pdi-ce-big-data-4.3.0-preview&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;(下载页面&lt;/a&gt;)版本中可以看到kettle开始支持cassandra的输入和输出.&lt;br /&gt;
-故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.&lt;br /&gt;
-在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:
-&lt;pre&gt;
-.
+&lt;ul&gt;
+&lt;li&gt;第一种方式:自己编写cassandra输入输出组件&lt;/li&gt;
+&lt;li&gt;第二种方式:使用别人编写好的插件,将其集成进来&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然还有第三种方法,直接使用4.3版本的pdi.&lt;/p&gt;
+
+&lt;p&gt;第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.&lt;/p&gt;
+
+&lt;p&gt;在pdi-ce-big-data-4.3.0-preview&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/&quot; target=&quot;_blank&quot;&gt;(下载页面&lt;/a&gt;)版本中可以看到kettle开始支持cassandra的输入和输出.&lt;/p&gt;
+
+&lt;p&gt;故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.&lt;/p&gt;
+
+&lt;p&gt;在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.
 |-- databases
 |-- hour-partitioner.jar
 |-- jobentries
@@ -2988,18 +2882,16 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 |-- spoon
 |-- steps
 `-- versioncheck
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下
-&lt;pre&gt;
-.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.
 |-- databases
 |-- hour-partitioner.jar
 |-- jobentries
-|   &lt;code&gt;-- DummyJob
+|   `-- DummyJob
 |       |-- DPL.png
 |       |-- dummyjob.jar
-|&lt;/code&gt;-- plugin.xml
+|       `-- plugin.xml
 |-- pentaho-big-data-plugin
 |   |-- lib
 |   |   |-- apache-cassandra-1.0.0.jar
@@ -3013,32 +2905,31 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 |   |   |-- mongo-java-driver-2.7.2.jar
 |   |   |-- pig-0.8.1.jar
 |   |   |-- xpp3_min-1.1.4c.jar
-|   |   &lt;code&gt;-- xstream-1.3.1.jar
-|&lt;/code&gt;-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
 |-- repositories
 |-- spoon
 |-- steps
 |   |-- DummyPlugin
 |   |   |-- DPL.png
 |   |   |-- dummy.jar
-|   |   &lt;code&gt;-- plugin.xml
+|   |   `-- plugin.xml
 |   |-- S3CsvInput
 |   |   |-- jets3t-0.7.0.jar
 |   |   |-- plugin.xml
 |   |   |-- S3CIN.png
-|   |&lt;/code&gt;-- s3csvinput.jar
-|   &lt;code&gt;-- ShapeFileReader3
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
 |       |-- plugin.xml
 |       |-- SFR.png
-|&lt;/code&gt;-- shapefilereader3.jar
-&lt;code&gt;-- versioncheck
+|       `-- shapefilereader3.jar
+`-- versioncheck
     |-- kettle-version-checker-0.2.0.jar
-&lt;/code&gt;-- lib
-        `-- pentaho-versionchecker.jar&lt;/p&gt;
+    `-- lib
+    `-- pentaho-versionchecker.jar
 
-&lt;p&gt;13 directories, 29 files
-&lt;/pre&gt;&lt;/p&gt;
-
+13 directories, 29 files
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
 &lt;div class=&quot;pic&quot;&gt;
 &lt;a href=&quot;http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg&quot; target=&quot;_blank&quot;&gt;
@@ -3047,23 +2938,25 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
 &lt;/div&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;获取pentaho-big-data-plugin源码&lt;/strong&gt;
-如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?&lt;br /&gt;
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
 你可以从&lt;a href=&quot;http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.&lt;/p&gt;
 
-&lt;p&gt;然后,需要在kettle-steps.xml中注册步骤节点&lt;br /&gt;
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.
-&lt;pre&gt;
-&lt;step id=&quot;MongoDbInput&quot;&gt;
-&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
-&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
-&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
-&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
-&lt;iconfile&gt;ui/images/mongodb-input.png
-&lt;/iconfile&gt;&lt;/tooltip&gt;&lt;/category&gt;&lt;/classname&gt;&lt;/description&gt;&lt;/step&gt;
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;p&gt;然后,需要在kettle-steps.xml中注册步骤节点
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;step id=&amp;quot;MongoDbInput&amp;quot;&amp;gt;
+&amp;lt;description&amp;gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+&amp;lt;classname&amp;gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+&amp;lt;category&amp;gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+&amp;lt;tooltip&amp;gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+&amp;lt;iconfile&amp;gt;ui/images/mongodb-input.png
+&amp;lt;/iconfile&amp;gt;&amp;lt;/tooltip&amp;gt;
+&amp;lt;/category&amp;gt;
+&amp;lt;/classname&amp;gt;
+&amp;lt;/description&amp;gt;
+&amp;lt;/step&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;div class=&quot;note&quot;&gt;
-&lt;h&gt;注意:&lt;br /&gt;
+&lt;h&gt;注意:
 由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
 &lt;/h&gt;&lt;/div&gt;
 
@@ -3079,19 +2972,24 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
  </entry>
  
  <entry>
-   <title>Seam的启动过程</title>
-   <link href="http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation"/>
+   <title>The Process Of Seam Initiation</title>
+   <link href="http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation"/>
    <updated>2012-02-23T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation</id>
-   <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
-&lt;pre lang=&quot;xml&quot;&gt;
-&amp;lt; listener&amp;gt;
-    &amp;lt; listener-class&amp;gt;org.jboss.seam.servlet.SeamListener&amp;lt; /listener-class&amp;gt;
-&amp;lt; /listener&amp;gt;
-&lt;/pre&gt;&lt;/p&gt;
+   <id>http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation</id>
+   <content type="html">&lt;p&gt;layout: post
+title: Seam的启动过程
+category: seam
+tags: [seam]
+keywords: seam, jboss
+description: Seam的启动过程&lt;/p&gt;
 
+&lt;p&gt;了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; listener&amp;gt;
+    &amp;lt; listenerclass&amp;gt;org. jboss. seam. servlet. SeamListener&amp;lt; /listenerclass&amp;gt;
+&amp;lt; /listener&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。
-&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.&lt;/blockquote&gt;&lt;/p&gt;
+&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. &lt;/blockquote&gt;&lt;/p&gt;
 
 &lt;p&gt;从描述中可以知道
 SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。&lt;/p&gt;
@@ -3103,34 +3001,34 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 &lt;p&gt;&lt;strong&gt;第二步&lt;/strong&gt;，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;1.添加命名空间&lt;/li&gt;
-&lt;li&gt;2.从“/WEB-INF/components.xml”加载组件&lt;/li&gt;
-&lt;li&gt;3.从“/WEB-INF/events.xml”加载组件&lt;/li&gt;
-&lt;li&gt;4.从“META-INF/components.xml”加载组件&lt;/li&gt;
-&lt;li&gt;5.从ServletContext初始化Properties&lt;/li&gt;
-&lt;li&gt;6.从“/seam.properties”初始化Properties&lt;/li&gt;
-&lt;li&gt;7.初始化jndi Properties&lt;/li&gt;
-&lt;li&gt;8.从system加载Properties&lt;/li&gt;
-&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;添加命名空间&lt;/li&gt;
+&lt;li&gt;从“/WEBINF/components. xml”加载组件&lt;/li&gt;
+&lt;li&gt;从“/WEBINF/events. xml”加载组件&lt;/li&gt;
+&lt;li&gt;从“METAINF/components. xml”加载组件&lt;/li&gt;
+&lt;li&gt;从ServletContext初始化Properties&lt;/li&gt;
+&lt;li&gt;从“/seam. properties”初始化Properties&lt;/li&gt;
+&lt;li&gt;初始化jndi Properties&lt;/li&gt;
+&lt;li&gt;从system加载Properties&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;&lt;strong&gt;第三步&lt;/strong&gt;，seam初始化过程（Initialization的init方法）。&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;1.ServletLifecycle开始初始化&lt;/li&gt;
-&lt;li&gt;2.设置Application上下文&lt;/li&gt;
-&lt;li&gt;3.添加Init组件&lt;/li&gt;
-&lt;li&gt;4.通过standardDeploymentStrategy的注解和xml组件扫描组件&lt;/li&gt;
-&lt;li&gt;5.判断jbpm是否安装&lt;/li&gt;
-&lt;li&gt;6.检查默认拦截器&lt;/li&gt;
-&lt;li&gt;7.添加特别组件&lt;/li&gt;
-&lt;li&gt;8.添加war root部署、热部署&lt;/li&gt;
-&lt;li&gt;9.安装组件&lt;/li&gt;
-&lt;li&gt;10.导入命名空间&lt;/li&gt;
-&lt;li&gt;11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/li&gt;
-&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;ServletLifecycle开始初始化&lt;/li&gt;
+&lt;li&gt;设置Application上下文&lt;/li&gt;
+&lt;li&gt;添加Init组件&lt;/li&gt;
+&lt;li&gt;通过standardDeploymentStrategy的注解和xml组件扫描组件&lt;/li&gt;
+&lt;li&gt;判断jbpm是否安装&lt;/li&gt;
+&lt;li&gt;检查默认拦截器&lt;/li&gt;
+&lt;li&gt;添加特别组件&lt;/li&gt;
+&lt;li&gt;添加war root部署、热部署&lt;/li&gt;
+&lt;li&gt;安装组件&lt;/li&gt;
+&lt;li&gt;导入命名空间&lt;/li&gt;
+&lt;li&gt;ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。&lt;/p&gt;
+&lt;p&gt;如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。&lt;/p&gt;
 </content>
  </entry>
  
@@ -3426,83 +3324,86 @@ CREATE TABLE a1
 &lt;p&gt;&lt;strong&gt;下面是方案3的具体的实现。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
-多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：
-&lt;pre lang=&quot;java&quot;&gt;public void ripDBWizard(final int no) {
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public void ripDBWizard(final int no) {
     final List databases = spoon.getActiveDatabases();
     if (databases.size() == 0)
-        return;&lt;/pre&gt;&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&amp;quot;1&amp;quot;,
-        databases);
-final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&amp;quot;2&amp;quot;);
-final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&amp;quot;3&amp;quot;,
-        spoon.getRepository());
-Wizard wizard = new Wizard() {
-    public boolean performFinish() {
-        try {
-            JobMeta jobMeta = ripDBByNo(no, databases,
-                page3.getJobname(), page3.getRepositoryDirectory(),
-                page3.getDirectory(), page1.getSourceDatabase(),
-                page1.getTargetDatabase(), page2.getSelection());
+        return;&amp;lt;/pre&amp;gt;
 
-            if (jobMeta == null)
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&amp;quot;1&amp;quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&amp;quot;2&amp;quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&amp;quot;3&amp;quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
+
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &amp;quot;Error&amp;quot;,
+                        &amp;quot;An unexpected error occurred!&amp;quot;, e);
                 return false;
-
-            if (page3.getRepositoryDirectory() != null) {
-                spoon.saveToRepository(jobMeta, false);
-            } else {
-                spoon.saveToFile(jobMeta);
             }
-
-            addJobGraph(jobMeta);
-            return true;
-        } catch (Exception e) {
-            new ErrorDialog(spoon.getShell(), &amp;quot;Error&amp;quot;,
-                    &amp;quot;An unexpected error occurred!&amp;quot;, e);
-            return false;
         }
-    }
 
-    public boolean canFinish() {
-        return page3.canFinish();
-    }
-};
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
 
-wizard.addPage(page1);
-wizard.addPage(page2);
-wizard.addPage(page3);
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
 
-WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
-WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
-wd.setMinimumPageSize(700, 400);
-wd.updateSize();
-wd.open();
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}
-该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于&lt;strong&gt;选择数据库连接&lt;/strong&gt;：源数据库和目标数据库连接；第二个向导页用于&lt;strong&gt;选表&lt;/strong&gt;；第三个向导页用于&lt;strong&gt;指定作业保存路径&lt;/strong&gt;。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
-创建Jobmeta的方法为：
-&lt;pre lang=&quot;java&quot;&gt;public JobMeta ripDB(final List databases,final String jobname, final
+&lt;p&gt;该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于&lt;strong&gt;选择数据库连接&lt;/strong&gt;：源数据库和目标数据库连接；第二个向导页用于&lt;strong&gt;选表&lt;/strong&gt;；第三个向导页用于&lt;strong&gt;指定作业保存路径&lt;/strong&gt;。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public JobMeta ripDB(final List databases,final String jobname, final
     RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
     sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
  //此处省略若干代码
-}&lt;/pre&gt;
-该方法主要逻辑在下面代码内：
-&lt;pre lang=&quot;java&quot;&gt;IRunnableWithProgress op = new IRunnableWithProgress() {
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;该方法主要逻辑在下面代码内：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;IRunnableWithProgress op = new IRunnableWithProgress() {
     public void run(IProgressMonitor monitor)
      throws InvocationTargetException, InterruptedException {
-           //此处省略若干代码
-        }
-}&lt;/pre&gt;
-上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：
-&lt;pre lang=&quot;java&quot;&gt;for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
+       //此处省略若干代码
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;for (int i = 0; i &amp;amp;lt; tables.length &amp;amp;amp;&amp;amp;amp; !monitor.isCanceled(); i++) {
     //此处省略若干代码
-}&lt;/pre&gt;
-针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
-这部分的代码如下：
-&lt;pre lang=&quot;java&quot;&gt;String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;String pksql = JdbcDataMetaUtil.exportPkAndIndex(
         sourceDbInfo, sourceCon, tables[i],
-        targetDbInfo, targetCon, tables[i]);&lt;/p&gt;
-
-&lt;p&gt;if (!Const.isEmpty(pksql)) {
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
     location.x += 300;
     JobEntrySQL jesql = new JobEntrySQL(
         BaseMessages.getString(PKG,&amp;quot;Spoon.RipDB.AddPkAndIndex&amp;quot;)
@@ -3512,21 +3413,19 @@ wd.open();
     jesql.setDescription(BaseMessages.getString(PKG,
             &amp;quot;Spoon.RipDB.AddPkAndIndex&amp;quot;)
             + tables[i]
-            + &amp;quot;]&amp;quot;);&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JobEntryCopy jecsql = new JobEntryCopy();
-jecsql.setEntry(jesql);
-jecsql.setLocation(new Point(location.x, location.y));
-jecsql.setDrawn();
-jobMeta.addJobEntry(jecsql);
-
-// Add the hop too...
-JobHopMeta jhi = new JobHopMeta(previous, jecsql);
-jobMeta.addJobHop(jhi);
-previous = jecsql;
+            + &amp;quot;]&amp;quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}
-&lt;/pre&gt;
-获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+&lt;p&gt;获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
 该代码见：&lt;a href=&quot;https://gist.github.com/1564353.js&quot; target=&quot;_blank&quot;&gt;https://gist.github.com/1564353.js&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;最后的效果图如下：
@@ -3723,9 +3622,8 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
    <updated>2011-10-22T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi</id>
    <content type="html">&lt;p&gt;最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章&lt;/a&gt;
-获取弹出窗口url后的参数方法：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;
-// 获取url后的参数值
+获取弹出窗口url后的参数方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;// 获取url后的参数值
 function getQueryStringValue(name) {
     var url = window.location.search;
     if (url.indexOf(&amp;#39;?&amp;#39;) &amp;lt; 0) {
@@ -3746,12 +3644,11 @@ function getQueryStringValue(name) {
 }
 // 获取xml的服务器路径
 function getXmlUrl(xmlFile) {
-    return &amp;#39;../bjsasc&lt;em&gt;dictionary/&amp;#39; + getQueryStringValue(&amp;#39;xmlFile&amp;#39;);
+    return &amp;#39;../bjsasc_dictionary/&amp;#39; + getQueryStringValue(&amp;#39;xmlFile&amp;#39;);
 }
-&lt;/pre&gt;
-用到的一些辅助方法：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;
-// 去掉Dom节点中的空白字符
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;用到的一些辅助方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;// 去掉Dom节点中的空白字符
 function cleanWhitespaces(elem) {
     var elem = elem || document;
     var childElem = elem.childNodes;
@@ -3771,7 +3668,7 @@ function getParentFormValues() {
         if (formObj.elements[i].value != null
                 &amp;amp;&amp;amp; formObj.elements[i].value != &amp;quot;&amp;quot;
                 &amp;amp;&amp;amp; formObj.elements[i].value.length != 0) {
-            formValues += &amp;#39;&lt;/em&gt;&amp;#39; + formObj.elements[i].name.toUpperCase() + &amp;#39;{&amp;#39;
+            formValues += &amp;#39;_&amp;#39; + formObj.elements[i].name.toUpperCase() + &amp;#39;{&amp;#39;
                     + formObj.elements[i].value.toUpperCase() + &amp;#39;}&amp;#39;
                     + formObj.elements[i].name.toUpperCase() + &amp;#39;_ &amp;#39;;
         }
@@ -3787,16 +3684,15 @@ function getCondictionValues() {
         if (formObj.elements[i].value != null
                 &amp;amp;&amp;amp; formObj.elements[i].value != &amp;quot;&amp;quot;
                 &amp;amp;&amp;amp; formObj.elements[i].value.length != 0) {
-            condictionString += &amp;#39;&lt;em&gt;&amp;#39; + formObj.elements[i].name + &amp;#39;{&amp;#39;
+            condictionString += &amp;#39;_&amp;#39; + formObj.elements[i].name + &amp;#39;{&amp;#39;
                     + formObj.elements[i].value + &amp;#39;}&amp;#39;
-                    + formObj.elements[i].name + &amp;#39;&lt;/em&gt; &amp;#39;;
+                    + formObj.elements[i].name + &amp;#39;_ &amp;#39;;
         }
     }
     // alert(&amp;quot;condictionString&amp;quot;+condictionString);
     return condictionString;
-}&lt;/p&gt;
-
-&lt;p&gt;// 判读Ext表单是否有输入
+}
+// 判读Ext表单是否有输入
 function isFormInputed(ExtForm) {
     var flag = false;
     var formObj = ExtForm.getEl().dom;
@@ -3809,16 +3705,14 @@ function isFormInputed(ExtForm) {
         }
     }
     return flag;
-}&lt;/p&gt;
-
-&lt;p&gt;// 将计算得到的结果四舍五入
+}
+// 将计算得到的结果四舍五入
 /* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
 function ForDight(Dight, How) {
     var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
     return Dight;
 }
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;xml文件格式：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; ?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;gb2312&amp;quot;?&amp;gt;
 &amp;lt; dictionary&amp;gt;
@@ -3845,71 +3739,69 @@ function ForDight(Dight, How) {
 &amp;lt;/ dictionary&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;然后，弹出窗口页面Ext入口代码：
-&lt;pre&gt;
-// 全局变量
-var result = {};
-var grid;
-var form;
-var viewport;
-var store;
-var sm = new Ext.grid.CheckboxSelectionModel();
-var autoStore;
-var tempItems1 = [];
-var tempItems2 = [];
-var tempItems3 = [];
-var flag = 1;
-// 程序入口
-Ext.onReady(function() {
-    Ext.QuickTips.init();// 初始化
-    Ext.form.Field.prototype.msgTarget = &amp;#39;qtip&amp;#39;;// 统一指定错误信息提示方式
-    Ext.util.CSS    .swapStyleSheet(&amp;#39;theme&amp;#39;, &amp;#39;../aws&lt;em&gt;js/extjs2/css/xtheme-gray.css&amp;#39;);// 更换皮肤
-    Ext.BLANK&lt;/em&gt;IMAGE&lt;em&gt;URL = &amp;#39;../aws&lt;/em&gt;js/extjs2/images/default/s.gif&amp;#39;;
-    Ext.Ajax.request({
-        url : getXmlUrl(getQueryStringValue(&amp;#39;xmlFile&amp;#39;)), // 访问数据字典
-        method : &amp;#39;post&amp;#39;,
-        success : function(res, opt) {
-            var xmlObj = res.responseXML;
-            initStoreData(xmlObj); // 访问成功后执行后续工作
-        }
-    })
-});
-function initStoreData(xmlObj) {
-    getInitData(xmlObj);
-    document.title = result.winTitle;&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
-// 获取表格数据部分
-store = new Ext.data.Store({
-    idProperty : &amp;#39;ID&amp;#39;,
-    proxy : new Ext.data.HttpProxy({
-        url : &amp;#39;../search.do?method=findAll&amp;#39;,
-        failure : function() {
-            // Ext.Msg.alert(&amp;quot;Notice&amp;quot;, &amp;quot;网路问题&amp;quot;);
-        },
-        success : function(response) {
-            // Ext.Msg.alert(&amp;quot;Notice&amp;quot;, response.responseText);
-        }
-    }),
+    // 全局变量
+    var result = {};
+    var grid;
+    var form;
+    var viewport;
+    var store;
+    var sm = new Ext.grid.CheckboxSelectionModel();
+    var autoStore;
+    var tempItems1 = [];
+    var tempItems2 = [];
+    var tempItems3 = [];
+    var flag = 1;
+    // 程序入口
+    Ext.onReady(function() {
+        Ext.QuickTips.init();// 初始化
+        Ext.form.Field.prototype.msgTarget = &amp;#39;qtip&amp;#39;;// 统一指定错误信息提示方式
+        Ext.util.CSS    .swapStyleSheet(&amp;#39;theme&amp;#39;, &amp;#39;../aws&lt;em&gt;js/extjs2/css/xtheme-gray.css&amp;#39;);// 更换皮肤
+        Ext.BLANK&lt;/em&gt;IMAGE&lt;em&gt;URL = &amp;#39;../aws&lt;/em&gt;js/extjs2/images/default/s.gif&amp;#39;;
+        Ext.Ajax.request({
+            url : getXmlUrl(getQueryStringValue(&amp;#39;xmlFile&amp;#39;)), // 访问数据字典
+            method : &amp;#39;post&amp;#39;,
+            success : function(res, opt) {
+                var xmlObj = res.responseXML;
+                initStoreData(xmlObj); // 访问成功后执行后续工作
+            }
+        })
+    });
+    function initStoreData(xmlObj) {
+        getInitData(xmlObj);
+        document.title = result.winTitle;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+    // 获取表格数据部分
+    store = new Ext.data.Store({
+        idProperty : &amp;#39;ID&amp;#39;,
+        proxy : new Ext.data.HttpProxy({
+            url : &amp;#39;../search.do?method=findAll&amp;#39;,
+            failure : function() {
+                // Ext.Msg.alert(&amp;quot;Notice&amp;quot;, &amp;quot;网路问题&amp;quot;);
+            },
+            success : function(response) {
+                // Ext.Msg.alert(&amp;quot;Notice&amp;quot;, response.responseText);
+            }
+        }),
 
-    // baseParams : {
-    // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
-    // xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;)
-    // // cmd:&amp;#39;search&amp;#39;
-    // },
-    reader : new Ext.data.JsonReader({
-        totalProperty : &amp;#39;totalCount&amp;#39;,
-        root : &amp;#39;data&amp;#39;
-    }, dataRecorder)
-});
-// 要分页，第一次加载数据必须传start和limit两参数
-// store.load({
-// params : {
-// start : 0,
-// limit : result.limit
-// }
-// });
-initViewport();
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}
+        // baseParams : {
+        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+        // xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;)
+        // // cmd:&amp;#39;search&amp;#39;
+        // },
+        reader : new Ext.data.JsonReader({
+            totalProperty : &amp;#39;totalCount&amp;#39;,
+            root : &amp;#39;data&amp;#39;
+        }, dataRecorder)
+    });
+    // 要分页，第一次加载数据必须传start和limit两参数
+    // store.load({
+    // params : {
+    // start : 0,
+    // limit : result.limit
+    // }
+    // });
+    initViewport();
+}
 // 获得界面初始化的一些数据
 function getInitData(xmlObj) {
     // result.formItems = {};
@@ -3977,96 +3869,94 @@ function getInitData(xmlObj) {
             tempItems3.push(item);
         }
     }
-    // alert(Ext.util.JSON.encode(result));&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;// 获取表格表头的界面数据和rcord记录的数据格式
-var fields = xmlObj.getElementsByTagName(&amp;quot;field&amp;quot;);
-result.columnHeaders.push(sm);// 插入多选框
-result.columnHeaders.push(new Ext.grid.RowNumberer({
-    width : 20
-}));// 插入行号
-for (var i = 0; i &amp;lt; fields.length; i++) {
-    var item = {};
-    var record = {};
-    var array = [];
-    var field = cleanWhitespaces(fields[i]);
-    var renderDate = function(value) {
-        return value ? value.dateFormat(&amp;#39;Y-m-d&amp;#39;) : &amp;#39;&amp;#39;;
-    }
-    // 生成grid表格中store数据记录
-    record.name = field[0].firstChild.nodeValue;
-    record.mapping = field[0].firstChild.nodeValue;
-    if (field[1].firstChild.nodeValue == &amp;#39;日期&amp;#39;) {
-        record.type = &amp;#39;date&amp;#39;;
-        record.dateFormat = &amp;#39;Y-m-d&amp;#39;;
-        item.renderer = Ext.util.Format.dateRenderer(&amp;#39;Y-m-d&amp;#39;)
-    } else if (field[1].firstChild.nodeValue == &amp;#39;数值&amp;#39;) {
-        record.type = &amp;#39;auto&amp;#39;;
-    } else {
-        record.type = &amp;#39;string&amp;#39;;
-    }
-    result.gridRecords.push(record);
+    // alert(Ext.util.JSON.encode(result));
 
-    // 生成grid表格表头数据记录
-    item.dataIndex = field[0].firstChild.nodeValue;
-    item.header = field[2].firstChild.nodeValue;
-    // item.width=field[3].firstChild.nodeValue;
-    item.sortable = true;
-    if (field.length == 7
-            &amp;amp;&amp;amp; field[5].firstChild.nodeValue.toUpperCase() == &amp;#39;TRUE&amp;#39;) {
-        item.hidden = true;
-        // item.hideable=false;
-    }
-    if (field.length == 6) {
-        item.hidden = false;
-    }
-    result.columnHeaders.push(item);
+    // 获取表格表头的界面数据和rcord记录的数据格式
+    var fields = xmlObj.getElementsByTagName(&amp;quot;field&amp;quot;);
+    result.columnHeaders.push(sm);// 插入多选框
+    result.columnHeaders.push(new Ext.grid.RowNumberer({
+        width : 20
+    }));// 插入行号
+    for (var i = 0; i &amp;lt; fields.length; i++) {
+        var item = {};
+        var record = {};
+        var array = [];
+        var field = cleanWhitespaces(fields[i]);
+        var renderDate = function(value) {
+            return value ? value.dateFormat(&amp;#39;Y-m-d&amp;#39;) : &amp;#39;&amp;#39;;
+        }
+        // 生成grid表格中store数据记录
+        record.name = field[0].firstChild.nodeValue;
+        record.mapping = field[0].firstChild.nodeValue;
+        if (field[1].firstChild.nodeValue == &amp;#39;日期&amp;#39;) {
+            record.type = &amp;#39;date&amp;#39;;
+            record.dateFormat = &amp;#39;Y-m-d&amp;#39;;
+            item.renderer = Ext.util.Format.dateRenderer(&amp;#39;Y-m-d&amp;#39;)
+        } else if (field[1].firstChild.nodeValue == &amp;#39;数值&amp;#39;) {
+            record.type = &amp;#39;auto&amp;#39;;
+        } else {
+            record.type = &amp;#39;string&amp;#39;;
+        }
+        result.gridRecords.push(record);
 
-    // 生成模糊过滤store的记录
-    if (field[4].firstChild.nodeValue.toUpperCase() == &amp;#39;TRUE&amp;#39;) {
-        array.push(field[2].firstChild.nodeValue);// fieldName
-        array.push(field[0].firstChild.nodeValue);// fieldValue
+        // 生成grid表格表头数据记录
+        item.dataIndex = field[0].firstChild.nodeValue;
+        item.header = field[2].firstChild.nodeValue;
+        // item.width=field[3].firstChild.nodeValue;
+        item.sortable = true;
+        if (field.length == 7
+                &amp;amp;&amp;amp; field[5].firstChild.nodeValue.toUpperCase() == &amp;#39;TRUE&amp;#39;) {
+            item.hidden = true;
+            // item.hideable=false;
+        }
+        if (field.length == 6) {
+            item.hidden = false;
+        }
+        result.columnHeaders.push(item);
+
+        // 生成模糊过滤store的记录
+        if (field[4].firstChild.nodeValue.toUpperCase() == &amp;#39;TRUE&amp;#39;) {
+            array.push(field[2].firstChild.nodeValue);// fieldName
+            array.push(field[0].firstChild.nodeValue);// fieldValue
+        }
+        result.dbFilterRecords.push(array);
     }
-    result.dbFilterRecords.push(array);
-}
-return result;
+    return result;
+};
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;};
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;渲染Ext界面代码：
-&lt;pre&gt;
-function initViewport() {
+&lt;p&gt;渲染Ext界面代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function initViewport() {
     if (!form) {
         form = getInsertForm();
-    }&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;if (!grid) {
-    grid = getInsertGrid();
+    }
+
+    if (!grid) {
+        grid = getInsertGrid();
+    }
+
+    if (!viewport) {
+        var formPanel = new Ext.Panel({
+            title : &amp;#39;查询条件&amp;#39;,
+            region : &amp;#39;north&amp;#39;,
+            split : true,
+            frame : true,
+            border : true,
+            layout : &amp;#39;fit&amp;#39;,
+            height : 280,
+            collapsible : true,
+            items : [form]
+
+        });
+        viewport = new Ext.Viewport({
+            layout : &amp;#39;border&amp;#39;,
+            modal : true,// 是否为模式窗口
+            border : false,
+            items : [formPanel, grid]
+        });
+    }
 }
 
-if (!viewport) {
-    var formPanel = new Ext.Panel({
-        title : &amp;#39;查询条件&amp;#39;,
-        region : &amp;#39;north&amp;#39;,
-        split : true,
-        frame : true,
-        border : true,
-        layout : &amp;#39;fit&amp;#39;,
-        height : 280,
-        collapsible : true,
-        items : [form]
-
-    });
-    viewport = new Ext.Viewport({
-        layout : &amp;#39;border&amp;#39;,
-        modal : true,// 是否为模式窗口
-        border : false,
-        items : [formPanel, grid]
-    });
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}&lt;/p&gt;
-
-&lt;p&gt;function searchByFilter() {
+function searchByFilter() {
     var dbfilter = Ext.get(&amp;quot;dbFilter&amp;quot;).getValue();
     var fieldMame = Ext.get(&amp;quot;search-type&amp;quot;).getValue();
     if (dbfilter == null || dbfilter == &amp;quot;&amp;quot;) {
@@ -4101,12 +3991,12 @@ if (!viewport) {
                 xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;),
                 cmd : &amp;#39;filter&amp;#39;
             };
-            store.reload();&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    }
-    Ext.get(&amp;quot;dbFilter&amp;quot;).dom.value = &amp;quot;&amp;quot;;
+            store.reload();
+
+        }
+        Ext.get(&amp;quot;dbFilter&amp;quot;).dom.value = &amp;quot;&amp;quot;;
+    }
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}
 // 获取过滤条件部分的表单控件
 function getInsertForm() {
     form = new Ext.form.FormPanel({
@@ -4200,89 +4090,88 @@ function getInsertForm() {
                                     parentFormValues : getParentFormValues()
                                 },
                                 callback : function(options, success, response) {
-                                    if (response.responseText == &amp;quot;success&amp;quot;) {&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;                                    Ext.Msg.alert(&amp;quot;提示&amp;quot;, &amp;quot;插入成功&amp;quot;, function() {
-                                        window.close();
-                                        // opener.location.reload();
+                                    if (response.responseText == &amp;quot;success&amp;quot;) {
+
+                                        Ext.Msg.alert(&amp;quot;提示&amp;quot;, &amp;quot;插入成功&amp;quot;, function() {
+                                            window.close();
+                                            // opener.location.reload();
                                         opener.saveForm();
-                                    });
-                                } else {
-                                    Ext.Msg.alert(&amp;quot;提示&amp;quot;, &amp;quot;插入失败&amp;quot;);
+                                        });
+                                    } else {
+                                        Ext.Msg.alert(&amp;quot;提示&amp;quot;, &amp;quot;插入失败&amp;quot;);
+                                    }
                                 }
-                            }
-                        })
+                            })
 
-                    } else {
-                        alert(&amp;quot;请选择一行或多行数据&amp;quot;);
-                    }
-                },
-                scope : this
-            }, &amp;#39;-&amp;#39;, {
-                pressed : true,
-                xtype : &amp;#39;button&amp;#39;,
-                text : &amp;#39;取消&amp;#39;,
-                tooltip : &amp;#39;取消选择，直接退出&amp;#39;,
-                handler : function() {
-                    Ext.Msg.confirm(&amp;#39;Notice&amp;#39;, &amp;#39;确认退出？&amp;#39;, function(id) {
-                        if (id == &amp;quot;yes&amp;quot;)
-                            window.close();
-                    });
-                },
-                scope : this
-            }],
-    buttons : [{
-        text : &amp;#39;执行查询条件&amp;#39;,
-        handler : function() {
-            var connections = getCondictionValues();
-            if (!form.getForm().isValid()) {
-                return;
-            };
-            if (isFormInputed(form.getForm()) == false) {
-                alert(&amp;quot;请输入查询条件&amp;quot;);
-                form.getForm().focus();
-                return;
-            } else {
-                Ext.get(&amp;quot;dbFilter&amp;quot;).dom.value = &amp;quot;&amp;quot;;
-                if (flag == 1) {
-                    store.baseParams = {
-                        xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;),
-                        condictions : connections,
-                        parentFormValues : getParentFormValues(),
-                        cmd : &amp;#39;search&amp;#39;
-                    };
-                    store.load({
-                        params : {
-                            start : 0,
-                            limit : result.limit
+                        } else {
+                            alert(&amp;quot;请选择一行或多行数据&amp;quot;);
                         }
-                    });
-                    form.getForm().reset();
-                    flag = 0;
+                    },
+                    scope : this
+                }, &amp;#39;-&amp;#39;, {
+                    pressed : true,
+                    xtype : &amp;#39;button&amp;#39;,
+                    text : &amp;#39;取消&amp;#39;,
+                    tooltip : &amp;#39;取消选择，直接退出&amp;#39;,
+                    handler : function() {
+                        Ext.Msg.confirm(&amp;#39;Notice&amp;#39;, &amp;#39;确认退出？&amp;#39;, function(id) {
+                            if (id == &amp;quot;yes&amp;quot;)
+                                window.close();
+                        });
+                    },
+                    scope : this
+                }],
+        buttons : [{
+            text : &amp;#39;执行查询条件&amp;#39;,
+            handler : function() {
+                var connections = getCondictionValues();
+                if (!form.getForm().isValid()) {
+                    return;
+                };
+                if (isFormInputed(form.getForm()) == false) {
+                    alert(&amp;quot;请输入查询条件&amp;quot;);
+                    form.getForm().focus();
+                    return;
                 } else {
-                    store.baseParams = {
-                        xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;),
-                        condictions : connections,
-                        parentFormValues : getParentFormValues(),
-                        cmd : &amp;#39;search&amp;#39;
-                    };
-                    store.reload();
-                }
+                    Ext.get(&amp;quot;dbFilter&amp;quot;).dom.value = &amp;quot;&amp;quot;;
+                    if (flag == 1) {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &amp;#39;search&amp;#39;
+                        };
+                        store.load({
+                            params : {
+                                start : 0,
+                                limit : result.limit
+                            }
+                        });
+                        form.getForm().reset();
+                        flag = 0;
+                    } else {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&amp;#39;xmlFile&amp;#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &amp;#39;search&amp;#39;
+                        };
+                        store.reload();
+                    }
 
+                    form.getForm().reset();
+                }
+            }
+        }, {
+            text : &amp;#39;重置&amp;#39;,
+            handler : function() {
                 form.getForm().reset();
             }
-        }
-    }, {
-        text : &amp;#39;重置&amp;#39;,
-        handler : function() {
-            form.getForm().reset();
-        }
-    }]
-});
-return form;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;}
-&lt;/pre&gt;&lt;/p&gt;
-</content>
+        }]
+    });
+    return form;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>
@@ -4290,22 +4179,23 @@ return form;
    <link href="http://blog.javachen.com/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse"/>
    <updated>2011-09-28T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse</id>
-   <content type="html">&lt;p&gt;首先需要说明的是，Pentaho BI Server源代码在&lt;em&gt;svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/&lt;/em&gt;，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。&lt;br /&gt;
-当然，您可以参考&lt;a href=&quot;http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse&quot; target=&quot;_blank&quot;&gt;官方文档&lt;/a&gt;构建源码。&lt;/p&gt;
+   <content type="html">&lt;p&gt;首先需要说明的是，Pentaho BI Server源代码在&lt;em&gt;svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/&lt;/em&gt;，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。&lt;/p&gt;
 
-&lt;p&gt;Pentaho BI Server打包后的文件存于&lt;a href=&quot;http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。
-&lt;!--more--&gt;
-将biserver-ce-3.9.0-stable.zip解压之后执行&lt;em&gt;biserver-ce/start-pentaho.bat&lt;/em&gt;（或是再linux环境下：&lt;em&gt;biserver-ce/start-pentaho.sh&lt;/em&gt;），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？&lt;/p&gt;
+&lt;p&gt;当然，您可以参考&lt;a href=&quot;http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse&quot; target=&quot;_blank&quot;&gt;官方文档&lt;/a&gt;构建源码。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。&lt;/strong&gt;
-在eclipse中创建一个web项目，名称为pentaho，然后将&lt;em&gt;biserver-ce/tomcat/webapps&lt;/em&gt;下的&lt;code&gt;pentaho-style&lt;/code&gt;和&lt;code&gt;sw-style&lt;/code&gt;拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改&lt;code&gt;WEB-INF/web.xml&lt;/code&gt;文件你的以下配置，用于指定pentaho-solutions的路径：
-&lt;pre&gt;
-&lt; context-param &gt;
-    &lt; param-name &gt;solution-path&lt; /param-name&gt;
-    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
-&lt; /context-param &gt;
-&lt;/pre&gt;
-现在即可部署项目，运行&lt;code&gt;biserver-ce/data/start_hypersonic.bat&lt;/code&gt;（用于启动数据库），然后启动tomcat，就可以通过&lt;em&gt;http://localhost:8080/pentaho&lt;/em&gt;访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（&lt;em&gt;\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib&lt;/em&gt;）。&lt;br /&gt;
+&lt;p&gt;Pentaho BI Server打包后的文件存于&lt;a href=&quot;http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/&quot; target=&quot;_blank&quot;&gt;这里&lt;/a&gt;，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。&lt;/p&gt;
+
+&lt;p&gt;将biserver-ce-3.9.0-stable.zip解压之后执行&lt;em&gt;biserver-ce/start-pentaho.bat&lt;/em&gt;（或是再linux环境下：&lt;em&gt;biserver-ce/start-pentaho.sh&lt;/em&gt;），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在eclipse中创建一个web项目，名称为pentaho，然后将&lt;em&gt;biserver-ce/tomcat/webapps&lt;/em&gt;下的&lt;code&gt;pentaho-style&lt;/code&gt;和&lt;code&gt;sw-style&lt;/code&gt;拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改&lt;code&gt;WEB-INF/web.xml&lt;/code&gt;文件你的以下配置，用于指定pentaho-solutions的路径：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; context-param &amp;gt;
+    &amp;lt; param-name &amp;gt;solution-path&amp;lt; /param-name&amp;gt;
+    &amp;lt; param-value &amp;gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&amp;lt; /param-value&amp;gt;
+&amp;lt; /context-param &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;现在即可部署项目，运行&lt;code&gt;biserver-ce/data/start_hypersonic.bat&lt;/code&gt;（用于启动数据库），然后启动tomcat，就可以通过&lt;em&gt;http://localhost:8080/pentaho&lt;/em&gt;访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（&lt;em&gt;\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib&lt;/em&gt;）。&lt;br /&gt;
 现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;接下来，构建源代码。&lt;/strong&gt;
@@ -4315,17 +4205,13 @@ return form;
 1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件&lt;br /&gt;
 2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。&lt;br /&gt;
 3.
-&lt;pre&gt;   
-&lt;ul&gt;
-&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，&lt;/li&gt;
-    &lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，&lt;/li&gt;
-    &lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，&lt;/li&gt;
-&lt;li&gt; biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，&lt;/li&gt;
-&lt;li&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/pre&gt;
-4.biserver-ce-3.9.0-stable.zip的lib（biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误
-&lt;/p&gt;
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。&lt;/p&gt;
+
+&lt;p&gt;4.biserver-ce-3.9.0-stable.zip的lib（&lt;code&gt;biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib&lt;/code&gt;）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误&lt;/p&gt;
 </content>
  </entry>
  
@@ -4565,24 +4451,24 @@ public String[] getCells() {
    <id>http://blog.javachen.com/javascript/2011/07/31/custom-dhtmlxgrid-header-menu</id>
    <content type="html">&lt;p&gt;dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。
 以下是dhtmlxGrid的表头菜单效果：
-&lt;div class=&quot;pic&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-2287&quot; title=&quot;dhtmlxgrid-head-menu&quot; src=&quot;/files/2011/07/dhtmlxgrid-head-menu.jpg&quot; alt=&quot;&quot; width=&quot;300&quot; height=&quot;174&quot; /&gt;&lt;/div&gt;
+&lt;div class=&quot;pic&quot;&gt;
+&lt;img class=&quot;aligncenter size-medium wp-image-2287&quot; title=&quot;dhtmlxgrid-head-menu&quot; src=&quot;/files/2011/07/dhtmlxgrid-head-menu.jpg&quot; alt=&quot;&quot; width=&quot;300&quot; height=&quot;174&quot; /&gt;&lt;/div&gt;
 其功能过于单一，以下是表格右键菜单效果：
 &lt;div class=&quot;pic&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-2288&quot; title=&quot;dhtmlxgrid-context-menu&quot; src=&quot;/files/2011/07/dhtmlxgrid-context-menu.jpg&quot; alt=&quot;&quot; width=&quot;300&quot; height=&quot;126&quot; /&gt;&lt;/div&gt;
 如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
 如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&amp;lt;!--more--&amp;gt;
-首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：
-&lt;pre lang=&quot;javascript&quot;&gt;
-function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split(&amp;quot;&lt;em&gt;&amp;quot;);
-    //rowId&lt;/em&gt;colInd;
-    mygrid.setRowTextStyle(data[0], &amp;quot;color:&amp;quot; + menuitemId.split(&amp;quot;&lt;em&gt;&amp;quot;)[1]);
+首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&amp;quot;_&amp;quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &amp;quot;color:&amp;quot; + menuitemId.split(&amp;quot;_&amp;quot;)[1]);
     return true;
 }
 menu = new dhtmlXMenuObject();
 menu.setIconsPath(&amp;quot;../common/images/&amp;quot;);
 menu.renderAsContextMenu();
 menu.attachEvent(&amp;quot;onClick&amp;quot;, onButtonClick);
-menu.loadXML(&amp;quot;../common/&lt;/em&gt;context.xml&amp;quot;);
+menu.loadXML(&amp;quot;../common/_context.xml&amp;quot;);
 mygrid = new dhtmlXGridObject(&amp;#39;gridbox&amp;#39;);
 mygrid.setImagePath(&amp;quot;../../codebase/imgs/&amp;quot;);
 mygrid.setHeader(&amp;quot;Author,Title&amp;quot;);
@@ -4593,28 +4479,27 @@ mygrid.setColTypes(&amp;quot;ro,link&amp;quot;);
 mygrid.setColSorting(&amp;quot;str,str&amp;quot;);
 mygrid.enableContextMenu(menu);
 mygrid.init();
-mygrid.setSkin(&amp;quot;dhx&lt;em&gt;skyblue&amp;quot;);
-mygrid.loadXML(&amp;quot;../common/grid&lt;/em&gt;links.xml&amp;quot;);&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：
-&lt;pre lang=&quot;JavaScript&quot;&gt;menu.renderAsContextMenu();
+mygrid.setSkin(&amp;quot;dhx_skyblue&amp;quot;);
+mygrid.loadXML(&amp;quot;../common/grid_links.xml&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;menu.renderAsContextMenu();
 mygrid.enableContextMenu(menu);
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;上面对于context menu提供的方法太少，这时候可以看看dhtmlxMenu api，看看有没有设置context menu生效位置的方法（指定context menu在哪片区域有效）。在dhtmlxMenu API Methods里没有找到需要的方法，这时候在官网论坛搜搜，也许可以找到点什么。
-在论坛里可以找到一个例子，大致代码如下：
-&lt;pre lang=&quot;javascript&quot;&gt;function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split(&amp;quot;&lt;em&gt;&amp;quot;);
-    //rowId&lt;/em&gt;colInd;
-    mygrid.setRowTextStyle(data[0], &amp;quot;color:&amp;quot; + menuitemId.split(&amp;quot;&lt;em&gt;&amp;quot;)[1]);
+在论坛里可以找到一个例子，大致代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&amp;quot;_&amp;quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &amp;quot;color:&amp;quot; + menuitemId.split(&amp;quot;_&amp;quot;)[1]);
     return true;
 }
 menu = new dhtmlXMenuObject();
 menu.setIconsPath(&amp;quot;../common/images/&amp;quot;);
 menu.attachEvent(&amp;quot;onClick&amp;quot;, onButtonClick);
-menu.loadXML(&amp;quot;../common/&lt;/em&gt;context.xml&amp;quot;);&lt;/p&gt;
+menu.loadXML(&amp;quot;../common/_context.xml&amp;quot;);
 
-&lt;p&gt;mygrid = new dhtmlXGridObject(&amp;#39;gridbox&amp;#39;);
+mygrid = new dhtmlXGridObject(&amp;#39;gridbox&amp;#39;);
 mygrid.setImagePath(&amp;quot;../../codebase/imgs/&amp;quot;);
 mygrid.setHeader(&amp;quot;Author,Title&amp;quot;);
 mygrid.setInitWidths(&amp;quot;250,250&amp;quot;);
@@ -4624,20 +4509,19 @@ mygrid.setColTypes(&amp;quot;ro,link&amp;quot;);
 mygrid.setColSorting(&amp;quot;str,str&amp;quot;);
 //mygrid.enableContextMenu(menu); //使其失效
 mygrid.init();
-mygrid.setSkin(&amp;quot;dhx&lt;em&gt;skyblue&amp;quot;);
-mygrid.loadXML(&amp;quot;../common/grid&lt;/em&gt;links.xml&amp;quot;);&lt;/p&gt;
+mygrid.setSkin(&amp;quot;dhx_skyblue&amp;quot;);
+mygrid.loadXML(&amp;quot;../common/grid_links.xml&amp;quot;);
 
-&lt;p&gt;mygrid.hdr.id = &amp;quot;header&lt;em&gt;id&amp;quot;;
-var header&lt;/em&gt;row = mygrid.hdr.rows[1];
-for ( var i = 0; i &amp;lt; header&lt;em&gt;row.cells.length; i++) {
-   header&lt;/em&gt;row.cells[i].id = &amp;quot;context&lt;em&gt;zone&lt;/em&gt;&amp;quot; + i;
+mygrid.hdr.id = &amp;quot;header_id&amp;quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &amp;amp;lt; header_row.cells.length; i++) {
+   header_row.cells[i].id = &amp;quot;context_zone_&amp;quot; + i;
 }
 menu.addContextZone(&amp;quot;header_id&amp;quot;);
-&lt;/pre&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。
-剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：
-&lt;pre lang=&quot;javascript&quot;&gt;dhtmlxEvent(mygrid.hdr, &amp;quot;contextmenu&amp;quot;, function(ev) {
+剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;dhtmlxEvent(mygrid.hdr, &amp;quot;contextmenu&amp;quot;, function(ev) {
     ev = ev || event;
     var el = ev.target || ev.srcElement;
     var zel = el;
@@ -4646,137 +4530,134 @@ menu.addContextZone(&amp;quot;header_id&amp;quot;);
     var grid = zel.grid;
     if (!grid)
         return;
-    grid.setActive();&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;el = grid.getFirstParentOfType(el, &amp;quot;TD&amp;quot;)
+    grid.setActive();
 
-if ((grid) &amp;amp;amp;&amp;amp;amp; (!grid._colInMove)) {
-    grid.resized = null;
-    if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &amp;quot;true&amp;quot;))
-        colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
-}
+    el = grid.getFirstParentOfType(el, &amp;quot;TD&amp;quot;)
 
-function mouseCoords(ev) {
-    if (ev.pageX || ev.pageY) {
+    if ((grid) &amp;amp;amp;&amp;amp;amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &amp;quot;true&amp;quot;))
+            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
+    }
+
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {
+                x : ev.pageX,
+                y : ev.pageY
+            };
+        }
+        var d = _isIE &amp;amp;amp;&amp;amp;amp; document.compatMode != &amp;quot;BackCompat&amp;quot; ? 
+                document.documentElement: document.body;
         return {
-            x : ev.pageX,
-            y : ev.pageY
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
         };
     }
-    var d = _isIE &amp;amp;amp;&amp;amp;amp; document.compatMode != &amp;quot;BackCompat&amp;quot; ? 
-                document.documentElement: document.body;
-    return {
-        x : ev.clientX + d.scrollLeft - d.clientLeft,
-        y : ev.clientY + d.scrollTop - d.clientTop
-    };
-}
 
-var coords = mouseCoords(ev);
-menu.addContextZone(&amp;quot;header_id&amp;quot;);
-menu.showContextMenu(coords.x, coords.y);//强制显示
-return true;
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&amp;quot;header_id&amp;quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;});
-&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：
-&lt;pre lang=&quot;javascript&quot;&gt;function onButtonClick(menuitemId, type, e) {
+&lt;p&gt;在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function onButtonClick(menuitemId, type, e) {
     mygrid.insertColumn(colId, &amp;quot;12&amp;quot;, &amp;quot;ed&amp;quot;, 80);
     colId = 0;
     return true;
-}&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;然后，需要禁止掉表格数据区域的菜单显示：
-&lt;pre lang=&quot;JavaScript&quot;&gt;mygrid.attachEvent(&amp;quot;onBeforeContextMenu&amp;quot;, function(rid, cid, e) {
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，需要禁止掉表格数据区域的菜单显示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid.attachEvent(&amp;quot;onBeforeContextMenu&amp;quot;, function(rid, cid, e) {
     return false;//禁止数据区域菜单
-});&lt;/pre&gt;
-最后的最后，最后的代码如下：&lt;/p&gt;
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最后的最后，最后的代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;var mygrid, colId;
 
-&lt;pre lang=&quot;javascript&quot;&gt;
-    var mygrid, colId;
+function onButtonClick(menuitemId, type, e) {
+    mygrid.insertColumn(colId, &amp;quot;12&amp;quot;, &amp;quot;ed&amp;quot;, 80);
+    colId = 0;
+    return true;
+}
 
-    function onButtonClick(menuitemId, type, e) {
-        mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
-        colId = 0;
-        return true;
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&amp;quot;../common/images/&amp;quot;);
+menu.renderAsContextMenu();
+menu.attachEvent(&amp;quot;onClick&amp;quot;, onButtonClick);
+menu.loadXML(&amp;quot;../common/_context.xml&amp;quot;);
+menu.attachEvent(&amp;quot;onBeforeContextMenu&amp;quot;, function(zoneId, e) {
+    var hdr = document.getElementById(zoneId)
+    return true;
+});
+
+mygrid = new dhtmlXGridObject(&amp;#39;gridbox&amp;#39;);
+mygrid.setImagePath(&amp;quot;../codebase/imgs/&amp;quot;);
+mygrid.setHeader(&amp;quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&amp;quot;);
+mygrid.setInitWidths(&amp;quot;50,150,100,80,80,80,80,200&amp;quot;);
+mygrid.setColAlign(&amp;quot;right,left,left,right,center,left,center,center&amp;quot;);
+mygrid.setColTypes(&amp;quot;dyn,edtxt,ed,price,ch,co,ra,ro&amp;quot;);
+
+mygrid.init();
+mygrid.setSkin(&amp;quot;dhx_skyblue&amp;quot;);
+//mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.enableContextMenu(menu);
+dhtmlxEvent(mygrid.hdr, &amp;quot;contextmenu&amp;quot;, function(ev) {
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != &amp;quot;TABLE&amp;quot;)
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+
+    el = grid.getFirstParentOfType(el, &amp;quot;TD&amp;quot;)
+
+    if ((grid) &amp;amp;#038;&amp;amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &amp;quot;true&amp;quot;))
+                            //获得表头右键菜单焦点所在列索引
+            colId = el._cellIndex + 1;
     }
 
-    menu = new dhtmlXMenuObject();
-    menu.setIconsPath(&quot;../common/images/&quot;);
-    menu.renderAsContextMenu();
-    menu.attachEvent(&quot;onClick&quot;, onButtonClick);
-    menu.loadXML(&quot;../common/_context.xml&quot;);
-    menu.attachEvent(&quot;onBeforeContextMenu&quot;, function(zoneId, e) {
-        var hdr = document.getElementById(zoneId)
-        return true;
-    });
-
-    mygrid = new dhtmlXGridObject('gridbox');
-    mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
-    mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-              Date of Publication&quot;);
-    mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
-    mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
-    mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
-
-    mygrid.init();
-    mygrid.setSkin(&quot;dhx_skyblue&quot;);
-    //mygrid.enableHeaderMenu();
-    mygrid.enableColumnMove(true);
-    mygrid.enableContextMenu(menu);
-    dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
-        ev = ev || event;
-        var el = ev.target || ev.srcElement;
-        var zel = el;
-        while (zel.tagName != &quot;TABLE&quot;)
-            zel = zel.parentNode;
-        var grid = zel.grid;
-        if (!grid)
-            return;
-        grid.setActive();
-
-        el = grid.getFirstParentOfType(el, &quot;TD&quot;)
-
-        if ((grid) &amp;#038;&amp; (!grid._colInMove)) {
-            grid.resized = null;
-            if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
-                                //获得表头右键菜单焦点所在列索引
-                colId = el._cellIndex + 1;
-        }
-
-        function mouseCoords(ev) {
-            if (ev.pageX || ev.pageY) {
-                return {
-                    x : ev.pageX,
-                    y : ev.pageY
-                };
-            }
-            var d = _isIE &amp;#038;&amp; document.compatMode != &quot;BackCompat&quot; ? 
-                             document.documentElement: document.body;
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
             return {
-                x : ev.clientX + d.scrollLeft - d.clientLeft,
-                y : ev.clientY + d.scrollTop - d.clientTop
+                x : ev.pageX,
+                y : ev.pageY
             };
         }
-
-        var coords = mouseCoords(ev);
-        menu.addContextZone(&quot;header_id&quot;);
-        menu.showContextMenu(coords.x, coords.y);//强制显示
-        return true;
-    });
-
-    mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
-        return false;//禁止数据区域菜单
-    });
-
-    mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
-
-    mygrid.hdr.id = &quot;header_id&quot;;
-    var header_row = mygrid.hdr.rows[1];
-    for ( var i = 0; i &lt; header_row.cells.length; i++) {
-        header_row.cells[i].id = &quot;context_zone_&quot; + i;
+        var d = _isIE &amp;amp;#038;&amp;amp; document.compatMode != &amp;quot;BackCompat&amp;quot; ? 
+                         document.documentElement: document.body;
+        return {
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
+        };
     }
-&lt;/pre&gt;
 
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&amp;quot;header_id&amp;quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
+
+mygrid.attachEvent(&amp;quot;onBeforeContextMenu&amp;quot;, function(rid, cid, e) {
+    return false;//禁止数据区域菜单
+});
+
+mygrid.loadXML(&amp;quot;../common/grid_ml_16_rows_columns_manipulations.xml&amp;quot;);
+
+mygrid.hdr.id = &amp;quot;header_id&amp;quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &amp;lt; header_row.cells.length; i++) {
+    header_row.cells[i].id = &amp;quot;context_zone_&amp;quot; + i;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;效果图如下;
 &lt;div class=&quot;pic&quot;&gt;
 &lt;img src=&quot;/files/2011/07/dhtmlxgrid-custom-head-menu.jpg&quot; alt=&quot;&quot; title=&quot;dhtmlxgrid-custom-head-menu&quot; width=&quot;300&quot; height=&quot;154&quot; class=&quot;aligncenter size-medium wp-image-2291&quot; /&gt;&lt;/div&gt;&lt;/p&gt;
@@ -4956,233 +4837,270 @@ Custom Drag Out：&lt;a href=&quot;http://www.dhtmlx.com/docs/products/dhtmlxTre
    <link href="http://blog.javachen.com/javascript/2011/07/19/dhtmlxgrid-quick-start-guide"/>
    <updated>2011-07-19T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/javascript/2011/07/19/dhtmlxgrid-quick-start-guide</id>
-   <content type="html">&lt;p&gt;&lt;span style=&quot;color: #ff0000;&quot;&gt;&lt;strong&gt;说明:&lt;/strong&gt;&lt;/span&gt;本文来源于&lt;a href=&quot;http://dhtmlx.com/docs/products/dhtmlxGrid/&quot;&gt;http://dhtmlx.com/docs/products/dhtmlxGrid/&lt;/a&gt;，本人对其进行翻译整理成下文，贴出此文，紧供分享。&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;span style=&quot;color: #ff0000;&quot;&gt;说明:&lt;/span&gt;&lt;/p&gt;
 
-&lt;p&gt;dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。
-&lt;ul&gt;
-    &lt;li&gt;跨浏览器&lt;/li&gt;
-    &lt;li&gt;使用JavaScript API进行控制&lt;/li&gt;
-    &lt;li&gt;Ajax支持&lt;/li&gt;
-    &lt;li&gt;简单的JavaScript 或者XML 配置&lt;/li&gt;
-    &lt;li&gt;与HTML集成&lt;/li&gt;
-    &lt;li&gt;内建过滤、排序、查询、分组功能&lt;/li&gt;
-    &lt;li&gt;表格 footer/header自动计算&lt;/li&gt;
-    &lt;li&gt;行内编辑&lt;/li&gt;
-    &lt;li&gt;准备使用大数据集解决方案：分页，动态加载，智能渲染&lt;/li&gt;
-    &lt;li&gt;序列化为XML或CSV&lt;/li&gt;
-    &lt;li&gt;从 XML或CSV加载&lt;/li&gt;
-    &lt;li&gt;列锁定&lt;/li&gt;
-    &lt;li&gt;剪贴板支持&lt;/li&gt;
-    &lt;li&gt;简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)&lt;/li&gt;
-    &lt;li&gt;支持子表格&lt;/li&gt;
-    &lt;li&gt;列拖拽和移动&lt;/li&gt;
-    &lt;li&gt;行或列拖拽&lt;/li&gt;
-    &lt;li&gt;dhtmlxTree PRO Edition支持拖拽&lt;/li&gt;
-    &lt;li&gt;可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)&lt;/li&gt;
-    &lt;li&gt;组合框，日历以及更多的预定义eXcells&lt;/li&gt;
-    &lt;li&gt;Cell支持数学方程式&lt;/li&gt;
-    &lt;li&gt;不同的键盘映射&lt;/li&gt;
-    &lt;li&gt;简单的CSS风格或是预定义的皮肤&lt;/li&gt;
-    &lt;li&gt;对于rows/entire grid不可见的数据块 (用户数据)&lt;/li&gt;
-    &lt;li&gt;客户端排序(string, integer, date, custom)&lt;/li&gt;
-    &lt;li&gt;服务器端排序&lt;/li&gt;
-    &lt;li&gt;广泛的事件处理&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;&lt;!--more--&gt;
-Step 1 – 引入文件&lt;/h2&gt;
-&lt;pre lang=&quot;html&quot; line=&quot;1&quot;&gt; 
-&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
-&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
-&lt; script&gt;
-    //we'll write script commands here
-&lt; /script&gt;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;本文来源于&lt;a href=&quot;http://dhtmlx.com/docs/products/dhtmlxGrid/&quot;&gt;http://dhtmlx.com/docs/products/dhtmlxGrid/&lt;/a&gt;，本人对其进行翻译整理成下文，贴出此文，紧供分享。&lt;/p&gt;
 
-&lt;p&gt;&lt;h2&gt;Step 2 – 放置gird&lt;/h2&gt;
-有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：
-&lt;pre&gt;  &lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;&lt;/pre&gt;
-下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：
-&lt;pre&gt; 
- var mygrid;
+&lt;p&gt;dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Step 1 – 引入文件&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; link rel =&amp;quot;STYLESHEET&amp;quot; type=&amp;quot;text/css&amp;quot; href=&amp;quot;codebase/dhtmlxgrid.css&amp;quot; /&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxcommon.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxgrid.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxgridcell.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script&amp;gt;
+    //we&amp;#39;ll write script commands here
+&amp;lt; /script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Step 2 – 放置gird&lt;/h2&gt;
+
+&lt;p&gt;有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; div id=&amp;quot;mygrid_container&amp;quot; style=&amp;quot;width:600px;height:150px;&amp;quot;&amp;gt;&amp;lt; /div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; var mygrid;
  function doInitGrid(){
  }
-&lt;/pre&gt;
-doInitGrid方法会包括以下代码：&lt;br /&gt;
-o 使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；&lt;br /&gt;
-o 设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；&lt;br /&gt;
-o 使用setHeader 方法定义表头；&lt;br /&gt;
-o 使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用*代表让列自动使用所有表格宽度；&lt;br /&gt;
-o 定义一个列的水平对其方式。 Numeric values is better to align right;&lt;br /&gt;
-o 使用setSkin方法设置皮肤；&lt;br /&gt;
-o 最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。目前，doInitGrid方法如下：
-&lt;pre&gt; 
-mygrid = new dhtmlXGridObject('mygrid_container');
-mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
-mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
-grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
-grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
-mygrid.setSkin(&quot;light&quot;); //设置皮肤
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;doInitGrid方法会包括以下代码：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；&lt;/li&gt;
+&lt;li&gt;设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；&lt;/li&gt;
+&lt;li&gt;使用setHeader 方法定义表头；&lt;/li&gt;
+&lt;li&gt;使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用&lt;code&gt;*&lt;/code&gt;代表让列自动使用所有表格宽度；&lt;/li&gt;
+&lt;li&gt;定义一个列的水平对其方式。 Numeric values is better to align right;&lt;/li&gt;
+&lt;li&gt;使用setSkin方法设置皮肤；&lt;/li&gt;
+&lt;li&gt;最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;目前，doInitGrid方法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid = new dhtmlXGridObject(&amp;#39;mygrid_container&amp;#39;);
+mygrid.setImagePath(&amp;quot;codebase/imgs/&amp;quot;); //指定图片路径
+mygrid.setHeader(&amp;quot;Model,Qty,Price&amp;quot;); //设置表头显示
+grid.setInitWidths(&amp;quot;*,150,150&amp;quot;); //设置列的初始宽度
+grid.setColAlign(&amp;quot;left,right,right&amp;quot;); //设置列的水平对其方式
+mygrid.setSkin(&amp;quot;light&amp;quot;); //设置皮肤
 grid.init(); //显示调用初始化方法，必须的
-&lt;/pre&gt;
-现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：
-&lt;pre&gt;&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;&lt;/pre&gt;
-这样在该页面初始化之后会显示如下：
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; body onload=&amp;quot;doInitGrid();&amp;quot;&amp;gt;&amp;lt; /body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样在该页面初始化之后会显示如下：&lt;/p&gt;
+
 &lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;amp;media=dhtmlxgrid:step_2_last.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;
-说明：除了调用set方法之外，还可以如下风格定义：
-&lt;pre lang=&quot;Javascript&quot;&gt;mygrid = new dhtmlXGridObject({
-        parent:&quot;a_grid&quot;,
-        image_path:&quot;codebase/imgs&quot;,
+
+&lt;p&gt;说明：除了调用set方法之外，还可以如下风格定义：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid = new dhtmlXGridObject({
+        parent:&amp;quot;a_grid&amp;quot;,
+        image_path:&amp;quot;codebase/imgs&amp;quot;,
         columns:[
-            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
-            { label:[&quot;Book title&quot;,
-                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
-            { label:[&quot;Author&quot;,
-                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
-            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
-            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
-            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
-            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
-            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
-        ],&lt;/pre&gt;&lt;/p&gt;
-
-&lt;p&gt;     xml:&quot;data.xml&quot;&lt;br /&gt;
+            { label: &amp;quot;Sales&amp;quot;,           width:50,   type:&amp;quot;ed&amp;quot; },
+            { label:[&amp;quot;Book title&amp;quot;,
+                 &amp;quot;#text_filter&amp;quot;],   width:150,  type:&amp;quot;ed&amp;quot; },
+            { label:[&amp;quot;Author&amp;quot;,
+                 &amp;quot;#select_filter&amp;quot;], width:150,  type:&amp;quot;ed&amp;quot; },
+            { label: &amp;quot;Price&amp;quot;,       width:50,   type:&amp;quot;ed&amp;quot; },
+            { label:&amp;quot;In store&amp;quot; ,    width:80,   type:&amp;quot;ch&amp;quot; },
+            { label:&amp;quot;Shipping&amp;quot; ,    width:50,   type:&amp;quot;ed&amp;quot; },
+            { label:&amp;quot;Bestseller&amp;quot; ,  width:50,   type:&amp;quot;ed&amp;quot; },
+            { label:&amp;quot;Date&amp;quot; ,    width:50,   type:&amp;quot;ed&amp;quot; }
+        ],
+        xml:&amp;quot;data.xml&amp;quot;
     });
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;Step 3 – 填充数据&lt;/h2&gt;
-你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。&lt;br /&gt;
-在上面的例子中每行有三列，故我们的json数据如下：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;{
+
+&lt;p&gt;你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。&lt;/p&gt;
+
+&lt;p&gt;在上面的例子中每行有三列，故我们的json数据如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;{
 rows:[
-{
-        id: &quot;a&quot;,
+    {
+        id: &amp;quot;a&amp;quot;,
         data: [Model 1, 100, 399]
-},
-{
-id: &quot;b&quot;,
+    },
+    {
+    id: &amp;quot;b&amp;quot;,
         data: [Model 2, 50, 649]
-},
-{
-    id: &quot;c&quot;,
-       data: [ Model 3, 70, 499]
-}
+    },
+    {
+        id: &amp;quot;c&amp;quot;,
+           data: [ Model 3, 70, 499]
+    }
 ]
-}&lt;/pre&gt;
-将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：
-&lt;pre lang=&quot;javascript&quot;&gt;mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);&lt;/pre&gt;
-这时候页面展示如下：
-&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;amp;media=dhtmlxgrid:step_3.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid.load (&amp;quot;data.json&amp;quot;，,&amp;quot;json&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这时候页面展示如下：
+&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;amp;media=dhtmlxgrid:step_3.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/p&gt;
+
 &lt;h2&gt;Step 4 – 客户端排序&lt;/h2&gt;
-为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。该类型值有以下四种：&lt;br /&gt;
-o str – 作为字符串排序&lt;br /&gt;
-o int - 以Integer值排序 (通常可以是任何数字);&lt;br /&gt;
-o date – 以日期排序&lt;br /&gt;
-o custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).&lt;/p&gt;
 
-&lt;p&gt;接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。
-&lt;pre lang=&quot;javascript&quot;&gt;mygrid.setColSorting(&quot;str,int,int&quot;);&lt;/pre&gt;
-这时候单击最后一列表头，结果如下：
-&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;
+&lt;p&gt;为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。&lt;/p&gt;
+
+&lt;p&gt;该类型值有以下四种：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;str – 作为字符串排序&lt;/li&gt;
+&lt;li&gt;int - 以Integer值排序 (通常可以是任何数字);&lt;/li&gt;
+&lt;li&gt;date – 以日期排序&lt;/li&gt;
+&lt;li&gt;custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid.setColSorting(&amp;quot;str,int,int&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这时候单击最后一列表头，结果如下：
+&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/p&gt;
+
 &lt;h2&gt;Step 5 – 单元格格式化和编辑&lt;/h2&gt;
-Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。&lt;/p&gt;
 
-&lt;p&gt;设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。&lt;br /&gt;
-默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt; 
-mygrid.setColTypes(&quot;ed,ed,price&quot;);
-&lt;/pre&gt; &lt;/p&gt;
+&lt;p&gt;Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。&lt;/p&gt;
 
-&lt;p&gt;&lt;p&gt;Excells格式化有以下几种：
-&lt;div class=&quot;note&quot;&gt; link：超链接&lt;br /&gt;
- img：图片&lt;br /&gt;
- price：价格&lt;br /&gt;
- dyn：动态行&lt;/div&gt;
-Excell 复杂编辑器有以下几种：
-&lt;div class=&quot;note&quot;&gt; cp：colorpicker&lt;br /&gt;
- calck：允许调用grid.setNumberFormat的计算器&lt;br /&gt;
- dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置&lt;br /&gt;
- dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑&lt;br /&gt;
- calendar：YUI Calendar&lt;br /&gt;
- clist：多选组件&lt;/div&gt;
-使用其他组件作为单元格编辑器
-&lt;div class=&quot;note&quot;&gt; grid：使用dhtmlxgrid&lt;br /&gt;
- stree ：使用dhtmlxtree&lt;br /&gt;
- context：使用dhtmlxmenu&lt;br /&gt;
- combo：使用dhtmlxCombo&lt;/div&gt;
-Excells特别用途
-&lt;div class=&quot;note&quot;&gt;sub&lt;em&gt;row：允许单元格作为一个可展开的子单元格，就想查看明细一样。&lt;br /&gt;
-两个扩展&lt;br /&gt;
-o sub&lt;/em&gt;row&lt;em&gt;ajax – 单元格数据被认为是ajax请求的url&lt;br /&gt;
-o sub&lt;/em&gt;row&lt;em&gt;grid – 允许创建一个子表作为一个子行的内容&lt;/div&gt;
-现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
-&lt;div class=&quot;pic&quot;&gt;&amp;lt;img src=&amp;quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step&lt;/em&gt;5.png&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;&lt;/div&gt;
+&lt;p&gt;设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mygrid.setColTypes(&amp;quot;ed,ed,price&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Excells格式化有以下几种：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;link：超链接&lt;/li&gt;
+&lt;li&gt;img：图片&lt;/li&gt;
+&lt;li&gt;price：价格&lt;/li&gt;
+&lt;li&gt;dyn：动态行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Excell 复杂编辑器有以下几种：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cp：colorpicker&lt;/li&gt;
+&lt;li&gt;calck：允许调用grid.setNumberFormat的计算器&lt;/li&gt;
+&lt;li&gt;dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置&lt;/li&gt;
+&lt;li&gt;dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑&lt;/li&gt;
+&lt;li&gt;calendar：YUI Calendar&lt;/li&gt;
+&lt;li&gt;clist：多选组件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用其他组件作为单元格编辑器:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;grid：使用dhtmlxgrid&lt;/li&gt;
+&lt;li&gt;stree ：使用dhtmlxtree&lt;/li&gt;
+&lt;li&gt;context：使用dhtmlxmenu&lt;/li&gt;
+&lt;li&gt;combo：使用dhtmlxCombo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。&lt;/p&gt;
+
+&lt;p&gt;两个扩展:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;sub&lt;em&gt;row&lt;/em&gt;ajax – 单元格数据被认为是ajax请求的url&lt;/li&gt;
+&lt;li&gt;sub&lt;em&gt;row&lt;/em&gt;grid – 允许创建一个子表作为一个子行的内容&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+&lt;div class=&quot;pic&quot;&gt;&lt;img src=&quot;http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/p&gt;
+
 &lt;h2&gt;Step 6 – 行操作方法&lt;/h2&gt;
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;    function addRow(){
-        var newId = (new Date()).valueOf()
-        mygrid.addRow(newId,&amp;quot;&amp;quot;,mygrid.getRowsNum())
-        mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
-    }
-    function removeRow(){
-        var selId = mygrid.getSelectedId()
-        mygrid.deleteRow(selId);
-    }&lt;/pre&gt;
-代码中addRow() 方法的一些说明：
-&lt;div class=&quot;note&quot;&gt;o 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；&lt;br /&gt;
-o 在最后一行后面添加一新行，该行有新的id，值为空；&lt;br /&gt;
-o 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。&lt;/div&gt;
-代码中removeRow() 的一些说明（一行行的）:
-&lt;div class=&quot;note&quot;&gt;o 得到选中行id；&lt;br /&gt;
-o 删除指定行id的行&lt;/div&gt;
-&lt;h2&gt;Step 7 – 事件&lt;/h2&gt;
-添加事件调用attachEvent 方法，如下行选中事件：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;&lt;br&gt;
-    function doOnRowSelected(rowID,celInd){
-        alert(&amp;quot;Selected row ID is &amp;quot;+rowID+&amp;quot;\nUser clicked cell with index &amp;quot;+celInd);
-    }
-    mygrid.attachEvent(&amp;quot;onRowSelect&amp;quot;,doOnRowSelected);&lt;/pre&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&amp;quot;&amp;quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。&lt;/p&gt;
 
+&lt;p&gt;代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行&lt;/p&gt;
+
+&lt;h2&gt;Step 7 – 事件&lt;/h2&gt;
+
+&lt;p&gt;添加事件调用attachEvent 方法，如下行选中事件：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;function doOnRowSelected(rowID,celInd){
+alert(&amp;quot;Selected row ID is &amp;quot;+rowID+&amp;quot;\nUser clicked cell with index &amp;quot;+celInd);
+}
+mygrid.attachEvent(&amp;quot;onRowSelect&amp;quot;,doOnRowSelected);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;Step 8 – Code&lt;/h2&gt;
 
-&lt;p&gt;最后的代码：
-&lt;pre lang=&quot;javascript&quot; line=&quot;1&quot;&gt;
- &amp;lt; title&amp;gt;dhtmlxGrid Sample Page&amp;lt; /title&amp;gt;
-     &amp;lt; link rel=&amp;quot;STYLESHEET&amp;quot; type=&amp;quot;text/css&amp;quot; href=&amp;quot;codebase/dhtmlxgrid.css&amp;quot; /&amp;gt;
-     &amp;lt; script src=&amp;quot;codebase/dhtmlxcommon.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
-     &amp;lt; script src=&amp;quot;codebase/dhtmlxgrid.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
-     &amp;lt; script src=&amp;quot;codebase/dhtmlxgridcell.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
-     &amp;lt; script&amp;gt;
-      var mygrid;&lt;br /&gt;
-      function doInitGrid(){&lt;br /&gt;
-       mygrid = new dhtmlXGridObject(&amp;#39;mygrid&lt;em&gt;container&amp;#39;);&lt;br /&gt;
-       mygrid.setImagePath(&amp;quot;codebase/imgs/&amp;quot;);&lt;br /&gt;
-       mygrid.setHeader(&amp;quot;Model,Qty,Price&amp;quot;);&lt;br /&gt;
-       mygrid.setInitWidths(&amp;quot;*,150,150&amp;quot;);&lt;br /&gt;
-       mygrid.setColAlign(&amp;quot;left,right,right&amp;quot;)&lt;br /&gt;
-       mygrid.setSkin(&amp;quot;light&amp;quot;);&lt;br /&gt;
-       mygrid.setColSorting(&amp;quot;str,int,int&amp;quot;);&lt;br /&gt;
-       mygrid.setColTypes(&amp;quot;ed,ed,price&amp;quot;);&lt;br /&gt;
-       mygrid.attachEvent(&amp;quot;onRowSelect&amp;quot;,doOnRowSelected);&lt;br /&gt;
-       mygrid.init();&lt;br /&gt;
-       mygrid.load (&amp;quot;data.json&amp;quot;,&amp;quot;json&amp;quot;);&lt;br /&gt;
-      }
-     function addRow(){&lt;br /&gt;
-       var newId = (new Date()).valueOf()&lt;br /&gt;
-       mygrid.addRow(newId,&amp;quot;&amp;quot;,mygrid.getRowsNum())&lt;br /&gt;
-       mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);&lt;br /&gt;
-      }&lt;br /&gt;
-      function removeRow(){&lt;br /&gt;
-       var selId = mygrid.getSelectedId()&lt;br /&gt;
-       mygrid.deleteRow(selId);&lt;br /&gt;
-      }
-     function doOnRowSelected(rowID,celInd){&lt;br /&gt;
-       alert(&amp;quot;Selected row ID is &amp;quot;+rowID+&amp;quot;\nUser clicked cell with index &amp;quot;+celInd);&lt;br /&gt;
-      }
-   &amp;lt; /script&amp;gt;
-   &amp;lt; body onload=&amp;quot;doInitGrid()&amp;quot;&amp;gt;
-      &amp;lt; div id=&amp;quot;mygrid&lt;/em&gt;container&amp;quot; style=&amp;quot;width:600px;height:150px;&amp;quot;&amp;gt;&amp;lt; /div&amp;gt;
-   &amp;lt; /body&amp;gt;
-&lt;/pre&gt;&lt;/p&gt;
-</content>
+&lt;p&gt;最后的代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; title&amp;gt;dhtmlxGrid Sample Page&amp;lt; /title&amp;gt;
+&amp;lt; link rel=&amp;quot;STYLESHEET&amp;quot; type=&amp;quot;text/css&amp;quot; href=&amp;quot;codebase/dhtmlxgrid.css&amp;quot; /&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxcommon.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxgrid.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script src=&amp;quot;codebase/dhtmlxgridcell.js&amp;quot;&amp;gt;&amp;lt; /script&amp;gt;
+&amp;lt; script&amp;gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&amp;#39;mygrid_container&amp;#39;);
+mygrid.setImagePath(&amp;quot;codebase/imgs/&amp;quot;);
+mygrid.setHeader(&amp;quot;Model,Qty,Price&amp;quot;);
+mygrid.setInitWidths(&amp;quot;*,150,150&amp;quot;);
+mygrid.setColAlign(&amp;quot;left,right,right&amp;quot;)
+mygrid.setSkin(&amp;quot;light&amp;quot;);
+mygrid.setColSorting(&amp;quot;str,int,int&amp;quot;);
+mygrid.setColTypes(&amp;quot;ed,ed,price&amp;quot;);
+mygrid.attachEvent(&amp;quot;onRowSelect&amp;quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&amp;quot;data.json&amp;quot;,&amp;quot;json&amp;quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&amp;quot;&amp;quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&amp;quot;Selected row ID is &amp;quot;+rowID+&amp;quot;\nUser clicked cell with index &amp;quot;+celInd);
+}
+&amp;lt; /script&amp;gt;
+&amp;lt; body onload=&amp;quot;doInitGrid()&amp;quot;&amp;gt;
+&amp;lt; div id=&amp;quot;mygrid_container&amp;quot; style=&amp;quot;width:600px;height:150px;&amp;quot;&amp;gt;&amp;lt; /div&amp;gt;
+&amp;lt; /body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>

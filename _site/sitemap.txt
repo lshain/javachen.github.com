@@ -37,7 +37,7 @@ http://blog.javachen.com/cassandra/2012/04/09/getting-started-using-the-cassandr
 http://blog.javachen.com/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio
 http://blog.javachen.com/java/2012/03/26/hash-and-hash-functions
 http://blog.javachen.com/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2
-http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation
+http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation
 http://blog.javachen.com/kettle/2012/02/22/the-init-process-before-job-execution
 http://blog.javachen.com/kettle/2012/02/21/the-execution-process-of-kettles-job
 http://blog.javachen.com/kettle/2012/02/17/step-error-handling-in-kettle

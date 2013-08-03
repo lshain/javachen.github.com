@@ -94,53 +94,44 @@
 		<a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
-    <div class="content"><p>这仅仅是一个Cassandra CLI使用方法的清单。<br />
-Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+    <div class="content"><p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
 
-<p><h1>Starting the CLI</h1>
-使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。<br />
-如果你有一个但节点的集群，则使用以下命令：
-<pre> 
-$ cassandra-cli -host localhost -port 9160
-</pre>
-如果想连接多节点集群中的一个节点，可以使用以下命令:
-<pre>
-$ cassandra-cli -host 110.123.4.5 -port 9160
-</pre>
-或者，可以直接执行以下命令：
-<pre>
-$ cassandra-cli
-</pre>
-登录成功之后，可以看到：
-<pre>
-Welcome to cassandra CLI.
-Type 'help;' or '?' for help. Type 'quit;' or 'exit;' to quit.
-</pre>
-你必须指定连接一个节点：
-<pre>
-[default@unknown]connect localhost/9160;
-</pre>
-<!--more-->
+<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<h1>Starting the CLI</h1>
+
+<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
+如果你有一个但节点的集群，则使用以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
+</code></pre></div>
+<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
+</code></pre></div>
+<p>或者，可以直接执行以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
+</code></pre></div>
+<p>登录成功之后，可以看到：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
+Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
+</code></pre></div>
+<p>你必须指定连接一个节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
+</code></pre></div>
 <h1>Creating a Keyspace</h1>
-<pre>
-[default@unknown] CREATE KEYSPACE demo;
-</pre>
-下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。
-<pre>
-[default@unknown] CREATE KEYSPACE demo with 
-        placement_strategy ='org.apache.cassandra.locator.SimpleStrategy' 
-        and strategy_options = [{replication_factor:1}];
-</pre>
-你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
+</code></pre></div>
+<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
+    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
+    and strategy_options = [{replication_factor:1}];
+</code></pre></div>
+<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
 
-<p><h1>Use a keyspace</h1>
-<pre>
-[default@unknown] USE demo;
-</pre></p>
-
-<p><h1>Creating a Column Family</h1>
-<pre>
-[default@demo] CREATE COLUMN FAMILY users
+<h1>Use a keyspace</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
+</code></pre></div>
+<h1>Creating a Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
 WITH comparator = UTF8Type
 AND key_validation_class=UTF8Type
 AND column_metadata = [
@@ -150,129 +141,112 @@ AND column_metadata = [
 {column_name: gender, validation_class: UTF8Type}
 {column_name: birth_year, validation_class: LongType}
 ];
-</pre>
-我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。<br />
-下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。
-<pre>
-[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
-</pre></p>
+</code></pre></div>
+<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</code></pre></div>
+<h1>Creating a Counter Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+      default_validation_class=CounterColumnType 
+      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</code></pre></div>
+<p>插入一行和计数列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
+</code></pre></div>
+<p>增加计数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
+</code></pre></div>
+<h1>Inserting Rows and Columns</h1>
 
-<p><h1>Creating a Counter Column Family</h1>
-<pre>
-[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
-          default_validation_class=CounterColumnType 
-          AND key_validation_class=UTF8Type AND comparator=UTF8Type;
-</pre>
-插入一行和计数列：
-<pre>
-[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 0;
-</pre>
-增加计数：
-<pre>
-[default@demo] INCR page_view_counts['www.datastax.com'][home] BY 1;
-</pre></p>
+<p>以下命令以一个特点的行key值插入列到users中</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
+</code></pre></div>
+<p>更新数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
+</code></pre></div>
+<p>获取数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
+</code></pre></div>
+<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
 
-<p><h1>Inserting Rows and Columns</h1>
-以下命令以一个特点的行key值插入列到users中
-<pre>
-[default@demo] SET users['bobbyjo']['full_name']='Robert Jones';
-[default@demo] SET users['bobbyjo']['email']='bobjones@gmail.com';
-[default@demo] SET users['bobbyjo']['state']='TX';
-[default@demo] SET users['bobbyjo']['gender']='M';
-[default@demo] SET users['bobbyjo']['birth_year']='1975';
-</pre>
-更新数据： set users['bobbyjo']['full_name'] = 'Jack';<br />
-获取数据： get users['bobbyjo'];<br />
-get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a>
-查询数据： get users where gender= 'M';<br />
-下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 'I love my new shoes!'
-<pre>
-[default@demo] SET blog_entry['yomama'][timeuuid()] = 'I love my new shoes!';
-</pre></p>
+<p>查询数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
+</code></pre></div>
+<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
+</code></pre></div>
+<h1>Reading Rows and Columns</h1>
 
-<p><h1>Reading Rows and Columns</h1>
-使用List命令查询记录，默认查询100条记录
-<pre>
-[default@demo] LIST users;
-</pre>
-Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<p>使用List命令查询记录，默认查询100条记录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
+</code></pre></div>
+<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
 <li>ascii</li>
 <li>bytes</li>
 <li>integer (a generic variable-length integer type)</li>
 <li>lexicalUUID</li>
 <li>long</li>
 <li>utf8</li>
-例如：
-<pre>
-[default@demo] GET users[utf8('bobby')][utf8('full_name')];
-</pre>
-你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：
-<pre>
-[default@demo] ASSUME users KEYS AS ascii;
+例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
+</code></pre></div>
+<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
 [default@demo] ASSUME users COMPARATOR AS ascii;
 [default@demo] ASSUME users VALIDATOR AS ascii;
-</pre></p>
+</code></pre></div>
+<h1>Setting an Expiring Column</h1>
 
-<p><h1>Setting an Expiring Column</h1>
-例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：
-<pre>
-[default@demo] SET users['bobbyjo'] [utf8('coupon_code')] = utf8('SAVE20') WITH ttl=864000;
-</pre>
-自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
+</code></pre></div>
+<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
 
-<p><h1>Indexing a Column</h1>
-给birth_year添加一个二级索引：
-<pre>
-[default@demo] UPDATE COLUMN FAMILY users 
-            WITH comparator = UTF8Type AND column_metadata = 
-            [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
-</pre>
-由于该列被索引了，所以可以直接通过该列查询：
-<pre>
-[default@demo] GET users WHERE birth_date = 1969;
-</pre></p>
+<h1>Indexing a Column</h1>
 
-<p><h1>Deleting Rows and Columns</h1>
-删除yomama索引的coupon_code列：
-<pre>
-[default@demo] DEL users ['yomama']['coupon_code'];
-[default@demo] GET users ['yomama'];
-</pre>
-或者删除整行：
-<pre>
-[default@demo] DEL users ['yomama'];
-</pre></p>
+<p>给birth_year添加一个二级索引：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
+        WITH comparator = UTF8Type AND column_metadata = 
+        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</code></pre></div>
+<p>由于该列被索引了，所以可以直接通过该列查询：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
+</code></pre></div>
+<h1>Deleting Rows and Columns</h1>
 
-<p><h1>Dropping Column Families and Keyspaces</h1>
-<pre>
-[default@demo] DROP COLUMN FAMILY users;
+<p>删除yomama索引的coupon_code列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
+[default@demo] GET users [&#39;yomama&#39;];
+</code></pre></div>
+<p>或者删除整行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
+</code></pre></div>
+<h1>Dropping Column Families and Keyspaces</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
 [default@demo] DROP KEYSPACE demo;
-</pre></p>
-
-<p><h1>For help</h1>
-<pre>
-[default@unknown]help;
-</pre>
-查看某一个命令的详细说明：
-<pre>
-[default@unknown] help SET;
-</pre></p>
-
-<p><h1>To Quit</h1>
-<pre>
-[default@unknown]quit;
-</pre></p>
-
-<p><h1>To Execute Script</h1>
-<pre>
-bin/cassandra-cli -host localhost -port 9160 -f script.txt
-</pre></p>
-
+</code></pre></div>
+<h1>For help</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
+</code></pre></div>
+<p>查看某一个命令的详细说明：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
+</code></pre></div>
+<h1>To Quit</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
+</code></pre></div>
+<h1>To Execute Script</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</code></pre></div>
 <h1>参考文章</h1>
 
 <ul>
 <li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
-<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></p></li>
+<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
 </ul>
 </div>
     </article>
@@ -311,170 +285,128 @@ bin/cassandra-cli -host localhost -port 9160 -f script.txt
 <h1>检查java环境</h1>
 
 <p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
-<h3>1.检查是否安装java:</h3>
-<pre></p>
-
-<h1>java -version</h1>
-
-<p></pre>
-如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
+<h3>1.检查是否安装java:</h3></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
+</code></pre></div>
+<p>如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
 <h3>2.安装jdk</h3>
 下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
-1）修改执行权限:
-<pre>
-$ cd /tmp
+1）修改执行权限:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd /tmp
 $ chmod a+x jre-6u25-linux-x64-rpm.bin
-</pre>
-&lt;!--more--&gt;
-2）解压执行RPM文件,例如:
-<pre>
-$ sudo ./jre-6u25-linux-x64-rpm.bin
-</pre>
-这样JRE会安装在/usr/java/
-3）配置Oracle JRE取代OpenJDK JRE
-可以使用alternatives命令添加一个链接到Oracle JRE.
-<pre>
-$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0<em>25/bin/java 20000
-</pre>
-4）确认是否安装JRE
-<pre>
-$ java -version
-  java version &quot;1.6.0</em>25&quot;
+</code></pre></div>
+<p>2）解压执行RPM文件,例如:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo ./jre-6u25-linux-x64-rpm.bin
+</code></pre></div>
+<p>这样JRE会安装在/usr/java/</p>
+
+<p>3）配置Oracle JRE取代OpenJDK JRE
+可以使用alternatives命令添加一个链接到Oracle JRE.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
+</code></pre></div>
+<p>4）确认是否安装JRE</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -version
+  java version &quot;1.6.0_25&quot;
   Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
   Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
-</pre>
-如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:
-<pre>
-$ sudo alternatives --config java
-There are 2 programs which provide &#39;java&#39;.</p>
+</code></pre></div>
+<p>如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo alternatives --config java
+There are 2 programs which provide &#39;java&#39;.
 
-<h2>Selection      Command</h2>
-
-<p>1           /usr/lib/jvm/jre-1.6.0-openjdk.x86<em>64/bin/java
-*+ 2           /usr/java/jre1.6.0</em>25/bin/java
-</pre></p>
-
+Selection      Command
+-----------------------------------------------
+   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
+*+ 2           /usr/java/jre1.6.0_25/bin/java
+</code></pre></div>
 <h1>在Linux系统上安装DataStax Community二进制文件</h1>
 
 <h3>1.在用户目录创建一个目录,如datas</h3>
-
-<pre>
-$ cd $HOME
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $HOME
 $ mkdir datas
 $ cd datas
-</pre>
-
+</code></pre></div>
 <h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
-
-<pre>
-$ wget http://downloads.datastax.com/community/dsc.tar.gz
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget http://downloads.datastax.com/community/dsc.tar.gz
 $ wget http://downloads.datastax.com/community/opscenter.tar.gz
 $ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
-</pre>
-
+</code></pre></div>
 <h3>3.解压</h3>
-
-<pre>
-$ tar -xzvf dsc.tar.gz
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ tar -xzvf dsc.tar.gz
 $ tar -xzvf opscenter.tar.gz
 $ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
 $ rm *.tar.gz
-</pre>
-
+</code></pre></div>
 <h3>4.设置环境变量</h3>
 
-<p>1)编辑 .bashrc 
-<pre>
- vi $HOME/.bashrc
-</pre>
-2)添加以下代码
-<pre>
-export CASSANDRA<em>HOME=$HOME/datas/dsc</em>package<em>name
-export DSCDEMO</em>HOME=$HOME/datas/dsc-1.0.1/demos/portfolio<em>manager
-export OPSC</em>HOME=$HOME/datas/opscenter<em>package</em>name
-export PATH=&quot;$PATH:$CASSANDRA<em>HOME/bin:$DSCDEMO</em>HOME/bin:$OPSC_HOME/bin&quot;
-</pre></p>
-
+<p>1)编辑 .bashrc </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vi $HOME/.bashrc
+</code></pre></div>
+<p>2)添加以下代码</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export CASSANDRA_HOME=$HOME/datas/dsc_package_name
+export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
+export OPSC_HOME=$HOME/datas/opscenter_package_name
+export PATH=&quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&quot;
+</code></pre></div>
 <p>注意替换<font color="red">dsc<em>package</em>name</font>和<font color="red">opscenter<em>package</em>name</font>
 3)保存退出
-4)使该文件生效
-<pre>
-source $HOME/.bashrc
-</pre>
+4)使该文件生效</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">source $HOME/.bashrc
+</code></pre></div>
 <h3>5.创建保存Cassandra数据的文件和日志目录</h3>
-<pre>
-$ mkdir $HOME/datas/cassandra-data
-</pre></p>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir $HOME/datas/cassandra-data
+</code></pre></div>
 <h1>配置并启动单节点</h1>
 
 <h3>1.编辑配置环境</h3>
 
-<p>修改$CASSANDRA<em>HOME/conf/cassandra.yaml
-<pre>
-$ sed -i -e &quot;s,initial</em>token:,initial<em>token: 0,&quot; \
-  $CASSANDRA</em>HOME/conf/cassandra.yaml</p>
-
-<p>$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml</p>
-
-<p>$ sed -i -e &quot;s,saved<em>caches</em>directory: /var/lib/cassandra/saved<em>caches, \
-  saved</em>caches<em>directory: $HOME/datastax/cassandra-data/saved</em>caches,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml</p>
-
-<p>$ sed -i -e &quot;s,commitlog<em>directory: /var/lib/cassandra/commitlog,commitlog</em>directory: \
+<p>修改$CASSANDRA_HOME/conf/cassandra.yaml</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,initial_token:,initial_token: 0,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
+  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&quot; \
+  $CASSANDRA_HOME/conf/cassandra.yaml
+$ sed -i -e &quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
   $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
-</pre></p>
-
+</code></pre></div>
 <h3>2.设置日志文件位置</h3> 
 
-<p>修改：$CASSANDRA<em>HOME/conf/log4j-server.properties
-<pre>
-$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
+<p>修改：$CASSANDRA_HOME/conf/log4j-server.properties</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
   log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
-  $CASSANDRA</em>HOME/conf/log4j-server.properties
-</pre>
+  $CASSANDRA_HOME/conf/log4j-server.properties
+</code></pre></div>
 <h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
-<pre>
-$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/<dsc_package_name>,&quot; \
-  $DSCDEMO<em>HOME/bin/pricer
-&lt;/dsc</em>package_name&gt;
-</pre></p>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/dsc_package_name,&quot; \
+  $DSCDEMO_HOME/bin/pricer
+</code></pre></div>
 <h3>4.后台启动Cassandra</h3>
 
-<pre>
-$ cassandra
-</pre>
+<p>$ cassandra</p>
 
 <h3>5.检查cassandra环是否在运行</h3>
-
-<pre>
-$ nodetool ring -h localhost
-</pre>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ nodetool ring -h localhost
+</code></pre></div>
 <h3>6.运行Portfolio Demo示例程序</h3>
 
-<p>1)进入Portfolio目录
-<pre>
-$ cd $DSCDEMO<em>HOME
-</pre>
-2)运行 ./bin/pricer工具生成数据
-<pre>
-./bin/pricer --help
-</pre>
-下面代码生成100天的历史数据
-<pre>
-./bin/pricer -o INSERT</em>PRICES
-./bin/pricer -o UPDATE<em>PORTFOLIOS
-./bin/pricer -o INSERT</em>HISTORICAL<em>PRICES -n 100
-</pre>
-3)启动服务(必须在$DSCDEMO</em>HOME/website目录下启动)
-<pre>
-$ cd $DSCDEMO_HOME/website
+<p>1)进入Portfolio目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $DSCDEMO_HOME
+</code></pre></div>
+<p>2)运行 ./bin/pricer工具生成数据</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">./bin/pricer --help
+</code></pre></div>
+<p>下面代码生成100天的历史数据</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">./bin/pricer -o INSERT_PRICES
+./bin/pricer -o UPDATE_PORTFOLIOS
+./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
+</code></pre></div>
+<p>3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $DSCDEMO_HOME/website
 $ java -jar start.jar &amp;
-</pre>
-4)浏览程序 http://localhost:8983/portfolio</p>
+</code></pre></div>
+<p>4)浏览程序 <code>http://localhost:8983/portfolio</code></p>
 
 <h1>参考文章</h1>
 
@@ -711,21 +643,27 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
 		<a href='/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
-    <div class="content"><p>这是在QQ群里有人问到的一个问题.<br />
-如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+    <div class="content"><p>这是在QQ群里有人问到的一个问题.</p>
 
-<p>在kettle中实现cassandra的输入与输出有以下两种方式:<br />
-第一种方式:自己编写cassandra输入输出组件<br />
-第二种方式:使用别人编写好的插件,将其集成进来</p>
+<p>如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
 
-<p>当然还有第三种方法,直接使用4.3版本的pdi.<br />
-第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+<p>在kettle中实现cassandra的输入与输出有以下两种方式:</p>
 
-<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.<br />
-故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.<br />
-在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:
-<pre>
-.
+<ul>
+<li>第一种方式:自己编写cassandra输入输出组件</li>
+<li>第二种方式:使用别人编写好的插件,将其集成进来</li>
+</ul>
+
+<p>当然还有第三种方法,直接使用4.3版本的pdi.</p>
+
+<p>第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.</p>
+
+<p>故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
 |-- databases
 |-- hour-partitioner.jar
 |-- jobentries
@@ -737,18 +675,16 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
 |-- spoon
 |-- steps
 `-- versioncheck
-</pre></p>
-
-<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下
-<pre>
-.
+</code></pre></div>
+<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
 |-- databases
 |-- hour-partitioner.jar
 |-- jobentries
-|   <code>-- DummyJob
+|   `-- DummyJob
 |       |-- DPL.png
 |       |-- dummyjob.jar
-|</code>-- plugin.xml
+|       `-- plugin.xml
 |-- pentaho-big-data-plugin
 |   |-- lib
 |   |   |-- apache-cassandra-1.0.0.jar
@@ -762,32 +698,31 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
 |   |   |-- mongo-java-driver-2.7.2.jar
 |   |   |-- pig-0.8.1.jar
 |   |   |-- xpp3_min-1.1.4c.jar
-|   |   <code>-- xstream-1.3.1.jar
-|</code>-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
 |-- repositories
 |-- spoon
 |-- steps
 |   |-- DummyPlugin
 |   |   |-- DPL.png
 |   |   |-- dummy.jar
-|   |   <code>-- plugin.xml
+|   |   `-- plugin.xml
 |   |-- S3CsvInput
 |   |   |-- jets3t-0.7.0.jar
 |   |   |-- plugin.xml
 |   |   |-- S3CIN.png
-|   |</code>-- s3csvinput.jar
-|   <code>-- ShapeFileReader3
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
 |       |-- plugin.xml
 |       |-- SFR.png
-|</code>-- shapefilereader3.jar
-<code>-- versioncheck
+|       `-- shapefilereader3.jar
+`-- versioncheck
     |-- kettle-version-checker-0.2.0.jar
-</code>-- lib
-        `-- pentaho-versionchecker.jar</p>
+    `-- lib
+    `-- pentaho-versionchecker.jar
 
-<p>13 directories, 29 files
-</pre></p>
-
+13 directories, 29 files
+</code></pre></div>
 <p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
 <div class="pic">
 <a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
@@ -796,23 +731,25 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
 </div></p>
 
 <p><strong>获取pentaho-big-data-plugin源码</strong>
-如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?<br />
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
 你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
 
-<p>然后,需要在kettle-steps.xml中注册步骤节点<br />
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.
-<pre>
-<step id="MongoDbInput">
-<description>i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
-<classname>org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
-<category>i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
-<tooltip>i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
-<iconfile>ui/images/mongodb-input.png
-</iconfile></tooltip></category></classname></description></step>
-</pre></p>
-
+<p>然后,需要在kettle-steps.xml中注册步骤节点
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;step id=&quot;MongoDbInput&quot;&gt;
+&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+&lt;iconfile&gt;ui/images/mongodb-input.png
+&lt;/iconfile&gt;&lt;/tooltip&gt;
+&lt;/category&gt;
+&lt;/classname&gt;
+&lt;/description&gt;
+&lt;/step&gt;
+</code></pre></div>
 <div class="note">
-<h>注意:<br />
+<h>注意:
 由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
 </h></div>
 
@@ -829,37 +766,36 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
   </section>
   
   
-  <section id="seam20120223the-process-of-seam-initiation">
+  <section id="20120223the-process-of-seam-initiation">
     <article>
       <header>
-      <h3><a href="/seam/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h3>
+      <h3><a href="/2012/02/23/the-process-of-seam-initiation">The Process Of Seam Initiation</a></h3>
       <div class="c9">
      		Author: JavaChen
      		&emsp;&emsp;
 		Categories：
 			
-			<a href="/categories.html#seam">seam</a>
-			
-			
 		&emsp;&emsp;
 		Tags：
 			
-			<a href="/tags.html#seam-ref">seam</a>
-			
-			
 		&emsp;&emsp;
-		<a href='/seam/2012/02/23/the-process-of-seam-initiation#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		<a href='/2012/02/23/the-process-of-seam-initiation#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
-    <div class="content"><p>了解seam2的人知道，seam是通过在web.xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3.
-<pre lang="xml">
-&lt; listener&gt;
-    &lt; listener-class&gt;org.jboss.seam.servlet.SeamListener&lt; /listener-class&gt;
-&lt; /listener&gt;
-</pre></p>
+    <div class="content"><p>layout: post
+title: Seam的启动过程
+category: seam
+tags: [seam]
+keywords: seam, jboss
+description: Seam的启动过程</p>
 
+<p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; listener&gt;
+    &lt; listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt; /listenerclass&gt;
+&lt; /listener&gt;
+</code></pre></div>
 <p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle.</blockquote></p>
+<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote></p>
 
 <p>从描述中可以知道
 SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
@@ -871,34 +807,34 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
 <p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
 
-<ul>
-<li>1.添加命名空间</li>
-<li>2.从“/WEB-INF/components.xml”加载组件</li>
-<li>3.从“/WEB-INF/events.xml”加载组件</li>
-<li>4.从“META-INF/components.xml”加载组件</li>
-<li>5.从ServletContext初始化Properties</li>
-<li>6.从“/seam.properties”初始化Properties</li>
-<li>7.初始化jndi Properties</li>
-<li>8.从system加载Properties</li>
-</ul>
+<ol>
+<li>添加命名空间</li>
+<li>从“/WEBINF/components. xml”加载组件</li>
+<li>从“/WEBINF/events. xml”加载组件</li>
+<li>从“METAINF/components. xml”加载组件</li>
+<li>从ServletContext初始化Properties</li>
+<li>从“/seam. properties”初始化Properties</li>
+<li>初始化jndi Properties</li>
+<li>从system加载Properties</li>
+</ol>
 
 <p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
 
-<ul>
-<li>1.ServletLifecycle开始初始化</li>
-<li>2.设置Application上下文</li>
-<li>3.添加Init组件</li>
-<li>4.通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>5.判断jbpm是否安装</li>
-<li>6.检查默认拦截器</li>
-<li>7.添加特别组件</li>
-<li>8.添加war root部署、热部署</li>
-<li>9.安装组件</li>
-<li>10.导入命名空间</li>
-<li>11.ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ul>
+<ol>
+<li>ServletLifecycle开始初始化</li>
+<li>设置Application上下文</li>
+<li>添加Init组件</li>
+<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
+<li>判断jbpm是否安装</li>
+<li>检查默认拦截器</li>
+<li>添加特别组件</li>
+<li>添加war root部署、热部署</li>
+<li>安装组件</li>
+<li>导入命名空间</li>
+<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
+</ol>
 
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org.jboss.seam.persistence.HibernateSessionFactory。</p>
+<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
 </div>
     </article>
   </section>
@@ -1025,10 +961,6 @@ SeamListener主要完成应用以及web应用生命周期中的session上下文�
      
     	<li><a href="/categories.html#jsf-ref">
     		jsf <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#seam-ref">
-    		seam <span>1</span>
     	</a></li>
      
     	<li><a href="/categories.html#java-ref">

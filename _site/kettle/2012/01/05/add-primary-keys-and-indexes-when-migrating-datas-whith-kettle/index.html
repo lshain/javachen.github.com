@@ -133,83 +133,86 @@
 <p><strong>下面是方案3的具体的实现。</strong></p>
 
 <p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
-多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：
-<pre lang="java">public void ripDBWizard(final int no) {
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
     final List databases = spoon.getActiveDatabases();
     if (databases.size() == 0)
-        return;</pre></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
-        databases);
-final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
-final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
-        spoon.getRepository());
-Wizard wizard = new Wizard() {
-    public boolean performFinish() {
-        try {
-            JobMeta jobMeta = ripDBByNo(no, databases,
-                page3.getJobname(), page3.getRepositoryDirectory(),
-                page3.getDirectory(), page1.getSourceDatabase(),
-                page1.getTargetDatabase(), page2.getSelection());
+        return;&lt;/pre&gt;
 
-            if (jobMeta == null)
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
+
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
+                        &quot;An unexpected error occurred!&quot;, e);
                 return false;
-
-            if (page3.getRepositoryDirectory() != null) {
-                spoon.saveToRepository(jobMeta, false);
-            } else {
-                spoon.saveToFile(jobMeta);
             }
-
-            addJobGraph(jobMeta);
-            return true;
-        } catch (Exception e) {
-            new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
-                    &quot;An unexpected error occurred!&quot;, e);
-            return false;
         }
-    }
 
-    public boolean canFinish() {
-        return page3.canFinish();
-    }
-};
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
 
-wizard.addPage(page1);
-wizard.addPage(page2);
-wizard.addPage(page3);
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
 
-WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
-WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
-wd.setMinimumPageSize(700, 400);
-wd.updateSize();
-wd.open();
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
 </code></pre></div>
-<p>}
-该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
-创建Jobmeta的方法为：
-<pre lang="java">public JobMeta ripDB(final List databases,final String jobname, final
+<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
     RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
     sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
  //此处省略若干代码
-}</pre>
-该方法主要逻辑在下面代码内：
-<pre lang="java">IRunnableWithProgress op = new IRunnableWithProgress() {
+}
+</code></pre></div>
+<p>该方法主要逻辑在下面代码内：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
     public void run(IProgressMonitor monitor)
      throws InvocationTargetException, InterruptedException {
-           //此处省略若干代码
-        }
-}</pre>
-上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：
-<pre lang="java">for (int i = 0; i &lt; tables.length &amp;&amp; !monitor.isCanceled(); i++) {
+       //此处省略若干代码
+    }
+}
+</code></pre></div>
+<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
     //此处省略若干代码
-}</pre>
-针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
-这部分的代码如下：
-<pre lang="java">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+}
+</code></pre></div>
+<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
         sourceDbInfo, sourceCon, tables[i],
-        targetDbInfo, targetCon, tables[i]);</p>
-
-<p>if (!Const.isEmpty(pksql)) {
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
     location.x += 300;
     JobEntrySQL jesql = new JobEntrySQL(
         BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
@@ -219,21 +222,19 @@ wd.open();
     jesql.setDescription(BaseMessages.getString(PKG,
             &quot;Spoon.RipDB.AddPkAndIndex&quot;)
             + tables[i]
-            + &quot;]&quot;);</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">JobEntryCopy jecsql = new JobEntryCopy();
-jecsql.setEntry(jesql);
-jecsql.setLocation(new Point(location.x, location.y));
-jecsql.setDrawn();
-jobMeta.addJobEntry(jecsql);
-
-// Add the hop too...
-JobHopMeta jhi = new JobHopMeta(previous, jecsql);
-jobMeta.addJobHop(jhi);
-previous = jecsql;
+            + &quot;]&quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
 </code></pre></div>
-<p>}
-</pre>
-获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
 该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
 
 <p>最后的效果图如下：

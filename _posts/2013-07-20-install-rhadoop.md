@@ -22,33 +22,44 @@ description: 安装RHadoop
 ### 编译安装：R-3.0.1
 
 	tar -zxvf R-3.0.1 
-	./configure 	
+	./configure
 	make 
 	make install #R运行
 	export HADOOP_CMD=/usr/bin/hadoop
 
 ### 排错
 
-1、error: --with-readline=yes (default) 
+1、错误1
 
-安装yum install readline*
+	error: --with-readline=yes (default) 
 
-2、error: No F77 compiler found 
+安装readline 
+
+	yum install readline*
+
+2、错误2
+
+	error: No F77 compiler found 
 
 安装gfortran
 
-3、error: –with-x=yes (default) and X11 headers/libs are not available 
+3、错误3
 
-安装yum install libXt*
+	error: –with-x=yes (default) and X11 headers/libs are not available 
 
-4、error: C++ preprocessor "/lib/cpp" fails sanity check 
+安装
+
+	yum install libXt*
+
+4、错误4
+	
+	error: C++ preprocessor "/lib/cpp" fails sanity check 
 
 安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）
 
 ### 验证是否安张成功
 
 	[root@node1 bin]# R
-
 	R version 3.0.1 (2013-05-16) -- "Good Sport"
 	Copyright (C) 2013 The R Foundation for Statistical Computing
 	Platform: x86_64-unknown-linux-gnu (64-bit)
@@ -64,8 +75,6 @@ description: 安装RHadoop
 	用'demo()'来看一些示范程序，用'help()'来阅读在线帮助文件，或
 	用'help.start()'通过HTML浏览器来看帮助文件。
 	用'q()'退出R.
-
-	>
 
 ## 安装Rhadoop
 

@@ -164,28 +164,27 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 <p><img src="/files/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
 
 <ol>
-<li><p>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</p>
-
-<p>13/04/17 10:22:13 INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
+<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
 retrying after sleep of 1000
 java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
-    at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
-    at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
-    at $Proxy5.getProtocolVersion(Unknown Source)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
-    at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
-    at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
-    at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
+at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
+at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
+at $Proxy5.getProtocolVersion(Unknown Source)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
+at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
+at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
+at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
 Caused by: java.io.EOFException
-    at java.io.DataInputStream.readInt(DataInputStream.java:375)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)</p></li>
-</ol>
-
+at java.io.DataInputStream.readInt(DataInputStream.java:375)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
+</code></pre></div>
     
     <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle'>JavaChen Blog</a>-
 		<br/>

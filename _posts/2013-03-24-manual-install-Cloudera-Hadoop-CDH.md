@@ -25,12 +25,9 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 ## 使用说明
 安装hadoop、hbase、hive成功之后启动方式为：
 
-* 启动dfs和mapreduce
-desktop1上执行start-dfs.sh和start-yarn.sh
-* 启动hbase
-desktop3上执行start-hbase.xml
-* 启动hive
-desktop1上执行hive
+* 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh
+* 启动hbase: desktop3上执行start-hbase.xml
+* 启动hive: desktop1上执行hive
 
 ## 规划
 ```
@@ -46,14 +43,13 @@ desktop1上执行hive
 ## 部署过程
 ### 系统和网络配置
 1. 修改每台机器的名称
-<pre>
+
 	[root@desktop1 ~]# cat /etc/sysconfig/network
 	NETWORKING=yes
 	HOSTNAME=desktop1
-</pre>
 
 2. 在各个节点上修改/etc/hosts增加以下内容:
-<pre>
+
 	[root@desktop1 ~]# cat /etc/hosts
 	127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 	::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
@@ -64,12 +60,10 @@ desktop1上执行hive
 	192.168.0.6		desktop6
 	192.168.0.7		desktop7
 	192.168.0.8		desktop8
-</pre>
 
 3. 配置ssh无密码登陆
 以下是设置desktop1上可以无密码登陆到其他机器上。
 
-<pre>
 	[root@desktop1 ~]# ssh-keygen
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
@@ -77,7 +71,6 @@ desktop1上执行hive
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-</pre>
 
 4. 每台机器上关闭防火墙：
 
@@ -139,22 +132,18 @@ desktop1上执行hive
   <name>dfs.replication</name>
   <value>1</value>
 </property>
-
 <property>
   <name>hadoop.tmp.dir</name>
   <value>/opt/data/hadoop-${user.name}</value>
 </property>
-
 <property>
 <name>dfs.namenode.http-address</name>
 <value>desktop1:50070</value>
 </property>
-
 <property>
 <name>dfs.namenode.secondary.http-address</name>
 <value>desktop2:50090</value>
 </property>
-
 <property>
 <name>dfs.webhdfs.enabled</name>
 <value>true</value>
@@ -196,12 +185,10 @@ desktop8
  <name>mapreduce.framework.name</name>
  <value>yarn</value>
 </property>
-
 <property>
  <name>mapreduce.jobhistory.address</name>
  <value>desktop1:10020</value>
 </property>
-
 <property>
  <name>mapreduce.jobhistory.webapp.address</name>
  <value>desktop1:19888</value>
@@ -253,7 +240,6 @@ desktop8
     <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
     <value>org.apache.hadoop.mapred.ShuffleHandler</value>
   </property>
-
   <property>
     <name>yarn.nodemanager.local-dirs</name>
     <value>/opt/data/yarn/local</value>
@@ -267,12 +253,10 @@ desktop8
     <name>yarn.nodemanager.remote-app-log-dir</name>
     <value>/opt/data/yarn/logs</value>
   </property>
-
   <property>
     <name>yarn.app.mapreduce.am.staging-dir</name>
     <value>/user</value>
  </property>
-
 </configuration>
 ```
 
@@ -280,27 +264,23 @@ desktop8
 修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc
 
 ```
-[root@desktop1 ~]# cat .bashrc 
+[root@desktop1 ~] # cat .bashrc 
 # .bashrc
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-
 # Source global definitions
 if [ -f /etc/bashrc ]; then
         . /etc/bashrc
 fi
 # User specific environment and startup programs
 export LANG=zh_CN.utf8
-
 export JAVA_HOME=/opt/jdk1.6.0_38
 export JRE_HOME=$JAVA_HOME/jre
 export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
-
 export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
 export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
 export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
-
 export HADOOP_MAPRED_HOME=${HADOOP_HOME}
 export HADOOP_COMMON_HOME=${HADOOP_HOME}
 export HADOOP_HDFS_HOME=${HADOOP_HOME}
@@ -309,7 +289,6 @@ export HADOOP_YARN_HOME=${HADOOP_HOME}
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
 ```
 
@@ -367,11 +346,9 @@ http://desktop2:8042/node
 5980 Jps
 5710 ResourceManager
 7032 JobHistoryServer
-
 [root@desktop2 ~]# jps
 3187 Jps
 3124 SecondaryNameNode
-
 [root@desktop3 ~]# jps
 3187 Jps
 3124 DataNode

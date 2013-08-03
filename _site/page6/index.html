@@ -125,83 +125,86 @@
 <p><strong>下面是方案3的具体的实现。</strong></p>
 
 <p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
-多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：
-<pre lang="java">public void ripDBWizard(final int no) {
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
     final List databases = spoon.getActiveDatabases();
     if (databases.size() == 0)
-        return;</pre></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
-        databases);
-final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
-final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
-        spoon.getRepository());
-Wizard wizard = new Wizard() {
-    public boolean performFinish() {
-        try {
-            JobMeta jobMeta = ripDBByNo(no, databases,
-                page3.getJobname(), page3.getRepositoryDirectory(),
-                page3.getDirectory(), page1.getSourceDatabase(),
-                page1.getTargetDatabase(), page2.getSelection());
+        return;&lt;/pre&gt;
 
-            if (jobMeta == null)
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
+
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
+                        &quot;An unexpected error occurred!&quot;, e);
                 return false;
-
-            if (page3.getRepositoryDirectory() != null) {
-                spoon.saveToRepository(jobMeta, false);
-            } else {
-                spoon.saveToFile(jobMeta);
             }
-
-            addJobGraph(jobMeta);
-            return true;
-        } catch (Exception e) {
-            new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
-                    &quot;An unexpected error occurred!&quot;, e);
-            return false;
         }
-    }
 
-    public boolean canFinish() {
-        return page3.canFinish();
-    }
-};
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
 
-wizard.addPage(page1);
-wizard.addPage(page2);
-wizard.addPage(page3);
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
 
-WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
-WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
-wd.setMinimumPageSize(700, 400);
-wd.updateSize();
-wd.open();
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
 </code></pre></div>
-<p>}
-该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
-创建Jobmeta的方法为：
-<pre lang="java">public JobMeta ripDB(final List databases,final String jobname, final
+<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
     RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
     sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
  //此处省略若干代码
-}</pre>
-该方法主要逻辑在下面代码内：
-<pre lang="java">IRunnableWithProgress op = new IRunnableWithProgress() {
+}
+</code></pre></div>
+<p>该方法主要逻辑在下面代码内：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
     public void run(IProgressMonitor monitor)
      throws InvocationTargetException, InterruptedException {
-           //此处省略若干代码
-        }
-}</pre>
-上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：
-<pre lang="java">for (int i = 0; i &lt; tables.length &amp;&amp; !monitor.isCanceled(); i++) {
+       //此处省略若干代码
+    }
+}
+</code></pre></div>
+<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
     //此处省略若干代码
-}</pre>
-针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
-这部分的代码如下：
-<pre lang="java">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+}
+</code></pre></div>
+<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
         sourceDbInfo, sourceCon, tables[i],
-        targetDbInfo, targetCon, tables[i]);</p>
-
-<p>if (!Const.isEmpty(pksql)) {
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
     location.x += 300;
     JobEntrySQL jesql = new JobEntrySQL(
         BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
@@ -211,21 +214,19 @@ wd.open();
     jesql.setDescription(BaseMessages.getString(PKG,
             &quot;Spoon.RipDB.AddPkAndIndex&quot;)
             + tables[i]
-            + &quot;]&quot;);</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">JobEntryCopy jecsql = new JobEntryCopy();
-jecsql.setEntry(jesql);
-jecsql.setLocation(new Point(location.x, location.y));
-jecsql.setDrawn();
-jobMeta.addJobEntry(jecsql);
-
-// Add the hop too...
-JobHopMeta jhi = new JobHopMeta(previous, jecsql);
-jobMeta.addJobHop(jhi);
-previous = jecsql;
+            + &quot;]&quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
 </code></pre></div>
-<p>}
-</pre>
-获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
 该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
 
 <p>最后的效果图如下：
@@ -508,9 +509,8 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
 	</div>
     </header>
     <div class="content"><p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
-获取弹出窗口url后的参数方法：
-<pre lang="javascript" line="1">
-// 获取url后的参数值
+获取弹出窗口url后的参数方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
 function getQueryStringValue(name) {
     var url = window.location.search;
     if (url.indexOf(&#39;?&#39;) &lt; 0) {
@@ -531,12 +531,11 @@ function getQueryStringValue(name) {
 }
 // 获取xml的服务器路径
 function getXmlUrl(xmlFile) {
-    return &#39;../bjsasc<em>dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
+    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
 }
-</pre>
-用到的一些辅助方法：
-<pre lang="javascript" line="1">
-// 去掉Dom节点中的空白字符
+</code></pre></div>
+<p>用到的一些辅助方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
 function cleanWhitespaces(elem) {
     var elem = elem || document;
     var childElem = elem.childNodes;
@@ -556,7 +555,7 @@ function getParentFormValues() {
         if (formObj.elements[i].value != null
                 &amp;&amp; formObj.elements[i].value != &quot;&quot;
                 &amp;&amp; formObj.elements[i].value.length != 0) {
-            formValues += &#39;</em>&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
+            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
                     + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
                     + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
         }
@@ -572,16 +571,15 @@ function getCondictionValues() {
         if (formObj.elements[i].value != null
                 &amp;&amp; formObj.elements[i].value != &quot;&quot;
                 &amp;&amp; formObj.elements[i].value.length != 0) {
-            condictionString += &#39;<em>&#39; + formObj.elements[i].name + &#39;{&#39;
+            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
                     + formObj.elements[i].value + &#39;}&#39;
-                    + formObj.elements[i].name + &#39;</em> &#39;;
+                    + formObj.elements[i].name + &#39;_ &#39;;
         }
     }
     // alert(&quot;condictionString&quot;+condictionString);
     return condictionString;
-}</p>
-
-<p>// 判读Ext表单是否有输入
+}
+// 判读Ext表单是否有输入
 function isFormInputed(ExtForm) {
     var flag = false;
     var formObj = ExtForm.getEl().dom;
@@ -594,16 +592,14 @@ function isFormInputed(ExtForm) {
         }
     }
     return flag;
-}</p>
-
-<p>// 将计算得到的结果四舍五入
+}
+// 将计算得到的结果四舍五入
 /* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
 function ForDight(Dight, How) {
     var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
     return Dight;
 }
-</pre></p>
-
+</code></pre></div>
 <p>xml文件格式：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
 &lt; dictionary&gt;
@@ -630,71 +626,69 @@ function ForDight(Dight, How) {
 &lt;/ dictionary&gt;
 </code></pre></div>
 <p>然后，弹出窗口页面Ext入口代码：
-<pre>
-// 全局变量
-var result = {};
-var grid;
-var form;
-var viewport;
-var store;
-var sm = new Ext.grid.CheckboxSelectionModel();
-var autoStore;
-var tempItems1 = [];
-var tempItems2 = [];
-var tempItems3 = [];
-var flag = 1;
-// 程序入口
-Ext.onReady(function() {
-    Ext.QuickTips.init();// 初始化
-    Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
-    Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
-    Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
-    Ext.Ajax.request({
-        url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
-        method : &#39;post&#39;,
-        success : function(res, opt) {
-            var xmlObj = res.responseXML;
-            initStoreData(xmlObj); // 访问成功后执行后续工作
-        }
-    })
-});
-function initStoreData(xmlObj) {
-    getInitData(xmlObj);
-    document.title = result.winTitle;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
-// 获取表格数据部分
-store = new Ext.data.Store({
-    idProperty : &#39;ID&#39;,
-    proxy : new Ext.data.HttpProxy({
-        url : &#39;../search.do?method=findAll&#39;,
-        failure : function() {
-            // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
-        },
-        success : function(response) {
-            // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
-        }
-    }),
+    // 全局变量
+    var result = {};
+    var grid;
+    var form;
+    var viewport;
+    var store;
+    var sm = new Ext.grid.CheckboxSelectionModel();
+    var autoStore;
+    var tempItems1 = [];
+    var tempItems2 = [];
+    var tempItems3 = [];
+    var flag = 1;
+    // 程序入口
+    Ext.onReady(function() {
+        Ext.QuickTips.init();// 初始化
+        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
+        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
+        Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
+        Ext.Ajax.request({
+            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
+            method : &#39;post&#39;,
+            success : function(res, opt) {
+                var xmlObj = res.responseXML;
+                initStoreData(xmlObj); // 访问成功后执行后续工作
+            }
+        })
+    });
+    function initStoreData(xmlObj) {
+        getInitData(xmlObj);
+        document.title = result.winTitle;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+    // 获取表格数据部分
+    store = new Ext.data.Store({
+        idProperty : &#39;ID&#39;,
+        proxy : new Ext.data.HttpProxy({
+            url : &#39;../search.do?method=findAll&#39;,
+            failure : function() {
+                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
+            },
+            success : function(response) {
+                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
+            }
+        }),
 
-    // baseParams : {
-    // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
-    // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
-    // // cmd:&#39;search&#39;
-    // },
-    reader : new Ext.data.JsonReader({
-        totalProperty : &#39;totalCount&#39;,
-        root : &#39;data&#39;
-    }, dataRecorder)
-});
-// 要分页，第一次加载数据必须传start和limit两参数
-// store.load({
-// params : {
-// start : 0,
-// limit : result.limit
-// }
-// });
-initViewport();
-</code></pre></div>
-<p>}
+        // baseParams : {
+        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+        // // cmd:&#39;search&#39;
+        // },
+        reader : new Ext.data.JsonReader({
+            totalProperty : &#39;totalCount&#39;,
+            root : &#39;data&#39;
+        }, dataRecorder)
+    });
+    // 要分页，第一次加载数据必须传start和limit两参数
+    // store.load({
+    // params : {
+    // start : 0,
+    // limit : result.limit
+    // }
+    // });
+    initViewport();
+}
 // 获得界面初始化的一些数据
 function getInitData(xmlObj) {
     // result.formItems = {};
@@ -762,96 +756,94 @@ function getInitData(xmlObj) {
             tempItems3.push(item);
         }
     }
-    // alert(Ext.util.JSON.encode(result));</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取表格表头的界面数据和rcord记录的数据格式
-var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
-result.columnHeaders.push(sm);// 插入多选框
-result.columnHeaders.push(new Ext.grid.RowNumberer({
-    width : 20
-}));// 插入行号
-for (var i = 0; i &lt; fields.length; i++) {
-    var item = {};
-    var record = {};
-    var array = [];
-    var field = cleanWhitespaces(fields[i]);
-    var renderDate = function(value) {
-        return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
-    }
-    // 生成grid表格中store数据记录
-    record.name = field[0].firstChild.nodeValue;
-    record.mapping = field[0].firstChild.nodeValue;
-    if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
-        record.type = &#39;date&#39;;
-        record.dateFormat = &#39;Y-m-d&#39;;
-        item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
-    } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
-        record.type = &#39;auto&#39;;
-    } else {
-        record.type = &#39;string&#39;;
-    }
-    result.gridRecords.push(record);
+    // alert(Ext.util.JSON.encode(result));
 
-    // 生成grid表格表头数据记录
-    item.dataIndex = field[0].firstChild.nodeValue;
-    item.header = field[2].firstChild.nodeValue;
-    // item.width=field[3].firstChild.nodeValue;
-    item.sortable = true;
-    if (field.length == 7
-            &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-        item.hidden = true;
-        // item.hideable=false;
-    }
-    if (field.length == 6) {
-        item.hidden = false;
-    }
-    result.columnHeaders.push(item);
+    // 获取表格表头的界面数据和rcord记录的数据格式
+    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
+    result.columnHeaders.push(sm);// 插入多选框
+    result.columnHeaders.push(new Ext.grid.RowNumberer({
+        width : 20
+    }));// 插入行号
+    for (var i = 0; i &lt; fields.length; i++) {
+        var item = {};
+        var record = {};
+        var array = [];
+        var field = cleanWhitespaces(fields[i]);
+        var renderDate = function(value) {
+            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
+        }
+        // 生成grid表格中store数据记录
+        record.name = field[0].firstChild.nodeValue;
+        record.mapping = field[0].firstChild.nodeValue;
+        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
+            record.type = &#39;date&#39;;
+            record.dateFormat = &#39;Y-m-d&#39;;
+            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
+        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
+            record.type = &#39;auto&#39;;
+        } else {
+            record.type = &#39;string&#39;;
+        }
+        result.gridRecords.push(record);
 
-    // 生成模糊过滤store的记录
-    if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-        array.push(field[2].firstChild.nodeValue);// fieldName
-        array.push(field[0].firstChild.nodeValue);// fieldValue
+        // 生成grid表格表头数据记录
+        item.dataIndex = field[0].firstChild.nodeValue;
+        item.header = field[2].firstChild.nodeValue;
+        // item.width=field[3].firstChild.nodeValue;
+        item.sortable = true;
+        if (field.length == 7
+                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            item.hidden = true;
+            // item.hideable=false;
+        }
+        if (field.length == 6) {
+            item.hidden = false;
+        }
+        result.columnHeaders.push(item);
+
+        // 生成模糊过滤store的记录
+        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            array.push(field[2].firstChild.nodeValue);// fieldName
+            array.push(field[0].firstChild.nodeValue);// fieldValue
+        }
+        result.dbFilterRecords.push(array);
     }
-    result.dbFilterRecords.push(array);
-}
-return result;
+    return result;
+};
 </code></pre></div>
-<p>};
-</pre></p>
-
-<p>渲染Ext界面代码：
-<pre>
-function initViewport() {
+<p>渲染Ext界面代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
     if (!form) {
         form = getInsertForm();
-    }</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">if (!grid) {
-    grid = getInsertGrid();
+    }
+
+    if (!grid) {
+        grid = getInsertGrid();
+    }
+
+    if (!viewport) {
+        var formPanel = new Ext.Panel({
+            title : &#39;查询条件&#39;,
+            region : &#39;north&#39;,
+            split : true,
+            frame : true,
+            border : true,
+            layout : &#39;fit&#39;,
+            height : 280,
+            collapsible : true,
+            items : [form]
+
+        });
+        viewport = new Ext.Viewport({
+            layout : &#39;border&#39;,
+            modal : true,// 是否为模式窗口
+            border : false,
+            items : [formPanel, grid]
+        });
+    }
 }
 
-if (!viewport) {
-    var formPanel = new Ext.Panel({
-        title : &#39;查询条件&#39;,
-        region : &#39;north&#39;,
-        split : true,
-        frame : true,
-        border : true,
-        layout : &#39;fit&#39;,
-        height : 280,
-        collapsible : true,
-        items : [form]
-
-    });
-    viewport = new Ext.Viewport({
-        layout : &#39;border&#39;,
-        modal : true,// 是否为模式窗口
-        border : false,
-        items : [formPanel, grid]
-    });
-}
-</code></pre></div>
-<p>}</p>
-
-<p>function searchByFilter() {
+function searchByFilter() {
     var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
     var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
     if (dbfilter == null || dbfilter == &quot;&quot;) {
@@ -886,12 +878,12 @@ if (!viewport) {
                 xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
                 cmd : &#39;filter&#39;
             };
-            store.reload();</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    }
-    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+            store.reload();
+
+        }
+        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+    }
 }
-</code></pre></div>
-<p>}
 // 获取过滤条件部分的表单控件
 function getInsertForm() {
     form = new Ext.form.FormPanel({
@@ -985,89 +977,88 @@ function getInsertForm() {
                                     parentFormValues : getParentFormValues()
                                 },
                                 callback : function(options, success, response) {
-                                    if (response.responseText == &quot;success&quot;) {</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">                                    Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
-                                        window.close();
-                                        // opener.location.reload();
+                                    if (response.responseText == &quot;success&quot;) {
+
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
+                                            window.close();
+                                            // opener.location.reload();
                                         opener.saveForm();
-                                    });
-                                } else {
-                                    Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
+                                        });
+                                    } else {
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
+                                    }
                                 }
-                            }
-                        })
+                            })
 
-                    } else {
-                        alert(&quot;请选择一行或多行数据&quot;);
-                    }
-                },
-                scope : this
-            }, &#39;-&#39;, {
-                pressed : true,
-                xtype : &#39;button&#39;,
-                text : &#39;取消&#39;,
-                tooltip : &#39;取消选择，直接退出&#39;,
-                handler : function() {
-                    Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
-                        if (id == &quot;yes&quot;)
-                            window.close();
-                    });
-                },
-                scope : this
-            }],
-    buttons : [{
-        text : &#39;执行查询条件&#39;,
-        handler : function() {
-            var connections = getCondictionValues();
-            if (!form.getForm().isValid()) {
-                return;
-            };
-            if (isFormInputed(form.getForm()) == false) {
-                alert(&quot;请输入查询条件&quot;);
-                form.getForm().focus();
-                return;
-            } else {
-                Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
-                if (flag == 1) {
-                    store.baseParams = {
-                        xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                        condictions : connections,
-                        parentFormValues : getParentFormValues(),
-                        cmd : &#39;search&#39;
-                    };
-                    store.load({
-                        params : {
-                            start : 0,
-                            limit : result.limit
+                        } else {
+                            alert(&quot;请选择一行或多行数据&quot;);
                         }
-                    });
-                    form.getForm().reset();
-                    flag = 0;
+                    },
+                    scope : this
+                }, &#39;-&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;取消&#39;,
+                    tooltip : &#39;取消选择，直接退出&#39;,
+                    handler : function() {
+                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
+                            if (id == &quot;yes&quot;)
+                                window.close();
+                        });
+                    },
+                    scope : this
+                }],
+        buttons : [{
+            text : &#39;执行查询条件&#39;,
+            handler : function() {
+                var connections = getCondictionValues();
+                if (!form.getForm().isValid()) {
+                    return;
+                };
+                if (isFormInputed(form.getForm()) == false) {
+                    alert(&quot;请输入查询条件&quot;);
+                    form.getForm().focus();
+                    return;
                 } else {
-                    store.baseParams = {
-                        xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                        condictions : connections,
-                        parentFormValues : getParentFormValues(),
-                        cmd : &#39;search&#39;
-                    };
-                    store.reload();
-                }
+                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+                    if (flag == 1) {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.load({
+                            params : {
+                                start : 0,
+                                limit : result.limit
+                            }
+                        });
+                        form.getForm().reset();
+                        flag = 0;
+                    } else {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.reload();
+                    }
 
+                    form.getForm().reset();
+                }
+            }
+        }, {
+            text : &#39;重置&#39;,
+            handler : function() {
                 form.getForm().reset();
             }
-        }
-    }, {
-        text : &#39;重置&#39;,
-        handler : function() {
-            form.getForm().reset();
-        }
-    }]
-});
-return form;
-</code></pre></div>
-<p>}
-</pre></p>
-</div>
+        }]
+    });
+    return form;
+}
+</code></pre></div></div>
     </article>
   </section>
   
@@ -1193,10 +1184,6 @@ return form;
      
     	<li><a href="/categories.html#jsf-ref">
     		jsf <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#seam-ref">
-    		seam <span>1</span>
     	</a></li>
      
     	<li><a href="/categories.html#java-ref">

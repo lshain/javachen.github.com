@@ -124,7 +124,7 @@
 
 <h2>hadoop-install</h2>
 
-<p><a href="https://github.com/javachen/hadoop-install">hadoop-install</a>上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前完成了自动安装hdfs、hive和yarn。</p>
+<p><a href="https://github.com/javachen/hadoop-install">hadoop-install</a>上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前只完成了hdfs、hive和yarn的自动安装。</p>
 
 <p>需要说明的是：</p>
 
@@ -238,7 +238,7 @@ su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot;
 </code></pre></div>
 <h2>总结</h2>
 
-<p>更多脚本，请关注github：<a href="https://github.com/javachen/hadoop-install">hadoop-install</a>，你可以下载并修改其中代码！</p>
+<p>更多脚本，请关注github：<a href="https://github.com/javachen/hadoop-install">hadoop-install</a>，你可以下载、使用并修改其中代码！</p>
 </div>
     </article>
   </section>
@@ -467,32 +467,37 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 </code></pre></div>
 <h3>编译安装：R-3.0.1</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
-./configure     
+./configure
 make 
 make install #R运行
 export HADOOP_CMD=/usr/bin/hadoop
 </code></pre></div>
 <h3>排错</h3>
 
-<p>1、error: --with-readline=yes (default) </p>
-
-<p>安装yum install readline*</p>
-
-<p>2、error: No F77 compiler found </p>
-
+<p>1、错误1</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: --with-readline=yes (default) 
+</code></pre></div>
+<p>安装readline </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install readline*
+</code></pre></div>
+<p>2、错误2</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: No F77 compiler found 
+</code></pre></div>
 <p>安装gfortran</p>
 
-<p>3、error: –with-x=yes (default) and X11 headers/libs are not available </p>
-
-<p>安装yum install libXt*</p>
-
-<p>4、error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check </p>
-
+<p>3、错误3</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: –with-x=yes (default) and X11 headers/libs are not available 
+</code></pre></div>
+<p>安装</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install libXt*
+</code></pre></div>
+<p>4、错误4</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check 
+</code></pre></div>
 <p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
 
 <h3>验证是否安张成功</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
-
 R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
 Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
@@ -508,8 +513,6 @@ R是个合作计划，有许多人为之做出了贡献.
 用&#39;demo()&#39;来看一些示范程序，用&#39;help()&#39;来阅读在线帮助文件，或
 用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
 用&#39;q()&#39;退出R.
-
-&gt;
 </code></pre></div>
 <h2>安装Rhadoop</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
@@ -717,28 +720,27 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 <p><img src="/files/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
 
 <ol>
-<li><p>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</p>
-
-<p>13/04/17 10:22:13 INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
+<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
 retrying after sleep of 1000
 java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
-    at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
-    at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
-    at $Proxy5.getProtocolVersion(Unknown Source)
-    at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
-    at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
-    at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
-    at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
-    at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
+at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
+at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
+at $Proxy5.getProtocolVersion(Unknown Source)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
+at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
+at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
+at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
 Caused by: java.io.EOFException
-    at java.io.DataInputStream.readInt(DataInputStream.java:375)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
-    at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)</p></li>
-</ol>
-</div>
+at java.io.DataInputStream.readInt(DataInputStream.java:375)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
+</code></pre></div></div>
     </article>
   </section>
   
@@ -863,10 +865,6 @@ Caused by: java.io.EOFException
      
     	<li><a href="/categories.html#jsf-ref">
     		jsf <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#seam-ref">
-    		seam <span>1</span>
     	</a></li>
      
     	<li><a href="/categories.html#java-ref">
