@@ -5,7 +5,7 @@ tagline:
 {% include JB/setup %}
 
 <div class="row">
-  <div class="span8">
+  <div class="span9">
   {% for post in paginator.posts %}
   {% assign content = post.content %}
   <section id="{{ post.url | replace:'/',''}}">
@@ -47,7 +47,7 @@ tagline:
   </div>
   </div>
 
-  <aside class="span4">
+  <aside class="span3">
     <section>
    	 <h4>TODO</h4>
    	 <ul style="margin-top: -3px">
