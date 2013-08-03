@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-03T14:12:03+08:00</updated>
+ <updated>2013-08-03T16:02:35+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -2972,18 +2972,11 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
  </entry>
  
  <entry>
-   <title>The Process Of Seam Initiation</title>
-   <link href="http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation"/>
+   <title>Seam的启动过程</title>
+   <link href="http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation"/>
    <updated>2012-02-23T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2012/02/23/the-process-of-seam-initiation</id>
-   <content type="html">&lt;p&gt;layout: post
-title: Seam的启动过程
-category: seam
-tags: [seam]
-keywords: seam, jboss
-description: Seam的启动过程&lt;/p&gt;
-
-&lt;p&gt;了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;/p&gt;
+   <id>http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation</id>
+   <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; listener&amp;gt;
     &amp;lt; listenerclass&amp;gt;org. jboss. seam. servlet. SeamListener&amp;lt; /listenerclass&amp;gt;
 &amp;lt; /listener&amp;gt;
