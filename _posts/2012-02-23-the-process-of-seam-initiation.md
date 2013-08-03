@@ -1,11 +1,11 @@
-
+---
 layout: post
 title: Seam的启动过程
 category: seam
 tags: [seam]
 keywords: seam, jboss
 description: Seam的启动过程
-
+---
 
 了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. 
 
