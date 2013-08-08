@@ -1452,56 +1452,42 @@ http://desktop2:8042/node
 
 <p>HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。</p>
 
-<ol>
-<li><p>上传文件
-上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。</p></li>
-<li><p>hbase-site.xml </p>
+<p>上传hbase-0.94.2-cdh4.2.0.zip到desktop3上的/opt目录，先在desktop3上修改好配置文件，在同步到其他机器上。</p>
 
-<h1>pwd</h1>
-
-<p>/opt/hbase-0.94.2-cdh4.2.0/conf</p>
-
-<h1>cat hbase-site.xml</h1>
-
-<p>&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-<configuration>
-<property>
-<name>hbase.rootdir</name>
-<value>hdfs://desktop1/hbase-${user.name}</value>
-</property>
-<property>
-<name>hbase.cluster.distributed</name>
-<value>true</value>
-</property>
-<property>
-<name>hbase.tmp.dir</name>
-<value>/opt/data/hbase-${user.name}</value>
-</property>
-<property>
-<name>hbase.zookeeper.quorum</name>
-<value>desktop3,desktop4,desktop6,desktop7,desktop8</value>
-</property>
-</configuration></p></li>
-<li><p>regionservers</p>
-
-<h1>cat regionservers</h1>
-
-<p>desktop3
+<p>hbase-site.xml内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
+&lt;property&gt;
+    &lt;name&gt;hbase.rootdir&lt;/name&gt;
+    &lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+    &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+    &lt;name&gt;hbase.tmp.dir&lt;/name&gt;
+    &lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+    &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
+    &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre></div>
+<p>regionservers内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">desktop3
 desktop4
 desktop6
 desktop7
-desktop8</p></li>
-<li><p>环境变量
-参考hadoop中环境变量的设置</p></li>
-<li><p>同步文件
-同步文件到其他4台机器上</p></li>
-<li><p>启动脚本
-可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p>
+desktop8
+</code></pre></div>
+<p>环境变量：参考hadoop中环境变量的设置</p>
 
-<h1>start-hbase.sh</h1></li>
-</ol>
-</div>
+<p>然后，同步文件到其他4台机器上，可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p>
+
+<p>启动脚本：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#start-hbase.sh 
+</code></pre></div></div>
     </article>
   </section>
   

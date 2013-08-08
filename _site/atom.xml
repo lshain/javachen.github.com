@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-03T16:02:35+08:00</updated>
+ <updated>2013-08-08T16:05:43+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -305,13 +305,11 @@ fi
    <link href="http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop"/>
    <updated>2013-07-20T15:10:00+08:00</updated>
    <id>http://blog.javachen.com/hadoop/2013/07/20/install-rhadoop</id>
-   <content type="html">&lt;h2&gt;安装R&lt;/h2&gt;
+   <content type="html">&lt;h2&gt;1. R Language Install&lt;/h2&gt;
 
 &lt;h3&gt;安装相关依赖&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;安装R&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install libRmath-*
+yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -346,7 +344,7 @@ export HADOOP_CMD=/usr/bin/hadoop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）&lt;/p&gt;
 
-&lt;h3&gt;验证是否安张成功&lt;/h3&gt;
+&lt;h3&gt;验证是否安装成功&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 bin]# R
 R version 3.0.1 (2013-05-16) -- &amp;quot;Good Sport&amp;quot;
 Copyright (C) 2013 The R Foundation for Statistical Computing
@@ -364,7 +362,9 @@ R是个合作计划，有许多人为之做出了贡献.
 用&amp;#39;help.start()&amp;#39;通过HTML浏览器来看帮助文件。
 用&amp;#39;q()&amp;#39;退出R.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;安装Rhadoop&lt;/h2&gt;
+&lt;h2&gt;2. 安装Rhadoop&lt;/h2&gt;
+
+&lt;h3&gt;安装rhdfs，rmr2&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd Rhadoop/
 R CMD javareconf
 R CMD INSTALL &amp;#39;plyr_1.8.tar.gz&amp;#39;
@@ -383,17 +383,56 @@ R CMD INSTALL &amp;#39;rmr2_2.2.0.tar.gz&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;R library(rhdfs)检查是否能正常工作&lt;/p&gt;
 
-&lt;h2&gt;安装rhbase    thrift-0.9.0&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install boost*
-yum install openssl*
-tar -zxvf thrift-0.9.0.tar.gz
-./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
-make
-make install
+&lt;h4&gt;验证测试&lt;/h4&gt;
 
+&lt;p&gt;Rmr测试命令： &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;gt; train.mr&amp;lt;-mapreduce( + train.hdfs, + map = function(k, v) { + keyval(k,v$item) + } + ,reduce=function(k,v){ + m&amp;lt;-merge(v,v) + keyval(m$x,m$y) + } + )
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;出现如下错误：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;packageJobJar: [/tmp/RtmpCuhs7d/rmr-local-env18916b6f86b3, /tmp/RtmpCuhs7d/rmr-global-env18913824c681, /tmp/RtmpCuhs7d/rmr-streaming-map18912d6c2b1c, /tmp/RtmpCuhs7d/rmr-streaming-reduce1891179bb645, /tmp/hadoop-root/hadoop-unjar4575094085541826184/] [] /tmp/streamjob2910108622786868147.jar tmpDir=null 13/06/05 18:22:28
+WARN mapred.JobClient: Use GenericOptionsParser for parsing the arguments. Applications should implement Tool for the same. 13/06/05 18:22:28 INFO mapred.FileInputFormat: Total input paths to process : 1 13/06/05 18:22:29
+INFO streaming.StreamJob: getLocalDirs(): [/tmp/hadoop-root/mapred/local] 13/06/05 18:22:29 INFO streaming.StreamJob: Running job: job_201306050931_0004 13/06/05 18:22:29
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:29
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:29 INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:30 
+INFO streaming.StreamJob:  map 0%  reduce 0% 13/06/05 18:22:56
+INFO streaming.StreamJob:  map 100%  reduce 100% 13/06/05 18:22:56
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:56
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:56
+INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:56 
+ERROR streaming.StreamJob: Job not successful. Error: NA 13/06/05 18:22:56
+INFO streaming.StreamJob: killJob... Streaming Command Failed! Error in mr(map = map, reduce = reduce, combine = combine, vectorized.reduce,  :   hadoop streaming failed with error code 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;错误解决方法： 通过查看日志，hadoop没有在&lt;code&gt;/usr/bin&lt;/code&gt;下找到Rscript,于是从R的安装目录&lt;code&gt;/usr/local/bin&lt;/code&gt;下做R和Rscript的符号链接到&lt;code&gt;/usr/bin&lt;/code&gt;下，再次执行即可解决次错。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#ln -s /usr/loca/bin/R  /usr/bin
+#ln -s /usr/local/bin/Rscript  /usr/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;3. 安装rhbase&lt;/h2&gt;
 
-yum install openssl*
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
+&lt;h3&gt;安装依赖&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#yum install boost*
+#yum install openssl*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;安装thrift&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#tar -zxvf thrift-0.9.0.tar.gz
+#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+#cd thrift-0.9.0
+#./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
+#make
+#make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果报错：error: &amp;quot;Error: libcrypto required.&amp;quot;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#yum install openssl*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果报错：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;src/thrift/qt/moc_TQTcpServer.cpp:14:2: error: #error &amp;quot;This file was generated using the moc from 4.8.1. It&amp;quot;
+src/thrift/qt/moc_TQTcpServer.cpp:15:2: error: #error &amp;quot;cannot be used with the include files from this version of Qt.&amp;quot;
+src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &amp;quot;(The moc has changed too much.)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;则运行下面命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;配置PKG&lt;em&gt;CONFIG&lt;/em&gt;PATH&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
 pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
 cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
 cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
@@ -403,15 +442,89 @@ cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;使用jps查看thrift进程&lt;/p&gt;
 
-&lt;p&gt;安装rhbase&lt;/p&gt;
+&lt;h3&gt;安装rhbase&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;R CMD INSTALL &amp;#39;rhbase_1.1.1.tar.gz&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;R载入 library(rhbase) 检查rhbase是否可用&lt;/p&gt;
-
-&lt;h2&gt;验证并测试&lt;/h2&gt;
+&lt;h3&gt;验证并测试&lt;/h3&gt;
 
 &lt;p&gt;在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功&lt;/p&gt;
-</content>
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@desktop27 hadoop]# R
+R version 3.0.1 (2013-05-16) -- &amp;quot;Good Sport&amp;quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &amp;#39;license()&amp;#39; or &amp;#39;licence()&amp;#39; for distribution details.
+Natural language support but running in an English locale
+R is a collaborative project with many contributors.
+Type &amp;#39;contributors()&amp;#39; for more information and
+&amp;#39;citation()&amp;#39; on how to cite R or R packages in publications.
+Type &amp;#39;demo()&amp;#39; for some demos, &amp;#39;help()&amp;#39; for on-line help, or
+&amp;#39;help.start()&amp;#39; for an HTML browser interface to help.
+Type &amp;#39;q()&amp;#39; to quit R.
+&amp;gt; library(rhdfs)
+Loading required package: rJava
+HADOOP_CMD=/usr/bin/hadoop
+Be sure to run hdfs.init()
+&amp;gt; library(rmr2)
+Loading required package: Rcpp
+Loading required package: RJSONIO
+Loading required package: digest
+Loading required package: functional
+Loading required package: stringr
+Loading required package: plyr
+Loading required package: reshape2
+&amp;gt; library(rhbase)
+&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;4. 装RHive&lt;/h2&gt;
+
+&lt;h3&gt;环境变量&lt;/h3&gt;
+
+&lt;p&gt;设置环境变量 &lt;code&gt;vim /etc/profile&lt;/code&gt;,末行添加如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export HADOOP_CMD=/usr/bin/hadoop
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+export HADOOP_STREAMING=/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.0.0-mr1-cdh4.2.1.jar
+export HADOOP_HOME=/usr/lib/hadoop
+export RHIVE_DATA=/hadoop/dfs/rhive/data
+export HIVE_HOME=/usr/lib/hive
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;安装Rserve：&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#R CMD INSTALL &amp;#39;Rserve_1.7-1.tar.gz&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在安装Rsever用户下，创建一目录，并创建Rserv.conf文件，写入``remote enable&amp;#39;&amp;#39;保存并退出。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#cd /usr/local/lib64/R/
+#echo remote enable &amp;gt; Rserv.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;启动Rserve：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#R CMD Rserve --RS-conf /usr/local/lib64/R/Rserv.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;检查Rserve启动是否正常：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#telnet localhost 6311
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;显示 Rsrv0103QAP1 则表示连接成功&lt;/p&gt;
+
+&lt;h3&gt;安装RHive&lt;/h3&gt;
+
+&lt;p&gt;创建数据目录：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#R CMD INSTALL RHive_0.0-7.tar.gz
+#cd /usr/local/lib64/R/
+mkdir -p rhive/data
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在上传rhive_udf.jar到hdfs上：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hadoop fs -mkdir /rhive/lib
+cd /usr/local/lib64/R/library/RHive/java
+hadoop fs -put rhive_udf.jar /rhive/lib
+hadoop fs -chmod a+rw /rhive/lib/rhive_udf.jar
+cd /usr/lib/hadoop
+ln -s /etc/hadoop/conf conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;测试RHive安装是否成功：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;R
+library（RHive）
+rhive.connect(&amp;#39;192.168.0.27&amp;#39;)【hive的地址】
+rhive.env()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>
@@ -1792,56 +1905,42 @@ http://desktop2:8042/node
 
 &lt;p&gt;HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。&lt;/p&gt;
 
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;上传文件
-上传hbase-0.94.2-cdh4.2.0.zip到desktop3上，先在desktop3上修改好配置文件，在同步到其他机器上。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;hbase-site.xml &lt;/p&gt;
+&lt;p&gt;上传hbase-0.94.2-cdh4.2.0.zip到desktop3上的/opt目录，先在desktop3上修改好配置文件，在同步到其他机器上。&lt;/p&gt;
 
-&lt;h1&gt;pwd&lt;/h1&gt;
-
-&lt;p&gt;/opt/hbase-0.94.2-cdh4.2.0/conf&lt;/p&gt;
-
-&lt;h1&gt;cat hbase-site.xml&lt;/h1&gt;
-
-&lt;p&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;
-&amp;lt;?xml-stylesheet type=&amp;quot;text/xsl&amp;quot; href=&amp;quot;configuration.xsl&amp;quot;?&amp;gt;
-&lt;configuration&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.rootdir&lt;/name&gt;
-&lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-&lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-&lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;regionservers&lt;/p&gt;
-
-&lt;h1&gt;cat regionservers&lt;/h1&gt;
-
-&lt;p&gt;desktop3
+&lt;p&gt;hbase-site.xml内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;hdfs://desktop1/hbase-${user.name}&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.cluster.distributed&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.tmp.dir&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;/opt/data/hbase-${user.name}&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.zookeeper.quorum&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;desktop3,desktop4,desktop6,desktop7,desktop8&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;regionservers内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;desktop3
 desktop4
 desktop6
 desktop7
-desktop8&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;环境变量
-参考hadoop中环境变量的设置&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;同步文件
-同步文件到其他4台机器上&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;启动脚本
-可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase&lt;/p&gt;
+desktop8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;环境变量：参考hadoop中环境变量的设置&lt;/p&gt;
 
-&lt;h1&gt;start-hbase.sh&lt;/h1&gt;&lt;/li&gt;
-&lt;/ol&gt;
-</content>
+&lt;p&gt;然后，同步文件到其他4台机器上，可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase&lt;/p&gt;
+
+&lt;p&gt;启动脚本：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#start-hbase.sh 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>
@@ -2977,30 +3076,32 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
    <updated>2012-02-23T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation</id>
    <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt; listener&amp;gt;
-    &amp;lt; listenerclass&amp;gt;org. jboss. seam. servlet. SeamListener&amp;lt; /listenerclass&amp;gt;
-&amp;lt; /listener&amp;gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;listener&amp;gt;
+    &amp;lt;listenerclass&amp;gt;org. jboss. seam. servlet. SeamListener&amp;lt;/listenerclass&amp;gt;
+&amp;lt;/listener&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。
-&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. &lt;/blockquote&gt;&lt;/p&gt;
+&lt;p&gt;该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。&lt;/p&gt;
 
-&lt;p&gt;从描述中可以知道
-SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。&lt;/p&gt;
+&lt;blockquote&gt;Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. &lt;/blockquote&gt;
 
-&lt;p&gt;该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。
-该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。
-&lt;strong&gt;第一步&lt;/strong&gt;，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。&lt;/p&gt;
+&lt;p&gt;从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。&lt;/p&gt;
+
+&lt;p&gt;该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。&lt;/p&gt;
+
+&lt;p&gt;该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第一步&lt;/strong&gt;，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;第二步&lt;/strong&gt;，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;添加命名空间&lt;/li&gt;
-&lt;li&gt;从“/WEBINF/components. xml”加载组件&lt;/li&gt;
-&lt;li&gt;从“/WEBINF/events. xml”加载组件&lt;/li&gt;
-&lt;li&gt;从“METAINF/components. xml”加载组件&lt;/li&gt;
+&lt;li&gt;从/WEBINF/components. xml加载组件&lt;/li&gt;
+&lt;li&gt;从/WEBINF/events. xml加载组件&lt;/li&gt;
+&lt;li&gt;从METAINF/components. xml加载组件&lt;/li&gt;
 &lt;li&gt;从ServletContext初始化Properties&lt;/li&gt;
-&lt;li&gt;从“/seam. properties”初始化Properties&lt;/li&gt;
+&lt;li&gt;从/seam. properties初始化Properties&lt;/li&gt;
 &lt;li&gt;初始化jndi Properties&lt;/li&gt;
 &lt;li&gt;从system加载Properties&lt;/li&gt;
 &lt;/ol&gt;
