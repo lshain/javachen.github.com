@@ -38,6 +38,7 @@ description: 自动化安装hadoop的shell脚本
 1. 目前，仅仅是使用shell完成安装，没有使用puppt等部署工具，之后会完善hbase、zookeeper的自动化安装脚本。
 2. 之后会完善使用文档。
 
+
 ## 脚本片段
 IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，供大家学习。
 
@@ -133,7 +134,7 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	sed -i '/listen/s/#//;/listen/s/localhost/*/' /var/lib/pgsql/data/postgresql.conf
 	sed -i "s|#standard_coffforming_strings = on|standard_conforming_strings = off|g" /var/lib/pgsql/data/postgresql.conf
 	echo "local    all             all             		               trust" > /var/lib/pgsql/data/pg_hba.conf
-	echo "host     all             all             0.0.0.0/0	         trust" >> /var/lib/pgsql/data/pg_hba.conf
+	echo "host     all             all             0.0.0.0/0	       trust" >> /var/lib/pgsql/data/pg_hba.conf
 
 	sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
 
@@ -150,6 +151,11 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 ## 总结
 
 更多脚本，请关注github：[hadoop-install](https://github.com/javachen/hadoop-install)，你可以下载、使用并修改其中代码！
+
+
+## 更新
+
+2013年8月9日更新：完成hbase和zookeeper单节点的安装
 
 
 
