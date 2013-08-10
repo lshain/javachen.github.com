@@ -45,9 +45,11 @@
             <ul class="nav">
 
 
+              <li><a href="/sitemap.xml">Sitemap</a></li>
               <li><a href="/categories.html">Categories</a></li>
               <li><a href="/about.html">About me</a></li>
               <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
           </div>
@@ -230,7 +232,7 @@ service postgresql initdb
 sed -i &#39;/listen/s/#//;/listen/s/localhost/*/&#39; /var/lib/pgsql/data/postgresql.conf
 sed -i &quot;s|#standard_coffforming_strings = on|standard_conforming_strings = off|g&quot; /var/lib/pgsql/data/postgresql.conf
 echo &quot;local    all             all                                 trust&quot; &gt; /var/lib/pgsql/data/pg_hba.conf
-echo &quot;host     all             all             0.0.0.0/0             trust&quot; &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+echo &quot;host     all             all             0.0.0.0/0           trust&quot; &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
 
 sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
 

@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-09T10:06:04+08:00</updated>
+ <updated>2013-08-10T15:20:15+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -135,7 +135,7 @@ service postgresql initdb
 sed -i &amp;#39;/listen/s/#//;/listen/s/localhost/*/&amp;#39; /var/lib/pgsql/data/postgresql.conf
 sed -i &amp;quot;s|#standard_coffforming_strings = on|standard_conforming_strings = off|g&amp;quot; /var/lib/pgsql/data/postgresql.conf
 echo &amp;quot;local    all             all                                 trust&amp;quot; &amp;gt; /var/lib/pgsql/data/pg_hba.conf
-echo &amp;quot;host     all             all             0.0.0.0/0             trust&amp;quot; &amp;gt;&amp;gt; /var/lib/pgsql/data/pg_hba.conf
+echo &amp;quot;host     all             all             0.0.0.0/0           trust&amp;quot; &amp;gt;&amp;gt; /var/lib/pgsql/data/pg_hba.conf
 
 sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
 
