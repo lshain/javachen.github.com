@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-17T15:22:48+08:00</updated>
+ <updated>2013-08-17T16:32:31+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -54,7 +54,7 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;通过上面的&lt;code&gt;kill command&lt;/code&gt;可以killjob，但是运行过程中发现提示错误，错误原因：&lt;code&gt;HADOOP_LIBEXEC_DIR&lt;/code&gt;未做设置&lt;/p&gt;
 
-&lt;p&gt;解决方法：在hive-env.sh中添加如下代码&lt;/p&gt;
+&lt;p&gt;解决方法：在hadoop-env.sh中添加如下代码&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export HADOOP_LIBEXEC_DIR=$HADOOP_COMMON_HOME/libexec
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;2、 查看java进程中发现，JVM参数中-Xmx重复出现&lt;/p&gt;

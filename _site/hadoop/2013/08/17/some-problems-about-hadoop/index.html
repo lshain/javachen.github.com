@@ -151,7 +151,7 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
 </code></pre></div>
 <p>通过上面的<code>kill command</code>可以killjob，但是运行过程中发现提示错误，错误原因：<code>HADOOP_LIBEXEC_DIR</code>未做设置</p>
 
-<p>解决方法：在hive-env.sh中添加如下代码</p>
+<p>解决方法：在hadoop-env.sh中添加如下代码</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_LIBEXEC_DIR=$HADOOP_COMMON_HOME/libexec
 </code></pre></div>
 <p>2、 查看java进程中发现，JVM参数中-Xmx重复出现</p>

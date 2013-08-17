@@ -46,7 +46,7 @@ description: 使用hadoop中遇到的一些问题
 
 通过上面的`kill command`可以killjob，但是运行过程中发现提示错误，错误原因：`HADOOP_LIBEXEC_DIR`未做设置
 
-解决方法：在hive-env.sh中添加如下代码
+解决方法：在hadoop-env.sh中添加如下代码
 
 	export HADOOP_LIBEXEC_DIR=$HADOOP_COMMON_HOME/libexec
 
