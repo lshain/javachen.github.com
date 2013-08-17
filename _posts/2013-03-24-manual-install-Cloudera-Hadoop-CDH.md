@@ -50,6 +50,7 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 
 2. 在各个节点上修改/etc/hosts增加以下内容:
 
+```
 	[root@desktop1 ~]# cat /etc/hosts
 	127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 	::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
@@ -60,10 +61,12 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 	192.168.0.6		desktop6
 	192.168.0.7		desktop7
 	192.168.0.8		desktop8
+```
 
 3. 配置ssh无密码登陆
 以下是设置desktop1上可以无密码登陆到其他机器上。
 
+```
 	[root@desktop1 ~]# ssh-keygen
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
@@ -71,6 +74,7 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+```
 
 4. 每台机器上关闭防火墙：
 

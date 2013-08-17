@@ -45,7 +45,7 @@
 
               <li><a href="/sitemap.xml">Sitemap</a></li>
               <li><a href="/categories.html">Categories</a></li>
-              <li><a href="/about.html">About me</a></li>
+              <li><a href="/about.html">About</a></li>
               <li><a href="/archive.html">Archive</a></li>
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
@@ -327,6 +327,15 @@ y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。s
 </code></pre></div>
 <p>如果想远程调式hbase-master进程，请去掉对<code>HBASE_MASTER_OPTS</code>的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。</p>
 
+<hr>
+
+<h2>注意（20130817更新）：</h2>
+
+<p>如果启动hbase时提示<code>check your java command line for duplicate jdwp options</code>，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。</p>
+
+<p>例如，如果你想调试regionserver，请把下面代码加到<code>elif [ &quot;$COMMAND&quot; = &quot;regionserver&quot; ] ; then</code>中去：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
+</code></pre></div>
 <h2>配置hive远程调试</h2>
 
 <p>停止hive-server2进程，然后以下面命令启动hive-server2</p>

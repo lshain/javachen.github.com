@@ -52,6 +52,14 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 
 如果想远程调式hbase-master进程，请去掉对`HBASE_MASTER_OPTS`的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。
 
+---
+### 注意（20130817更新）：
+如果启动hbase时提示` check your java command line for duplicate jdwp options`，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。
+
+例如，如果你想调试regionserver，请把下面代码加到`elif [ "$COMMAND" = "regionserver" ] ; then`中去：
+
+	export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071"
+
 ## 配置hive远程调试
 
 停止hive-server2进程，然后以下面命令启动hive-server2
