@@ -135,6 +135,8 @@
 
 <h3>使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：</h3>
 
+<p>说明：以下问题不局限于CDH的hadoop版本。</p>
+
 <p>1、 在hive运行过程中会打印如下日志</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">Starting Job = job_1374551537478_0001, Tracking URL = http://june-fedora:8088/proxy/application_1374551537478_0001/
 Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
@@ -160,7 +162,12 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hive--&gt;hive-config.sh--&gt;hive-env.sh--&gt;hadoop-config.sh--&gt;hadoop-env.sh
 </code></pre></div>
 <p>故如果hadoop-env.sh中设置了<code>HADOOP_HEAPSIZE</code>，则hive-env.sh中设置的无效</p>
-</div>
+
+<p>5、如何设置JOB_HISTORYSERVER的jvm参数</p>
+
+<p>在<code>/etc/hadoop/conf/hadoop-env.sh</code>添加如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_JOB_HISTORYSERVER_HEAPSIZE=256
+</code></pre></div></div>
     </article>
   </section>
   

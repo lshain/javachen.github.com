@@ -37,6 +37,8 @@ description: 使用hadoop中遇到的一些问题
 
 ### 使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：
 
+说明：以下问题不局限于CDH的hadoop版本。
+
 1、 在hive运行过程中会打印如下日志
 
 	Starting Job = job_1374551537478_0001, Tracking URL = http://june-fedora:8088/proxy/application_1374551537478_0001/
@@ -67,6 +69,12 @@ hive脚本运行顺序：
 	hive-->hive-config.sh-->hive-env.sh-->hadoop-config.sh-->hadoop-env.sh
 
 故如果hadoop-env.sh中设置了`HADOOP_HEAPSIZE`，则hive-env.sh中设置的无效
+
+5、如何设置JOB_HISTORYSERVER的jvm参数
+
+在`/etc/hadoop/conf/hadoop-env.sh`添加如下代码：
+
+	export HADOOP_JOB_HISTORYSERVER_HEAPSIZE=256
 
 
 
