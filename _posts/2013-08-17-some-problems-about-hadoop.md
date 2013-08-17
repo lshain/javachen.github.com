@@ -37,7 +37,7 @@ description: 使用hadoop中遇到的一些问题
 
 ### 使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：
 
-说明：以下问题不局限于CDH的hadoop版本。
+#### 说明：以下问题不局限于CDH的hadoop版本。
 
 1、 在hive运行过程中会打印如下日志
 

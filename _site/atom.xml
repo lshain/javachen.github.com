@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-17T15:21:49+08:00</updated>
+ <updated>2013-08-17T15:22:48+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -46,7 +46,7 @@
 
 &lt;h3&gt;使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：&lt;/h3&gt;
 
-&lt;p&gt;说明：以下问题不局限于CDH的hadoop版本。&lt;/p&gt;
+&lt;h4&gt;说明：以下问题不局限于CDH的hadoop版本。&lt;/h4&gt;
 
 &lt;p&gt;1、 在hive运行过程中会打印如下日志&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Starting Job = job_1374551537478_0001, Tracking URL = http://june-fedora:8088/proxy/application_1374551537478_0001/
