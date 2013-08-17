@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-17T14:14:43+08:00</updated>
+ <updated>2013-08-17T14:16:31+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -206,7 +206,7 @@ y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。s
 
 &lt;hr&gt;
 
-&lt;h2&gt;注意（20130817更新）：&lt;/h2&gt;
+&lt;h3&gt;注意（20130817更新）：&lt;/h3&gt;
 
 &lt;p&gt;如果启动hbase时提示&lt;code&gt;check your java command line for duplicate jdwp options&lt;/code&gt;，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。&lt;/p&gt;
 
