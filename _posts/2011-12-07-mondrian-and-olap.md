@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Mondrian and OLAP
-category: mondrian
+category: pentaho
 tags: [mondrian, olap]
 keywords: mondrian, olap
 description: mondrian olap

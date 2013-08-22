@@ -136,6 +136,13 @@
 
 
 	<url>
+		<loc>http://blog.javachen.com/hive/2013/08/21/hive-CliDriver</loc>
+		<lastmod>2013-08-21</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
 		<loc>http://blog.javachen.com/hadoop/2013/08/17/some-problems-about-hadoop</loc>
 		<lastmod>2013-08-17</lastmod>
 		<changefreq>hourly</changefreq>
@@ -171,7 +178,7 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle</loc>
+		<loc>http://blog.javachen.com/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle</loc>
 		<lastmod>2013-04-17</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
@@ -234,7 +241,7 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</loc>
+		<loc>http://blog.javachen.com/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</loc>
 		<lastmod>2012-06-03</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
@@ -276,7 +283,7 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation</loc>
+		<loc>http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation</loc>
 		<lastmod>2012-02-23</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
@@ -304,14 +311,14 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/jsf/2012/02/14/this-expression-of-jsf-el</loc>
+		<loc>http://blog.javachen.com/java/2012/02/14/this-expression-of-jsf-el</loc>
 		<lastmod>2012-02-14</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</loc>
+		<loc>http://blog.javachen.com/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</loc>
 		<lastmod>2012-01-31</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
@@ -332,21 +339,21 @@
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/mondrian/2011/12/07/mondrian-and-olap</loc>
+		<loc>http://blog.javachen.com/pentaho/2011/12/07/mondrian-and-olap</loc>
 		<lastmod>2011-12-07</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/xml/2011/11/25/xml-user-interface-language-introuction</loc>
+		<loc>http://blog.javachen.com/javascript/2011/11/25/xml-user-interface-language-introuction</loc>
 		<lastmod>2011-11-25</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>
 	</url>
 
 	<url>
-		<loc>http://blog.javachen.com/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi</loc>
+		<loc>http://blog.javachen.com/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi</loc>
 		<lastmod>2011-10-22</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>1.0</priority>

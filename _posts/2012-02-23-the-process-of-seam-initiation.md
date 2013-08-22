@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Seam的启动过程
-category: seam
+category: java
 tags: [seam]
 keywords: seam, jboss
 description: Seam的启动过程

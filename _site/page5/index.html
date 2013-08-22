@@ -69,16 +69,176 @@
   <div class="span9">
   
   
-  <section id="seam20120223the-process-of-seam-initiation">
+  <section id="kettle20120323how-to-implement-cassandra-input-and-output-in-kettle4-2">
     <article>
       <header>
-      <h3><a href="/seam/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h3>
+      <h3><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h3>
       <div class="c9">
      		Author: JavaChen
      		&emsp;&emsp;
 		Categories：
 			
-			<a href="/categories.html#seam">seam</a>
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#pentaho-ref">pentaho</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>这是在QQ群里有人问到的一个问题.</p>
+
+<p>如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+
+<p>在kettle中实现cassandra的输入与输出有以下两种方式:</p>
+
+<ul>
+<li>第一种方式:自己编写cassandra输入输出组件</li>
+<li>第二种方式:使用别人编写好的插件,将其集成进来</li>
+</ul>
+
+<p>当然还有第三种方法,直接使用4.3版本的pdi.</p>
+
+<p>第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.</p>
+
+<p>故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|-- kettle-gpload-plugin
+|-- kettle-hl7-plugin
+|-- kettle-palo-plugin
+|-- pentaho-big-data-plugin
+|-- repositories
+|-- spoon
+|-- steps
+`-- versioncheck
+</code></pre></div>
+<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|   `-- DummyJob
+|       |-- DPL.png
+|       |-- dummyjob.jar
+|       `-- plugin.xml
+|-- pentaho-big-data-plugin
+|   |-- lib
+|   |   |-- apache-cassandra-1.0.0.jar
+|   |   |-- apache-cassandra-thrift-1.0.0.jar
+|   |   |-- aws-java-sdk-1.0.008.jar
+|   |   |-- commons-cli-1.2.jar
+|   |   |-- guava-r08.jar
+|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
+|   |   |-- jline-0.9.94.jar
+|   |   |-- libthrift-0.6.jar
+|   |   |-- mongo-java-driver-2.7.2.jar
+|   |   |-- pig-0.8.1.jar
+|   |   |-- xpp3_min-1.1.4c.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|-- repositories
+|-- spoon
+|-- steps
+|   |-- DummyPlugin
+|   |   |-- DPL.png
+|   |   |-- dummy.jar
+|   |   `-- plugin.xml
+|   |-- S3CsvInput
+|   |   |-- jets3t-0.7.0.jar
+|   |   |-- plugin.xml
+|   |   |-- S3CIN.png
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
+|       |-- plugin.xml
+|       |-- SFR.png
+|       `-- shapefilereader3.jar
+`-- versioncheck
+    |-- kettle-version-checker-0.2.0.jar
+    `-- lib
+    `-- pentaho-versionchecker.jar
+
+13 directories, 29 files
+</code></pre></div>
+<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
+<div class="pic">
+<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
+<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
+</a>
+</div></p>
+
+<p><strong>获取pentaho-big-data-plugin源码</strong>
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
+你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
+
+<p>然后,需要在kettle-steps.xml中注册步骤节点
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;step id=&quot;MongoDbInput&quot;&gt;
+&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+&lt;iconfile&gt;ui/images/mongodb-input.png
+&lt;/iconfile&gt;&lt;/tooltip&gt;
+&lt;/category&gt;
+&lt;/classname&gt;
+&lt;/description&gt;
+&lt;/step&gt;
+</code></pre></div>
+<div class="note">
+<h>注意:
+由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
+</h></div>
+
+<p><strong>扩展阅读:</strong></p>
+
+<ul>
+<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
+<li>pentaho-big-data-plugin ci
+<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
+<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="java20120223the-process-of-seam-initiation">
+    <article>
+      <header>
+      <h3><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#java">java</a>
 			
 			
 		&emsp;&emsp;
@@ -88,7 +248,7 @@
 			
 			
 		&emsp;&emsp;
-		<a href='/seam/2012/02/23/the-process-of-seam-initiation#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		<a href='/java/2012/02/23/the-process-of-seam-initiation#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
     <div class="content"><p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
@@ -381,69 +541,6 @@ CREATE TABLE a1
     </article>
   </section>
   
-  
-  <section id="jsf20120214this-expression-of-jsf-el">
-    <article>
-      <header>
-      <h3><a href="/jsf/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#jsf">jsf</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#jsf-ref">jsf</a>
-			
-			,
-			
-			
-			<a href="/tags.html#el-ref">el</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/jsf/2012/02/14/this-expression-of-jsf-el#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
-
-<p><strong>EL表达式this扩展</strong>
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
-
-<p>我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式</p>
-
-<p>我们将上述功能处理为“this”表达式。其功能模型为：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
-</div>
-页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
-&lt;!--more--&gt;</p>
-
-<p><strong>动作类和页面的一致性保证</strong>
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
-
-<p><strong>“this”EL表达式算法</strong>
-算法流程如下图：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div></p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page4'>&larr; Previous</a></li>
@@ -465,6 +562,9 @@ CREATE TABLE a1
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
       <li class="post">
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+      <li class="post">
         <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
       </li>
       <li class="post">
@@ -480,7 +580,7 @@ CREATE TABLE a1
         <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
       </li>
       <li class="post">
-        <a href="/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
@@ -490,9 +590,6 @@ CREATE TABLE a1
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
       </li>
     </ul>
     </section>
@@ -541,55 +638,39 @@ CREATE TABLE a1
     	</a></li>
      
     	<li><a href="/categories.html#javascript-ref">
-    		javascript <span>4</span>
+    		javascript <span>7</span>
     	</a></li>
      
     	<li><a href="/categories.html#pentaho-ref">
-    		pentaho <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#extjs-ref">
-    		extjs <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#xml-ref">
-    		xml <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#mondrian-ref">
-    		mondrian <span>1</span>
+    		pentaho <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#kettle-ref">
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#jsf-ref">
-    		jsf <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#seam-ref">
-    		seam <span>1</span>
-    	</a></li>
-     
     	<li><a href="/categories.html#java-ref">
-    		java <span>1</span>
+    		java <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#cassandra-ref">
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#github-ref">
-    		github <span>1</span>
-    	</a></li>
-     
     	<li><a href="/categories.html#work-ref">
-    		work <span>1</span>
+    		work <span>2</span>
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>12</span>
+    		hadoop <span>11</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>1</span>
     	</a></li>
     
   

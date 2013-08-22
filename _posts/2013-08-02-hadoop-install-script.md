@@ -31,12 +31,7 @@ description: 自动化安装hadoop的shell脚本
 
 
 ## hadoop-install
-[hadoop-install](https://github.com/javachen/hadoop-install)上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前只完成了hdfs、hive和yarn的自动安装。
-
-需要说明的是：
-
-1. 目前，仅仅是使用shell完成安装，没有使用puppt等部署工具，之后会完善hbase、zookeeper的自动化安装脚本。
-2. 之后会完善使用文档。
+[hadoop-install](https://github.com/javachen/hadoop-install)上脚本，all-in-one-install.sh是在一个节点上安装hdfs、hive、yarn、zookeeper和hbase，编写该脚本是为了在本机（fedora19系统）上调试mapreduce、hive和hbase；cluster-install.sh是在多个节点上安装hadoop集群，同样目前完成了hdfs、hive、yarn、zookeeper和hbase的自动安装。
 
 
 ## 脚本片段
@@ -152,10 +147,6 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 
 更多脚本，请关注github：[hadoop-install](https://github.com/javachen/hadoop-install)，你可以下载、使用并修改其中代码！
 
-
-## 更新
-
-2013年8月9日更新：完成hbase和zookeeper单节点的安装
 
 
 

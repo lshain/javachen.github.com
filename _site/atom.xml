@@ -4,13 +4,116 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-17T16:32:31+08:00</updated>
+ <updated>2013-08-22T12:54:04+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
    <email>june.chan@foxmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>hive cli的入口类</title>
+   <link href="http://blog.javachen.com/hive/2013/08/21/hive-CliDriver"/>
+   <updated>2013-08-21T13:14:00+08:00</updated>
+   <id>http://blog.javachen.com/hive/2013/08/21/hive-CliDriver</id>
+   <content type="html">&lt;h2&gt;启动脚本&lt;/h2&gt;
+
+&lt;p&gt;从shell脚本&lt;code&gt;/usr/lib/hive/bin/ext/cli.sh&lt;/code&gt;可以看到hive cli的入口类为&lt;code&gt;org.apache.hadoop.hive.cli.CliDriver&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cli () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &amp;quot;$@&amp;quot;
+}
+cli_help () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &amp;quot;--help&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;入口类&lt;/h2&gt;
+
+&lt;p&gt;java中的类如果有main方法就能运行，故直接查找&lt;code&gt;org.apache.hadoop.hive.cli.CliDriver&lt;/code&gt;中的main方法即可。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public static void main(String[] args) throws Exception {
+    int ret = run(args);
+    System.exit(ret);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;阅读run函数可以看到，主要做了以下几件事情：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;读取main方法的参数&lt;/li&gt;
+&lt;li&gt;重置默认的log4j配置并为hive重新初始化log4j，注意，在这里是读取hive-log4j.properties来初始化log4j。&lt;/li&gt;
+&lt;li&gt;创建CliSessionState，并初始化in、out、info、error等stream流。CliSessionState是一次命令行操作的session会话，其继承了SessionState。&lt;/li&gt;
+&lt;li&gt;重命令行参数中读取参数并设置到CliSessionState中。&lt;/li&gt;
+&lt;li&gt;启动SessionState并连接到hive server&lt;/li&gt;
+&lt;li&gt;如果cli是本地模式运行，则加载&lt;code&gt;hive.aux.jars.path&lt;/code&gt;参数配置的jar包到classpath&lt;/li&gt;
+&lt;li&gt;创建一个CliDriver对象，并设置当前选择的数据库。可以在命令行参数添加&lt;code&gt;-database database&lt;/code&gt;来选择连接那个数据库，默认为default数据库。&lt;/li&gt;
+&lt;li&gt;加载初始化文件&lt;code&gt;.hiverc&lt;/code&gt;，该文件位于当前用户主目录下，读取该文件内容后，然后调用processFile方法处理文件内容。&lt;/li&gt;
+&lt;li&gt;如果命令行中有-e参数，则运行指定的sql语句；如果有-f参数，则读取该文件内容并运行。注意：不能同时指定这两个参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    hive -e &amp;#39;show tables&amp;#39;
+    hive -f /root/hive.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;如果没有指定上面两个参数，则从当前用户主目录读取&lt;code&gt;.hivehistory&lt;/code&gt;文件，如果不存在则创建。该文件保存了当前用户所有运行的hive命令。&lt;/li&gt;
+&lt;li&gt;在while循环里不断读取控制台的输入内容，每次读取一行，如果行末有分号，则调用CliDriver的processLine方法运行读取到的内容。&lt;/li&gt;
+&lt;li&gt;每次调用processLine方法时，都会创建SignalHandler用于捕捉用户的输入，当用户输入Ctrl+C时，会kill当前正在运行的任务以及kill掉当前进程。kill当前正在运行的job的代码如下.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    HadoopJobExecHelper.killRunningJobs();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;处理hive命令。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;处理hive命令过程&lt;/h3&gt;
+
+&lt;p&gt;如果输入的是quit或者exit,则程序退出。&lt;/p&gt;
+
+&lt;p&gt;如果命令开头是source，则会读取source 后面文件内容，然后执行该文件内容。通过这种方式，你可以在hive命令行模式运行一个文件中的hive命令。&lt;/p&gt;
+
+&lt;p&gt;如果命令开头是感叹号，执行操作系统命令（如&lt;code&gt;!ls&lt;/code&gt;，列出当前目录的文件信息）。通过以下代码来运行：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Process executor = Runtime.getRuntime().exec(shell_cmd);
+StreamPrinter outPrinter = new StreamPrinter(executor.getInputStream(), null, ss.out);
+StreamPrinter errPrinter = new StreamPrinter(executor.getErrorStream(), null, ss.err);
+
+outPrinter.start();
+errPrinter.start();
+
+ret = executor.waitFor();
+if (ret != 0) {
+  console.printError(&amp;quot;Command failed with exit code = &amp;quot; + ret);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;shell_cmd的内容大概如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;shell_cmd = &amp;quot;/bin/bash -c \&amp;#39;&amp;quot; + shell_cmd + &amp;quot;\&amp;#39;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果命令开头是list，列出jar/file/archive&lt;/p&gt;
+
+&lt;p&gt;如果是远程模式运行命令行，则通过HiveClient来运行命令；否则，调用processLocalCmd方法运行本地命令。&lt;/p&gt;
+
+&lt;p&gt;以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor。&lt;code&gt;set/dfs/add/delete&lt;/code&gt;指令交给指定的CommandProcessor处理，其余的交给&lt;code&gt;org.apache.hadoop.hive.ql.Driver.run()&lt;/code&gt;处理。
+故，CommandProcessor接口的实现类有：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;AddResourceProcessor
+DeleteResourceProcessor
+DfsProcessor
+Driver
+ResetProcessor
+SetProcessor
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;org.apache.hadoop.hive.ql.Driver&lt;/code&gt;类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。&lt;/p&gt;
+
+&lt;h2&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/files/2013/hive-cli-clidriver.jpg&quot; alt=&quot;hive-cli-clidriver&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;参考文章&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/end/archive/2012/12/19/2825320.html&quot;&gt;hive 初始化运行流程&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>使用hadoop中遇到的一些问题</title>
@@ -106,14 +209,7 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
 
 &lt;h2&gt;hadoop-install&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;上脚本包括两部分，all-in-one是在一个节点上安装hdfs、hive和yarn，不包括hbase和zookeeper，编写该脚本是为了在本机（fedora19系统）上调试mapreduce和hive；cluster-install是在多个节点上安装hadoop集群，同样目前只完成了hdfs、hive和yarn的自动安装。&lt;/p&gt;
-
-&lt;p&gt;需要说明的是：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;目前，仅仅是使用shell完成安装，没有使用puppt等部署工具，之后会完善hbase、zookeeper的自动化安装脚本。&lt;/li&gt;
-&lt;li&gt;之后会完善使用文档。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;上脚本，all-in-one-install.sh是在一个节点上安装hdfs、hive、yarn、zookeeper和hbase，编写该脚本是为了在本机（fedora19系统）上调试mapreduce、hive和hbase；cluster-install.sh是在多个节点上安装hadoop集群，同样目前完成了hdfs、hive、yarn、zookeeper和hbase的自动安装。&lt;/p&gt;
 
 &lt;h2&gt;脚本片段&lt;/h2&gt;
 
@@ -221,10 +317,6 @@ su -c &amp;quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&a
 &lt;h2&gt;总结&lt;/h2&gt;
 
 &lt;p&gt;更多脚本，请关注github：&lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;，你可以下载、使用并修改其中代码！&lt;/p&gt;
-
-&lt;h2&gt;更新&lt;/h2&gt;
-
-&lt;p&gt;2013年8月9日更新：完成hbase和zookeeper单节点的安装&lt;/p&gt;
 </content>
  </entry>
  
@@ -652,9 +744,9 @@ yum install -y cloudera-manager-server-db
  
  <entry>
    <title>kettle访问IDH2.3中的HBase</title>
-   <link href="http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle"/>
+   <link href="http://blog.javachen.com/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle"/>
    <updated>2013-04-17T21:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle</id>
+   <id>http://blog.javachen.com/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle</id>
    <content type="html">&lt;p&gt;Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。&lt;a href=&quot;https://github.com/pentaho/big-data-plugin&quot;&gt;big-data-plugin&lt;/a&gt;是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。&lt;/p&gt;
 
 &lt;p&gt;截至目前，kettle的版本为4.4.1，&lt;code&gt;big-data-plugin&lt;/code&gt;插件支持&lt;code&gt;cloudera CDH3u4、CDH4.1&lt;/code&gt;，暂不支持Intel的hadoop发行版本IDH。&lt;/p&gt;
@@ -2365,9 +2457,9 @@ select count(*) from hive_userinfo
  
  <entry>
    <title>使用Octopress将博客从wordpress迁移到GitHub上</title>
-   <link href="http://blog.javachen.com/github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress"/>
+   <link href="http://blog.javachen.com/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress"/>
    <updated>2012-06-03T14:00:00+08:00</updated>
-   <id>http://blog.javachen.com/github/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</id>
+   <id>http://blog.javachen.com/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress</id>
    <content type="html">&lt;h2&gt;Step1 - 在本机安装Octopress&lt;/h2&gt;
 
 &lt;p&gt;首先，必须先在本机安装配置&lt;a href=&quot;http://git-scm.com/&quot;&gt;Git&lt;/a&gt;和&lt;a href=&quot;https://rvm.beginrescueend.com/rvm/install/&quot;&gt;Ruby&lt;/a&gt;,Octopress需要Ruby版本至少为1.9.2。你可以使用&lt;a href=&quot;http://rvm.beginrescueend.com/&quot;&gt;RVM&lt;/a&gt;或&lt;a href=&quot;https://github.com/sstephenson/rbenv&quot;&gt;rbenv&lt;/a&gt;安装ruby，安装方法见Octopress官方文档：&lt;a href=&quot;http://octopress.org/docs/setup/&quot;&gt;http://octopress.org/docs/setup/&lt;/a&gt;&lt;/p&gt;
@@ -3158,9 +3250,9 @@ Java Hashtable分析 &lt;a href=&quot;http://kantery.iteye.com/blog/441755&quot;
  
  <entry>
    <title>Seam的启动过程</title>
-   <link href="http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation"/>
+   <link href="http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation"/>
    <updated>2012-02-23T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/seam/2012/02/23/the-process-of-seam-initiation</id>
+   <id>http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation</id>
    <content type="html">&lt;p&gt;了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;listener&amp;gt;
     &amp;lt;listenerclass&amp;gt;org. jboss. seam. servlet. SeamListener&amp;lt;/listenerclass&amp;gt;
@@ -3395,9 +3487,9 @@ CREATE TABLE a1
  
  <entry>
    <title>JSF中EL表达式之this扩展</title>
-   <link href="http://blog.javachen.com/jsf/2012/02/14/this-expression-of-jsf-el"/>
+   <link href="http://blog.javachen.com/java/2012/02/14/this-expression-of-jsf-el"/>
    <updated>2012-02-14T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/jsf/2012/02/14/this-expression-of-jsf-el</id>
+   <id>http://blog.javachen.com/java/2012/02/14/this-expression-of-jsf-el</id>
    <content type="html">&lt;p&gt;本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;EL表达式this扩展&lt;/strong&gt;
@@ -3434,9 +3526,9 @@ CREATE TABLE a1
  
  <entry>
    <title>Ext读取xml文件生成动态表格和表单(续)</title>
-   <link href="http://blog.javachen.com/extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue"/>
+   <link href="http://blog.javachen.com/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue"/>
    <updated>2012-01-31T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/extjs/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
+   <id>http://blog.javachen.com/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</id>
    <content type="html">&lt;p&gt;很多人向我要《&lt;a href=&quot;http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi&quot; target=&quot;_blank&quot;&gt;Ext读取xml文件生成动态表格和表单&lt;/a&gt;》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。&lt;/p&gt;
 
 &lt;p&gt;《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
@@ -3712,9 +3804,9 @@ if (!Const.isEmpty(pksql)) {
  
  <entry>
    <title>Mondrian and OLAP</title>
-   <link href="http://blog.javachen.com/mondrian/2011/12/07/mondrian-and-olap"/>
+   <link href="http://blog.javachen.com/pentaho/2011/12/07/mondrian-and-olap"/>
    <updated>2011-12-07T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/mondrian/2011/12/07/mondrian-and-olap</id>
+   <id>http://blog.javachen.com/pentaho/2011/12/07/mondrian-and-olap</id>
    <content type="html">&lt;p&gt;Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;&lt;span style=&quot;color: #00ff00;&quot;&gt;Online Analytical Processing&lt;/span&gt;&lt;/strong&gt;
@@ -3742,9 +3834,9 @@ if (!Const.isEmpty(pksql)) {
  
  <entry>
    <title>XUL 用户界面语言介绍</title>
-   <link href="http://blog.javachen.com/xml/2011/11/25/xml-user-interface-language-introuction"/>
+   <link href="http://blog.javachen.com/javascript/2011/11/25/xml-user-interface-language-introuction"/>
    <updated>2011-11-25T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/xml/2011/11/25/xml-user-interface-language-introuction</id>
+   <id>http://blog.javachen.com/javascript/2011/11/25/xml-user-interface-language-introuction</id>
    <content type="html">&lt;p&gt;XUL[1]是英文“&lt;span style=&quot;color: #339966;&quot;&gt;XML User Interface Language&lt;/span&gt;”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。&lt;br /&gt;
 XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。&lt;br /&gt;
 使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。&lt;/p&gt;
@@ -3798,9 +3890,9 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
  
  <entry>
    <title>Ext读取xml文件生成动态表格和表单</title>
-   <link href="http://blog.javachen.com/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi"/>
+   <link href="http://blog.javachen.com/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi"/>
    <updated>2011-10-22T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi</id>
+   <id>http://blog.javachen.com/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi</id>
    <content type="html">&lt;p&gt;最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章&lt;/a&gt;
 获取弹出窗口url后的参数方法：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;// 获取url后的参数值

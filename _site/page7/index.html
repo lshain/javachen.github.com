@@ -69,16 +69,96 @@
   <div class="span9">
   
   
-  <section id="extjs20111022ext_readxml_in_bjsasc_wuzi">
+  <section id="javascript20111125xml-user-interface-language-introuction">
     <article>
       <header>
-      <h3><a href="/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
+      <h3><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h3>
       <div class="c9">
      		Author: JavaChen
      		&emsp;&emsp;
 		Categories：
 			
-			<a href="/categories.html#extjs">extjs</a>
+			<a href="/categories.html#javascript">javascript</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xul-ref">xul</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
+XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
+使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+
+<p><span style="color: #339966;"><strong>XUL元素</strong></span>
+XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
+基层元素：例如视窗、page、对话框、向导<br />
+Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
+排版:例如方框、网格、堆栈、叠<br />
+事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
+数据源:例如template、rule<br />
+其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
+一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
+现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
+
+<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
+Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
+
+<p><span style="color: #339966;"><strong>XUL应用</strong></span>
+虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
+Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
+
+<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
+可以选择 3 种方式来运行 XUL 应用程序：<br />
+1.使用基于 Mozilla 的浏览器进行简单测试<br />
+2.使用XULRunner<br />
+3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
+
+<p><strong><span style="color: #339966;">总结</span></strong>
+XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
+
+<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
+
+<p><li>
+1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+</li>
+<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+</li>
+<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<em>Page</a>
+</li>
+<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</em>%E6%95%99%E7%A8%8B/1-2<em>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</em>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
+</li>
+<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
+</li>
+<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
+</li>
+<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+</li></p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20111022ext_readxml_in_bjsasc_wuzi">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#javascript">javascript</a>
 			
 			
 		&emsp;&emsp;
@@ -88,7 +168,7 @@
 			
 			
 		&emsp;&emsp;
-		<a href='/extjs/2011/10/22/ext_readxml_in_bjsasc_wuzi#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
     <div class="content"><p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
@@ -810,217 +890,6 @@ function getInsertForm() {
     </article>
   </section>
   
-  
-  <section id="javascript20110811export-dhtmlxgrid-to-pdf-in-java">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#javascript">javascript</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#javascript-ref">javascript</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
-
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
-
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<img src="/files/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
-</div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();
-</pre></p>
-
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-    Element root;
-    PDFColumn[][] columns;
-    PDFRow[] rows;
-    double[] widths;
-    private Boolean header = false;
-    private Boolean footer = false;
-    private String profile = &quot;gray&quot;;
-    private double[] orientation = null;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
-    SAXReader saxReader = new SAXReader();
-
-    Document document = null;
-    try {
-        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
-    } catch (DocumentException e) {
-        e.printStackTrace();
-    }
-    root = document.getRootElement();
-
-    if ((root.attributeValue(&quot;header&quot;) != null)
-            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
-        header = true;
-    }
-    String footer_string = root.attributeValue(&quot;footer&quot;);
-    if ((footer_string != null)
-            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
-        footer = true;
-    }
-    String profile_string = root.attributeValue(&quot;profile&quot;);
-    if (profile_string != null) {
-        profile = profile_string;
-    }
-
-    String orientation_string = root.attributeValue(&quot;orientation&quot;);
-    if (orientation_string != null) {
-        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
-            orientation = A4.LANDSCAPE;
-        } else {
-            orientation = A4.PORTRAIT;
-        }
-    } else {
-        orientation = Letter.PORTRAIT;
-    }
-}
-
-public PDFColumn[][] getColumnsInfo() {
-    PDFColumn[] colLine = null;
-    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
-    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
-        columns = new PDFColumn[n1.size()][];
-        for (int i = 0; i &amp;lt; n1.size(); i++) {
-            Element cols = (Element) n1.get(i);
-            List n2 = cols.elements(&quot;column&quot;);
-            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
-                colLine = new PDFColumn[n2.size()];
-                for (int j = 0; j &amp;lt; n2.size(); j++) {
-                    Element col_xml = (Element) n2.get(j);
-                    PDFColumn col = new PDFColumn();
-                    col.parse(col_xml);
-                    colLine[j] = col;
-                }
-            }
-            columns[i] = colLine;
-        }
-    }
-    createWidthsArray();
-    optimizeColumns();
-    return columns;
-}
-    public PDFRow[] getGridContent() {
-    List nodes = root.elements(&quot;row&quot;);
-    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
-        rows = new PDFRow[nodes.size()];
-        for (int i = 0; i &amp;lt; nodes.size(); i++) {
-            rows[i] = new PDFRow();
-            rows[i].parse((Element) nodes.get(i));
-        }
-    }
-    return rows;
-
-}
-
-   *****
-</code></pre></div>
-<p>}
-</pre></p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
-
-public void parse(Element parent) {
-    List nodes = ((Element) parent).elements(&quot;cell&quot;);
-    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
-        cells = new String[nodes.size()];
-        for (int i = 0; i &amp;lt; nodes.size(); i++) {
-            cells[i] = ((Element) nodes.get(i)).getTextTrim();
-        }
-    }
-}
-
-public String[] getCells() {
-    return cells;
-}
-</code></pre></div>
-<p>}</p>
-
-<p>public class PDFColumn {</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
-    colName = parent.getText();
-    String width_string = parent.attributeValue(&quot;width&quot;);
-    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
-        width = Integer.parseInt(width_string);
-    }
-    type = parent.attributeValue(&quot;type&quot;);
-    align = parent.attributeValue(&quot;align&quot;);
-    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
-    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
-        colspan = Integer.parseInt(colspan_string);
-    }
-    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
-    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
-        rowspan= Integer.parseInt(rowspan_string);
-    }
-}
-</code></pre></div>
-<p>}
-</pre></p>
-
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<img src="/files/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
-</div></p>
-
-<h2>结论：</h2>
-
-<ul>
-<li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
-<li>2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。</li>
-<li>3.导出的pdf为多页显示，每页有表头</li>
-<li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
-</ul>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page6'>&larr; Previous</a></li>
@@ -1042,6 +911,9 @@ public String[] getCells() {
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
       <li class="post">
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+      <li class="post">
         <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
       </li>
       <li class="post">
@@ -1057,7 +929,7 @@ public String[] getCells() {
         <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
       </li>
       <li class="post">
-        <a href="/hadoop/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
@@ -1067,9 +939,6 @@ public String[] getCells() {
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
       </li>
     </ul>
     </section>
@@ -1118,55 +987,39 @@ public String[] getCells() {
     	</a></li>
      
     	<li><a href="/categories.html#javascript-ref">
-    		javascript <span>4</span>
+    		javascript <span>7</span>
     	</a></li>
      
     	<li><a href="/categories.html#pentaho-ref">
-    		pentaho <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#extjs-ref">
-    		extjs <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#xml-ref">
-    		xml <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#mondrian-ref">
-    		mondrian <span>1</span>
+    		pentaho <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#kettle-ref">
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#jsf-ref">
-    		jsf <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#seam-ref">
-    		seam <span>1</span>
-    	</a></li>
-     
     	<li><a href="/categories.html#java-ref">
-    		java <span>1</span>
+    		java <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#cassandra-ref">
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#github-ref">
-    		github <span>1</span>
-    	</a></li>
-     
     	<li><a href="/categories.html#work-ref">
-    		work <span>1</span>
+    		work <span>2</span>
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>12</span>
+    		hadoop <span>11</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>1</span>
     	</a></li>
     
   

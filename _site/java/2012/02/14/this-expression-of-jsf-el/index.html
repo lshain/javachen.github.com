@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>JSF中EL表达式之this扩展 - JavaChen Blog</title>
+    <meta name="keywords" content="jsf, el" />
+    <meta name="description" content="JSF中EL表达式之this扩展" />
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="ujianVerification" content="f8b60286538bf86567069598d8a5d6cc" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/sitemap.xml">Sitemap</a></li>
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/atom.xml">Feed</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  	<h2>JSF中EL表达式之this扩展 </h2>
+	<div class="c9">
+		Categories：
+			
+			<a href="/categories.html#java">java</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#jsf-ref">jsf</a>
+			
+			,
+			
+			
+			<a href="/tags.html#el-ref">el</a>
+			
+			
+		&emsp;&emsp;&emsp;&emsp;
+		Time：<time date="2012-02-14 00:00:00 +0800">2012-02-14 00:02</time>
+		&emsp;&emsp;&emsp;&emsp;
+		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue" title="Ext读取xml文件生成动态表格和表单(续)">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/kettle/2012/02/17/step-error-handling-in-kettle" title="kettle中定义错误处理">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    
+    <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
+
+<p><strong>EL表达式this扩展</strong>
+在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
+1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
+2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
+3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
+
+<p>我们需要一种新的功能，实现：
+1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
+2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
+3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
+4.兼容标准的EL表达式</p>
+
+<p>我们将上述功能处理为“this”表达式。其功能模型为：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
+</div>
+页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
+&lt;!--more--&gt;</p>
+
+<p><strong>动作类和页面的一致性保证</strong>
+为了有效实现this表达式，我们实现如下映射规则：
+1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
+2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
+
+<p><strong>“this”EL表达式算法</strong>
+算法流程如下图：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
+</div></p>
+
+    
+    <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/java/2012/02/14/this-expression-of-jsf-el'>JavaChen Blog</a>-
+		<br/>
+		<br/>
+		<!-- JiaThis Button BEGIN -->
+		<div class="jiathis_style_32x32">
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_tqq"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_twitter"></a>
+		<a class="jiathis_button_fb"></a>
+		<a class="jiathis_button_googleplus"></a>
+		<a class="jiathis_button_translate"></a>
+		<a class="jiathis_button_delicious"></a>
+		<a class="jiathis_button_sdonote"></a>
+		<a class="jiathis_button_ydnote"></a>
+		<a class="jiathis_button_qingbiji"></a>
+		<a class="jiathis_button_fav"></a>
+		<a class="jiathis_button_ishare"></a>
+		<a class="jiathis_button_copy"></a>
+		<a class="jiathis_button_email"></a>
+		<a href="http://www.jiathis.com/share?uid=1709061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+		<a class="jiathis_counter_style"></a>
+		</div>
+		<script type="text/javascript" >
+		var jiathis_config={
+			data_track_clickback:true,
+			summary:"",
+			hideMore:false
+		}
+		</script>
+		<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1709061" charset="utf-8"></script>
+		<!-- JiaThis Button END -->
+
+
+
+		<!-- UJian Button BEGIN -->
+		<div class="ujian-hook"></div>
+		<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1709061"></script>
+		<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+		<!-- UJian Button END -->
+	</div>
+	
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue" title="Ext读取xml文件生成动态表格和表单(续)">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/kettle/2012/02/17/step-error-handling-in-kettle" title="kettle中定义错误处理">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+  </div>
+  <div class="span4">
+  <section>
+  
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#jsf-ref">jsf <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#el-ref">el <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+  
+  </section>  
+  
+  <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+    
+    </ul>
+  </section>
+  
+  <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </div>
+</div>
+
+<div id="comment">
+	<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+</div>
+
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&btn=4&fade=1&uid=1709061"></script>
+<!-- UJian Button END -->
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: JSF中EL表达式之this扩展
-category: jsf
+category: java
 tags: [jsf, el]
 keywords: jsf, el
 description: JSF中EL表达式之this扩展
