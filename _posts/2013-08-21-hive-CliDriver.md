@@ -3,8 +3,8 @@ layout: post
 title:  hive cli的入口类
 date: 2013-08-21 13:14
 category: hive
-tags: [hadoop, hive, hbase, mapreduce]
-keywords: hadoop, hive, mapreduce
+tags: [hadoop, hive]
+keywords: hadoop, hive
 description: 分析hive cli入口类逻辑
 ---
 
