@@ -69,6 +69,450 @@
   <div class="span9">
   
   
+  <section id="hadoop20130801remote-debug-hadoop">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#hadoop">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/hadoop/2013/08/01/remote-debug-hadoop#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
+
+<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
+
+<h2>JPDA 简介</h2>
+
+<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
+
+<p>更详细的介绍，您可以参考<a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></p>
+
+<h2>JDWP 设置</h2>
+
+<p>JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
+</code></pre></div>
+<p>各参数的含义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug
+启用调试特性
+-Xrunjdwp
+启用JDWP实现，包含若干子选项：
+transport=dt_socket
+JPDA front-end和back-end之间的传输方法。dt_socket表示使用套接字传输。
+address=8000
+JVM在8000端口上监听请求，这个设定为一个不冲突的端口即可。
+server=y
+y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试器。
+suspend=y
+y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
+</code></pre></div>
+<h2>配置hbase远程调试</h2>
+
+<p>打开<code>/etc/hbase/conf/hbase-env.sh</code>，找到以下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
+# export HBASE_MASTER_OPTS=&quot;$HBASE_MASTER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8070&quot;
+# export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
+# export HBASE_THRIFT_OPTS=&quot;$HBASE_THRIFT_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8072&quot;
+# export HBASE_ZOOKEEPER_OPTS=&quot;$HBASE_ZOOKEEPER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8073&quot;
+</code></pre></div>
+<p>如果想远程调式hbase-master进程，请去掉对<code>HBASE_MASTER_OPTS</code>的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。</p>
+
+<hr>
+
+<h3>注意（20130817更新）：</h3>
+
+<p>如果启动hbase时提示<code>check your java command line for duplicate jdwp options</code>，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。</p>
+
+<p>例如，如果你想调试regionserver，请把下面代码加到<code>elif [ &quot;$COMMAND&quot; = &quot;regionserver&quot; ] ; then</code>中去：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
+</code></pre></div>
+<h2>配置hive远程调试</h2>
+
+<p>停止hive-server2进程，然后以下面命令启动hive-server2</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver --debug
+</code></pre></div>
+<p>进程会监听在8000端口等待调试连接。如果想更改监听端口，可以修改配置文件:<code>${HIVE_HOME}bin/ext/debug.sh</code></p>
+
+<p>如果Hadoop是0.23以上版本，debug模式启动Cli会报错：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ERROR: Cannot load this JVM TI agent twice, check your java command line for duplicate jdwp options.
+</code></pre></div>
+<p>打开<code>${Hadoop_HOME}/bin/hadoop</code>，注释掉以下代码</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
+HADOOP_OPTS=&quot;$HADOOP_OPTS $HADOOP_CLIENT_OPTS&quot;
+</code></pre></div>
+<h2>配置yarn远程调试</h2>
+
+<p>请在以下代码添加调试参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if [ &quot;$COMMAND&quot; = &quot;classpath&quot; ] ; then
+if $cygwin; then
+CLASSPATH=`cygpath -p -w &quot;$CLASSPATH&quot;`
+fi
+echo $CLASSPATH
+exit
+elif [ &quot;$COMMAND&quot; = &quot;rmadmin&quot; ] ; then
+CLASS=&#39;org.apache.hadoop.yarn.client.RMAdmin&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;application&quot; ] ; then
+class=&quot;org&quot;.apache.hadoop.yarn.client.cli.ApplicationCLI
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;node&quot; ] ; then
+class=&quot;org&quot;.apache.hadoop.yarn.client.cli.NodeCLI
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/rm-config/log4j.properties
+CLASS=&#39;org.apache.hadoop.yarn.server.resourcemanager.ResourceManager&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_RESOURCEMANAGER_OPTS&quot;
+if [ &quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot;&quot;m&quot;
+fi
+elif [ &quot;$COMMAND&quot; = &quot;nodemanager&quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/nm-config/log4j.properties
+CLASS=&#39;org.apache.hadoop.yarn.server.nodemanager.NodeManager&#39;
+YARN_OPTS=&quot;$YARN_OPTS -server $YARN_NODEMANAGER_OPTS&quot;
+if [ &quot;$YARN_NODEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_NODEMANAGER_HEAPSIZE&quot;&quot;m&quot;
+fi
+elif [ &quot;$COMMAND&quot; = &quot;proxyserver&quot; ] ; then
+CLASS=&#39;org.apache.hadoop.yarn.server.webproxy.WebAppProxyServer&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_PROXYSERVER_OPTS&quot;
+if [ &quot;$YARN_PROXYSERVER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_PROXYSERVER_HEAPSIZE&quot;&quot;m&quot;
+fi
+</code></pre></div>
+<p>例如：
+如果你想调试resourcemanager代码，请在<code>elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ]</code> 分支内添加如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">YARN_RESOURCEMANAGER_OPTS=&quot;$YARN_RESOURCEMANAGER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6001&quot;
+</code></pre></div>
+<p>其他进程，参照上面即可。</p>
+
+<p>注意：端口不要冲突。</p>
+
+<h2>配置mapreduce远程调试</h2>
+
+<p>如果想要调试Map 或Reduce Task，则修改<code>bin/hadoop</code>已经没用了，因为<code>bin/hadoop</code>中没有Map Task的启动参数。</p>
+
+<p>此时需要修改mapred-site.xml</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt; 
+    &lt;name&gt;mapred.child.java.opts&lt;/name&gt; 
+    &lt;value&gt;-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000&lt;/value&gt; 
+&lt;/property
+</code></pre></div>
+<p>在一个TaskTracker上，只能启动一个Map Task或一个Reduce Task，否则启动时会有端口冲突。因此要修改所有TaskTracker上的<code>conf/hadoop-site.xml</code>中的配置项：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+    &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+    &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;
+    &lt;value&gt;0&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<h2>在Eclipse中使用方法：</h2>
+
+<ol>
+<li><p>打开eclipse，找到<code>Debug Configurations...</code>，添加一个Remout Java Application:</p></li>
+<li><p>在source中可以关联到hive的源代码,然后，单击Debug按钮进入远程debug模式。</p></li>
+<li><p>编写个jdbc的测试类，运行代码，这时候因为hive-server2端没有设置端点，故程序可以正常运行直到结束。</p></li>
+<li><p>在hive代码中设置一个断点，如<code>ExecDriver.java</code>的<code>execute</code>方法中设置断点，然后再运行jdbc测试类。</p></li>
+</ol>
+
+<h2>参考文章</h2>
+
+<ol>
+<li><a href="http://zhangjie.me/eclipse-debug-hadoop/">在Eclipse中远程调试Hadoop</a></li>
+<li><a href="http://long-xie.iteye.com/blog/1779072">hive远程调试</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></li>
+</ol>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130720install-rhadoop">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#hadoop">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#R-ref">R</a>
+			
+			,
+			
+			
+			<a href="/tags.html#rhadoop-ref">rhadoop</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/hadoop/2013/07/20/install-rhadoop#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>1. R Language Install</h2>
+
+<h3>安装相关依赖</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+</code></pre></div>
+<h3>编译安装：R-3.0.1</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
+./configure
+make 
+make install #R运行
+export HADOOP_CMD=/usr/bin/hadoop
+</code></pre></div>
+<h3>排错</h3>
+
+<p>1、错误1</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: --with-readline=yes (default) 
+</code></pre></div>
+<p>安装readline </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install readline*
+</code></pre></div>
+<p>2、错误2</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: No F77 compiler found 
+</code></pre></div>
+<p>安装gfortran</p>
+
+<p>3、错误3</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: –with-x=yes (default) and X11 headers/libs are not available 
+</code></pre></div>
+<p>安装</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install libXt*
+</code></pre></div>
+<p>4、错误4</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check 
+</code></pre></div>
+<p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
+
+<h3>验证是否安装成功</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
+R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R是自由软件，不带任何担保。
+在某些条件下你可以将其自由散布。
+用&#39;license()&#39;或&#39;licence()&#39;来看散布的详细条件。
+
+R是个合作计划，有许多人为之做出了贡献.
+用&#39;contributors()&#39;来看合作者的详细情况
+用&#39;citation()&#39;会告诉你如何在出版物中正确地引用R或R程序包。
+
+用&#39;demo()&#39;来看一些示范程序，用&#39;help()&#39;来阅读在线帮助文件，或
+用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
+用&#39;q()&#39;退出R.
+</code></pre></div>
+<h2>2. 安装Rhadoop</h2>
+
+<h3>安装rhdfs，rmr2</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
+R CMD javareconf
+R CMD INSTALL &#39;plyr_1.8.tar.gz&#39;
+R CMD INSTALL &#39;stringr_0.6.2.tar.gz&#39;
+R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
+R CMD INSTALL &#39;digest_0.6.3.tar.gz&#39;
+R CMD INSTALL &#39;functional_0.4.tar.gz&#39;
+R CMD INSTALL &#39;iterators_1.0.6.tar.gz&#39;
+R CMD INSTALL &#39;itertools_0.1-1.tar.gz&#39;
+R CMD INSTALL &#39;Rcpp_0.10.3.tar.gz&#39;
+R CMD INSTALL &#39;rJava_0.9-4.tar.gz&#39;
+R CMD INSTALL &#39;RJSONIO_1.0-3.tar.gz&#39;
+R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
+R CMD INSTALL &#39;rhdfs_1.0.5.tar.gz&#39;
+R CMD INSTALL &#39;rmr2_2.2.0.tar.gz&#39;
+</code></pre></div>
+<p>R library(rhdfs)检查是否能正常工作</p>
+
+<h4>验证测试</h4>
+
+<p>Rmr测试命令： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt; train.mr&lt;-mapreduce( + train.hdfs, + map = function(k, v) { + keyval(k,v$item) + } + ,reduce=function(k,v){ + m&lt;-merge(v,v) + keyval(m$x,m$y) + } + )
+</code></pre></div>
+<p>出现如下错误：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">packageJobJar: [/tmp/RtmpCuhs7d/rmr-local-env18916b6f86b3, /tmp/RtmpCuhs7d/rmr-global-env18913824c681, /tmp/RtmpCuhs7d/rmr-streaming-map18912d6c2b1c, /tmp/RtmpCuhs7d/rmr-streaming-reduce1891179bb645, /tmp/hadoop-root/hadoop-unjar4575094085541826184/] [] /tmp/streamjob2910108622786868147.jar tmpDir=null 13/06/05 18:22:28
+WARN mapred.JobClient: Use GenericOptionsParser for parsing the arguments. Applications should implement Tool for the same. 13/06/05 18:22:28 INFO mapred.FileInputFormat: Total input paths to process : 1 13/06/05 18:22:29
+INFO streaming.StreamJob: getLocalDirs(): [/tmp/hadoop-root/mapred/local] 13/06/05 18:22:29 INFO streaming.StreamJob: Running job: job_201306050931_0004 13/06/05 18:22:29
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:29
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:29 INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:30 
+INFO streaming.StreamJob:  map 0%  reduce 0% 13/06/05 18:22:56
+INFO streaming.StreamJob:  map 100%  reduce 100% 13/06/05 18:22:56
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:56
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:56
+INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:56 
+ERROR streaming.StreamJob: Job not successful. Error: NA 13/06/05 18:22:56
+INFO streaming.StreamJob: killJob... Streaming Command Failed! Error in mr(map = map, reduce = reduce, combine = combine, vectorized.reduce,  :   hadoop streaming failed with error code 1
+</code></pre></div>
+<p>错误解决方法： 通过查看日志，hadoop没有在<code>/usr/bin</code>下找到Rscript,于是从R的安装目录<code>/usr/local/bin</code>下做R和Rscript的符号链接到<code>/usr/bin</code>下，再次执行即可解决次错。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#ln -s /usr/loca/bin/R  /usr/bin
+#ln -s /usr/local/bin/Rscript  /usr/bin
+</code></pre></div>
+<h2>3. 安装rhbase</h2>
+
+<h3>安装依赖</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install boost*
+#yum install openssl*
+</code></pre></div>
+<h3>安装thrift</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#tar -zxvf thrift-0.9.0.tar.gz
+#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+#cd thrift-0.9.0
+#./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
+#make
+#make install
+</code></pre></div>
+<p>如果报错：error: &quot;Error: libcrypto required.&quot;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install openssl*
+</code></pre></div>
+<p>如果报错：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">src/thrift/qt/moc_TQTcpServer.cpp:14:2: error: #error &quot;This file was generated using the moc from 4.8.1. It&quot;
+src/thrift/qt/moc_TQTcpServer.cpp:15:2: error: #error &quot;cannot be used with the include files from this version of Qt.&quot;
+src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &quot;(The moc has changed too much.)&quot;
+</code></pre></div>
+<p>则运行下面命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+</code></pre></div>
+<h3>配置PKG<em>CONFIG</em>PATH</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
+pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
+</code></pre></div>
+<p>启动hbase：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/usr/lib/hbase/bin/hbase-daemon.sh  start  thrift 
+</code></pre></div>
+<p>使用jps查看thrift进程</p>
+
+<h3>安装rhbase</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">R CMD INSTALL &#39;rhbase_1.1.1.tar.gz&#39;
+</code></pre></div>
+<h3>验证并测试</h3>
+
+<p>在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop27 hadoop]# R
+R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+Natural language support but running in an English locale
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+&gt; library(rhdfs)
+Loading required package: rJava
+HADOOP_CMD=/usr/bin/hadoop
+Be sure to run hdfs.init()
+&gt; library(rmr2)
+Loading required package: Rcpp
+Loading required package: RJSONIO
+Loading required package: digest
+Loading required package: functional
+Loading required package: stringr
+Loading required package: plyr
+Loading required package: reshape2
+&gt; library(rhbase)
+&gt;
+</code></pre></div>
+<h2>4. 装RHive</h2>
+
+<h3>环境变量</h3>
+
+<p>设置环境变量 <code>vim /etc/profile</code>,末行添加如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_CMD=/usr/bin/hadoop
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+export HADOOP_STREAMING=/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.0.0-mr1-cdh4.2.1.jar
+export HADOOP_HOME=/usr/lib/hadoop
+export RHIVE_DATA=/hadoop/dfs/rhive/data
+export HIVE_HOME=/usr/lib/hive
+</code></pre></div>
+<h3>安装Rserve：</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL &#39;Rserve_1.7-1.tar.gz&#39;
+</code></pre></div>
+<p>在安装Rsever用户下，创建一目录，并创建Rserv.conf文件，写入``remote enable&#39;&#39;保存并退出。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#cd /usr/local/lib64/R/
+#echo remote enable &gt; Rserv.conf
+</code></pre></div>
+<p>启动Rserve：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD Rserve --RS-conf /usr/local/lib64/R/Rserv.conf
+</code></pre></div>
+<p>检查Rserve启动是否正常：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#telnet localhost 6311
+</code></pre></div>
+<p>显示 Rsrv0103QAP1 则表示连接成功</p>
+
+<h3>安装RHive</h3>
+
+<p>创建数据目录：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL RHive_0.0-7.tar.gz
+#cd /usr/local/lib64/R/
+mkdir -p rhive/data
+</code></pre></div>
+<p>在上传rhive_udf.jar到hdfs上：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop fs -mkdir /rhive/lib
+cd /usr/local/lib64/R/library/RHive/java
+hadoop fs -put rhive_udf.jar /rhive/lib
+hadoop fs -chmod a+rw /rhive/lib/rhive_udf.jar
+cd /usr/lib/hadoop
+ln -s /etc/hadoop/conf conf
+</code></pre></div>
+<p>测试RHive安装是否成功：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">R
+library（RHive）
+rhive.connect(&#39;192.168.0.27&#39;)【hive的地址】
+rhive.env()
+</code></pre></div></div>
+    </article>
+  </section>
+  
+  
   <section id="hadoop20130624install-cdh-by-cloudera-manager">
     <article>
       <header>
@@ -298,958 +742,6 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
     </article>
   </section>
   
-  
-  <section id="hadoop20130406install-cloudera-cdh-by-yum">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#hadoop">hadoop</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#impala-ref">impala</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cloudera-ref">cloudera</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/hadoop/2013/04/06/install-cloudera-cdh-by-yum#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
-
-<h2>0.环境准备</h2>
-
-<p>1.设置hosts
-临时设置hostname，以node1为例</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"> sudo hostname node1
-</code></pre></div>
-<p>确保<code>/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code>/etc/hosts</code>不是必要的，却是最佳实践。
-确保<code>/etc/sysconfig/network</code>中包含hostname=node1
-检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">host -v -t A `hostname` 
-</code></pre></div>
-<p>hadoop的配置文件<code>core-site.xml</code>、<code>mapred-site.xml</code>和<code>yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
-
-<p>2.关闭防火墙</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">setenforce 0
-vim /etc/sysconfig/selinux #修改SELINUX=disabled
-</code></pre></div>
-<p>3.清空iptables <code>iptables -F</code></p>
-
-<p>4.检查每个节点上的<code>/tmp</code>目录权限是否为<code>1777</code>，如果不是请修改。</p>
-
-<p>5.设置时钟同步服务</p>
-
-<p>在所有节点安装ntp</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install ntp
-</code></pre></div>
-<p>设置开机启动</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig ntpd on
-</code></pre></div>
-<p>在所有节点启动ntp</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/ntpd start
-</code></pre></div>
-<p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">server $LOCAL_SERVER_IP OR HOSTNAME
-</code></pre></div>
-<h2>1. 安装jdk</h2>
-
-<p>检查jdk版本</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
-</code></pre></div>
-<p>如果其版本低于v1.6 update 31，则将其卸载</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -qa | grep java
-yum remove {java-1.*}
-</code></pre></div>
-<p>验证没人的jdk是否被卸载</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">which java
-</code></pre></div>
-<p>安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：<a href="http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR">这里</a></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install jdk -y
-</code></pre></div>
-<p>创建符号连接</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -s XXXXX/jdk1.6.0_31 /usr/java/default
-ln -s /usr/java/default/bin/java /usr/bin/java
-</code></pre></div>
-<p>设置环境变量:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;/root/.bashrc
-echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; /root/.bashrc
-source /root/.bashrc
-</code></pre></div>
-<p>验证版本</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
-</code></pre></div>
-<p>你将看到以下输出：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java version &quot;1.6.0_31&quot;
-Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
-Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
-</code></pre></div>
-<p>检查环境变量中是否有设置<code>JAVA_HOME</code></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo env | grep JAVA_HOME
-</code></pre></div>
-<p>如果env中没有<code>JAVA_HOM</code>E变量，则修改<code>/etc/sudoers</code>文件</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vi /etc/sudoers
-Defaults env_keep+=JAVA_HOME
-</code></pre></div>
-<h2>2. 设置yum源</h2>
-
-<p>从<a href="http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz">这里</a> 下载压缩包解压并设置本地或ftp yum源，可以参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></p>
-
-<h2>3. 安装HDFS</h2>
-
-<h3>在NameNode节点yum安装</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
-yum install hadoop-hdfs-namenode
-yum install hadoop-hdfs-secondarynamenode
-yum install hadoop-yarn-resourcemanager
-yum install hadoop-mapreduce-historyserver
-</code></pre></div>
-<h3>在DataNode节点yum安装</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
-yum install hadoop-hdfs-datanode
-yum install hadoop-yarn-nodemanager
-yum install hadoop-mapreduce
-yum install zookeeper-server
-yum install hadoop-httpfs
-yum install hadoop-debuginfo
-</code></pre></div>
-<h2>4. 配置hadoop</h2>
-
-<h3>自定义hadoop配置文件</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
-sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
-</code></pre></div>
-<p>hadoop默认使用<code>/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code>/etc/hadoop/conf</code>会软连接到<code>/etc/hadoop/conf.my_cluster</code>目录</p>
-
-<h3>修改配置文件</h3>
-
-<p>进入/etc/hadoop/conf编辑配置文件。</p>
-
-<p>修改core-site.xml配置:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.defaultFS&lt;/name&gt;
-      &lt;value&gt;hdfs://node1&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.trash.interval&lt;/name&gt;
-      &lt;value&gt;10080&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
-      &lt;value&gt;10080&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;io.bytes.per.checksum&lt;/name&gt;
-      &lt;value&gt;4096&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
-</code></pre></div>
-<p>修改hdfs-site.xml:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-      &lt;name&gt;dfs.replication&lt;/name&gt;
-      &lt;value&gt;3&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
-      &lt;value&gt;/opt/data/hadoop&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;dfs.block.size&lt;/name&gt;
-        &lt;value&gt;268435456&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;dfs.permissions.superusergroup&lt;/name&gt;
-      &lt;value&gt;hadoop&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;dfs.namenode.handler.count&lt;/name&gt;
-      &lt;value&gt;100&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;dfs.datanode.handler.count&lt;/name&gt;
-      &lt;value&gt;100&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;dfs.datanode.balance.bandwidthPerSec&lt;/name&gt;
-      &lt;value&gt;1048576&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
-        &lt;value&gt;node1:50070&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
-        &lt;value&gt;node1:50090&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
-        &lt;value&gt;true&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
-</code></pre></div>
-<p>修改master和slaves文件</p>
-
-<p>注意：</p>
-
-<p>The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
-To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
-
-<h3>配置NameNode HA</h3>
-
-<p>请参考<a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">Introduction to HDFS High Availability</a></p>
-
-<h3>配置Secondary NameNode</h3>
-
-<p>在hdfs-site.xml中可以配置以下参数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">dfs.namenode.checkpoint.check.period
-dfs.namenode.checkpoint.txns
-dfs.namenode.checkpoint.dir
-dfs.namenode.checkpoint.edits.dir
-dfs.namenode.num.checkpoints.retained
-</code></pre></div>
-<h4>多个secondarynamenode的配置</h4>
-
-<p>设置多个secondarynamenode，请参考<a href="http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/">multi-host-secondarynamenode-configuration</a>.</p>
-
-<h3>文件路径配置清单</h3>
-
-<p>在hadoop中默认的文件路径以及权限要求如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">目录                          所有者       权限      默认路径
-hadoop.tmp.dir                  hdfs:hdfs   drwx------  /var/hadoop
-dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
-dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
-dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
-yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
-yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
-yarn.nodemanager.remote-app-log-dir                     /tmp/logs
-</code></pre></div>
-<p>我的配置如下:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop.tmp.dir                  /opt/data/hadoop
-dfs.namenode.name.dir               ${hadoop.tmp.dir}/dfs/name
-dfs.datanode.data.dir               ${hadoop.tmp.dir}/dfs/data
-dfs.namenode.checkpoint.dir         ${hadoop.tmp.dir}/dfs/namesecondary
-yarn.nodemanager.local-dirs         /opt/data/yarn/local
-yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
-yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
-</code></pre></div>
-<p>在hadoop中<code>dfs.permissions.superusergroup</code>默认为hdfs，我的<code>hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
-
-<h3>配置CDH4组件端口</h3>
-
-<p>请参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html">Configuring Ports for CDH4</a></p>
-
-<h3>创建数据目录</h3>
-
-<p>在namenode节点创建name目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/name
-chown -R hdfs:hadoop /opt/data/hadoop/dfs/name
-chmod 700 /opt/data/hadoop/dfs/name
-</code></pre></div>
-<p>在所有datanode节点创建data目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/data
-chown -R hdfs:hadoop /opt/data/hadoop/dfs/data
-chmod 700 /opt/data/hadoop/dfs/data
-</code></pre></div>
-<p>在secondarynode节点创建namesecondary目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/namesecondary
-chown -R hdfs:hadoop /opt/data/hadoop/dfs/namesecondary
-chmod 700 /opt/data/hadoop/dfs/namesecondary
-</code></pre></div>
-<p>在所有datanode节点创建yarn的local目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/yarn/local
-chown -R yarn:yarn /opt/data/hadoop/yarn/local
-chmod 700 /opt/data/hadoop/yarn/local
-</code></pre></div>
-<h3>同步配置文件到整个集群</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
-</code></pre></div>
-<h3>格式化NameNode</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hdfs namenode -format
-</code></pre></div>
-<h3>定期检查datanode状态</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#!/bin/bash
-if ! jps | grep -q DataNode ; then
- echo ERROR: datanode not up
-fi
-</code></pre></div>
-<h3>在每个节点启动hdfs</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
-</code></pre></div>
-<h3>验证测试</h3>
-
-<ul>
-<li>打开浏览器访问：http://node1:50070 </li>
-</ul>
-
-<h2>5. 安装YARN</h2>
-
-<p>先在一台机器上配置好，然后在做同步。</p>
-
-<p>修改mapred-site.xml文件:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-            &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
-            &lt;value&gt;yarn&lt;/value&gt;
-    &lt;/property&gt;
-      &lt;property&gt;
-            &lt;name&gt;mapreduce.jobtracker.staging.root.dir&lt;/name&gt;
-            &lt;value&gt;/user&lt;/value&gt;
-      &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
-        &lt;value&gt;node1:10020&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
-        &lt;value&gt;node1:19888&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-            &lt;name&gt;mapred.child.java.opts&lt;/name&gt;
-            &lt;value&gt;-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.io.sort.factor&lt;/name&gt;
-      &lt;value&gt;100&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.io.sort.mb&lt;/name&gt;
-      &lt;value&gt;200&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.reduce.shuffle.parallelcopies&lt;/name&gt;
-      &lt;value&gt;16&lt;/value&gt;
-       &lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.timeout&lt;/name&gt;
-      &lt;value&gt;1800000&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.tasktracker.map.tasks.maximum&lt;/name&gt;
-      &lt;value&gt;4&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.tasktracker.reduce.tasks.maximum&lt;/name&gt;
-      &lt;value&gt;2&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
-</code></pre></div>
-<p>修改yarn-site.xml文件:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
-        &lt;value&gt;node1:8031&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
-        &lt;value&gt;node1:8032&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
-        &lt;value&gt;node1:8030&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
-        &lt;value&gt;node1:8033&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
-        &lt;value&gt;node1:8088&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
-        &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
-        &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.log-aggregation-enable&lt;/name&gt;
-        &lt;value&gt;true&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.application.classpath&lt;/name&gt;
-        &lt;value&gt;
-        $HADOOP_CONF_DIR,
-        $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
-        $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
-        $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
-        $YARN_HOME/*,$YARN_HOME/lib/*
-        &lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
-        &lt;value&gt;/opt/hadoop/yarn/local&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
-        &lt;value&gt;/var/log/hadoop-yarn/logs&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
-        &lt;value&gt;/var/log/hadoop-yarn/apps&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
-</code></pre></div>
-<h3>HDFS创建临时目录</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /tmp
-sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
-</code></pre></div>
-<h3>创建日志目录</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/history
-sudo -u hdfs hadoop fs -chmod 1777 /user/history
-sudo -u hdfs hadoop fs -chown yarn /user/history
-sudo -u hdfs hadoop fs -mkdir /user/history/done
-sudo -u hdfs hadoop fs -chmod 777 /user/history/done
-sudo -u hdfs hadoop fs -chown yarn /user/history/done
-sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
-sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
-</code></pre></div>
-<h3>验证hdfs结构是否正确</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
-drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
-drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred             0 2012-05-31 15:31 /var/log/hadoop-yarn
-</code></pre></div>
-<h3>启动mapred-historyserver</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
-</code></pre></div>
-<h3>在每个节点启动YARN</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
-</code></pre></div>
-<h3>验证</h3>
-
-<ul>
-<li>打开浏览器：http://node1:8088/</li>
-<li>运行测试程序</li>
-</ul>
-
-<h3>为每个MapReduce用户创建主目录</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
-sudo -u hdfs hadoop fs -chown $USER /user/$USER
-</code></pre></div>
-<h3>Set HADOOP<em>MAPRED</em>HOME</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
-</code></pre></div>
-<h3>设置开机启动</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo chkconfig hadoop-hdfs-namenode on
-sudo chkconfig hadoop-hdfs-datanode on
-sudo chkconfig hadoop-hdfs-secondarynamenode on
-sudo chkconfig hadoop-yarn-resourcemanager on
-sudo chkconfig hadoop-yarn-nodemanager on
-sudo chkconfig hadoop-mapreduce-historyserver on
-sudo chkconfig hbase-master on
-sudo chkconfig hbase-regionserver on
-sudo chkconfig hive-metastore  on
-sudo chkconfig hive-server2 on
-sudo chkconfig zookeeper-server on
-sudo chkconfig hadoop-httpfs on
-</code></pre></div>
-<h2>6. 安装Zookeeper</h2>
-
-<p>安装zookeeper</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install zookeeper*
-</code></pre></div>
-<p>设置crontab</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
-15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
-/usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
-/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
-org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
-</code></pre></div>
-<p>在每个需要安装zookeeper的节点上创建zookeeper的目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/zookeeper
-chown -R zookeeper:zookeeper /opt/data/zookeeper
-</code></pre></div>
-<p>设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tickTime=2000
-initLimit=10
-syncLimit=5
-dataDir=/opt/data/zookeeper
-clientPort=2181
-server.1=node1:2888:3888
-server.2=node2:2888:3888
-server.3=node3:2888:3888
-</code></pre></div>
-<p>在每个节点上初始化并启动zookeeper，注意修改n值</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">service zookeeper-server init --myid=n
-service zookeeper-server restart
-</code></pre></div>
-<h2>7. 安装HBase</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install hbase*
-</code></pre></div>
-<h3>在hdfs中创建/hbase</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /hbase
-sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
-</code></pre></div>
-<h3>设置crontab：</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
-* 10 * * * cd /var/log/hbase/; rm -rf\
-`ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
-</code></pre></div>
-<h3>修改配置文件并同步到其他机器：</h3>
-
-<p>修改hbase-site.xml文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.distributed&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.rootdir&lt;/name&gt;
-    &lt;value&gt;hdfs://node1:8020/hbase&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-    &lt;value&gt;/opt/data/hbase&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-    &lt;value&gt;node1,node2,node3&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.hregion.max.filesize&lt;/name&gt;
-    &lt;value&gt;536870912&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hregion.memstore.flush.size&lt;/name&gt;
-    &lt;value&gt;67108864&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.regionserver.lease.period&lt;/name&gt;
-    &lt;value&gt;600000&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.client.retries.number&lt;/name&gt;
-    &lt;value&gt;3&lt;/value&gt;
-  &lt;/property&gt; 
-  &lt;property&gt;
-    &lt;name&gt;hbase.regionserver.handler.count&lt;/name&gt;
-    &lt;value&gt;100&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.zookeeper.property.maxClientCnxns&lt;/name&gt;
-    &lt;value&gt;2000&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hfile.block.cache.size&lt;/name&gt;
-    &lt;value&gt;0.1&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.regions.slop&lt;/name&gt;
-    &lt;value&gt;0&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hstore.compactionThreshold&lt;/name&gt;
-    &lt;value&gt;10&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hstore.blockingStoreFiles&lt;/name&gt;
-    &lt;value&gt;30&lt;/value&gt;
-  &lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<h3>修改regionserver文件</h3>
-
-<h3>启动HBase</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">service hbase-master start
-service hbase-regionserver start
-</code></pre></div>
-<h2>8. 安装hive</h2>
-
-<h3>在一个节点上安装hive</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install hive*
-</code></pre></div>
-<h3>安装postgresql</h3>
-
-<p>手动安装、配置postgresql数据库，请参考<a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2/">手动安装Cloudera Hive CDH4.2</a></p>
-
-<p>yum方式安装：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install postgresql-server
-</code></pre></div>
-<p>初始化数据库：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"> sudo service postgresql initdb
-</code></pre></div>
-<p>修改配置文件postgresql.conf，修改完后内容如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
-listen_addresses = &#39;*&#39;
-standard_conforming_strings = off
-</code></pre></div>
-<p>修改 pg_hba.conf，添加以下一行内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">host    all         all         0.0.0.0         0.0.0.0               md5
-</code></pre></div>
-<p>启动数据库</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo service postgresql start
-</code></pre></div>
-<p>配置开启启动</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig postgresql on
-</code></pre></div>
-<p>安装jdbc驱动</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install postgresql-jdbc
-ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
-</code></pre></div>
-<p>创建数据库和用户</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">bash# sudo –u postgres psql
-bash$ psql
-postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
-postgres=# CREATE DATABASE metastore owner=hiveuser;
-postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
-postgres=# \q;
-bash$ psql  -U hiveuser -d metastore
-postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
-SET
-SET
-..
-</code></pre></div>
-<h3>修改配置文件</h3>
-
-<p>修改hive-site.xml文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;fs.defaultFS&lt;/name&gt;
-    &lt;value&gt;hdfs://node1:8020&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://node1/metastore&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;node1:8031&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;datanucleus.autoCreateSchema&lt;/name&gt;
-    &lt;value&gt;false&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;datanucleus.fixedDatastore&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-    &lt;value&gt;/user/hive/warehouse&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.uris&lt;/name&gt;
-    &lt;value&gt;thrift://node1:9083&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.local&lt;/name&gt;
-    &lt;value&gt;false&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;value&gt;node2,node3,node1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;node1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.merge.mapredfiles&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<h3>在hdfs中创建hive数据仓库目录</h3>
-
-<ul>
-<li>hive的数据仓库在hdfs中默认为<code>/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
-<li>每一个查询hive的用户都必须有一个hdfs的home目录(<code>/user</code>目录下，如root用户的为<code>/user/root</code>)</li>
-<li>hive所在节点的 <code>/tmp</code>必须是world-writable权限的。</li>
-</ul>
-
-<p>创建目录并设置权限：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
-sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
-sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
-</code></pre></div>
-<h3>启动hive-server和metastore</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">service hive-metastore start
-service hive-server start
-service hive-server2 start
-</code></pre></div>
-<h3>访问beeline</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /usr/lib/hive/bin/beeline
-beeline&gt; !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
-0: jdbc:hive2://localhost:10000&gt; SHOW TABLES;
-show tables;
-+-----------+
-| tab_name  |
-+-----------+
-+-----------+
-No rows selected (0.238 seconds)
-0: jdbc:hive2://localhost:10000&gt; 
-</code></pre></div>
-<p>其 sql语法参考<a href="http://sqlline.sourceforge.net/">SQLLine CLI</a>，在这里，你不能使用HiveServer的sql语句</p>
-
-<h3>与hbase集成</h3>
-
-<p>需要在hive里添加以下jar包：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ADD JAR /usr/lib/hive/lib/zookeeper.jar;
-ADD JAR /usr/lib/hive/lib/hbase.jar;
-ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
-ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
-</code></pre></div>
-<h2>9. 其他</h2>
-
-<h3>安装Snappy</h3>
-
-<p>在每个节点安装Snappy</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install snappy snappy-devel
-</code></pre></div>
-<p>使snappy对hadoop可用</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
-</code></pre></div>
-<h3>安装LZO</h3>
-
-<p>在每个节点安装：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
-</code></pre></div>
-<h2>10. 参考文章</h2>
-
-<ul>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html">Java Development Kit Installation</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html">Deploying HDFS on a Cluster</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html">HBase Installation</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html">ZooKeeper Installation</a></li>
-<li><a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
-</ul>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="hadoop20130329install-impala">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#hadoop">hadoop</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#impala-ref">impala</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cloudera-ref">cloudera</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/hadoop/2013/03/29/install-impala#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
-
-<h3>install</h3>
-
-<p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
-
-<h3>安装过程</h3>
-
-<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
-
-<ul>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
-</ul>
-
-<ol>
-<li><p>DataNode节点</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
-<li><p>在hive节点上</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm \
-impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm \
-libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
-</ol>
-
-<h3>配置Impala</h3>
-
-<h4>查看安装路径</h4>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
-/var/run/impala
-/var/lib/alternatives/impala
-/var/log/impala
-/usr/lib/impala
-/etc/alternatives/impala
-/etc/default/impala
-/etc/impala
-</code></pre></div>
-<h4>添加配置文件</h4>
-
-<p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
-
-<p>在节点desktop1上 拷贝<code>hive-site.xml</code>、<code>core-site.xml</code>、<code>hdfs-site.xml</code>至<code>/usr/lib/impala/conf</code>目录下:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
-</code></pre></div>
-<p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
-    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<p>同步以上文件到其他节点</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
-</code></pre></div>
-<h4>hadoop中添加native包</h4>
-
-<p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
-</code></pre></div>
-<h4>创建socket path</h4>
-
-<p>在每个节点上创建/var/run/hadoop-hdfs:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
-</code></pre></div>
-<p>拷贝postgres jdbc jar：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
-</code></pre></div>
-<h3>启动服务</h3>
-
-<ol>
-<li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
-
-<p>GLOG<em>v=1 nohup statestored -state</em>store_port=24000 &amp;</p></li>
-</ol>
-
-<p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
-
-<ol>
-<li><p>在所有impalad节点上：</p>
-
-<p>HADOOP<em>CONF</em>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<em>store</em>host=desktop1 -nn=desktop1 \
-    -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
-</ol>
-
-<p>注意： 其中的<code>-hostname</code>和<code>-ipaddress</code>表示当前启动impalad实例所在机器的主机名和ip地址。</p>
-
-<p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
-
-<h3>使用shell</h3>
-
-<p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
-[Not connected] &gt;connect desktop3:21000
-[desktop3:21000] &gt;refresh
-[desktop3:21000] &gt;connect desktop4:21000
-[desktop4:21000] &gt;refresh
-</code></pre></div>
-<h3>注意：</h3>
-
-<ol>
-<li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
-<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
-</ol>
-
-<p>可能是已经启动了statestored进程</p>
-
-<h3>参考文章</h3>
-
-<ul>
-<li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
-<li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
-<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
-</ul>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/'>&larr; Previous</a></li>
@@ -1270,6 +762,12 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-Driver">hive Driver类运行过程</a>
+      </li>
       <li class="post">
         <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
       </li>
@@ -1293,12 +791,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
       </li>
     </ul>
     </section>
@@ -1371,7 +863,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>11</span>
+    		hadoop <span>12</span>
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
@@ -1379,7 +871,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>1</span>
+    		hive <span>2</span>
     	</a></li>
     
   

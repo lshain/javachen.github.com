@@ -4,9 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <title>The execution process of kettle’s job - JavaChen Blog</title>
-    <meta name="keywords" content="kettle" />
-    <meta name="description" content="kettle执行过程" />
+    <title>hive Driver类运行过程 - JavaChen Blog</title>
+    <meta name="keywords" content="hadoop, hive" />
+    <meta name="description" content="分析hive Driver类运行过程" />
     <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
@@ -63,21 +63,26 @@
         
 
 <div class="page-header">
-  	<h2>The execution process of kettle’s job </h2>
+  	<h2>hive Driver类运行过程 </h2>
 	<div class="c9">
 		Categories：
 			
-			<a href="/categories.html#kettle">kettle</a>
+			<a href="/categories.html#hive">hive</a>
 			
 			
 		&emsp;&emsp;&emsp;&emsp;
 		Tags：
 			
-			<a href="/tags.html#kettle-ref">kettle</a>
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
 			
 			
 		&emsp;&emsp;&emsp;&emsp;
-		Time：<time date="2012-02-21 00:00:00 +0800">2012-02-21 00:02</time>
+		Time：<time date="2013-08-21 13:14:00 +0800">2013-08-21 13:08</time>
 		&emsp;&emsp;&emsp;&emsp;
 		<a href='#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
@@ -90,29 +95,151 @@
     <div class="pagination">
       <ul>
       
-        <li class="prev"><a href="/kettle/2012/02/17/step-error-handling-in-kettle" title="kettle中定义错误处理">&larr; Previous</a></li>
+        <li class="prev"><a href="/hive/2013/08/21/hive-CliDriver" title="hive cli的入口类">&larr; Previous</a></li>
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next"><a href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">Next &rarr;</a></li>
+        <li class="next"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper" title="使用ZooKeeper实现配置同步">Next &rarr;</a></li>
       
       </ul>
     </div>
     
-    <p>How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.</p>
+    <h2>概括</h2>
 
-<p>When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.</p>
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
 
-<p>This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.</p>
+<h2>分析</h2>
 
-<p><div class="pic">
-<a href="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg" target="_blank"><img src="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg" alt="" title="spoon execute sequence" width="300" height="180" class="aligncenter size-medium wp-image-2511" /></a>
-</div></p>
+<p>Driver类入口如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Driver.run(String command) // 处理一条命令 
+{ 
+    int ret = compile(command);  // 分析命令，生成Task。 
+    ret = execute();  // 运行Task。 
+} 
+</code></pre></div>
+<p>运行命令之前，先编译命令，然后在运行任务。</p>
 
-<p>What is the detail process of job execution? You should look into the Job.run() method for detail information.</p>
+<h3>compile方法过程</h3>
+
+<p>1、创建Context上下文</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">command = new VariableSubstitution().substitute(conf,command);
+ctx = new Context(conf);
+ctx.setTryCount(getTryCount());
+ctx.setCmd(command);
+ctx.setHDFSCleanup(true);
+</code></pre></div>
+<p>2、创建ParseDriver对象，然后解析命令、生成AST树。语法和词法分析内容，不是本文重点故不做介绍。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ParseDriver pd = new ParseDriver();
+ASTNode tree = pd.parse(command, ctx);
+tree = ParseUtils.findRootNonNullToken(tree);
+</code></pre></div>
+<p>简单归纳来说，解析程包括如下：</p>
+
+<ul>
+<li>词法分析，生成AST树，ParseDriver完成。 </li>
+<li>分析AST树，AST拆分成查询子块，信息记录在QB，这个QB在下面几个阶段都需要用到，SemanticAnalyzer.doPhase1完成。 </li>
+<li>从metastore中获取表的信息，SemanticAnalyzer.getMetaData完成。 </li>
+<li>生成逻辑执行计划，SemanticAnalyzer.genPlan完成。 </li>
+<li>优化逻辑执行计划，Optimizer完成，ParseContext作为上下文信息进行传递。 </li>
+<li>生成物理执行计划，SemanticAnalyzer.genMapRedTasks完成。 </li>
+<li>物理计划优化，PhysicalOptimizer完成，PhysicalContext作为上下文信息进行传递。</li>
+</ul>
+
+<p>3、读取环境变量，如果配置了语法分析的hook，参数为：<code>hive.semantic.analyzer.hook</code>，则:先用反射得到<code>AbstractSemanticAnalyzerHook</code>的集合，调用<code>hook.preAnalyze(hookCtx, tree)</code>方法,然后再调用<code>sem.analyze(tree, ctx)</code>方法，该方法才是用来作语法分析的,最后再调用<code>hook.postAnalyze(hookCtx, tree)</code>方法执行一些用户定义的后置操作；</p>
+
+<p>否则，直接调用<code>sem.analyze(tree, ctx)</code>进行语法分析。</p>
+
+<p>4、校验执行计划：<code>sem.validate()</code></p>
+
+<p>5、创建查询计划QueryPlan。</p>
+
+<p>6、初始化FetchTask。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if (plan.getFetchTask() != null) {
+   plan.getFetchTask().initialize(conf, plan, null);
+}
+</code></pre></div>
+<p>7、授权校验工作。</p>
+
+<h3>run方法过程</h3>
+
+<p>1、运行HiveDriverRunHook的前置方法preDriverRun</p>
+
+<p>2、运行<code>compile(command)</code>方法，并根据返回值判断是否该释放Hive锁。hive中可以配置<code>hive.support.concurrency</code>值为true并设置zookeeper的服务器地址和端口，基于zookeeper实现分布式锁以支持hive的多并发访问。这部分内容不是本文重点故不做介绍。</p>
+
+<p>3、调用execute()方法执行任务。</p>
+
+<ul>
+<li>先运行ExecuteWithHookContext的前置hook方法，ExecuteWithHookContext类型有三种：前置、运行失败、后置。</li>
+<li>然后创建DriverContext用于维护正在运行的task任务，正在运行的task任务会添加到队列runnable中去。</li>
+<li>其次，在while循环中遍历队列中的任务，然后启动任务让其执行。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    while (runnable.peek() != null &amp;&amp; running.size() &lt; maxthreads) {
+      Task&lt;? extends Serializable&gt; tsk = runnable.remove();
+      launchTask(tsk, queryId, noName, running, jobname, jobs, driverCxt);
+    }
+</code></pre></div>
+<ul>
+<li>在launchTask方法中，先判断是否支持并发执行，如果支持则调用线程的start()方法，否则调用<code>tskRun.runSequential()</code>方法顺序执行，只有当是MapReduce任务时，才执行并发执行：</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.EXECPARALLEL) &amp;&amp; tsk.isMapRedTask()) {
+          // Launch it in the parallel mode, as a separate thread only for MR tasks
+          tskRun.start();
+    } else {
+          tskRun.runSequential();
+    }
+</code></pre></div>
+<ul>
+<li>最后任务的运行，交给具体的Task去执行了。</li>
+<li>如果任务运行失败，则会创建一个备份任务，重新加入队列，然后再次运行；如果备份任务运行完成，则运行ExecuteWithHookContext的hook方法，这时候的hook为失败类型的hook。</li>
+</ul>
+
+<p>4、运行HiveDriverRunHook的后置方法postDriverRun</p>
+
+<h3>hive中支持的hook</h3>
+
+<p>上面分析中，提到了hive的hook机制，hive中一共存在以下几种hook。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive.semantic.analyzer.hook
+hive.exec.filter.hook
+hive.exec.driver.run.hooks
+hive.server2.session.hook
+hive.exec.pre.hooks
+hive.exec.post.hooks
+hive.exec.failure.hooks
+hive.client.stats.publishers
+hive.metastore.ds.connection.url.hook
+hive.metastore.init.hooks
+</code></pre></div>
+<p>通过hook机制，可以在运行前后做一些用户想做的事情。如：你可以在语法分析的hook中对hive的操作做一些超级管理员级别的权限判断；你可以对hive-server2做一些session级别的控制。</p>
+
+<p>cloudera的github仓库<a href="https://github.com/cloudera/access">access</a>中关于hive的访问控制就是使用了hive的hook机制。</p>
+
+<p>twitter的mapreduce可视化项目监控项目<a href="https://github.com/twitter/ambrose">ambrose</a>也利用了hive的hook机制，有兴趣的话，你可以去看看其是如何使用hive的hook并且你也可以扩增hook做些自己想做的事情。</p>
+
+<h2>总结</h2>
+
+<p>本文主要介绍了hive运行过程，其中简单提到了hive语法词法解析以及hook机制，没有详细分析。</p>
+
+<p>hive Driver类的执行过程如下：</p>
+
+<p><img src="/files/2013/hive-driver.jpg" alt="hive-driver"></p>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
+<li><a href="https://github.com/cloudera/access">Cloudera access</a></li>
+<li><a href="https://github.com/twitter/ambrose">twitter ambrose</a></li>
+</ul>
 
     
-    <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/kettle/2012/02/21/the-execution-process-of-kettles-job'>JavaChen Blog</a>-
+    <div style="text-align:center;margin:1em;">-<strong>原创文章，转载请注明：</strong>转载自：<a href='/hive/2013/08/21/hive-Driver'>JavaChen Blog</a>-
 		<br/>
 		<br/>
 		<!-- JiaThis Button BEGIN -->
@@ -158,11 +285,11 @@
     <div class="pagination">
       <ul>
       
-        <li class="prev"><a href="/kettle/2012/02/17/step-error-handling-in-kettle" title="kettle中定义错误处理">&larr; Previous</a></li>
+        <li class="prev"><a href="/hive/2013/08/21/hive-CliDriver" title="hive cli的入口类">&larr; Previous</a></li>
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next"><a href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">Next &rarr;</a></li>
+        <li class="next"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper" title="使用ZooKeeper实现配置同步">Next &rarr;</a></li>
       
       </ul>
     </div>
@@ -180,7 +307,9 @@
 
   
      
-    	<li><a href="/tags.html#kettle-ref">kettle <span>9</span></a></li>
+    	<li><a href="/tags.html#hadoop-ref">hadoop <span>15</span></a></li>
+     
+    	<li><a href="/tags.html#hive-ref">hive <span>6</span></a></li>
     
   
 

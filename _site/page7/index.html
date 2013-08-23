@@ -69,6 +69,170 @@
   <div class="span9">
   
   
+  <section id="kettle20120104some-problems-about-migrating-database-datas-with-kettle">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+
+<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+
+<ul>
+<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
+<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
+</ul>
+
+<h4>关键字的问题。</h4>
+
+<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
+
+<ul>
+<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
+</ul>
+
+<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
+
+<ul>
+<li>解决办法：字段改名称，去掉#号</li>
+</ul>
+
+<h4>Db2初始化到mysql或是postgres出错</h4>
+
+<ul>
+<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
+<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
+</ul>
+
+<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
+
+<ul>
+<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
+</ul>
+
+<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
+
+<ul>
+<li>原因：pdi程序中没有对主键进行处理</li>
+<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
+</ul>
+
+<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
+
+<ul>
+<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
+<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
+</ul>
+
+<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
+
+<ul>
+<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
+<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
+</ul>
+
+<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
+
+<ul>
+<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
+</ul>
+
+<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
+
+<ul>
+<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
+<li>解决办法：使用最新的pdi程序。</li>
+</ul>
+
+<h4>导数据中途时没有报错，直接软件退出</h4>
+
+<ul>
+<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
+<li>解决办法：修改jvm参数</li>
+</ul>
+
+<h4>初次使用kettle做db2的初始化会报错</h4>
+
+<ul>
+<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
+<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="pentaho20111207mondrian-and-olap">
+    <article>
+      <header>
+      <h3><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#pentaho">pentaho</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#mondrian-ref">mondrian</a>
+			
+			,
+			
+			
+			<a href="/tags.html#olap-ref">olap</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/pentaho/2011/12/07/mondrian-and-olap#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
+
+<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
+
+<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
+
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+
+<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
+
+<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
+
+<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
+
+<p><strong><span style="color: #00ff00;">结论</span></strong>
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
+
+<p><strong><span style="color: #00ff00;">说明</span></strong>
+<div class="note">
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="javascript20111125xml-user-interface-language-introuction">
     <article>
       <header>
@@ -790,106 +954,6 @@ function getInsertForm() {
     </article>
   </section>
   
-  
-  <section id="pentaho20110926resolved-pentaho-problems-9-16">
-    <article>
-      <header>
-      <h3><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#pentaho">pentaho</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bi-ref">bi</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>很久没写文章了，最近在关注Pentaho。<br />
- 以下是9月16日现场提出的问题解决办法：<br />
-      1、PDF预览中文没显示，txt预览中文乱码：<br />
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
-           3）、如要发布到服务器，需要修改如下的配置：<br />
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
-     2、实现文件拷贝方式发布报表<br />
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
-     3、报表链接参数传递问题<br />
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
-     4、查询参数缺省值问题<br />
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
-     5、实现在pie chart上显示文字<br />
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
-     6、报表集成时候垂直滚动条是否可以去掉<br />
-          改变报表的高度：报表设计器 file-page setup<br />
-     7、报表中的chart不能导出到Excel2007<br />
-          目前为系统bug，excel2003能够正常导出<br />
-     8、实现隔行换色<br />
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="cloud20110820install-eucalyptus-on-fedora-15">
-    <article>
-      <header>
-      <h3><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#cloud">cloud</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openNebula-ref">openNebula</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openStack-ref">openStack</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/cloud/2011/08/20/install-eucalyptus-on-fedora-15#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
-
-<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
-
-<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
-
-<p></p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page6'>&larr; Previous</a></li>
@@ -910,6 +974,12 @@ function getInsertForm() {
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-Driver">hive Driver类运行过程</a>
+      </li>
       <li class="post">
         <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
       </li>
@@ -933,12 +1003,6 @@ function getInsertForm() {
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
       </li>
     </ul>
     </section>
@@ -1011,7 +1075,7 @@ function getInsertForm() {
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>11</span>
+    		hadoop <span>12</span>
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
@@ -1019,7 +1083,7 @@ function getInsertForm() {
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>1</span>
+    		hive <span>2</span>
     	</a></li>
     
   

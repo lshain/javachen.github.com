@@ -136,6 +136,20 @@
 
 
 	<url>
+		<loc>http://blog.javachen.com/hadoop/2013/08/23/publish-proerties-using-zookeeper</loc>
+		<lastmod>2013-08-23</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
+		<loc>http://blog.javachen.com/hive/2013/08/21/hive-Driver</loc>
+		<lastmod>2013-08-21</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
 		<loc>http://blog.javachen.com/hive/2013/08/21/hive-CliDriver</loc>
 		<lastmod>2013-08-21</lastmod>
 		<changefreq>hourly</changefreq>

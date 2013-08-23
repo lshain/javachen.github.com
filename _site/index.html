@@ -69,6 +69,290 @@
   <div class="span9">
   
   
+  <section id="hadoop20130823publish-proerties-using-zookeeper">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#hadoop">hadoop</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#ZooKeeper-ref">ZooKeeper</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>前言</h2>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h2>ZooKeeper</h2>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+<p>一些在线系统在运行中，需要在不停止程序的情况下能够动态调整某一个变量的值并且能够及时生效。特别是当部署了多台应用服务器的时候，需要能够做到在一台机器上修改配置文件，然后在同步到所有应用服务器。这时候使用ZooKeeper来实现就很合适了。</p>
+
+<h2>数据发布与订阅</h2>
+
+<p>发布与订阅模型，即所谓的配置中心，顾名思义就是发布者将数据发布到ZK节点上，供订阅者动态获取数据，实现配置信息的集中式管理和动态更新。例如全局的配置信息，服务式服务框架的服务地址列表等就非常适合使用。</p>
+
+<p>使用ZooKeeper的发布与订阅模型，可以将应用中用到的一些配置信息放到ZK上进行集中管理。这类场景通常是这样：应用在启动的时候会主动来获取一次配置，同时，在节点上注册一个Watcher，这样一来，以后每次配置有更新的时候，都会实时通知到订阅的客户端，从来达到获取最新配置信息的目的。这样的场景适合数据量很小，但是数据更新可能会比较快的需求。</p>
+
+<h2>配置存储方案</h2>
+
+<p>配置文件通常有如下几种保存方式：</p>
+
+<ol>
+<li><p>将配置信息保存在程序代码中
+这种方案简单，但每次修改配置都要重新编译、部署应用程序。显然这种方案很不方便，也不可靠，更无法做到修改的实时生效。</p></li>
+<li><p>将配置信息保存在xml文件或者属性文件中
+在参数信息保存在xml或者属性文件中，当需要修改参数时，直接修改 xml 文件。这样无需重新编译，只需重新部署修改的文件即可。但然后对所有的应用进行重新部署。这样做的缺点显而易见，要往上百台机器上重新部署应用，简直是一个噩梦。同时该方案还有一个缺点，就是配置修改无法做到实时生效。修改后往往过一段时间才能生效。</p></li>
+<li><p>将配置信息保存在数据库中
+当需要修改参数时，直接修改数据库，然后重启分布式应用程序，或者刷新分布式应用的缓存。尽管这种做法比以上两种方案简单，但却面临着单点失效问题。如果数据库服务器停机，则分布式应用程序的配置信息将无法更新。另外这种方案的配置修改生效实时性虽然比第二种方案好些，但仍然不能达到某些情况下的要求。</p></li>
+</ol>
+
+<h2>基于ZooKeeper的配置信息同步方案</h2>
+
+<p>如果使用ZooKeeper来实现，就可以直接把配置信息保存到ZooKeeper中，或者把属性文件内容保存到ZooKeeper中，当属性文件内容发生变化时，就通知监听者如应用程序去重新读取配置文件。</p>
+
+<p>在网上搜索了一下，很能找到好用的现成的代码实现。有的基于ZooKeeper来扩张jdk的hashmap来存储配置参数，如：<a href="http://melin.iteye.com/blog/899435">使用ZooKeeper实现静态数据中心化配置管理</a>，也有人直接实现了一个基于java并发框架的工具包，如：<a href="https://github.com/openUtility/menagerie">menagerie</a>。</p>
+
+<hr>
+
+<p><code>注意</code>:以下部分文字和图来自：<a href="http://www.code365.org/wp-content/uploads/2012/02/%E5%9F%BA%E4%BA%8EZooKeeper%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B01.pdf">基于ZooKeeper的配置信息存储方案的设计与实现1.pdf</a></p>
+
+<p>基于ZooKeeper的特性,借助ZooKeeper可以实现一个可靠的、简单的、修改配置能够实时生效的配置信息存储方案,整体的设计方案如图：</p>
+
+<p><img src="/files/2013/zookeeper-01.jpg" alt="基于zookeeper的方案"></p>
+
+<p>整个配置信息存储方案由三部分组成:ZooKeeper服务器集群、配置管理程序、分布式应用程序。</p>
+
+<p>ZooKeeper服务器集群存储配置信息,在服务器上创建一个保存数据的节点(创建节点操作);配置管理程序提供一个配置管理的UI界面或者命令行方式,用户通过配置界面修改ZooKeeper服务器节点上配置信息(设置节点数据操作);分布式应用连接到ZooKeeper集群上(创建ZooKeeper客户端操作),监听配置信息的变化(使用获取节点数据操作,并注册一个watcher)。</p>
+
+<p>当配置信息发生变化时,分布式应用会更新程序中使用配置信息。</p>
+
+<p><img src="/files/2013/zookeeper-02.jpg" alt="修改配置的时许图"></p>
+
+<h2>源代码</h2>
+
+<p>找到一个淘宝工程师写的实现方式，待整理下之后，提交到github上去。</p>
+
+<h2>优点</h2>
+
+<p>借助 ZooKeeper我们实现的配置信息存储方案具有的优点如下:</p>
+
+<ol>
+<li>简单。尽管前期搭建ZooKeeper服务器集群较为麻烦,但是实现该方案后,修改配置整个过程变得简单很多。用户只要修改配置,无需进行其他任何操作,配置自动生效。</li>
+<li>可靠。ZooKeeper服务集群具有无单点失效的特性,使整个系统更加可靠。即使ZooKeeper 集群中的一台机器失效,也不会影响整体服务,更不会影响分布式应用配置信息的更新。</li>
+<li>实时。ZooKeeper的数据更新通知机制,可以在数据发生变化后,立即通知给分布式应用程序,具有很强的变化响应能力。</li>
+</ol>
+
+<h2>总结</h2>
+
+<p>本文参考了网上的一些文章，给出了基于ZooKeeper的配置信息同步方案,解决了传统配置信息同步方案的缺点如实时性差、可靠性差、复杂等。</p>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a></li>
+<li><a href="http://melin.iteye.com/blog/899435">使用ZooKeeper实现静态数据中心化配置管理</a></li>
+<li><a href="https://github.com/openUtility/menagerie">menagerie</a></li>
+<li><a href="http://www.code365.org/wp-content/uploads/2012/02/%E5%9F%BA%E4%BA%8EZooKeeper%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B01.pdf">基于ZooKeeper的配置信息存储方案的设计与实现1.pdf</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hive20130821hive-Driver">
+    <article>
+      <header>
+      <h3><a href="/hive/2013/08/21/hive-Driver">hive Driver类运行过程</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#hive">hive</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/hive/2013/08/21/hive-Driver#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>概括</h2>
+
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
+
+<h2>分析</h2>
+
+<p>Driver类入口如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Driver.run(String command) // 处理一条命令 
+{ 
+    int ret = compile(command);  // 分析命令，生成Task。 
+    ret = execute();  // 运行Task。 
+} 
+</code></pre></div>
+<p>运行命令之前，先编译命令，然后在运行任务。</p>
+
+<h3>compile方法过程</h3>
+
+<p>1、创建Context上下文</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">command = new VariableSubstitution().substitute(conf,command);
+ctx = new Context(conf);
+ctx.setTryCount(getTryCount());
+ctx.setCmd(command);
+ctx.setHDFSCleanup(true);
+</code></pre></div>
+<p>2、创建ParseDriver对象，然后解析命令、生成AST树。语法和词法分析内容，不是本文重点故不做介绍。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ParseDriver pd = new ParseDriver();
+ASTNode tree = pd.parse(command, ctx);
+tree = ParseUtils.findRootNonNullToken(tree);
+</code></pre></div>
+<p>简单归纳来说，解析程包括如下：</p>
+
+<ul>
+<li>词法分析，生成AST树，ParseDriver完成。 </li>
+<li>分析AST树，AST拆分成查询子块，信息记录在QB，这个QB在下面几个阶段都需要用到，SemanticAnalyzer.doPhase1完成。 </li>
+<li>从metastore中获取表的信息，SemanticAnalyzer.getMetaData完成。 </li>
+<li>生成逻辑执行计划，SemanticAnalyzer.genPlan完成。 </li>
+<li>优化逻辑执行计划，Optimizer完成，ParseContext作为上下文信息进行传递。 </li>
+<li>生成物理执行计划，SemanticAnalyzer.genMapRedTasks完成。 </li>
+<li>物理计划优化，PhysicalOptimizer完成，PhysicalContext作为上下文信息进行传递。</li>
+</ul>
+
+<p>3、读取环境变量，如果配置了语法分析的hook，参数为：<code>hive.semantic.analyzer.hook</code>，则:先用反射得到<code>AbstractSemanticAnalyzerHook</code>的集合，调用<code>hook.preAnalyze(hookCtx, tree)</code>方法,然后再调用<code>sem.analyze(tree, ctx)</code>方法，该方法才是用来作语法分析的,最后再调用<code>hook.postAnalyze(hookCtx, tree)</code>方法执行一些用户定义的后置操作；</p>
+
+<p>否则，直接调用<code>sem.analyze(tree, ctx)</code>进行语法分析。</p>
+
+<p>4、校验执行计划：<code>sem.validate()</code></p>
+
+<p>5、创建查询计划QueryPlan。</p>
+
+<p>6、初始化FetchTask。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if (plan.getFetchTask() != null) {
+   plan.getFetchTask().initialize(conf, plan, null);
+}
+</code></pre></div>
+<p>7、授权校验工作。</p>
+
+<h3>run方法过程</h3>
+
+<p>1、运行HiveDriverRunHook的前置方法preDriverRun</p>
+
+<p>2、运行<code>compile(command)</code>方法，并根据返回值判断是否该释放Hive锁。hive中可以配置<code>hive.support.concurrency</code>值为true并设置zookeeper的服务器地址和端口，基于zookeeper实现分布式锁以支持hive的多并发访问。这部分内容不是本文重点故不做介绍。</p>
+
+<p>3、调用execute()方法执行任务。</p>
+
+<ul>
+<li>先运行ExecuteWithHookContext的前置hook方法，ExecuteWithHookContext类型有三种：前置、运行失败、后置。</li>
+<li>然后创建DriverContext用于维护正在运行的task任务，正在运行的task任务会添加到队列runnable中去。</li>
+<li>其次，在while循环中遍历队列中的任务，然后启动任务让其执行。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    while (runnable.peek() != null &amp;&amp; running.size() &lt; maxthreads) {
+      Task&lt;? extends Serializable&gt; tsk = runnable.remove();
+      launchTask(tsk, queryId, noName, running, jobname, jobs, driverCxt);
+    }
+</code></pre></div>
+<ul>
+<li>在launchTask方法中，先判断是否支持并发执行，如果支持则调用线程的start()方法，否则调用<code>tskRun.runSequential()</code>方法顺序执行，只有当是MapReduce任务时，才执行并发执行：</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.EXECPARALLEL) &amp;&amp; tsk.isMapRedTask()) {
+          // Launch it in the parallel mode, as a separate thread only for MR tasks
+          tskRun.start();
+    } else {
+          tskRun.runSequential();
+    }
+</code></pre></div>
+<ul>
+<li>最后任务的运行，交给具体的Task去执行了。</li>
+<li>如果任务运行失败，则会创建一个备份任务，重新加入队列，然后再次运行；如果备份任务运行完成，则运行ExecuteWithHookContext的hook方法，这时候的hook为失败类型的hook。</li>
+</ul>
+
+<p>4、运行HiveDriverRunHook的后置方法postDriverRun</p>
+
+<h3>hive中支持的hook</h3>
+
+<p>上面分析中，提到了hive的hook机制，hive中一共存在以下几种hook。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive.semantic.analyzer.hook
+hive.exec.filter.hook
+hive.exec.driver.run.hooks
+hive.server2.session.hook
+hive.exec.pre.hooks
+hive.exec.post.hooks
+hive.exec.failure.hooks
+hive.client.stats.publishers
+hive.metastore.ds.connection.url.hook
+hive.metastore.init.hooks
+</code></pre></div>
+<p>通过hook机制，可以在运行前后做一些用户想做的事情。如：你可以在语法分析的hook中对hive的操作做一些超级管理员级别的权限判断；你可以对hive-server2做一些session级别的控制。</p>
+
+<p>cloudera的github仓库<a href="https://github.com/cloudera/access">access</a>中关于hive的访问控制就是使用了hive的hook机制。</p>
+
+<p>twitter的mapreduce可视化项目监控项目<a href="https://github.com/twitter/ambrose">ambrose</a>也利用了hive的hook机制，有兴趣的话，你可以去看看其是如何使用hive的hook并且你也可以扩增hook做些自己想做的事情。</p>
+
+<h2>总结</h2>
+
+<p>本文主要介绍了hive运行过程，其中简单提到了hive语法词法解析以及hook机制，没有详细分析。</p>
+
+<p>hive Driver类的执行过程如下：</p>
+
+<p><img src="/files/2013/hive-driver.jpg" alt="hive-driver"></p>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
+<li><a href="https://github.com/cloudera/access">Cloudera access</a></li>
+<li><a href="https://github.com/twitter/ambrose">twitter ambrose</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="hive20130821hive-CliDriver">
     <article>
       <header>
@@ -468,450 +752,6 @@ su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot;
     </article>
   </section>
   
-  
-  <section id="hadoop20130801remote-debug-hadoop">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#hadoop">hadoop</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hive-ref">hive</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hbase-ref">hbase</a>
-			
-			,
-			
-			
-			<a href="/tags.html#mapreduce-ref">mapreduce</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/hadoop/2013/08/01/remote-debug-hadoop#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
-
-<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
-
-<h2>JPDA 简介</h2>
-
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
-
-<p>更详细的介绍，您可以参考<a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></p>
-
-<h2>JDWP 设置</h2>
-
-<p>JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
-</code></pre></div>
-<p>各参数的含义：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug
-启用调试特性
--Xrunjdwp
-启用JDWP实现，包含若干子选项：
-transport=dt_socket
-JPDA front-end和back-end之间的传输方法。dt_socket表示使用套接字传输。
-address=8000
-JVM在8000端口上监听请求，这个设定为一个不冲突的端口即可。
-server=y
-y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试器。
-suspend=y
-y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
-</code></pre></div>
-<h2>配置hbase远程调试</h2>
-
-<p>打开<code>/etc/hbase/conf/hbase-env.sh</code>，找到以下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"># Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
-# export HBASE_MASTER_OPTS=&quot;$HBASE_MASTER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8070&quot;
-# export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
-# export HBASE_THRIFT_OPTS=&quot;$HBASE_THRIFT_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8072&quot;
-# export HBASE_ZOOKEEPER_OPTS=&quot;$HBASE_ZOOKEEPER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8073&quot;
-</code></pre></div>
-<p>如果想远程调式hbase-master进程，请去掉对<code>HBASE_MASTER_OPTS</code>的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。</p>
-
-<hr>
-
-<h3>注意（20130817更新）：</h3>
-
-<p>如果启动hbase时提示<code>check your java command line for duplicate jdwp options</code>，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。</p>
-
-<p>例如，如果你想调试regionserver，请把下面代码加到<code>elif [ &quot;$COMMAND&quot; = &quot;regionserver&quot; ] ; then</code>中去：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
-</code></pre></div>
-<h2>配置hive远程调试</h2>
-
-<p>停止hive-server2进程，然后以下面命令启动hive-server2</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver --debug
-</code></pre></div>
-<p>进程会监听在8000端口等待调试连接。如果想更改监听端口，可以修改配置文件:<code>${HIVE_HOME}bin/ext/debug.sh</code></p>
-
-<p>如果Hadoop是0.23以上版本，debug模式启动Cli会报错：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ERROR: Cannot load this JVM TI agent twice, check your java command line for duplicate jdwp options.
-</code></pre></div>
-<p>打开<code>${Hadoop_HOME}/bin/hadoop</code>，注释掉以下代码</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"># Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
-HADOOP_OPTS=&quot;$HADOOP_OPTS $HADOOP_CLIENT_OPTS&quot;
-</code></pre></div>
-<h2>配置yarn远程调试</h2>
-
-<p>请在以下代码添加调试参数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">if [ &quot;$COMMAND&quot; = &quot;classpath&quot; ] ; then
-if $cygwin; then
-CLASSPATH=`cygpath -p -w &quot;$CLASSPATH&quot;`
-fi
-echo $CLASSPATH
-exit
-elif [ &quot;$COMMAND&quot; = &quot;rmadmin&quot; ] ; then
-CLASS=&#39;org.apache.hadoop.yarn.client.RMAdmin&#39;
-YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
-elif [ &quot;$COMMAND&quot; = &quot;application&quot; ] ; then
-class=&quot;org&quot;.apache.hadoop.yarn.client.cli.ApplicationCLI
-YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
-elif [ &quot;$COMMAND&quot; = &quot;node&quot; ] ; then
-class=&quot;org&quot;.apache.hadoop.yarn.client.cli.NodeCLI
-YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
-elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ] ; then
-CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/rm-config/log4j.properties
-CLASS=&#39;org.apache.hadoop.yarn.server.resourcemanager.ResourceManager&#39;
-YARN_OPTS=&quot;$YARN_OPTS $YARN_RESOURCEMANAGER_OPTS&quot;
-if [ &quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
-JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot;&quot;m&quot;
-fi
-elif [ &quot;$COMMAND&quot; = &quot;nodemanager&quot; ] ; then
-CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/nm-config/log4j.properties
-CLASS=&#39;org.apache.hadoop.yarn.server.nodemanager.NodeManager&#39;
-YARN_OPTS=&quot;$YARN_OPTS -server $YARN_NODEMANAGER_OPTS&quot;
-if [ &quot;$YARN_NODEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
-JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_NODEMANAGER_HEAPSIZE&quot;&quot;m&quot;
-fi
-elif [ &quot;$COMMAND&quot; = &quot;proxyserver&quot; ] ; then
-CLASS=&#39;org.apache.hadoop.yarn.server.webproxy.WebAppProxyServer&#39;
-YARN_OPTS=&quot;$YARN_OPTS $YARN_PROXYSERVER_OPTS&quot;
-if [ &quot;$YARN_PROXYSERVER_HEAPSIZE&quot; != &quot;&quot; ]; then
-JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_PROXYSERVER_HEAPSIZE&quot;&quot;m&quot;
-fi
-</code></pre></div>
-<p>例如：
-如果你想调试resourcemanager代码，请在<code>elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ]</code> 分支内添加如下代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">YARN_RESOURCEMANAGER_OPTS=&quot;$YARN_RESOURCEMANAGER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6001&quot;
-</code></pre></div>
-<p>其他进程，参照上面即可。</p>
-
-<p>注意：端口不要冲突。</p>
-
-<h2>配置mapreduce远程调试</h2>
-
-<p>如果想要调试Map 或Reduce Task，则修改<code>bin/hadoop</code>已经没用了，因为<code>bin/hadoop</code>中没有Map Task的启动参数。</p>
-
-<p>此时需要修改mapred-site.xml</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt; 
-    &lt;name&gt;mapred.child.java.opts&lt;/name&gt; 
-    &lt;value&gt;-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000&lt;/value&gt; 
-&lt;/property
-</code></pre></div>
-<p>在一个TaskTracker上，只能启动一个Map Task或一个Reduce Task，否则启动时会有端口冲突。因此要修改所有TaskTracker上的<code>conf/hadoop-site.xml</code>中的配置项：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-    &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;
-    &lt;value&gt;1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;
-    &lt;value&gt;0&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<h2>在Eclipse中使用方法：</h2>
-
-<ol>
-<li><p>打开eclipse，找到<code>Debug Configurations...</code>，添加一个Remout Java Application:</p></li>
-<li><p>在source中可以关联到hive的源代码,然后，单击Debug按钮进入远程debug模式。</p></li>
-<li><p>编写个jdbc的测试类，运行代码，这时候因为hive-server2端没有设置端点，故程序可以正常运行直到结束。</p></li>
-<li><p>在hive代码中设置一个断点，如<code>ExecDriver.java</code>的<code>execute</code>方法中设置断点，然后再运行jdbc测试类。</p></li>
-</ol>
-
-<h2>参考文章</h2>
-
-<ol>
-<li><a href="http://zhangjie.me/eclipse-debug-hadoop/">在Eclipse中远程调试Hadoop</a></li>
-<li><a href="http://long-xie.iteye.com/blog/1779072">hive远程调试</a></li>
-<li><a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></li>
-</ol>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="hadoop20130720install-rhadoop">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#hadoop">hadoop</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#R-ref">R</a>
-			
-			,
-			
-			
-			<a href="/tags.html#rhadoop-ref">rhadoop</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/hadoop/2013/07/20/install-rhadoop#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><h2>1. R Language Install</h2>
-
-<h3>安装相关依赖</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
-yum install libRmath-*
-rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
-rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
-</code></pre></div>
-<h3>编译安装：R-3.0.1</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
-./configure
-make 
-make install #R运行
-export HADOOP_CMD=/usr/bin/hadoop
-</code></pre></div>
-<h3>排错</h3>
-
-<p>1、错误1</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">error: --with-readline=yes (default) 
-</code></pre></div>
-<p>安装readline </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install readline*
-</code></pre></div>
-<p>2、错误2</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">error: No F77 compiler found 
-</code></pre></div>
-<p>安装gfortran</p>
-
-<p>3、错误3</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">error: –with-x=yes (default) and X11 headers/libs are not available 
-</code></pre></div>
-<p>安装</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install libXt*
-</code></pre></div>
-<p>4、错误4</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check 
-</code></pre></div>
-<p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
-
-<h3>验证是否安装成功</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
-R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
-
-R是自由软件，不带任何担保。
-在某些条件下你可以将其自由散布。
-用&#39;license()&#39;或&#39;licence()&#39;来看散布的详细条件。
-
-R是个合作计划，有许多人为之做出了贡献.
-用&#39;contributors()&#39;来看合作者的详细情况
-用&#39;citation()&#39;会告诉你如何在出版物中正确地引用R或R程序包。
-
-用&#39;demo()&#39;来看一些示范程序，用&#39;help()&#39;来阅读在线帮助文件，或
-用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
-用&#39;q()&#39;退出R.
-</code></pre></div>
-<h2>2. 安装Rhadoop</h2>
-
-<h3>安装rhdfs，rmr2</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
-R CMD javareconf
-R CMD INSTALL &#39;plyr_1.8.tar.gz&#39;
-R CMD INSTALL &#39;stringr_0.6.2.tar.gz&#39;
-R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
-R CMD INSTALL &#39;digest_0.6.3.tar.gz&#39;
-R CMD INSTALL &#39;functional_0.4.tar.gz&#39;
-R CMD INSTALL &#39;iterators_1.0.6.tar.gz&#39;
-R CMD INSTALL &#39;itertools_0.1-1.tar.gz&#39;
-R CMD INSTALL &#39;Rcpp_0.10.3.tar.gz&#39;
-R CMD INSTALL &#39;rJava_0.9-4.tar.gz&#39;
-R CMD INSTALL &#39;RJSONIO_1.0-3.tar.gz&#39;
-R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
-R CMD INSTALL &#39;rhdfs_1.0.5.tar.gz&#39;
-R CMD INSTALL &#39;rmr2_2.2.0.tar.gz&#39;
-</code></pre></div>
-<p>R library(rhdfs)检查是否能正常工作</p>
-
-<h4>验证测试</h4>
-
-<p>Rmr测试命令： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt; train.mr&lt;-mapreduce( + train.hdfs, + map = function(k, v) { + keyval(k,v$item) + } + ,reduce=function(k,v){ + m&lt;-merge(v,v) + keyval(m$x,m$y) + } + )
-</code></pre></div>
-<p>出现如下错误：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">packageJobJar: [/tmp/RtmpCuhs7d/rmr-local-env18916b6f86b3, /tmp/RtmpCuhs7d/rmr-global-env18913824c681, /tmp/RtmpCuhs7d/rmr-streaming-map18912d6c2b1c, /tmp/RtmpCuhs7d/rmr-streaming-reduce1891179bb645, /tmp/hadoop-root/hadoop-unjar4575094085541826184/] [] /tmp/streamjob2910108622786868147.jar tmpDir=null 13/06/05 18:22:28
-WARN mapred.JobClient: Use GenericOptionsParser for parsing the arguments. Applications should implement Tool for the same. 13/06/05 18:22:28 INFO mapred.FileInputFormat: Total input paths to process : 1 13/06/05 18:22:29
-INFO streaming.StreamJob: getLocalDirs(): [/tmp/hadoop-root/mapred/local] 13/06/05 18:22:29 INFO streaming.StreamJob: Running job: job_201306050931_0004 13/06/05 18:22:29
-INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:29
-INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:29 INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:30 
-INFO streaming.StreamJob:  map 0%  reduce 0% 13/06/05 18:22:56
-INFO streaming.StreamJob:  map 100%  reduce 100% 13/06/05 18:22:56
-INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:56
-INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:56
-INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:56 
-ERROR streaming.StreamJob: Job not successful. Error: NA 13/06/05 18:22:56
-INFO streaming.StreamJob: killJob... Streaming Command Failed! Error in mr(map = map, reduce = reduce, combine = combine, vectorized.reduce,  :   hadoop streaming failed with error code 1
-</code></pre></div>
-<p>错误解决方法： 通过查看日志，hadoop没有在<code>/usr/bin</code>下找到Rscript,于是从R的安装目录<code>/usr/local/bin</code>下做R和Rscript的符号链接到<code>/usr/bin</code>下，再次执行即可解决次错。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#ln -s /usr/loca/bin/R  /usr/bin
-#ln -s /usr/local/bin/Rscript  /usr/bin
-</code></pre></div>
-<h2>3. 安装rhbase</h2>
-
-<h3>安装依赖</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install boost*
-#yum install openssl*
-</code></pre></div>
-<h3>安装thrift</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#tar -zxvf thrift-0.9.0.tar.gz
-#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
-#cd thrift-0.9.0
-#./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
-#make
-#make install
-</code></pre></div>
-<p>如果报错：error: &quot;Error: libcrypto required.&quot;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install openssl*
-</code></pre></div>
-<p>如果报错：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">src/thrift/qt/moc_TQTcpServer.cpp:14:2: error: #error &quot;This file was generated using the moc from 4.8.1. It&quot;
-src/thrift/qt/moc_TQTcpServer.cpp:15:2: error: #error &quot;cannot be used with the include files from this version of Qt.&quot;
-src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &quot;(The moc has changed too much.)&quot;
-</code></pre></div>
-<p>则运行下面命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
-</code></pre></div>
-<h3>配置PKG<em>CONFIG</em>PATH</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
-pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
-cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
-cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
-</code></pre></div>
-<p>启动hbase：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/usr/lib/hbase/bin/hbase-daemon.sh  start  thrift 
-</code></pre></div>
-<p>使用jps查看thrift进程</p>
-
-<h3>安装rhbase</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">R CMD INSTALL &#39;rhbase_1.1.1.tar.gz&#39;
-</code></pre></div>
-<h3>验证并测试</h3>
-
-<p>在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop27 hadoop]# R
-R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
-Natural language support but running in an English locale
-R is a collaborative project with many contributors.
-Type &#39;contributors()&#39; for more information and
-&#39;citation()&#39; on how to cite R or R packages in publications.
-Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
-&#39;help.start()&#39; for an HTML browser interface to help.
-Type &#39;q()&#39; to quit R.
-&gt; library(rhdfs)
-Loading required package: rJava
-HADOOP_CMD=/usr/bin/hadoop
-Be sure to run hdfs.init()
-&gt; library(rmr2)
-Loading required package: Rcpp
-Loading required package: RJSONIO
-Loading required package: digest
-Loading required package: functional
-Loading required package: stringr
-Loading required package: plyr
-Loading required package: reshape2
-&gt; library(rhbase)
-&gt;
-</code></pre></div>
-<h2>4. 装RHive</h2>
-
-<h3>环境变量</h3>
-
-<p>设置环境变量 <code>vim /etc/profile</code>,末行添加如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_CMD=/usr/bin/hadoop
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
-export HADOOP_STREAMING=/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.0.0-mr1-cdh4.2.1.jar
-export HADOOP_HOME=/usr/lib/hadoop
-export RHIVE_DATA=/hadoop/dfs/rhive/data
-export HIVE_HOME=/usr/lib/hive
-</code></pre></div>
-<h3>安装Rserve：</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL &#39;Rserve_1.7-1.tar.gz&#39;
-</code></pre></div>
-<p>在安装Rsever用户下，创建一目录，并创建Rserv.conf文件，写入``remote enable&#39;&#39;保存并退出。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#cd /usr/local/lib64/R/
-#echo remote enable &gt; Rserv.conf
-</code></pre></div>
-<p>启动Rserve：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD Rserve --RS-conf /usr/local/lib64/R/Rserv.conf
-</code></pre></div>
-<p>检查Rserve启动是否正常：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#telnet localhost 6311
-</code></pre></div>
-<p>显示 Rsrv0103QAP1 则表示连接成功</p>
-
-<h3>安装RHive</h3>
-
-<p>创建数据目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL RHive_0.0-7.tar.gz
-#cd /usr/local/lib64/R/
-mkdir -p rhive/data
-</code></pre></div>
-<p>在上传rhive_udf.jar到hdfs上：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop fs -mkdir /rhive/lib
-cd /usr/local/lib64/R/library/RHive/java
-hadoop fs -put rhive_udf.jar /rhive/lib
-hadoop fs -chmod a+rw /rhive/lib/rhive_udf.jar
-cd /usr/lib/hadoop
-ln -s /etc/hadoop/conf conf
-</code></pre></div>
-<p>测试RHive安装是否成功：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">R
-library（RHive）
-rhive.connect(&#39;192.168.0.27&#39;)【hive的地址】
-rhive.env()
-</code></pre></div></div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li><a href="/archive.html">Archive</a></li>
@@ -931,6 +771,12 @@ rhive.env()
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-Driver">hive Driver类运行过程</a>
+      </li>
       <li class="post">
         <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
       </li>
@@ -954,12 +800,6 @@ rhive.env()
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
       </li>
     </ul>
     </section>
@@ -1032,7 +872,7 @@ rhive.env()
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>11</span>
+    		hadoop <span>12</span>
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
@@ -1040,7 +880,7 @@ rhive.env()
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>1</span>
+    		hive <span>2</span>
     	</a></li>
     
   
