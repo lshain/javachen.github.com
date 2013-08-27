@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  hadoop自动化安装shell脚本
-date: 2013-08-02 13:14
 category: hadoop
 tags: [hadoop, hive, hbase, mapreduce]
 keywords: hadoop, hive, remote debug, mapreduce

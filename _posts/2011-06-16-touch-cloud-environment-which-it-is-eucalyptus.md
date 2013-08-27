@@ -6,6 +6,7 @@ tags: [eucalyptus]
 keywords: eucalyptus
 description: 接触云服务环境Eucalyptus
 ---
+
 <p>最近在接触云计算平台，熟悉了<a href="http://www.eucalyptus.com/">Eucalyptus</a>，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用<a href="http://www.eucalyptus.com/">Eucalyptus</a>搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。
 <h2>Eucalyptus</h2>
 Elastic Utility Computing Architecture for Linking Your Programs To Useful Systems （Eucalyptus） 是一种开源的软件基础结构，用来通过<span style="color: #ff0000;">计算集群或工作站群实现弹性的、实用的云计算</span>。它最初是美国加利福尼亚大学 Santa Barbara 计算机科学学院的一个研究项目，现在已经商业化，发展成为了 Eucalyptus Systems Inc。不过，Eucalyptus 仍然按开源项目那样维护和开发。Eucalyptus Systems 还在基于开源的 Eucalyptus 构建额外的产品；它还提供支持服务。
@@ -49,8 +50,3 @@ Installing Eucalyptus (2.0) on Fedora 12
 <p>
 <h2>Eucalyptus java源代码</h2>
 在安装过程中，我把Eucalyptus的java源代码（eucalyptus-2.0.3-src-offline.tar.gz）下下来了，并按照<a href="http://open.eucalyptus.com/participate/sourcecode">http://open.eucalyptus.com/participate/sourcecode</a>的说明好不容易把java代码通过ant编译然后手动复制粘贴导入eclipse了，现在这些代码能够通过编译了，并能够清楚的看到Eucalyptus的java代码部分的实现方式。<br />
-以下是两个截图：</p>
-
-<p><a href="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-01.png"><img class="size-medium wp-image-2097 alignleft" title="eucalyptus-2.0.3-src-01" src="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-01-300x258.png" alt="eucalyptus-2.0.3-src-01" width="300" height="258" /></a></p>
-
-<p><a href="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-02.jpg"><img class="size-medium wp-image-2099 alignleft" title="eucalyptus-2.0.3-src-02" src="http://blog.javachen.com/files/2011/06/eucalyptus-2.0.3-src-02-214x300.jpg" alt="eucalyptus-2.0.3-src-02" width="214" height="300" /></a></p>

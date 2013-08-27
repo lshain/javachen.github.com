@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  远程调试hadoop各组件
-date: 2013-08-01 13:14
 category: hadoop
 tags: [hadoop, hive, hbase, mapreduce]
 keywords: hadoop, hive, remote debug, mapreduce

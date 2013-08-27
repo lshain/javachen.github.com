@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  使用hadoop中遇到的一些问题
-date: 2013-08-17 13:14
 category: hadoop
 tags: [hadoop, hive, hbase, mapreduce]
 keywords: hadoop, hive, mapreduce

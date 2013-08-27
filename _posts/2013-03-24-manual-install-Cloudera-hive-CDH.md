@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 手动安装Cloudera Hive CDH
-date: 2013-03-24 15:00
 category: hadoop
 tags: [hadoop, cdh, hive]
 keywords: hadoop, cdh, cloudera manager, hive

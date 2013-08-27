@@ -2,27 +2,14 @@
 <div class="page-header">
   	<h2>{{ page.title }} {% if page.tagline %} <small>{{ page.tagline }}</small> {% endif %}</h2>
 	<div class="c9">
-		Categories：
-			{%for cg in page.categories%}
-			<a href="/categories.html#{{cg}}">{{cg}}</a>
-			{%if forloop.index < forloop.length %}
-			,
-			{%endif%}
-			{%endfor%}
+		Categories：{%for cg in page.categories%}<a href="/categories.html#{{cg}}-ref">{{cg}}</a>{%if forloop.index < forloop.length %},{%endif%}{%endfor%}
 		&emsp;&emsp;&emsp;&emsp;
-		Tags：
-			{%for cg in page.tags%}
-			<a href="/tags.html#{{cg}}-ref">{{cg}}</a>
-			{%if forloop.index < forloop.length %}
-			,
-			{%endif%}
-			{%endfor%}
+		Tags：{%for cg in page.tags%}<a href="/tags.html#{{cg}}-ref">{{cg}}</a>{%if forloop.index < forloop.length %},{%endif%}{%endfor%}
 		&emsp;&emsp;&emsp;&emsp;
-		Time：<time date="{{ page.date }}">{{ page.date|date: "%Y-%m-%d %H:%m"}}</time>
+		Time：<time date="{{ page.date|date: '%Y-%m-%d' }}">{{ page.date|date: "%Y-%m-%d"}}</time>
 		&emsp;&emsp;&emsp;&emsp;
 		<a href='{{post.url}}#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
-
 </div>
 {% endif %}
 

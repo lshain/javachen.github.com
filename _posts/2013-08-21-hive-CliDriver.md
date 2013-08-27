@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  hive cli的入口类
-date: 2013-08-21 13:14
 category: hive
 tags: [hadoop, hive]
 keywords: hadoop, hive

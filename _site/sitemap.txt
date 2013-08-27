@@ -23,7 +23,7 @@ http://blog.javachen.com/page12/index.html
 http://blog.javachen.com/page13/index.html
 
 http://blog.javachen.com/hadoop/2013/08/23/publish-proerties-using-zookeeper
-http://blog.javachen.com/hive/2013/08/21/hive-Driver
+http://blog.javachen.com/hive/2013/08/22/hive-Driver
 http://blog.javachen.com/hive/2013/08/21/hive-CliDriver
 http://blog.javachen.com/hadoop/2013/08/17/some-problems-about-hadoop
 http://blog.javachen.com/hadoop/2013/08/02/hadoop-install-script
@@ -34,9 +34,9 @@ http://blog.javachen.com/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle
 http://blog.javachen.com/kettle/2013/04/07/add-a-field-from-paramter-to-output
 http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum
 http://blog.javachen.com/hadoop/2013/03/29/install-impala
-http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH
-http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH
 http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH
+http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH
+http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH
 http://blog.javachen.com/hadoop/2013/03/08/note-about-installing-hadoop-cluster
 http://blog.javachen.com/work/2013/02/20/summary-of-the-work-in-2012
 http://blog.javachen.com/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress

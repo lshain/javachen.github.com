@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "【笔记】Hadoop安装部署"
-date: 2013-03-08 21:00
 category: hadoop
 tags: [hadoop, cdh]
 keywords: hadoop, hdfs

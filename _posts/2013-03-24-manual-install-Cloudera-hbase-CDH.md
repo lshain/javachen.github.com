@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 手动安装Cloudera HBase CDH
-date: 2013-03-24 15:05
 category: Hadoop
 tags: [hbase, cdh]
 keywords: hbase, cdh, cloudera manager

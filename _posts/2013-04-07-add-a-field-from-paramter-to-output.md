@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  kettle中添加一个参数字段到输出
-date:  2013-04-07 21:00
 category: Kettle
 tags: [kettle]
 keywords: kettle

@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 安装impala过程
-date: 2013-03-29 10:00
 category: hadoop
 tags: [hadoop, impala, cloudera]
 keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera, impala

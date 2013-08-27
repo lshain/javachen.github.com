@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  hive Driver类运行过程
-date: 2013-08-21 13:14
 category: hive
 tags: [hadoop, hive]
 keywords: hadoop, hive
@@ -141,7 +140,7 @@ hive Driver类的执行过程如下：
 
 ## 参考文章
 
-- [hive 初始化运行流程](http://www.cnblogs.com/end/archive/2012/12/19/2825320.html)
-- [Cloudera access](https://github.com/cloudera/access)
-- [twitter ambrose](https://github.com/twitter/ambrose)
+1. [hive 初始化运行流程](http://www.cnblogs.com/end/archive/2012/12/19/2825320.html)
+2. [Cloudera access](https://github.com/cloudera/access)
+3. [twitter ambrose](https://github.com/twitter/ambrose)
 

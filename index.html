@@ -13,11 +13,9 @@ tagline:
       <header>
       <h3><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></h3>
       <div class="c9">
-     		Author: {{ site.author.name }}
-     		&emsp;&emsp;
 		Categories：
 			{%for cg in post.categories%}
-			<a href="/categories.html#{{cg}}">{{cg}}</a>
+			<a href="/categories.html#{{cg}}-ref">{{cg}}</a>
 			{%if forloop.index < forloop.length %}
 			,
 			{%endif%}
@@ -30,6 +28,8 @@ tagline:
 			,
 			{%endif%}
 			{%endfor%}
+		&emsp;&emsp;
+		Time：<time date="{{ post.date|date: '%Y-%m-%d' }}">{{ post.date|date: "%Y-%m-%d"}}</time>
 		&emsp;&emsp;
 		<a href='{{post.url}}#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>

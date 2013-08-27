@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  安装RHadoop
-date: 2013-07-20 15:10
 category: hadoop
 tags: [hadoop, R, rhadoop]
 keywords: hadoop, rhadoop

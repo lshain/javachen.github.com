@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 手动安装Cloudera Hadoop CDH
-date: 2013-03-24 15:10
 category: hadoop
 tags: [hadoop, cdh]
 keywords: hadoop, cdh, cloudera manager

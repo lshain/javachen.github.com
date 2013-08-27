@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  从yum安装Cloudera CDH集群
-date:  2013-04-06 17:00
 category: hadoop
 tags: [hadoop, impala, cloudera]
 keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera
