@@ -31,7 +31,7 @@ tagline:
 			{%endif%}
 			{%endfor%}
 		&emsp;&emsp;
-		<a href='{{post.url}}#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		<a href='{{post.url}}#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
     <div class="content">{{ content }}</div>
@@ -64,28 +64,25 @@ tagline:
     </ul>
     </section>
     
-    <script type="text/javascript">
+	<script type="text/javascript">
 	var duoshuoQuery = {short_name:"javachen"};
 	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = 'http://static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
 	})();
 	</script>
 	
 	<section>
 		<h3>Recent Comments</h3>
-		<ul class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="70"></ul>
-	<script>if (typeof DUOSHUO !== 'undefined')	DUOSHUO.RecentComments('.ds-recent-visitors');</script>
+		<ul class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="100"></ul>
 	</section>
 	
 	<section>
 		<h3>Recent Vistors</h3>
-		 <ul class="ds-recent-visitors" data-num-items="16"></ul>
-		<script>if (typeof DUOSHUO !== 'undefined')	DUOSHUO.RecentVisitors('.ds-recent-visitors');</script>
+		 <ul class="ds-recent-visitors" data-num-items="18"></ul>
 	</section>
 	 
      <section>
