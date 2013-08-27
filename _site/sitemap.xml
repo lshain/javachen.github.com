@@ -134,6 +134,27 @@
 		<priority>1.0</priority>
 	</url>
 
+	<url>
+		<loc>http://blog.javachen.com/page11/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
+		<loc>http://blog.javachen.com/page12/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
+		<loc>http://blog.javachen.com/page13/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
 
 	<url>
 		<loc>http://blog.javachen.com/hadoop/2013/08/23/publish-proerties-using-zookeeper</loc>

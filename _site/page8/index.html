@@ -34,7 +34,7 @@
     <script src="/assets/themes/twitter/js/main.js"></script>
   </head>
 
-  <body data-spy="scroll" data-target=".nav" data-offset="100">
+  <body >
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -70,10 +70,355 @@
   <div class="span9">
   
   
-  <section id="pentaho20110926resolved-pentaho-problems-9-16">
+  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
     <article>
       <header>
-      <h3><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h3>
+      <h3><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#javascript">javascript</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#extjs-ref">extjs</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
+
+<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码</p>
+
+<p>详细html和js代码见相关文件，这里先描述思路。</p>
+
+<p><strong>首先</strong>
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
+
+<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
+
+<p><strong>然后</strong></p>
+
+<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
+
+<p><strong>最后</strong>
+相关文件打包见：
+<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
+
+<p><strong>说明</strong>
+如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			,
+			
+			
+			<a href="/tags.html#etl-ref">etl</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。</p>
+
+<p>kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。</p>
+
+<p>这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，<strong>需要有主键和索引方便对比和加快查询速度</strong>。
+先来看看kettle中的一些组件。</p>
+
+<p>下图是kettle中的一个表输出组件。
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="http://blog.javachen.com/files/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
+</div></p>
+
+<p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
+&lt;!--more--&gt;
+下图是kettle中纬度更新/查询的组件。
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="http://blog.javachen.com/files/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
+</div>
+该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
+从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
+
+<p>如果现在想使用kettle实现<strong>异构数据库的数据以及主键和索引的迁移</strong>，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
+<strong>1.</strong>使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
+<strong>2.</strong>针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
+<strong>3.</strong>扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。</p>
+
+<p>方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。</p>
+
+<p><strong>下面是方案3的具体的实现。</strong></p>
+
+<p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
+    final List databases = spoon.getActiveDatabases();
+    if (databases.size() == 0)
+        return;&lt;/pre&gt;
+
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
+
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
+                        &quot;An unexpected error occurred!&quot;, e);
+                return false;
+            }
+        }
+
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
+
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
+
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
+</code></pre></div>
+<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
+    RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
+    sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
+ //此处省略若干代码
+}
+</code></pre></div>
+<p>该方法主要逻辑在下面代码内：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
+    public void run(IProgressMonitor monitor)
+     throws InvocationTargetException, InterruptedException {
+       //此处省略若干代码
+    }
+}
+</code></pre></div>
+<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
+    //此处省略若干代码
+}
+</code></pre></div>
+<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+        sourceDbInfo, sourceCon, tables[i],
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
+    location.x += 300;
+    JobEntrySQL jesql = new JobEntrySQL(
+        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i] + &quot;]&quot;);
+    jesql.setDatabase(targetDbInfo);
+    jesql.setSQL(pksql);
+    jesql.setDescription(BaseMessages.getString(PKG,
+            &quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i]
+            + &quot;]&quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
+</code></pre></div>
+<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
+
+<p>最后的效果图如下：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
+</div></p>
+
+<div class="infor">说明：
+1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。
+2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的</div>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120104some-problems-about-migrating-database-datas-with-kettle">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h3>
+      <div class="c9">
+     		Author: JavaChen
+     		&emsp;&emsp;
+		Categories：
+			
+			<a href="/categories.html#kettle">kettle</a>
+			
+			
+		&emsp;&emsp;
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		&emsp;&emsp;
+		<a href='/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+
+<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+
+<ul>
+<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
+<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
+</ul>
+
+<h4>关键字的问题。</h4>
+
+<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
+
+<ul>
+<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
+</ul>
+
+<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
+
+<ul>
+<li>解决办法：字段改名称，去掉#号</li>
+</ul>
+
+<h4>Db2初始化到mysql或是postgres出错</h4>
+
+<ul>
+<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
+<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
+</ul>
+
+<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
+
+<ul>
+<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
+</ul>
+
+<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
+
+<ul>
+<li>原因：pdi程序中没有对主键进行处理</li>
+<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
+</ul>
+
+<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
+
+<ul>
+<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
+<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
+</ul>
+
+<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
+
+<ul>
+<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
+<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
+</ul>
+
+<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
+
+<ul>
+<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
+</ul>
+
+<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
+
+<ul>
+<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
+<li>解决办法：使用最新的pdi程序。</li>
+</ul>
+
+<h4>导数据中途时没有报错，直接软件退出</h4>
+
+<ul>
+<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
+<li>解决办法：修改jvm参数</li>
+</ul>
+
+<h4>初次使用kettle做db2的初始化会报错</h4>
+
+<ul>
+<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
+<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="pentaho20111207mondrian-and-olap">
+    <article>
+      <header>
+      <h3><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
       <div class="c9">
      		Author: JavaChen
      		&emsp;&emsp;
@@ -85,743 +430,40 @@
 		&emsp;&emsp;
 		Tags：
 			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
+			<a href="/tags.html#mondrian-ref">mondrian</a>
 			
 			,
 			
 			
-			<a href="/tags.html#bi-ref">bi</a>
+			<a href="/tags.html#olap-ref">olap</a>
 			
 			
 		&emsp;&emsp;
-		<a href='/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		<a href='/pentaho/2011/12/07/mondrian-and-olap#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
-    <div class="content"><p>很久没写文章了，最近在关注Pentaho。<br />
- 以下是9月16日现场提出的问题解决办法：<br />
-      1、PDF预览中文没显示，txt预览中文乱码：<br />
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
-           3）、如要发布到服务器，需要修改如下的配置：<br />
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
-     2、实现文件拷贝方式发布报表<br />
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
-     3、报表链接参数传递问题<br />
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
-     4、查询参数缺省值问题<br />
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
-     5、实现在pie chart上显示文字<br />
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
-     6、报表集成时候垂直滚动条是否可以去掉<br />
-          改变报表的高度：报表设计器 file-page setup<br />
-     7、报表中的chart不能导出到Excel2007<br />
-          目前为系统bug，excel2003能够正常导出<br />
-     8、实现隔行换色<br />
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="cloud20110820install-eucalyptus-on-fedora-15">
-    <article>
-      <header>
-      <h3><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#cloud">cloud</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openNebula-ref">openNebula</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openStack-ref">openStack</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/cloud/2011/08/20/install-eucalyptus-on-fedora-15#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
+    <div class="content"><p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
 
-<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
+<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
 
-<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
+<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
 
-<p></p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20110811export-dhtmlxgrid-to-pdf-in-java">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#javascript">javascript</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#javascript-ref">javascript</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
-<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
-当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
 
-<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
-需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
 
-<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
-<div class="pic">
-<img src="/files/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
-</div>
-点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
-<pre lang="java">
-DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
-DocumentBuilder db = dbf.newDocumentBuilder();
-Document dom = null;
-try {
-     dom = db.parse(new InputSource(new StringReader(xml)));
-}catch(SAXException se) {
-     se.printStackTrace();
-}catch(IOException ioe) { 
-     ioe.printStackTrace();
-}
-root = dom.getDocumentElement();
-</pre></p>
+<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
 
-<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
-为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
-<pre lang="java">
-public class PDFXMLParser {
-    Element root;
-    PDFColumn[][] columns;
-    PDFRow[] rows;
-    double[] widths;
-    private Boolean header = false;
-    private Boolean footer = false;
-    private String profile = &quot;gray&quot;;
-    private double[] orientation = null;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
-    SAXReader saxReader = new SAXReader();
+<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
 
-    Document document = null;
-    try {
-        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
-    } catch (DocumentException e) {
-        e.printStackTrace();
-    }
-    root = document.getRootElement();
+<p><strong><span style="color: #00ff00;">结论</span></strong>
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
 
-    if ((root.attributeValue(&quot;header&quot;) != null)
-            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
-        header = true;
-    }
-    String footer_string = root.attributeValue(&quot;footer&quot;);
-    if ((footer_string != null)
-            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
-        footer = true;
-    }
-    String profile_string = root.attributeValue(&quot;profile&quot;);
-    if (profile_string != null) {
-        profile = profile_string;
-    }
-
-    String orientation_string = root.attributeValue(&quot;orientation&quot;);
-    if (orientation_string != null) {
-        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
-            orientation = A4.LANDSCAPE;
-        } else {
-            orientation = A4.PORTRAIT;
-        }
-    } else {
-        orientation = Letter.PORTRAIT;
-    }
-}
-
-public PDFColumn[][] getColumnsInfo() {
-    PDFColumn[] colLine = null;
-    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
-    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
-        columns = new PDFColumn[n1.size()][];
-        for (int i = 0; i &amp;lt; n1.size(); i++) {
-            Element cols = (Element) n1.get(i);
-            List n2 = cols.elements(&quot;column&quot;);
-            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
-                colLine = new PDFColumn[n2.size()];
-                for (int j = 0; j &amp;lt; n2.size(); j++) {
-                    Element col_xml = (Element) n2.get(j);
-                    PDFColumn col = new PDFColumn();
-                    col.parse(col_xml);
-                    colLine[j] = col;
-                }
-            }
-            columns[i] = colLine;
-        }
-    }
-    createWidthsArray();
-    optimizeColumns();
-    return columns;
-}
-    public PDFRow[] getGridContent() {
-    List nodes = root.elements(&quot;row&quot;);
-    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
-        rows = new PDFRow[nodes.size()];
-        for (int i = 0; i &amp;lt; nodes.size(); i++) {
-            rows[i] = new PDFRow();
-            rows[i].parse((Element) nodes.get(i));
-        }
-    }
-    return rows;
-
-}
-
-   *****
-</code></pre></div>
-<p>}
-</pre></p>
-
-<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
-<pre lang="java">
-public class PDFRow {</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
-
-public void parse(Element parent) {
-    List nodes = ((Element) parent).elements(&quot;cell&quot;);
-    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
-        cells = new String[nodes.size()];
-        for (int i = 0; i &amp;lt; nodes.size(); i++) {
-            cells[i] = ((Element) nodes.get(i)).getTextTrim();
-        }
-    }
-}
-
-public String[] getCells() {
-    return cells;
-}
-</code></pre></div>
-<p>}</p>
-
-<p>public class PDFColumn {</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
-    colName = parent.getText();
-    String width_string = parent.attributeValue(&quot;width&quot;);
-    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
-        width = Integer.parseInt(width_string);
-    }
-    type = parent.attributeValue(&quot;type&quot;);
-    align = parent.attributeValue(&quot;align&quot;);
-    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
-    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
-        colspan = Integer.parseInt(colspan_string);
-    }
-    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
-    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
-        rowspan= Integer.parseInt(rowspan_string);
-    }
-}
-</code></pre></div>
-<p>}
-</pre></p>
-
-<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
-<div class="pic">
-<img src="/files/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
-</div></p>
-
-<h2>结论：</h2>
-
-<ul>
-<li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
-<li>2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。</li>
-<li>3.导出的pdf为多页显示，每页有表头</li>
-<li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
-</ul>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20110731custom-dhtmlxgrid-header-menu">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu">自定义dhtmlxGrid表头菜单</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#javascript">javascript</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#javascript-ref">javascript</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/javascript/2011/07/31/custom-dhtmlxgrid-header-menu#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。
-以下是dhtmlxGrid的表头菜单效果：
-<div class="pic">
-<img class="aligncenter size-medium wp-image-2287" title="dhtmlxgrid-head-menu" src="/files/2011/07/dhtmlxgrid-head-menu.jpg" alt="" width="300" height="174" /></div>
-其功能过于单一，以下是表格右键菜单效果：
-<div class="pic"><img class="aligncenter size-medium wp-image-2288" title="dhtmlxgrid-context-menu" src="/files/2011/07/dhtmlxgrid-context-menu.jpg" alt="" width="300" height="126" /></div>
-如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
-如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt;
-首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split(&quot;_&quot;);
-    //rowId_colInd;
-    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
-    return true;
-}
-menu = new dhtmlXMenuObject();
-menu.setIconsPath(&quot;../common/images/&quot;);
-menu.renderAsContextMenu();
-menu.attachEvent(&quot;onClick&quot;, onButtonClick);
-menu.loadXML(&quot;../common/_context.xml&quot;);
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Author,Title&quot;);
-mygrid.setInitWidths(&quot;250,250&quot;);
-mygrid.enableAutoWidth(true);
-mygrid.setColAlign(&quot;left,left&quot;);
-mygrid.setColTypes(&quot;ro,link&quot;);
-mygrid.setColSorting(&quot;str,str&quot;);
-mygrid.enableContextMenu(menu);
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
-</code></pre></div>
-<p>上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">menu.renderAsContextMenu();
-mygrid.enableContextMenu(menu);
-</code></pre></div>
-<p>上面对于context menu提供的方法太少，这时候可以看看dhtmlxMenu api，看看有没有设置context menu生效位置的方法（指定context menu在哪片区域有效）。在dhtmlxMenu API Methods里没有找到需要的方法，这时候在官网论坛搜搜，也许可以找到点什么。
-在论坛里可以找到一个例子，大致代码如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
-    var data = mygrid.contextID.split(&quot;_&quot;);
-    //rowId_colInd;
-    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
-    return true;
-}
-menu = new dhtmlXMenuObject();
-menu.setIconsPath(&quot;../common/images/&quot;);
-menu.attachEvent(&quot;onClick&quot;, onButtonClick);
-menu.loadXML(&quot;../common/_context.xml&quot;);
-
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Author,Title&quot;);
-mygrid.setInitWidths(&quot;250,250&quot;);
-mygrid.enableAutoWidth(true);
-mygrid.setColAlign(&quot;left,left&quot;);
-mygrid.setColTypes(&quot;ro,link&quot;);
-mygrid.setColSorting(&quot;str,str&quot;);
-//mygrid.enableContextMenu(menu); //使其失效
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
-
-mygrid.hdr.id = &quot;header_id&quot;;
-var header_row = mygrid.hdr.rows[1];
-for ( var i = 0; i &amp;lt; header_row.cells.length; i++) {
-   header_row.cells[i].id = &quot;context_zone_&quot; + i;
-}
-menu.addContextZone(&quot;header_id&quot;);
-</code></pre></div>
-<p>上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。
-剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
-    ev = ev || event;
-    var el = ev.target || ev.srcElement;
-    var zel = el;
-    while (zel.tagName != &quot;TABLE&quot;)
-        zel = zel.parentNode;
-    var grid = zel.grid;
-    if (!grid)
-        return;
-    grid.setActive();
-
-    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
-
-    if ((grid) &amp;amp;&amp;amp; (!grid._colInMove)) {
-        grid.resized = null;
-        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
-            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
-    }
-
-    function mouseCoords(ev) {
-        if (ev.pageX || ev.pageY) {
-            return {
-                x : ev.pageX,
-                y : ev.pageY
-            };
-        }
-        var d = _isIE &amp;amp;&amp;amp; document.compatMode != &quot;BackCompat&quot; ? 
-                document.documentElement: document.body;
-        return {
-            x : ev.clientX + d.scrollLeft - d.clientLeft,
-            y : ev.clientY + d.scrollTop - d.clientTop
-        };
-    }
-
-    var coords = mouseCoords(ev);
-    menu.addContextZone(&quot;header_id&quot;);
-    menu.showContextMenu(coords.x, coords.y);//强制显示
-    return true;
-});
-</code></pre></div>
-<p>在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type, e) {
-    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
-    colId = 0;
-    return true;
-}
-</code></pre></div>
-<p>然后，需要禁止掉表格数据区域的菜单显示：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
-    return false;//禁止数据区域菜单
-});
-</code></pre></div>
-<p>最后的最后，最后的代码如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">var mygrid, colId;
-
-function onButtonClick(menuitemId, type, e) {
-    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
-    colId = 0;
-    return true;
-}
-
-menu = new dhtmlXMenuObject();
-menu.setIconsPath(&quot;../common/images/&quot;);
-menu.renderAsContextMenu();
-menu.attachEvent(&quot;onClick&quot;, onButtonClick);
-menu.loadXML(&quot;../common/_context.xml&quot;);
-menu.attachEvent(&quot;onBeforeContextMenu&quot;, function(zoneId, e) {
-    var hdr = document.getElementById(zoneId)
-    return true;
-});
-
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-          Date of Publication&quot;);
-mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
-mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
-mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
-
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-//mygrid.enableHeaderMenu();
-mygrid.enableColumnMove(true);
-mygrid.enableContextMenu(menu);
-dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
-    ev = ev || event;
-    var el = ev.target || ev.srcElement;
-    var zel = el;
-    while (zel.tagName != &quot;TABLE&quot;)
-        zel = zel.parentNode;
-    var grid = zel.grid;
-    if (!grid)
-        return;
-    grid.setActive();
-
-    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
-
-    if ((grid) &amp;#038;&amp; (!grid._colInMove)) {
-        grid.resized = null;
-        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
-                            //获得表头右键菜单焦点所在列索引
-            colId = el._cellIndex + 1;
-    }
-
-    function mouseCoords(ev) {
-        if (ev.pageX || ev.pageY) {
-            return {
-                x : ev.pageX,
-                y : ev.pageY
-            };
-        }
-        var d = _isIE &amp;#038;&amp; document.compatMode != &quot;BackCompat&quot; ? 
-                         document.documentElement: document.body;
-        return {
-            x : ev.clientX + d.scrollLeft - d.clientLeft,
-            y : ev.clientY + d.scrollTop - d.clientTop
-        };
-    }
-
-    var coords = mouseCoords(ev);
-    menu.addContextZone(&quot;header_id&quot;);
-    menu.showContextMenu(coords.x, coords.y);//强制显示
-    return true;
-});
-
-mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
-    return false;//禁止数据区域菜单
-});
-
-mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
-
-mygrid.hdr.id = &quot;header_id&quot;;
-var header_row = mygrid.hdr.rows[1];
-for ( var i = 0; i &lt; header_row.cells.length; i++) {
-    header_row.cells[i].id = &quot;context_zone_&quot; + i;
-}
-</code></pre></div>
-<p>效果图如下;
-<div class="pic">
-<img src="/files/2011/07/dhtmlxgrid-custom-head-menu.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></div></p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20110724drag-an-item-to-dhtmlxgrid-and-add-a-column">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h3>
-      <div class="c9">
-     		Author: JavaChen
-     		&emsp;&emsp;
-		Categories：
-			
-			<a href="/categories.html#javascript">javascript</a>
-			
-			
-		&emsp;&emsp;
-		Tags：
-			
-			<a href="/tags.html#javascript-ref">javascript</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		&emsp;&emsp;
-		<a href='/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comment' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
-现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
-如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
-首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
-上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
-<pre escaped="true" lang="javascript" line="1">function maf() {
-    return false;
-}
-tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
-
-<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
-tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
-tree.enableDragAndDrop(true);
-tree.setDragHandler(maf);
-tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
-
-<p>function s<em>control() {
-    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
-        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
-    }
-    this.<em>dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
-        return htmlObject;
-    }
-    this.</em>dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
-        return this;
-    }
-}
-var sinput = document.getElementById(&#39;sInput&#39;);
-tree.dragger.addDragLanding(sinput, new s_control);
-</pre></p>
-
-<p>为了使tree支持拖拽功能，必须添加以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
-
-<p>为了实现自定义拖拽的输出，添加了以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
-
-<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
-<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
-        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
-    }
-    this.</em>dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
-        return htmlObject;
-    }
-    this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
-        return this;
-    }
-</pre></p>
-
-<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
-
-<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
-
-<pre escaped="true" lang="javascript" line="1">
-    var insertId;
-    this._drag = function(sourceHtmlObject, dhtmlObject,
-        targetHtmlObject, e) {
-    var zel = e;
-    while (zel.tagName != "TABLE")
-        zel = zel.parentNode;
-    var grid = zel.grid;
-    if (!grid)
-        return;
-    grid.setActive();
-    if (!grid._mCol || e.button == 2)
-        return;
-    e = grid.getFirstParentOfType(e, "TD")
-
-    if ((grid) &amp;&amp; (!grid._colInMove)) {
-        grid.resized = null;
-        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
-            insertId = e._cellIndex + 1;
-    }
-
-    mygrid.insertColumn(insertId, "12", "ed", 80);
-}
-</pre>
-
-<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
-<div class="pic">
-<img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
-</div></p>
-
-<p>本例最后的代码：
-<pre escaped="true" lang="javascript" line="1">
-    var mygrid;
-    function maf() {
-        return false;
-    }</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
-tree.setSkin(&#39;dhx_skyblue&#39;);
-tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
-tree.enableDragAndDrop(true);
-//tree.setDragHandler(maf);
-tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
-tree.openAllItems(0);
-
-function s_control() {
-    var insertId;
-    this._drag = function(sourceHtmlObject, dhtmlObject,
-            targetHtmlObject, e) {
-        var zel = e;
-        while (zel.tagName != &quot;TABLE&quot;)
-            zel = zel.parentNode;
-        var grid = zel.grid;
-        if (!grid)
-            return;
-        grid.setActive();
-        if (!grid._mCol || e.button == 2)
-            return;
-        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
-
-        if ((grid) &amp;&amp; (!grid._colInMove)) {
-            grid.resized = null;
-            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
-                insertId = e._cellIndex + 1;
-        }
-
-        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
-    }
-}
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-          Date of Publication&quot;);
-mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
-mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
-mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
-mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-mygrid.enableHeaderMenu();
-mygrid.enableColumnMove(true);
-mygrid.setColumnHidden(2, true);
-mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
-});
-mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
-tree.dragger.addDragLanding(mygrid.hdr, new s_control);
-</code></pre></div>
-<p></pre>
-本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
-
-<h2>参考文章</h2>
-
-<p><li>
-Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
-</li>
-<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
-</li>
-<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
-</li></p>
+<p><strong><span style="color: #00ff00;">说明</span></strong>
+<div class="note">
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
 </div>
     </article>
   </section>
