@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>JavaChen Blog</title>
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+    <script src="/assets/themes/twitter/js/jquery.js"></script>
+    <script src="/assets/themes/twitter/js/main.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/sitemap.xml">Sitemap</a></li>
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/atom.xml">Feed</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+<div class="row">
+  <div class="span9">
+  
+  
+  <section id="hadoop20130802hadoop-install-script">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-02">2013-08-02</time>
+		<a href='/hadoop/2013/08/02/hadoop-install-script#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
+
+<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
+
+<h2>hadoop安装文章</h2>
+
+<p>博客中所有关于安装hadoop的文章列出如下：</p>
+
+<ol>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/03/08/note-about-installing-hadoop-cluster/">【笔记】Hadoop安装部署</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/">手动安装Cloudera Hive CDH</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH/">手动安装Cloudera HBase CDH</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH/">手动安装Cloudera Hadoop CDH</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/03/29/install-impala/">安装impala过程</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum/">从yum安装Cloudera CDH集群</a></p></li>
+<li><p><a href="http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager/">通过Cloudera Manager安装CDH</a></p></li>
+</ol>
+
+<h2>hadoop-install</h2>
+
+<p><a href="https://github.com/javachen/hadoop-install">hadoop-install</a>上脚本，all-in-one-install.sh是在一个节点上安装hdfs、hive、yarn、zookeeper和hbase，编写该脚本是为了在本机（fedora19系统）上调试mapreduce、hive和hbase；cluster-install.sh是在多个节点上安装hadoop集群，同样目前完成了hdfs、hive、yarn、zookeeper和hbase的自动安装。</p>
+
+<h2>脚本片段</h2>
+
+<p>IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，供大家学习。</p>
+
+<h3>检测操作系统版本</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">( grep -i &quot;CentOS&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=centos
+( grep -i &quot;Red[[:blank:]]*Hat[[:blank:]]*Enterprise[[:blank:]]*Linux&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=rhel
+( grep -i &quot;Oracle[[:blank:]]*Linux&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=oel
+( grep -i &quot;Asianux[[:blank:]]*Server&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=an
+( grep -i &quot;SUSE[[:blank:]]*Linux[[:blank:]]*Enterprise[[:blank:]]*Server&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=sles
+( grep -i &quot;Fedora&quot; /etc/issue &gt; /dev/null ) &amp;&amp; OS_DISTRIBUTOR=fedora
+
+major_revision=`grep -oP &#39;\d+&#39; /etc/issue | sed -n &quot;1,1p&quot;`
+minor_revision=`grep -oP &#39;\d+&#39; /etc/issue | sed -n &quot;2,2p&quot;`
+OS_RELEASE=&quot;$major_revision.$minor_revision&quot;
+</code></pre></div>
+<h3>生成ssh公要</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yes|ssh-keygen -t rsa -f /root/.ssh/id_rsa -N &quot;&quot;
+[ ! -d /root/.ssh ] &amp;&amp; ( mkdir /root/.ssh ) &amp;&amp; ( chmod 700 /root/.ssh )
+</code></pre></div>
+<h3>ssh设置无密码登陆</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">set timeout 20
+
+set host [lindex $argv 0]
+set password [lindex $argv 1]
+set pubkey [exec cat /root/.ssh/id_rsa.pub]
+set localsh [exec cat ./config_ssh_local.sh]
+
+#spawn ssh-copy-id -i /root/.ssh/id_rsa.pub root@$host
+spawn ssh root@$host &quot;
+umask 022
+mkdir -p  /root/.ssh
+echo \&#39;$pubkey\&#39; &gt; /root/.ssh/authorized_keys
+echo \&#39;$localsh\&#39; &gt;  /root/.ssh/config_ssh_local.sh
+cd /root/.ssh/; sh config_ssh_local.sh
+&quot;
+expect {
+    timeout exit
+    yes/no  {send &quot;yes\r&quot;;exp_continue}
+    assword {send &quot;$password\r&quot;}
+}
+expect eof
+#interact
+</code></pre></div>
+<h3>配置JAVA_HOME</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># set JAVA_HOME and PATH
+if [ -f /root/.bashrc ] ; then
+    sed -i &#39;/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d&#39; /root/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d&#39; /root/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d&#39; /root/.bashrc
+fi
+echo &quot;&quot; &gt;&gt;/root/.bashrc
+echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;/root/.bashrc
+echo &quot;export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar&quot;&gt;&gt;/root/.bashrc
+echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; /root/.bashrc
+source /root/.bashrc
+</code></pre></div>
+<h3>格式化集群</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash hdfs -c &#39;yes Y | hadoop namenode -format &gt;&gt; /tmp/format.log 2&gt;&amp;1&#39;
+</code></pre></div>
+<h3>创建hadoop目录</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash hdfs -c &quot;hadoop fs -chmod a+rw /&quot;
+while read dir user group perm
+do
+     su -s /bin/bash hdfs -c &quot;hadoop fs -mkdir -R $dir &amp;&amp; hadoop fs -chmod -R $perm $dir &amp;&amp; hadoop fs -chown -R $user:$group $dir&quot;
+     echo &quot;.&quot;
+done &lt;&lt; EOF
+/tmp hdfs hadoop 1777 
+/tmp/hadoop-yarn mapred mapred 777
+/var hdfs hadoop 755 
+/var/log yarn mapred 1775 
+/var/log/hadoop-yarn/apps yarn mapred 1777
+/hbase hbase hadoop 755
+/user hdfs hadoop 777
+/user/history mapred hadoop 1777
+/user/root root hadoop 777
+/user/hive hive hadoop 777
+EOF
+</code></pre></div>
+<h3>hive中安装并初始化postgresql</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install postgresql-server postgresql-jdbc -y &gt;/dev/null
+chkconfig postgresql on
+rm -rf /var/lib/pgsql/data
+rm -rf /var/run/postgresql/.s.PGSQL.5432
+service postgresql initdb
+
+sed -i &#39;/listen/s/#//;/listen/s/localhost/*/&#39; /var/lib/pgsql/data/postgresql.conf
+sed -i &quot;s|#standard_coffforming_strings = on|standard_conforming_strings = off|g&quot; /var/lib/pgsql/data/postgresql.conf
+echo &quot;local    all             all                                 trust&quot; &gt; /var/lib/pgsql/data/pg_hba.conf
+echo &quot;host     all             all             0.0.0.0/0           trust&quot; &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+
+sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
+
+rm -rf /usr/lib/hive/lib/postgresql-jdbc.jar
+ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
+
+su -c &quot;cd ; /usr/bin/pg_ctl start -w -m fast -D /var/lib/pgsql/data&quot; postgres
+su -c &quot;cd ; /usr/bin/psql --command \&quot;create user hiveuser with password &#39;redhat&#39;; \&quot; &quot; postgres
+su -c &quot;cd ; /usr/bin/psql --command \&quot;CREATE DATABASE metastore owner=hiveuser;\&quot; &quot; postgres
+su -c &quot;cd ; /usr/bin/psql --command \&quot;GRANT ALL privileges ON DATABASE metastore TO hiveuser;\&quot; &quot; postgres
+su -c &quot;cd ; /usr/bin/psql -U hiveuser -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql&quot; postgres
+su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot; postgres
+</code></pre></div>
+<h2>总结</h2>
+
+<p>更多脚本，请关注github：<a href="https://github.com/javachen/hadoop-install">hadoop-install</a>，你可以下载、使用并修改其中代码！</p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130801remote-debug-hadoop">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-01">2013-08-01</time>
+		<a href='/hadoop/2013/08/01/remote-debug-hadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
+
+<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
+
+<h2>JPDA 简介</h2>
+
+<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
+
+<p>更详细的介绍，您可以参考<a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></p>
+
+<h2>JDWP 设置</h2>
+
+<p>JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
+</code></pre></div>
+<p>各参数的含义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug
+启用调试特性
+-Xrunjdwp
+启用JDWP实现，包含若干子选项：
+transport=dt_socket
+JPDA front-end和back-end之间的传输方法。dt_socket表示使用套接字传输。
+address=8000
+JVM在8000端口上监听请求，这个设定为一个不冲突的端口即可。
+server=y
+y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试器。
+suspend=y
+y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
+</code></pre></div>
+<h2>配置hbase远程调试</h2>
+
+<p>打开<code>/etc/hbase/conf/hbase-env.sh</code>，找到以下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
+# export HBASE_MASTER_OPTS=&quot;$HBASE_MASTER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8070&quot;
+# export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
+# export HBASE_THRIFT_OPTS=&quot;$HBASE_THRIFT_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8072&quot;
+# export HBASE_ZOOKEEPER_OPTS=&quot;$HBASE_ZOOKEEPER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8073&quot;
+</code></pre></div>
+<p>如果想远程调式hbase-master进程，请去掉对<code>HBASE_MASTER_OPTS</code>的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。</p>
+
+<hr>
+
+<h3>注意（20130817更新）：</h3>
+
+<p>如果启动hbase时提示<code>check your java command line for duplicate jdwp options</code>，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。</p>
+
+<p>例如，如果你想调试regionserver，请把下面代码加到<code>elif [ &quot;$COMMAND&quot; = &quot;regionserver&quot; ] ; then</code>中去：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
+</code></pre></div>
+<h2>配置hive远程调试</h2>
+
+<p>停止hive-server2进程，然后以下面命令启动hive-server2</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver --debug
+</code></pre></div>
+<p>进程会监听在8000端口等待调试连接。如果想更改监听端口，可以修改配置文件:<code>${HIVE_HOME}bin/ext/debug.sh</code></p>
+
+<p>如果Hadoop是0.23以上版本，debug模式启动Cli会报错：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ERROR: Cannot load this JVM TI agent twice, check your java command line for duplicate jdwp options.
+</code></pre></div>
+<p>打开<code>${Hadoop_HOME}/bin/hadoop</code>，注释掉以下代码</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
+HADOOP_OPTS=&quot;$HADOOP_OPTS $HADOOP_CLIENT_OPTS&quot;
+</code></pre></div>
+<h2>配置yarn远程调试</h2>
+
+<p>请在以下代码添加调试参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if [ &quot;$COMMAND&quot; = &quot;classpath&quot; ] ; then
+if $cygwin; then
+CLASSPATH=`cygpath -p -w &quot;$CLASSPATH&quot;`
+fi
+echo $CLASSPATH
+exit
+elif [ &quot;$COMMAND&quot; = &quot;rmadmin&quot; ] ; then
+CLASS=&#39;org.apache.hadoop.yarn.client.RMAdmin&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;application&quot; ] ; then
+class=&quot;org&quot;.apache.hadoop.yarn.client.cli.ApplicationCLI
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;node&quot; ] ; then
+class=&quot;org&quot;.apache.hadoop.yarn.client.cli.NodeCLI
+YARN_OPTS=&quot;$YARN_OPTS $YARN_CLIENT_OPTS&quot;
+elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/rm-config/log4j.properties
+CLASS=&#39;org.apache.hadoop.yarn.server.resourcemanager.ResourceManager&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_RESOURCEMANAGER_OPTS&quot;
+if [ &quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_RESOURCEMANAGER_HEAPSIZE&quot;&quot;m&quot;
+fi
+elif [ &quot;$COMMAND&quot; = &quot;nodemanager&quot; ] ; then
+CLASSPATH=${CLASSPATH}:$YARN_CONF_DIR/nm-config/log4j.properties
+CLASS=&#39;org.apache.hadoop.yarn.server.nodemanager.NodeManager&#39;
+YARN_OPTS=&quot;$YARN_OPTS -server $YARN_NODEMANAGER_OPTS&quot;
+if [ &quot;$YARN_NODEMANAGER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_NODEMANAGER_HEAPSIZE&quot;&quot;m&quot;
+fi
+elif [ &quot;$COMMAND&quot; = &quot;proxyserver&quot; ] ; then
+CLASS=&#39;org.apache.hadoop.yarn.server.webproxy.WebAppProxyServer&#39;
+YARN_OPTS=&quot;$YARN_OPTS $YARN_PROXYSERVER_OPTS&quot;
+if [ &quot;$YARN_PROXYSERVER_HEAPSIZE&quot; != &quot;&quot; ]; then
+JAVA_HEAP_MAX=&quot;-Xmx&quot;&quot;$YARN_PROXYSERVER_HEAPSIZE&quot;&quot;m&quot;
+fi
+</code></pre></div>
+<p>例如：
+如果你想调试resourcemanager代码，请在<code>elif [ &quot;$COMMAND&quot; = &quot;resourcemanager&quot; ]</code> 分支内添加如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">YARN_RESOURCEMANAGER_OPTS=&quot;$YARN_RESOURCEMANAGER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6001&quot;
+</code></pre></div>
+<p>其他进程，参照上面即可。</p>
+
+<p>注意：端口不要冲突。</p>
+
+<h2>配置mapreduce远程调试</h2>
+
+<p>如果想要调试Map 或Reduce Task，则修改<code>bin/hadoop</code>已经没用了，因为<code>bin/hadoop</code>中没有Map Task的启动参数。</p>
+
+<p>此时需要修改mapred-site.xml</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt; 
+    &lt;name&gt;mapred.child.java.opts&lt;/name&gt; 
+    &lt;value&gt;-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000&lt;/value&gt; 
+&lt;/property
+</code></pre></div>
+<p>在一个TaskTracker上，只能启动一个Map Task或一个Reduce Task，否则启动时会有端口冲突。因此要修改所有TaskTracker上的<code>conf/hadoop-site.xml</code>中的配置项：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+    &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+    &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;
+    &lt;value&gt;0&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<h2>在Eclipse中使用方法：</h2>
+
+<ol>
+<li><p>打开eclipse，找到<code>Debug Configurations...</code>，添加一个Remout Java Application:</p></li>
+<li><p>在source中可以关联到hive的源代码,然后，单击Debug按钮进入远程debug模式。</p></li>
+<li><p>编写个jdbc的测试类，运行代码，这时候因为hive-server2端没有设置端点，故程序可以正常运行直到结束。</p></li>
+<li><p>在hive代码中设置一个断点，如<code>ExecDriver.java</code>的<code>execute</code>方法中设置断点，然后再运行jdbc测试类。</p></li>
+</ol>
+
+<h2>参考文章</h2>
+
+<ol>
+<li><a href="http://zhangjie.me/eclipse-debug-hadoop/">在Eclipse中远程调试Hadoop</a></li>
+<li><a href="http://long-xie.iteye.com/blog/1779072">hive远程调试</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></li>
+</ol>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130720install-rhadoop">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#R-ref">R</a>
+			
+			,
+			
+			
+			<a href="/tags.html#rhadoop-ref">rhadoop</a>
+			
+			
+		|
+		Time：<time date="2013-07-20">2013-07-20</time>
+		<a href='/hadoop/2013/07/20/install-rhadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>1. R Language Install</h2>
+
+<h3>安装相关依赖</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+</code></pre></div>
+<h3>编译安装：R-3.0.1</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
+./configure
+make 
+make install #R运行
+export HADOOP_CMD=/usr/bin/hadoop
+</code></pre></div>
+<h3>排错</h3>
+
+<p>1、错误1</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: --with-readline=yes (default) 
+</code></pre></div>
+<p>安装readline </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install readline*
+</code></pre></div>
+<p>2、错误2</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: No F77 compiler found 
+</code></pre></div>
+<p>安装gfortran</p>
+
+<p>3、错误3</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: –with-x=yes (default) and X11 headers/libs are not available 
+</code></pre></div>
+<p>安装</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install libXt*
+</code></pre></div>
+<p>4、错误4</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check 
+</code></pre></div>
+<p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
+
+<h3>验证是否安装成功</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
+R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R是自由软件，不带任何担保。
+在某些条件下你可以将其自由散布。
+用&#39;license()&#39;或&#39;licence()&#39;来看散布的详细条件。
+
+R是个合作计划，有许多人为之做出了贡献.
+用&#39;contributors()&#39;来看合作者的详细情况
+用&#39;citation()&#39;会告诉你如何在出版物中正确地引用R或R程序包。
+
+用&#39;demo()&#39;来看一些示范程序，用&#39;help()&#39;来阅读在线帮助文件，或
+用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
+用&#39;q()&#39;退出R.
+</code></pre></div>
+<h2>2. 安装Rhadoop</h2>
+
+<h3>安装rhdfs，rmr2</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
+R CMD javareconf
+R CMD INSTALL &#39;plyr_1.8.tar.gz&#39;
+R CMD INSTALL &#39;stringr_0.6.2.tar.gz&#39;
+R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
+R CMD INSTALL &#39;digest_0.6.3.tar.gz&#39;
+R CMD INSTALL &#39;functional_0.4.tar.gz&#39;
+R CMD INSTALL &#39;iterators_1.0.6.tar.gz&#39;
+R CMD INSTALL &#39;itertools_0.1-1.tar.gz&#39;
+R CMD INSTALL &#39;Rcpp_0.10.3.tar.gz&#39;
+R CMD INSTALL &#39;rJava_0.9-4.tar.gz&#39;
+R CMD INSTALL &#39;RJSONIO_1.0-3.tar.gz&#39;
+R CMD INSTALL &#39;reshape2_1.2.2.tar.gz&#39;
+R CMD INSTALL &#39;rhdfs_1.0.5.tar.gz&#39;
+R CMD INSTALL &#39;rmr2_2.2.0.tar.gz&#39;
+</code></pre></div>
+<p>R library(rhdfs)检查是否能正常工作</p>
+
+<h4>验证测试</h4>
+
+<p>Rmr测试命令： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt; train.mr&lt;-mapreduce( + train.hdfs, + map = function(k, v) { + keyval(k,v$item) + } + ,reduce=function(k,v){ + m&lt;-merge(v,v) + keyval(m$x,m$y) + } + )
+</code></pre></div>
+<p>出现如下错误：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">packageJobJar: [/tmp/RtmpCuhs7d/rmr-local-env18916b6f86b3, /tmp/RtmpCuhs7d/rmr-global-env18913824c681, /tmp/RtmpCuhs7d/rmr-streaming-map18912d6c2b1c, /tmp/RtmpCuhs7d/rmr-streaming-reduce1891179bb645, /tmp/hadoop-root/hadoop-unjar4575094085541826184/] [] /tmp/streamjob2910108622786868147.jar tmpDir=null 13/06/05 18:22:28
+WARN mapred.JobClient: Use GenericOptionsParser for parsing the arguments. Applications should implement Tool for the same. 13/06/05 18:22:28 INFO mapred.FileInputFormat: Total input paths to process : 1 13/06/05 18:22:29
+INFO streaming.StreamJob: getLocalDirs(): [/tmp/hadoop-root/mapred/local] 13/06/05 18:22:29 INFO streaming.StreamJob: Running job: job_201306050931_0004 13/06/05 18:22:29
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:29
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:29 INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:30 
+INFO streaming.StreamJob:  map 0%  reduce 0% 13/06/05 18:22:56
+INFO streaming.StreamJob:  map 100%  reduce 100% 13/06/05 18:22:56
+INFO streaming.StreamJob: To kill this job, run: 13/06/05 18:22:56
+INFO streaming.StreamJob: /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=cdh1:8021 -kill job_201306050931_0004 13/06/05 18:22:56
+INFO streaming.StreamJob: Tracking URL: http://cdh1:50030/jobdetails.jsp?jobid=job_201306050931_0004 13/06/05 18:22:56 
+ERROR streaming.StreamJob: Job not successful. Error: NA 13/06/05 18:22:56
+INFO streaming.StreamJob: killJob... Streaming Command Failed! Error in mr(map = map, reduce = reduce, combine = combine, vectorized.reduce,  :   hadoop streaming failed with error code 1
+</code></pre></div>
+<p>错误解决方法： 通过查看日志，hadoop没有在<code>/usr/bin</code>下找到Rscript,于是从R的安装目录<code>/usr/local/bin</code>下做R和Rscript的符号链接到<code>/usr/bin</code>下，再次执行即可解决次错。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#ln -s /usr/loca/bin/R  /usr/bin
+#ln -s /usr/local/bin/Rscript  /usr/bin
+</code></pre></div>
+<h2>3. 安装rhbase</h2>
+
+<h3>安装依赖</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install boost*
+#yum install openssl*
+</code></pre></div>
+<h3>安装thrift</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#tar -zxvf thrift-0.9.0.tar.gz
+#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+#cd thrift-0.9.0
+#./configure --with-boost=/usr/include/boost JAVAC=/usr/java/jdk1.6.0_31/bin/javac
+#make
+#make install
+</code></pre></div>
+<p>如果报错：error: &quot;Error: libcrypto required.&quot;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install openssl*
+</code></pre></div>
+<p>如果报错：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">src/thrift/qt/moc_TQTcpServer.cpp:14:2: error: #error &quot;This file was generated using the moc from 4.8.1. It&quot;
+src/thrift/qt/moc_TQTcpServer.cpp:15:2: error: #error &quot;cannot be used with the include files from this version of Qt.&quot;
+src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &quot;(The moc has changed too much.)&quot;
+</code></pre></div>
+<p>则运行下面命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
+</code></pre></div>
+<h3>配置PKG<em>CONFIG</em>PATH</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
+pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
+cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
+</code></pre></div>
+<p>启动hbase：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/usr/lib/hbase/bin/hbase-daemon.sh  start  thrift 
+</code></pre></div>
+<p>使用jps查看thrift进程</p>
+
+<h3>安装rhbase</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">R CMD INSTALL &#39;rhbase_1.1.1.tar.gz&#39;
+</code></pre></div>
+<h3>验证并测试</h3>
+
+<p>在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop27 hadoop]# R
+R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type &#39;license()&#39; or &#39;licence()&#39; for distribution details.
+Natural language support but running in an English locale
+R is a collaborative project with many contributors.
+Type &#39;contributors()&#39; for more information and
+&#39;citation()&#39; on how to cite R or R packages in publications.
+Type &#39;demo()&#39; for some demos, &#39;help()&#39; for on-line help, or
+&#39;help.start()&#39; for an HTML browser interface to help.
+Type &#39;q()&#39; to quit R.
+&gt; library(rhdfs)
+Loading required package: rJava
+HADOOP_CMD=/usr/bin/hadoop
+Be sure to run hdfs.init()
+&gt; library(rmr2)
+Loading required package: Rcpp
+Loading required package: RJSONIO
+Loading required package: digest
+Loading required package: functional
+Loading required package: stringr
+Loading required package: plyr
+Loading required package: reshape2
+&gt; library(rhbase)
+&gt;
+</code></pre></div>
+<h2>4. 装RHive</h2>
+
+<h3>环境变量</h3>
+
+<p>设置环境变量 <code>vim /etc/profile</code>,末行添加如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_CMD=/usr/bin/hadoop
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+export HADOOP_STREAMING=/usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.0.0-mr1-cdh4.2.1.jar
+export HADOOP_HOME=/usr/lib/hadoop
+export RHIVE_DATA=/hadoop/dfs/rhive/data
+export HIVE_HOME=/usr/lib/hive
+</code></pre></div>
+<h3>安装Rserve：</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL &#39;Rserve_1.7-1.tar.gz&#39;
+</code></pre></div>
+<p>在安装Rsever用户下，创建一目录，并创建Rserv.conf文件，写入``remote enable&#39;&#39;保存并退出。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#cd /usr/local/lib64/R/
+#echo remote enable &gt; Rserv.conf
+</code></pre></div>
+<p>启动Rserve：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD Rserve --RS-conf /usr/local/lib64/R/Rserv.conf
+</code></pre></div>
+<p>检查Rserve启动是否正常：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#telnet localhost 6311
+</code></pre></div>
+<p>显示 Rsrv0103QAP1 则表示连接成功</p>
+
+<h3>安装RHive</h3>
+
+<p>创建数据目录：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL RHive_0.0-7.tar.gz
+#cd /usr/local/lib64/R/
+mkdir -p rhive/data
+</code></pre></div>
+<p>在上传rhive_udf.jar到hdfs上：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop fs -mkdir /rhive/lib
+cd /usr/local/lib64/R/library/RHive/java
+hadoop fs -put rhive_udf.jar /rhive/lib
+hadoop fs -chmod a+rw /rhive/lib/rhive_udf.jar
+cd /usr/lib/hadoop
+ln -s /etc/hadoop/conf conf
+</code></pre></div>
+<p>测试RHive安装是否成功：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">R
+library（RHive）
+rhive.connect(&#39;192.168.0.27&#39;)【hive的地址】
+rhive.env()
+</code></pre></div></div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130624install-cdh-by-cloudera-manager">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cdh-ref">cdh</a>
+			
+			
+		|
+		Time：<time date="2013-06-24">2013-06-24</time>
+		<a href='/hadoop/2013/06/24/install-cdh-by-cloudera-manager#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。
+该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
+
+<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+<p>这里还有一种方法，就是手动下载<code>Cloudera Manager</code>的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使<code>archive.cloudera.com</code>域名映射到本地ip。</p>
+
+<p>出于好奇，想破解<code>cloudera-manager-installer.bin</code>，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
+[june@june-fedora cdh]$ unzip cloudera-manager-installer.zip 
+</code></pre></div>
+<p>解压之后的目录如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cloudera-manager-installer]$ ll
+总用量 512
+-rwxrwxr-x. 1 june june 501698 5月  25 09:53 cloudera-manager-installer.zip
+drwxr-xr-x. 2 june june   4096 5月  23 03:05 data
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 guis
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 meta
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 scripts
+</code></pre></div>
+<p>查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从<code>scripts/config.lua</code>脚本中大概可以看出安装脚本的执行过程。</p>
+
+<p>整理下该脚本逻辑，主要是做了以下操作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y jdk.x86_64 
+yum install -y cloudera-manager-server 
+yum install -y cloudera-manager-server-db
+/etc/init.d/cloudera-scm-server start
+/etc/init.d/cloudera-scm-server-db start
+</code></pre></div>
+<p>知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后查看7180端口是否打开：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">netstat -na| grep 7180
+</code></pre></div>
+<p>通过浏览器访问<code>http://IP:7180</code>登录cloudera manager界面：用户名/密码：<code>admin/admin</code>,按照界面提示完成hadoop集群安装。</p>
+</div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li class="next"><a href='/'>&larr; Previous</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li class="prev"><a href='/page3'>Next &rarr;</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span3">
+    <section>
+   	 <h4>About me</h4>
+	<div>
+   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
+	<br/>
+	<br/>
+	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
+	<br/><br/>
+	联系博主：javachen.june[a]gmail.com
+	</div>
+    </section>
+
+    <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+    </ul>
+    </section>
+    
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	
+	<section>
+		<h3>Recent Comments</h3>
+		<ul class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="100"></ul>
+	</section>
+	
+	<section>
+		<h3>Recent Vistors</h3>
+		 <ul class="ds-recent-visitors" data-num-items="18"></ul>
+	</section>
+	 
+     <section>
+   	 <h4>WeiBo</h4>
+   	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+    </section>
+    
+    <section>
+	  
+	    <h4>Categories</h4>
+	    <ul class="tag_box">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>9</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>2</span>
+    	</a></li>
+    
+  
+
+
+	    </ul>
+	  
+     </section>
+       <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

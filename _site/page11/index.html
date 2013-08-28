@@ -1,0 +1,855 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>JavaChen Blog</title>
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+    <script src="/assets/themes/twitter/js/jquery.js"></script>
+    <script src="/assets/themes/twitter/js/main.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/sitemap.xml">Sitemap</a></li>
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/atom.xml">Feed</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+<div class="row">
+  <div class="span9">
+  
+  
+  <section id="javascript20110719dhtmlxgrid-quick-start-guide">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-19">2011-07-19</time>
+		<a href='/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p><span style="color: #ff0000;">说明:</span></p>
+
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+</code></pre></div>
+<h2>Step 1 – 引入文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+    //we&#39;ll write script commands here
+&lt; /script&gt;
+</code></pre></div>
+<h2>Step 2 – 放置gird</h2>
+
+<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+</code></pre></div>
+<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
+ function doInitGrid(){
+ }
+</code></pre></div>
+<p>doInitGrid方法会包括以下代码：</p>
+
+<ul>
+<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
+<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
+<li>使用setHeader 方法定义表头；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
+<li>使用setSkin方法设置皮肤；</li>
+<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
+</ul>
+
+<p>目前，doInitGrid方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
+mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
+grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
+grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
+mygrid.setSkin(&quot;light&quot;); //设置皮肤
+grid.init(); //显示调用初始化方法，必须的
+</code></pre></div>
+<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
+</code></pre></div>
+<p>这样在该页面初始化之后会显示如下：</p>
+
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
+
+<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
+        parent:&quot;a_grid&quot;,
+        image_path:&quot;codebase/imgs&quot;,
+        columns:[
+            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
+            { label:[&quot;Book title&quot;,
+                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
+            { label:[&quot;Author&quot;,
+                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
+            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
+            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
+            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
+            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
+            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
+        ],
+        xml:&quot;data.xml&quot;
+    });
+</code></pre></div>
+<h2>Step 3 – 填充数据</h2>
+
+<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
+
+<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{
+rows:[
+    {
+        id: &quot;a&quot;,
+        data: [Model 1, 100, 399]
+    },
+    {
+    id: &quot;b&quot;,
+        data: [Model 2, 50, 649]
+    },
+    {
+        id: &quot;c&quot;,
+           data: [ Model 3, 70, 499]
+    }
+]
+}
+</code></pre></div>
+<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
+</code></pre></div>
+<p>这时候页面展示如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
+
+<h2>Step 4 – 客户端排序</h2>
+
+<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
+
+<p>该类型值有以下四种：</p>
+
+<ul>
+<li>str – 作为字符串排序</li>
+<li>int - 以Integer值排序 (通常可以是任何数字);</li>
+<li>date – 以日期排序</li>
+<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
+</ul>
+
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
+</code></pre></div>
+<p>这时候单击最后一列表头，结果如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
+
+<h2>Step 5 – 单元格格式化和编辑</h2>
+
+<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
+
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
+</code></pre></div>
+<p>Excells格式化有以下几种：</p>
+
+<ul>
+<li>link：超链接</li>
+<li>img：图片</li>
+<li>price：价格</li>
+<li>dyn：动态行</li>
+</ul>
+
+<p>Excell 复杂编辑器有以下几种：</p>
+
+<ul>
+<li>cp：colorpicker</li>
+<li>calck：允许调用grid.setNumberFormat的计算器</li>
+<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
+<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
+<li>calendar：YUI Calendar</li>
+<li>clist：多选组件</li>
+</ul>
+
+<p>使用其他组件作为单元格编辑器:</p>
+
+<ul>
+<li>grid：使用dhtmlxgrid</li>
+<li>stree ：使用dhtmlxtree</li>
+<li>context：使用dhtmlxmenu</li>
+<li>combo：使用dhtmlxCombo</li>
+</ul>
+
+<p>Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
+
+<p>两个扩展:</p>
+
+<ul>
+<li>sub<em>row</em>ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub<em>row</em>grid – 允许创建一个子表作为一个子行的内容</li>
+</ul>
+
+<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
+
+<h2>Step 6 – 行操作方法</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+</code></pre></div>
+<p>代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
+
+<p>代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行</p>
+
+<h2>Step 7 – 事件</h2>
+
+<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+</code></pre></div>
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Model,Qty,Price&quot;);
+mygrid.setInitWidths(&quot;*,150,150&quot;);
+mygrid.setColAlign(&quot;left,right,right&quot;)
+mygrid.setSkin(&quot;light&quot;);
+mygrid.setColSorting(&quot;str,int,int&quot;);
+mygrid.setColTypes(&quot;ed,ed,price&quot;);
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+&lt; /script&gt;
+&lt; body onload=&quot;doInitGrid()&quot;&gt;
+&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+&lt; /body&gt;
+</code></pre></div></div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110707some-resources-about-openstack">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
+			
+			
+		|
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/some-resources-about-openstack#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p><li>
+<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
+</li>
+<li>
+OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
+</li>
+<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
+</li>
+<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
+</li>
+<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
+</li>
+<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
+</li>
+<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
+</li>
+<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
+</li>
+<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
+</li>
+<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
+</li>
+<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
+</li>
+<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
+</li>
+<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
+</li>
+<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
+</li>
+<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
+</li>
+<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
+</li>
+<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</li>
+<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+</li>
+<li>
+安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
+</li>
+<li>
+安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
+</li>
+<li>
+Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
+</li>
+<li>
+RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
+</li>
+<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
+</li></p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110707openstack-architecture-overview">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/07/07/openstack-architecture-overview">OpenStack架构预览</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
+			
+			
+		|
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/openstack-architecture-overview#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p><h2>What is OpenStack?</h2>
+OpenStack提供开放源码软件，建立公共和私有云。 OpenStack是一个社区和一个项目，以及开放源码软件，以帮助企业运行的虚拟计算或者存储云。 OpenStackd开源项目由社区维护，包括OpenStack计算（代号为Nova），OpenStack对象存储（代号为SWIFT），并OpenStack镜像服务（代号Glance）的集合。 OpenStack提供了一个操作平台，或工具包，用于编排云。
+<h2>Components of OpenStack</h2>
+OpenStack当前主要有三个组件：计算，存储，镜像。<br />
+OpenStack计算是一个云控制器，用来启动一个用户或一个组的虚拟实例，它也用于配置每个实例或项目中包含多个实例为某个特定项目的联网。<br />
+OpenStack对象存储是一个在具有内置冗余和容错的大容量系统中存储对象的系统。对象存储有各种应用，如备份或存档数据，存储图形或视频（流媒体数据传输到用户的浏览器），储存二级或三级静态数据，发展与数据存储集成新的应用程序，当预测存储容量困难时存储数据，创造弹性和灵活的云存储Web应用程序。<br />
+OpenStack镜像服务是一个查找和虚拟机图像检索系统。它可以配置三种方式：使用OpenStack对象存储来存储图像;使用亚马逊S3直接存储，或使用S3对象存储作为S3访问中间存储。
+<h2>OpenStack Project Architecture</h2>
+OpenStack当前包括三个子项目，三个项目相会独立，可以单独安装。<br />
+• Swift 提供对象存储。这是大致类似于Rackspace云文件（从它派生）或亚马逊S3。<br />
+• Glance 提供OpenStack Nova虚拟机镜像的发现，存储和检索。<br />
+• Nova 根据要求提供虚拟服务。这与Rackspace云服务器或亚马逊EC2类似。<br />
+将来会出现web 接口的子项目以及队列服务的子项目。
+<h2>Cloud Provider Conceptual Architecture</h2>
+构建自己的Iaas云环境并将其提供给用户，需要提供以下几个特性：<br />
+1. 允许应用用户注册云服务、查看使用情况以及账单。<br />
+2. 允许开发商和开发人员创建和存储自定义的镜像。<br />
+3. 允许开发商和开发人员启动、监控、停止虚拟机实例。<br />
+4. 允许操作人员配置和操作云基础设施。<!--more--></p>
+
+<p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
+
+<p>在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
+表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
+逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
+集成功能，大多数服务提供商已经有一个客户的身份和计费系统。任何云架构将需要与这些系统集成。<br />
+管理层，提供一个API来管理云并提供监控功能。<br />
+资源层，因为这是一个计算云，我们需要实际的计算，网络和存储资源，以提供给客户。这一层提供这些服务，他们可能是服务器，网络交换机，网络附加存储或其他资源。
+<h2>OpenStack Compute Logical Architecture</h2>
+OpenStack 中有两个守护进程：<br />
+接收和调解API调用的WSGI应用程序 （nova-api，glance-api等等）。<br />
+进行编排任务的工人守护进程（nova-compute， nova-network,，nova-schedule）。<br />
+OpenStack中还包含两个组件：消息队列服务和数据库。这两个组件方便异步编排复杂的任务通过消息传递和信息共享。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture.png"><img class="size-medium wp-image-2124 aligncenter" title="OpenStack Compute Logical Architecture" src="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture-300x220.png" alt="" width="300" height="220" /></a></p>
+这个复杂的，但不是太翔实的图表可以概括为三句话：<br />
+ 终端用户通过nova-api 接口与Openstack 计算交互。<br />
+ OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
+ OpenStack Glance是一个完全独立的基础上设施。
+<strong>各个组件的介绍：</strong></p></p>
+
+<p><code><strong>nova-api</strong></code><code>：</code>是对外的接口。OpenStack 云计算的核心控制器（CloudController定义在trunk/nova/api/ec2/cloud.py）。它提供了一个为所有的API查询（OpenStack API或EC2 API）的端点，引发多数业务流程的活动（如运行一个实例），并实施一些政策（主要是配额检查）。</p>
+
+<p><code><strong>nova-schedule</strong></code><code><strong>：</strong></code>根据当前资源使用情况，决定计算节点分布到哪台计算节点上。目前实现很薄，目前已支持插件方式扩展，方便后面可能有采用更复杂算法。</p>
+
+<p><code><strong>nova-compute</strong></code><code><strong>：</strong></code>接收队列中的动作，然后执行一系列的系统命令（如启动KVM实例），同时更新数据库中的状态。</p>
+
+<p><code><strong>nova-volume</strong></code><code><strong>：</strong></code>给虚拟机分配额外持久化的存储，管理持久卷到计算实例的创建，连接和分离。</p>
+
+<p><code><strong>nova-network</strong></code><code><strong>：</strong></code>网络管理，给虚拟机分配网络和管理，使外部 PC 可以可直接访问。它接受队列中的网络任务，然后执行任务操纵网络（如设立桥接接口或更改iptables规则）。</p>
+
+<p><code><strong>queue</strong></code><code><strong>：</strong></code>提供了一个守护进程之间传递消息的中央枢纽。当前由 <a href="http://www.rabbitmq.com/" target="_top">RabbitMQ</a>实现，理论上可以是Python的ampqlib支持的任何AMPQ消息队列。</p>
+
+<p><code><strong>SQL database</strong></code><code><strong>：</strong></code>存储云基础设施的编译时和运行时的状态。这包括可用的实例类型，在使用中的实例，可用的网络和项目。</p>
+
+<p><code><strong>OpenStack Glance：</strong></code>OpenStack 单独的一个项目。
+<h2>Nova Conceptual Mapping</h2>
+<p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
+
+<p>上面的功能模块对应上面模型的映射：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p></p>
+
+<p><h2>Service Architecture</h2>
+管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
+
+<p><h2>部署</h2>
+部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
+
+<p>OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
+<h2>镜像管理</h2>
+<p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />
+你可以使用Ubuntu的已有image (https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</p>
+<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p></p>
+
+<p><h2>网络模型</h2>
+Flat Network Manager, Flat DHCP Network Manager, VLAN Network Manager.<br />
+VLAN Network Manager 这种方式适合于共有云。<br />
+在私有云方面， IP充足，而且为了方便的互联互通，简单的Flat结构网络比较适合。<br />
+OpenStack支持 Floating IPs ,该特性可以方便的通过更改IP来Failover(容错转移）或者迁移。
+<div class="note">
+<h2>参考文章</h2>
+OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+nova code:<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a>
+openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</div></p>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110706opennebula-architecture">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/07/06/opennebula-architecture">OpenNebula的架构</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-07-06">2011-07-06</time>
+		<a href='/cloud/2011/07/06/opennebula-architecture#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
+
+<p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
+
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
+
+<p align="center">图1  OpenNebula总体架构图</p>
+
+<p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
+
+<p><h2>私有云</h2>
+私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
+
+<p align="center">图2 私有云</p>
+
+<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
+<p align="center">图3 私有云内用户视图</p>
+&nbsp;
+<h2>混合云</h2>
+<p align="left">OpenNebula提供Deltacloud适配器与Amazon EC2相配合来管理混合云。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/hyb-cloud2.png"><img class="size-medium wp-image-2109 aligncenter" title="hyb cloud2" src="http://blog.javachen.com/files/2011/07/hyb-cloud2-300x203.png" alt="" width="300" height="203" /></a></p>
+<p align="center">图4 混合云</p>
+&nbsp;
+<h2>公开云</h2>
+<p align="left">OpenNebula公有云是私有云的一个扩展，是在私有云的基础上对外暴露REST接口。如果你要让合作伙伴或外部用户能够访问您的基础设施，或出售你的服务，云接口可以被添加到您的私有或混合云。显然，一个本地的云解决方案是任何公共云自然后端。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/public-cloud.png"><img class="size-medium wp-image-2110 aligncenter" title="public cloud" src="http://blog.javachen.com/files/2011/07/public-cloud-300x175.png" alt="" width="300" height="175" /></a></p>
+<p align="center">图5 公开云</p>
+<p align="left">OpenNebula的构架包括三个部分：驱动层、核心层、工具层。驱动层直接与操作系统打交道，负责虚拟机的创建、启动和关闭，为虚拟机分配存储，监控物理机和虚拟机的运行状况。核心层负责对虚拟机、存储设备、虚拟网络等进行管理。工具层通过命令行界面/浏览器界面方式提供用户交互接口，通过API方式提供程序调用接口。</p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/3-cloud.png"><img class="size-medium wp-image-2111 aligncenter" title="3 cloud" src="http://blog.javachen.com/files/2011/07/3-cloud-300x178.png" alt="" width="300" height="178" /></a></p>
+<p align="center">图6 三层架构图</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/3-cloud2.png"><img class="size-medium wp-image-2112 aligncenter" title="3 cloud2" src="http://blog.javachen.com/files/2011/07/3-cloud2-300x181.png" alt="" width="300" height="181" /></a></p>
+<p align="left">OpenNebula使用共享存储设备（例如NFS）来提供虚拟机映像服务，使得每一个计算节点都能够访问到相同的虚拟机映像资源。当用户需要启动或者是关闭某个虚拟机时，OpenNebula通过SSH登陆到计算节点，在计算节点上直接运行相对应的虚拟化管理命令。这种模式也称为无代理模式，由于不需要在计算节点上安装额外的软件（或者服务），系统的复杂度也相对降低了。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-services.png"><img class="size-medium wp-image-2113 aligncenter" title="one services" src="http://blog.javachen.com/files/2011/07/one-services-300x189.png" alt="" width="300" height="189" /></a></p>
+<p align="center">图7 前端节点和集群节点之间交互</p>
+&nbsp;
+<h2>网络架构</h2>
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
+
+<p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
+
+<p>&nbsp;
+<div class="infor">
+<h2>参考资料</h2>
+* 1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
+* 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
+* 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
+</div></p>
+</div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li class="next"><a href='/page10'>&larr; Previous</a></li>
+        <li><a href="/archive.html">Archive</a></li>
+        <li class="prev"><a href='/page12'>Next &rarr;</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span3">
+    <section>
+   	 <h4>About me</h4>
+	<div>
+   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
+	<br/>
+	<br/>
+	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
+	<br/><br/>
+	联系博主：javachen.june[a]gmail.com
+	</div>
+    </section>
+
+    <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+    </ul>
+    </section>
+    
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	
+	<section>
+		<h3>Recent Comments</h3>
+		<ul class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="100"></ul>
+	</section>
+	
+	<section>
+		<h3>Recent Vistors</h3>
+		 <ul class="ds-recent-visitors" data-num-items="18"></ul>
+	</section>
+	 
+     <section>
+   	 <h4>WeiBo</h4>
+   	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+    </section>
+    
+    <section>
+	  
+	    <h4>Categories</h4>
+	    <ul class="tag_box">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>9</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>2</span>
+    	</a></li>
+    
+  
+
+
+	    </ul>
+	  
+     </section>
+       <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

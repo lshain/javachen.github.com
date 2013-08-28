@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>JavaChen Blog</title>
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta property="wb:webmaster" content="61eb31a6e636506d" />
+    <meta name="wumiiVerification" content="eec4ca3c-ccdb-4c0f-9fe3-4499d87649a3" />
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+	<!-- Update these with your own images
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
+    <script src="/assets/themes/twitter/js/jquery.js"></script>
+    <script src="/assets/themes/twitter/js/main.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">JavaChen Blog</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/sitemap.xml">Sitemap</a></li>
+              <li><a href="/categories.html">Categories</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/archive.html">Archive</a></li>
+              <li><a href="/atom.xml">Feed</a></li>
+              <li><a href="/tags.html">Tags</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+<div class="row">
+  <div class="span9">
+  
+  
+  <section id="hadoop20130823publish-proerties-using-zookeeper">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#ZooKeeper-ref">ZooKeeper</a>
+			
+			
+		|
+		Time：<time date="2013-08-23">2013-08-23</time>
+		<a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>前言</h2>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h2>ZooKeeper</h2>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+<p>一些在线系统在运行中，需要在不停止程序的情况下能够动态调整某一个变量的值并且能够及时生效。特别是当部署了多台应用服务器的时候，需要能够做到在一台机器上修改配置文件，然后在同步到所有应用服务器。这时候使用ZooKeeper来实现就很合适了。</p>
+
+<h2>数据发布与订阅</h2>
+
+<p>发布与订阅模型，即所谓的配置中心，顾名思义就是发布者将数据发布到ZK节点上，供订阅者动态获取数据，实现配置信息的集中式管理和动态更新。例如全局的配置信息，服务式服务框架的服务地址列表等就非常适合使用。</p>
+
+<p>使用ZooKeeper的发布与订阅模型，可以将应用中用到的一些配置信息放到ZK上进行集中管理。这类场景通常是这样：应用在启动的时候会主动来获取一次配置，同时，在节点上注册一个Watcher，这样一来，以后每次配置有更新的时候，都会实时通知到订阅的客户端，从来达到获取最新配置信息的目的。这样的场景适合数据量很小，但是数据更新可能会比较快的需求。</p>
+
+<h2>配置存储方案</h2>
+
+<p>配置文件通常有如下几种保存方式：</p>
+
+<ol>
+<li><p>将配置信息保存在程序代码中
+这种方案简单，但每次修改配置都要重新编译、部署应用程序。显然这种方案很不方便，也不可靠，更无法做到修改的实时生效。</p></li>
+<li><p>将配置信息保存在xml文件或者属性文件中
+在参数信息保存在xml或者属性文件中，当需要修改参数时，直接修改 xml 文件。这样无需重新编译，只需重新部署修改的文件即可。但然后对所有的应用进行重新部署。这样做的缺点显而易见，要往上百台机器上重新部署应用，简直是一个噩梦。同时该方案还有一个缺点，就是配置修改无法做到实时生效。修改后往往过一段时间才能生效。</p></li>
+<li><p>将配置信息保存在数据库中
+当需要修改参数时，直接修改数据库，然后重启分布式应用程序，或者刷新分布式应用的缓存。尽管这种做法比以上两种方案简单，但却面临着单点失效问题。如果数据库服务器停机，则分布式应用程序的配置信息将无法更新。另外这种方案的配置修改生效实时性虽然比第二种方案好些，但仍然不能达到某些情况下的要求。</p></li>
+</ol>
+
+<h2>基于ZooKeeper的配置信息同步方案</h2>
+
+<p>如果使用ZooKeeper来实现，就可以直接把配置信息保存到ZooKeeper中，或者把属性文件内容保存到ZooKeeper中，当属性文件内容发生变化时，就通知监听者如应用程序去重新读取配置文件。</p>
+
+<p>在网上搜索了一下，很能找到好用的现成的代码实现。有的基于ZooKeeper来扩张jdk的hashmap来存储配置参数，如：<a href="http://melin.iteye.com/blog/899435">使用ZooKeeper实现静态数据中心化配置管理</a>，也有人直接实现了一个基于java并发框架的工具包，如：<a href="https://github.com/openUtility/menagerie">menagerie</a>。</p>
+
+<hr>
+
+<p><code>注意</code>:以下部分文字和图来自：<a href="http://www.code365.org/wp-content/uploads/2012/02/%E5%9F%BA%E4%BA%8EZooKeeper%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B01.pdf">基于ZooKeeper的配置信息存储方案的设计与实现1.pdf</a></p>
+
+<p>基于ZooKeeper的特性,借助ZooKeeper可以实现一个可靠的、简单的、修改配置能够实时生效的配置信息存储方案,整体的设计方案如图：</p>
+
+<p><img src="/files/2013/zookeeper-01.jpg" alt="基于zookeeper的方案"></p>
+
+<p>整个配置信息存储方案由三部分组成:ZooKeeper服务器集群、配置管理程序、分布式应用程序。</p>
+
+<p>ZooKeeper服务器集群存储配置信息,在服务器上创建一个保存数据的节点(创建节点操作);配置管理程序提供一个配置管理的UI界面或者命令行方式,用户通过配置界面修改ZooKeeper服务器节点上配置信息(设置节点数据操作);分布式应用连接到ZooKeeper集群上(创建ZooKeeper客户端操作),监听配置信息的变化(使用获取节点数据操作,并注册一个watcher)。</p>
+
+<p>当配置信息发生变化时,分布式应用会更新程序中使用配置信息。</p>
+
+<p><img src="/files/2013/zookeeper-02.jpg" alt="修改配置的时许图"></p>
+
+<h2>源代码</h2>
+
+<p>找到一个淘宝工程师写的实现方式，待整理下之后，提交到github上去。</p>
+
+<h2>优点</h2>
+
+<p>借助 ZooKeeper我们实现的配置信息存储方案具有的优点如下:</p>
+
+<ol>
+<li>简单。尽管前期搭建ZooKeeper服务器集群较为麻烦,但是实现该方案后,修改配置整个过程变得简单很多。用户只要修改配置,无需进行其他任何操作,配置自动生效。</li>
+<li>可靠。ZooKeeper服务集群具有无单点失效的特性,使整个系统更加可靠。即使ZooKeeper 集群中的一台机器失效,也不会影响整体服务,更不会影响分布式应用配置信息的更新。</li>
+<li>实时。ZooKeeper的数据更新通知机制,可以在数据发生变化后,立即通知给分布式应用程序,具有很强的变化响应能力。</li>
+</ol>
+
+<h2>总结</h2>
+
+<p>本文参考了网上的一些文章，给出了基于ZooKeeper的配置信息同步方案,解决了传统配置信息同步方案的缺点如实时性差、可靠性差、复杂等。</p>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a></li>
+<li><a href="http://melin.iteye.com/blog/899435">使用ZooKeeper实现静态数据中心化配置管理</a></li>
+<li><a href="https://github.com/openUtility/menagerie">menagerie</a></li>
+<li><a href="http://www.code365.org/wp-content/uploads/2012/02/%E5%9F%BA%E4%BA%8EZooKeeper%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B01.pdf">基于ZooKeeper的配置信息存储方案的设计与实现1.pdf</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hive20130822hive-Driver">
+    <article>
+      <header>
+      <h3><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hive-ref">hive</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			
+		|
+		Time：<time date="2013-08-22">2013-08-22</time>
+		<a href='/hive/2013/08/22/hive-Driver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>概括</h2>
+
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
+
+<h2>分析</h2>
+
+<p>Driver类入口如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Driver.run(String command) // 处理一条命令 
+{ 
+    int ret = compile(command);  // 分析命令，生成Task。 
+    ret = execute();  // 运行Task。 
+} 
+</code></pre></div>
+<p>运行命令之前，先编译命令，然后在运行任务。</p>
+
+<h3>compile方法过程</h3>
+
+<p>1、创建Context上下文</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">command = new VariableSubstitution().substitute(conf,command);
+ctx = new Context(conf);
+ctx.setTryCount(getTryCount());
+ctx.setCmd(command);
+ctx.setHDFSCleanup(true);
+</code></pre></div>
+<p>2、创建ParseDriver对象，然后解析命令、生成AST树。语法和词法分析内容，不是本文重点故不做介绍。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ParseDriver pd = new ParseDriver();
+ASTNode tree = pd.parse(command, ctx);
+tree = ParseUtils.findRootNonNullToken(tree);
+</code></pre></div>
+<p>简单归纳来说，解析程包括如下：</p>
+
+<ul>
+<li>词法分析，生成AST树，ParseDriver完成。 </li>
+<li>分析AST树，AST拆分成查询子块，信息记录在QB，这个QB在下面几个阶段都需要用到，SemanticAnalyzer.doPhase1完成。 </li>
+<li>从metastore中获取表的信息，SemanticAnalyzer.getMetaData完成。 </li>
+<li>生成逻辑执行计划，SemanticAnalyzer.genPlan完成。 </li>
+<li>优化逻辑执行计划，Optimizer完成，ParseContext作为上下文信息进行传递。 </li>
+<li>生成物理执行计划，SemanticAnalyzer.genMapRedTasks完成。 </li>
+<li>物理计划优化，PhysicalOptimizer完成，PhysicalContext作为上下文信息进行传递。</li>
+</ul>
+
+<p>3、读取环境变量，如果配置了语法分析的hook，参数为：<code>hive.semantic.analyzer.hook</code>，则:先用反射得到<code>AbstractSemanticAnalyzerHook</code>的集合，调用<code>hook.preAnalyze(hookCtx, tree)</code>方法,然后再调用<code>sem.analyze(tree, ctx)</code>方法，该方法才是用来作语法分析的,最后再调用<code>hook.postAnalyze(hookCtx, tree)</code>方法执行一些用户定义的后置操作；</p>
+
+<p>否则，直接调用<code>sem.analyze(tree, ctx)</code>进行语法分析。</p>
+
+<p>4、校验执行计划：<code>sem.validate()</code></p>
+
+<p>5、创建查询计划QueryPlan。</p>
+
+<p>6、初始化FetchTask。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if (plan.getFetchTask() != null) {
+   plan.getFetchTask().initialize(conf, plan, null);
+}
+</code></pre></div>
+<p>7、授权校验工作。</p>
+
+<h3>run方法过程</h3>
+
+<p>1、运行HiveDriverRunHook的前置方法preDriverRun</p>
+
+<p>2、运行<code>compile(command)</code>方法，并根据返回值判断是否该释放Hive锁。hive中可以配置<code>hive.support.concurrency</code>值为true并设置zookeeper的服务器地址和端口，基于zookeeper实现分布式锁以支持hive的多并发访问。这部分内容不是本文重点故不做介绍。</p>
+
+<p>3、调用execute()方法执行任务。</p>
+
+<ul>
+<li>先运行ExecuteWithHookContext的前置hook方法，ExecuteWithHookContext类型有三种：前置、运行失败、后置。</li>
+<li>然后创建DriverContext用于维护正在运行的task任务，正在运行的task任务会添加到队列runnable中去。</li>
+<li>其次，在while循环中遍历队列中的任务，然后启动任务让其执行。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    while (runnable.peek() != null &amp;&amp; running.size() &lt; maxthreads) {
+      Task&lt;? extends Serializable&gt; tsk = runnable.remove();
+      launchTask(tsk, queryId, noName, running, jobname, jobs, driverCxt);
+    }
+</code></pre></div>
+<ul>
+<li>在launchTask方法中，先判断是否支持并发执行，如果支持则调用线程的start()方法，否则调用<code>tskRun.runSequential()</code>方法顺序执行，只有当是MapReduce任务时，才执行并发执行：</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.EXECPARALLEL) &amp;&amp; tsk.isMapRedTask()) {
+          // Launch it in the parallel mode, as a separate thread only for MR tasks
+          tskRun.start();
+    } else {
+          tskRun.runSequential();
+    }
+</code></pre></div>
+<ul>
+<li>最后任务的运行，交给具体的Task去执行了。</li>
+<li>如果任务运行失败，则会创建一个备份任务，重新加入队列，然后再次运行；如果备份任务运行完成，则运行ExecuteWithHookContext的hook方法，这时候的hook为失败类型的hook。</li>
+</ul>
+
+<p>4、运行HiveDriverRunHook的后置方法postDriverRun</p>
+
+<h3>hive中支持的hook</h3>
+
+<p>上面分析中，提到了hive的hook机制，hive中一共存在以下几种hook。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive.semantic.analyzer.hook
+hive.exec.filter.hook
+hive.exec.driver.run.hooks
+hive.server2.session.hook
+hive.exec.pre.hooks
+hive.exec.post.hooks
+hive.exec.failure.hooks
+hive.client.stats.publishers
+hive.metastore.ds.connection.url.hook
+hive.metastore.init.hooks
+</code></pre></div>
+<p>通过hook机制，可以在运行前后做一些用户想做的事情。如：你可以在语法分析的hook中对hive的操作做一些超级管理员级别的权限判断；你可以对hive-server2做一些session级别的控制。</p>
+
+<p>cloudera的github仓库<a href="https://github.com/cloudera/access">access</a>中关于hive的访问控制就是使用了hive的hook机制。</p>
+
+<p>twitter的mapreduce可视化项目监控项目<a href="https://github.com/twitter/ambrose">ambrose</a>也利用了hive的hook机制，有兴趣的话，你可以去看看其是如何使用hive的hook并且你也可以扩增hook做些自己想做的事情。</p>
+
+<h2>总结</h2>
+
+<p>本文主要介绍了hive运行过程，其中简单提到了hive语法词法解析以及hook机制，没有详细分析。</p>
+
+<p>hive Driver类的执行过程如下：</p>
+
+<p><img src="/files/2013/hive-driver.jpg" alt="hive-driver"></p>
+
+<h2>参考文章</h2>
+
+<ol>
+<li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
+<li><a href="https://github.com/cloudera/access">Cloudera access</a></li>
+<li><a href="https://github.com/twitter/ambrose">twitter ambrose</a></li>
+</ol>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hive20130821hive-CliDriver">
+    <article>
+      <header>
+      <h3><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hive-ref">hive</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			
+		|
+		Time：<time date="2013-08-21">2013-08-21</time>
+		<a href='/hive/2013/08/21/hive-CliDriver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><h2>启动脚本</h2>
+
+<p>从shell脚本<code>/usr/lib/hive/bin/ext/cli.sh</code>可以看到hive cli的入口类为<code>org.apache.hadoop.hive.cli.CliDriver</code></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cli () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &quot;$@&quot;
+}
+cli_help () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &quot;--help&quot;
+}
+</code></pre></div>
+<h2>入口类</h2>
+
+<p>java中的类如果有main方法就能运行，故直接查找<code>org.apache.hadoop.hive.cli.CliDriver</code>中的main方法即可。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public static void main(String[] args) throws Exception {
+    int ret = run(args);
+    System.exit(ret);
+}
+</code></pre></div>
+<p>阅读run函数可以看到，主要做了以下几件事情：</p>
+
+<ul>
+<li>读取main方法的参数</li>
+<li>重置默认的log4j配置并为hive重新初始化log4j，注意，在这里是读取hive-log4j.properties来初始化log4j。</li>
+<li>创建CliSessionState，并初始化in、out、info、error等stream流。CliSessionState是一次命令行操作的session会话，其继承了SessionState。</li>
+<li>重命令行参数中读取参数并设置到CliSessionState中。</li>
+<li>启动SessionState并连接到hive server</li>
+<li>如果cli是本地模式运行，则加载<code>hive.aux.jars.path</code>参数配置的jar包到classpath</li>
+<li>创建一个CliDriver对象，并设置当前选择的数据库。可以在命令行参数添加<code>-database database</code>来选择连接那个数据库，默认为default数据库。</li>
+<li>加载初始化文件<code>.hiverc</code>，该文件位于当前用户主目录下，读取该文件内容后，然后调用processFile方法处理文件内容。</li>
+<li>如果命令行中有-e参数，则运行指定的sql语句；如果有-f参数，则读取该文件内容并运行。注意：不能同时指定这两个参数。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    hive -e &#39;show tables&#39;
+    hive -f /root/hive.sql
+</code></pre></div>
+<ul>
+<li>如果没有指定上面两个参数，则从当前用户主目录读取<code>.hivehistory</code>文件，如果不存在则创建。该文件保存了当前用户所有运行的hive命令。</li>
+<li>在while循环里不断读取控制台的输入内容，每次读取一行，如果行末有分号，则调用CliDriver的processLine方法运行读取到的内容。</li>
+<li>每次调用processLine方法时，都会创建SignalHandler用于捕捉用户的输入，当用户输入Ctrl+C时，会kill当前正在运行的任务以及kill掉当前进程。kill当前正在运行的job的代码如下.</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    HadoopJobExecHelper.killRunningJobs();
+</code></pre></div>
+<ul>
+<li>处理hive命令。</li>
+</ul>
+
+<h3>处理hive命令过程</h3>
+
+<p>如果输入的是quit或者exit,则程序退出。</p>
+
+<p>如果命令开头是source，则会读取source 后面文件内容，然后执行该文件内容。通过这种方式，你可以在hive命令行模式运行一个文件中的hive命令。</p>
+
+<p>如果命令开头是感叹号，执行操作系统命令（如<code>!ls</code>，列出当前目录的文件信息）。通过以下代码来运行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Process executor = Runtime.getRuntime().exec(shell_cmd);
+StreamPrinter outPrinter = new StreamPrinter(executor.getInputStream(), null, ss.out);
+StreamPrinter errPrinter = new StreamPrinter(executor.getErrorStream(), null, ss.err);
+
+outPrinter.start();
+errPrinter.start();
+
+ret = executor.waitFor();
+if (ret != 0) {
+  console.printError(&quot;Command failed with exit code = &quot; + ret);
+}
+</code></pre></div>
+<p>shell_cmd的内容大概如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">shell_cmd = &quot;/bin/bash -c \&#39;&quot; + shell_cmd + &quot;\&#39;&quot;
+</code></pre></div>
+<p>如果命令开头是list，列出jar/file/archive</p>
+
+<p>如果是远程模式运行命令行，则通过HiveClient来运行命令；否则，调用processLocalCmd方法运行本地命令。</p>
+
+<p>以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor。<code>set/dfs/add/delete</code>指令交给指定的CommandProcessor处理，其余的交给<code>org.apache.hadoop.hive.ql.Driver.run()</code>处理。
+故，CommandProcessor接口的实现类有：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">AddResourceProcessor
+DeleteResourceProcessor
+DfsProcessor
+Driver
+ResetProcessor
+SetProcessor
+</code></pre></div>
+<p><code>org.apache.hadoop.hive.ql.Driver</code>类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。</p>
+
+<h2>总结</h2>
+
+<p>作为尝试，第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑，如下图。以后还需要加强画图和表达能力。</p>
+
+<p><img src="/files/2013/hive-cli-clidriver.jpg" alt="hive-cli-clidriver"></p>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130817some-problems-about-hadoop">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-17">2013-08-17</time>
+		<a href='/hadoop/2013/08/17/some-problems-about-hadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content"><p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
+
+<h3>安装hadoop过程中需要注意以下几点：</h3>
+
+<ol>
+<li>每个节点配置hosts</li>
+<li>每个节点配置时钟同步</li>
+<li>如果没有特殊要求，关闭防火墙</li>
+<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
+</ol>
+
+<hr>
+
+<h3>使用intel的hadoop发行版IDH过程遇到问题：</h3>
+
+<p>1、 IDH集群中需要配置管理节点到集群各节点的无密码登录，公钥文件存放路径为<code>/etc/intelcloud</code>目录下，文件名称为<code>idh-id_rsa</code>。</p>
+
+<p>如果在管理界面发现不能启动/停止hadoop组件的进程，请检查ssh无密码登录是否有问题。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh -i /etc/intelcloud/idh-id_rsa nodeX
+</code></pre></div>
+<p>如果存在问题，请重新配置无密码登录：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">scp -i /etc/intelcloud/idh-id_rsa nodeX
+</code></pre></div>
+<p>2、 IDH使用puppt和shell脚本来管理hadoop集群，shell脚本中有一处调用puppt的地方存在问题，详细说明待整理！！</p>
+
+<hr>
+
+<h3>使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：</h3>
+
+<h4>说明：以下问题不局限于CDH的hadoop版本。</h4>
+
+<p>1、 在hive运行过程中会打印如下日志</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Starting Job = job_1374551537478_0001, Tracking URL = http://june-fedora:8088/proxy/application_1374551537478_0001/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
+</code></pre></div>
+<p>通过上面的<code>kill command</code>可以killjob，但是运行过程中发现提示错误，错误原因：<code>HADOOP_LIBEXEC_DIR</code>未做设置</p>
+
+<p>解决方法：在hadoop-env.sh中添加如下代码</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_LIBEXEC_DIR=$HADOOP_COMMON_HOME/libexec
+</code></pre></div>
+<p>2、 查看java进程中发现，JVM参数中-Xmx重复出现</p>
+
+<p>解决办法：<code>/etc/hadoop/conf/hadoop-env.sh</code>去掉第二行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_OPTS=&quot;-Djava.net.preferIPv4Stack=true $HADOOP_OPTS&quot;
+</code></pre></div>
+<p>3、 hive中mapreduce运行为本地模式，而不是远程模式</p>
+
+<p>解决办法：<code>/etc/hadoop/conf/hadoop-env.sh</code>设置<code>HADOOP_MAPRED_HOME</code>变量</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+</code></pre></div>
+<p>4、 如何设置hive的jvm启动参数</p>
+
+<p>hive脚本运行顺序：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive--&gt;hive-config.sh--&gt;hive-env.sh--&gt;hadoop-config.sh--&gt;hadoop-env.sh
+</code></pre></div>
+<p>故如果hadoop-env.sh中设置了<code>HADOOP_HEAPSIZE</code>，则hive-env.sh中设置的无效</p>
+
+<p>5、如何设置JOB_HISTORYSERVER的jvm参数</p>
+
+<p>在<code>/etc/hadoop/conf/hadoop-env.sh</code>添加如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_JOB_HISTORYSERVER_HEAPSIZE=256
+</code></pre></div></div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li><a href="/archive.html">Archive</a></li>
+        <li class="prev"><a href='/page2'>Next &rarr;</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span3">
+    <section>
+   	 <h4>About me</h4>
+	<div>
+   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
+	<br/>
+	<br/>
+	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
+	<br/><br/>
+	联系博主：javachen.june[a]gmail.com
+	</div>
+    </section>
+
+    <section>
+    <h4>Recent Posts</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+    </ul>
+    </section>
+    
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"javachen"};
+	(function() {
+	    var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+	    ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	
+	<section>
+		<h3>Recent Comments</h3>
+		<ul class="ds-recent-comments" data-num-items="5" data-show-avatars="1" data-show-time="1" data-show-title="1" data-show-admin="1" data-excerpt-length="100"></ul>
+	</section>
+	
+	<section>
+		<h3>Recent Vistors</h3>
+		 <ul class="ds-recent-visitors" data-num-items="18"></ul>
+	</section>
+	 
+     <section>
+   	 <h4>WeiBo</h4>
+   	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+    </section>
+    
+    <section>
+	  
+	    <h4>Categories</h4>
+	    <ul class="tag_box">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>9</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>2</span>
+    	</a></li>
+    
+  
+
+
+	    </ul>
+	  
+     </section>
+       <section>
+    <h4>Links</h4>
+   	<ul>
+	<li>Java开发
+			<ul>
+				<li><a href="http://blog.frankel.ch/" target="_blank">A Java geek</a></li>
+				<li><a href="http://xinwang.osdn.cn/" target="_blank">辛望的开发日志</a></li>
+				<li><a href="http://kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+				<li><a href="http://www.longtask.com/blog/" target="_blank">龙浩的blog</a>就职于阿里巴巴云计算</li>
+				<li><a href="http://jdkcn.com/" target="_blank">莫多泡泡</a>A Java programmeri</li>
+				<li><a href="http://hackfisher.info/" target="_blank">HackFisher</a></li>
+				<li><a href="http://bluedash.net/categories/%E7%BC%96%E7%A8%8B/spaces" target="_blank">蓝点</a></li>
+				<li><a href="http://javafans.info/" target="_blank">Java爱好者</a></li>
+				<li><a href="http://www.yankay.com/" target="_blank">我自然</a>颜开的博客</li>
+			</ul>
+		</li>
+		<li>前端开发
+			<ul>
+				<li><a href="http://panweizeng.com/" target="_blank">潘魏增</a>美团网前端工程师</li>
+				<li><a href="http://14px.com/" target="_blank">十四像素</a></li>
+			</ul>
+		</li>
+		<li>其他
+			<ul>
+				<li><a href="http://blog.boluotou.com/" target="_blank">圆木菠萝罐</a>一个大学学长</li>
+				<li><a href="http://blog.codingnow.com/" target="_blank">云风的BLOG</a></li>
+				<li><a href="http://www.yy42.net/blog/" target="_blank">程显峰</a></li>
+				<li><a href="http://coolshell.cn/" target="_blank">酷壳–CoolShell.cn</a></li>
+				<li><a href="http://www.coder4.com/" target="_blank">四号程序员</a></li>
+				<li><a href="http://timyang.net/" target="_blank">Tim[后端技术]</a></li>
+
+				<li><a href="http://www.agiledon.com/" target="_blank">捷道</a>Thoughtworks架构师</li>
+				<li><a href="http://log4d.com/" target="_blank">Log4D</a></li>
+
+				<li><a href="http://dev.ymeng.net/" target="_blank">Dev Notes</a></li>
+				<li><a href="http://www.dbanotes.net/" target="_blank">DBA Notes</a></li>		
+			</ul>
+		</li>
+	</ul>
+  </section>
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; JavaChen 2013 
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> | <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+        </p>
+      </footer>
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+
