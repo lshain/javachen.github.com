@@ -51,6 +51,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -70,315 +74,1083 @@
   <div class="span9">
   
   
-  <section id="java20120223the-process-of-seam-initiation">
+  <section id="pentaho20110926resolved-pentaho-problems-9-16">
     <article>
       <header>
-      <h3><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h3>
+      <h3><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#java-ref">java</a>
+			<a href="/categories.html#pentaho-ref">pentaho</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#seam-ref">seam</a>
+			<a href="/tags.html#pentaho-ref">pentaho</a>
+			
+			,
+			
+			
+			<a href="/tags.html#bi-ref">bi</a>
 			
 			
 		|
-		Time：<time date="2012-02-23">2012-02-23</time>
-		<a href='/java/2012/02/23/the-process-of-seam-initiation#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-09-26">2011-09-26</time>
+		<a href='/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
-</code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+    <div class="content">
+	  
+	    <p>很久没写文章了，最近在关注Pentaho。<br />
+ 以下是9月16日现场提出的问题解决办法：<br />
+      1、PDF预览中文没显示，txt预览中文乱码：<br />
+           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
+           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
+           3）、如要发布到服务器，需要修改如下的配置：<br />
+             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
+             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
+     2、实现文件拷贝方式发布报表<br />
+           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
+     3、报表链接参数传递问题<br />
+          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
+     4、查询参数缺省值问题<br />
+          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
+     5、实现在pie chart上显示文字<br />
+          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
+     6、报表集成时候垂直滚动条是否可以去掉<br />
+          改变报表的高度：报表设计器 file-page setup<br />
+     7、报表中的chart不能导出到Excel2007<br />
+          目前为系统bug，excel2003能够正常导出<br />
+     8、实现隔行换色<br />
+          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
+     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
 
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
-
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
-
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
-
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
-
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
-
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
-
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
-
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
-
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
-
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
-</div>
+	  
+   </div>
     </article>
   </section>
   
   
-  <section id="kettle20120222the-init-process-before-job-execution">
+  <section id="cloud20110820install-eucalyptus-on-fedora-15">
     <article>
       <header>
-      <h3><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h3>
+      <h3><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#kettle-ref">kettle</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#kettle-ref">kettle</a>
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
 			
 			
 		|
-		Time：<time date="2012-02-22">2012-02-22</time>
-		<a href='/kettle/2012/02/22/the-init-process-before-job-execution#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-08-20">2011-08-20</time>
+		<a href='/cloud/2011/08/20/install-eucalyptus-on-fedora-15#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
+    <div class="content">
+	  
+	    <p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
+在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
 
-<p>之前用英文写了一篇文章《<a href="http://www.javachen.com/2012/02/the-execution-process-of-kettles-job/" target="_blank">The execution process of kettle’s job</a>》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。</p>
+<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
 
-<p>在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。</p>
+<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
 
+<p></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110811export-dhtmlxgrid-to-pdf-in-java">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-08-11">2011-08-11</time>
+		<a href='/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
+当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+
+<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
+需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+
+<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
+<div class="pic">
+<img src="/files/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
+</div>
+点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
 <pre lang="java">
-public void runFile() {
-    executeFile(true, false, false, false, false, null, false);
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document dom = null;
+try {
+     dom = db.parse(new InputSource(new StringReader(xml)));
+}catch(SAXException se) {
+     se.printStackTrace();
+}catch(IOException ioe) { 
+     ioe.printStackTrace();
 }
+root = dom.getDocumentElement();
+</pre></p>
 
-public void executeFile(boolean local, boolean remote, boolean cluster,
-        boolean preview, boolean debug, Date replayDate, boolean safe) {
-    TransMeta transMeta = getActiveTransformation();
-    if (transMeta != null)
-        executeTransformation(transMeta, local, remote, cluster, preview,
-                debug, replayDate, safe);
+<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
+为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
+<pre lang="java">
+public class PDFXMLParser {
+    Element root;
+    PDFColumn[][] columns;
+    PDFRow[] rows;
+    double[] widths;
+    private Boolean header = false;
+    private Boolean footer = false;
+    private String profile = &quot;gray&quot;;
+    private double[] orientation = null;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
+    SAXReader saxReader = new SAXReader();
 
-    JobMeta jobMeta = getActiveJob();
-    if (jobMeta != null)
-        executeJob(jobMeta, local, remote, replayDate, safe, null, 0);
-}
-
-public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
-        Date replayDate, boolean safe, String startCopyName, int startCopyNr) {
+    Document document = null;
     try {
-        delegates.jobs.executeJob(jobMeta, local, remote, replayDate, safe,
-                startCopyName, startCopyNr);
-    } catch (Exception e) {
-        new ErrorDialog(shell, "Execute job",
-                "There was an error during job execution", e);
+        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+    } catch (DocumentException e) {
+        e.printStackTrace();
     }
+    root = document.getRootElement();
+
+    if ((root.attributeValue(&quot;header&quot;) != null)
+            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
+        header = true;
+    }
+    String footer_string = root.attributeValue(&quot;footer&quot;);
+    if ((footer_string != null)
+            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
+        footer = true;
+    }
+    String profile_string = root.attributeValue(&quot;profile&quot;);
+    if (profile_string != null) {
+        profile = profile_string;
+    }
+
+    String orientation_string = root.attributeValue(&quot;orientation&quot;);
+    if (orientation_string != null) {
+        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
+            orientation = A4.LANDSCAPE;
+        } else {
+            orientation = A4.PORTRAIT;
+        }
+    } else {
+        orientation = Letter.PORTRAIT;
+    }
+}
+
+public PDFColumn[][] getColumnsInfo() {
+    PDFColumn[] colLine = null;
+    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
+    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
+        columns = new PDFColumn[n1.size()][];
+        for (int i = 0; i &amp;lt; n1.size(); i++) {
+            Element cols = (Element) n1.get(i);
+            List n2 = cols.elements(&quot;column&quot;);
+            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
+                colLine = new PDFColumn[n2.size()];
+                for (int j = 0; j &amp;lt; n2.size(); j++) {
+                    Element col_xml = (Element) n2.get(j);
+                    PDFColumn col = new PDFColumn();
+                    col.parse(col_xml);
+                    colLine[j] = col;
+                }
+            }
+            columns[i] = colLine;
+        }
+    }
+    createWidthsArray();
+    optimizeColumns();
+    return columns;
+}
+    public PDFRow[] getGridContent() {
+    List nodes = root.elements(&quot;row&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        rows = new PDFRow[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            rows[i] = new PDFRow();
+            rows[i].parse((Element) nodes.get(i));
+        }
+    }
+    return rows;
+
+}
+
+   *****
+</code></pre></div>
+<p>}
+</pre></p>
+
+<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
+<pre lang="java">
+public class PDFRow {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
+
+public void parse(Element parent) {
+    List nodes = ((Element) parent).elements(&quot;cell&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        cells = new String[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            cells[i] = ((Element) nodes.get(i)).getTextTrim();
+        }
+    }
+}
+
+public String[] getCells() {
+    return cells;
+}
+</code></pre></div>
+<p>}</p>
+
+<p>public class PDFColumn {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
+    colName = parent.getText();
+    String width_string = parent.attributeValue(&quot;width&quot;);
+    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
+        width = Integer.parseInt(width_string);
+    }
+    type = parent.attributeValue(&quot;type&quot;);
+    align = parent.attributeValue(&quot;align&quot;);
+    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
+    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
+        colspan = Integer.parseInt(colspan_string);
+    }
+    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
+    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
+        rowspan= Integer.parseInt(rowspan_string);
+    }
+}
+</code></pre></div>
+<p>}
+</pre></p>
+
+<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
+<div class="pic">
+<img src="/files/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
+</div></p>
+
+<h2>结论：</h2>
+
+<ul>
+<li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
+<li>2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。</li>
+<li>3.导出的pdf为多页显示，每页有表头</li>
+<li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
+</ul>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110731custom-dhtmlxgrid-header-menu">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu">自定义dhtmlxGrid表头菜单</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-31">2011-07-31</time>
+		<a href='/javascript/2011/07/31/custom-dhtmlxgrid-header-menu#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。
+以下是dhtmlxGrid的表头菜单效果：
+<div class="pic">
+<img class="aligncenter size-medium wp-image-2287" title="dhtmlxgrid-head-menu" src="/files/2011/07/dhtmlxgrid-head-menu.jpg" alt="" width="300" height="174" /></div>
+其功能过于单一，以下是表格右键菜单效果：
+<div class="pic"><img class="aligncenter size-medium wp-image-2288" title="dhtmlxgrid-context-menu" src="/files/2011/07/dhtmlxgrid-context-menu.jpg" alt="" width="300" height="126" /></div>
+如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
+如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt;
+首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&quot;_&quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
+    return true;
+}
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.renderAsContextMenu();
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
+mygrid.enableAutoWidth(true);
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
+mygrid.enableContextMenu(menu);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
+</code></pre></div>
+<p>上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">menu.renderAsContextMenu();
+mygrid.enableContextMenu(menu);
+</code></pre></div>
+<p>上面对于context menu提供的方法太少，这时候可以看看dhtmlxMenu api，看看有没有设置context menu生效位置的方法（指定context menu在哪片区域有效）。在dhtmlxMenu API Methods里没有找到需要的方法，这时候在官网论坛搜搜，也许可以找到点什么。
+在论坛里可以找到一个例子，大致代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&quot;_&quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
+    return true;
+}
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
+
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
+mygrid.enableAutoWidth(true);
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
+//mygrid.enableContextMenu(menu); //使其失效
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
+
+mygrid.hdr.id = &quot;header_id&quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &amp;lt; header_row.cells.length; i++) {
+   header_row.cells[i].id = &quot;context_zone_&quot; + i;
+}
+menu.addContextZone(&quot;header_id&quot;);
+</code></pre></div>
+<p>上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。
+剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != &quot;TABLE&quot;)
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+
+    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
+
+    if ((grid) &amp;amp;&amp;amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
+            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
+    }
+
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {
+                x : ev.pageX,
+                y : ev.pageY
+            };
+        }
+        var d = _isIE &amp;amp;&amp;amp; document.compatMode != &quot;BackCompat&quot; ? 
+                document.documentElement: document.body;
+        return {
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
+        };
+    }
+
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&quot;header_id&quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
+</code></pre></div>
+<p>在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type, e) {
+    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
+    colId = 0;
+    return true;
+}
+</code></pre></div>
+<p>然后，需要禁止掉表格数据区域的菜单显示：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
+    return false;//禁止数据区域菜单
+});
+</code></pre></div>
+<p>最后的最后，最后的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">var mygrid, colId;
+
+function onButtonClick(menuitemId, type, e) {
+    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
+    colId = 0;
+    return true;
+}
+
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.renderAsContextMenu();
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
+menu.attachEvent(&quot;onBeforeContextMenu&quot;, function(zoneId, e) {
+    var hdr = document.getElementById(zoneId)
+    return true;
+});
+
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+//mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.enableContextMenu(menu);
+dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != &quot;TABLE&quot;)
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+
+    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
+
+    if ((grid) &amp;#038;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
+                            //获得表头右键菜单焦点所在列索引
+            colId = el._cellIndex + 1;
+    }
+
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {
+                x : ev.pageX,
+                y : ev.pageY
+            };
+        }
+        var d = _isIE &amp;#038;&amp; document.compatMode != &quot;BackCompat&quot; ? 
+                         document.documentElement: document.body;
+        return {
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
+        };
+    }
+
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&quot;header_id&quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
+
+mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
+    return false;//禁止数据区域菜单
+});
+
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+
+mygrid.hdr.id = &quot;header_id&quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &lt; header_row.cells.length; i++) {
+    header_row.cells[i].id = &quot;context_zone_&quot; + i;
+}
+</code></pre></div>
+<p>效果图如下;
+<div class="pic">
+<img src="/files/2011/07/dhtmlxgrid-custom-head-menu.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110724drag-an-item-to-dhtmlxgrid-and-add-a-column">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-24">2011-07-24</time>
+		<a href='/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
+现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
+如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
+首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
+<pre escaped="true" lang="javascript" line="1">function maf() {
+    return false;
+}
+tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
+
+<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
+
+<p>function s<em>control() {
+    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.<em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this.</em>dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+}
+var sinput = document.getElementById(&#39;sInput&#39;);
+tree.dragger.addDragLanding(sinput, new s_control);
+</pre></p>
+
+<p>为了使tree支持拖拽功能，必须添加以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
+
+<p>为了实现自定义拖拽的输出，添加了以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
+
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.</em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this._dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+</pre></p>
+
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
+
+<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
+
+<pre escaped="true" lang="javascript" line="1">
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+        targetHtmlObject, e) {
+    var zel = e;
+    while (zel.tagName != "TABLE")
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+    if (!grid._mCol || e.button == 2)
+        return;
+    e = grid.getFirstParentOfType(e, "TD")
+
+    if ((grid) &amp;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
+            insertId = e._cellIndex + 1;
+    }
+
+    mygrid.insertColumn(insertId, "12", "ed", 80);
 }
 </pre>
 
-<p>runFile()方法内部调用executeFile()方法，executeFile方法有以下几个参数：
-- local：是否本地运行
-- remote：是否远程运行
-- cluster：是否集群环境运行
-- preview：是否预览
-- debug：是否调试
-- replayDate：回放时间
-- safe：是否安全模式</p>
-
-<p>executeFile方法会先获取当前激活的转换，如果获取结果不为空，则执行该转换；否则获取当前激活的作业，执行该作业。 本文主要讨论作业的执行过程，关于转换的执行过程，之后单独一篇文章进行讨论。</p>
-
-<p>executeJob委托SpoonJobDelegate执行其内部的executeJob方法，注意，其将JobMeta传递给了executeJob方法。SpoonJobDelegate还保存着对Spoon的引用。</p>
-
-<p>SpoonJobDelegate的executeJob方法主要完成以下操作：</p>
-
-<ul>
-<li>1.设置Spoon的执行配置JobExecutionConfiguration类，该类设置变量、仓库、是否执行安全模式、日志等级等等。</li>
-<li>2.获得当前Job对应的图形类JobGraph。</li>
-<li>3.将执行配置类JobExecutionConfiguration的变量、参数、命令行参数设置给jobMeta。</li>
-<li>4.如果本地执行，则调用jobGraph.startJob(executionConfiguration)，如果远程执行，则委托给SpoonSlaveDelegate执行。</li>
-</ul>
-
-<p>JobExecutionConfiguration类是保存job执行过程中的一些配置，该类会在Spoon、JobGraph类之间传递。</p>
-
-<p>本文只讨论本地执行的情况，故往下查看jobGraph.startJob(executionConfiguration)方法。该方法被synchronized关键字修饰。</p>
-
-<p>JobGraph类包含当前Spoon类的引用、以及对Job的引用。初始情况，Job的引用应该为null。该类会做以下操作：</p>
-
-<ul>
-<li>1.如果job为空或者没有运行或者没有激活，则先保存，然后往下执行作业。</li>
-<li>2.在仓库不为空的时候，通过仓库加载Job获得一个运行时的JobMeta对象，名称为runJobMeta；否则，通过文件名称直接new一个JobMeta对象，名称也为runJobMeta。</li>
-<li>3.通过仓库和runJobMeta对象构建一个Job对象，并将jobMeta对象（此对象通过JobGraph构造方法传入）的变量、参数共享给Job对象。</li>
-<li>4.Job对象添加JobEntry监听器、Job监听器。</li>
-<li>5.调用Job的start方法，启动线程开始执行一个job。</li>
-</ul>
-
-<p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20120221the-execution-process-of-kettles-job">
-    <article>
-      <header>
-      <h3><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Time：<time date="2012-02-21">2012-02-21</time>
-		<a href='/kettle/2012/02/21/the-execution-process-of-kettles-job#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.</p>
-
-<p>When we start a job or transformation,Spoon invokes the method runFile(),and then is distributed to executeTransformation() or executeJob().At now,we mainly study about executeJob() method.</p>
-
-<p>This is a simple sequence diagram below.It contains several classes for Starting to execute a job using execute(int nr, Result result) in Job.java.We can see the relation of these classes from it.</p>
-
-<p><div class="pic">
-<a href="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence.jpg" target="_blank"><img src="http://www.javachen.com/wp-content/uploads/2012/02/spoon-execute-sequence-300x180.jpg" alt="" title="spoon execute sequence" width="300" height="180" class="aligncenter size-medium wp-image-2511" /></a>
-</div></p>
-
-<p>What is the detail process of job execution? You should look into the Job.run() method for detail information.</p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20120217step-error-handling-in-kettle">
-    <article>
-      <header>
-      <h3><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Time：<time date="2012-02-17">2012-02-17</time>
-		<a href='/kettle/2012/02/17/step-error-handling-in-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。</p>
-
-<p>下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
 <div class="pic">
-<img alt="" src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wck3m7j.jpg" class="alignnone" width="600" height="172" />
+<img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
 </div></p>
 
-<p>a1表结构如下：
-<pre lang="sql">
-CREATE TABLE a1
-(
-  a double precision,
-  id integer NOT NULL,
-  CONSTRAINT id<em>pk PRIMARY KEY (id ),
-  CONSTRAINT id</em>unin UNIQUE (id )
-)
-</pre></p>
+<p>本例最后的代码：
+<pre escaped="true" lang="javascript" line="1">
+    var mygrid;
+    function maf() {
+        return false;
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
+tree.setSkin(&#39;dhx_skyblue&#39;);
+tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+//tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
+tree.openAllItems(0);
 
-<p>从表结构可以看出，a1表中id为主键、唯一。</p>
+function s_control() {
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+            targetHtmlObject, e) {
+        var zel = e;
+        while (zel.tagName != &quot;TABLE&quot;)
+            zel = zel.parentNode;
+        var grid = zel.grid;
+        if (!grid)
+            return;
+        grid.setActive();
+        if (!grid._mCol || e.button == 2)
+            return;
+        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
 
-<p>a0表数据预览：
-<div class="pic">
-<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wcr6c2j.jpg" class="alignnone" width="553" height="403" />
-</div></p>
+        if ((grid) &amp;&amp; (!grid._colInMove)) {
+            grid.resized = null;
+            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
+                insertId = e._cellIndex + 1;
+        }
 
-<p>现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。
-再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。</p>
+        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
+    }
+}
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.setColumnHidden(2, true);
+mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
+});
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</code></pre></div>
+<p></pre>
+本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
 
-<p>现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。
-在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。
-<div class="pic">
-<img src="http://ww3.sinaimg.cn/mw600/48e24b4cjw1dq56wd5ckwj.jpg" alt="" />
-</div></p>
+<h2>参考文章</h2>
 
-<p><strong>相关字段说明：</strong></p>
-
-<ul>
-<li>目标步骤：指定处理错误的步骤</li>
-<li>启用错误处理？：设置是否启用错误处理</li>
-<li>错误数列名：出错的记录个数</li>
-<li>错误描述列名：描述错误信息的列名称</li>
-<li>错误列的列名：出错列的名称</li>
-<li>错误编码列名：描述错误的代码的列名</li>
-<li>允许的最大错误数：允许的最大错误数，超过此数，不在处理错误</li>
-<li>允许的最大错误百分比：</li>
-<li>在计算百分百前最少要读入的行数：</li>
-</ul>
-
-<p>添加错误处理后的转换如下：
-<div class="pic">
-<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wdntipj.jpg" alt="" />
-</div></p>
-
-<p>记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。
-<div class="pic">
-<img src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wdvk6uj.jpg" alt="" />
-</div></p>
-
-<p>记录的错误信息如下：
-<div class="pic">
-<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56we2sn2j.jpg" alt="" />
-</div></p>
-
-<p><strong>分析</strong>
-可以看到,错误日志里只是记录了出错的行里面的信息，并没有记录当前行所在的表名称以及执行时间等等，如果能够对此进行扩展，则该错误日志表才能更有实际意义。</p>
-
-<p><strong>说明</strong>
-1.错误日志的错误码含义（如：TOP001）含义见参考文章2.</p>
-
-<p><strong>参考文章</strong>
-<li><a href="http://wiki.pentaho.com/display/EAI/.09+Transformation+Steps#.09TransformationSteps-StepErrorHandling" target="_blank">Step Error Handling</a>
+<p><li>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
 </li>
-<li><a href="http://wiki.pentaho.com/display/COM/Step+error+handling+codes" target="_blank">Step error handling codes</a>
+<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
+</li>
+<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
 </li></p>
-</div>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110719dhtmlxgrid-quick-start-guide">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-19">2011-07-19</time>
+		<a href='/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p><span style="color: #ff0000;">说明:</span></p>
+
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+</code></pre></div>
+<h2>Step 1 – 引入文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+    //we&#39;ll write script commands here
+&lt; /script&gt;
+</code></pre></div>
+<h2>Step 2 – 放置gird</h2>
+
+<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+</code></pre></div>
+<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
+ function doInitGrid(){
+ }
+</code></pre></div>
+<p>doInitGrid方法会包括以下代码：</p>
+
+<ul>
+<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
+<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
+<li>使用setHeader 方法定义表头；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
+<li>使用setSkin方法设置皮肤；</li>
+<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
+</ul>
+
+<p>目前，doInitGrid方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
+mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
+grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
+grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
+mygrid.setSkin(&quot;light&quot;); //设置皮肤
+grid.init(); //显示调用初始化方法，必须的
+</code></pre></div>
+<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
+</code></pre></div>
+<p>这样在该页面初始化之后会显示如下：</p>
+
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
+
+<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
+        parent:&quot;a_grid&quot;,
+        image_path:&quot;codebase/imgs&quot;,
+        columns:[
+            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
+            { label:[&quot;Book title&quot;,
+                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
+            { label:[&quot;Author&quot;,
+                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
+            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
+            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
+            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
+            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
+            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
+        ],
+        xml:&quot;data.xml&quot;
+    });
+</code></pre></div>
+<h2>Step 3 – 填充数据</h2>
+
+<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
+
+<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{
+rows:[
+    {
+        id: &quot;a&quot;,
+        data: [Model 1, 100, 399]
+    },
+    {
+    id: &quot;b&quot;,
+        data: [Model 2, 50, 649]
+    },
+    {
+        id: &quot;c&quot;,
+           data: [ Model 3, 70, 499]
+    }
+]
+}
+</code></pre></div>
+<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
+</code></pre></div>
+<p>这时候页面展示如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
+
+<h2>Step 4 – 客户端排序</h2>
+
+<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
+
+<p>该类型值有以下四种：</p>
+
+<ul>
+<li>str – 作为字符串排序</li>
+<li>int - 以Integer值排序 (通常可以是任何数字);</li>
+<li>date – 以日期排序</li>
+<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
+</ul>
+
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
+</code></pre></div>
+<p>这时候单击最后一列表头，结果如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
+
+<h2>Step 5 – 单元格格式化和编辑</h2>
+
+<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
+
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
+</code></pre></div>
+<p>Excells格式化有以下几种：</p>
+
+<ul>
+<li>link：超链接</li>
+<li>img：图片</li>
+<li>price：价格</li>
+<li>dyn：动态行</li>
+</ul>
+
+<p>Excell 复杂编辑器有以下几种：</p>
+
+<ul>
+<li>cp：colorpicker</li>
+<li>calck：允许调用grid.setNumberFormat的计算器</li>
+<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
+<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
+<li>calendar：YUI Calendar</li>
+<li>clist：多选组件</li>
+</ul>
+
+<p>使用其他组件作为单元格编辑器:</p>
+
+<ul>
+<li>grid：使用dhtmlxgrid</li>
+<li>stree ：使用dhtmlxtree</li>
+<li>context：使用dhtmlxmenu</li>
+<li>combo：使用dhtmlxCombo</li>
+</ul>
+
+<p>Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
+
+<p>两个扩展:</p>
+
+<ul>
+<li>sub<em>row</em>ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub<em>row</em>grid – 允许创建一个子表作为一个子行的内容</li>
+</ul>
+
+<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
+
+<h2>Step 6 – 行操作方法</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+</code></pre></div>
+<p>代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
+
+<p>代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行</p>
+
+<h2>Step 7 – 事件</h2>
+
+<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+</code></pre></div>
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Model,Qty,Price&quot;);
+mygrid.setInitWidths(&quot;*,150,150&quot;);
+mygrid.setColAlign(&quot;left,right,right&quot;)
+mygrid.setSkin(&quot;light&quot;);
+mygrid.setColSorting(&quot;str,int,int&quot;);
+mygrid.setColTypes(&quot;ed,ed,price&quot;);
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+&lt; /script&gt;
+&lt; body onload=&quot;doInitGrid()&quot;&gt;
+&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+&lt; /body&gt;
+</code></pre></div>
+	  
+   </div>
     </article>
   </section>
   
@@ -451,6 +1223,21 @@ CREATE TABLE a1
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
+      </li>
+      <li class="post">
+        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
+      </li>
+      <li class="post">
+        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
       </li>
     </ul>
     </section>

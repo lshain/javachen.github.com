@@ -53,6 +53,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -91,6 +95,8 @@
     <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
 
 <p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
+
+<!-- more -->
 
 <h2>hadoop安装文章</h2>
 

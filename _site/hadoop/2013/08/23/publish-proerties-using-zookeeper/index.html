@@ -53,6 +53,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -105,6 +109,8 @@
 <li>分布式锁</li>
 <li>分布式队列</li>
 </ul>
+
+<!-- more -->
 
 <p>一些在线系统在运行中，需要在不停止程序的情况下能够动态调整某一个变量的值并且能够及时生效。特别是当部署了多台应用服务器的时候，需要能够做到在一台机器上修改配置文件，然后在同步到所有应用服务器。这时候使用ZooKeeper来实现就很合适了。</p>
 

@@ -52,6 +52,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -110,6 +114,8 @@ jekyll server
 &lt;/div&gt;
 &lt;/section&gt;
 </code></pre></div>
+<!-- more -->
+
 <h2>添加about页面</h2>
 
 <p>在根目录创建about.md并修改，注意：文件开头几行内容如下</p>
@@ -165,7 +171,7 @@ group: navigation
 </code></pre></div>
 <h2>修改h1、h2等标题字体</h2>
 
-<p>主要是参考<a href="http://www.ituring.com.cn/">图灵社区</a>的css，在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
+<p>主要是参考<a href="http://www.ituring.com.cn/">图灵社区</a>的css，在<code>assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
 h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
 h2{font-size:24px;line-height:36px;}h2 small{font-size:18px;}
@@ -177,7 +183,7 @@ h6{font-size:11px;color:#999999;text-transform:uppercase;}
 </code></pre></div>
 <h2>添加返回顶部功能</h2>
 
-<p>同样是参考了<a href="http://www.ituring.com.cn/">图灵社区</a>的css和网上的一篇js实现。在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>：</p>
+<p>同样是参考了<a href="http://www.ituring.com.cn/">图灵社区</a>的css和网上的一篇js实现。在<code>assets/themes/twitter/css/style.css</code>：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">.backToTop {
     display: block;
     width: 40px;
@@ -199,7 +205,7 @@ h6{font-size:11px;color:#999999;text-transform:uppercase;}
     filter: Alpha(opacity=60);
 }
 </code></pre></div>
-<p>在<code>javachen.github.com/assets/themes/twitter/js</code>添加jquery和main.js，main.js内容如下：</p>
+<p>在<code>assets/themes/twitter/js</code>添加jquery和main.js，main.js内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">jQuery.noConflict();
 jQuery(document).ready(function(){
     var backToTopTxt = &quot;▲&quot;, backToTopEle = jQuery(&#39;&lt;div class=&quot;backToTop&quot;&gt;&lt;/div&gt;&#39;).appendTo(jQuery(&quot;body&quot;)).text(backToTopTxt).attr(&quot;title&quot;,&quot;Back top top&quot;).click(function() {
@@ -220,14 +226,14 @@ jQuery(document).ready(function(){
 </code></pre></div>
 <h2>添加文章版权说明</h2>
 
-<p>在<code>javachen.github.com/_includes/themes/twitter/post.html</code>中文章主体下面添加如下代码：</p>
+<p>在<code>_includes/themes/twitter/post.html</code>中文章主体下面添加如下代码：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;hr&gt;
 &lt;div class=&quot;copyright&quot;&gt;
 &lt;p&gt;&lt;strong&gt;本文固定链接：&lt;/strong&gt;&lt;a href=&#39;{ {page.url}}&#39;&gt;http://blog.javachen.com/post/2013/08/31/my-jekyll-config&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;原创文章,转载请注明出处：&lt;/strong&gt;&lt;a href=&#39;{ {page.url}}&#39;&gt;JavaChen Blog&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </code></pre></div>
-<p>并在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
+<p>并在<code>assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">.copyright {
 margin: 10px 0;
 padding: 10px 20px;
@@ -235,6 +241,31 @@ line-height: 1;
 border-radius: 5px;
 background: #f5f5f5;
 }
+</code></pre></div>
+<h2>添加read more功能</h2>
+
+<p>参考<a href="http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/">Jekyll - Read More without plugin</a>，在index.html找到 ，然后修改为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{ % if post.content contains &quot;&lt;!-- more --&gt;&quot; %}
+{ { post.content | split:&quot;&lt;!-- more --&gt;&quot; | first % }}
+&lt;h4&gt;&lt;a href=&#39;{ {post.url}}&#39; title=&#39;Read more...&#39;&gt;Read more...&lt;/a&gt;&lt;/h4&gt;
+{ % else %}
+{ { post.content}}
+{ % endif %}
+</code></pre></div>
+<p>然后，在文章中添加<code>&lt;!-- more --&gt;</code>即可。</p>
+
+<h2>添加搜索栏</h2>
+
+<p>参考<a href="http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/">Jekyll Bootstrap - Create Simple Search box</a>，在<code>_includes/themes/twitter/default.html</code>导航菜单下面添加：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;form class=&quot;navbar-search pull-left&quot; id=&quot;search-form&quot;&gt;
+  &lt;input type=&quot;text&quot; id=&quot;google-search&quot; class=&quot;search-query&quot; placeholder=&quot;Search&quot;&gt;
+&lt;/form
+</code></pre></div>
+<p>添加js：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">jQuery(&quot;#search-form&quot;).submit(function(){
+    var query = document.getElementById(&quot;google-search&quot;).value;
+    window.open(&quot;http://google.com/search?q=&quot; + query+ &quot;%20site:&quot; + &quot;http://blog.javachen.com&quot;);
+});
 </code></pre></div>
 <h2>其他</h2>
 
@@ -247,9 +278,7 @@ background: #f5f5f5;
 <h2>TODO</h2>
 
 <ul>
-<li>添加read more功能，参考<a href="http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/">Jekyll - Read More without plugin</a></li>
 <li>添加语法高亮，参考<a href="http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/">Jekyll - Syntax highlighting</a></li>
-<li>添加简单的搜索功能，参考<a href="http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/">Jekyll Bootstrap - Create Simple Search box</a></li>
 </ul>
 
      

@@ -44,6 +44,10 @@
           <div class="nav-collapse">
             <ul class="nav">{% assign pages_list = site.pages %}{% assign group = 'navigation' %}{% include JB/pages_list %}
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>

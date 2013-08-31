@@ -53,6 +53,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -100,6 +104,8 @@ cli_help () {
   execHiveCmd $CLASS &quot;--help&quot;
 }
 </code></pre></div>
+<!-- more -->
+
 <h2>入口类</h2>
 
 <p>java中的类如果有main方法就能运行，故直接查找<code>org.apache.hadoop.hive.cli.CliDriver</code>中的main方法即可。</p>

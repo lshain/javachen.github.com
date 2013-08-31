@@ -34,7 +34,14 @@ tagline:
 	</div>
 	<hr/>
     </header>
-    <div class="content">{{ content }}</div>
+    <div class="content">
+	  {% if post.content contains "<!-- more -->" %}
+	    {{ post.content | split:"<!-- more -->" | first % }}
+	    <h4><a href='{{post.url}}' title='Read more...'>Read more...</a></h4>
+	  {% else %}
+	    {{ post.content}}
+	  {% endif %}
+   </div>
     </article>
   </section>
   {% endfor %}
@@ -62,7 +69,7 @@ tagline:
 
     <section>
     <h4>Recent Posts</h4>
-    <ul id="recent_posts">{% for rpost in site.posts limit: 15 %}
+    <ul id="recent_posts">{% for rpost in site.posts limit: 20 %}
       <li class="post">
         <a href="{{ BASE_PATH }}{{ rpost.url }}">{{ rpost.title }}</a>
       </li>{% endfor %}

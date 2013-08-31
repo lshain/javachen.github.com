@@ -15,6 +15,8 @@ description: 安装RHadoop,RHBase,RHive,RMR
 	rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 	rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 
+<!-- more -->
+
 ### 编译安装：R-3.0.1
 
 	tar -zxvf R-3.0.1 

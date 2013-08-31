@@ -15,6 +15,8 @@ description: 记录如何远程调试MapReduce、Hive和HBase
 
 Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。
 
+<!-- more -->
+
 更详细的介绍，您可以参考[使用 Eclipse 远程调试 Java 应用程序](http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/)
 
 ## JDWP 设置

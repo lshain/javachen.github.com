@@ -51,6 +51,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -70,778 +74,298 @@
   <div class="span9">
   
   
-  <section id="pentaho20111207mondrian-and-olap">
+  <section id="cloud20110622the-introduction-of-eucalyptus-ee-features-and-functions">
     <article>
       <header>
-      <h3><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
+      <h3><a href="/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions">Eucalyptus EE的介绍及功能说明</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#mondrian-ref">mondrian</a>
-			
-			,
-			
-			
-			<a href="/tags.html#olap-ref">olap</a>
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
 			
 			
 		|
-		Time：<time date="2011-12-07">2011-12-07</time>
-		<a href='/pentaho/2011/12/07/mondrian-and-olap#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-06-22">2011-06-22</time>
+		<a href='/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
+    <div class="content">
+	  
+	    <p>Eucalyptus企业版2.0是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。</p>
 
-<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
-联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
+<p>Eucalyptus的设计目的是从根本上易于安装和尽可能没有侵扰。该软件高度模块化，具有行业标准，和语言无关。它提供了可以与EC2兼容的云计算平台和与S3兼容的云存储平台。<!--more-->
+<h1>功能亮点</h1>
+<ul>
+    <li>无缝管理多个管理程序环境（Xen的，vSphere的，KVM，ESX，ESXi的）下一个管理控制台</li>
+    <li>启用跨平台的客户机操作系统包括微软Windows和Linux</li>
+    <li>高级存储集成器（iSCSI，SAN，NAS），您可以轻松地连接和管理Eucalyptus云内现有的存储系统</li>
+    <li>完善的用户和组管理，允许私有云资源的精确控制</li>
+    <li>测试，开发和部署能够顺利过渡到公共云或反之亦然，没有任何修改</li>
+    <li>快速，轻松地建立与基于VMware的虚拟化环境和其他公共云混合云</li>
+    <li>启用先进设备，最先进的企业，如可扩展的存储整合，监控，审计，报表</li>
+    <li>利用充满活力的生态系统围绕亚马逊AWS构建，提供解决方案，无缝地与Eucalyptus兼容</li>
+</ul>
+<h1>优点</h1>
+<ul>
+    <li>建立一个私有云，让你接入到亚马逊AWS</li>
+    <li>允许云在原有的所有硬件和软件类型很容易的部署</li>
+    <li>客户可以利用其全球用户社区</li>
+    <li>Eucalyptus是与Linux和多个管理程序兼容</li>
+    <li>Eucalyptus还支持商业Linux发行版本：红帽企业Linux（RHEL）和SUSE Linux企业服务器（SLES）</li>
+</ul>
+<h1>对于IT管理员的好处</h1>
+<ul>
+    <li>提供自助服务的IT基础设施供应到最终用户需要的IT资源迅速</li>
+    <li>没有额外的资金保持现有的基础设施费用，降低运营成本</li>
+    <li>保持防火墙后面的关键数据</li>
+    <li>技术是对现有的硬件和软件基础设施覆盖，而不是替代</li>
+    <li>避免锁定在第三方公共云供应商</li>
+    <li>可轻松转换之间来回私人和公共云</li>
+</ul>
+&nbsp;
+<h1>Eucalyptus EE新特性</h1>
+<h2><strong><span style="color: #0000ff;">对windows VM的支持</span></strong></h2>
+1.  运行windows 虚拟机在Eucalyptus 云环境上运行，目前支持Windows 2003 Server,Windows 2008 Server和Windows 7。<br />
+2.  试用Euca2ools管理和控制windows虚拟机。<br />
+3.  试用EC2兼容的命令从正在运行的windows虚拟机创建新的虚拟机<br />
+4.  在Eucalyptus中通过标准的RDP客户端工具，使用AWS “get-password”访问虚拟机实例<br />
+5.  在多个hypervisors环境中部署windows虚拟机，包括Xen、Kvm、VMware（ESX/ESXi）<br />
+6.  基于windows 操作系统安装文件（ISO镜像、CD/DVD）创建新的windows虚拟机
+<h2><strong><span style="color: #0000ff;">对VMware的支持</span></strong></h2>
+1.支持VMware vCenter 4.0,ESX/ESXi 4.0!<br />
+2.与VMware vSphere 客户端兼容<br />
+3.能够合并VMware(ESX/ESXi)和开源的hypervisors（Xen、Kvm）到一个单独的云环境<br />
+4.通过Eucalyptus的软件扩展一些云的基本特性（例如IPs，安全组，S3）到一个VMware基础架构</p>
 
-<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
+<p>&nbsp;
+<h2><strong><span style="color: #0000ff;">引入SAN的支持</span></strong></h2>
+Eucalyptus EE引入对SAN的支持，使你能够整合enterprise-grade SAN(Storage Area Network) 硬件设备到Eucalyptus云环境。SAN扩展SC并在Eucalyptus中运行的虚拟机和SAN设备之间提供高性能的数据通道。Eucalyptus EE的SAN支持为Eucalyptus云环境提供了一个企业级的EBS解决方案。</p>
 
-<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+<p>&nbsp;
+<h1>Eucalyptus的功能</h1>
+<h2><strong><span style="color: #0000ff;">基本组成部分及功能</span></strong></h2>
+<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
+<tbody>
+<tr>
+<td width="102" valign="top">模块</td>
+<td width="279" valign="top">功能</td>
+<td width="234" valign="top">说明</td>
+</tr>
+<tr>
+<td width="102" valign="top">云控制器（CLC）</td>
+<td width="279" valign="top">1.对外提供EC2和Web接口，管理各类组件中的可用虚拟资源（服务、网络、存储）。<br />
+2.资源抽象，决定哪个簇将提供给实例，分发请求给CC。<br />
+3.管理运行的实例。</td>
+<td width="234" valign="top">CLC是整个云结构的前端。CLC为客户工具提供与EC2/S3兼容的网络接口，与Eucalyptus的组件通信。</td>
+</tr>
+<tr>
+<td width="102" valign="top">存储控制器（SC）</td>
+<td width="279" valign="top">1.提供与EBS类似的存储功能，能够与大量的文件存储系统交互。<br />
+2.使用AoE或者iSCSI协议为实例提供块存储。<br />
+3.允许在存储系统中（如Walrus）建立快照。</td>
+<td width="234" valign="top">SC提供实例使用的块存储。<br />
+与EBS类似。&nbsp;</td></tr></tbody></table></p>
 
-<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
+<p>&nbsp;
 
-<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
+<tr>
+<td width="102" valign="top">Walrus控制器（WS3）</td>
+<td width="279" valign="top">1.允许用户存储持久化的数据。<br />
+2.提供REST接口操作数据，设置数据访问策略。<br />
+3.使用S3 API存储和获取虚拟镜像和数据。</td>
+<td width="234" valign="top">WS3使用与S3 API兼容的REST和SOAP   API提供简单的存储服务</td>
+</tr>
+<tr>
+<td width="102" valign="top">控制簇（CC）</td>
+<td width="279" valign="top">1.接收CLC的请求，然后部署实例。<br />
+2.收集虚拟机的信息并决定在哪个节点控制上执行虚拟机。<br />
+3.为实例提供有效的虚拟网络。<br />
+4.收集NCs提交的信息，并报告给CLC。</td>
+<td width="234" valign="top">CC管理NC，部署和管理在节点上的实例，在Eucalyptus联网模型的类型下管理在控制节点上运行的实例的联网。<br />
+CC连接着云控制器CLC和控制节点NC。</td>
+</tr>
+<tr>
+<td width="102" valign="top">节点控制器（NC）&nbsp;</td></tr></p>
 
-<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
+<p>&nbsp;
+<td width="279" valign="top">1.托管虚拟机实例<br />
+2.收集节点上相关的数据资源的可用性和利用率，并报告给控制簇CC。<br />
+3.管理虚拟机的生命周期，能够获取和清除镜像的本地拷贝。<br />
+4.维护虚拟网络</td>
+<td width="234" valign="top">UEC的节点使用虚拟化技术使KVM能作为管理程序在服务器上运行。当用户安装UEC节点时，UEC将自动安装KVM。UEC的实例就是在管理程序下运行的虚拟机。Eucalyptus支持其他管理程序，如Xen。<br />
+节点控制器在每一个节点上运行，控制着节点上实例的生命周期。</td>
 
-<p><strong><span style="color: #00ff00;">结论</span></strong>
-我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
-现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
+<tr>
+<td width="102" valign="top">VMware   Broker</td>
+<td width="279" valign="top">允许 Eucalyptus直接地或通过 VMware<strong> </strong>Vcenter在   VMware设备部署虚拟机，在CC和 VMware  hypervisors(ESX/ESXi)起一个连接作用<strong> </strong></td>
+<td width="234" valign="top">Eucalyptus   EE额外的一个组件，用于对VMware的支持</td>
+</tr>
 
-<p><strong><span style="color: #00ff00;">说明</span></strong>
-<div class="note">
-这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
-</div>
+
+&nbsp;</p>
+
+<p><span style="font-size: 20px; font-weight: bold; color: #0000ff;">管理员拥有的功能</span>
+<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
+<tbody>
+<tr>
+<td width="102" valign="top">模块</td>
+<td width="279" valign="top">功能</td>
+<td width="234" valign="top">说明</td>
+</tr>
+<tr>
+<td width="102" valign="top">用户管理</td>
+<td width="279" valign="top">1.  添加用户（邮件通知，设置管理员）<br />
+2.  查看用户，设置账户是否激活<br />
+3.  删除用户</td>
+<td width="234" valign="top"></td>
+</tr>
+<tr>
+<td width="102" valign="top">组管理</td>
+<td width="279" valign="top">1.  添加用户组<br />
+2.  查看用户组<br />
+3.  删除用户组<br />
+4.  添加/删除组员</td>
+<td width="234" valign="top"></td>
+</tr>
+<tr>
+<td width="102" valign="top">权限管理</td>
+<td width="279" valign="top">1.给组设置权限</td>
+<td width="234" valign="top"></td>
+</tr>
+<tr>
+<td width="102" valign="top">Web接口</td>
+<td width="279" valign="top">1.  查看、下载证书<br />
+2.  查看上传的镜像，并能修改镜像状态<br />
+3.  配置管理。可以设置云主机IP、DNS、Walrus、Cluster和SAN<br />
+4.  审计报表。查看用户状态、资源使用率、系统日志、已注册的组件</td>
+<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
+</tr>
+<tr>
+<td width="102" valign="top">组件管理</td>
+<td width="279" valign="top">1.  可以注册Cloud、Walrus、Storage、Node，并可以查看、删除<br />
+2.  启动、停止云服务<br />
+3.  允许转换卷的实现方式<br />
+4.  可以查看、修改配置文件</td>
+<td width="234" valign="top">对外以SOAP和REST提供接口</td>
+</tr>
+</tbody>
+</table>
+&nbsp;</p>
+
+<p>&nbsp;
+<h2><strong><span style="color: #0000ff;">使用者拥有的功能</span></strong></h2>
+<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
+<tbody>
+<tr>
+<td width="102" valign="top">模块</td>
+<td width="279" valign="top">功能</td>
+<td width="234" valign="top">说明</td>
+</tr>
+<tr>
+<td width="102" valign="top">Web接口</td>
+<td width="279" valign="top">1.  用户可以注册帐号，修改信息及密码<br />
+2.  查看、下载证书<br />
+3.  查看上传的镜像</td>
+<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
+</tr>
+<tr>
+<td width="102" valign="top">组件管理</td>
+<td width="279" valign="top">1.  启动、停止节点<br />
+2.  可以绑定、上传、注册、查看镜像，也可以删除、取消绑定镜像<br />
+3.  查看本地可用的资源<br />
+4.  可以查看、启动、停止、重启虚拟机<br />
+5.  可以登入到一个windows虚拟机实例<br />
+6.  创建、附件、脱离、删除快照和卷</td>
+<td width="234" valign="top">通过Euca2ools工具完成这些功能</td>
+</tr>
+</tbody>
+</table>
+&nbsp;</p>
+
+	  
+   </div>
     </article>
   </section>
   
   
-  <section id="javascript20111125xml-user-interface-language-introuction">
+  <section id="cloud20110616touch-cloud-environment-which-it-is-eucalyptus">
     <article>
       <header>
-      <h3><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h3>
+      <h3><a href="/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus">接触云服务环境Eucalyptus</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#javascript-ref">javascript</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xul-ref">xul</a>
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
 			
 			
 		|
-		Time：<time date="2011-11-25">2011-11-25</time>
-		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-06-16">2011-06-16</time>
+		<a href='/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
-XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
-使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+    <div class="content">
+	  
+	    <p>最近在接触云计算平台，熟悉了<a href="http://www.eucalyptus.com/">Eucalyptus</a>，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用<a href="http://www.eucalyptus.com/">Eucalyptus</a>搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。
+<h2>Eucalyptus</h2>
+Elastic Utility Computing Architecture for Linking Your Programs To Useful Systems （Eucalyptus） 是一种开源的软件基础结构，用来通过<span style="color: #ff0000;">计算集群或工作站群实现弹性的、实用的云计算</span>。它最初是美国加利福尼亚大学 Santa Barbara 计算机科学学院的一个研究项目，现在已经商业化，发展成为了 Eucalyptus Systems Inc。不过，Eucalyptus 仍然按开源项目那样维护和开发。Eucalyptus Systems 还在基于开源的 Eucalyptus 构建额外的产品；它还提供支持服务。
+<!--more--> 它提供了如下这些高级特性：
+<blockquote>与 EC2 和 S3 的接口兼容性（<span style="color: #ff0000;">SOAP 接口和 REST 接口</span>）。使用这些接口的几乎所有现有工具都将可以与基于 Eucalyptus 的云协作。<br />
+支持运行在<span style="color: #ff0000;"> Xen hypervisor</span> 或 <span style="color: #ff0000;">KVM</span> 之上的 VM 的运行。未来版本还有望支持其他类型的 VM，比如 VMware。<br />
+用来进行<span style="color: #ff0000;">系统管理和用户结算</span>的云管理工具。<br />
+能够将多个分别具有各自私有的内部网络地址的<span style="color: #ff0000;">集群</span>配置到一个云内。</blockquote>
+<h2>架构</h2>
+Eucalyptus 包含五个主要组件，它们能相互协作共同提供所需的云服务。这些组件使用具有 WS-Security 的 SOAP 消息传递安全地相互通信。</p>
 
-<p><span style="color: #339966;"><strong>XUL元素</strong></span>
-XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
-基层元素：例如视窗、page、对话框、向导<br />
-Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
-排版:例如方框、网格、堆栈、叠<br />
-事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
-数据源:例如template、rule<br />
-其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
-一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
-现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
-
-<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
-Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
-
-<p><span style="color: #339966;"><strong>XUL应用</strong></span>
-虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
-Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
-
-<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
-可以选择 3 种方式来运行 XUL 应用程序：<br />
-1.使用基于 Mozilla 的浏览器进行简单测试<br />
-2.使用XULRunner<br />
-3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
-
-<p><strong><span style="color: #339966;">总结</span></strong>
-XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
-
-<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
-
-<p><li>
-1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+<p><strong>Cloud Controller (CLC)</strong>
+在 Eucalyptus 云内，这是主要的控制器组件，负责管理整个系统。它是所有用户和管理员进入 Eucalyptus 云的主要入口。所有客户机通过基于 SOAP 或 REST 的 API 只与 CLC 通信。由 CLC 负责将请求传递给正确的组件、收集它们并将来自这些组件的响应发送回至该客户机。这是 Eucalyptus 云的对外 “窗口”。
+<strong>Cluster Controller (CC)</strong>
+Eucalyptus 内的这个控制器组件负责管理整个虚拟实例网络。请求通过基于 SOAP 或 REST 的接口被送至 CC。CC 维护有关运行在系统内的 Node Controller 的全部信息，并负责控制这些实例的生命周期。它将开启虚拟实例的请求路由到具有可用资源的 Node Controller。
+<strong>Node Controller (NC)</strong>
+它控制主机操作系统及相应的 hypervisor（Xen 或最近的 KVM，很快就会支持 VMWare）。必须在托管了实际的虚拟实例（根据来自 CC 的请求实例化）的每个机器上运行 NC 的一个实例。
+<strong>Walrus (W)</strong>
+这个控制器组件管理对 Eucalyptus 内的存储服务的访问。请求通过基于 SOAP 或 REST 的接口传递至 Walrus。
+<strong>Storage Controller (SC)</strong>
+Eucalyptus 内的这个存储服务实现 Amazon 的 S3 接口。SC 与 Walrus 联合工作，用于存储和访问虚拟机映像、内核映像、RAM 磁盘映像和用户数据。其中，VM 映像可以是公共的，也可以是私有的，并最初以压缩和加密的格式存储。这些映像只有在某个节点需要启动一个新的实例并请求访问此映像时才会被解密。<br />
+一个 Eucalyptus 云安装可以聚合和管理来自一个或多个集群的资源。一个集群 是连接到相同 LAN 的一组机器。在一个集群中，可以有一个或多个 NC 实例，每个实例管理虚拟实例的实例化和终止。
+<div class="info">
+<h2>参考文章</h2>
+在安装的过程中，参考了一些网上的文章：<br />
+<li>Eucalyptus 开启云端：
+<a href="http://blog.163.com/firstsko@126/blog/static/132168891201022935737810/">http://blog.163.com/firstsko@126/blog/static/132168891201022935737810/</a>
 </li>
-<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+<li>
+Installing Eucalyptus (2.0) on Fedora 12
+<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0">http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0</a>
 </li>
-<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<em>Page</a>
+<li>
+ 在Fedora 13 上搭建Eucalyptus
+<a href="http://blog.csdn.net/hispania/archive/2010/09/24/5902926.aspx">http://blog.csdn.net/hispania/archive/2010/09/24/5902926.aspx</a>
 </li>
-<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</em>%E6%95%99%E7%A8%8B/1-2<em>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</em>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
-</li>
-<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
-</li>
-<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
-</li>
-<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
-</li></p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20111022ext_readxml_in_bjsasc_wuzi">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#javascript-ref">javascript</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#extjs-ref">extjs</a>
-			
-			
-		|
-		Time：<time date="2011-10-22">2011-10-22</time>
-		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
-获取弹出窗口url后的参数方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
-function getQueryStringValue(name) {
-    var url = window.location.search;
-    if (url.indexOf(&#39;?&#39;) &lt; 0) {
-        return null
-    }
-    var index = url.indexOf(name + &quot;=&quot;);
-    if (index &lt; 0) {
-        return null
-    }
-    var args = url.indexOf(&#39;&amp;&#39;, index);
-    var value;
-    if (args &gt; 0) {
-        value = url.substring(index + name.length + 1, args);
-    } else {
-        value = url.substring(index + name.length + 1, url.length);
-    }
-    return value;
-}
-// 获取xml的服务器路径
-function getXmlUrl(xmlFile) {
-    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
-}
-</code></pre></div>
-<p>用到的一些辅助方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
-function cleanWhitespaces(elem) {
-    var elem = elem || document;
-    var childElem = elem.childNodes;
-    var childElemArray = new Array;
-    for (var i = 0; i &lt; childElem.length; i++) {
-        if (childElem[i].nodeType == 1) {
-            childElemArray.push(childElem[i]);
-        }
-    }
-    return childElemArray;
-}
-// 取得父窗口表单中键值对
-function getParentFormValues() {
-    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
-    var formValues = &quot;&quot;;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
-                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
-                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
-        }
-    }
-    formValues += opener.getBindValue(formObj.elements);
-    return formValues;
-}
-// 取得过滤条件表单的键值对
-function getCondictionValues() {
-    var condictionString = &quot;&quot;;
-    var formObj = form.getForm().getEl().dom;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
-                    + formObj.elements[i].value + &#39;}&#39;
-                    + formObj.elements[i].name + &#39;_ &#39;;
-        }
-    }
-    // alert(&quot;condictionString&quot;+condictionString);
-    return condictionString;
-}
-// 判读Ext表单是否有输入
-function isFormInputed(ExtForm) {
-    var flag = false;
-    var formObj = ExtForm.getEl().dom;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            flag = true;
-            break;
-        }
-    }
-    return flag;
-}
-// 将计算得到的结果四舍五入
-/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
-function ForDight(Dight, How) {
-    var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
-    return Dight;
-}
-</code></pre></div>
-<p>xml文件格式：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
-&lt; dictionary&gt;
-    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
-    &lt;sql&gt;
-    select V_stores_list.* 
-    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
-        AND CANUSEQTY&gt;0 AND ??? and isblock=0
-    &lt;/sql&gt;
-    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
-    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
-    &lt;line&gt;20&lt;/line&gt;
-    &lt;!-- 条件区开始--&gt;
-    &lt;condition&gt;
-        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
-        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
-        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
-        &lt;comparetype&gt;&lt; ![CDATA[like
-        MTRNAME
-        单行
-        &lt; ![CDATA[]]&gt;       
-        &lt;/comparetype&gt;
-    &lt;/ condition&gt;
-&lt;/ dictionary&gt;
-</code></pre></div>
-<p>然后，弹出窗口页面Ext入口代码：
-    // 全局变量
-    var result = {};
-    var grid;
-    var form;
-    var viewport;
-    var store;
-    var sm = new Ext.grid.CheckboxSelectionModel();
-    var autoStore;
-    var tempItems1 = [];
-    var tempItems2 = [];
-    var tempItems3 = [];
-    var flag = 1;
-    // 程序入口
-    Ext.onReady(function() {
-        Ext.QuickTips.init();// 初始化
-        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
-        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
-        Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
-        Ext.Ajax.request({
-            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
-            method : &#39;post&#39;,
-            success : function(res, opt) {
-                var xmlObj = res.responseXML;
-                initStoreData(xmlObj); // 访问成功后执行后续工作
-            }
-        })
-    });
-    function initStoreData(xmlObj) {
-        getInitData(xmlObj);
-        document.title = result.winTitle;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
-    // 获取表格数据部分
-    store = new Ext.data.Store({
-        idProperty : &#39;ID&#39;,
-        proxy : new Ext.data.HttpProxy({
-            url : &#39;../search.do?method=findAll&#39;,
-            failure : function() {
-                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
-            },
-            success : function(response) {
-                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
-            }
-        }),
+<li>ubuntu 9.04 (server)下 eucalyptus 安装（推荐）：
+<a href="http://bbs.chinacloud.cn/archiver/showtopic-230.aspx">http://bbs.chinacloud.cn/archiver/showtopic-230.aspx</a></div></p>
 
-        // baseParams : {
-        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
-        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
-        // // cmd:&#39;search&#39;
-        // },
-        reader : new Ext.data.JsonReader({
-            totalProperty : &#39;totalCount&#39;,
-            root : &#39;data&#39;
-        }, dataRecorder)
-    });
-    // 要分页，第一次加载数据必须传start和limit两参数
-    // store.load({
-    // params : {
-    // start : 0,
-    // limit : result.limit
-    // }
-    // });
-    initViewport();
-}
-// 获得界面初始化的一些数据
-function getInitData(xmlObj) {
-    // result.formItems = {};
-    result.columnHeaders = [];
-    result.gridRecords = [];
-    result.dbFilterRecords = [];
-    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
-    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
-    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
-    // 获取过滤条件表单的界面数据
-    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
-    var row = ForDight(conections.length / 3, 0);
-    for (var i = 0; i &lt; conections.length; i++) {
-        var item = {};
-        var condition = cleanWhitespaces(conections[i]);
-        item.id = condition[0].firstChild.nodeValue;
-        item.fieldLabel = condition[1].firstChild.nodeValue;
-        item.name = condition[4].firstChild.nodeValue;
-        item.anchor = &#39;95%&#39;;
-        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
-            item.xtype = &#39;textfield&#39;;
-        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
-            item.xtype = &#39;datefield&#39;;
-            item.format = &#39;Y-m-d&#39;;
-        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
-            item.xtype = &#39;numberfield&#39;;
-            item.minValue = 0;
-            item.minText = &#39;请输入有效的数字&#39;;
-            item.decimalPrecision = 6;
-        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
-            var autoStore = new Ext.data.SimpleStore({
-                proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
-                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
-                    failure : function() {
-                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
-                    }
-                }),
-                fields : [&#39;property&#39;],
-                baseParams : {
-                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
-                            + result.fromTable
-                }
-            });
-            item.xtype = &#39;combo&#39;;
-            item.store = autoStore;
-            item.displayField = &#39;property&#39;;
-            item.typeAhead = true;
-            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
-            item.queryParam = &#39;keyword&#39;;// 查询的名字
-            item.mode = &#39;remote&#39;;
-            item.minChars = 3;// 默认最少输入4
-            item.forceSelection = true;
-            item.queryDelay = 0;// 查询延迟时间
-            item.triggerAction = &#39;all&#39;;
-            item.emptyText = &#39;&#39;;
-            item.resizable = true;
-            item.selectOnFocus = true;
-        }
-        if (i / row &lt; 1) {
-            tempItems1.push(item);
-        }
-        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
-            tempItems2.push(item);
-        } else if (i / row &gt;= 2) {
-            tempItems3.push(item);
-        }
-    }
-    // alert(Ext.util.JSON.encode(result));
+<p></li></p>
 
-    // 获取表格表头的界面数据和rcord记录的数据格式
-    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
-    result.columnHeaders.push(sm);// 插入多选框
-    result.columnHeaders.push(new Ext.grid.RowNumberer({
-        width : 20
-    }));// 插入行号
-    for (var i = 0; i &lt; fields.length; i++) {
-        var item = {};
-        var record = {};
-        var array = [];
-        var field = cleanWhitespaces(fields[i]);
-        var renderDate = function(value) {
-            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
-        }
-        // 生成grid表格中store数据记录
-        record.name = field[0].firstChild.nodeValue;
-        record.mapping = field[0].firstChild.nodeValue;
-        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
-            record.type = &#39;date&#39;;
-            record.dateFormat = &#39;Y-m-d&#39;;
-            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
-        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
-            record.type = &#39;auto&#39;;
-        } else {
-            record.type = &#39;string&#39;;
-        }
-        result.gridRecords.push(record);
+<p><p>
+<h2>Eucalyptus java源代码</h2>
+在安装过程中，我把Eucalyptus的java源代码（eucalyptus-2.0.3-src-offline.tar.gz）下下来了，并按照<a href="http://open.eucalyptus.com/participate/sourcecode">http://open.eucalyptus.com/participate/sourcecode</a>的说明好不容易把java代码通过ant编译然后手动复制粘贴导入eclipse了，现在这些代码能够通过编译了，并能够清楚的看到Eucalyptus的java代码部分的实现方式。<br /></p>
 
-        // 生成grid表格表头数据记录
-        item.dataIndex = field[0].firstChild.nodeValue;
-        item.header = field[2].firstChild.nodeValue;
-        // item.width=field[3].firstChild.nodeValue;
-        item.sortable = true;
-        if (field.length == 7
-                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-            item.hidden = true;
-            // item.hideable=false;
-        }
-        if (field.length == 6) {
-            item.hidden = false;
-        }
-        result.columnHeaders.push(item);
-
-        // 生成模糊过滤store的记录
-        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-            array.push(field[2].firstChild.nodeValue);// fieldName
-            array.push(field[0].firstChild.nodeValue);// fieldValue
-        }
-        result.dbFilterRecords.push(array);
-    }
-    return result;
-};
-</code></pre></div>
-<p>渲染Ext界面代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
-    if (!form) {
-        form = getInsertForm();
-    }
-
-    if (!grid) {
-        grid = getInsertGrid();
-    }
-
-    if (!viewport) {
-        var formPanel = new Ext.Panel({
-            title : &#39;查询条件&#39;,
-            region : &#39;north&#39;,
-            split : true,
-            frame : true,
-            border : true,
-            layout : &#39;fit&#39;,
-            height : 280,
-            collapsible : true,
-            items : [form]
-
-        });
-        viewport = new Ext.Viewport({
-            layout : &#39;border&#39;,
-            modal : true,// 是否为模式窗口
-            border : false,
-            items : [formPanel, grid]
-        });
-    }
-}
-
-function searchByFilter() {
-    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
-    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
-    if (dbfilter == null || dbfilter == &quot;&quot;) {
-        alert(&quot;请输入一个关键字&quot;);
-        Ext.get(&quot;dbFilter&quot;).focus();
-    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
-        alert(&quot;请选择一个过滤字段&quot;);
-        Ext.get(&quot;search-type&quot;).focus();
-    } else {
-        form.getForm().reset();
-        if (flag == 1) {
-            store.baseParams = {
-                dbfilter : dbfilter,
-                parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
-                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                cmd : &#39;filter&#39;
-            };
-            store.load({
-                params : {
-                    start : 0,
-                    limit : result.limit
-                }
-            });
-            form.getForm().reset();
-            flag = 0;
-        } else {
-            store.baseParams = {
-                dbfilter : dbfilter,
-                parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
-                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                cmd : &#39;filter&#39;
-            };
-            store.reload();
-
-        }
-        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
-    }
-}
-// 获取过滤条件部分的表单控件
-function getInsertForm() {
-    form = new Ext.form.FormPanel({
-        name : &#39;frmMain&#39;,
-        height : 260,
-        labelAlign : &#39;left&#39;,
-        labelWidth : 110,
-        layout : &#39;fit&#39;,
-        waitMsgTarget : true,
-        items : [{
-            xtype : &#39;fieldset&#39;,
-            frame : true,
-            title : &#39;高级查询&#39;,
-            autoHeight : true,
-            layout : &#39;column&#39;,
-            items : [{
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems1
-            }, {
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems2
-            }, {
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems3
-            }]
-        }],
-        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
-            xtype : &#39;textfield&#39;,
-            width : 200,
-            id : &#39;dbFilter&#39;,
-            listeners : {
-                specialkey : function(field, e) {
-                    if (e.getKey() == Ext.EventObject.ENTER) {
-                        searchByFilter();
-                    }
-                }
-            }
-        }, &#39;-&#39;, {
-            xtype : &#39;combo&#39;,
-            id : &#39;search-type&#39;,
-            anchor : &#39;60%&#39;,
-            hiddenName : &#39;hiddenValue&#39;,
-            width : 120,
-            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
-            store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
-                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
-                data : result.dbFilterRecords
-            }),// 设置数据源
-            displayField : &#39;fieldName&#39;,// 定义要显示的字段
-            valueField : &#39;fieldValue&#39;,// 定义值字段
-            mode : &#39;local&#39;,// 本地模式
-            forceSelection : true,// 要求输入值必须在列表中存在
-            typeAhead : true,// 允许自动选择匹配的剩余部分文本
-            // value : &#39;==选择过滤字段==&#39;,
-            value : &#39;==选择过滤字段==&#39;,
-            handleHeight : 10
-                // 下拉列表中拖动手柄的高度
-                }, &#39;-&#39;, {
-                    xtype : &#39;button&#39;,
-                    text : &#39;筛选&#39;,
-                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
-                    iconCls : &#39;find&#39;,
-                    handler : searchByFilter
-                }, &#39;-&gt;&#39;, {
-                    pressed : true,
-                    xtype : &#39;button&#39;,
-                    text : &#39;确认插入&#39;,
-                    enableToggle : true,
-                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
-                    handler : function() {
-                        if (sm.hasSelection()) {
-                            var records = sm.getSelections();
-                            var jsonObj = &quot;{data:[&quot;;
-                            for (var i = 0; i &lt; records.length; i++) {
-                                jsonObj += Ext.encode(records[i].data);
-                                if (i != records.length - 1) {
-                                    jsonObj += &quot;,&quot;;
-                                }
-                            }
-                            jsonObj += &quot;]}&quot;
-                            Ext.Ajax.request({
-                                url : &#39;../search.do?method=insertChoices&#39;,
-                                method : &#39;post&#39;,
-                                params : {
-                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
-                                            .toString(),
-                                    jsonObj : jsonObj,
-                                    parentFormValues : getParentFormValues()
-                                },
-                                callback : function(options, success, response) {
-                                    if (response.responseText == &quot;success&quot;) {
-
-                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
-                                            window.close();
-                                            // opener.location.reload();
-                                        opener.saveForm();
-                                        });
-                                    } else {
-                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
-                                    }
-                                }
-                            })
-
-                        } else {
-                            alert(&quot;请选择一行或多行数据&quot;);
-                        }
-                    },
-                    scope : this
-                }, &#39;-&#39;, {
-                    pressed : true,
-                    xtype : &#39;button&#39;,
-                    text : &#39;取消&#39;,
-                    tooltip : &#39;取消选择，直接退出&#39;,
-                    handler : function() {
-                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
-                            if (id == &quot;yes&quot;)
-                                window.close();
-                        });
-                    },
-                    scope : this
-                }],
-        buttons : [{
-            text : &#39;执行查询条件&#39;,
-            handler : function() {
-                var connections = getCondictionValues();
-                if (!form.getForm().isValid()) {
-                    return;
-                };
-                if (isFormInputed(form.getForm()) == false) {
-                    alert(&quot;请输入查询条件&quot;);
-                    form.getForm().focus();
-                    return;
-                } else {
-                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
-                    if (flag == 1) {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : &#39;search&#39;
-                        };
-                        store.load({
-                            params : {
-                                start : 0,
-                                limit : result.limit
-                            }
-                        });
-                        form.getForm().reset();
-                        flag = 0;
-                    } else {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : &#39;search&#39;
-                        };
-                        store.reload();
-                    }
-
-                    form.getForm().reset();
-                }
-            }
-        }, {
-            text : &#39;重置&#39;,
-            handler : function() {
-                form.getForm().reset();
-            }
-        }]
-    });
-    return form;
-}
-</code></pre></div></div>
-    </article>
-  </section>
-  
-  
-  <section id="pentaho20110928build-pentaho-bi-server-source-code-in-eclipse">
-    <article>
-      <header>
-      <h3><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bi-ref">bi</a>
-			
-			
-		|
-		Time：<time date="2011-09-28">2011-09-28</time>
-		<a href='/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
-
-<p>当然，您可以参考<a href="http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse" target="_blank">官方文档</a>构建源码。</p>
-
-<p>Pentaho BI Server打包后的文件存于<a href="http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/" target="_blank">这里</a>，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。</p>
-
-<p>将biserver-ce-3.9.0-stable.zip解压之后执行<em>biserver-ce/start-pentaho.bat</em>（或是再linux环境下：<em>biserver-ce/start-pentaho.sh</em>），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？</p>
-
-<p><strong>以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。</strong></p>
-
-<p>在eclipse中创建一个web项目，名称为pentaho，然后将<em>biserver-ce/tomcat/webapps</em>下的<code>pentaho-style</code>和<code>sw-style</code>拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改<code>WEB-INF/web.xml</code>文件你的以下配置，用于指定pentaho-solutions的路径：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; context-param &gt;
-    &lt; param-name &gt;solution-path&lt; /param-name&gt;
-    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
-&lt; /context-param &gt;
-</code></pre></div>
-<p>现在即可部署项目，运行<code>biserver-ce/data/start_hypersonic.bat</code>（用于启动数据库），然后启动tomcat，就可以通过<em>http://localhost:8080/pentaho</em>访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（<em>\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib</em>）。<br />
-现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。</p>
-
-<p><strong>接下来，构建源代码。</strong>
-在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。</p>
-
-<p><strong><font color="red">需要注意的是：</font></strong>
-1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件<br />
-2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。<br />
-3.
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。</p>
-
-<p>4.biserver-ce-3.9.0-stable.zip的lib（<code>biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib</code>）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误</p>
-</div>
+	  
+   </div>
     </article>
   </section>
   
@@ -849,7 +373,6 @@ function getInsertForm() {
       <ul>
         <li class="next"><a href='/page8'>&larr; Previous</a></li>
         <li><a href="/archive.html">Archive</a></li>
-        <li class="prev"><a href='/page10'>Next &rarr;</a></li>
       </ul>
   </div>
   </div>
@@ -914,6 +437,21 @@ function getInsertForm() {
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
+      </li>
+      <li class="post">
+        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
+      </li>
+      <li class="post">
+        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
       </li>
     </ul>
     </section>

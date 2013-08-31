@@ -51,6 +51,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -70,549 +74,10 @@
   <div class="span9">
   
   
-  <section id="cassandra20120409getting-started-using-the-cassandra-cli">
+  <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
     <article>
       <header>
-      <h3><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#cassandra-ref">cassandra</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#cassandra-ref">cassandra</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cli-ref">cli</a>
-			
-			
-		|
-		Time：<time date="2012-04-09">2012-04-09</time>
-		<a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
-
-<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
-
-<h1>Starting the CLI</h1>
-
-<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
-如果你有一个但节点的集群，则使用以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
-</code></pre></div>
-<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
-</code></pre></div>
-<p>或者，可以直接执行以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
-</code></pre></div>
-<p>登录成功之后，可以看到：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
-Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
-</code></pre></div>
-<p>你必须指定连接一个节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
-</code></pre></div>
-<h1>Creating a Keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
-</code></pre></div>
-<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
-    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
-    and strategy_options = [{replication_factor:1}];
-</code></pre></div>
-<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
-
-<h1>Use a keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
-</code></pre></div>
-<h1>Creating a Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
-WITH comparator = UTF8Type
-AND key_validation_class=UTF8Type
-AND column_metadata = [
-{column_name: full_name, validation_class: UTF8Type}
-{column_name: email, validation_class: UTF8Type}
-{column_name: state, validation_class: UTF8Type}
-{column_name: gender, validation_class: UTF8Type}
-{column_name: birth_year, validation_class: LongType}
-];
-</code></pre></div>
-<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
-下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
-</code></pre></div>
-<h1>Creating a Counter Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
-      default_validation_class=CounterColumnType 
-      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
-</code></pre></div>
-<p>插入一行和计数列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
-</code></pre></div>
-<p>增加计数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
-</code></pre></div>
-<h1>Inserting Rows and Columns</h1>
-
-<p>以下命令以一个特点的行key值插入列到users中</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
-</code></pre></div>
-<p>更新数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
-</code></pre></div>
-<p>获取数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
-</code></pre></div>
-<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
-
-<p>查询数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
-</code></pre></div>
-<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
-</code></pre></div>
-<h1>Reading Rows and Columns</h1>
-
-<p>使用List命令查询记录，默认查询100条记录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
-</code></pre></div>
-<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
-<li>ascii</li>
-<li>bytes</li>
-<li>integer (a generic variable-length integer type)</li>
-<li>lexicalUUID</li>
-<li>long</li>
-<li>utf8</li>
-例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
-</code></pre></div>
-<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
-[default@demo] ASSUME users COMPARATOR AS ascii;
-[default@demo] ASSUME users VALIDATOR AS ascii;
-</code></pre></div>
-<h1>Setting an Expiring Column</h1>
-
-<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
-</code></pre></div>
-<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
-
-<h1>Indexing a Column</h1>
-
-<p>给birth_year添加一个二级索引：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
-        WITH comparator = UTF8Type AND column_metadata = 
-        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
-</code></pre></div>
-<p>由于该列被索引了，所以可以直接通过该列查询：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
-</code></pre></div>
-<h1>Deleting Rows and Columns</h1>
-
-<p>删除yomama索引的coupon_code列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
-[default@demo] GET users [&#39;yomama&#39;];
-</code></pre></div>
-<p>或者删除整行：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
-</code></pre></div>
-<h1>Dropping Column Families and Keyspaces</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
-[default@demo] DROP KEYSPACE demo;
-</code></pre></div>
-<h1>For help</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
-</code></pre></div>
-<p>查看某一个命令的详细说明：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
-</code></pre></div>
-<h1>To Quit</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
-</code></pre></div>
-<h1>To Execute Script</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
-</code></pre></div>
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
-<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
-</ul>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="cassandra20120406install_singlenode-with-datastax-community-editio">
-    <article>
-      <header>
-      <h3><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#cassandra-ref">cassandra</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#cassandra-ref">cassandra</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dataStax-ref">dataStax</a>
-			
-			
-		|
-		Time：<time date="2012-04-06">2012-04-06</time>
-		<a href='/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.</p>
-
-<h1>检查java环境</h1>
-
-<p>Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本.
-<h3>1.检查是否安装java:</h3></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
-</code></pre></div>
-<p>如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法.
-<h3>2.安装jdk</h3>
-下载<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Oracle JRE</a>
-1）修改执行权限:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd /tmp
-$ chmod a+x jre-6u25-linux-x64-rpm.bin
-</code></pre></div>
-<p>2）解压执行RPM文件,例如:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo ./jre-6u25-linux-x64-rpm.bin
-</code></pre></div>
-<p>这样JRE会安装在/usr/java/</p>
-
-<p>3）配置Oracle JRE取代OpenJDK JRE
-可以使用alternatives命令添加一个链接到Oracle JRE.</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000
-</code></pre></div>
-<p>4）确认是否安装JRE</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -version
-  java version &quot;1.6.0_25&quot;
-  Java(TM) SE Runtime Environment (build 1.6.0_25-b06)
-  Java HotSpot(TM) 64-Bit Server VM (build 20.0-b11, mixed mode)
-</code></pre></div>
-<p>如果OpenJDK JRE仍然被使用,可以使用alternatives命令切换到Oracle JRE.例如:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo alternatives --config java
-There are 2 programs which provide &#39;java&#39;.
-
-Selection      Command
------------------------------------------------
-   1           /usr/lib/jvm/jre-1.6.0-openjdk.x86_64/bin/java
-*+ 2           /usr/java/jre1.6.0_25/bin/java
-</code></pre></div>
-<h1>在Linux系统上安装DataStax Community二进制文件</h1>
-
-<h3>1.在用户目录创建一个目录,如datas</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $HOME
-$ mkdir datas
-$ cd datas
-</code></pre></div>
-<h3>2.下载cassandra(必须的)和OpsCenter包(可选的)</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget http://downloads.datastax.com/community/dsc.tar.gz
-$ wget http://downloads.datastax.com/community/opscenter.tar.gz
-$ wget http://downloads.datastax.com/community/dsc-1.0.1-demo-bin.tar.gz
-</code></pre></div>
-<h3>3.解压</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ tar -xzvf dsc.tar.gz
-$ tar -xzvf opscenter.tar.gz
-$ tar -xzvf dsc-1.0.1-demo-bin.tar.gz
-$ rm *.tar.gz
-</code></pre></div>
-<h3>4.设置环境变量</h3>
-
-<p>1)编辑 .bashrc </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vi $HOME/.bashrc
-</code></pre></div>
-<p>2)添加以下代码</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export CASSANDRA_HOME=$HOME/datas/dsc_package_name
-export DSCDEMO_HOME=$HOME/datas/dsc-1.0.1/demos/portfolio_manager
-export OPSC_HOME=$HOME/datas/opscenter_package_name
-export PATH=&quot;$PATH:$CASSANDRA_HOME/bin:$DSCDEMO_HOME/bin:$OPSC_HOME/bin&quot;
-</code></pre></div>
-<p>注意替换<font color="red">dsc<em>package</em>name</font>和<font color="red">opscenter<em>package</em>name</font>
-3)保存退出
-4)使该文件生效</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">source $HOME/.bashrc
-</code></pre></div>
-<h3>5.创建保存Cassandra数据的文件和日志目录</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir $HOME/datas/cassandra-data
-</code></pre></div>
-<h1>配置并启动单节点</h1>
-
-<h3>1.编辑配置环境</h3>
-
-<p>修改$CASSANDRA_HOME/conf/cassandra.yaml</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,initial_token:,initial_token: 0,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
-$ sed -i -e &quot;s,- /var/lib/cassandra/data,- $HOME/datastax/cassandra-data,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
-$ sed -i -e &quot;s,saved_caches_directory: /var/lib/cassandra/saved_caches, \
-  saved_caches_directory: $HOME/datastax/cassandra-data/saved_caches,&quot; \
-  $CASSANDRA_HOME/conf/cassandra.yaml
-$ sed -i -e &quot;s,commitlog_directory: /var/lib/cassandra/commitlog,commitlog_directory: \
-  $HOME/datastax/cassandra-data/commitlog,&quot; $CASSANDRA_HOME/conf/cassandra.yaml
-</code></pre></div>
-<h3>2.设置日志文件位置</h3> 
-
-<p>修改：$CASSANDRA_HOME/conf/log4j-server.properties</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,log4j.appender.R.File=/var/log/cassandra/system.log, \
-  log4j.appender.R.File=$HOME/datastax/cassandra-data/system.log,&quot; \
-  $CASSANDRA_HOME/conf/log4j-server.properties
-</code></pre></div>
-<h3>3.配置DataStax示例程序指向Cassandra的安装位置</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sed -i -e &quot;s,/usr/share/cassandra,$HOME/datastax/dsc_package_name,&quot; \
-  $DSCDEMO_HOME/bin/pricer
-</code></pre></div>
-<h3>4.后台启动Cassandra</h3>
-
-<p>$ cassandra</p>
-
-<h3>5.检查cassandra环是否在运行</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ nodetool ring -h localhost
-</code></pre></div>
-<h3>6.运行Portfolio Demo示例程序</h3>
-
-<p>1)进入Portfolio目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $DSCDEMO_HOME
-</code></pre></div>
-<p>2)运行 ./bin/pricer工具生成数据</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">./bin/pricer --help
-</code></pre></div>
-<p>下面代码生成100天的历史数据</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">./bin/pricer -o INSERT_PRICES
-./bin/pricer -o UPDATE_PORTFOLIOS
-./bin/pricer -o INSERT_HISTORICAL_PRICES -n 100
-</code></pre></div>
-<p>3)启动服务(必须在$DSCDEMO_HOME/website目录下启动)</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd $DSCDEMO_HOME/website
-$ java -jar start.jar &amp;
-</code></pre></div>
-<p>4)浏览程序 <code>http://localhost:8983/portfolio</code></p>
-
-<h1>参考文章</h1>
-
-<ul>
-<li>1.<a href="http://www.datastax.com/docs/1.0/getting_started/install_singlenode" target="_blank">Installing a Single-Node Instance of Cassandra</a></li>
-</ul>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="java20120326hash-and-hash-functions">
-    <article>
-      <header>
-      <h3><a href="/java/2012/03/26/hash-and-hash-functions">哈希表</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#java-ref">java</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#java-ref">java</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hash-ref">hash</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hashmap-ref">hashmap</a>
-			
-			
-		|
-		Time：<time date="2012-03-26">2012-03-26</time>
-		<a href='/java/2012/03/26/hash-and-hash-functions#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p><strong>定义 </strong>
-一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。</p>
-
-<p><code>哈希表</code>又称散列表。
-<em>哈希表存储的基本思想是</em>：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即<code>数组空间</code>）的单元地址（即<code>下标</code>），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为<code>哈希表</code>或<code>散列表</code>。<br />
-哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。<br />
-哈希表是基于<code>数组结构</code>实现的，所以它也存在一些<em>缺点</em>： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即<code>冲突现象</code>：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： <em>不需要有序遍历数据，并且可以提前预测数据量的大小</em>。</p>
-
-<p><strong>冲突</strong>
-理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。<br />
-把这种具有不同关键字值而具有相同哈希地址的对象称<code>同义词</code>。 在大多数情况下，冲突是不能完全避免的。这是因为所有可能的关键字的集合可能比较大，而对应的地址数则可能比较少。<br />
-对于哈希技术，主要研究两个问题：<br />
-（1）如何设计哈希函数以使冲突尽可能少地发生。<br />
-（2）发生冲突后如何解决。</p>
-
-<p><strong>哈希函数的构造方法</strong>
-构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。
-<strong>1．直接定址法</strong>
-<code>直接定址法</code>是以关键字k本身或关键字加上某个数值常量c作为哈希地址的方法。<br />
-该哈希函数H(k)为：<br />
-H(k)=k+c (c≥0)<br />
-这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费</p>
-
-<p><strong>2．除留余数法</strong></p>
-
-<p>取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即：<br />
-H(k)=k％m<br />
-这是一种较简单、也是较常见的构造方法。<br />
-这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。<br />
-理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。</p>
-
-<p><strong>3．平方取中法</strong>
-取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。<br />
-设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。</p>
-
-<p><strong>4．折叠法</strong>
-这种方法适合在关键字的位数较多，而地址区间较小的情况。<br />
-将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。<br />
-例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。</p>
-
-<p><strong>5．数值分析法</strong>
-若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。<br />
-例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。</p>
-
-<p><strong>6. 随机数法</strong>
-选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。</p>
-
-<p><strong>7. 斐波那契（Fibonacci）散列法</strong>
-平方散列法的缺点是显而易见的，所以我们能不能找出一个理想的乘数，而不是拿value本身当作乘数呢？答案是肯定的。<br />
-1，对于16位整数而言，这个乘数是40503<br />
-2，对于32位整数而言，这个乘数是2654435769<br />
-3，对于64位整数而言，这个乘数是11400714819323198485<br />
-这几个“理想乘数”是如何得出来的呢？这跟一个法则有关，叫黄金分割法则，而描述黄金分割法则的最经典表达式无疑就是著名的斐波那契数列，如果你还有兴趣，就到网上查找一下“斐波那契数列”等关键字，我数学水平有限，不知道怎么描述清楚为什么，另外斐波那契数列的值居然和太阳系八大行星的轨道半径的比例出奇吻合，很神奇，对么？<br />
-对我们常见的32位整数而言，公式：<br />
-index = (value * 2654435769) &gt;&gt; 28<br />
-如果用这种斐波那契散列法的话，那我上面的图就变成这样了：</p>
-
-<p><strong>冲突的解决方法</strong>
-假设哈希表的地址范围为0～m-l，当对给定的关键字k，由哈希函数H(k)算出的哈希地址为i（0≤i≤m-1）的位置上已存有记录，这种情况就是<code>冲突现象</code>。 处理冲突就是为该关键字的记录找到另一个“空”的哈希地址。即通过一个新的哈希函数得到一个新的哈希地址。如果仍然发生冲突，则再求下一个，依次类推。直至新的哈希地址不再发生冲突为止。<br />
-常用的处理冲突的方法有开放地址法、链地址法两大类
-<strong>1．开放定址法</strong>
-用开放定址法处理冲突就是当冲突发生时，形成一个地址序列。沿着这个序列逐个探测，直到找出一个“空”的开放地址。将发生冲突的关键字值存放到该地址中去。<br />
-如 Hi=(H(k)+d（i）) % m, i=1，2，…k (k 其中H(k)为哈希函数，m为哈希表长，d为增量函数，d(i)=dl，d2…dn-l。<br />
-增量序列的取法不同，可得到不同的开放地址处理冲突探测方法。</p>
-
-<p><strong>1）线性探测法</strong>
-线性探测法是从发生冲突的地址（设为d）开始，依次探查d+l，d+2，…m-1（当达到表尾m-1时，又从0开始探查）等地址，直到找到一个空闲位置来存放冲突处的关键字。<br />
-若整个地址都找遍仍无空地址，则产生溢出。<br />
-线性探查法的数学递推描述公式为：<br />
-d0=H(k)<br />
-di=(di-1+1)% m (1≤i≤m-1)</p>
-
-<p>【例】已知哈希表地址区间为0～10，给定关键字序列（20，30，70，15，8，12，18，63，19）。哈希函数为H(k)=k％ll，采用线性探测法处理冲突，则将以上关键字依次存储到哈希表中。试构造出该哈希表，并求出等概率情况下的平均查找长度。<br />
-假设数组为A, 本题中各元素的存放过程如下：<br />
-H(20)=9，可直接存放到A[9]中去。<br />
-H(30)=8，可直接存放到A[8]中去。<br />
-H(70)=4，可直接存放到A[4]中去。<br />
-H(15)=4，冲突；<br />
-d0=4<br />
-d1=(4+1)%11=5，将15放入到A[5]中。<br />
-H(8)=8，冲突；<br />
-d0=8<br />
-d1=(8+1)%11=9，仍冲突；<br />
-d2=(8+2)%11=10，将8放入到A[10]中。</p>
-
-<p>在等概率情况下成功的平均查找长度为：<br />
-（1*5+2+3+4+6）/9 =20/9<br />
-利用线性探查法处理冲突容易造成关键字的<code>堆积</code>问题。这是因为当连续n个单元被占用后，再散列到这些单元上的关键字和直接散列到后面一个空闲单元上的关键字都要占用这个空闲单元，致使该空闲单元很容易被占用，从而发生非同义冲突。造成平均查找长度的增加。<br />
-为了克服堆积现象的发生，可以用下面的方法替代线性探查法。</p>
-
-<p><strong>（2）平方探查法</strong>
-设发生冲突的地址为d，则平方探查法的探查序列为：d+12，d+22，…直到找到一个空闲位置为止。<br />
-平方探查法的数学描述公式为：<br />
-d0=H(k)<br />
-di=(d0+i2) % m (1≤i≤m-1)<br />
-在等概率情况下成功的平均查找长度为：<br />
-（1*4+2*2+3+4+6）/9 =21/9<br />
-平方探查法是一种较好的处理冲突的方法，可以避免出现堆积问题。它的缺点是不能探查到哈希表上的所有单元，但至少能探查到一半单元。<br />
-例如，若表长m=13，假设在第3个位置发生冲突，则后面探查的位置依次为4、7、12、6、2、0，即可以探查到一半单元。<br />
-若解决冲突时，探查到一半单元仍找不到一个空闲单元。则表明此哈希表太满，需重新建立哈希表。</p>
-
-<p><strong>2．链地址法</strong>
-用链地址法解决冲突的方法是：把所有关键字为同义词的记录存储在一个线性链表中，这个链表称为同义词链表。并将这些链表的表头指针放在数组中（下标从0到m-1）。这类似于图中的邻接表和树中孩子链表的结构。<br />
-由于在各链表中的第一个元素的查找长度为l，第二个元素的查找长度为2，依此类推。因此，在等概率情况下成功的平均查找长度为：<br />
-(1*5+2*2+3*l+4*1)／9=16／9</p>
-
-<p>虽然链地址法要多费一些存储空间，但是彻底解决了“堆积”问题，大大提高了查找效率。</p>
-
-<p><strong>3. 再哈希法</strong>：<br />
-Hi=R Hi(key)，<br />
-R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另一个哈希函数地址，直到冲突不再发生。这种方法不易产生<code>聚集</code>，但增加了计算的时间。</p>
-
-<p><strong>4.建立一个公共溢出区</strong>
-这也是处理冲突的一种方法。<br />
-假设哈希函数的值域为[0，m-1]，则设向量HashTable[0…m-1]为基本表，每个分量存放一个记录，另设立向量OverTable[0．．v]为溢出表。所有关键字和基本表中关键字为同义词的记录，不管它们由哈希函数得到的哈希地址是什么，一旦发生冲突，都填入溢出表。</p>
-
-<p><strong>哈希表的查找及性能分析</strong>
-<code>哈希法</code>是利用关键字进行计算后直接求出存储地址的。当哈希函数能得到均匀的地址分布时，不需要进行任何比较就可以直接找到所要查的记录。但实际上不可能完全避免冲突，因此查找时还需要进行探测比较。<br />
-在哈希表中，虽然冲突很难避免，但发生冲突的可能性却有大有小。这主要与三个因素有关。
-<strong>第一:与装填因子有关</strong>
-所谓装填因子是指哈希表中己存入的元素个数n与哈希表的大小m的比值，即f=n/m。<br />
-当f越小时，发生冲突的可能性越小，越大（最大为1）时，发生冲突的可能性就越大。
-<strong>第二:与所构造的哈希函数有关</strong>
-若哈希函数选择得当，就可使哈希地址尽可能均匀地分布在哈希地址空间上，从而减少冲突的发生。否则，若哈希函数选择不当，就可能使哈希地址集中于某些区域，从而加大冲突的发生。
-<strong>第三:与解决冲突的哈希冲突函数有关</strong>
-哈希冲突函数选择的好坏也将减少或增加发生冲突的可能性。</p>
-
-<p><strong>思考</strong>
-<em>哈希算法的基本思想是什么？</em>
-<em>哈希算法的存储效率主要取决于什么？</em>
-<em>哈希算法解决冲突的方式有哪些？</em></p>
-
-<p><strong>java 哈希表实现</strong>
-java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap，也有其他公司实现的，如apache的FashHashmap,google的mapmarker,high-lib的NonBlockingHashMap,其中差别是：</p>
-
-<p><strong>hastable</strong>:线程同步，比较慢
-<strong>hashmap</strong>：线程不同步，不同步时候读写最快（但是不能保证读到最新数据），加同步修饰的时候， 读写比较慢
-<strong>currenthashmap</strong>:线程同步，默认分成16块，写入的时候只锁要写入的快，读取一般不锁块，只有读到空的时候，才锁块，性能比较高，处于hashmap同步和不同步之间。
-<strong>fashhashmap</strong>:apache collection 将HashMap封装，读取的时候copy一个新的，写入比较慢（尤其是存入比较多对象每写一次都要复制一个对象，超级慢），读取快
-<strong>NoBlockingHashMap</strong>： high_scale_lib实现写入慢，读取较快
-<strong>MiltigetHashMap</strong>，MapMaker google collection，和CurrentHashMap性能相当，功能比较全，可以设置超时，重复的可以保存成list</p>
-
-<p><strong>参考文章</strong>
-<a href="http://course.onlinesjtu.com/mod/page/view.php?id=423" target="_blank"> http://course.onlinesjtu.com/mod/page/view.php?id=423</a>
-<a href="http://www.cnblogs.com/bigshuai/articles/2398116.html" target="_blank"> http://www.cnblogs.com/bigshuai/articles/2398116.html</a></p>
-
-<p><strong>扩展阅读</strong>
-Hash碰撞的拒绝式服务攻击 <a href="http://blog.jobbole.com/11454/" target="_blank">http://blog.jobbole.com/11454/</a>
-Berkeley DB Hash、Btree、Queue、Recno选择<a href=" http://www.webzone8.com/article/560.html" target="_blank"> http://www.webzone8.com/article/560.html</a>
-Java Hashtable <a href="http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1" target="_blank">http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1</a>
-Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_blank">http://kantery.iteye.com/blog/441755</a></p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20120323how-to-implement-cassandra-input-and-output-in-kettle4-2">
-    <article>
-      <header>
-      <h3><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h3>
+      <h3><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h3>
       <div class="c9">
 		Categories：
 			
@@ -627,144 +92,1069 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
 			,
 			
 			
-			<a href="/tags.html#cassandra-ref">cassandra</a>
+			<a href="/tags.html#etl-ref">etl</a>
+			
+			
+		|
+		Time：<time date="2012-01-05">2012-01-05</time>
+		<a href='/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。</p>
+
+<p>kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。</p>
+
+<p>这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，<strong>需要有主键和索引方便对比和加快查询速度</strong>。
+先来看看kettle中的一些组件。</p>
+
+<p>下图是kettle中的一个表输出组件。
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="http://blog.javachen.com/files/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
+</div></p>
+
+<p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
+&lt;!--more--&gt;
+下图是kettle中纬度更新/查询的组件。
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="http://blog.javachen.com/files/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
+</div>
+该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
+从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
+
+<p>如果现在想使用kettle实现<strong>异构数据库的数据以及主键和索引的迁移</strong>，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
+<strong>1.</strong>使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
+<strong>2.</strong>针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
+<strong>3.</strong>扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。</p>
+
+<p>方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。</p>
+
+<p><strong>下面是方案3的具体的实现。</strong></p>
+
+<p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
+    final List databases = spoon.getActiveDatabases();
+    if (databases.size() == 0)
+        return;&lt;/pre&gt;
+
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
+
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
+                        &quot;An unexpected error occurred!&quot;, e);
+                return false;
+            }
+        }
+
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
+
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
+
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
+</code></pre></div>
+<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
+    RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
+    sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
+ //此处省略若干代码
+}
+</code></pre></div>
+<p>该方法主要逻辑在下面代码内：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
+    public void run(IProgressMonitor monitor)
+     throws InvocationTargetException, InterruptedException {
+       //此处省略若干代码
+    }
+}
+</code></pre></div>
+<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
+    //此处省略若干代码
+}
+</code></pre></div>
+<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+        sourceDbInfo, sourceCon, tables[i],
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
+    location.x += 300;
+    JobEntrySQL jesql = new JobEntrySQL(
+        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i] + &quot;]&quot;);
+    jesql.setDatabase(targetDbInfo);
+    jesql.setSQL(pksql);
+    jesql.setDescription(BaseMessages.getString(PKG,
+            &quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i]
+            + &quot;]&quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
+</code></pre></div>
+<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
+
+<p>最后的效果图如下：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
+</div></p>
+
+<div class="infor">说明：
+1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。
+2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的</div>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120104some-problems-about-migrating-database-datas-with-kettle">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#kettle-ref">kettle</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			
+		|
+		Time：<time date="2012-01-04">2012-01-04</time>
+		<a href='/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+
+<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+
+<ul>
+<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
+<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
+</ul>
+
+<h4>关键字的问题。</h4>
+
+<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
+
+<ul>
+<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
+</ul>
+
+<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
+
+<ul>
+<li>解决办法：字段改名称，去掉#号</li>
+</ul>
+
+<h4>Db2初始化到mysql或是postgres出错</h4>
+
+<ul>
+<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
+<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
+</ul>
+
+<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
+
+<ul>
+<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
+</ul>
+
+<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
+
+<ul>
+<li>原因：pdi程序中没有对主键进行处理</li>
+<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
+</ul>
+
+<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
+
+<ul>
+<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
+<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
+</ul>
+
+<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
+
+<ul>
+<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
+<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
+</ul>
+
+<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
+
+<ul>
+<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
+</ul>
+
+<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
+
+<ul>
+<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
+<li>解决办法：使用最新的pdi程序。</li>
+</ul>
+
+<h4>导数据中途时没有报错，直接软件退出</h4>
+
+<ul>
+<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
+<li>解决办法：修改jvm参数</li>
+</ul>
+
+<h4>初次使用kettle做db2的初始化会报错</h4>
+
+<ul>
+<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
+<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+</ul>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="pentaho20111207mondrian-and-olap">
+    <article>
+      <header>
+      <h3><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#pentaho-ref">pentaho</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#mondrian-ref">mondrian</a>
 			
 			,
 			
+			
+			<a href="/tags.html#olap-ref">olap</a>
+			
+			
+		|
+		Time：<time date="2011-12-07">2011-12-07</time>
+		<a href='/pentaho/2011/12/07/mondrian-and-olap#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
+
+<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
+
+<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
+
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+
+<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
+
+<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
+
+<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
+
+<p><strong><span style="color: #00ff00;">结论</span></strong>
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
+
+<p><strong><span style="color: #00ff00;">说明</span></strong>
+<div class="note">
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20111125xml-user-interface-language-introuction">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xul-ref">xul</a>
+			
+			
+		|
+		Time：<time date="2011-11-25">2011-11-25</time>
+		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
+XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
+使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+
+<p><span style="color: #339966;"><strong>XUL元素</strong></span>
+XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
+基层元素：例如视窗、page、对话框、向导<br />
+Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
+排版:例如方框、网格、堆栈、叠<br />
+事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
+数据源:例如template、rule<br />
+其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
+一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
+现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
+
+<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
+Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
+
+<p><span style="color: #339966;"><strong>XUL应用</strong></span>
+虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
+Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
+
+<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
+可以选择 3 种方式来运行 XUL 应用程序：<br />
+1.使用基于 Mozilla 的浏览器进行简单测试<br />
+2.使用XULRunner<br />
+3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
+
+<p><strong><span style="color: #339966;">总结</span></strong>
+XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
+
+<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
+
+<p><li>
+1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+</li>
+<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+</li>
+<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<em>Page</a>
+</li>
+<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</em>%E6%95%99%E7%A8%8B/1-2<em>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</em>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
+</li>
+<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
+</li>
+<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
+</li>
+<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+</li></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20111022ext_readxml_in_bjsasc_wuzi">
+    <article>
+      <header>
+      <h3><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#extjs-ref">extjs</a>
+			
+			
+		|
+		Time：<time date="2011-10-22">2011-10-22</time>
+		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
+获取弹出窗口url后的参数方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
+function getQueryStringValue(name) {
+    var url = window.location.search;
+    if (url.indexOf(&#39;?&#39;) &lt; 0) {
+        return null
+    }
+    var index = url.indexOf(name + &quot;=&quot;);
+    if (index &lt; 0) {
+        return null
+    }
+    var args = url.indexOf(&#39;&amp;&#39;, index);
+    var value;
+    if (args &gt; 0) {
+        value = url.substring(index + name.length + 1, args);
+    } else {
+        value = url.substring(index + name.length + 1, url.length);
+    }
+    return value;
+}
+// 获取xml的服务器路径
+function getXmlUrl(xmlFile) {
+    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
+}
+</code></pre></div>
+<p>用到的一些辅助方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
+function cleanWhitespaces(elem) {
+    var elem = elem || document;
+    var childElem = elem.childNodes;
+    var childElemArray = new Array;
+    for (var i = 0; i &lt; childElem.length; i++) {
+        if (childElem[i].nodeType == 1) {
+            childElemArray.push(childElem[i]);
+        }
+    }
+    return childElemArray;
+}
+// 取得父窗口表单中键值对
+function getParentFormValues() {
+    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
+    var formValues = &quot;&quot;;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
+                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
+                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
+        }
+    }
+    formValues += opener.getBindValue(formObj.elements);
+    return formValues;
+}
+// 取得过滤条件表单的键值对
+function getCondictionValues() {
+    var condictionString = &quot;&quot;;
+    var formObj = form.getForm().getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
+                    + formObj.elements[i].value + &#39;}&#39;
+                    + formObj.elements[i].name + &#39;_ &#39;;
+        }
+    }
+    // alert(&quot;condictionString&quot;+condictionString);
+    return condictionString;
+}
+// 判读Ext表单是否有输入
+function isFormInputed(ExtForm) {
+    var flag = false;
+    var formObj = ExtForm.getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
+}
+// 将计算得到的结果四舍五入
+/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
+function ForDight(Dight, How) {
+    var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
+    return Dight;
+}
+</code></pre></div>
+<p>xml文件格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
+&lt; dictionary&gt;
+    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
+    &lt;sql&gt;
+    select V_stores_list.* 
+    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
+        AND CANUSEQTY&gt;0 AND ??? and isblock=0
+    &lt;/sql&gt;
+    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
+    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
+    &lt;line&gt;20&lt;/line&gt;
+    &lt;!-- 条件区开始--&gt;
+    &lt;condition&gt;
+        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
+        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
+        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
+        &lt;comparetype&gt;&lt; ![CDATA[like
+        MTRNAME
+        单行
+        &lt; ![CDATA[]]&gt;       
+        &lt;/comparetype&gt;
+    &lt;/ condition&gt;
+&lt;/ dictionary&gt;
+</code></pre></div>
+<p>然后，弹出窗口页面Ext入口代码：
+    // 全局变量
+    var result = {};
+    var grid;
+    var form;
+    var viewport;
+    var store;
+    var sm = new Ext.grid.CheckboxSelectionModel();
+    var autoStore;
+    var tempItems1 = [];
+    var tempItems2 = [];
+    var tempItems3 = [];
+    var flag = 1;
+    // 程序入口
+    Ext.onReady(function() {
+        Ext.QuickTips.init();// 初始化
+        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
+        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
+        Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
+        Ext.Ajax.request({
+            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
+            method : &#39;post&#39;,
+            success : function(res, opt) {
+                var xmlObj = res.responseXML;
+                initStoreData(xmlObj); // 访问成功后执行后续工作
+            }
+        })
+    });
+    function initStoreData(xmlObj) {
+        getInitData(xmlObj);
+        document.title = result.winTitle;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+    // 获取表格数据部分
+    store = new Ext.data.Store({
+        idProperty : &#39;ID&#39;,
+        proxy : new Ext.data.HttpProxy({
+            url : &#39;../search.do?method=findAll&#39;,
+            failure : function() {
+                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
+            },
+            success : function(response) {
+                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
+            }
+        }),
+
+        // baseParams : {
+        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+        // // cmd:&#39;search&#39;
+        // },
+        reader : new Ext.data.JsonReader({
+            totalProperty : &#39;totalCount&#39;,
+            root : &#39;data&#39;
+        }, dataRecorder)
+    });
+    // 要分页，第一次加载数据必须传start和limit两参数
+    // store.load({
+    // params : {
+    // start : 0,
+    // limit : result.limit
+    // }
+    // });
+    initViewport();
+}
+// 获得界面初始化的一些数据
+function getInitData(xmlObj) {
+    // result.formItems = {};
+    result.columnHeaders = [];
+    result.gridRecords = [];
+    result.dbFilterRecords = [];
+    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
+    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
+    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
+    // 获取过滤条件表单的界面数据
+    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
+    var row = ForDight(conections.length / 3, 0);
+    for (var i = 0; i &lt; conections.length; i++) {
+        var item = {};
+        var condition = cleanWhitespaces(conections[i]);
+        item.id = condition[0].firstChild.nodeValue;
+        item.fieldLabel = condition[1].firstChild.nodeValue;
+        item.name = condition[4].firstChild.nodeValue;
+        item.anchor = &#39;95%&#39;;
+        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
+            item.xtype = &#39;textfield&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
+            item.xtype = &#39;datefield&#39;;
+            item.format = &#39;Y-m-d&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
+            item.xtype = &#39;numberfield&#39;;
+            item.minValue = 0;
+            item.minText = &#39;请输入有效的数字&#39;;
+            item.decimalPrecision = 6;
+        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
+            var autoStore = new Ext.data.SimpleStore({
+                proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
+                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
+                    failure : function() {
+                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
+                    }
+                }),
+                fields : [&#39;property&#39;],
+                baseParams : {
+                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
+                            + result.fromTable
+                }
+            });
+            item.xtype = &#39;combo&#39;;
+            item.store = autoStore;
+            item.displayField = &#39;property&#39;;
+            item.typeAhead = true;
+            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
+            item.queryParam = &#39;keyword&#39;;// 查询的名字
+            item.mode = &#39;remote&#39;;
+            item.minChars = 3;// 默认最少输入4
+            item.forceSelection = true;
+            item.queryDelay = 0;// 查询延迟时间
+            item.triggerAction = &#39;all&#39;;
+            item.emptyText = &#39;&#39;;
+            item.resizable = true;
+            item.selectOnFocus = true;
+        }
+        if (i / row &lt; 1) {
+            tempItems1.push(item);
+        }
+        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
+            tempItems2.push(item);
+        } else if (i / row &gt;= 2) {
+            tempItems3.push(item);
+        }
+    }
+    // alert(Ext.util.JSON.encode(result));
+
+    // 获取表格表头的界面数据和rcord记录的数据格式
+    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
+    result.columnHeaders.push(sm);// 插入多选框
+    result.columnHeaders.push(new Ext.grid.RowNumberer({
+        width : 20
+    }));// 插入行号
+    for (var i = 0; i &lt; fields.length; i++) {
+        var item = {};
+        var record = {};
+        var array = [];
+        var field = cleanWhitespaces(fields[i]);
+        var renderDate = function(value) {
+            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
+        }
+        // 生成grid表格中store数据记录
+        record.name = field[0].firstChild.nodeValue;
+        record.mapping = field[0].firstChild.nodeValue;
+        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
+            record.type = &#39;date&#39;;
+            record.dateFormat = &#39;Y-m-d&#39;;
+            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
+        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
+            record.type = &#39;auto&#39;;
+        } else {
+            record.type = &#39;string&#39;;
+        }
+        result.gridRecords.push(record);
+
+        // 生成grid表格表头数据记录
+        item.dataIndex = field[0].firstChild.nodeValue;
+        item.header = field[2].firstChild.nodeValue;
+        // item.width=field[3].firstChild.nodeValue;
+        item.sortable = true;
+        if (field.length == 7
+                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            item.hidden = true;
+            // item.hideable=false;
+        }
+        if (field.length == 6) {
+            item.hidden = false;
+        }
+        result.columnHeaders.push(item);
+
+        // 生成模糊过滤store的记录
+        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            array.push(field[2].firstChild.nodeValue);// fieldName
+            array.push(field[0].firstChild.nodeValue);// fieldValue
+        }
+        result.dbFilterRecords.push(array);
+    }
+    return result;
+};
+</code></pre></div>
+<p>渲染Ext界面代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
+    if (!form) {
+        form = getInsertForm();
+    }
+
+    if (!grid) {
+        grid = getInsertGrid();
+    }
+
+    if (!viewport) {
+        var formPanel = new Ext.Panel({
+            title : &#39;查询条件&#39;,
+            region : &#39;north&#39;,
+            split : true,
+            frame : true,
+            border : true,
+            layout : &#39;fit&#39;,
+            height : 280,
+            collapsible : true,
+            items : [form]
+
+        });
+        viewport = new Ext.Viewport({
+            layout : &#39;border&#39;,
+            modal : true,// 是否为模式窗口
+            border : false,
+            items : [formPanel, grid]
+        });
+    }
+}
+
+function searchByFilter() {
+    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
+    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
+    if (dbfilter == null || dbfilter == &quot;&quot;) {
+        alert(&quot;请输入一个关键字&quot;);
+        Ext.get(&quot;dbFilter&quot;).focus();
+    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
+        alert(&quot;请选择一个过滤字段&quot;);
+        Ext.get(&quot;search-type&quot;).focus();
+    } else {
+        form.getForm().reset();
+        if (flag == 1) {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.load({
+                params : {
+                    start : 0,
+                    limit : result.limit
+                }
+            });
+            form.getForm().reset();
+            flag = 0;
+        } else {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.reload();
+
+        }
+        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+    }
+}
+// 获取过滤条件部分的表单控件
+function getInsertForm() {
+    form = new Ext.form.FormPanel({
+        name : &#39;frmMain&#39;,
+        height : 260,
+        labelAlign : &#39;left&#39;,
+        labelWidth : 110,
+        layout : &#39;fit&#39;,
+        waitMsgTarget : true,
+        items : [{
+            xtype : &#39;fieldset&#39;,
+            frame : true,
+            title : &#39;高级查询&#39;,
+            autoHeight : true,
+            layout : &#39;column&#39;,
+            items : [{
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems1
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems2
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems3
+            }]
+        }],
+        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
+            xtype : &#39;textfield&#39;,
+            width : 200,
+            id : &#39;dbFilter&#39;,
+            listeners : {
+                specialkey : function(field, e) {
+                    if (e.getKey() == Ext.EventObject.ENTER) {
+                        searchByFilter();
+                    }
+                }
+            }
+        }, &#39;-&#39;, {
+            xtype : &#39;combo&#39;,
+            id : &#39;search-type&#39;,
+            anchor : &#39;60%&#39;,
+            hiddenName : &#39;hiddenValue&#39;,
+            width : 120,
+            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
+            store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
+                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
+                data : result.dbFilterRecords
+            }),// 设置数据源
+            displayField : &#39;fieldName&#39;,// 定义要显示的字段
+            valueField : &#39;fieldValue&#39;,// 定义值字段
+            mode : &#39;local&#39;,// 本地模式
+            forceSelection : true,// 要求输入值必须在列表中存在
+            typeAhead : true,// 允许自动选择匹配的剩余部分文本
+            // value : &#39;==选择过滤字段==&#39;,
+            value : &#39;==选择过滤字段==&#39;,
+            handleHeight : 10
+                // 下拉列表中拖动手柄的高度
+                }, &#39;-&#39;, {
+                    xtype : &#39;button&#39;,
+                    text : &#39;筛选&#39;,
+                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
+                    iconCls : &#39;find&#39;,
+                    handler : searchByFilter
+                }, &#39;-&gt;&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;确认插入&#39;,
+                    enableToggle : true,
+                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
+                    handler : function() {
+                        if (sm.hasSelection()) {
+                            var records = sm.getSelections();
+                            var jsonObj = &quot;{data:[&quot;;
+                            for (var i = 0; i &lt; records.length; i++) {
+                                jsonObj += Ext.encode(records[i].data);
+                                if (i != records.length - 1) {
+                                    jsonObj += &quot;,&quot;;
+                                }
+                            }
+                            jsonObj += &quot;]}&quot;
+                            Ext.Ajax.request({
+                                url : &#39;../search.do?method=insertChoices&#39;,
+                                method : &#39;post&#39;,
+                                params : {
+                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+                                            .toString(),
+                                    jsonObj : jsonObj,
+                                    parentFormValues : getParentFormValues()
+                                },
+                                callback : function(options, success, response) {
+                                    if (response.responseText == &quot;success&quot;) {
+
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
+                                            window.close();
+                                            // opener.location.reload();
+                                        opener.saveForm();
+                                        });
+                                    } else {
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
+                                    }
+                                }
+                            })
+
+                        } else {
+                            alert(&quot;请选择一行或多行数据&quot;);
+                        }
+                    },
+                    scope : this
+                }, &#39;-&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;取消&#39;,
+                    tooltip : &#39;取消选择，直接退出&#39;,
+                    handler : function() {
+                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
+                            if (id == &quot;yes&quot;)
+                                window.close();
+                        });
+                    },
+                    scope : this
+                }],
+        buttons : [{
+            text : &#39;执行查询条件&#39;,
+            handler : function() {
+                var connections = getCondictionValues();
+                if (!form.getForm().isValid()) {
+                    return;
+                };
+                if (isFormInputed(form.getForm()) == false) {
+                    alert(&quot;请输入查询条件&quot;);
+                    form.getForm().focus();
+                    return;
+                } else {
+                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+                    if (flag == 1) {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.load({
+                            params : {
+                                start : 0,
+                                limit : result.limit
+                            }
+                        });
+                        form.getForm().reset();
+                        flag = 0;
+                    } else {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.reload();
+                    }
+
+                    form.getForm().reset();
+                }
+            }
+        }, {
+            text : &#39;重置&#39;,
+            handler : function() {
+                form.getForm().reset();
+            }
+        }]
+    });
+    return form;
+}
+</code></pre></div>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="pentaho20110928build-pentaho-bi-server-source-code-in-eclipse">
+    <article>
+      <header>
+      <h3><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#pentaho-ref">pentaho</a>
+			
+			
+		|
+		Tags：
 			
 			<a href="/tags.html#pentaho-ref">pentaho</a>
 			
 			,
 			
 			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
+			<a href="/tags.html#bi-ref">bi</a>
 			
 			
 		|
-		Time：<time date="2012-03-23">2012-03-23</time>
-		<a href='/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-09-28">2011-09-28</time>
+		<a href='/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>这是在QQ群里有人问到的一个问题.</p>
+    <div class="content">
+	  
+	    <p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
 
-<p>如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+<p>当然，您可以参考<a href="http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse" target="_blank">官方文档</a>构建源码。</p>
 
-<p>在kettle中实现cassandra的输入与输出有以下两种方式:</p>
+<p>Pentaho BI Server打包后的文件存于<a href="http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/" target="_blank">这里</a>，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。</p>
 
-<ul>
-<li>第一种方式:自己编写cassandra输入输出组件</li>
-<li>第二种方式:使用别人编写好的插件,将其集成进来</li>
-</ul>
+<p>将biserver-ce-3.9.0-stable.zip解压之后执行<em>biserver-ce/start-pentaho.bat</em>（或是再linux环境下：<em>biserver-ce/start-pentaho.sh</em>），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？</p>
 
-<p>当然还有第三种方法,直接使用4.3版本的pdi.</p>
+<p><strong>以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。</strong></p>
 
-<p>第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
-
-<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.</p>
-
-<p>故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.</p>
-
-<p>在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|-- kettle-gpload-plugin
-|-- kettle-hl7-plugin
-|-- kettle-palo-plugin
-|-- pentaho-big-data-plugin
-|-- repositories
-|-- spoon
-|-- steps
-`-- versioncheck
+<p>在eclipse中创建一个web项目，名称为pentaho，然后将<em>biserver-ce/tomcat/webapps</em>下的<code>pentaho-style</code>和<code>sw-style</code>拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改<code>WEB-INF/web.xml</code>文件你的以下配置，用于指定pentaho-solutions的路径：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; context-param &gt;
+    &lt; param-name &gt;solution-path&lt; /param-name&gt;
+    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
+&lt; /context-param &gt;
 </code></pre></div>
-<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">.
-|-- databases
-|-- hour-partitioner.jar
-|-- jobentries
-|   `-- DummyJob
-|       |-- DPL.png
-|       |-- dummyjob.jar
-|       `-- plugin.xml
-|-- pentaho-big-data-plugin
-|   |-- lib
-|   |   |-- apache-cassandra-1.0.0.jar
-|   |   |-- apache-cassandra-thrift-1.0.0.jar
-|   |   |-- aws-java-sdk-1.0.008.jar
-|   |   |-- commons-cli-1.2.jar
-|   |   |-- guava-r08.jar
-|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
-|   |   |-- jline-0.9.94.jar
-|   |   |-- libthrift-0.6.jar
-|   |   |-- mongo-java-driver-2.7.2.jar
-|   |   |-- pig-0.8.1.jar
-|   |   |-- xpp3_min-1.1.4c.jar
-|   |   `-- xstream-1.3.1.jar
-|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
-|-- repositories
-|-- spoon
-|-- steps
-|   |-- DummyPlugin
-|   |   |-- DPL.png
-|   |   |-- dummy.jar
-|   |   `-- plugin.xml
-|   |-- S3CsvInput
-|   |   |-- jets3t-0.7.0.jar
-|   |   |-- plugin.xml
-|   |   |-- S3CIN.png
-|   |   `-- s3csvinput.jar
-|   `-- ShapeFileReader3
-|       |-- plugin.xml
-|       |-- SFR.png
-|       `-- shapefilereader3.jar
-`-- versioncheck
-    |-- kettle-version-checker-0.2.0.jar
-    `-- lib
-    `-- pentaho-versionchecker.jar
+<p>现在即可部署项目，运行<code>biserver-ce/data/start_hypersonic.bat</code>（用于启动数据库），然后启动tomcat，就可以通过<em>http://localhost:8080/pentaho</em>访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（<em>\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib</em>）。<br />
+现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。</p>
 
-13 directories, 29 files
-</code></pre></div>
-<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
-<div class="pic">
-<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
-<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
-</a>
-</div></p>
+<p><strong>接下来，构建源代码。</strong>
+在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。</p>
 
-<p><strong>获取pentaho-big-data-plugin源码</strong>
-如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
-你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
+<p><strong><font color="red">需要注意的是：</font></strong>
+1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件<br />
+2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。<br />
+3.
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。</p>
 
-<p>然后,需要在kettle-steps.xml中注册步骤节点
-例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;step id=&quot;MongoDbInput&quot;&gt;
-&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
-&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
-&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
-&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
-&lt;iconfile&gt;ui/images/mongodb-input.png
-&lt;/iconfile&gt;&lt;/tooltip&gt;
-&lt;/category&gt;
-&lt;/classname&gt;
-&lt;/description&gt;
-&lt;/step&gt;
-</code></pre></div>
-<div class="note">
-<h>注意:
-由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
-</h></div>
+<p>4.biserver-ce-3.9.0-stable.zip的lib（<code>biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib</code>）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误</p>
 
-<p><strong>扩展阅读:</strong></p>
-
-<ul>
-<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
-<li>pentaho-big-data-plugin ci
-<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
-<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
-</ul>
-</div>
+	  
+   </div>
     </article>
   </section>
   
@@ -837,6 +1227,21 @@ Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_bla
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
+      </li>
+      <li class="post">
+        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
+      </li>
+      <li class="post">
+        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
       </li>
     </ul>
     </section>

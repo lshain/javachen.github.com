@@ -19,6 +19,8 @@ description: 分析hive cli入口类逻辑
 	  execHiveCmd $CLASS "--help"
 	}
 
+<!-- more -->
+
 ## 入口类
 java中的类如果有main方法就能运行，故直接查找`org.apache.hadoop.hive.cli.CliDriver`中的main方法即可。
 

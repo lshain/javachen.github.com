@@ -51,6 +51,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -70,410 +74,714 @@
   <div class="span9">
   
   
-  <section id="java20120214this-expression-of-jsf-el">
+  <section id="cloud20110707some-resources-about-openstack">
     <article>
       <header>
-      <h3><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h3>
+      <h3><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#java-ref">java</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#jsf-ref">jsf</a>
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
 			
 			,
 			
 			
-			<a href="/tags.html#el-ref">el</a>
-			
-			
-		|
-		Time：<time date="2012-02-14">2012-02-14</time>
-		<a href='/java/2012/02/14/this-expression-of-jsf-el#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content"><p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
-
-<p><strong>EL表达式this扩展</strong>
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
-
-<p>我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式</p>
-
-<p>我们将上述功能处理为“this”表达式。其功能模型为：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
-</div>
-页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
-&lt;!--more--&gt;</p>
-
-<p><strong>动作类和页面的一致性保证</strong>
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
-
-<p><strong>“this”EL表达式算法</strong>
-算法流程如下图：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div></p>
-</div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
-    <article>
-      <header>
-      <h3><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#javascript-ref">javascript</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#extjs-ref">extjs</a>
+			<a href="/tags.html#openNebula-ref">openNebula</a>
 			
 			,
 			
 			
-			<a href="/tags.html#xml-ref">xml</a>
+			<a href="/tags.html#openStack-ref">openStack</a>
 			
 			
 		|
-		Time：<time date="2012-01-31">2012-01-31</time>
-		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/some-resources-about-openstack#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
+    <div class="content">
+	  
+	    <p><li>
+<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
+</li>
+<li>
+OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
+</li>
+<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
+</li>
+<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
+</li>
+<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
+</li>
+<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
+</li>
+<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
+</li>
+<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
+</li>
+<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
+</li>
+<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
+</li>
+<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
+</li>
+<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
+</li>
+<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
+</li>
+<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
+</li>
+<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
+</li>
+<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
+</li>
+<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</li>
+<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+</li>
+<li>
+安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
+</li>
+<li>
+安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
+</li>
+<li>
+Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
+</li>
+<li>
+RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
+</li>
+<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
+</li></p>
 
-<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
-1.html文件，此处以SASC.search.MtrUse.html为例
-2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
-3.工具类，DomUtils.js
-4.核心js类:SASC.extjs.search.MtrUse.js
-5.java代码</p>
-
-<p>详细html和js代码见相关文件，这里先描述思路。</p>
-
-<p><strong>首先</strong>
-通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
-
-<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
-需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
-
-<p><strong>然后</strong></p>
-
-<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
-
-<p><strong>最后</strong>
-相关文件打包见：
-<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
-
-<p><strong>说明</strong>
-如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
-</div>
+	  
+   </div>
     </article>
   </section>
   
   
-  <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
+  <section id="cloud20110707openstack-architecture-overview">
     <article>
       <header>
-      <h3><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h3>
+      <h3><a href="/cloud/2011/07/07/openstack-architecture-overview">OpenStack架构预览</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#kettle-ref">kettle</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			,
-			
-			
-			<a href="/tags.html#etl-ref">etl</a>
+			<a href="/tags.html#openStack-ref">openStack</a>
 			
 			
 		|
-		Time：<time date="2012-01-05">2012-01-05</time>
-		<a href='/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/openstack-architecture-overview#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。</p>
+    <div class="content">
+	  
+	    <p><h2>What is OpenStack?</h2>
+OpenStack提供开放源码软件，建立公共和私有云。 OpenStack是一个社区和一个项目，以及开放源码软件，以帮助企业运行的虚拟计算或者存储云。 OpenStackd开源项目由社区维护，包括OpenStack计算（代号为Nova），OpenStack对象存储（代号为SWIFT），并OpenStack镜像服务（代号Glance）的集合。 OpenStack提供了一个操作平台，或工具包，用于编排云。
+<h2>Components of OpenStack</h2>
+OpenStack当前主要有三个组件：计算，存储，镜像。<br />
+OpenStack计算是一个云控制器，用来启动一个用户或一个组的虚拟实例，它也用于配置每个实例或项目中包含多个实例为某个特定项目的联网。<br />
+OpenStack对象存储是一个在具有内置冗余和容错的大容量系统中存储对象的系统。对象存储有各种应用，如备份或存档数据，存储图形或视频（流媒体数据传输到用户的浏览器），储存二级或三级静态数据，发展与数据存储集成新的应用程序，当预测存储容量困难时存储数据，创造弹性和灵活的云存储Web应用程序。<br />
+OpenStack镜像服务是一个查找和虚拟机图像检索系统。它可以配置三种方式：使用OpenStack对象存储来存储图像;使用亚马逊S3直接存储，或使用S3对象存储作为S3访问中间存储。
+<h2>OpenStack Project Architecture</h2>
+OpenStack当前包括三个子项目，三个项目相会独立，可以单独安装。<br />
+• Swift 提供对象存储。这是大致类似于Rackspace云文件（从它派生）或亚马逊S3。<br />
+• Glance 提供OpenStack Nova虚拟机镜像的发现，存储和检索。<br />
+• Nova 根据要求提供虚拟服务。这与Rackspace云服务器或亚马逊EC2类似。<br />
+将来会出现web 接口的子项目以及队列服务的子项目。
+<h2>Cloud Provider Conceptual Architecture</h2>
+构建自己的Iaas云环境并将其提供给用户，需要提供以下几个特性：<br />
+1. 允许应用用户注册云服务、查看使用情况以及账单。<br />
+2. 允许开发商和开发人员创建和存储自定义的镜像。<br />
+3. 允许开发商和开发人员启动、监控、停止虚拟机实例。<br />
+4. 允许操作人员配置和操作云基础设施。<!--more--></p>
 
-<p>kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。</p>
+<p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
 
-<p>这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，<strong>需要有主键和索引方便对比和加快查询速度</strong>。
-先来看看kettle中的一些组件。</p>
+<p>在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
+表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
+逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
+集成功能，大多数服务提供商已经有一个客户的身份和计费系统。任何云架构将需要与这些系统集成。<br />
+管理层，提供一个API来管理云并提供监控功能。<br />
+资源层，因为这是一个计算云，我们需要实际的计算，网络和存储资源，以提供给客户。这一层提供这些服务，他们可能是服务器，网络交换机，网络附加存储或其他资源。
+<h2>OpenStack Compute Logical Architecture</h2>
+OpenStack 中有两个守护进程：<br />
+接收和调解API调用的WSGI应用程序 （nova-api，glance-api等等）。<br />
+进行编排任务的工人守护进程（nova-compute， nova-network,，nova-schedule）。<br />
+OpenStack中还包含两个组件：消息队列服务和数据库。这两个组件方便异步编排复杂的任务通过消息传递和信息共享。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture.png"><img class="size-medium wp-image-2124 aligncenter" title="OpenStack Compute Logical Architecture" src="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture-300x220.png" alt="" width="300" height="220" /></a></p>
+这个复杂的，但不是太翔实的图表可以概括为三句话：<br />
+ 终端用户通过nova-api 接口与Openstack 计算交互。<br />
+ OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
+ OpenStack Glance是一个完全独立的基础上设施。
+<strong>各个组件的介绍：</strong></p></p>
 
-<p>下图是kettle中的一个表输出组件。
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="http://blog.javachen.com/files/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
+<p><code><strong>nova-api</strong></code><code>：</code>是对外的接口。OpenStack 云计算的核心控制器（CloudController定义在trunk/nova/api/ec2/cloud.py）。它提供了一个为所有的API查询（OpenStack API或EC2 API）的端点，引发多数业务流程的活动（如运行一个实例），并实施一些政策（主要是配额检查）。</p>
+
+<p><code><strong>nova-schedule</strong></code><code><strong>：</strong></code>根据当前资源使用情况，决定计算节点分布到哪台计算节点上。目前实现很薄，目前已支持插件方式扩展，方便后面可能有采用更复杂算法。</p>
+
+<p><code><strong>nova-compute</strong></code><code><strong>：</strong></code>接收队列中的动作，然后执行一系列的系统命令（如启动KVM实例），同时更新数据库中的状态。</p>
+
+<p><code><strong>nova-volume</strong></code><code><strong>：</strong></code>给虚拟机分配额外持久化的存储，管理持久卷到计算实例的创建，连接和分离。</p>
+
+<p><code><strong>nova-network</strong></code><code><strong>：</strong></code>网络管理，给虚拟机分配网络和管理，使外部 PC 可以可直接访问。它接受队列中的网络任务，然后执行任务操纵网络（如设立桥接接口或更改iptables规则）。</p>
+
+<p><code><strong>queue</strong></code><code><strong>：</strong></code>提供了一个守护进程之间传递消息的中央枢纽。当前由 <a href="http://www.rabbitmq.com/" target="_top">RabbitMQ</a>实现，理论上可以是Python的ampqlib支持的任何AMPQ消息队列。</p>
+
+<p><code><strong>SQL database</strong></code><code><strong>：</strong></code>存储云基础设施的编译时和运行时的状态。这包括可用的实例类型，在使用中的实例，可用的网络和项目。</p>
+
+<p><code><strong>OpenStack Glance：</strong></code>OpenStack 单独的一个项目。
+<h2>Nova Conceptual Mapping</h2>
+<p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
+
+<p>上面的功能模块对应上面模型的映射：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p></p>
+
+<p><h2>Service Architecture</h2>
+管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
+
+<p><h2>部署</h2>
+部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
+
+<p>OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
+<h2>镜像管理</h2>
+<p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />
+你可以使用Ubuntu的已有image (https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</p>
+<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p></p>
+
+<p><h2>网络模型</h2>
+Flat Network Manager, Flat DHCP Network Manager, VLAN Network Manager.<br />
+VLAN Network Manager 这种方式适合于共有云。<br />
+在私有云方面， IP充足，而且为了方便的互联互通，简单的Flat结构网络比较适合。<br />
+OpenStack支持 Floating IPs ,该特性可以方便的通过更改IP来Failover(容错转移）或者迁移。
+<div class="note">
+<h2>参考文章</h2>
+OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+nova code:<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a>
+openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
 </div></p>
 
-<p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
-&lt;!--more--&gt;
-下图是kettle中纬度更新/查询的组件。
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="http://blog.javachen.com/files/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
-</div>
-该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
-从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
-
-<p>如果现在想使用kettle实现<strong>异构数据库的数据以及主键和索引的迁移</strong>，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
-<strong>1.</strong>使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
-<strong>2.</strong>针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
-<strong>3.</strong>扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。</p>
-
-<p>方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。</p>
-
-<p><strong>下面是方案3的具体的实现。</strong></p>
-
-<p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
-多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
-    final List databases = spoon.getActiveDatabases();
-    if (databases.size() == 0)
-        return;&lt;/pre&gt;
-
-    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
-            databases);
-    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
-    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
-            spoon.getRepository());
-    Wizard wizard = new Wizard() {
-        public boolean performFinish() {
-            try {
-                JobMeta jobMeta = ripDBByNo(no, databases,
-                    page3.getJobname(), page3.getRepositoryDirectory(),
-                    page3.getDirectory(), page1.getSourceDatabase(),
-                    page1.getTargetDatabase(), page2.getSelection());
-
-                if (jobMeta == null)
-                    return false;
-
-                if (page3.getRepositoryDirectory() != null) {
-                    spoon.saveToRepository(jobMeta, false);
-                } else {
-                    spoon.saveToFile(jobMeta);
-                }
-
-                addJobGraph(jobMeta);
-                return true;
-            } catch (Exception e) {
-                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
-                        &quot;An unexpected error occurred!&quot;, e);
-                return false;
-            }
-        }
-
-        public boolean canFinish() {
-            return page3.canFinish();
-        }
-    };
-
-    wizard.addPage(page1);
-    wizard.addPage(page2);
-    wizard.addPage(page3);
-
-    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
-    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
-    wd.setMinimumPageSize(700, 400);
-    wd.updateSize();
-    wd.open();
-}
-</code></pre></div>
-<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
-创建Jobmeta的方法为：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
-    RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
-    sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
- //此处省略若干代码
-}
-</code></pre></div>
-<p>该方法主要逻辑在下面代码内：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
-    public void run(IProgressMonitor monitor)
-     throws InvocationTargetException, InterruptedException {
-       //此处省略若干代码
-    }
-}
-</code></pre></div>
-<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
-    //此处省略若干代码
-}
-</code></pre></div>
-<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
-这部分的代码如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
-        sourceDbInfo, sourceCon, tables[i],
-        targetDbInfo, targetCon, tables[i]);
-if (!Const.isEmpty(pksql)) {
-    location.x += 300;
-    JobEntrySQL jesql = new JobEntrySQL(
-        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
-            + tables[i] + &quot;]&quot;);
-    jesql.setDatabase(targetDbInfo);
-    jesql.setSQL(pksql);
-    jesql.setDescription(BaseMessages.getString(PKG,
-            &quot;Spoon.RipDB.AddPkAndIndex&quot;)
-            + tables[i]
-            + &quot;]&quot;);
-    JobEntryCopy jecsql = new JobEntryCopy();
-    jecsql.setEntry(jesql);
-    jecsql.setLocation(new Point(location.x, location.y));
-    jecsql.setDrawn();
-    jobMeta.addJobEntry(jecsql);
-    // Add the hop too...
-    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
-    jobMeta.addJobHop(jhi);
-    previous = jecsql;
-}
-</code></pre></div>
-<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
-该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
-
-<p>最后的效果图如下：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
-</div></p>
-
-<div class="infor">说明：
-1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。
-2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的</div>
-</div>
+	  
+   </div>
     </article>
   </section>
   
   
-  <section id="kettle20120104some-problems-about-migrating-database-datas-with-kettle">
+  <section id="cloud20110706opennebula-architecture">
     <article>
       <header>
-      <h3><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h3>
+      <h3><a href="/cloud/2011/07/06/opennebula-architecture">OpenNebula的架构</a></h3>
       <div class="c9">
 		Categories：
 			
-			<a href="/categories.html#kettle-ref">kettle</a>
+			<a href="/categories.html#cloud-ref">cloud</a>
 			
 			
 		|
 		Tags：
 			
-			<a href="/tags.html#kettle-ref">kettle</a>
+			<a href="/tags.html#openNebula-ref">openNebula</a>
 			
 			
 		|
-		Time：<time date="2012-01-04">2012-01-04</time>
-		<a href='/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-07-06">2011-07-06</time>
+		<a href='/cloud/2011/07/06/opennebula-architecture#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 	<hr/>
     </header>
-    <div class="content"><p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+    <div class="content">
+	  
+	    <p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
 
-<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+<p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
 
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
+
+<p align="center">图1  OpenNebula总体架构图</p>
+
+<p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
+
+<p><h2>私有云</h2>
+私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
+
+<p align="center">图2 私有云</p>
+
+<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
+<p align="center">图3 私有云内用户视图</p>
+&nbsp;
+<h2>混合云</h2>
+<p align="left">OpenNebula提供Deltacloud适配器与Amazon EC2相配合来管理混合云。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/hyb-cloud2.png"><img class="size-medium wp-image-2109 aligncenter" title="hyb cloud2" src="http://blog.javachen.com/files/2011/07/hyb-cloud2-300x203.png" alt="" width="300" height="203" /></a></p>
+<p align="center">图4 混合云</p>
+&nbsp;
+<h2>公开云</h2>
+<p align="left">OpenNebula公有云是私有云的一个扩展，是在私有云的基础上对外暴露REST接口。如果你要让合作伙伴或外部用户能够访问您的基础设施，或出售你的服务，云接口可以被添加到您的私有或混合云。显然，一个本地的云解决方案是任何公共云自然后端。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/public-cloud.png"><img class="size-medium wp-image-2110 aligncenter" title="public cloud" src="http://blog.javachen.com/files/2011/07/public-cloud-300x175.png" alt="" width="300" height="175" /></a></p>
+<p align="center">图5 公开云</p>
+<p align="left">OpenNebula的构架包括三个部分：驱动层、核心层、工具层。驱动层直接与操作系统打交道，负责虚拟机的创建、启动和关闭，为虚拟机分配存储，监控物理机和虚拟机的运行状况。核心层负责对虚拟机、存储设备、虚拟网络等进行管理。工具层通过命令行界面/浏览器界面方式提供用户交互接口，通过API方式提供程序调用接口。</p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/3-cloud.png"><img class="size-medium wp-image-2111 aligncenter" title="3 cloud" src="http://blog.javachen.com/files/2011/07/3-cloud-300x178.png" alt="" width="300" height="178" /></a></p>
+<p align="center">图6 三层架构图</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/3-cloud2.png"><img class="size-medium wp-image-2112 aligncenter" title="3 cloud2" src="http://blog.javachen.com/files/2011/07/3-cloud2-300x181.png" alt="" width="300" height="181" /></a></p>
+<p align="left">OpenNebula使用共享存储设备（例如NFS）来提供虚拟机映像服务，使得每一个计算节点都能够访问到相同的虚拟机映像资源。当用户需要启动或者是关闭某个虚拟机时，OpenNebula通过SSH登陆到计算节点，在计算节点上直接运行相对应的虚拟化管理命令。这种模式也称为无代理模式，由于不需要在计算节点上安装额外的软件（或者服务），系统的复杂度也相对降低了。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-services.png"><img class="size-medium wp-image-2113 aligncenter" title="one services" src="http://blog.javachen.com/files/2011/07/one-services-300x189.png" alt="" width="300" height="189" /></a></p>
+<p align="center">图7 前端节点和集群节点之间交互</p>
+&nbsp;
+<h2>网络架构</h2>
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
+
+<p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
+
+<p>&nbsp;
+<div class="infor">
+<h2>参考资料</h2>
+* 1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
+* 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
+* 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
+</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110629install-opennebula-management-console-in-centos5-6">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6">Centos上安装 OpenNebula Management Console</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-06-29">2011-06-29</time>
+		<a href='/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
+
+<p>OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章：<br />
+《<a href="http://www.vpsee.com/2011/03/install-opennebula-management-console-on-centos/" target="_blank">安装 OpenNebula 基于 Web 的管理控制台》</a>，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。</p>
+
+<p>我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。</p>
+
+<p><span style="color: #ff0000;"><!--more-->以下来自<a href="http://dev.opennebula.org/projects/management-console/wiki">官方文档</a>：</span>
+<h3><span style="color: #0000ff;">要求:</span></h3>
 <ul>
-<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
-<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
+    <li>Apache or whatever webserver.</li>
+    <li>php5 (May work with php4 but not tested)</li>
+    <li>php-adodb<br />
+And you need a db driver for adodb: php-mysql or php-pgsql.</li>
+    <li>Mysql or postgresql database</li>
+    <li>php-curl</li>
+    <li>php-xmlrpc</li>
+    <li>php-pear: pecl install uploadprogress (Only if you want a nice upload progress bar)</li>
 </ul>
+如果你想查看更多资料，您可以去官网：<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>；如果你想在ubutun上安装OpenNebula Management Console，参照这篇文章：<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
 
-<h4>关键字的问题。</h4>
+<p><span style="color: #ff0000;">以下为安装过程：</span>
+<h3><span style="color: #0000ff;">必要软件</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php mysql-server httpd mysql-connector-odbc mysql-devel libdbi-dbd-mysql</pre>
+<h3><span style="color: #ff0000; font-size: 15px;">安装php-adodb</span></h3>
+从<a href="http://sourceforge.net/projects/adodb/files/adodb-php5-only">http://sourceforge.net/projects/adodb/files/adodb-php5-only</a>下载
+<strong><span style="color: #ff0000;">注意：</span></strong>将adobd包解压拷贝到/var/www/html/onemc/include/，将文件名改为adobd
+<h3><span style="color: #0000ff;">安装php的扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-curl php-mysql</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">安装apache扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install httpd-manual mod_ssl mod_perl mod_auth_mysql</pre>
+<h3><span style="color: #ff0000;">修改配置文件权限</span></h3>
+<pre escaped="true" lang="shell"># chmod 644 /var/www/html/onemc/include/config.php</pre>
+我下载的是OpenNebula 2.2其中/config.php的权限很特别，如果你从浏览器访问onemc时候页面都是空白的，你可以看看日志（我使用的是httpd，日志在httpd.log），可以看到日志中提示没有权限访问/var/www/html/onemc/include/config.php
+<h3><span style="color: #0000ff;">下载 onemc</span></h3>
+下载和解压 onemc-1.0.0.tar.gz 后直接放在 apache 的默认目录里：
+<pre escaped="true" lang="shell"># cd /var/www/html
+# wget http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz
+# tar zxvf onemc-1.0.0.tar.gz
+# cd onemc</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">配置数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -uroot -p
+Enter password:
+mysql&gt; create database onemc;
+mysql&gt; create user 'oneadmin'@'localhost' identified by 'oneadmin';
+mysql&gt; grant all privileges on onemc.* to 'oneadmin'@'localhost';
+mysql&gt; \q</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">初始化数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -u oneadmin -p onemc &lt; /var/www/html/onemc/include/mysql.sql</pre>
+<h3><span style="color: #0000ff;">配置 onemc</span></h3>
+<pre escaped="true" lang="shell"># vi /var/www/html/onemc/include/config.php
+...
+// vmm: kvm or xen
+$vmm = "xen";
+...
+// ADODB settings
+$adodb_type = "mysql";
+$adodb_server = "localhost";
+$adodb_user = "oneadmin";
+$adodb_pass = "oneadmin";
+$adodb_name = "onemc";</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">登录</span></h3>
+如果系统设置了 http_proxy 环境变量的话一定要先关闭，然后重启 one 和 httpd：
+<pre escaped="true" lang="shell"># unset http_proxy
+# one stop; one start
+# /etc/init.d/httpd restar
+</pre>
+访问地址为http://localhost/onemc/index.php，用户名和密码在one_auth 中。
+<h3><span style="font-size: 15px;"><span style="color: #ff0000;">总结</span></span></h3>
+以上步骤最重要的是配置好centos的yum源，一次将php和mysql及相关组件安装成功，然后需要注意的是上面红色部分标出的部分。其实，除了红色那部分之外，其余和开头提到的那篇文章内容没什么差别。
+<h3><span style="color: #0000ff;">参考文章</span></h3>
+<li>
+<a href="http://www.javachen.com/?page_id=2073#date=2011-06-29 12:00:00,mode=month" target="_blank">Centos上安装 OpenNebula Management Console</a>
+</li>
+<li>
+<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>
+</li>
+<li><a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a>
+</li>
+</p>
 
-<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110626opennebula-2-2-features">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/06/26/opennebula-2-2-features">OpenNebula 2.2的特性</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-06-26">2011-06-26</time>
+		<a href='/cloud/2011/06/26/opennebula-2-2-features#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>以下这篇文章由<a title="OpenNebula 2.2 Features" href="http://opennebula.org/documentation:features">OpenNebula 2.2 Features</a>翻译而来。</p>
 
+<p>OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
+
+<p>目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。
+<h2>主要特点和优势</h2>
+<strong>私有云计算</strong><strong> </strong></p>
+
+<p>为私有数据中心或集群（管理功能<strong>私有云计算</strong>）上运行<strong>的</strong><strong>Xen</strong>，<strong>KVM</strong>和<strong>VMware</strong><strong>的</strong>。
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="107"><strong>模块</strong></td>
+<td valign="top" width="453"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>用户管理</strong></td>
+<td valign="top" width="453">用户管理，认证框架，多个云用户和管理员角色，会计，配额管理，安全的多租户。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>VM</strong><strong>图像管理</strong></td>
+<td valign="top" width="453">带目录的镜像仓库和镜像管理，访问控制，以及从正在运行的虚拟机创建镜像。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>虚拟网络管理</strong></td>
+<td valign="top" width="453">对互联的虚拟机;一定范围或固定的网络;虚拟网络共享;相关的第2层虚拟网络和网络隔离的通用属性定义提供虚拟网络管理。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>虚拟机管理</strong></td>
+<td valign="top" width="453">虚拟机管理功能，支持在同一物理结构中的多个hypervisors，分布式环境的多个hypervisor管理，虚拟机自动配置，以及脚本在虚拟机的状态变化时的触发管理。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>服务管理</strong></td>
+<td valign="top" width="453">部署由多层次的相互联系的虚拟机组成的群体服务;在启动时自动配置，以及对微软Windows和Linux镜像的支持。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>基础设施管理</strong></td>
+<td valign="top" width="453">管理物理主机;创建本地集群，占地面积小，占用空间不到700KB。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>存储管理</strong></td>
+<td valign="top" width="453">虚拟机映像管理，支持多种硬件平台（FibreChannel, iSCSI, NAS shared storage…）和存储后端传输镜像。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>信息管理</strong></td>
+<td valign="top" width="453">虚拟机和物理基础设施的监控，并与数据监测工具集成，如</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>调度</strong></td>
+<td valign="top" width="453">强大和灵活的竞价/排名调度、工作量和资源分配政策，如包装，分割，负载感知.....</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>用户界面</strong></td>
+<td valign="top" width="453">Unix类似的云基础设施管理命令行。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>运营中心</strong></td>
+<td valign="top" width="453">图形化管理的云基础设施。</td>
+</tr>
+</tbody>
+</table>
+<!--more--></p>
+
+<p><strong>混合云计算</strong></p>
+
+<p>本地基础设施与远程云资源的扩展（<strong>混合云计算</strong>）
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="111"><strong>模块</strong></td>
+<td valign="top" width="449"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="111"><strong>Cloudbursting</strong></td>
+<td valign="top" width="449">本地的基础设施，可以辅从外部云计算能力，以满足高峰需求，更好地服务用户的访问请求，或者为了实现高可用性策略。支持亚马逊EC2，并同时访问多个云。</td>
+</tr>
+<tr>
+<td valign="top" width="111"><strong>Federation</strong><strong> </strong></td>
+<td valign="top" width="449">不同的云实例以构建一个独立的虚拟化集群层次;更高水平的可扩展性。</td>
+</tr>
+</tbody>
+</table>
+&nbsp;</p>
+
+<p><strong>公共云计算</strong></p>
+
+<p>暴露云接口给私有的基础设施功能（<strong>公共云计算</strong>）
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="107"><strong>功能</strong></td>
+<td valign="top" width="453"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>云接口</strong></td>
+<td valign="top" width="453">通过提供给用户的REST接口;实现OGF OCCI和亚马逊EC2接口，使本地的基础架构转变为一个公开云;支持同时公开多种云API，客户端工具，以及安全访问。</td>
+</tr>
+</tbody>
+</table>
+<h2>主要特点和集成优势</h2>
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="107"><strong>功能</strong></td>
+<td valign="top" width="453"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>基础设施抽象</strong></td>
+<td valign="top" width="453">无缝与任何操作平台的验证/授权，虚拟化，网络和存储平台融合，采用模块化结构，以适应任何数据中心。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>适应性和定制</strong></td>
+<td valign="top" width="453">启用任何云架构的部署：公共，私有，混合和联合;定制插件来访问虚拟化、存储、信息、认证/授权和远程云服务，新的插件可以很容易地在任何语言编写，配置和改变参数调整云管理实例的行为以满足环境和用例要求;钩机制，当虚拟机的状态改变使触发管理脚本的执行。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>互操作性和标准</strong></td>
+<td valign="top" width="453">开放标准为基础的架构，以避免厂商锁定，提高互操作性​​，以及开放的实施标准。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>开放</strong></td>
+<td valign="top" width="453">开源Apache许可下发布协议。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>编程接口</strong></td>
+<td valign="top" width="453">提供Ruby和Java XMLRPC的原生云API创建新的云接口和访问核心功能。</td>
+</tr>
+</tbody>
+</table>
+<h2>主要特点和生产效益</h2>
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="107"><strong>特点</strong></td>
+<td valign="top" width="453"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>安全</strong></td>
+<td valign="top" width="453">验证框架的密码，或基于SSH的RSA密钥对LDAP，外部和内部通信通过SSL，安全的多​​租户;隔离的网络。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>健壮性</strong></td>
+<td valign="top" width="453">持久数据库后端存储主机、网络、虚拟机信息。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>容错</strong></td>
+<td valign="top" width="453">配置主机、虚拟机或OpenNebula实例故障事件。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>可扩展性</strong></td>
+<td valign="top" width="453">测试在大规模的核心和成千上万的基础设施;高度可扩展的后端，并为MySQL和SQLite支持。</td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>性能</strong></td>
+<td valign="top" width="453">非常高效的内核开发C++语言。</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>可靠性</strong></td>
+<td valign="top" width="453">自动化的功能、可扩展性、性能、可靠性和稳定性测试过程。</td>
+</tr>
+</tbody>
+</table>
+<h2>利用充满活力的云生态系统</h2>
+<table width="100%">
+<tbody>
+<tr bgcolor="cornsilk">
+<td valign="top" width="107"></td>
+<td valign="top" width="453"><strong>功能</strong></td>
+</tr>
+<tr bgcolor="aliceblue">
+<td valign="top" width="107"><strong>OpenNebula Ecosystem</strong></td>
+<td valign="top" width="453">充分利用<a title="http://www.opennebula.org/software:ecosystem" href="http://www.opennebula.org/software:ecosystem">OpenNebula开放云生态系统</a>与新元件加强了OpenNebula云工具包提供的功能并能够与其他产品的集成：vCloud的API、OpenNebula块、Haizea调度、 Libcloud、Deltacloud、Web管理控制台，Deltacloud的混合云适配器...</td>
+</tr>
+<tr>
+<td valign="top" width="107"><strong>Other Cloud Ecosystems</strong></td>
+<td valign="top" width="453">围绕Amazon AWS, OGC OCCI and VMware vCloud构建的生态系统。</td>
+</tr>
+</tbody>
+</table></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110622the-technology-used-in-eucalyptus">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/06/22/the-technology-used-in-eucalyptus">Eucalyptus使用的技术</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
+			
+			
+		|
+		Time：<time date="2011-06-22">2011-06-22</time>
+		<a href='/cloud/2011/06/22/the-technology-used-in-eucalyptus#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p><ul>
+    <li><a href="http://libvirt.org/">libvirt</a></li>
+</ul>
+Libvirt 库是一种实现 Linux 虚拟化功能的 Linux® API，它支持各种虚拟机监控程序，包括 Xen 和 KVM，以及 QEMU 和用于其他操作系统的一些虚拟产品。
 <ul>
-<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
+    <li><a href="http://www.jboss.org/netty/">Netty</a></li>
 </ul>
-
-<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
-
+Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。
 <ul>
-<li>解决办法：字段改名称，去掉#号</li>
+    <li><a href="http://ws.apache.org/axis2/">Axis2</a></li>
 </ul>
-
-<h4>Db2初始化到mysql或是postgres出错</h4>
-
+Axis2是下一代 Apache Axis。Axis2 虽然由 Axis 1.x 处理程序模型提供支持，但它具有更强的灵活性并可扩展到新的体系结构。Axis2 基于新的体系结构进行了全新编写，而且没有采用 Axis 1.x 的常用代码。支持开发 Axis2 的动力是探寻模块化更强、灵活性更高和更有效的体系结构，这种体系结构可以很容易地插入到其他相关 Web 服务标准和协议（如 WS-Security、WS-ReliableMessaging 等）的实现中。
 <ul>
-<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
-<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
+    <li><a href="http://ws.apache.org/axis2/c/">Axis2c</a></li>
 </ul>
-
-<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
-
+Apache Axis2/C is a Web services engine implemented in the C programming language. It is based on the extensible and flexible <a title="External Link" href="http://ws.apache.org/axis2/1_2/Axis2ArchitectureGuide.html">Axis2 architecture</a>.
 <ul>
-<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
+    <li><a href="http://ws.apache.org/rampart/c/">Rampart/C</a></li>
 </ul>
-
-<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
-
+<a title="External Link" href="http://ws.apache.org/axis2/c/">Apache Axis2/C</a>的安全模块
 <ul>
-<li>原因：pdi程序中没有对主键进行处理</li>
-<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
+    <li><a href="http://jibx.sourceforge.net/">JiBX</a></li>
 </ul>
-
-<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
-
+JiBX是一款非常优秀的XML（Extensible Markup Language）数据绑定框架。它提供灵活的绑定映射文件实现数据对象与XML文件之间的转换；并不需要你修改既有的Java类。另外，另外，它的转换效率是目前很多开源项目都无法比拟的。
 <ul>
-<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
-<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
+    <li><a href="http://www.bouncycastle.org/java.html">Bouncy Castle</a></li>
 </ul>
-
-<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
-
+Bouncy Castle 是一种用于 Java 平台的开放源码的轻量级密码术包。它支持大量的密码术算法，并提供 JCE 1.2.1 的实现。因为 Bouncy Castle 被设计成轻量级的，所以从 J2SE 1.4 到 J2ME（包括 MIDP）平台，它都可以运行。它是在 MIDP 上运行的唯一完整的密码术包。
 <ul>
-<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
-<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
+    <li><a href="http://mule.mulesource.org/display/MULE/Home">Mule</a></li>
 </ul>
-
-<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
-
+它是一个轻量级的消息框架和整合平台，基于EIP（Enterprise Integeration Patterns,由Hohpe和Woolf编写的一本书）而实现的。Mule的核心组件是UMO(Universal Message Objects，从Mule2.0开始UMO这一概念已经被组件Componse所代替)，UMO实现整合逻辑。UMO可以是POJO,JavaBean等等。它支持20多种传输协议(file,FTP,UDP,SMTP,POP,HTTP,SOAP,JMS等)，并整合了许多流行的开源项目，比如Spring,ActiveMQ,CXF,Axis,Drools等。虽然Mule没有基于JBI来构建其架构，但是它为JBI容器提供了JBI适配器，应此可以很好地与JBI容器整合在一起。而 Mule更关注其灵活性，高效性以及易开发性。从2005年发表1.0版本以来，Mule吸引了越来越多的关注者，成为开源ESB中的一支独秀。目前许多公司都使用了Mule，比如Walmart,HP,Sony,Deutsche Bank 以及 CitiBank等公司。
 <ul>
-<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
+    <li><a href="http://www.hibernate.org/">Hibernate</a></li>
 </ul>
-
-<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
-
+Hibernate是一个开放源代码的<a href="http://baike.baidu.com/view/2387.htm" target="_blank">对象</a>关系映射框架，它对JDBC进行了非常轻量级的对象封装，使得Java程序员可以随心所欲的使用对象编程思维来操纵<a href="http://baike.baidu.com/view/1088.htm" target="_blank">数据库</a>。 Hibernate可以应用在任何使用JDBC的场合，既可以在Java的客户端程序使用，也可以在Servlet/JSP的Web应用中使用，最具革命意义的是，Hibernate可以在应用EJB的J2EE架构中取代CMP，完成数据持久化的重任。
 <ul>
-<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
-<li>解决办法：使用最新的pdi程序。</li>
+    <li><a href="http://www.hsqldb.org/">HSQLDB</a></li>
 </ul>
-
-<h4>导数据中途时没有报错，直接软件退出</h4>
-
+Hsqldb是一个开放源代码的JAVA数据库，其具有标准的SQL语法和JAVA接口，它可以自由使用和分发，非常简洁和快速的。在其官网可以获得最新的程序源代码及jar包文件
 <ul>
-<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
-<li>解决办法：修改jvm参数</li>
+    <li><a href="http://xen.org/">Xen</a></li>
 </ul>
-
-<h4>初次使用kettle做db2的初始化会报错</h4>
-
+Xen 是一个开放源代码<a href="http://baike.baidu.com/view/1132.htm" target="_blank">虚拟机</a>监视器，由<a href="http://baike.baidu.com/view/13714.htm" target="_blank">剑桥大学</a>开发。它打算在单个计算机上运行多达100个满特征的<a href="http://baike.baidu.com/view/880.htm" target="_blank">操作系统</a>。操作系统必须进行显式地修改（“移植”）以在Xen上运行（但是提供对用户应用的兼容性）。这使得Xen无需特殊硬件支持，就能达到高性能的虚拟化。
 <ul>
-<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
-<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+    <li><a href="http://www.linux-kvm.org/page/Main_Page">KVM</a></li>
 </ul>
-</div>
+基于内核的虚拟机(或简称为KVM)是一个由Qumrannet开发和赞助的开源项目.
+<ul>
+    <li><a href="http://code.google.com/webtoolkit/">Google Web Toolkit</a></li>
+</ul>
+<em> Google Web Toolkit</em> (GWT) 允许开发人员使用Java 编程语言快速构建和维护复杂而又高性能的JavaScript 前端应用程序，从而降低了开发难度
+<ul>
+    <li><a href="http://sourceware.org/lvm2/">LVM2</a></li>
+</ul>
+LVM是 Logical Volume Manager(逻辑卷管理)的简写，它是Linux环境下对磁盘分区进行管理的一种机制，它由Heinz Mauelshagen在Linux 2.4内核上实现，目前最新版本为：稳定版1.0.5，开发版 1.1.0-rc2，以及LVM2开发版。
+<ul>
+    <li><a href="http://jetty.codehaus.org/jetty/" target="_blank">Jetty</a></li>
+</ul>
+Jetty 是一个开源的servlet容器，它为基于Java的web内容，例如JSP和servlet提供运行环境。Jetty是使用<a href="http://baike.baidu.com/view/229611.htm" target="_blank">Java语言</a>编写的，它的API以一组JAR包的形式发布。开发人员可以将Jetty容器实例化成一个对象，可以迅速为一些独立运行（stand-alone）的Java应用提供网络和web连接。</p>
+
+<p>&nbsp;</p>
+
+	  
+   </div>
     </article>
   </section>
   
@@ -546,6 +854,21 @@ if (!Const.isEmpty(pksql)) {
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
+      </li>
+      <li class="post">
+        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
+      </li>
+      <li class="post">
+        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
+      </li>
+      <li class="post">
+        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
       </li>
     </ul>
     </section>

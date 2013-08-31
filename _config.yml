@@ -8,7 +8,7 @@ pygments: true
 
 #markdown: rdiscount
 markdown: redcarpet
-paginate: 4
+paginate: 6
 
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.

@@ -33,6 +33,8 @@ description: 我的Jekyll配置
 </section>
 ```
 
+<!-- more -->
+
 ## 添加about页面
 
 在根目录创建about.md并修改，注意：文件开头几行内容如下
@@ -98,7 +100,7 @@ description: 我的Jekyll配置
 
 ## 修改h1、h2等标题字体
 
-主要是参考[图灵社区](http://www.ituring.com.cn/)的css，在`javachen.github.com/assets/themes/twitter/css/style.css`中添加如下css代码：
+主要是参考[图灵社区](http://www.ituring.com.cn/)的css，在`assets/themes/twitter/css/style.css`中添加如下css代码：
 
 	h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
 	h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
@@ -111,7 +113,7 @@ description: 我的Jekyll配置
 
 ## 添加返回顶部功能
 
-同样是参考了[图灵社区](http://www.ituring.com.cn/)的css和网上的一篇js实现。在`javachen.github.com/assets/themes/twitter/css/style.css`：
+同样是参考了[图灵社区](http://www.ituring.com.cn/)的css和网上的一篇js实现。在`assets/themes/twitter/css/style.css`：
 
 	.backToTop {
 	    display: block;
@@ -134,7 +136,7 @@ description: 我的Jekyll配置
 	    filter: Alpha(opacity=60);
 	}
 
-在`javachen.github.com/assets/themes/twitter/js`添加jquery和main.js，main.js内容如下：
+在`assets/themes/twitter/js`添加jquery和main.js，main.js内容如下：
 
 	jQuery.noConflict();
 	jQuery(document).ready(function(){
@@ -157,7 +159,7 @@ description: 我的Jekyll配置
 
 ## 添加文章版权说明
 
-在`javachen.github.com/_includes/themes/twitter/post.html`中文章主体下面添加如下代码：
+在`_includes/themes/twitter/post.html`中文章主体下面添加如下代码：
 
 	<hr>
 	<div class="copyright">
@@ -165,7 +167,7 @@ description: 我的Jekyll配置
 	<p><strong>原创文章,转载请注明出处：</strong><a href='{ {page.url}}'>JavaChen Blog</a></p>
 	</div>
 
-并在`javachen.github.com/assets/themes/twitter/css/style.css`中添加如下css代码：
+并在`assets/themes/twitter/css/style.css`中添加如下css代码：
 
 	.copyright {
 	margin: 10px 0;
@@ -175,6 +177,34 @@ description: 我的Jekyll配置
 	background: #f5f5f5;
 	}
 
+
+## 添加read more功能
+参考[Jekyll - Read More without plugin](http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/)，在index.html找到 {{ post.content }}，然后修改为：
+
+	{ % if post.content contains "<!-- more -->" %}
+	{ { post.content | split:"<!-- more -->" | first % }}
+	<h4><a href='{ {post.url}}' title='Read more...'>Read more...</a></h4>
+	{ % else %}
+	{ { post.content}}
+	{ % endif %}
+
+然后，在文章中添加`<!-- more -->`即可。
+
+##添加搜索栏
+
+参考[Jekyll Bootstrap - Create Simple Search box](http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/)，在`_includes/themes/twitter/default.html`导航菜单下面添加：
+
+	<form class="navbar-search pull-left" id="search-form">
+	  <input type="text" id="google-search" class="search-query" placeholder="Search">
+	</form
+
+添加js：
+
+	jQuery("#search-form").submit(function(){
+		var query = document.getElementById("google-search").value;
+		window.open("http://google.com/search?q=" + query+ "%20site:" + "http://blog.javachen.com");
+	});
+
 ## 其他
 
 - 添加404页面
@@ -183,7 +213,4 @@ description: 我的Jekyll配置
 
 ## TODO
 
-- 添加read more功能，参考[Jekyll - Read More without plugin](http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/)
 - 添加语法高亮，参考[Jekyll - Syntax highlighting](http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/)
-- 添加简单的搜索功能，参考[Jekyll Bootstrap - Create Simple Search box](http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/)
-

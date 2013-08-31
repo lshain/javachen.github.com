@@ -53,6 +53,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -96,6 +100,8 @@ yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 </code></pre></div>
+<!-- more -->
+
 <h3>编译安装：R-3.0.1</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
 ./configure

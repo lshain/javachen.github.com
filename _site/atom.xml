@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-31T22:25:20+08:00</updated>
+ <updated>2013-08-31T23:16:00+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -40,6 +40,8 @@ jekyll server
 &amp;lt;/div&amp;gt;
 &amp;lt;/section&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
 &lt;h2&gt;添加about页面&lt;/h2&gt;
 
 &lt;p&gt;在根目录创建about.md并修改，注意：文件开头几行内容如下&lt;/p&gt;
@@ -95,7 +97,7 @@ group: navigation
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;修改h1、h2等标题字体&lt;/h2&gt;
 
-&lt;p&gt;主要是参考&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css，在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
+&lt;p&gt;主要是参考&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css，在&lt;code&gt;assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
 h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
 h2{font-size:24px;line-height:36px;}h2 small{font-size:18px;}
@@ -107,7 +109,7 @@ h6{font-size:11px;color:#999999;text-transform:uppercase;}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;添加返回顶部功能&lt;/h2&gt;
 
-&lt;p&gt;同样是参考了&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css和网上的一篇js实现。在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;同样是参考了&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css和网上的一篇js实现。在&lt;code&gt;assets/themes/twitter/css/style.css&lt;/code&gt;：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.backToTop {
     display: block;
     width: 40px;
@@ -129,7 +131,7 @@ h6{font-size:11px;color:#999999;text-transform:uppercase;}
     filter: Alpha(opacity=60);
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在&lt;code&gt;javachen.github.com/assets/themes/twitter/js&lt;/code&gt;添加jquery和main.js，main.js内容如下：&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;assets/themes/twitter/js&lt;/code&gt;添加jquery和main.js，main.js内容如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;jQuery.noConflict();
 jQuery(document).ready(function(){
     var backToTopTxt = &amp;quot;▲&amp;quot;, backToTopEle = jQuery(&amp;#39;&amp;lt;div class=&amp;quot;backToTop&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;#39;).appendTo(jQuery(&amp;quot;body&amp;quot;)).text(backToTopTxt).attr(&amp;quot;title&amp;quot;,&amp;quot;Back top top&amp;quot;).click(function() {
@@ -150,14 +152,14 @@ jQuery(document).ready(function(){
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;添加文章版权说明&lt;/h2&gt;
 
-&lt;p&gt;在&lt;code&gt;javachen.github.com/_includes/themes/twitter/post.html&lt;/code&gt;中文章主体下面添加如下代码：&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;_includes/themes/twitter/post.html&lt;/code&gt;中文章主体下面添加如下代码：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;hr&amp;gt;
 &amp;lt;div class=&amp;quot;copyright&amp;quot;&amp;gt;
 &amp;lt;p&amp;gt;&amp;lt;strong&amp;gt;本文固定链接：&amp;lt;/strong&amp;gt;&amp;lt;a href=&amp;#39;{ {page.url}}&amp;#39;&amp;gt;http://blog.javachen.com/post/2013/08/31/my-jekyll-config&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
 &amp;lt;p&amp;gt;&amp;lt;strong&amp;gt;原创文章,转载请注明出处：&amp;lt;/strong&amp;gt;&amp;lt;a href=&amp;#39;{ {page.url}}&amp;#39;&amp;gt;JavaChen Blog&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
 &amp;lt;/div&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;并在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
+&lt;p&gt;并在&lt;code&gt;assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.copyright {
 margin: 10px 0;
 padding: 10px 20px;
@@ -165,6 +167,31 @@ line-height: 1;
 border-radius: 5px;
 background: #f5f5f5;
 }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;添加read more功能&lt;/h2&gt;
+
+&lt;p&gt;参考&lt;a href=&quot;http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/&quot;&gt;Jekyll - Read More without plugin&lt;/a&gt;，在index.html找到 ，然后修改为：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;{ % if post.content contains &amp;quot;&amp;lt;!-- more --&amp;gt;&amp;quot; %}
+{ { post.content | split:&amp;quot;&amp;lt;!-- more --&amp;gt;&amp;quot; | first % }}
+&amp;lt;h4&amp;gt;&amp;lt;a href=&amp;#39;{ {post.url}}&amp;#39; title=&amp;#39;Read more...&amp;#39;&amp;gt;Read more...&amp;lt;/a&amp;gt;&amp;lt;/h4&amp;gt;
+{ % else %}
+{ { post.content}}
+{ % endif %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，在文章中添加&lt;code&gt;&amp;lt;!-- more --&amp;gt;&lt;/code&gt;即可。&lt;/p&gt;
+
+&lt;h2&gt;添加搜索栏&lt;/h2&gt;
+
+&lt;p&gt;参考&lt;a href=&quot;http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/&quot;&gt;Jekyll Bootstrap - Create Simple Search box&lt;/a&gt;，在&lt;code&gt;_includes/themes/twitter/default.html&lt;/code&gt;导航菜单下面添加：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;form class=&amp;quot;navbar-search pull-left&amp;quot; id=&amp;quot;search-form&amp;quot;&amp;gt;
+  &amp;lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;google-search&amp;quot; class=&amp;quot;search-query&amp;quot; placeholder=&amp;quot;Search&amp;quot;&amp;gt;
+&amp;lt;/form
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;添加js：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;jQuery(&amp;quot;#search-form&amp;quot;).submit(function(){
+    var query = document.getElementById(&amp;quot;google-search&amp;quot;).value;
+    window.open(&amp;quot;http://google.com/search?q=&amp;quot; + query+ &amp;quot;%20site:&amp;quot; + &amp;quot;http://blog.javachen.com&amp;quot;);
+});
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;其他&lt;/h2&gt;
 
@@ -177,9 +204,7 @@ background: #f5f5f5;
 &lt;h2&gt;TODO&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;添加read more功能，参考&lt;a href=&quot;http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/&quot;&gt;Jekyll - Read More without plugin&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;添加语法高亮，参考&lt;a href=&quot;http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/&quot;&gt;Jekyll - Syntax highlighting&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;添加简单的搜索功能，参考&lt;a href=&quot;http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/&quot;&gt;Jekyll Bootstrap - Create Simple Search box&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
@@ -206,6 +231,8 @@ background: #f5f5f5;
 &lt;li&gt;分布式锁&lt;/li&gt;
 &lt;li&gt;分布式队列&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;!-- more --&gt;
 
 &lt;p&gt;一些在线系统在运行中，需要在不停止程序的情况下能够动态调整某一个变量的值并且能够及时生效。特别是当部署了多台应用服务器的时候，需要能够做到在一台机器上修改配置文件，然后在同步到所有应用服务器。这时候使用ZooKeeper来实现就很合适了。&lt;/p&gt;
 
@@ -294,6 +321,8 @@ background: #f5f5f5;
 （5）其他       Driver 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;h2&gt;分析&lt;/h2&gt;
 
@@ -437,6 +466,8 @@ cli_help () {
   execHiveCmd $CLASS &amp;quot;--help&amp;quot;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
 &lt;h2&gt;入口类&lt;/h2&gt;
 
 &lt;p&gt;java中的类如果有main方法就能运行，故直接查找&lt;code&gt;org.apache.hadoop.hive.cli.CliDriver&lt;/code&gt;中的main方法即可。&lt;/p&gt;
@@ -541,6 +572,8 @@ SetProcessor
 
 &lt;hr&gt;
 
+&lt;!-- more --&gt;
+
 &lt;h3&gt;使用intel的hadoop发行版IDH过程遇到问题：&lt;/h3&gt;
 
 &lt;p&gt;1、 IDH集群中需要配置管理节点到集群各节点的无密码登录，公钥文件存放路径为&lt;code&gt;/etc/intelcloud&lt;/code&gt;目录下，文件名称为&lt;code&gt;idh-id_rsa&lt;/code&gt;。&lt;/p&gt;
@@ -600,6 +633,8 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
    <content type="html">&lt;p&gt;之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。&lt;/p&gt;
 
 &lt;p&gt;安装过程中参考了很多网上的文章，解压缩过cloudera的&lt;code&gt;cloudera-manager-installer.bin&lt;/code&gt;，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: &lt;a href=&quot;https://github.com/javachen/hadoop-install&quot;&gt;hadoop-install&lt;/a&gt;。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;h2&gt;hadoop安装文章&lt;/h2&gt;
 
@@ -740,6 +775,8 @@ su -c &amp;quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&a
 &lt;h2&gt;JPDA 简介&lt;/h2&gt;
 
 &lt;p&gt;Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;p&gt;更详细的介绍，您可以参考&lt;a href=&quot;http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/&quot;&gt;使用 Eclipse 远程调试 Java 应用程序&lt;/a&gt;&lt;/p&gt;
 
@@ -895,6 +932,8 @@ yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
 rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
 &lt;h3&gt;编译安装：R-3.0.1&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf R-3.0.1 
 ./configure
@@ -1118,6 +1157,8 @@ rhive.env()
 该脚本中配置的rhel6的yum源为：&lt;a href=&quot;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&quot;&gt;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&lt;/a&gt;，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。&lt;/p&gt;
 
 &lt;p&gt;因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：&lt;a href=&quot;http://dreamyue.com/post/41090075449/cloudera-manager-hadoop&quot;&gt;通过cloudera-manager来安装hadoop&lt;/a&gt;。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;p&gt;这里还有一种方法，就是手动下载&lt;code&gt;Cloudera Manager&lt;/code&gt;的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使&lt;code&gt;archive.cloudera.com&lt;/code&gt;域名映射到本地ip。&lt;/p&gt;
 

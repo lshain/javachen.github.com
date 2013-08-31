@@ -12,6 +12,8 @@ description: 通过Cloudera Manager安装CDH
 
 因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：[通过cloudera-manager来安装hadoop](http://dreamyue.com/post/41090075449/cloudera-manager-hadoop)。
 
+<!-- more -->
+
 这里还有一种方法，就是手动下载`Cloudera Manager`的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使`archive.cloudera.com`域名映射到本地ip。
 
 出于好奇，想破解`cloudera-manager-installer.bin`，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：

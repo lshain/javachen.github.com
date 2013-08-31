@@ -53,6 +53,10 @@
               <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
             </ul>
+		<!-- my custom google search -->
+		<form class="navbar-search pull-left" id="search-form">
+		  <input type="text" id="google-search" class="search-query" placeholder="Search">
+		</form>
           </div>
         </div>
       </div>
@@ -92,6 +96,8 @@
 该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
 
 <p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+<!-- more -->
 
 <p>这里还有一种方法，就是手动下载<code>Cloudera Manager</code>的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使<code>archive.cloudera.com</code>域名映射到本地ip。</p>
 

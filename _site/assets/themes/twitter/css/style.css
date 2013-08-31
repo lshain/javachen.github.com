@@ -14,6 +14,10 @@ h4{font-size:14px;}h4 small{font-size:12px;}
 h5{font-size:12px;}
 h6{font-size:11px;color:#999999;text-transform:uppercase;}
 
+.pull-left {
+float: left;
+}
+
 .copyright {
 margin: 10px 0;
 padding: 10px 20px;

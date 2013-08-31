@@ -18,6 +18,8 @@ description: 使用hadoop中遇到的一些问题
 
 ---
 
+<!-- more -->
+
 ### 使用intel的hadoop发行版IDH过程遇到问题：
 
 1、 IDH集群中需要配置管理节点到集群各节点的无密码登录，公钥文件存放路径为`/etc/intelcloud`目录下，文件名称为`idh-id_rsa`。

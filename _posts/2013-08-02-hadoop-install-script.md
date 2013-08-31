@@ -11,6 +11,8 @@ description: 自动化安装hadoop的shell脚本
 
 安装过程中参考了很多网上的文章，解压缩过cloudera的`cloudera-manager-installer.bin`，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: [hadoop-install](https://github.com/javachen/hadoop-install)。
 
+<!-- more -->
+
 ## hadoop安装文章
 博客中所有关于安装hadoop的文章列出如下：
 

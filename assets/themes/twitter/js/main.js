@@ -13,5 +13,12 @@ jQuery(document).ready(function(){
 
 	backToTopEle.hide(); 
     	jQuery(window).bind("scroll", backToTopFun);
-	jQuery('div.main a,div.pic a').attr('target', '_blank');
+
+	jQuery('div.content.content a').attr('target', '_blank');
+
+	jQuery("#search-form").submit(function(){
+		var query = document.getElementById("google-search").value;
+		window.open("http://google.com/search?q=" + query+ "%20site:" + "http://blog.javachen.com");
+	});
 });
+

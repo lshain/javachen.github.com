@@ -19,6 +19,8 @@ description: 分析hive Driver类运行过程
 
 Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。
 
+<!-- more -->
+
 ## 分析
 
 Driver类入口如下：

@@ -17,10 +17,6 @@ http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
-http://blog.javachen.com/page10/index.html
-http://blog.javachen.com/page11/index.html
-http://blog.javachen.com/page12/index.html
-http://blog.javachen.com/page13/index.html
 
 http://blog.javachen.com/post/2013/08/31/my-jekyll-config
 http://blog.javachen.com/hadoop/2013/08/23/publish-proerties-using-zookeeper
