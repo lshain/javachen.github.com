@@ -70,6 +70,82 @@
   <div class="span9">
   
   
+  <section id="cloud20110706opennebula-architecture">
+    <article>
+      <header>
+      <h3><a href="/cloud/2011/07/06/opennebula-architecture">OpenNebula的架构</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-07-06">2011-07-06</time>
+		<a href='/cloud/2011/07/06/opennebula-architecture#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content"><p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
+
+<p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
+
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
+
+<p align="center">图1  OpenNebula总体架构图</p>
+
+<p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
+
+<p><h2>私有云</h2>
+私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
+
+<p align="center">图2 私有云</p>
+
+<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
+<p align="center">图3 私有云内用户视图</p>
+&nbsp;
+<h2>混合云</h2>
+<p align="left">OpenNebula提供Deltacloud适配器与Amazon EC2相配合来管理混合云。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/hyb-cloud2.png"><img class="size-medium wp-image-2109 aligncenter" title="hyb cloud2" src="http://blog.javachen.com/files/2011/07/hyb-cloud2-300x203.png" alt="" width="300" height="203" /></a></p>
+<p align="center">图4 混合云</p>
+&nbsp;
+<h2>公开云</h2>
+<p align="left">OpenNebula公有云是私有云的一个扩展，是在私有云的基础上对外暴露REST接口。如果你要让合作伙伴或外部用户能够访问您的基础设施，或出售你的服务，云接口可以被添加到您的私有或混合云。显然，一个本地的云解决方案是任何公共云自然后端。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/public-cloud.png"><img class="size-medium wp-image-2110 aligncenter" title="public cloud" src="http://blog.javachen.com/files/2011/07/public-cloud-300x175.png" alt="" width="300" height="175" /></a></p>
+<p align="center">图5 公开云</p>
+<p align="left">OpenNebula的构架包括三个部分：驱动层、核心层、工具层。驱动层直接与操作系统打交道，负责虚拟机的创建、启动和关闭，为虚拟机分配存储，监控物理机和虚拟机的运行状况。核心层负责对虚拟机、存储设备、虚拟网络等进行管理。工具层通过命令行界面/浏览器界面方式提供用户交互接口，通过API方式提供程序调用接口。</p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/3-cloud.png"><img class="size-medium wp-image-2111 aligncenter" title="3 cloud" src="http://blog.javachen.com/files/2011/07/3-cloud-300x178.png" alt="" width="300" height="178" /></a></p>
+<p align="center">图6 三层架构图</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/3-cloud2.png"><img class="size-medium wp-image-2112 aligncenter" title="3 cloud2" src="http://blog.javachen.com/files/2011/07/3-cloud2-300x181.png" alt="" width="300" height="181" /></a></p>
+<p align="left">OpenNebula使用共享存储设备（例如NFS）来提供虚拟机映像服务，使得每一个计算节点都能够访问到相同的虚拟机映像资源。当用户需要启动或者是关闭某个虚拟机时，OpenNebula通过SSH登陆到计算节点，在计算节点上直接运行相对应的虚拟化管理命令。这种模式也称为无代理模式，由于不需要在计算节点上安装额外的软件（或者服务），系统的复杂度也相对降低了。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-services.png"><img class="size-medium wp-image-2113 aligncenter" title="one services" src="http://blog.javachen.com/files/2011/07/one-services-300x189.png" alt="" width="300" height="189" /></a></p>
+<p align="center">图7 前端节点和集群节点之间交互</p>
+&nbsp;
+<h2>网络架构</h2>
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
+
+<p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
+
+<p>&nbsp;
+<div class="infor">
+<h2>参考资料</h2>
+* 1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
+* 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
+* 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
+</div></p>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="cloud20110629install-opennebula-management-console-in-centos5-6">
     <article>
       <header>
@@ -90,6 +166,7 @@
 		Time：<time date="2011-06-29">2011-06-29</time>
 		<a href='/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
 
@@ -196,6 +273,7 @@ $adodb_name = "onemc";</pre>
 		Time：<time date="2011-06-26">2011-06-26</time>
 		<a href='/cloud/2011/06/26/opennebula-2-2-features#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>以下这篇文章由<a title="OpenNebula 2.2 Features" href="http://opennebula.org/documentation:features">OpenNebula 2.2 Features</a>翻译而来。</p>
 
@@ -400,6 +478,7 @@ $adodb_name = "onemc";</pre>
 		Time：<time date="2011-06-22">2011-06-22</time>
 		<a href='/cloud/2011/06/22/the-technology-used-in-eucalyptus#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p><ul>
     <li><a href="http://libvirt.org/">libvirt</a></li>
@@ -467,222 +546,6 @@ Jetty 是一个开源的servlet容器，它为基于Java的web内容，例如JSP
     </article>
   </section>
   
-  
-  <section id="cloud20110622the-introduction-of-eucalyptus-ee-features-and-functions">
-    <article>
-      <header>
-      <h3><a href="/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions">Eucalyptus EE的介绍及功能说明</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#cloud-ref">cloud</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			
-		|
-		Time：<time date="2011-06-22">2011-06-22</time>
-		<a href='/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>Eucalyptus企业版2.0是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。</p>
-
-<p>Eucalyptus的设计目的是从根本上易于安装和尽可能没有侵扰。该软件高度模块化，具有行业标准，和语言无关。它提供了可以与EC2兼容的云计算平台和与S3兼容的云存储平台。<!--more-->
-<h1>功能亮点</h1>
-<ul>
-    <li>无缝管理多个管理程序环境（Xen的，vSphere的，KVM，ESX，ESXi的）下一个管理控制台</li>
-    <li>启用跨平台的客户机操作系统包括微软Windows和Linux</li>
-    <li>高级存储集成器（iSCSI，SAN，NAS），您可以轻松地连接和管理Eucalyptus云内现有的存储系统</li>
-    <li>完善的用户和组管理，允许私有云资源的精确控制</li>
-    <li>测试，开发和部署能够顺利过渡到公共云或反之亦然，没有任何修改</li>
-    <li>快速，轻松地建立与基于VMware的虚拟化环境和其他公共云混合云</li>
-    <li>启用先进设备，最先进的企业，如可扩展的存储整合，监控，审计，报表</li>
-    <li>利用充满活力的生态系统围绕亚马逊AWS构建，提供解决方案，无缝地与Eucalyptus兼容</li>
-</ul>
-<h1>优点</h1>
-<ul>
-    <li>建立一个私有云，让你接入到亚马逊AWS</li>
-    <li>允许云在原有的所有硬件和软件类型很容易的部署</li>
-    <li>客户可以利用其全球用户社区</li>
-    <li>Eucalyptus是与Linux和多个管理程序兼容</li>
-    <li>Eucalyptus还支持商业Linux发行版本：红帽企业Linux（RHEL）和SUSE Linux企业服务器（SLES）</li>
-</ul>
-<h1>对于IT管理员的好处</h1>
-<ul>
-    <li>提供自助服务的IT基础设施供应到最终用户需要的IT资源迅速</li>
-    <li>没有额外的资金保持现有的基础设施费用，降低运营成本</li>
-    <li>保持防火墙后面的关键数据</li>
-    <li>技术是对现有的硬件和软件基础设施覆盖，而不是替代</li>
-    <li>避免锁定在第三方公共云供应商</li>
-    <li>可轻松转换之间来回私人和公共云</li>
-</ul>
-&nbsp;
-<h1>Eucalyptus EE新特性</h1>
-<h2><strong><span style="color: #0000ff;">对windows VM的支持</span></strong></h2>
-1.  运行windows 虚拟机在Eucalyptus 云环境上运行，目前支持Windows 2003 Server,Windows 2008 Server和Windows 7。<br />
-2.  试用Euca2ools管理和控制windows虚拟机。<br />
-3.  试用EC2兼容的命令从正在运行的windows虚拟机创建新的虚拟机<br />
-4.  在Eucalyptus中通过标准的RDP客户端工具，使用AWS “get-password”访问虚拟机实例<br />
-5.  在多个hypervisors环境中部署windows虚拟机，包括Xen、Kvm、VMware（ESX/ESXi）<br />
-6.  基于windows 操作系统安装文件（ISO镜像、CD/DVD）创建新的windows虚拟机
-<h2><strong><span style="color: #0000ff;">对VMware的支持</span></strong></h2>
-1.支持VMware vCenter 4.0,ESX/ESXi 4.0!<br />
-2.与VMware vSphere 客户端兼容<br />
-3.能够合并VMware(ESX/ESXi)和开源的hypervisors（Xen、Kvm）到一个单独的云环境<br />
-4.通过Eucalyptus的软件扩展一些云的基本特性（例如IPs，安全组，S3）到一个VMware基础架构</p>
-
-<p>&nbsp;
-<h2><strong><span style="color: #0000ff;">引入SAN的支持</span></strong></h2>
-Eucalyptus EE引入对SAN的支持，使你能够整合enterprise-grade SAN(Storage Area Network) 硬件设备到Eucalyptus云环境。SAN扩展SC并在Eucalyptus中运行的虚拟机和SAN设备之间提供高性能的数据通道。Eucalyptus EE的SAN支持为Eucalyptus云环境提供了一个企业级的EBS解决方案。</p>
-
-<p>&nbsp;
-<h1>Eucalyptus的功能</h1>
-<h2><strong><span style="color: #0000ff;">基本组成部分及功能</span></strong></h2>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">云控制器（CLC）</td>
-<td width="279" valign="top">1.对外提供EC2和Web接口，管理各类组件中的可用虚拟资源（服务、网络、存储）。<br />
-2.资源抽象，决定哪个簇将提供给实例，分发请求给CC。<br />
-3.管理运行的实例。</td>
-<td width="234" valign="top">CLC是整个云结构的前端。CLC为客户工具提供与EC2/S3兼容的网络接口，与Eucalyptus的组件通信。</td>
-</tr>
-<tr>
-<td width="102" valign="top">存储控制器（SC）</td>
-<td width="279" valign="top">1.提供与EBS类似的存储功能，能够与大量的文件存储系统交互。<br />
-2.使用AoE或者iSCSI协议为实例提供块存储。<br />
-3.允许在存储系统中（如Walrus）建立快照。</td>
-<td width="234" valign="top">SC提供实例使用的块存储。<br />
-与EBS类似。&nbsp;</td></tr></tbody></table></p>
-
-<p>&nbsp;
-
-<tr>
-<td width="102" valign="top">Walrus控制器（WS3）</td>
-<td width="279" valign="top">1.允许用户存储持久化的数据。<br />
-2.提供REST接口操作数据，设置数据访问策略。<br />
-3.使用S3 API存储和获取虚拟镜像和数据。</td>
-<td width="234" valign="top">WS3使用与S3 API兼容的REST和SOAP   API提供简单的存储服务</td>
-</tr>
-<tr>
-<td width="102" valign="top">控制簇（CC）</td>
-<td width="279" valign="top">1.接收CLC的请求，然后部署实例。<br />
-2.收集虚拟机的信息并决定在哪个节点控制上执行虚拟机。<br />
-3.为实例提供有效的虚拟网络。<br />
-4.收集NCs提交的信息，并报告给CLC。</td>
-<td width="234" valign="top">CC管理NC，部署和管理在节点上的实例，在Eucalyptus联网模型的类型下管理在控制节点上运行的实例的联网。<br />
-CC连接着云控制器CLC和控制节点NC。</td>
-</tr>
-<tr>
-<td width="102" valign="top">节点控制器（NC）&nbsp;</td></tr></p>
-
-<p>&nbsp;
-<td width="279" valign="top">1.托管虚拟机实例<br />
-2.收集节点上相关的数据资源的可用性和利用率，并报告给控制簇CC。<br />
-3.管理虚拟机的生命周期，能够获取和清除镜像的本地拷贝。<br />
-4.维护虚拟网络</td>
-<td width="234" valign="top">UEC的节点使用虚拟化技术使KVM能作为管理程序在服务器上运行。当用户安装UEC节点时，UEC将自动安装KVM。UEC的实例就是在管理程序下运行的虚拟机。Eucalyptus支持其他管理程序，如Xen。<br />
-节点控制器在每一个节点上运行，控制着节点上实例的生命周期。</td>
-
-<tr>
-<td width="102" valign="top">VMware   Broker</td>
-<td width="279" valign="top">允许 Eucalyptus直接地或通过 VMware<strong> </strong>Vcenter在   VMware设备部署虚拟机，在CC和 VMware  hypervisors(ESX/ESXi)起一个连接作用<strong> </strong></td>
-<td width="234" valign="top">Eucalyptus   EE额外的一个组件，用于对VMware的支持</td>
-</tr>
-
-
-&nbsp;</p>
-
-<p><span style="font-size: 20px; font-weight: bold; color: #0000ff;">管理员拥有的功能</span>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">用户管理</td>
-<td width="279" valign="top">1.  添加用户（邮件通知，设置管理员）<br />
-2.  查看用户，设置账户是否激活<br />
-3.  删除用户</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">组管理</td>
-<td width="279" valign="top">1.  添加用户组<br />
-2.  查看用户组<br />
-3.  删除用户组<br />
-4.  添加/删除组员</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">权限管理</td>
-<td width="279" valign="top">1.给组设置权限</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">Web接口</td>
-<td width="279" valign="top">1.  查看、下载证书<br />
-2.  查看上传的镜像，并能修改镜像状态<br />
-3.  配置管理。可以设置云主机IP、DNS、Walrus、Cluster和SAN<br />
-4.  审计报表。查看用户状态、资源使用率、系统日志、已注册的组件</td>
-<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
-</tr>
-<tr>
-<td width="102" valign="top">组件管理</td>
-<td width="279" valign="top">1.  可以注册Cloud、Walrus、Storage、Node，并可以查看、删除<br />
-2.  启动、停止云服务<br />
-3.  允许转换卷的实现方式<br />
-4.  可以查看、修改配置文件</td>
-<td width="234" valign="top">对外以SOAP和REST提供接口</td>
-</tr>
-</tbody>
-</table>
-&nbsp;</p>
-
-<p>&nbsp;
-<h2><strong><span style="color: #0000ff;">使用者拥有的功能</span></strong></h2>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">Web接口</td>
-<td width="279" valign="top">1.  用户可以注册帐号，修改信息及密码<br />
-2.  查看、下载证书<br />
-3.  查看上传的镜像</td>
-<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
-</tr>
-<tr>
-<td width="102" valign="top">组件管理</td>
-<td width="279" valign="top">1.  启动、停止节点<br />
-2.  可以绑定、上传、注册、查看镜像，也可以删除、取消绑定镜像<br />
-3.  查看本地可用的资源<br />
-4.  可以查看、启动、停止、重启虚拟机<br />
-5.  可以登入到一个windows虚拟机实例<br />
-6.  创建、附件、脱离、删除快照和卷</td>
-<td width="234" valign="top">通过Euca2ools工具完成这些功能</td>
-</tr>
-</tbody>
-</table>
-&nbsp;</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page11'>&larr; Previous</a></li>
@@ -708,6 +571,9 @@ CC连接着云控制器CLC和控制节点NC。</td>
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
       </li>
@@ -737,6 +603,18 @@ CC连接着云控制器CLC和控制节点NC。</td>
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>
@@ -815,6 +693,10 @@ CC连接着云控制器CLC和控制节点NC。</td>
      
     	<li><a href="/categories.html#hive-ref">
     		hive <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
     	</a></li>
     
   

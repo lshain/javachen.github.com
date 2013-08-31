@@ -70,6 +70,184 @@
   <div class="span9">
   
   
+  <section id="hadoop20130329install-impala">
+    <article>
+      <header>
+      <h3><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#impala-ref">impala</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cloudera-ref">cloudera</a>
+			
+			
+		|
+		Time：<time date="2013-03-29">2013-03-29</time>
+		<a href='/hadoop/2013/03/29/install-impala#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content"><p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
+
+<h3>install</h3>
+
+<p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
+
+<h3>安装过程</h3>
+
+<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
+
+<ul>
+<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
+<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
+</ul>
+
+<ol>
+<li><p>DataNode节点</p>
+
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
+<li><p>在hive节点上</p>
+
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm \
+impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm \
+libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
+</ol>
+
+<h3>配置Impala</h3>
+
+<h4>查看安装路径</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
+/var/run/impala
+/var/lib/alternatives/impala
+/var/log/impala
+/usr/lib/impala
+/etc/alternatives/impala
+/etc/default/impala
+/etc/impala
+</code></pre></div>
+<h4>添加配置文件</h4>
+
+<p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
+
+<p>在节点desktop1上 拷贝<code>hive-site.xml</code>、<code>core-site.xml</code>、<code>hdfs-site.xml</code>至<code>/usr/lib/impala/conf</code>目录下:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
+[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
+</code></pre></div>
+<p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
+    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<p>同步以上文件到其他节点</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
+[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
+</code></pre></div>
+<h4>hadoop中添加native包</h4>
+
+<p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
+</code></pre></div>
+<h4>创建socket path</h4>
+
+<p>在每个节点上创建/var/run/hadoop-hdfs:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
+[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
+</code></pre></div>
+<p>拷贝postgres jdbc jar：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
+</code></pre></div>
+<h3>启动服务</h3>
+
+<ol>
+<li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
+
+<p>GLOG<em>v=1 nohup statestored -state</em>store_port=24000 &amp;</p></li>
+</ol>
+
+<p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
+
+<ol>
+<li><p>在所有impalad节点上：</p>
+
+<p>HADOOP<em>CONF</em>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<em>store</em>host=desktop1 -nn=desktop1 \
+    -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
+</ol>
+
+<p>注意： 其中的<code>-hostname</code>和<code>-ipaddress</code>表示当前启动impalad实例所在机器的主机名和ip地址。</p>
+
+<p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
+
+<h3>使用shell</h3>
+
+<p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
+[Not connected] &gt;connect desktop3:21000
+[desktop3:21000] &gt;refresh
+[desktop3:21000] &gt;connect desktop4:21000
+[desktop4:21000] &gt;refresh
+</code></pre></div>
+<h3>注意：</h3>
+
+<ol>
+<li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
+<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
+</ol>
+
+<p>可能是已经启动了statestored进程</p>
+
+<h3>参考文章</h3>
+
+<ul>
+<li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
+<li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
+<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="hadoop20130324manual-install-Cloudera-hive-CDH">
     <article>
       <header>
@@ -100,6 +278,7 @@
 		Time：<time date="2013-03-24">2013-03-24</time>
 		<a href='/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。</p>
 
@@ -335,6 +514,7 @@ select count(*) from hive_userinfo
 		Time：<time date="2013-03-24">2013-03-24</time>
 		<a href='/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。</p>
 
@@ -407,6 +587,7 @@ desktop8
 		Time：<time date="2013-03-24">2013-03-24</time>
 		<a href='/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><h2>安装版本</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop-2.0.0-cdh4.2.0
@@ -733,109 +914,6 @@ http://desktop2:8042/node
     </article>
   </section>
   
-  
-  <section id="hadoop20130308note-about-installing-hadoop-cluster">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#hadoop-ref">hadoop</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cdh-ref">cdh</a>
-			
-			
-		|
-		Time：<time date="2013-03-08">2013-03-08</time>
-		<a href='/hadoop/2013/03/08/note-about-installing-hadoop-cluster#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><h3>安装虚拟机</h3>
-
-<p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
-
-<h3>配置网络</h3>
-
-<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi</p>
-
-<p>b. 设置每一个虚拟机的网络为Host-Only</p>
-
-<p>c.分别修改每个虚拟机的ip，DHCP或手动设置
-        vim etc/sysconfig/network-scripts/ifcfg-eth0
-        vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-        start_udev</p>
-
-<p>d.修改主机名
-        vim /etc/sysconfig/network</p>
-
-<p>e.每个虚拟机中修改hosts：
-        192.168.56.100 rhel-june
-        192.168.56.101 rhel-june-1
-        192.168.56.102 rhel-june-2</p>
-
-<p>最后机器列表为：
-        rhel-june:   192.168.56.100
-        rhel-june-1: 192.168.56.101
-        rhel-june-2: 192.168.56.102</p>
-
-<h3>机群规划</h3>
-
-<p>版本：
-        hadoop:1.1.1
-        JDK:1.6.0_38</p>
-
-<p>集群各节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    NameNode:192.168.56.100
-    NameSecondary:192.168.56.100
-    DataNode:192.168.56.101
-    DataNode:192.168.56.102
-</code></pre></div>
-<h3>安装过程</h3>
-
-<p>a.解压缩到/opt</p>
-
-<p>b.设置配置文件：
-        core-site.xml
-        hdfs-site.sml<br>
-        mapred-site.xml</p>
-
-<p>c.设置master、slaves</p>
-
-<p>d.设置环境变量</p>
-
-<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash<em>profile 追加下列信息
-        export JAVA</em>HOME=/opt/jdk1.6.0<em>38
-        export HADOOP</em>INSTALL=/opt/hadoop-1.1.1
-        export PATH=$PATH:$HADOOP<em>INSTALL/bin:$JAVA</em>HOME/bin</p>
-
-<p>e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
-
-<p>f.格式化namenode
-        hadoop namenode -format</p>
-
-<p>g.启动hdfs集群
-        sh /opt/hadoop-1.1.1/bin/start-all.sh</p>
-
-<p>h.查看节点进程
-        jps</p>
-
-<h3>查看状态</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    http://rhel-june:50030/
-    http://rhel-june:50070/
-</code></pre></div></div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page3'>&larr; Previous</a></li>
@@ -861,6 +939,9 @@ http://desktop2:8042/node
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
       </li>
@@ -890,6 +971,18 @@ http://desktop2:8042/node
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>
@@ -968,6 +1061,10 @@ http://desktop2:8042/node
      
     	<li><a href="/categories.html#hive-ref">
     		hive <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
     	</a></li>
     
   

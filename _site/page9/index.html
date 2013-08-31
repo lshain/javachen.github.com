@@ -70,6 +70,60 @@
   <div class="span9">
   
   
+  <section id="pentaho20111207mondrian-and-olap">
+    <article>
+      <header>
+      <h3><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#pentaho-ref">pentaho</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#mondrian-ref">mondrian</a>
+			
+			,
+			
+			
+			<a href="/tags.html#olap-ref">olap</a>
+			
+			
+		|
+		Time：<time date="2011-12-07">2011-12-07</time>
+		<a href='/pentaho/2011/12/07/mondrian-and-olap#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content"><p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
+
+<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
+
+<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
+
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+
+<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
+
+<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
+
+<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
+
+<p><strong><span style="color: #00ff00;">结论</span></strong>
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
+
+<p><strong><span style="color: #00ff00;">说明</span></strong>
+<div class="note">
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="javascript20111125xml-user-interface-language-introuction">
     <article>
       <header>
@@ -95,6 +149,7 @@
 		Time：<time date="2011-11-25">2011-11-25</time>
 		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
 XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
@@ -169,6 +224,7 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
 		Time：<time date="2011-10-22">2011-10-22</time>
 		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
 获取弹出窗口url后的参数方法：</p>
@@ -750,6 +806,7 @@ function getInsertForm() {
 		Time：<time date="2011-09-28">2011-09-28</time>
 		<a href='/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
 
@@ -788,60 +845,6 @@ function getInsertForm() {
     </article>
   </section>
   
-  
-  <section id="pentaho20110926resolved-pentaho-problems-9-16">
-    <article>
-      <header>
-      <h3><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bi-ref">bi</a>
-			
-			
-		|
-		Time：<time date="2011-09-26">2011-09-26</time>
-		<a href='/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>很久没写文章了，最近在关注Pentaho。<br />
- 以下是9月16日现场提出的问题解决办法：<br />
-      1、PDF预览中文没显示，txt预览中文乱码：<br />
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
-           3）、如要发布到服务器，需要修改如下的配置：<br />
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
-     2、实现文件拷贝方式发布报表<br />
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
-     3、报表链接参数传递问题<br />
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
-     4、查询参数缺省值问题<br />
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
-     5、实现在pie chart上显示文字<br />
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
-     6、报表集成时候垂直滚动条是否可以去掉<br />
-          改变报表的高度：报表设计器 file-page setup<br />
-     7、报表中的chart不能导出到Excel2007<br />
-          目前为系统bug，excel2003能够正常导出<br />
-     8、实现隔行换色<br />
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
-</div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page8'>&larr; Previous</a></li>
@@ -867,6 +870,9 @@ function getInsertForm() {
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
       </li>
@@ -896,6 +902,18 @@ function getInsertForm() {
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>
@@ -974,6 +992,10 @@ function getInsertForm() {
      
     	<li><a href="/categories.html#hive-ref">
     		hive <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
     	</a></li>
     
   

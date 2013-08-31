@@ -70,6 +70,197 @@
   <div class="span9">
   
   
+  <section id="post20130831my-jekyll-config">
+    <article>
+      <header>
+      <h3><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#post-ref">post</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#jekyll-ref">jekyll</a>
+			
+			
+		|
+		Time：<time date="2013-08-31">2013-08-31</time>
+		<a href='/post/2013/08/31/my-jekyll-config#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content"><p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
+
+<p>注意：使用时请删除{和%以及{和{之间的空格。</p>
+
+<h2>预览文章</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">source ~/.bash_profile
+jekyll server
+</code></pre></div>
+<h2>添加about me 边栏</h2>
+
+<p>参考<a href="http://www.the5fire.com/">the5fire的技术博客</a>在index.html页面加入如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;section&gt;
+&lt;h4&gt;About me&lt;/h4&gt;
+&lt;div&gt;
+ 一个Java方案架构师，主要从事hadoop相关工作。&lt;a href=&quot;/about.html&quot;&gt;更多信息&lt;/a&gt; 
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;strong&gt;&lt;font color=&quot;red&quot;&gt;&lt;a href=&quot;/atom.xml&quot; target=&quot;_blank&quot;&gt;订阅本站&lt;/a&gt;&lt;/font&gt;&lt;/strong&gt;
+&lt;br/&gt;&lt;br/&gt;
+联系博主：javachen.june[a]gmail.com
+&lt;/div&gt;
+&lt;/section&gt;
+</code></pre></div>
+<h2>添加about页面</h2>
+
+<p>在根目录创建about.md并修改，注意：文件开头几行内容如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">title: About
+layout: page
+group: navigation
+</code></pre></div>
+<h2>设置固定链接</h2>
+
+<p>在 _config.yml 里，找到 permalink，设置如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">permalink: /:categories/:year/:month/:day/:title 
+</code></pre></div>
+<h2>修改，markdown实现为redcarpet</h2>
+
+<p>首先通过gem安装redcarpet，然后修改_config.yml：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">markdown: redcarpet
+</code></pre></div>
+<h2>首页添加最近文章</h2>
+
+<p>在index.html页面</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;section&gt;
+&lt;h4&gt;Recent Posts&lt;/h4&gt;
+&lt;ul id=&quot;recent_posts&quot;&gt;{ % for rpost in site.posts limit: 15 %}
+&lt;li class=&quot;post&quot;&gt;
+&lt;a href=&quot;&quot;&gt;&lt;/a&gt;
+&lt;/li&gt;{ % endfor %}
+&lt;/ul&gt;
+&lt;/section&gt;
+</code></pre></div>
+<h2>首页为每篇文章添加分类、标签、发表日期以及评论连接</h2>
+
+<p>在index.html页面找到<code>&lt;h3&gt;&lt;a href=&quot;{ { BASE_PATH }}{ { post.url }}&quot;&gt;{ { post.title }}&lt;/a&gt;&lt;/h3&gt;</code>，在下面添加：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;div class=&quot;c9&quot;&gt;
+    Categories：
+        { %for cg in post.categories % }
+        &lt;a href=&quot;/categories.html#-ref&quot;&gt;&lt;/a&gt;
+        { %if forloop.index &lt; forloop.length % }
+        ,
+        { %endif%}
+        { %endfor%}
+    |
+    Tags：
+        { %for cg in post.tags %}
+        &lt;a href=&quot;/tags.html#-ref&quot;&gt;&lt;/a&gt;
+        { %if forloop.index &lt; forloop.length %}
+        ,
+        { %endif%}
+        { %endfor%}
+    |
+    Time：&lt;time date=&quot;{ { post.date|date: &#39;%Y-%m-%d&#39; }}&quot;&gt;&lt;/time&gt;
+    &lt;a href=&#39;#comments&#39; title=&#39;分享文章、查看评论&#39; style=&quot;float:right;margin-right:.5em;&quot;&gt;Comments&lt;/a&gt;
+&lt;/div&gt;
+</code></pre></div>
+<h2>修改h1、h2等标题字体</h2>
+
+<p>主要是参考<a href="http://www.ituring.com.cn/">图灵社区</a>的css，在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
+h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
+h2{font-size:24px;line-height:36px;}h2 small{font-size:18px;}
+h3{font-size:18px;line-height:27px;}h3 small{font-size:14px;}
+h4,h5,h6{line-height:18px;}
+h4{font-size:14px;}h4 small{font-size:12px;}
+h5{font-size:12px;}
+h6{font-size:11px;color:#999999;text-transform:uppercase;}
+</code></pre></div>
+<h2>添加返回顶部功能</h2>
+
+<p>同样是参考了<a href="http://www.ituring.com.cn/">图灵社区</a>的css和网上的一篇js实现。在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.backToTop {
+    display: block;
+    width: 40px;
+    height: 32px;
+    font-size: 26px;
+    line-height: 32px;
+    font-family: verdana, arial;
+    padding: 5px 0;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    position: fixed;
+    _position: absolute;
+    right: 10px;
+    bottom: 100px;
+    _bottom: &quot;auto&quot;;
+    cursor: pointer;
+    opacity: .6;
+    filter: Alpha(opacity=60);
+}
+</code></pre></div>
+<p>在<code>javachen.github.com/assets/themes/twitter/js</code>添加jquery和main.js，main.js内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">jQuery.noConflict();
+jQuery(document).ready(function(){
+    var backToTopTxt = &quot;▲&quot;, backToTopEle = jQuery(&#39;&lt;div class=&quot;backToTop&quot;&gt;&lt;/div&gt;&#39;).appendTo(jQuery(&quot;body&quot;)).text(backToTopTxt).attr(&quot;title&quot;,&quot;Back top top&quot;).click(function() {
+        jQuery(&quot;html, body&quot;).animate({ scrollTop: 0 }, 120);
+    }), backToTopFun = function() {
+        var st = jQuery(document).scrollTop(), winh = jQuery(window).height();
+        (st &gt; 200)? backToTopEle.show(): backToTopEle.hide();    
+        //IE6下的定位
+        if (!window.XMLHttpRequest) {
+            backToTopEle.css(&quot;top&quot;, st + winh - 166); 
+        }
+    };
+
+    backToTopEle.hide(); 
+        jQuery(window).bind(&quot;scroll&quot;, backToTopFun);
+    jQuery(&#39;div.main a,div.pic a&#39;).attr(&#39;target&#39;, &#39;_blank&#39;);
+});
+</code></pre></div>
+<h2>添加文章版权说明</h2>
+
+<p>在<code>javachen.github.com/_includes/themes/twitter/post.html</code>中文章主体下面添加如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;hr&gt;
+&lt;div class=&quot;copyright&quot;&gt;
+&lt;p&gt;&lt;strong&gt;本文固定链接：&lt;/strong&gt;&lt;a href=&#39;{ {page.url}}&#39;&gt;http://blog.javachen.com/post/2013/08/31/my-jekyll-config&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原创文章,转载请注明出处：&lt;/strong&gt;&lt;a href=&#39;{ {page.url}}&#39;&gt;JavaChen Blog&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</code></pre></div>
+<p>并在<code>javachen.github.com/assets/themes/twitter/css/style.css</code>中添加如下css代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.copyright {
+margin: 10px 0;
+padding: 10px 20px;
+line-height: 1;
+border-radius: 5px;
+background: #f5f5f5;
+}
+</code></pre></div>
+<h2>其他</h2>
+
+<ul>
+<li>添加404页面</li>
+<li>使用多说评论</li>
+<li>修改博客主体为宽屏模式</li>
+</ul>
+
+<h2>TODO</h2>
+
+<ul>
+<li>添加read more功能，参考<a href="http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/">Jekyll - Read More without plugin</a></li>
+<li>添加语法高亮，参考<a href="http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/">Jekyll - Syntax highlighting</a></li>
+<li>添加简单的搜索功能，参考<a href="http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/">Jekyll Bootstrap - Create Simple Search box</a></li>
+</ul>
+</div>
+    </article>
+  </section>
+  
+  
   <section id="hadoop20130823publish-proerties-using-zookeeper">
     <article>
       <header>
@@ -90,6 +281,7 @@
 		Time：<time date="2013-08-23">2013-08-23</time>
 		<a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><h2>前言</h2>
 
@@ -208,6 +400,7 @@
 		Time：<time date="2013-08-22">2013-08-22</time>
 		<a href='/hive/2013/08/22/hive-Driver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><h2>概括</h2>
 
@@ -372,6 +565,7 @@ hive.metastore.init.hooks
 		Time：<time date="2013-08-21">2013-08-21</time>
 		<a href='/hive/2013/08/21/hive-CliDriver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content"><h2>启动脚本</h2>
 
@@ -472,108 +666,6 @@ SetProcessor
     </article>
   </section>
   
-  
-  <section id="hadoop20130817some-problems-about-hadoop">
-    <article>
-      <header>
-      <h3><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#hadoop-ref">hadoop</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hive-ref">hive</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hbase-ref">hbase</a>
-			
-			,
-			
-			
-			<a href="/tags.html#mapreduce-ref">mapreduce</a>
-			
-			
-		|
-		Time：<time date="2013-08-17">2013-08-17</time>
-		<a href='/hadoop/2013/08/17/some-problems-about-hadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content"><p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
-
-<h3>安装hadoop过程中需要注意以下几点：</h3>
-
-<ol>
-<li>每个节点配置hosts</li>
-<li>每个节点配置时钟同步</li>
-<li>如果没有特殊要求，关闭防火墙</li>
-<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
-</ol>
-
-<hr>
-
-<h3>使用intel的hadoop发行版IDH过程遇到问题：</h3>
-
-<p>1、 IDH集群中需要配置管理节点到集群各节点的无密码登录，公钥文件存放路径为<code>/etc/intelcloud</code>目录下，文件名称为<code>idh-id_rsa</code>。</p>
-
-<p>如果在管理界面发现不能启动/停止hadoop组件的进程，请检查ssh无密码登录是否有问题。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh -i /etc/intelcloud/idh-id_rsa nodeX
-</code></pre></div>
-<p>如果存在问题，请重新配置无密码登录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">scp -i /etc/intelcloud/idh-id_rsa nodeX
-</code></pre></div>
-<p>2、 IDH使用puppt和shell脚本来管理hadoop集群，shell脚本中有一处调用puppt的地方存在问题，详细说明待整理！！</p>
-
-<hr>
-
-<h3>使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：</h3>
-
-<h4>说明：以下问题不局限于CDH的hadoop版本。</h4>
-
-<p>1、 在hive运行过程中会打印如下日志</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Starting Job = job_1374551537478_0001, Tracking URL = http://june-fedora:8088/proxy/application_1374551537478_0001/
-Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
-</code></pre></div>
-<p>通过上面的<code>kill command</code>可以killjob，但是运行过程中发现提示错误，错误原因：<code>HADOOP_LIBEXEC_DIR</code>未做设置</p>
-
-<p>解决方法：在hadoop-env.sh中添加如下代码</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_LIBEXEC_DIR=$HADOOP_COMMON_HOME/libexec
-</code></pre></div>
-<p>2、 查看java进程中发现，JVM参数中-Xmx重复出现</p>
-
-<p>解决办法：<code>/etc/hadoop/conf/hadoop-env.sh</code>去掉第二行。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_OPTS=&quot;-Djava.net.preferIPv4Stack=true $HADOOP_OPTS&quot;
-</code></pre></div>
-<p>3、 hive中mapreduce运行为本地模式，而不是远程模式</p>
-
-<p>解决办法：<code>/etc/hadoop/conf/hadoop-env.sh</code>设置<code>HADOOP_MAPRED_HOME</code>变量</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
-</code></pre></div>
-<p>4、 如何设置hive的jvm启动参数</p>
-
-<p>hive脚本运行顺序：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hive--&gt;hive-config.sh--&gt;hive-env.sh--&gt;hadoop-config.sh--&gt;hadoop-env.sh
-</code></pre></div>
-<p>故如果hadoop-env.sh中设置了<code>HADOOP_HEAPSIZE</code>，则hive-env.sh中设置的无效</p>
-
-<p>5、如何设置JOB_HISTORYSERVER的jvm参数</p>
-
-<p>在<code>/etc/hadoop/conf/hadoop-env.sh</code>添加如下代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_JOB_HISTORYSERVER_HEAPSIZE=256
-</code></pre></div></div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li><a href="/archive.html">Archive</a></li>
@@ -598,6 +690,9 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
     <section>
     <h4>Recent Posts</h4>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
+      </li>
       <li class="post">
         <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
       </li>
@@ -627,6 +722,18 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
       </li>
       <li class="post">
         <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
+      </li>
+      <li class="post">
+        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>
@@ -705,6 +812,10 @@ Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1374551537478_0001
      
     	<li><a href="/categories.html#hive-ref">
     		hive <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
     	</a></li>
     
   

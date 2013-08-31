@@ -4,13 +4,185 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-08-28T16:31:51+08:00</updated>
+ <updated>2013-08-31T22:25:20+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
-   <email>june.chan@foxmail.com</email>
+   <email>javachen.june@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>我的jekyll配置和修改</title>
+   <link href="http://blog.javachen.com/post/2013/08/31/my-jekyll-config"/>
+   <updated>2013-08-31T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/post/2013/08/31/my-jekyll-config</id>
+   <content type="html">&lt;p&gt;主要记录使用jekyll搭建博客时的一些配置和修改。&lt;/p&gt;
+
+&lt;p&gt;注意：使用时请删除{和%以及{和{之间的空格。&lt;/p&gt;
+
+&lt;h2&gt;预览文章&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;source ~/.bash_profile
+jekyll server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;添加about me 边栏&lt;/h2&gt;
+
+&lt;p&gt;参考&lt;a href=&quot;http://www.the5fire.com/&quot;&gt;the5fire的技术博客&lt;/a&gt;在index.html页面加入如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;section&amp;gt;
+&amp;lt;h4&amp;gt;About me&amp;lt;/h4&amp;gt;
+&amp;lt;div&amp;gt;
+ 一个Java方案架构师，主要从事hadoop相关工作。&amp;lt;a href=&amp;quot;/about.html&amp;quot;&amp;gt;更多信息&amp;lt;/a&amp;gt; 
+&amp;lt;br/&amp;gt;
+&amp;lt;br/&amp;gt;
+&amp;lt;strong&amp;gt;&amp;lt;font color=&amp;quot;red&amp;quot;&amp;gt;&amp;lt;a href=&amp;quot;/atom.xml&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;订阅本站&amp;lt;/a&amp;gt;&amp;lt;/font&amp;gt;&amp;lt;/strong&amp;gt;
+&amp;lt;br/&amp;gt;&amp;lt;br/&amp;gt;
+联系博主：javachen.june[a]gmail.com
+&amp;lt;/div&amp;gt;
+&amp;lt;/section&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;添加about页面&lt;/h2&gt;
+
+&lt;p&gt;在根目录创建about.md并修改，注意：文件开头几行内容如下&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;title: About
+layout: page
+group: navigation
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;设置固定链接&lt;/h2&gt;
+
+&lt;p&gt;在 _config.yml 里，找到 permalink，设置如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;permalink: /:categories/:year/:month/:day/:title 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;修改，markdown实现为redcarpet&lt;/h2&gt;
+
+&lt;p&gt;首先通过gem安装redcarpet，然后修改_config.yml：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;markdown: redcarpet
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;首页添加最近文章&lt;/h2&gt;
+
+&lt;p&gt;在index.html页面&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;section&amp;gt;
+&amp;lt;h4&amp;gt;Recent Posts&amp;lt;/h4&amp;gt;
+&amp;lt;ul id=&amp;quot;recent_posts&amp;quot;&amp;gt;{ % for rpost in site.posts limit: 15 %}
+&amp;lt;li class=&amp;quot;post&amp;quot;&amp;gt;
+&amp;lt;a href=&amp;quot;&amp;quot;&amp;gt;&amp;lt;/a&amp;gt;
+&amp;lt;/li&amp;gt;{ % endfor %}
+&amp;lt;/ul&amp;gt;
+&amp;lt;/section&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;首页为每篇文章添加分类、标签、发表日期以及评论连接&lt;/h2&gt;
+
+&lt;p&gt;在index.html页面找到&lt;code&gt;&amp;lt;h3&amp;gt;&amp;lt;a href=&amp;quot;{ { BASE_PATH }}{ { post.url }}&amp;quot;&amp;gt;{ { post.title }}&amp;lt;/a&amp;gt;&amp;lt;/h3&amp;gt;&lt;/code&gt;，在下面添加：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; &amp;lt;div class=&amp;quot;c9&amp;quot;&amp;gt;
+    Categories：
+        { %for cg in post.categories % }
+        &amp;lt;a href=&amp;quot;/categories.html#-ref&amp;quot;&amp;gt;&amp;lt;/a&amp;gt;
+        { %if forloop.index &amp;lt; forloop.length % }
+        ,
+        { %endif%}
+        { %endfor%}
+    |
+    Tags：
+        { %for cg in post.tags %}
+        &amp;lt;a href=&amp;quot;/tags.html#-ref&amp;quot;&amp;gt;&amp;lt;/a&amp;gt;
+        { %if forloop.index &amp;lt; forloop.length %}
+        ,
+        { %endif%}
+        { %endfor%}
+    |
+    Time：&amp;lt;time date=&amp;quot;{ { post.date|date: &amp;#39;%Y-%m-%d&amp;#39; }}&amp;quot;&amp;gt;&amp;lt;/time&amp;gt;
+    &amp;lt;a href=&amp;#39;#comments&amp;#39; title=&amp;#39;分享文章、查看评论&amp;#39; style=&amp;quot;float:right;margin-right:.5em;&amp;quot;&amp;gt;Comments&amp;lt;/a&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;修改h1、h2等标题字体&lt;/h2&gt;
+
+&lt;p&gt;主要是参考&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css，在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
+h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
+h2{font-size:24px;line-height:36px;}h2 small{font-size:18px;}
+h3{font-size:18px;line-height:27px;}h3 small{font-size:14px;}
+h4,h5,h6{line-height:18px;}
+h4{font-size:14px;}h4 small{font-size:12px;}
+h5{font-size:12px;}
+h6{font-size:11px;color:#999999;text-transform:uppercase;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;添加返回顶部功能&lt;/h2&gt;
+
+&lt;p&gt;同样是参考了&lt;a href=&quot;http://www.ituring.com.cn/&quot;&gt;图灵社区&lt;/a&gt;的css和网上的一篇js实现。在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.backToTop {
+    display: block;
+    width: 40px;
+    height: 32px;
+    font-size: 26px;
+    line-height: 32px;
+    font-family: verdana, arial;
+    padding: 5px 0;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    position: fixed;
+    _position: absolute;
+    right: 10px;
+    bottom: 100px;
+    _bottom: &amp;quot;auto&amp;quot;;
+    cursor: pointer;
+    opacity: .6;
+    filter: Alpha(opacity=60);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在&lt;code&gt;javachen.github.com/assets/themes/twitter/js&lt;/code&gt;添加jquery和main.js，main.js内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;jQuery.noConflict();
+jQuery(document).ready(function(){
+    var backToTopTxt = &amp;quot;▲&amp;quot;, backToTopEle = jQuery(&amp;#39;&amp;lt;div class=&amp;quot;backToTop&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;#39;).appendTo(jQuery(&amp;quot;body&amp;quot;)).text(backToTopTxt).attr(&amp;quot;title&amp;quot;,&amp;quot;Back top top&amp;quot;).click(function() {
+        jQuery(&amp;quot;html, body&amp;quot;).animate({ scrollTop: 0 }, 120);
+    }), backToTopFun = function() {
+        var st = jQuery(document).scrollTop(), winh = jQuery(window).height();
+        (st &amp;gt; 200)? backToTopEle.show(): backToTopEle.hide();    
+        //IE6下的定位
+        if (!window.XMLHttpRequest) {
+            backToTopEle.css(&amp;quot;top&amp;quot;, st + winh - 166); 
+        }
+    };
+
+    backToTopEle.hide(); 
+        jQuery(window).bind(&amp;quot;scroll&amp;quot;, backToTopFun);
+    jQuery(&amp;#39;div.main a,div.pic a&amp;#39;).attr(&amp;#39;target&amp;#39;, &amp;#39;_blank&amp;#39;);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;添加文章版权说明&lt;/h2&gt;
+
+&lt;p&gt;在&lt;code&gt;javachen.github.com/_includes/themes/twitter/post.html&lt;/code&gt;中文章主体下面添加如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;hr&amp;gt;
+&amp;lt;div class=&amp;quot;copyright&amp;quot;&amp;gt;
+&amp;lt;p&amp;gt;&amp;lt;strong&amp;gt;本文固定链接：&amp;lt;/strong&amp;gt;&amp;lt;a href=&amp;#39;{ {page.url}}&amp;#39;&amp;gt;http://blog.javachen.com/post/2013/08/31/my-jekyll-config&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+&amp;lt;p&amp;gt;&amp;lt;strong&amp;gt;原创文章,转载请注明出处：&amp;lt;/strong&amp;gt;&amp;lt;a href=&amp;#39;{ {page.url}}&amp;#39;&amp;gt;JavaChen Blog&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;并在&lt;code&gt;javachen.github.com/assets/themes/twitter/css/style.css&lt;/code&gt;中添加如下css代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;.copyright {
+margin: 10px 0;
+padding: 10px 20px;
+line-height: 1;
+border-radius: 5px;
+background: #f5f5f5;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;其他&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;添加404页面&lt;/li&gt;
+&lt;li&gt;使用多说评论&lt;/li&gt;
+&lt;li&gt;修改博客主体为宽屏模式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;TODO&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;添加read more功能，参考&lt;a href=&quot;http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/&quot;&gt;Jekyll - Read More without plugin&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;添加语法高亮，参考&lt;a href=&quot;http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/&quot;&gt;Jekyll - Syntax highlighting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;添加简单的搜索功能，参考&lt;a href=&quot;http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/&quot;&gt;Jekyll Bootstrap - Create Simple Search box&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>使用ZooKeeper实现配置同步</title>
@@ -2580,72 +2752,72 @@ http://desktop2:8042/node
 
 &lt;h3&gt;配置网络&lt;/h3&gt;
 
-&lt;p&gt;a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi&lt;/p&gt;
+&lt;p&gt;a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0&lt;/p&gt;
 
 &lt;p&gt;b. 设置每一个虚拟机的网络为Host-Only&lt;/p&gt;
 
-&lt;p&gt;c.分别修改每个虚拟机的ip，DHCP或手动设置
-        vim etc/sysconfig/network-scripts/ifcfg-eth0
-        vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-        start_udev&lt;/p&gt;
-
-&lt;p&gt;d.修改主机名
-        vim /etc/sysconfig/network&lt;/p&gt;
-
-&lt;p&gt;e.每个虚拟机中修改hosts：
-        192.168.56.100 rhel-june
-        192.168.56.101 rhel-june-1
-        192.168.56.102 rhel-june-2&lt;/p&gt;
-
-&lt;p&gt;最后机器列表为：
-        rhel-june:   192.168.56.100
-        rhel-june-1: 192.168.56.101
-        rhel-june-2: 192.168.56.102&lt;/p&gt;
-
+&lt;p&gt;c.分别修改每个虚拟机的ip，DHCP或手动设置&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vim /etc/sysconfig/network-scripts/ifcfg-eth0
+vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+start_udev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;d.修改主机名&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vim /etc/sysconfig/network
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;e.每个虚拟机中修改hosts：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;192.168.56.100 rhel-june
+192.168.56.101 rhel-june-1
+192.168.56.102 rhel-june-2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最后机器列表为：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rhel-june:   192.168.56.100
+rhel-june-1: 192.168.56.101
+rhel-june-2: 192.168.56.102
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;机群规划&lt;/h3&gt;
 
-&lt;p&gt;版本：
-        hadoop:1.1.1
-        JDK:1.6.0_38&lt;/p&gt;
-
+&lt;p&gt;版本：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hadoop:1.1.1
+JDK:1.6.0_38
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;集群各节点：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    NameNode:192.168.56.100
-    NameSecondary:192.168.56.100
-    DataNode:192.168.56.101
-    DataNode:192.168.56.102
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;NameNode:192.168.56.100
+NameSecondary:192.168.56.100
+DataNode:192.168.56.101
+DataNode:192.168.56.102
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;安装过程&lt;/h3&gt;
 
 &lt;p&gt;a.解压缩到/opt&lt;/p&gt;
 
-&lt;p&gt;b.设置配置文件：
-        core-site.xml
-        hdfs-site.sml&lt;br&gt;
-        mapred-site.xml&lt;/p&gt;
-
+&lt;p&gt;b.设置配置文件：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;core-site.xml
+hdfs-site.sml    
+mapred-site.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;c.设置master、slaves&lt;/p&gt;
 
 &lt;p&gt;d.设置环境变量&lt;/p&gt;
 
-&lt;p&gt;方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash&lt;em&gt;profile 追加下列信息
-        export JAVA&lt;/em&gt;HOME=/opt/jdk1.6.0&lt;em&gt;38
-        export HADOOP&lt;/em&gt;INSTALL=/opt/hadoop-1.1.1
-        export PATH=$PATH:$HADOOP&lt;em&gt;INSTALL/bin:$JAVA&lt;/em&gt;HOME/bin&lt;/p&gt;
+&lt;p&gt;方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export JAVA_HOME=/opt/jdk1.6.0_38
+export HADOOP_INSTALL=/opt/hadoop-1.1.1
+export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;e.修改hadoop脚本中&lt;code&gt;JAVA_HOME&lt;/code&gt;：/opt/hadoop-1.1.1/conf/hadoop-env.sh&lt;/p&gt;
 
-&lt;p&gt;e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh&lt;/p&gt;
-
-&lt;p&gt;f.格式化namenode
-        hadoop namenode -format&lt;/p&gt;
-
-&lt;p&gt;g.启动hdfs集群
-        sh /opt/hadoop-1.1.1/bin/start-all.sh&lt;/p&gt;
-
-&lt;p&gt;h.查看节点进程
-        jps&lt;/p&gt;
-
+&lt;p&gt;f.格式化namenode&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hadoop namenode -format
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;g.启动hdfs集群&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh /opt/hadoop-1.1.1/bin/start-all.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;h.查看节点进程&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;jps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;查看状态&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    http://rhel-june:50030/
-    http://rhel-june:50070/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;http://rhel-june:50030/
+http://rhel-june:50070/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  

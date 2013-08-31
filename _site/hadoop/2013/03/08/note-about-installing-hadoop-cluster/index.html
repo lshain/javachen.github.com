@@ -94,78 +94,78 @@
 
 <h3>配置网络</h3>
 
-<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0vi</p>
+<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0</p>
 
 <p>b. 设置每一个虚拟机的网络为Host-Only</p>
 
-<p>c.分别修改每个虚拟机的ip，DHCP或手动设置
-        vim etc/sysconfig/network-scripts/ifcfg-eth0
-        vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-        start_udev</p>
-
-<p>d.修改主机名
-        vim /etc/sysconfig/network</p>
-
-<p>e.每个虚拟机中修改hosts：
-        192.168.56.100 rhel-june
-        192.168.56.101 rhel-june-1
-        192.168.56.102 rhel-june-2</p>
-
-<p>最后机器列表为：
-        rhel-june:   192.168.56.100
-        rhel-june-1: 192.168.56.101
-        rhel-june-2: 192.168.56.102</p>
-
+<p>c.分别修改每个虚拟机的ip，DHCP或手动设置</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network-scripts/ifcfg-eth0
+vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+start_udev
+</code></pre></div>
+<p>d.修改主机名</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network
+</code></pre></div>
+<p>e.每个虚拟机中修改hosts：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">192.168.56.100 rhel-june
+192.168.56.101 rhel-june-1
+192.168.56.102 rhel-june-2
+</code></pre></div>
+<p>最后机器列表为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rhel-june:   192.168.56.100
+rhel-june-1: 192.168.56.101
+rhel-june-2: 192.168.56.102
+</code></pre></div>
 <h3>机群规划</h3>
 
-<p>版本：
-        hadoop:1.1.1
-        JDK:1.6.0_38</p>
-
+<p>版本：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop:1.1.1
+JDK:1.6.0_38
+</code></pre></div>
 <p>集群各节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    NameNode:192.168.56.100
-    NameSecondary:192.168.56.100
-    DataNode:192.168.56.101
-    DataNode:192.168.56.102
+<div class="highlight"><pre><code class="text language-text" data-lang="text">NameNode:192.168.56.100
+NameSecondary:192.168.56.100
+DataNode:192.168.56.101
+DataNode:192.168.56.102
 </code></pre></div>
 <h3>安装过程</h3>
 
 <p>a.解压缩到/opt</p>
 
-<p>b.设置配置文件：
-        core-site.xml
-        hdfs-site.sml<br>
-        mapred-site.xml</p>
-
+<p>b.设置配置文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml
+hdfs-site.sml    
+mapred-site.xml
+</code></pre></div>
 <p>c.设置master、slaves</p>
 
 <p>d.设置环境变量</p>
 
-<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash<em>profile 追加下列信息
-        export JAVA</em>HOME=/opt/jdk1.6.0<em>38
-        export HADOOP</em>INSTALL=/opt/hadoop-1.1.1
-        export PATH=$PATH:$HADOOP<em>INSTALL/bin:$JAVA</em>HOME/bin</p>
+<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_HOME=/opt/jdk1.6.0_38
+export HADOOP_INSTALL=/opt/hadoop-1.1.1
+export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
+</code></pre></div>
+<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
 
-<p>e.修改hadoop脚本中JAVA_HOME：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
-
-<p>f.格式化namenode
-        hadoop namenode -format</p>
-
-<p>g.启动hdfs集群
-        sh /opt/hadoop-1.1.1/bin/start-all.sh</p>
-
-<p>h.查看节点进程
-        jps</p>
-
+<p>f.格式化namenode</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop namenode -format
+</code></pre></div>
+<p>g.启动hdfs集群</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sh /opt/hadoop-1.1.1/bin/start-all.sh
+</code></pre></div>
+<p>h.查看节点进程</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">jps
+</code></pre></div>
 <h3>查看状态</h3>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    http://rhel-june:50030/
-    http://rhel-june:50070/
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://rhel-june:50030/
+http://rhel-june:50070/
 </code></pre></div>
      
     <hr>
     <div class="copyright">
-	<p><strong>原创文章,转载请注明出处：</strong><a href='/hadoop/2013/03/08/note-about-installing-hadoop-cluster'>JavaChen Blog</a></p>
 	<p><strong>本文固定链接：</strong><a href='/hadoop/2013/03/08/note-about-installing-hadoop-cluster'>http://blog.javachen.com/hadoop/2013/03/08/note-about-installing-hadoop-cluster</a></p>
+	<p><strong>原创文章,转载请注明出处：</strong><a href='/hadoop/2013/03/08/note-about-installing-hadoop-cluster'>JavaChen Blog</a></p>
     </div>
 
    <br/>
@@ -240,6 +240,10 @@
     <ul id="recent_posts">
     
       <li class="post" >
+        <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
+      </li>
+    
+      <li class="post" >
         <a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a>
       </li>
     
@@ -273,10 +277,6 @@
     
       <li class="post" >
         <a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a>
       </li>
     
     </ul>

@@ -157,6 +157,13 @@
 
 
 	<url>
+		<loc>http://blog.javachen.com/post/2013/08/31/my-jekyll-config</loc>
+		<lastmod>2013-08-31</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
 		<loc>http://blog.javachen.com/hadoop/2013/08/23/publish-proerties-using-zookeeper</loc>
 		<lastmod>2013-08-23</lastmod>
 		<changefreq>hourly</changefreq>

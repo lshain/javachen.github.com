@@ -32,6 +32,7 @@ tagline:
 		Time：<time date="{{ post.date|date: '%Y-%m-%d' }}">{{ post.date|date: "%Y-%m-%d"}}</time>
 		<a href='{{post.url}}#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
+	<hr/>
     </header>
     <div class="content">{{ content }}</div>
     </article>
@@ -61,7 +62,7 @@ tagline:
 
     <section>
     <h4>Recent Posts</h4>
-    <ul id="recent_posts">{% for rpost in site.posts limit: 10 %}
+    <ul id="recent_posts">{% for rpost in site.posts limit: 15 %}
       <li class="post">
         <a href="{{ BASE_PATH }}{{ rpost.url }}">{{ rpost.title }}</a>
       </li>{% endfor %}
