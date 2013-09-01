@@ -1,19 +1,20 @@
 jQuery.noConflict();
 jQuery(document).ready(function(){
-	var backToTopTxt = "▲", backToTopEle = jQuery('<div class="backToTop"></div>').appendTo(jQuery("body")).text(backToTopTxt).attr("title","Back top top").click(function() {
-	    jQuery("html, body").animate({ scrollTop: 0 }, 120);
-	}), backToTopFun = function() {
-		var st = jQuery(document).scrollTop(), winh = jQuery(window).height();
-		(st > 200)? backToTopEle.show(): backToTopEle.hide();    
-		//IE6下的定位
-		if (!window.XMLHttpRequest) {
-		    backToTopEle.css("top", st + winh - 166);    
-		}
-	};
+	jQuery("#toTop").hide(); 
+	
+	jQuery( "#toTop a:first").click( function () {
+        	jQuery( "html,body").animate({ "scrollTop" : 0 }, 200);
+        });
+	
+	var windowHeight = parseInt(jQuery("body").css("height" ));
+		jQuery( "#toTop a:last").click(function () {
+		jQuery( "html,body").animate({ "scrollTop" : windowHeight }, 200);
+	});
 
-	backToTopEle.hide(); 
-    	jQuery(window).bind("scroll", backToTopFun);
-
+	jQuery(window).scroll(function() {
+		jQuery(this).scrollTop() > 200 ? jQuery("#toTop").fadeIn() : jQuery("#toTop").fadeOut()
+	});
+	
 	jQuery('div.content.content a').attr('target', '_blank');
 
 	jQuery("#search-form").submit(function(){
