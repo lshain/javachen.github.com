@@ -15,7 +15,7 @@ jQuery(document).ready(function(){
 		jQuery(this).scrollTop() > 200 ? jQuery("#toTop").fadeIn() : jQuery("#toTop").fadeOut()
 	});
 	
-	jQuery('div.content.content a').attr('target', '_blank');
+	jQuery('div.row a').attr('target', '_blank');
 
 	jQuery("#search-form").submit(function(){
 		var query = document.getElementById("google-search").value;
