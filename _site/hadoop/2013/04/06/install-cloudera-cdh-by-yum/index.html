@@ -138,7 +138,7 @@ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 <div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -qa | grep java
 yum remove {java-1.*}
 </code></pre></div>
-<p>验证没人的jdk是否被卸载</p>
+<p>验证默认的jdk是否被卸载</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">which java
 </code></pre></div>
 <p>安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：<a href="http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR">这里</a></p>
@@ -271,8 +271,10 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 
 <p>注意：</p>
 
+<blockquote>
 <p>The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
 To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
+</blockquote>
 
 <h3>配置NameNode HA</h3>
 
@@ -494,7 +496,7 @@ drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
 drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred             0 2012-05-31 15:31 /var/log/hadoop-yarn
+drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 </code></pre></div>
 <h3>启动mapred-historyserver</h3>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
@@ -808,6 +810,8 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
 <h3>安装Snappy</h3>
 
+<p>cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。</p>
+
 <p>在每个节点安装Snappy</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install snappy snappy-devel
 </code></pre></div>
@@ -816,18 +820,20 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 </code></pre></div>
 <h3>安装LZO</h3>
 
+<p>cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。</p>
+
 <p>在每个节点安装：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 </code></pre></div>
 <h2>10. 参考文章</h2>
 
 <ul>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html">Java Development Kit Installation</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html">Deploying HDFS on a Cluster</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html">HBase Installation</a></li>
-<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html">ZooKeeper Installation</a></li>
-<li><a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
+<li>[1] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
+<li>[2] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html">Java Development Kit Installation</a></li>
+<li>[3] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html">Deploying HDFS on a Cluster</a></li>
+<li>[4] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html">HBase Installation</a></li>
+<li>[5] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html">ZooKeeper Installation</a></li>
+<li>[6] <a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
 </ul>
 
 
@@ -881,7 +887,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   <div class="span3">
   <section>
   
-    <h4>Tags</h4>
+    <h3>Tags</h3>
     <ul class="tag_box">
     
     
@@ -904,8 +910,12 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   </section>  
 
   <section>
-  <h4>Related Posts</h4>
+  <h3>Related Posts</h3>
   <ul>
+   
+   <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
+   
+   <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
    
    <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
    
@@ -923,15 +933,19 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
    
    <li><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></li>
    
-   <li><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></li>
-   
-   <li><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></li>
-   
   </ul>
   </section>  
   <section>
-    <h4>Recent Posts</h4>
+    <h3>Recent Posts</h3>
     <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/work/2013/09/08/recent-work">最近的工作</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a>
+      </li>
     
       <li class="post" >
         <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
@@ -1005,19 +1019,11 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
         <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
     
-      <li class="post" >
-        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
-      </li>
-    
     </ul>
   </section>
   
   <section>
-    <h4>Links</h4>
+    <h3>Links</h3>
    	<ul>
 	<li>Java开发
 			<ul>

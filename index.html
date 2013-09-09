@@ -56,7 +56,7 @@ tagline:
 
   <aside class="span3">
     <section>
-   	 <h4>About me</h4>
+   	 <h3>About me</h3>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	<br/>
@@ -68,7 +68,7 @@ tagline:
     </section>
 
     <section>
-    <h4>Recent Posts</h4>
+    <h3>Recent Posts</h3>
     <ul id="recent_posts">{% for rpost in site.posts limit: 20 %}
       <li class="post">
         <a href="{{ BASE_PATH }}{{ rpost.url }}">{{ rpost.title }}</a>
@@ -98,13 +98,13 @@ tagline:
 	</section>
 	 
      <section>
-   	 <h4>WeiBo</h4>
+   	 <h3>WeiBo</h3>
    	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
     </section>
     
     <section>
 	  {% unless site.categories == empty %}
-	    <h4>Categories</h4>
+	    <h3>Categories</h3>
 	    <ul class="tag_box">
 	      {% assign categories_list = site.categories %}
 	      {% include JB/categories_list %}
@@ -112,7 +112,7 @@ tagline:
 	  {% endunless %}
      </section>
        <section>
-    <h4>Links</h4>
+    <h3>Links</h3>
    	<ul>
 	<li>Java开发
 			<ul>

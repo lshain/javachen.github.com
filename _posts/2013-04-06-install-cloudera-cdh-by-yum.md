@@ -64,7 +64,7 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 	rpm -qa | grep java
 	yum remove {java-1.*}
 
-验证没人的jdk是否被卸载
+验证默认的jdk是否被卸载
 
 	which java
 
@@ -211,8 +211,8 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 注意：
 
-The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
-To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.
+>The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
+>To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.
 
 ### 配置NameNode HA
 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
@@ -445,7 +445,7 @@ To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and ch
 	drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
 	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
 	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
-	drwxr-xr-x   - yarn   mapred        	 0 2012-05-31 15:31 /var/log/hadoop-yarn
+	drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
 ### 启动mapred-historyserver 
@@ -785,6 +785,8 @@ yum方式安装：
 ## 9. 其他
 ### 安装Snappy
 
+cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。
+
 在每个节点安装Snappy
 
 	yum install snappy snappy-devel
@@ -794,17 +796,18 @@ yum方式安装：
 	ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 
 ### 安装LZO
+
+cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。
+
 在每个节点安装：
 
 	yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 
-
-
 ## 10. 参考文章
 
-* [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
-* [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)
-* [Deploying HDFS on a Cluster](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html)
-* [HBase Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html)
-* [ZooKeeper Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html)
-* [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)
+* [1] [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
+* [2] [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)
+* [3] [Deploying HDFS on a Cluster](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html)
+* [4] [HBase Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html)
+* [5] [ZooKeeper Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html)
+* [6] [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)

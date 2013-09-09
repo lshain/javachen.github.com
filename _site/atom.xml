@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-09-03T09:36:29+08:00</updated>
+ <updated>2013-09-09T22:28:08+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -13,13 +13,386 @@
 
  
  <entry>
+   <title>最近的工作</title>
+   <link href="http://blog.javachen.com/work/2013/09/08/recent-work"/>
+   <updated>2013-09-08T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/work/2013/09/08/recent-work</id>
+   <content type="html">&lt;p&gt;最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。&lt;/p&gt;
+
+&lt;p&gt;最近半年多一直在做hadoop方面的工作，也就是接触hadoop才半年多时间。最开始接触hadoop是去年的11月21日，那天去Intel公司参加了两天的hadoop培训。培训的内容很多干货也有很多枯燥的东西，所以边听边瞌睡的听完了两天的培训内容。培训的ppt打印出来了，时不时地会翻看上面讲述的内容，然后在网上搜索些相关的资料。&lt;/p&gt;
+
+&lt;p&gt;最先接触的hadoop发行版是Intel的IDH，刚开始使用IDH也就是用他的管理界面安装、部署hadoop集群，然后在8节点的集群上作hive两表关联的测试。测试结果不是很满意，但是对IDH倒是印象深刻。IDH的前端使用GWT开发，界面简洁，操作也比较方便，只是同步配置文件有时候非常慢，要等上一杯咖啡的时间。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;IDH的源代码不开源，所以遇到一些问题的时候，只能先自己摸索。我不喜欢闭源也不喜欢许可证以及混淆代码什么的。虽然java代码的混淆了，但是shell和puppet脚本还是能够很容易读懂的。参考IDH的部署安装脚本，我在试着用shell编写一个hadoop的安装部署脚本，这个工作还在慢慢进行中。也许在弄懂puppet的原理和代码之后，我会简化、改进IDH的脚本；也许会使用公司使用的saltstack来完善这个部署脚本。&lt;/p&gt;
+
+&lt;p&gt;IDH实现了hive over hbase，这是一个很不错的特性，其基于hbase的协作器，代码实现并不复杂。IDH中有个hmon用于监控hadoop，我已经把这部分代码反编译了。&lt;/p&gt;
+
+&lt;p&gt;在hadoop版本选择的过程中，体验了Cloudera的CDH。首先是CDH的压缩包手动安装hadoop集群，一点点的修改配置文件，直到最后集群能够成功启动，这种方式安装的hadoop集群不包含本地lib文件；然后又试着解压缩Cloudera-manager.bin文件，尝试在虚拟机中不连接网络的情况下通过Cloudera-manager来安装配置集群，在使用了一段时间之后，发现Cloudera-manager没有使用操作系统的service服务来管理hadoop组件的启动和停止，而是有自己一套实现来管理集群，再加上Cloudera-manager也不开源，故放弃了使用Cloudera-manager来安装集群的方式；最后，最后是使用rpm方式来安装hadoop，安装过程倒是不复杂，只是以后如果自己修改了源代码时候升级不是很方便了，Cloudera的github上有个cdh-package项目，这个其实就是apache的bigtop项目，试过通过这个来编译出hadoop的rpm包，没有成功。&lt;/p&gt;
+
+&lt;p&gt;IDH通过本地文件来保存集群的配置信息，而CDH将这些信息保存到数据库了。CDH的Cloudera-manager的web界面基于bootstrap和jquery插件，ui做的很不错，通过反编译java代码，已经知道了其web界面的实现方式以及编译成功了部分java代码。CDH的Cloudera-manager和IDH-manager也很大不同，我想在这两个的基础上也实现一个hadoop的manager，这是我个人想法，还需要研究、整理出他们的实现思路，然后一点点的构思自己该怎么做。Cloudera-manager免费版简称CMF。&lt;/p&gt;
+
+&lt;p&gt;差不多两个月前，公司想做个hive的查询界面，这个东西其实就是和hwi、hue差不多的个东西。基于Spring，我很快搭好了框架，然后把CMF其中的css和js都迁移过来了。这是我第一次接触bootstrap，稍微修改下代码一个前台框架就弄好了，CMF最主要是使用了require.js使javascript代码模块化，这东西改起来也很简单，我把CMF中大部分基础javascript代码都移到了我搭好的框架中。搭好这个框架没花多少时间，但后来公司不打算使用这一套框架，以后有时间我会继续基于这个框架开发个hadoop的管理界面。&lt;/p&gt;
+
+&lt;p&gt;在使用ganglia监控hadoop的过程中，有时候需要找一个监控指标需要花好长时间，而且一个页面上显示的指标太多的时候，这个页面会反应不过来。hortonworks的HDP发行版中似乎对ganglia做了些修改，具体不知道改了什么。HDP发行版没有使用和研究过，只是下载了1.3和2.0两个版本的VM，然后看了看其中的hue，觉得做的很不错，只可惜是python写的。&lt;/p&gt;
+
+&lt;p&gt;在使用hadoop的过程中，觉得hadoop的门槛对于用户来说还是有点卡。用户需要学习hive语法，写出的sql语句通常都不是最优sql，如果有个sql优化器自动帮用户优化sql语句就好了。hbase用于监控业务日志，数据建模和编写代码查询数据对于业务人员来说难度也太大了，如果能够适度封装，让业务人员不用关心hadoop的细节，只需要编写sql语句就能查询数据该多好啊！&lt;/p&gt;
+
+&lt;p&gt;其他工作：hive和mapreduce调优。&lt;/p&gt;
+
+&lt;p&gt;上面是最近在做的一些事情，包括暂停没做的、正在做的以及还未做的。有时候觉得有些事情很简单，但没有时间、没有精力也没有自由一下子做完，有些时候人在江湖，身不由己。&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>hive中如何确定map数</title>
+   <link href="http://blog.javachen.com/hive/2013/09/04/how-to-decide-map-number"/>
+   <updated>2013-09-04T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hive/2013/09/04/how-to-decide-map-number</id>
+   <content type="html">&lt;p&gt;hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h2&gt;hive默认的input format&lt;/h2&gt;
+
+&lt;p&gt;在&lt;code&gt;cdh-4.3.0&lt;/code&gt;的hive中查看&lt;code&gt;hive.input.format&lt;/code&gt;值（为什么是&lt;code&gt;hive.input.format&lt;/code&gt;？）：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set hive.input.format;
+hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;可以看到默认值为CombineHiveInputFormat，如果你使用的是&lt;code&gt;IDH&lt;/code&gt;的hive，则默认值为：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set hive.input.format;
+hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;CombineHiveInputFormat类继承自HiveInputFormat，而HiveInputFormat实现了org.apache.hadoop.mapred.InputFormat接口，关于InputFormat的分析，可以参考&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;InputFormat接口功能&lt;/h2&gt;
+
+&lt;p&gt;简单来说，InputFormat主要用于描述输入数据的格式，提供了以下两个功能： &lt;/p&gt;
+
+&lt;p&gt;1)、数据切分，按照某个策略将输入数据且分成若干个split，以便确定Map Task的个数即Mapper的个数，在MapReduce框架中，一个split就意味着需要一个Map Task; &lt;/p&gt;
+
+&lt;p&gt;2)、为Mapper提供输入数据，即给定一个split(使用其中的RecordReader对象)将之解析为一个个的key/value键值对。 &lt;/p&gt;
+
+&lt;p&gt;该类接口定义如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public interface InputFormat&amp;lt;K,V&amp;gt;{
+    public InputSplit[] getSplits(JobConf job,int numSplits) throws IOException; 
+    public RecordReader&amp;lt;K,V&amp;gt; getRecordReader(InputSplit split,JobConf job,Reporter reporter) throws IOException; 
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;其中，getSplit()方法主要用于切分数据，每一份数据由，split只是在逻辑上对数据分片，并不会在磁盘上将数据切分成split物理分片，实际上数据在HDFS上还是以block为基本单位来存储数据的。InputSplit只记录了Mapper要处理的数据的元数据信息，如起始位置、长度和所在的节点。&lt;/p&gt;
+
+&lt;p&gt;MapReduce自带了一些InputFormat的实现类： &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://dl2.iteye.com/upload/attachment/0085/0423/fa2e8c9f-f26a-3184-98e7-277c1b56fda1.jpg&quot; alt=&quot;InputFormat实现类&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;hive中有一些InputFormat的实现类，如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;AvroContainerInputFormat
+RCFileBlockMergeInputFormat
+RCFileInputFormat
+FlatFileInputFormat
+OneNullRowInputFormat
+ReworkMapredInputFormat
+SymbolicInputFormat
+SymlinkTextInputFormat
+HiveInputFormat
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;HiveInputFormat的子类有：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/files/2013/implement-of-hiveinputformat.png&quot; alt=&quot;HiveInputFormat的子类&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;HiveInputFormat&lt;/h2&gt;
+
+&lt;p&gt;以HiveInputFormat为例，看看其getSplit()方法逻辑：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;for (Path dir : dirs) {
+  PartitionDesc part = getPartitionDescFromPath(pathToPartitionInfo, dir);
+  // create a new InputFormat instance if this is the first time to see this
+  // class
+  Class inputFormatClass = part.getInputFileFormatClass();
+  InputFormat inputFormat = getInputFormatFromCache(inputFormatClass, job);
+  Utilities.copyTableJobPropertiesToConf(part.getTableDesc(), newjob);
+
+  // Make filter pushdown information available to getSplits.
+  ArrayList&amp;lt;String&amp;gt; aliases =
+      mrwork.getPathToAliases().get(dir.toUri().toString());
+  if ((aliases != null) &amp;amp;&amp;amp; (aliases.size() == 1)) {
+    Operator op = mrwork.getAliasToWork().get(aliases.get(0));
+    if ((op != null) &amp;amp;&amp;amp; (op instanceof TableScanOperator)) {
+      TableScanOperator tableScan = (TableScanOperator) op;
+      pushFilters(newjob, tableScan);
+    }
+  }
+
+  FileInputFormat.setInputPaths(newjob, dir);
+  newjob.setInputFormat(inputFormat.getClass());
+  InputSplit[] iss = inputFormat.getSplits(newjob, numSplits / dirs.length);
+  for (InputSplit is : iss) {
+    result.add(new HiveInputSplit(is, inputFormatClass.getName()));
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面代码主要过程是：&lt;/p&gt;
+
+&lt;blockquote&gt;遍历每个输入目录，然后获得PartitionDesc对象，从该对象调用getInputFileFormatClass方法得到实际的InputFormat类，并调用其`getSplits(newjob, numSplits / dirs.length)`方法。
+&lt;/blockquote&gt;
+
+&lt;p&gt;按照上面代码逻辑，似乎hive中每一个表都应该有一个InputFormat实现类。在hive中运行下面代码，可以查看建表语句：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; show create table info; 
+OK
+CREATE  TABLE info(
+  statist_date string, 
+  statistics_date string, 
+  inner_code string, 
+  office_no string, 
+  window_no string, 
+  ticket_no string, 
+  id_kind string, 
+  id_no string, 
+  id_name string, 
+  area_center_code string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY &amp;#39;\;&amp;#39; 
+  LINES TERMINATED BY &amp;#39;\n&amp;#39; 
+STORED AS INPUTFORMAT 
+  &amp;#39;org.apache.hadoop.mapred.TextInputFormat&amp;#39; 
+OUTPUTFORMAT 
+  &amp;#39;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&amp;#39;
+LOCATION
+  &amp;#39;hdfs://node:8020/user/hive/warehouse/info&amp;#39;
+TBLPROPERTIES (
+  &amp;#39;numPartitions&amp;#39;=&amp;#39;0&amp;#39;, 
+  &amp;#39;numFiles&amp;#39;=&amp;#39;1&amp;#39;, 
+  &amp;#39;transient_lastDdlTime&amp;#39;=&amp;#39;1378245263&amp;#39;, 
+  &amp;#39;numRows&amp;#39;=&amp;#39;0&amp;#39;, 
+  &amp;#39;totalSize&amp;#39;=&amp;#39;301240320&amp;#39;, 
+  &amp;#39;rawDataSize&amp;#39;=&amp;#39;0&amp;#39;)
+Time taken: 0.497 seconds
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从上面可以看到info表的INPUTFORMAT为&lt;code&gt;org.apache.hadoop.mapred.TextInputFormat&lt;/code&gt;，TextInputFormat继承自FileInputFormat。FileInputFormat是一个抽象类，它最重要的功能是为各种InputFormat提供统一的getSplits()方法，该方法最核心的是文件切分算法和Host选择算法。&lt;/p&gt;
+
+&lt;p&gt;算法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;long length = file.getLen();
+long goalSize = totalSize / (numSplits == 0 ? 1 : numSplits);
+long minSize = Math.max(job.getLong(org.apache.hadoop.mapreduce.lib.input.
+FileInputFormat.SPLIT_MINSIZE, 1), minSplitSize);
+
+long blockSize = file.getBlockSize();
+long splitSize = computeSplitSize(goalSize, minSize, blockSize);
+long bytesRemaining = length;
+while (((double) bytesRemaining)/splitSize &amp;gt; SPLIT_SLOP) {
+String[] splitHosts = getSplitHosts(blkLocations, 
+    length-bytesRemaining, splitSize, clusterMap);
+    splits.add(makeSplit(path, length-bytesRemaining, splitSize, 
+               splitHosts));
+    bytesRemaining -= splitSize;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+
+&lt;p&gt;&lt;code&gt;华丽的分割线&lt;/code&gt;：以下摘抄自&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1）、文件切分算法&lt;/strong&gt; &lt;/p&gt;
+
+&lt;p&gt;文件切分算法主要用于确定InputSplit的个数以及每个InputSplit对应的数据段，FileInputSplit以文件为单位切分生成InputSplit。有三个属性值来确定InputSplit的个数：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;goalSize：该值由totalSize/numSplits来确定InputSplit的长度，它是根据用户的期望的InputSplit个数计算出来的；numSplits为用户设定的Map Task的个数，默认为1。 &lt;/li&gt;
+&lt;li&gt;minSize：由配置参数mapred.min.split.size（或者 &lt;code&gt;mapreduce.input.fileinputformat.split.minsize&lt;/code&gt;）决定的InputFormat的最小长度，默认为1。 &lt;/li&gt;
+&lt;li&gt;blockSize：HDFS中的文件存储块block的大小，默认为64MB。&lt;/li&gt;
+&lt;li&gt;numSplits=&lt;code&gt;mapred.map.tasks&lt;/code&gt; 或者 &lt;code&gt;mapreduce.job.maps&lt;/code&gt; &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这三个参数决定一个InputFormat分片的最终的长度，计算方法如下： &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;splitSize = max{minSize,min{goalSize,blockSize}} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;计算出了分片的长度后，也就确定了InputFormat的数目。 &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2）、host选择算法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;InputFormat的切分方案确定后，接下来就是要确定每一个InputSplit的元数据信息。InputSplit元数据通常包括四部分，&lt;code&gt;&amp;lt;file,start,length,hosts&amp;gt;&lt;/code&gt;其意义为： &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;file标识InputSplit分片所在的文件； &lt;/li&gt;
+&lt;li&gt;InputSplit分片在文件中的的起始位置； &lt;/li&gt;
+&lt;li&gt;InputSplit分片的长度； &lt;/li&gt;
+&lt;li&gt;分片所在的host节点的列表。 &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+InputSplit的host列表的算作策略直接影响到运行作业的本地性。&lt;br/&gt;
+
+我们知道，由于大文件存储在HDFS上的block可能会遍布整个Hadoop集群，而一个InputSplit分片的划分算法可能会导致一个split分片对应多个不在同一个节点上的blocks，这就会使得在Map Task执行过程中会涉及到读其他节点上的属于该Task的block中的数据，从而不能实现数据本地性，而造成更多的网络传输开销。&lt;br/&gt;
+ 
+一个InputSplit分片对应的blocks可能位于多个数据节点地上，但是基于任务调度的效率，通常情况下，不会把一个分片涉及的所有的节点信息都加到其host列表中，而是选择包含该分片的数据总量的最大的前几个节点，作为任务调度时判断是否具有本地性的主要凭证。&lt;br/&gt;
+ 
+FileInputFormat使用了一个启发式的host选择算法：首先按照rack机架包含的数据量对rack排序，然后再在rack内部按照每个node节点包含的数据量对node排序，最后选取前N个(N为block的副本数)node的host作为InputSplit分片的host列表。当任务地调度Task作业时，只要将Task调度给host列表上的节点，就可以认为该Task满足了本地性。 &lt;br/&gt;
+
+从上面的信息我们可以知道，当InputSplit分片的大小大于block的大小时，Map Task并不能完全满足数据的本地性，总有一本分的数据要通过网络从远程节点上读数据，故为了提高Map Task的数据本地性，减少网络传输的开销，应尽量是InputFormat的大小和HDFS的block块大小相同。
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;h2&gt;CombineHiveInputFormat&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;getSplits(JobConf job, int numSplits)&lt;/code&gt;代码运行过程如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;init(job);
+CombineFileInputFormatShim combine = ShimLoader.getHadoopShims().getCombineFileInputFormat();
+    ShimLoader.loadShims(HADOOP_SHIM_CLASSES, HadoopShims.class);
+        Hadoop23Shims
+            HadoopShimsSecure.getCombineFileInputFormat()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;CombineFileInputFormatShim继承了&lt;code&gt;org.apache.hadoop.mapred.lib.CombineFileInputFormat&lt;/code&gt;,CombineFileInputFormatShim的getSplits方法代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public InputSplitShim[] getSplits(JobConf job, int numSplits) throws IOException {
+  long minSize = job.getLong(&amp;quot;mapred.min.split.size&amp;quot;, 0);
+
+  // For backward compatibility, let the above parameter be used
+  if (job.getLong(&amp;quot;mapred.min.split.size.per.node&amp;quot;, 0) == 0) {
+    super.setMinSplitSizeNode(minSize);
+  }
+
+  if (job.getLong(&amp;quot;mapred.min.split.size.per.rack&amp;quot;, 0) == 0) {
+    super.setMinSplitSizeRack(minSize);
+  }
+
+  if (job.getLong(&amp;quot;mapred.max.split.size&amp;quot;, 0) == 0) {
+    super.setMaxSplitSize(minSize);
+  }
+
+  InputSplit[] splits = (InputSplit[]) super.getSplits(job, numSplits);
+
+  InputSplitShim[] isplits = new InputSplitShim[splits.length];
+  for (int pos = 0; pos &amp;lt; splits.length; pos++) {
+    isplits[pos] = new InputSplitShim((CombineFileSplit)splits[pos]);
+  }
+
+  return isplits;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从上面代码可以看出，如果为CombineHiveInputFormat，则以下四个参数起作用：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;mapred.min.split.size 或者 mapreduce.input.fileinputformat.split.minsize&lt;/li&gt;
+&lt;li&gt;mapred.max.split.size 或者 mapreduce.input.fileinputformat.split.maxsize&lt;/li&gt;
+&lt;li&gt;mapred.min.split.size.per.rack 或者 mapreduce.input.fileinputformat.split.minsize.per.rack&lt;/li&gt;
+&lt;li&gt;mapred.min.split.size.per.node 或者 mapreduce.input.fileinputformat.split.minsize.per.node&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;CombineFileInputFormatShim的getSplits方法最终会调用父类的getSplits方法，拆分算法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;long left = locations[i].getLength();
+long myOffset = locations[i].getOffset();
+long myLength = 0;
+do {
+    if (maxSize == 0) {
+        myLength = left;
+    } else {
+    if (left &amp;gt; maxSize &amp;amp;&amp;amp; left &amp;lt; 2 * maxSize) {
+      myLength = left / 2;
+    } else {
+      myLength = Math.min(maxSize, left);
+    }
+    }
+    OneBlockInfo oneblock = new OneBlockInfo(path, myOffset,
+      myLength, locations[i].getHosts(), locations[i]
+          .getTopologyPaths());
+    left -= myLength;
+    myOffset += myLength;
+
+    blocksList.add(oneblock);
+} while (left &amp;gt; 0);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;hive中如何确定map数&lt;/h2&gt;
+
+&lt;p&gt;总上总结如下：&lt;/p&gt;
+
+&lt;p&gt;如果&lt;code&gt;hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat&lt;/code&gt;，则这时候的参数如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set mapred.min.split.size;
+mapred.min.split.size=1
+hive&amp;gt; set mapred.map.tasks;
+mapred.map.tasks=2
+hive&amp;gt; set dfs.blocksize;
+dfs.blocksize=134217728
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面参数中mapred.map.tasks为2，dfs.blocksize（使用的是cdh-4.3.0版本的hadoop，这里block和size之间没有逗号）为128M。&lt;/p&gt;
+
+&lt;p&gt;假设有一个文件为200M，则按上面HiveInputFormat的split算法：&lt;/p&gt;
+
+&lt;p&gt;1、文件总大小为200M，goalSize=200M /2 =100M，minSize=1 ，splitSize = max{1,min{100M,128M}} =100M&lt;/p&gt;
+
+&lt;p&gt;2、200M / 100M &amp;gt;1.1,故第一块大小为100M&lt;/p&gt;
+
+&lt;p&gt;3、剩下文件大小为100M，小于128M，故第二块大小为100M。&lt;/p&gt;
+
+&lt;p&gt;如果&lt;code&gt;hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat&lt;/code&gt;，则这时候的参数如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set mapred.min.split.size;
+mapred.min.split.size=1
+hive&amp;gt; set mapred.max.split.size;
+mapred.max.split.size=67108864
+hive&amp;gt; set mapred.min.split.size.per.rack;
+mapred.min.split.size.per.rack=1
+hive&amp;gt; set mapred.min.split.size.per.node;
+mapred.min.split.size.per.node=1
+hive&amp;gt; set dfs.blocksize;
+dfs.blocksize=134217728
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面参数中mapred.max.split.size为64M，dfs.blocksize（使用的是cdh-4.3.0版本的hadoop，这里block和size之间没有逗号）为128M。&lt;/p&gt;
+
+&lt;p&gt;假设有一个文件为200M，则按上面CombineHiveInputFormat的split算法：&lt;/p&gt;
+
+&lt;p&gt;1、128M &amp;lt; 200M &amp;lt;128M X 2，故第一个block大小为128M&lt;/p&gt;
+
+&lt;p&gt;2、剩下文件大小为200M-128M=72M，72M&amp;lt;128M,故第二块大小为72M&lt;/p&gt;
+
+&lt;h2&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;网上有一些文章关于hive中如何控制map数的文章是否考虑的不够全面，没有具体情况具体分析。简而言之，当InputFormat的实现类为不同类时，拆分块算法都不一样，相关设置参数也不一样，需要具体分析。&lt;/p&gt;
+
+&lt;h3&gt;1. map数不是越多越好&lt;/h3&gt;
+
+&lt;p&gt;如果一个任务有很多小文件（远远小于块大小128m）,则每个小文件也会被当做一个块，用一个map任务来完成，而一个map任务启动和初始化的时间远远大于逻辑处理的时间，就会造成很大的资源浪费。
+而且，同时可执行的map数是受限的。&lt;/p&gt;
+
+&lt;h3&gt;2. 如何适当的增加map数？&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;将数据导入到hive前，手动将大文件拆分为小文件&lt;/li&gt;
+&lt;li&gt;指定map数，使用insert或者create as select语句将一个表导入到另一个表，然后对另一张表做查询&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;3. 一些经验&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;合并小文件可以减少map数，但是会增加网络IO。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;尽量使拆分块大小和hdfs的块大小接近，避免一个拆分块大小上的多个hdfs块位于不同数据节点，从而降低网络IO。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;根据实际情况，控制map数量需要遵循两个原则：&lt;code&gt;使大数据量利用合适的map数&lt;/code&gt;；&lt;code&gt;使单个map任务处理合适的数据量。&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;参考文章&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://f.dataguru.cn/thread-149820-1-1.html&quot;&gt;【hive】hive的查询注意事项以及优化总结&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://blog.sina.com.cn/s/blog_6ff05a2c010178qd.html&quot;&gt;Hadoop中map数的计算&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://blog.sina.com.cn/s/blog_6ff05a2c0101aqvv.html&quot;&gt;[Hive]从一个经典案例看优化mapred.map.tasks的重要性&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href=&quot;http://superlxw1234.iteye.com/blog/1582880&quot;&gt;hive优化之------控制hive任务中的map数和reduce数&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[5] &lt;a href=&quot;http://www.searchtb.com/2010/12/hadoop-job-tuning.html&quot;&gt;Hadoop Job Tuning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[6] &lt;a href=&quot;http://www.tuicool.com/articles/77f2Af&quot;&gt;Hive配置项的含义详解（2）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[7] &lt;a href=&quot;http://blog.csdn.net/lalaguozhe/article/details/9053645&quot;&gt;Hive小文件合并调研&lt;/a&gt;
+&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>我的jekyll配置和修改</title>
    <link href="http://blog.javachen.com/post/2013/08/31/my-jekyll-config"/>
    <updated>2013-08-31T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/post/2013/08/31/my-jekyll-config</id>
    <content type="html">&lt;p&gt;主要记录使用jekyll搭建博客时的一些配置和修改。&lt;/p&gt;
 
-&lt;p&gt;注意：使用时请删除{和%以及{和{之间的空格。&lt;/p&gt;
+&lt;p&gt;注意：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;使用时请删除{和%以及{和{之间的空格。&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;h2&gt;预览文章&lt;/h2&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;source ~/.bash_profile
@@ -1349,7 +1722,7 @@ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -qa | grep java
 yum remove {java-1.*}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;验证没人的jdk是否被卸载&lt;/p&gt;
+&lt;p&gt;验证默认的jdk是否被卸载&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;which java
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：&lt;a href=&quot;http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR&quot;&gt;这里&lt;/a&gt;&lt;/p&gt;
@@ -1482,8 +1855,10 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 
 &lt;p&gt;注意：&lt;/p&gt;
 
+&lt;blockquote&gt;
 &lt;p&gt;The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
 To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;h3&gt;配置NameNode HA&lt;/h3&gt;
 
@@ -1705,7 +2080,7 @@ drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
 drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred             0 2012-05-31 15:31 /var/log/hadoop-yarn
+drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;启动mapred-historyserver&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/hadoop-mapreduce-historyserver start
@@ -2019,6 +2394,8 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
 &lt;h3&gt;安装Snappy&lt;/h3&gt;
 
+&lt;p&gt;cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。&lt;/p&gt;
+
 &lt;p&gt;在每个节点安装Snappy&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install snappy snappy-devel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -2027,18 +2404,20 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;安装LZO&lt;/h3&gt;
 
+&lt;p&gt;cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。&lt;/p&gt;
+
 &lt;p&gt;在每个节点安装：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;10. 参考文章&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html&quot;&gt;Java Development Kit Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html&quot;&gt;HBase Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html&quot;&gt;ZooKeeper Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://roserouge.iteye.com/blog/1558498&quot;&gt;hadoop cdh 安装笔记&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html&quot;&gt;Creating a Local Yum Repository&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html&quot;&gt;Java Development Kit Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html&quot;&gt;Deploying HDFS on a Cluster&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html&quot;&gt;HBase Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[5] &lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html&quot;&gt;ZooKeeper Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[6] &lt;a href=&quot;http://roserouge.iteye.com/blog/1558498&quot;&gt;hadoop cdh 安装笔记&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>

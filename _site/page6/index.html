@@ -74,6 +74,137 @@
   <div class="span9">
   
   
+  <section id="java20120214this-expression-of-jsf-el">
+    <article>
+      <header>
+      <h3><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#java-ref">java</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#jsf-ref">jsf</a>
+			
+			,
+			
+			
+			<a href="/tags.html#el-ref">el</a>
+			
+			
+		|
+		Time：<time date="2012-02-14">2012-02-14</time>
+		<a href='/java/2012/02/14/this-expression-of-jsf-el#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
+
+<p><strong>EL表达式this扩展</strong>
+在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
+1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
+2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
+3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
+
+<p>我们需要一种新的功能，实现：
+1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
+2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
+3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
+4.兼容标准的EL表达式</p>
+
+<p>我们将上述功能处理为“this”表达式。其功能模型为：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
+</div>
+页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
+&lt;!--more--&gt;</p>
+
+<p><strong>动作类和页面的一致性保证</strong>
+为了有效实现this表达式，我们实现如下映射规则：
+1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
+2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
+
+<p><strong>“this”EL表达式算法</strong>
+算法流程如下图：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
+</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
+    <article>
+      <header>
+      <h3><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#extjs-ref">extjs</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2012-01-31">2012-01-31</time>
+		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
+
+<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码</p>
+
+<p>详细html和js代码见相关文件，这里先描述思路。</p>
+
+<p><strong>首先</strong>
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
+
+<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
+
+<p><strong>然后</strong></p>
+
+<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
+
+<p><strong>最后</strong>
+相关文件打包见：
+<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
+
+<p><strong>说明</strong>
+如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
     <article>
       <header>
@@ -508,656 +639,6 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
     </article>
   </section>
   
-  
-  <section id="javascript20111022ext_readxml_in_bjsasc_wuzi">
-    <article>
-      <header>
-      <h3><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#javascript-ref">javascript</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#extjs-ref">extjs</a>
-			
-			
-		|
-		Time：<time date="2011-10-22">2011-10-22</time>
-		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content">
-	  
-	    <p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
-获取弹出窗口url后的参数方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
-function getQueryStringValue(name) {
-    var url = window.location.search;
-    if (url.indexOf(&#39;?&#39;) &lt; 0) {
-        return null
-    }
-    var index = url.indexOf(name + &quot;=&quot;);
-    if (index &lt; 0) {
-        return null
-    }
-    var args = url.indexOf(&#39;&amp;&#39;, index);
-    var value;
-    if (args &gt; 0) {
-        value = url.substring(index + name.length + 1, args);
-    } else {
-        value = url.substring(index + name.length + 1, url.length);
-    }
-    return value;
-}
-// 获取xml的服务器路径
-function getXmlUrl(xmlFile) {
-    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
-}
-</code></pre></div>
-<p>用到的一些辅助方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
-function cleanWhitespaces(elem) {
-    var elem = elem || document;
-    var childElem = elem.childNodes;
-    var childElemArray = new Array;
-    for (var i = 0; i &lt; childElem.length; i++) {
-        if (childElem[i].nodeType == 1) {
-            childElemArray.push(childElem[i]);
-        }
-    }
-    return childElemArray;
-}
-// 取得父窗口表单中键值对
-function getParentFormValues() {
-    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
-    var formValues = &quot;&quot;;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
-                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
-                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
-        }
-    }
-    formValues += opener.getBindValue(formObj.elements);
-    return formValues;
-}
-// 取得过滤条件表单的键值对
-function getCondictionValues() {
-    var condictionString = &quot;&quot;;
-    var formObj = form.getForm().getEl().dom;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
-                    + formObj.elements[i].value + &#39;}&#39;
-                    + formObj.elements[i].name + &#39;_ &#39;;
-        }
-    }
-    // alert(&quot;condictionString&quot;+condictionString);
-    return condictionString;
-}
-// 判读Ext表单是否有输入
-function isFormInputed(ExtForm) {
-    var flag = false;
-    var formObj = ExtForm.getEl().dom;
-    for (var i = 0; i &lt; formObj.elements.length; i++) {
-        if (formObj.elements[i].value != null
-                &amp;&amp; formObj.elements[i].value != &quot;&quot;
-                &amp;&amp; formObj.elements[i].value.length != 0) {
-            flag = true;
-            break;
-        }
-    }
-    return flag;
-}
-// 将计算得到的结果四舍五入
-/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
-function ForDight(Dight, How) {
-    var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
-    return Dight;
-}
-</code></pre></div>
-<p>xml文件格式：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
-&lt; dictionary&gt;
-    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
-    &lt;sql&gt;
-    select V_stores_list.* 
-    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
-        AND CANUSEQTY&gt;0 AND ??? and isblock=0
-    &lt;/sql&gt;
-    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
-    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
-    &lt;line&gt;20&lt;/line&gt;
-    &lt;!-- 条件区开始--&gt;
-    &lt;condition&gt;
-        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
-        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
-        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
-        &lt;comparetype&gt;&lt; ![CDATA[like
-        MTRNAME
-        单行
-        &lt; ![CDATA[]]&gt;       
-        &lt;/comparetype&gt;
-    &lt;/ condition&gt;
-&lt;/ dictionary&gt;
-</code></pre></div>
-<p>然后，弹出窗口页面Ext入口代码：
-    // 全局变量
-    var result = {};
-    var grid;
-    var form;
-    var viewport;
-    var store;
-    var sm = new Ext.grid.CheckboxSelectionModel();
-    var autoStore;
-    var tempItems1 = [];
-    var tempItems2 = [];
-    var tempItems3 = [];
-    var flag = 1;
-    // 程序入口
-    Ext.onReady(function() {
-        Ext.QuickTips.init();// 初始化
-        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
-        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
-        Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
-        Ext.Ajax.request({
-            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
-            method : &#39;post&#39;,
-            success : function(res, opt) {
-                var xmlObj = res.responseXML;
-                initStoreData(xmlObj); // 访问成功后执行后续工作
-            }
-        })
-    });
-    function initStoreData(xmlObj) {
-        getInitData(xmlObj);
-        document.title = result.winTitle;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
-    // 获取表格数据部分
-    store = new Ext.data.Store({
-        idProperty : &#39;ID&#39;,
-        proxy : new Ext.data.HttpProxy({
-            url : &#39;../search.do?method=findAll&#39;,
-            failure : function() {
-                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
-            },
-            success : function(response) {
-                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
-            }
-        }),
-
-        // baseParams : {
-        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
-        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
-        // // cmd:&#39;search&#39;
-        // },
-        reader : new Ext.data.JsonReader({
-            totalProperty : &#39;totalCount&#39;,
-            root : &#39;data&#39;
-        }, dataRecorder)
-    });
-    // 要分页，第一次加载数据必须传start和limit两参数
-    // store.load({
-    // params : {
-    // start : 0,
-    // limit : result.limit
-    // }
-    // });
-    initViewport();
-}
-// 获得界面初始化的一些数据
-function getInitData(xmlObj) {
-    // result.formItems = {};
-    result.columnHeaders = [];
-    result.gridRecords = [];
-    result.dbFilterRecords = [];
-    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
-    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
-    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
-    // 获取过滤条件表单的界面数据
-    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
-    var row = ForDight(conections.length / 3, 0);
-    for (var i = 0; i &lt; conections.length; i++) {
-        var item = {};
-        var condition = cleanWhitespaces(conections[i]);
-        item.id = condition[0].firstChild.nodeValue;
-        item.fieldLabel = condition[1].firstChild.nodeValue;
-        item.name = condition[4].firstChild.nodeValue;
-        item.anchor = &#39;95%&#39;;
-        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
-            item.xtype = &#39;textfield&#39;;
-        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
-            item.xtype = &#39;datefield&#39;;
-            item.format = &#39;Y-m-d&#39;;
-        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
-            item.xtype = &#39;numberfield&#39;;
-            item.minValue = 0;
-            item.minText = &#39;请输入有效的数字&#39;;
-            item.decimalPrecision = 6;
-        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
-            var autoStore = new Ext.data.SimpleStore({
-                proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
-                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
-                    failure : function() {
-                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
-                    }
-                }),
-                fields : [&#39;property&#39;],
-                baseParams : {
-                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
-                            + result.fromTable
-                }
-            });
-            item.xtype = &#39;combo&#39;;
-            item.store = autoStore;
-            item.displayField = &#39;property&#39;;
-            item.typeAhead = true;
-            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
-            item.queryParam = &#39;keyword&#39;;// 查询的名字
-            item.mode = &#39;remote&#39;;
-            item.minChars = 3;// 默认最少输入4
-            item.forceSelection = true;
-            item.queryDelay = 0;// 查询延迟时间
-            item.triggerAction = &#39;all&#39;;
-            item.emptyText = &#39;&#39;;
-            item.resizable = true;
-            item.selectOnFocus = true;
-        }
-        if (i / row &lt; 1) {
-            tempItems1.push(item);
-        }
-        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
-            tempItems2.push(item);
-        } else if (i / row &gt;= 2) {
-            tempItems3.push(item);
-        }
-    }
-    // alert(Ext.util.JSON.encode(result));
-
-    // 获取表格表头的界面数据和rcord记录的数据格式
-    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
-    result.columnHeaders.push(sm);// 插入多选框
-    result.columnHeaders.push(new Ext.grid.RowNumberer({
-        width : 20
-    }));// 插入行号
-    for (var i = 0; i &lt; fields.length; i++) {
-        var item = {};
-        var record = {};
-        var array = [];
-        var field = cleanWhitespaces(fields[i]);
-        var renderDate = function(value) {
-            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
-        }
-        // 生成grid表格中store数据记录
-        record.name = field[0].firstChild.nodeValue;
-        record.mapping = field[0].firstChild.nodeValue;
-        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
-            record.type = &#39;date&#39;;
-            record.dateFormat = &#39;Y-m-d&#39;;
-            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
-        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
-            record.type = &#39;auto&#39;;
-        } else {
-            record.type = &#39;string&#39;;
-        }
-        result.gridRecords.push(record);
-
-        // 生成grid表格表头数据记录
-        item.dataIndex = field[0].firstChild.nodeValue;
-        item.header = field[2].firstChild.nodeValue;
-        // item.width=field[3].firstChild.nodeValue;
-        item.sortable = true;
-        if (field.length == 7
-                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-            item.hidden = true;
-            // item.hideable=false;
-        }
-        if (field.length == 6) {
-            item.hidden = false;
-        }
-        result.columnHeaders.push(item);
-
-        // 生成模糊过滤store的记录
-        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
-            array.push(field[2].firstChild.nodeValue);// fieldName
-            array.push(field[0].firstChild.nodeValue);// fieldValue
-        }
-        result.dbFilterRecords.push(array);
-    }
-    return result;
-};
-</code></pre></div>
-<p>渲染Ext界面代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
-    if (!form) {
-        form = getInsertForm();
-    }
-
-    if (!grid) {
-        grid = getInsertGrid();
-    }
-
-    if (!viewport) {
-        var formPanel = new Ext.Panel({
-            title : &#39;查询条件&#39;,
-            region : &#39;north&#39;,
-            split : true,
-            frame : true,
-            border : true,
-            layout : &#39;fit&#39;,
-            height : 280,
-            collapsible : true,
-            items : [form]
-
-        });
-        viewport = new Ext.Viewport({
-            layout : &#39;border&#39;,
-            modal : true,// 是否为模式窗口
-            border : false,
-            items : [formPanel, grid]
-        });
-    }
-}
-
-function searchByFilter() {
-    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
-    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
-    if (dbfilter == null || dbfilter == &quot;&quot;) {
-        alert(&quot;请输入一个关键字&quot;);
-        Ext.get(&quot;dbFilter&quot;).focus();
-    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
-        alert(&quot;请选择一个过滤字段&quot;);
-        Ext.get(&quot;search-type&quot;).focus();
-    } else {
-        form.getForm().reset();
-        if (flag == 1) {
-            store.baseParams = {
-                dbfilter : dbfilter,
-                parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
-                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                cmd : &#39;filter&#39;
-            };
-            store.load({
-                params : {
-                    start : 0,
-                    limit : result.limit
-                }
-            });
-            form.getForm().reset();
-            flag = 0;
-        } else {
-            store.baseParams = {
-                dbfilter : dbfilter,
-                parentFormValues : getParentFormValues(),
-                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
-                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                cmd : &#39;filter&#39;
-            };
-            store.reload();
-
-        }
-        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
-    }
-}
-// 获取过滤条件部分的表单控件
-function getInsertForm() {
-    form = new Ext.form.FormPanel({
-        name : &#39;frmMain&#39;,
-        height : 260,
-        labelAlign : &#39;left&#39;,
-        labelWidth : 110,
-        layout : &#39;fit&#39;,
-        waitMsgTarget : true,
-        items : [{
-            xtype : &#39;fieldset&#39;,
-            frame : true,
-            title : &#39;高级查询&#39;,
-            autoHeight : true,
-            layout : &#39;column&#39;,
-            items : [{
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems1
-            }, {
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems2
-            }, {
-                columnWidth : .333,
-                layout : &#39;form&#39;,
-                items : tempItems3
-            }]
-        }],
-        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
-            xtype : &#39;textfield&#39;,
-            width : 200,
-            id : &#39;dbFilter&#39;,
-            listeners : {
-                specialkey : function(field, e) {
-                    if (e.getKey() == Ext.EventObject.ENTER) {
-                        searchByFilter();
-                    }
-                }
-            }
-        }, &#39;-&#39;, {
-            xtype : &#39;combo&#39;,
-            id : &#39;search-type&#39;,
-            anchor : &#39;60%&#39;,
-            hiddenName : &#39;hiddenValue&#39;,
-            width : 120,
-            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
-            store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
-                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
-                data : result.dbFilterRecords
-            }),// 设置数据源
-            displayField : &#39;fieldName&#39;,// 定义要显示的字段
-            valueField : &#39;fieldValue&#39;,// 定义值字段
-            mode : &#39;local&#39;,// 本地模式
-            forceSelection : true,// 要求输入值必须在列表中存在
-            typeAhead : true,// 允许自动选择匹配的剩余部分文本
-            // value : &#39;==选择过滤字段==&#39;,
-            value : &#39;==选择过滤字段==&#39;,
-            handleHeight : 10
-                // 下拉列表中拖动手柄的高度
-                }, &#39;-&#39;, {
-                    xtype : &#39;button&#39;,
-                    text : &#39;筛选&#39;,
-                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
-                    iconCls : &#39;find&#39;,
-                    handler : searchByFilter
-                }, &#39;-&gt;&#39;, {
-                    pressed : true,
-                    xtype : &#39;button&#39;,
-                    text : &#39;确认插入&#39;,
-                    enableToggle : true,
-                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
-                    handler : function() {
-                        if (sm.hasSelection()) {
-                            var records = sm.getSelections();
-                            var jsonObj = &quot;{data:[&quot;;
-                            for (var i = 0; i &lt; records.length; i++) {
-                                jsonObj += Ext.encode(records[i].data);
-                                if (i != records.length - 1) {
-                                    jsonObj += &quot;,&quot;;
-                                }
-                            }
-                            jsonObj += &quot;]}&quot;
-                            Ext.Ajax.request({
-                                url : &#39;../search.do?method=insertChoices&#39;,
-                                method : &#39;post&#39;,
-                                params : {
-                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
-                                            .toString(),
-                                    jsonObj : jsonObj,
-                                    parentFormValues : getParentFormValues()
-                                },
-                                callback : function(options, success, response) {
-                                    if (response.responseText == &quot;success&quot;) {
-
-                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
-                                            window.close();
-                                            // opener.location.reload();
-                                        opener.saveForm();
-                                        });
-                                    } else {
-                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
-                                    }
-                                }
-                            })
-
-                        } else {
-                            alert(&quot;请选择一行或多行数据&quot;);
-                        }
-                    },
-                    scope : this
-                }, &#39;-&#39;, {
-                    pressed : true,
-                    xtype : &#39;button&#39;,
-                    text : &#39;取消&#39;,
-                    tooltip : &#39;取消选择，直接退出&#39;,
-                    handler : function() {
-                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
-                            if (id == &quot;yes&quot;)
-                                window.close();
-                        });
-                    },
-                    scope : this
-                }],
-        buttons : [{
-            text : &#39;执行查询条件&#39;,
-            handler : function() {
-                var connections = getCondictionValues();
-                if (!form.getForm().isValid()) {
-                    return;
-                };
-                if (isFormInputed(form.getForm()) == false) {
-                    alert(&quot;请输入查询条件&quot;);
-                    form.getForm().focus();
-                    return;
-                } else {
-                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
-                    if (flag == 1) {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : &#39;search&#39;
-                        };
-                        store.load({
-                            params : {
-                                start : 0,
-                                limit : result.limit
-                            }
-                        });
-                        form.getForm().reset();
-                        flag = 0;
-                    } else {
-                        store.baseParams = {
-                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
-                            condictions : connections,
-                            parentFormValues : getParentFormValues(),
-                            cmd : &#39;search&#39;
-                        };
-                        store.reload();
-                    }
-
-                    form.getForm().reset();
-                }
-            }
-        }, {
-            text : &#39;重置&#39;,
-            handler : function() {
-                form.getForm().reset();
-            }
-        }]
-    });
-    return form;
-}
-</code></pre></div>
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="pentaho20110928build-pentaho-bi-server-source-code-in-eclipse">
-    <article>
-      <header>
-      <h3><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bi-ref">bi</a>
-			
-			
-		|
-		Time：<time date="2011-09-28">2011-09-28</time>
-		<a href='/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content">
-	  
-	    <p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
-
-<p>当然，您可以参考<a href="http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse" target="_blank">官方文档</a>构建源码。</p>
-
-<p>Pentaho BI Server打包后的文件存于<a href="http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/" target="_blank">这里</a>，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。</p>
-
-<p>将biserver-ce-3.9.0-stable.zip解压之后执行<em>biserver-ce/start-pentaho.bat</em>（或是再linux环境下：<em>biserver-ce/start-pentaho.sh</em>），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？</p>
-
-<p><strong>以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。</strong></p>
-
-<p>在eclipse中创建一个web项目，名称为pentaho，然后将<em>biserver-ce/tomcat/webapps</em>下的<code>pentaho-style</code>和<code>sw-style</code>拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改<code>WEB-INF/web.xml</code>文件你的以下配置，用于指定pentaho-solutions的路径：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; context-param &gt;
-    &lt; param-name &gt;solution-path&lt; /param-name&gt;
-    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
-&lt; /context-param &gt;
-</code></pre></div>
-<p>现在即可部署项目，运行<code>biserver-ce/data/start_hypersonic.bat</code>（用于启动数据库），然后启动tomcat，就可以通过<em>http://localhost:8080/pentaho</em>访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（<em>\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib</em>）。<br />
-现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。</p>
-
-<p><strong>接下来，构建源代码。</strong>
-在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。</p>
-
-<p><strong><font color="red">需要注意的是：</font></strong>
-1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件<br />
-2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。<br />
-3.
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。</p>
-
-<p>4.biserver-ce-3.9.0-stable.zip的lib（<code>biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib</code>）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误</p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page5'>&larr; Previous</a></li>
@@ -1169,7 +650,7 @@ function getInsertForm() {
 
   <aside class="span3">
     <section>
-   	 <h4>About me</h4>
+   	 <h3>About me</h3>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	<br/>
@@ -1181,8 +662,14 @@ function getInsertForm() {
     </section>
 
     <section>
-    <h4>Recent Posts</h4>
+    <h3>Recent Posts</h3>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/work/2013/09/08/recent-work">最近的工作</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a>
+      </li>
       <li class="post">
         <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
       </li>
@@ -1237,12 +724,6 @@ function getInsertForm() {
       <li class="post">
         <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
-      <li class="post">
-        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
-      </li>
-      <li class="post">
-        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
-      </li>
     </ul>
     </section>
     
@@ -1268,13 +749,13 @@ function getInsertForm() {
 	</section>
 	 
      <section>
-   	 <h4>WeiBo</h4>
+   	 <h3>WeiBo</h3>
    	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
     </section>
     
     <section>
 	  
-	    <h4>Categories</h4>
+	    <h3>Categories</h3>
 	    <ul class="tag_box">
 	      
 	      
@@ -1307,7 +788,7 @@ function getInsertForm() {
     	</a></li>
      
     	<li><a href="/categories.html#work-ref">
-    		work <span>2</span>
+    		work <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
@@ -1319,7 +800,7 @@ function getInsertForm() {
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>2</span>
+    		hive <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#post-ref">
@@ -1333,7 +814,7 @@ function getInsertForm() {
 	  
      </section>
        <section>
-    <h4>Links</h4>
+    <h3>Links</h3>
    	<ul>
 	<li>Java开发
 			<ul>

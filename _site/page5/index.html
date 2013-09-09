@@ -74,6 +74,362 @@
   <div class="span9">
   
   
+  <section id="java20120326hash-and-hash-functions">
+    <article>
+      <header>
+      <h3><a href="/java/2012/03/26/hash-and-hash-functions">哈希表</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#java-ref">java</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#java-ref">java</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hash-ref">hash</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hashmap-ref">hashmap</a>
+			
+			
+		|
+		Time：<time date="2012-03-26">2012-03-26</time>
+		<a href='/java/2012/03/26/hash-and-hash-functions#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p><strong>定义 </strong>
+一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。</p>
+
+<p><code>哈希表</code>又称散列表。
+<em>哈希表存储的基本思想是</em>：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即<code>数组空间</code>）的单元地址（即<code>下标</code>），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为<code>哈希表</code>或<code>散列表</code>。<br />
+哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。<br />
+哈希表是基于<code>数组结构</code>实现的，所以它也存在一些<em>缺点</em>： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即<code>冲突现象</code>：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： <em>不需要有序遍历数据，并且可以提前预测数据量的大小</em>。</p>
+
+<p><strong>冲突</strong>
+理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。<br />
+把这种具有不同关键字值而具有相同哈希地址的对象称<code>同义词</code>。 在大多数情况下，冲突是不能完全避免的。这是因为所有可能的关键字的集合可能比较大，而对应的地址数则可能比较少。<br />
+对于哈希技术，主要研究两个问题：<br />
+（1）如何设计哈希函数以使冲突尽可能少地发生。<br />
+（2）发生冲突后如何解决。</p>
+
+<p><strong>哈希函数的构造方法</strong>
+构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。
+<strong>1．直接定址法</strong>
+<code>直接定址法</code>是以关键字k本身或关键字加上某个数值常量c作为哈希地址的方法。<br />
+该哈希函数H(k)为：<br />
+H(k)=k+c (c≥0)<br />
+这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费</p>
+
+<p><strong>2．除留余数法</strong></p>
+
+<p>取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即：<br />
+H(k)=k％m<br />
+这是一种较简单、也是较常见的构造方法。<br />
+这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。<br />
+理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。</p>
+
+<p><strong>3．平方取中法</strong>
+取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。<br />
+设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。</p>
+
+<p><strong>4．折叠法</strong>
+这种方法适合在关键字的位数较多，而地址区间较小的情况。<br />
+将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。<br />
+例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。</p>
+
+<p><strong>5．数值分析法</strong>
+若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。<br />
+例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。</p>
+
+<p><strong>6. 随机数法</strong>
+选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。</p>
+
+<p><strong>7. 斐波那契（Fibonacci）散列法</strong>
+平方散列法的缺点是显而易见的，所以我们能不能找出一个理想的乘数，而不是拿value本身当作乘数呢？答案是肯定的。<br />
+1，对于16位整数而言，这个乘数是40503<br />
+2，对于32位整数而言，这个乘数是2654435769<br />
+3，对于64位整数而言，这个乘数是11400714819323198485<br />
+这几个“理想乘数”是如何得出来的呢？这跟一个法则有关，叫黄金分割法则，而描述黄金分割法则的最经典表达式无疑就是著名的斐波那契数列，如果你还有兴趣，就到网上查找一下“斐波那契数列”等关键字，我数学水平有限，不知道怎么描述清楚为什么，另外斐波那契数列的值居然和太阳系八大行星的轨道半径的比例出奇吻合，很神奇，对么？<br />
+对我们常见的32位整数而言，公式：<br />
+index = (value * 2654435769) &gt;&gt; 28<br />
+如果用这种斐波那契散列法的话，那我上面的图就变成这样了：</p>
+
+<p><strong>冲突的解决方法</strong>
+假设哈希表的地址范围为0～m-l，当对给定的关键字k，由哈希函数H(k)算出的哈希地址为i（0≤i≤m-1）的位置上已存有记录，这种情况就是<code>冲突现象</code>。 处理冲突就是为该关键字的记录找到另一个“空”的哈希地址。即通过一个新的哈希函数得到一个新的哈希地址。如果仍然发生冲突，则再求下一个，依次类推。直至新的哈希地址不再发生冲突为止。<br />
+常用的处理冲突的方法有开放地址法、链地址法两大类
+<strong>1．开放定址法</strong>
+用开放定址法处理冲突就是当冲突发生时，形成一个地址序列。沿着这个序列逐个探测，直到找出一个“空”的开放地址。将发生冲突的关键字值存放到该地址中去。<br />
+如 Hi=(H(k)+d（i）) % m, i=1，2，…k (k 其中H(k)为哈希函数，m为哈希表长，d为增量函数，d(i)=dl，d2…dn-l。<br />
+增量序列的取法不同，可得到不同的开放地址处理冲突探测方法。</p>
+
+<p><strong>1）线性探测法</strong>
+线性探测法是从发生冲突的地址（设为d）开始，依次探查d+l，d+2，…m-1（当达到表尾m-1时，又从0开始探查）等地址，直到找到一个空闲位置来存放冲突处的关键字。<br />
+若整个地址都找遍仍无空地址，则产生溢出。<br />
+线性探查法的数学递推描述公式为：<br />
+d0=H(k)<br />
+di=(di-1+1)% m (1≤i≤m-1)</p>
+
+<p>【例】已知哈希表地址区间为0～10，给定关键字序列（20，30，70，15，8，12，18，63，19）。哈希函数为H(k)=k％ll，采用线性探测法处理冲突，则将以上关键字依次存储到哈希表中。试构造出该哈希表，并求出等概率情况下的平均查找长度。<br />
+假设数组为A, 本题中各元素的存放过程如下：<br />
+H(20)=9，可直接存放到A[9]中去。<br />
+H(30)=8，可直接存放到A[8]中去。<br />
+H(70)=4，可直接存放到A[4]中去。<br />
+H(15)=4，冲突；<br />
+d0=4<br />
+d1=(4+1)%11=5，将15放入到A[5]中。<br />
+H(8)=8，冲突；<br />
+d0=8<br />
+d1=(8+1)%11=9，仍冲突；<br />
+d2=(8+2)%11=10，将8放入到A[10]中。</p>
+
+<p>在等概率情况下成功的平均查找长度为：<br />
+（1*5+2+3+4+6）/9 =20/9<br />
+利用线性探查法处理冲突容易造成关键字的<code>堆积</code>问题。这是因为当连续n个单元被占用后，再散列到这些单元上的关键字和直接散列到后面一个空闲单元上的关键字都要占用这个空闲单元，致使该空闲单元很容易被占用，从而发生非同义冲突。造成平均查找长度的增加。<br />
+为了克服堆积现象的发生，可以用下面的方法替代线性探查法。</p>
+
+<p><strong>（2）平方探查法</strong>
+设发生冲突的地址为d，则平方探查法的探查序列为：d+12，d+22，…直到找到一个空闲位置为止。<br />
+平方探查法的数学描述公式为：<br />
+d0=H(k)<br />
+di=(d0+i2) % m (1≤i≤m-1)<br />
+在等概率情况下成功的平均查找长度为：<br />
+（1*4+2*2+3+4+6）/9 =21/9<br />
+平方探查法是一种较好的处理冲突的方法，可以避免出现堆积问题。它的缺点是不能探查到哈希表上的所有单元，但至少能探查到一半单元。<br />
+例如，若表长m=13，假设在第3个位置发生冲突，则后面探查的位置依次为4、7、12、6、2、0，即可以探查到一半单元。<br />
+若解决冲突时，探查到一半单元仍找不到一个空闲单元。则表明此哈希表太满，需重新建立哈希表。</p>
+
+<p><strong>2．链地址法</strong>
+用链地址法解决冲突的方法是：把所有关键字为同义词的记录存储在一个线性链表中，这个链表称为同义词链表。并将这些链表的表头指针放在数组中（下标从0到m-1）。这类似于图中的邻接表和树中孩子链表的结构。<br />
+由于在各链表中的第一个元素的查找长度为l，第二个元素的查找长度为2，依此类推。因此，在等概率情况下成功的平均查找长度为：<br />
+(1*5+2*2+3*l+4*1)／9=16／9</p>
+
+<p>虽然链地址法要多费一些存储空间，但是彻底解决了“堆积”问题，大大提高了查找效率。</p>
+
+<p><strong>3. 再哈希法</strong>：<br />
+Hi=R Hi(key)，<br />
+R Hi均是不同的哈希函数，即在同义词产生地址冲突时计算另一个哈希函数地址，直到冲突不再发生。这种方法不易产生<code>聚集</code>，但增加了计算的时间。</p>
+
+<p><strong>4.建立一个公共溢出区</strong>
+这也是处理冲突的一种方法。<br />
+假设哈希函数的值域为[0，m-1]，则设向量HashTable[0…m-1]为基本表，每个分量存放一个记录，另设立向量OverTable[0．．v]为溢出表。所有关键字和基本表中关键字为同义词的记录，不管它们由哈希函数得到的哈希地址是什么，一旦发生冲突，都填入溢出表。</p>
+
+<p><strong>哈希表的查找及性能分析</strong>
+<code>哈希法</code>是利用关键字进行计算后直接求出存储地址的。当哈希函数能得到均匀的地址分布时，不需要进行任何比较就可以直接找到所要查的记录。但实际上不可能完全避免冲突，因此查找时还需要进行探测比较。<br />
+在哈希表中，虽然冲突很难避免，但发生冲突的可能性却有大有小。这主要与三个因素有关。
+<strong>第一:与装填因子有关</strong>
+所谓装填因子是指哈希表中己存入的元素个数n与哈希表的大小m的比值，即f=n/m。<br />
+当f越小时，发生冲突的可能性越小，越大（最大为1）时，发生冲突的可能性就越大。
+<strong>第二:与所构造的哈希函数有关</strong>
+若哈希函数选择得当，就可使哈希地址尽可能均匀地分布在哈希地址空间上，从而减少冲突的发生。否则，若哈希函数选择不当，就可能使哈希地址集中于某些区域，从而加大冲突的发生。
+<strong>第三:与解决冲突的哈希冲突函数有关</strong>
+哈希冲突函数选择的好坏也将减少或增加发生冲突的可能性。</p>
+
+<p><strong>思考</strong>
+<em>哈希算法的基本思想是什么？</em>
+<em>哈希算法的存储效率主要取决于什么？</em>
+<em>哈希算法解决冲突的方式有哪些？</em></p>
+
+<p><strong>java 哈希表实现</strong>
+java中哈希表的实现有多个，比如hashtable，hashmap，currenthashmap，也有其他公司实现的，如apache的FashHashmap,google的mapmarker,high-lib的NonBlockingHashMap,其中差别是：</p>
+
+<p><strong>hastable</strong>:线程同步，比较慢
+<strong>hashmap</strong>：线程不同步，不同步时候读写最快（但是不能保证读到最新数据），加同步修饰的时候， 读写比较慢
+<strong>currenthashmap</strong>:线程同步，默认分成16块，写入的时候只锁要写入的快，读取一般不锁块，只有读到空的时候，才锁块，性能比较高，处于hashmap同步和不同步之间。
+<strong>fashhashmap</strong>:apache collection 将HashMap封装，读取的时候copy一个新的，写入比较慢（尤其是存入比较多对象每写一次都要复制一个对象，超级慢），读取快
+<strong>NoBlockingHashMap</strong>： high_scale_lib实现写入慢，读取较快
+<strong>MiltigetHashMap</strong>，MapMaker google collection，和CurrentHashMap性能相当，功能比较全，可以设置超时，重复的可以保存成list</p>
+
+<p><strong>参考文章</strong>
+<a href="http://course.onlinesjtu.com/mod/page/view.php?id=423" target="_blank"> http://course.onlinesjtu.com/mod/page/view.php?id=423</a>
+<a href="http://www.cnblogs.com/bigshuai/articles/2398116.html" target="_blank"> http://www.cnblogs.com/bigshuai/articles/2398116.html</a></p>
+
+<p><strong>扩展阅读</strong>
+Hash碰撞的拒绝式服务攻击 <a href="http://blog.jobbole.com/11454/" target="_blank">http://blog.jobbole.com/11454/</a>
+Berkeley DB Hash、Btree、Queue、Recno选择<a href=" http://www.webzone8.com/article/560.html" target="_blank"> http://www.webzone8.com/article/560.html</a>
+Java Hashtable <a href="http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1" target="_blank">http://javapapers.com/core-java/java-hashtable/#&amp;slider1=1</a>
+Java Hashtable分析 <a href="http://kantery.iteye.com/blog/441755" target="_blank">http://kantery.iteye.com/blog/441755</a></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="kettle20120323how-to-implement-cassandra-input-and-output-in-kettle4-2">
+    <article>
+      <header>
+      <h3><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h3>
+      <div class="c9">
+		Categories：
+			
+			<a href="/categories.html#kettle-ref">kettle</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			,
+			
+			
+			<a href="/tags.html#cassandra-ref">cassandra</a>
+			
+			,
+			
+			
+			<a href="/tags.html#pentaho-ref">pentaho</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Time：<time date="2012-03-23">2012-03-23</time>
+		<a href='/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+	<hr/>
+    </header>
+    <div class="content">
+	  
+	    <p>这是在QQ群里有人问到的一个问题.</p>
+
+<p>如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+
+<p>在kettle中实现cassandra的输入与输出有以下两种方式:</p>
+
+<ul>
+<li>第一种方式:自己编写cassandra输入输出组件</li>
+<li>第二种方式:使用别人编写好的插件,将其集成进来</li>
+</ul>
+
+<p>当然还有第三种方法,直接使用4.3版本的pdi.</p>
+
+<p>第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.</p>
+
+<p>故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|-- kettle-gpload-plugin
+|-- kettle-hl7-plugin
+|-- kettle-palo-plugin
+|-- pentaho-big-data-plugin
+|-- repositories
+|-- spoon
+|-- steps
+`-- versioncheck
+</code></pre></div>
+<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|   `-- DummyJob
+|       |-- DPL.png
+|       |-- dummyjob.jar
+|       `-- plugin.xml
+|-- pentaho-big-data-plugin
+|   |-- lib
+|   |   |-- apache-cassandra-1.0.0.jar
+|   |   |-- apache-cassandra-thrift-1.0.0.jar
+|   |   |-- aws-java-sdk-1.0.008.jar
+|   |   |-- commons-cli-1.2.jar
+|   |   |-- guava-r08.jar
+|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
+|   |   |-- jline-0.9.94.jar
+|   |   |-- libthrift-0.6.jar
+|   |   |-- mongo-java-driver-2.7.2.jar
+|   |   |-- pig-0.8.1.jar
+|   |   |-- xpp3_min-1.1.4c.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|-- repositories
+|-- spoon
+|-- steps
+|   |-- DummyPlugin
+|   |   |-- DPL.png
+|   |   |-- dummy.jar
+|   |   `-- plugin.xml
+|   |-- S3CsvInput
+|   |   |-- jets3t-0.7.0.jar
+|   |   |-- plugin.xml
+|   |   |-- S3CIN.png
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
+|       |-- plugin.xml
+|       |-- SFR.png
+|       `-- shapefilereader3.jar
+`-- versioncheck
+    |-- kettle-version-checker-0.2.0.jar
+    `-- lib
+    `-- pentaho-versionchecker.jar
+
+13 directories, 29 files
+</code></pre></div>
+<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
+<div class="pic">
+<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
+<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
+</a>
+</div></p>
+
+<p><strong>获取pentaho-big-data-plugin源码</strong>
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
+你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
+
+<p>然后,需要在kettle-steps.xml中注册步骤节点
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;step id=&quot;MongoDbInput&quot;&gt;
+&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+&lt;iconfile&gt;ui/images/mongodb-input.png
+&lt;/iconfile&gt;&lt;/tooltip&gt;
+&lt;/category&gt;
+&lt;/classname&gt;
+&lt;/description&gt;
+&lt;/step&gt;
+</code></pre></div>
+<div class="note">
+<h>注意:
+由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
+</h></div>
+
+<p><strong>扩展阅读:</strong></p>
+
+<ul>
+<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
+<li>pentaho-big-data-plugin ci
+<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
+<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
+</ul>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="java20120223the-process-of-seam-initiation">
     <article>
       <header>
@@ -402,137 +758,6 @@ CREATE TABLE a1
     </article>
   </section>
   
-  
-  <section id="java20120214this-expression-of-jsf-el">
-    <article>
-      <header>
-      <h3><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#java-ref">java</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#jsf-ref">jsf</a>
-			
-			,
-			
-			
-			<a href="/tags.html#el-ref">el</a>
-			
-			
-		|
-		Time：<time date="2012-02-14">2012-02-14</time>
-		<a href='/java/2012/02/14/this-expression-of-jsf-el#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content">
-	  
-	    <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
-
-<p><strong>EL表达式this扩展</strong>
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
-
-<p>我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式</p>
-
-<p>我们将上述功能处理为“this”表达式。其功能模型为：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
-</div>
-页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
-&lt;!--more--&gt;</p>
-
-<p><strong>动作类和页面的一致性保证</strong>
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
-
-<p><strong>“this”EL表达式算法</strong>
-算法流程如下图：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
-    <article>
-      <header>
-      <h3><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h3>
-      <div class="c9">
-		Categories：
-			
-			<a href="/categories.html#javascript-ref">javascript</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#extjs-ref">extjs</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		|
-		Time：<time date="2012-01-31">2012-01-31</time>
-		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-	<hr/>
-    </header>
-    <div class="content">
-	  
-	    <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
-
-<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
-1.html文件，此处以SASC.search.MtrUse.html为例
-2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
-3.工具类，DomUtils.js
-4.核心js类:SASC.extjs.search.MtrUse.js
-5.java代码</p>
-
-<p>详细html和js代码见相关文件，这里先描述思路。</p>
-
-<p><strong>首先</strong>
-通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
-
-<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
-需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
-
-<p><strong>然后</strong></p>
-
-<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
-
-<p><strong>最后</strong>
-相关文件打包见：
-<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
-
-<p><strong>说明</strong>
-如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page4'>&larr; Previous</a></li>
@@ -544,7 +769,7 @@ CREATE TABLE a1
 
   <aside class="span3">
     <section>
-   	 <h4>About me</h4>
+   	 <h3>About me</h3>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	<br/>
@@ -556,8 +781,14 @@ CREATE TABLE a1
     </section>
 
     <section>
-    <h4>Recent Posts</h4>
+    <h3>Recent Posts</h3>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/work/2013/09/08/recent-work">最近的工作</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a>
+      </li>
       <li class="post">
         <a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a>
       </li>
@@ -612,12 +843,6 @@ CREATE TABLE a1
       <li class="post">
         <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
-      <li class="post">
-        <a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a>
-      </li>
-      <li class="post">
-        <a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a>
-      </li>
     </ul>
     </section>
     
@@ -643,13 +868,13 @@ CREATE TABLE a1
 	</section>
 	 
      <section>
-   	 <h4>WeiBo</h4>
+   	 <h3>WeiBo</h3>
    	 <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
     </section>
     
     <section>
 	  
-	    <h4>Categories</h4>
+	    <h3>Categories</h3>
 	    <ul class="tag_box">
 	      
 	      
@@ -682,7 +907,7 @@ CREATE TABLE a1
     	</a></li>
      
     	<li><a href="/categories.html#work-ref">
-    		work <span>2</span>
+    		work <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#hadoop-ref">
@@ -694,7 +919,7 @@ CREATE TABLE a1
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>2</span>
+    		hive <span>3</span>
     	</a></li>
      
     	<li><a href="/categories.html#post-ref">
@@ -708,7 +933,7 @@ CREATE TABLE a1
 	  
      </section>
        <section>
-    <h4>Links</h4>
+    <h3>Links</h3>
    	<ul>
 	<li>Java开发
 			<ul>

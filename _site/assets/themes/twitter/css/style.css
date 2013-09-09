@@ -4,6 +4,10 @@ html, body {
   padding-top:20px; padding-bottom:10px;
 }
 
+body {
+font-size: 15px;
+}
+
 h1,h2,h3,h4,h5,h6{margin:18px 0 9px;font-family:inherit;font-weight:normal;color:inherit;text-rendering:optimizelegibility;}h1 small,h2 small,h3 small,h4 small,h5 small,h6 small{font-weight:normal;color:#999999;}
 
 h1{font-size:30px;line-height:36px;}h1 small{font-size:18px;}
@@ -13,6 +17,15 @@ h4,h5,h6{line-height:18px;}
 h4{font-size:14px;}h4 small{font-size:12px;}
 h5{font-size:12px;}
 h6{font-size:11px;color:#999999;text-transform:uppercase;}
+
+li {line-height: 21px;}
+
+p {
+margin: 0 0 9px;
+font-family: inherit;
+font-size: 15px;
+line-height: 24px;
+}
 
 .pull-left {
 float: left;
