@@ -7,15 +7,20 @@ keywords: hadoop, cdh, cloudera manager
 description: 通过Cloudera Manager安装CDH
 ---
 
+## 1 方法一
 你可以从[https://ccp.cloudera.com/display/SUPPORT/Downloads](https://ccp.cloudera.com/display/SUPPORT/Downloads)下载`cloudera-manager-installer.bin`，然后修改执行权限并执行该脚本。
+
 该脚本中配置的rhel6的yum源为：[http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/](http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/)，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。
 
 因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：[通过cloudera-manager来安装hadoop](http://dreamyue.com/post/41090075449/cloudera-manager-hadoop)。
 
 <!-- more -->
 
+## 2 方法二
+
 这里还有一种方法，就是手动下载`Cloudera Manager`的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使`archive.cloudera.com`域名映射到本地ip。
 
+## 3 方法三
 出于好奇，想破解`cloudera-manager-installer.bin`，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：
 
 	[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
@@ -42,8 +47,36 @@ description: 通过Cloudera Manager安装CDH
 	/etc/init.d/cloudera-scm-server start
 	/etc/init.d/cloudera-scm-server-db start
 
+
 知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后查看7180端口是否打开：
 
 	netstat -na| grep 7180
 
 通过浏览器访问`http://IP:7180`登录cloudera manager界面：用户名/密码：`admin/admin`,按照界面提示完成hadoop集群安装。
+
+## 4 排错
+在执行下面一个命令时候可能会出现如下异常
+
+	/etc/init.d/cloudera-scm-server-db start
+
+异常信息如下：
+
+```
+	[root@cdh1 cloudera-scm-server-db]# /etc/init.d/cloudera-scm-server-db start
+	属于此数据库系统的文件宿主为用户 "cloudera-scm".
+	此用户也必须为服务器进程的宿主.
+	数据库簇将带有 locale en_US.UTF8 初始化.
+	缺省的文本搜索配置将会被设置到"english"
+
+	修复已存在目录 /var/lib/cloudera-scm-server-db/data 的权限 ... initdb: 无法改变目录 "/var/lib/cloudera-scm-server-db/data" 的权限: 权限不够
+	Could not initialize database server.
+	  This usually means that your PostgreSQL installation failed or isn't working properly.
+	  PostgreSQL is installed using the set of repositories found on this machine. Please
+	  ensure that PostgreSQL can be installed. Please also uninstall any other instances of
+	  PostgreSQL and then try again., giving up
+```
+
+这时候，请执行如下命令：
+	
+	su -s /bin/bash cloudera-scm -c "touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log"
+	su -s /bin/bash cloudera-scm -c "pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log"

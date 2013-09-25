@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-09-09T22:28:08+08:00</updated>
+ <updated>2013-09-25T17:35:27+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -37,7 +37,7 @@
 
 &lt;p&gt;在使用ganglia监控hadoop的过程中，有时候需要找一个监控指标需要花好长时间，而且一个页面上显示的指标太多的时候，这个页面会反应不过来。hortonworks的HDP发行版中似乎对ganglia做了些修改，具体不知道改了什么。HDP发行版没有使用和研究过，只是下载了1.3和2.0两个版本的VM，然后看了看其中的hue，觉得做的很不错，只可惜是python写的。&lt;/p&gt;
 
-&lt;p&gt;在使用hadoop的过程中，觉得hadoop的门槛对于用户来说还是有点卡。用户需要学习hive语法，写出的sql语句通常都不是最优sql，如果有个sql优化器自动帮用户优化sql语句就好了。hbase用于监控业务日志，数据建模和编写代码查询数据对于业务人员来说难度也太大了，如果能够适度封装，让业务人员不用关心hadoop的细节，只需要编写sql语句就能查询数据该多好啊！&lt;/p&gt;
+&lt;p&gt;在使用hadoop的过程中，觉得hadoop的门槛对于用户来说还是有点高。用户需要学习hive语法，写出的sql语句通常都不是最优sql，如果有个sql优化器自动帮用户优化sql语句就好了。hbase用于监控业务日志，数据建模和编写代码查询数据对于业务人员来说难度也太大了，如果能够适度封装，让业务人员不用关心hadoop的细节，只需要编写sql语句就能查询数据该多好啊！&lt;/p&gt;
 
 &lt;p&gt;其他工作：hive和mapreduce调优。&lt;/p&gt;
 
@@ -1526,14 +1526,21 @@ rhive.env()
    <link href="http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager"/>
    <updated>2013-06-24T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager</id>
-   <content type="html">&lt;p&gt;你可以从&lt;a href=&quot;https://ccp.cloudera.com/display/SUPPORT/Downloads&quot;&gt;https://ccp.cloudera.com/display/SUPPORT/Downloads&lt;/a&gt;下载&lt;code&gt;cloudera-manager-installer.bin&lt;/code&gt;，然后修改执行权限并执行该脚本。
-该脚本中配置的rhel6的yum源为：&lt;a href=&quot;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&quot;&gt;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&lt;/a&gt;，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。&lt;/p&gt;
+   <content type="html">&lt;h2&gt;1 方法一&lt;/h2&gt;
+
+&lt;p&gt;你可以从&lt;a href=&quot;https://ccp.cloudera.com/display/SUPPORT/Downloads&quot;&gt;https://ccp.cloudera.com/display/SUPPORT/Downloads&lt;/a&gt;下载&lt;code&gt;cloudera-manager-installer.bin&lt;/code&gt;，然后修改执行权限并执行该脚本。&lt;/p&gt;
+
+&lt;p&gt;该脚本中配置的rhel6的yum源为：&lt;a href=&quot;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&quot;&gt;http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/&lt;/a&gt;，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。&lt;/p&gt;
 
 &lt;p&gt;因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：&lt;a href=&quot;http://dreamyue.com/post/41090075449/cloudera-manager-hadoop&quot;&gt;通过cloudera-manager来安装hadoop&lt;/a&gt;。&lt;/p&gt;
 
 &lt;!-- more --&gt;
 
+&lt;h2&gt;2 方法二&lt;/h2&gt;
+
 &lt;p&gt;这里还有一种方法，就是手动下载&lt;code&gt;Cloudera Manager&lt;/code&gt;的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使&lt;code&gt;archive.cloudera.com&lt;/code&gt;域名映射到本地ip。&lt;/p&gt;
+
+&lt;h2&gt;3 方法三&lt;/h2&gt;
 
 &lt;p&gt;出于好奇，想破解&lt;code&gt;cloudera-manager-installer.bin&lt;/code&gt;，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
@@ -1561,7 +1568,30 @@ yum install -y cloudera-manager-server-db
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;netstat -na| grep 7180
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;通过浏览器访问&lt;code&gt;http://IP:7180&lt;/code&gt;登录cloudera manager界面：用户名/密码：&lt;code&gt;admin/admin&lt;/code&gt;,按照界面提示完成hadoop集群安装。&lt;/p&gt;
-</content>
+
+&lt;h2&gt;4 排错&lt;/h2&gt;
+
+&lt;p&gt;在执行下面一个命令时候可能会出现如下异常&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/cloudera-scm-server-db start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;异常信息如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    [root@cdh1 cloudera-scm-server-db]# /etc/init.d/cloudera-scm-server-db start
+    属于此数据库系统的文件宿主为用户 &amp;quot;cloudera-scm&amp;quot;.
+    此用户也必须为服务器进程的宿主.
+    数据库簇将带有 locale en_US.UTF8 初始化.
+    缺省的文本搜索配置将会被设置到&amp;quot;english&amp;quot;
+
+    修复已存在目录 /var/lib/cloudera-scm-server-db/data 的权限 ... initdb: 无法改变目录 &amp;quot;/var/lib/cloudera-scm-server-db/data&amp;quot; 的权限: 权限不够
+    Could not initialize database server.
+      This usually means that your PostgreSQL installation failed or isn&amp;#39;t working properly.
+      PostgreSQL is installed using the set of repositories found on this machine. Please
+      ensure that PostgreSQL can be installed. Please also uninstall any other instances of
+      PostgreSQL and then try again., giving up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这时候，请执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su -s /bin/bash cloudera-scm -c &amp;quot;touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log&amp;quot;
+su -s /bin/bash cloudera-scm -c &amp;quot;pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  <entry>
