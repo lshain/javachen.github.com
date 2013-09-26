@@ -67,8 +67,8 @@
         
 
 <div class="page-header">
-  	<h2>hive中如何确定map数 </h2>
-	<div class="c9">
+  	<h1>hive中如何确定map数 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hive-ref">hive</a>
 		| Tags：<a href="/tags.html#hive-ref">hive</a>,<a href="/tags.html#mapreduce-ref">mapreduce</a>
 		| Time：<time date="2013-09-04">2013-09-04</time>
@@ -79,23 +79,12 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/post/2013/08/31/my-jekyll-config" title="我的jekyll配置和修改">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/work/2013/09/08/recent-work" title="最近的工作">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
 
 <!-- more -->
 
-<h2>hive默认的input format</h2>
+<h1>hive默认的input format</h1>
 
 <p>在<code>cdh-4.3.0</code>的hive中查看<code>hive.input.format</code>值（为什么是<code>hive.input.format</code>？）：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hive&gt; set hive.input.format;
@@ -107,7 +96,7 @@ hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
 </code></pre></div>
 <p>CombineHiveInputFormat类继承自HiveInputFormat，而HiveInputFormat实现了org.apache.hadoop.mapred.InputFormat接口，关于InputFormat的分析，可以参考<a href="http://flyingdutchman.iteye.com/blog/1876400">Hadoop深入学习：InputFormat组件</a>.</p>
 
-<h2>InputFormat接口功能</h2>
+<h1>InputFormat接口功能</h1>
 
 <p>简单来说，InputFormat主要用于描述输入数据的格式，提供了以下两个功能： </p>
 
@@ -142,7 +131,7 @@ HiveInputFormat
 
 <p><img src="/files/2013/implement-of-hiveinputformat.png" alt="HiveInputFormat的子类"></p>
 
-<h2>HiveInputFormat</h2>
+<h1>HiveInputFormat</h1>
 
 <p>以HiveInputFormat为例，看看其getSplit()方法逻辑：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for (Path dir : dirs) {
@@ -273,7 +262,7 @@ FileInputFormat使用了一个启发式的host选择算法：首先按照rack机
 
 <hr>
 
-<h2>CombineHiveInputFormat</h2>
+<h1>CombineHiveInputFormat</h1>
 
 <p><code>getSplits(JobConf job, int numSplits)</code>代码运行过程如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">init(job);
@@ -341,7 +330,7 @@ do {
     blocksList.add(oneblock);
 } while (left &gt; 0);
 </code></pre></div>
-<h2>hive中如何确定map数</h2>
+<h1>hive中如何确定map数</h1>
 
 <p>总上总结如下：</p>
 
@@ -381,25 +370,25 @@ dfs.blocksize=134217728
 
 <p>1、128M &lt; 200M &lt;128M X 2，故第一个block大小为128M</p>
 
-<p>2、剩下文件大小为200M-128M=72M，72M&lt;128M,故第二块大小为72M</p>
+<p>2、剩下文件大小为200M-128M=72M，72M &lt; 128M,故第二块大小为72M</p>
 
-<h2>总结</h2>
+<h1>总结</h1>
 
 <p>网上有一些文章关于hive中如何控制map数的文章是否考虑的不够全面，没有具体情况具体分析。简而言之，当InputFormat的实现类为不同类时，拆分块算法都不一样，相关设置参数也不一样，需要具体分析。</p>
 
-<h3>1. map数不是越多越好</h3>
+<h2>1. map数不是越多越好</h2>
 
 <p>如果一个任务有很多小文件（远远小于块大小128m）,则每个小文件也会被当做一个块，用一个map任务来完成，而一个map任务启动和初始化的时间远远大于逻辑处理的时间，就会造成很大的资源浪费。
 而且，同时可执行的map数是受限的。</p>
 
-<h3>2. 如何适当的增加map数？</h3>
+<h2>2. 如何适当的增加map数？</h2>
 
 <ul>
 <li>将数据导入到hive前，手动将大文件拆分为小文件</li>
 <li>指定map数，使用insert或者create as select语句将一个表导入到另一个表，然后对另一张表做查询</li>
 </ul>
 
-<h3>3. 一些经验</h3>
+<h2>3. 一些经验</h2>
 
 <ul>
 <li><p>合并小文件可以减少map数，但是会增加网络IO。</p></li>
@@ -407,7 +396,7 @@ dfs.blocksize=134217728
 <li><p>根据实际情况，控制map数量需要遵循两个原则：<code>使大数据量利用合适的map数</code>；<code>使单个map任务处理合适的数据量。</code></p></li>
 </ul>
 
-<h2>参考文章</h2>
+<h1>参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://f.dataguru.cn/thread-149820-1-1.html">【hive】hive的查询注意事项以及优化总结</a></li>
@@ -471,7 +460,7 @@ dfs.blocksize=134217728
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -492,7 +481,7 @@ dfs.blocksize=134217728
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -518,7 +507,7 @@ dfs.blocksize=134217728
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -605,7 +594,7 @@ dfs.blocksize=134217728
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

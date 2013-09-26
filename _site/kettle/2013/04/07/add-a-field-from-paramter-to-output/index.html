@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>kettle中添加一个参数字段到输出 </h2>
-	<div class="c9">
+  	<h1>kettle中添加一个参数字段到输出 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#kettle-ref">kettle</a>
 		| Tags：<a href="/tags.html#kettle-ref">kettle</a>
 		| Time：<time date="2013-04-07">2013-04-07</time>
@@ -80,17 +80,6 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum" title="从yum安装Cloudera CDH集群">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle" title="kettle访问IDH2.3中的HBase">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？</p>
 
@@ -101,19 +90,19 @@
 <li>合并输入流和这个字段</li>
 </ol>
 
-<h3>问题1</h3>
+<h2>问题1</h2>
 
 <p>第一个问题可以使用kettle中<code>获取系统信息</code>组件，定义一个变量，该值来自命令行参数，见下图：</p>
 
 <p><img src="/files/2013/get-a-field-from-paramter.png" alt="get-a-field-from-paramter"></p>
 
-<h3>问题2</h3>
+<h2>问题2</h2>
 
 <p>第二个问题可以使用kettle中<code>记录关联 (笛卡尔输出)</code>组件将两个组件关联起来，输出一个笛卡尔结果集，关联条件设定恒为true，在运行前设置第一个参数的值，然后运行即可。</p>
 
 <p><img src="/files/2013/run-kettle-for-join-two-inputs.png" alt="run-kettle-for-join-two-inputs"></p>
 
-<h3>下载脚本</h3>
+<h2>下载脚本</h2>
 
 <p>最后，kettle转换文件下载地址：<a href="/files/2013/join-a-paramter-to-input-in-kettle.zip">在这里</a>。</p>
 
@@ -168,7 +157,7 @@
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -187,7 +176,7 @@
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -213,7 +202,7 @@
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -300,7 +289,7 @@
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

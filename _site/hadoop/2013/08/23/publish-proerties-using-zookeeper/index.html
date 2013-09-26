@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>使用ZooKeeper实现配置同步 </h2>
-	<div class="c9">
+  	<h1>使用ZooKeeper实现配置同步 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#ZooKeeper-ref">ZooKeeper</a>
 		| Time：<time date="2013-08-23">2013-08-23</time>
@@ -80,23 +80,12 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hive/2013/08/22/hive-Driver" title="hive Driver类运行过程">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/post/2013/08/31/my-jekyll-config" title="我的jekyll配置和修改">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h2>前言</h2>
+    <h1>前言</h1>
 
 <p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
 
-<h2>ZooKeeper</h2>
+<h1>ZooKeeper</h1>
 
 <p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
 
@@ -114,13 +103,13 @@
 
 <p>一些在线系统在运行中，需要在不停止程序的情况下能够动态调整某一个变量的值并且能够及时生效。特别是当部署了多台应用服务器的时候，需要能够做到在一台机器上修改配置文件，然后在同步到所有应用服务器。这时候使用ZooKeeper来实现就很合适了。</p>
 
-<h2>数据发布与订阅</h2>
+<h1>数据发布与订阅</h1>
 
 <p>发布与订阅模型，即所谓的配置中心，顾名思义就是发布者将数据发布到ZK节点上，供订阅者动态获取数据，实现配置信息的集中式管理和动态更新。例如全局的配置信息，服务式服务框架的服务地址列表等就非常适合使用。</p>
 
 <p>使用ZooKeeper的发布与订阅模型，可以将应用中用到的一些配置信息放到ZK上进行集中管理。这类场景通常是这样：应用在启动的时候会主动来获取一次配置，同时，在节点上注册一个Watcher，这样一来，以后每次配置有更新的时候，都会实时通知到订阅的客户端，从来达到获取最新配置信息的目的。这样的场景适合数据量很小，但是数据更新可能会比较快的需求。</p>
 
-<h2>配置存储方案</h2>
+<h1>配置存储方案</h1>
 
 <p>配置文件通常有如下几种保存方式：</p>
 
@@ -133,7 +122,7 @@
 当需要修改参数时，直接修改数据库，然后重启分布式应用程序，或者刷新分布式应用的缓存。尽管这种做法比以上两种方案简单，但却面临着单点失效问题。如果数据库服务器停机，则分布式应用程序的配置信息将无法更新。另外这种方案的配置修改生效实时性虽然比第二种方案好些，但仍然不能达到某些情况下的要求。</p></li>
 </ol>
 
-<h2>基于ZooKeeper的配置信息同步方案</h2>
+<h1>基于ZooKeeper的配置信息同步方案</h1>
 
 <p>如果使用ZooKeeper来实现，就可以直接把配置信息保存到ZooKeeper中，或者把属性文件内容保存到ZooKeeper中，当属性文件内容发生变化时，就通知监听者如应用程序去重新读取配置文件。</p>
 
@@ -155,11 +144,11 @@
 
 <p><img src="/files/2013/zookeeper-02.jpg" alt="修改配置的时许图"></p>
 
-<h2>源代码</h2>
+<h1>源代码</h1>
 
 <p>找到一个淘宝工程师写的实现方式，待整理下之后，提交到github上去。</p>
 
-<h2>优点</h2>
+<h1>优点</h1>
 
 <p>借助 ZooKeeper我们实现的配置信息存储方案具有的优点如下:</p>
 
@@ -169,11 +158,11 @@
 <li>实时。ZooKeeper的数据更新通知机制,可以在数据发生变化后,立即通知给分布式应用程序,具有很强的变化响应能力。</li>
 </ol>
 
-<h2>总结</h2>
+<h1>总结</h1>
 
 <p>本文参考了网上的一些文章，给出了基于ZooKeeper的配置信息同步方案,解决了传统配置信息同步方案的缺点如实时性差、可靠性差、复杂等。</p>
 
-<h2>参考文章</h2>
+<h1>参考文章</h1>
 
 <ul>
 <li><a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a></li>
@@ -233,7 +222,7 @@
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -252,7 +241,7 @@
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -278,7 +267,7 @@
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -365,7 +354,7 @@
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

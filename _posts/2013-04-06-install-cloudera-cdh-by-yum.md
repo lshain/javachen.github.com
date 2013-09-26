@@ -9,7 +9,7 @@ description: 从yum安装Cloudera CDH集群，包括hadoop、yarn、HBase
 
 记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 
-## 0.环境准备
+# 0.环境准备
  1.设置hosts
 临时设置hostname，以node1为例
 	
@@ -54,7 +54,7 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 
 
 
-## 1. 安装jdk
+# 1. 安装jdk
 检查jdk版本
 	
 	java -version
@@ -102,11 +102,11 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 	vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 
-## 2. 设置yum源
+# 2. 设置yum源
 从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz) 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 
-## 3. 安装HDFS
-### 在NameNode节点yum安装
+# 3. 安装HDFS
+## 在NameNode节点yum安装
 
 	yum list hadoop
 	yum install hadoop-hdfs-namenode
@@ -114,7 +114,7 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 	yum install hadoop-yarn-resourcemanager
 	yum install hadoop-mapreduce-historyserver
 
-### 在DataNode节点yum安装 
+## 在DataNode节点yum安装 
 
 	yum list hadoop
 	yum install hadoop-hdfs-datanode
@@ -125,8 +125,8 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 	yum install hadoop-debuginfo
 
 
-## 4. 配置hadoop
-### 自定义hadoop配置文件
+# 4. 配置hadoop
+## 自定义hadoop配置文件
 
 	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
 	sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
@@ -134,7 +134,7 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 
 hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配置之后，`/etc/hadoop/conf`会软连接到`/etc/hadoop/conf.my_cluster`目录
 
-### 修改配置文件
+## 修改配置文件
 进入/etc/hadoop/conf编辑配置文件。
 
 修改core-site.xml配置:
@@ -214,10 +214,10 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 >The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
 >To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.
 
-### 配置NameNode HA
+## 配置NameNode HA
 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
 
-### 配置Secondary NameNode
+## 配置Secondary NameNode
 在hdfs-site.xml中可以配置以下参数：
 
 	dfs.namenode.checkpoint.check.period
@@ -226,10 +226,10 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	dfs.namenode.checkpoint.edits.dir
 	dfs.namenode.num.checkpoints.retained
 
-#### 多个secondarynamenode的配置
+## 多个secondarynamenode的配置
 设置多个secondarynamenode，请参考[multi-host-secondarynamenode-configuration](http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/).
 
-### 文件路径配置清单
+## 文件路径配置清单
 在hadoop中默认的文件路径以及权限要求如下：
 
 	目录							所有者		权限		默认路径
@@ -253,10 +253,10 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 在hadoop中`dfs.permissions.superusergroup`默认为hdfs，我的`hdfs-site.xml`配置文件将其修改为了hadoop。
 
-### 配置CDH4组件端口
+## 配置CDH4组件端口
 请参考[Configuring Ports for CDH4](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html)
 
-### 创建数据目录
+## 创建数据目录
 在namenode节点创建name目录
 
 	mkdir -p /opt/data/hadoop/dfs/name
@@ -281,30 +281,30 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	chown -R yarn:yarn /opt/data/hadoop/yarn/local
 	chmod 700 /opt/data/hadoop/yarn/local
 
-### 同步配置文件到整个集群
+## 同步配置文件到整个集群
 
 	sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
 
-### 格式化NameNode
+## 格式化NameNode
 
 	sudo -u hdfs hdfs namenode -format
 
-### 定期检查datanode状态
+## 定期检查datanode状态
 
 	#!/bin/bash
 	if ! jps | grep -q DataNode ; then
 	 echo ERROR: datanode not up
 	fi
 
-### 在每个节点启动hdfs
+## 在每个节点启动hdfs
 
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 
-### 验证测试
+## 验证测试
 * 打开浏览器访问：http://node1:50070 
 
 
-## 5. 安装YARN
+# 5. 安装YARN
 先在一台机器上配置好，然后在做同步。
 
 修改mapred-site.xml文件:
@@ -420,12 +420,12 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	</configuration>
 ```
 
-### HDFS创建临时目录
+## HDFS创建临时目录
 
 	sudo -u hdfs hadoop fs -mkdir /tmp
 	sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 
-### 创建日志目录
+## 创建日志目录
 
 	sudo -u hdfs hadoop fs -mkdir /user/history
 	sudo -u hdfs hadoop fs -chmod 1777 /user/history
@@ -436,7 +436,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 	sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 
-### 验证hdfs结构是否正确
+## 验证hdfs结构是否正确
 
 	[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 	drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
@@ -448,28 +448,28 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 
 
-### 启动mapred-historyserver 
+## 启动mapred-historyserver 
 
 	/etc/init.d/hadoop-mapreduce-historyserver start
 
-### 在每个节点启动YARN
+## 在每个节点启动YARN
 
 	for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 
-### 验证
+## 验证
 * 打开浏览器：http://node1:8088/
 * 运行测试程序
 
-### 为每个MapReduce用户创建主目录
+## 为每个MapReduce用户创建主目录
 
 	sudo -u hdfs hadoop fs -mkdir /user/$USER
 	sudo -u hdfs hadoop fs -chown $USER /user/$USER
 
-### Set HADOOP_MAPRED_HOME
+## Set HADOOP_MAPRED_HOME
 
 	export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 
-### 设置开机启动
+## 设置开机启动
 
 	sudo chkconfig hadoop-hdfs-namenode on
 	sudo chkconfig hadoop-hdfs-datanode on
@@ -484,7 +484,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	sudo chkconfig zookeeper-server on
 	sudo chkconfig hadoop-httpfs on
 
-## 6. 安装Zookeeper
+# 6. 安装Zookeeper
 安装zookeeper
 
 	yum install zookeeper*
@@ -518,23 +518,23 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	service zookeeper-server init --myid=n
 	service zookeeper-server restart
  
-## 7. 安装HBase
+# 7. 安装HBase
 
 	yum install hbase*
 
-### 在hdfs中创建/hbase
+## 在hdfs中创建/hbase
 
 	sudo -u hdfs hadoop fs -mkdir /hbase
 	sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
  
-### 设置crontab：
+## 设置crontab：
 
 	crontab -e
 	* 10 * * * cd /var/log/hbase/; rm -rf\
 	`ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
 
 
-### 修改配置文件并同步到其他机器：
+## 修改配置文件并同步到其他机器：
 修改hbase-site.xml文件：
 
 	<configuration>
@@ -597,20 +597,20 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	</configuration>
 
 
-### 修改regionserver文件
+## 修改regionserver文件
 
 
-### 启动HBase
+## 启动HBase
 
 	service hbase-master start
 	service hbase-regionserver start
 
-## 8. 安装hive
-### 在一个节点上安装hive
+# 8. 安装hive
+## 在一个节点上安装hive
 
 	sudo yum install hive*
 
-### 安装postgresql
+## 安装postgresql
 手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH4.2](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2/)
 
 yum方式安装：
@@ -660,7 +660,7 @@ yum方式安装：
 
 
 
-### 修改配置文件
+## 修改配置文件
 修改hive-site.xml文件：
 
 	<configuration>
@@ -739,7 +739,7 @@ yum方式安装：
 	</configuration>
 
 
-### 在hdfs中创建hive数据仓库目录
+## 在hdfs中创建hive数据仓库目录
 
 * hive的数据仓库在hdfs中默认为`/user/hive/warehouse`,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。
 * 每一个查询hive的用户都必须有一个hdfs的home目录(`/user`目录下，如root用户的为`/user/root`)
@@ -752,13 +752,13 @@ yum方式安装：
 	sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 
 
-### 启动hive-server和metastore
+## 启动hive-server和metastore
 
 	service hive-metastore start
 	service hive-server start
 	service hive-server2 start
 
-### 访问beeline
+## 访问beeline
 
 	$ /usr/lib/hive/bin/beeline
 	beeline> !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
@@ -773,7 +773,7 @@ yum方式安装：
 
 其 sql语法参考[SQLLine CLI](http://sqlline.sourceforge.net/)，在这里，你不能使用HiveServer的sql语句
 
-### 与hbase集成
+## 与hbase集成
 需要在hive里添加以下jar包：
 
 	ADD JAR /usr/lib/hive/lib/zookeeper.jar;
@@ -782,8 +782,8 @@ yum方式安装：
 	ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
 
-## 9. 其他
-### 安装Snappy
+# 9. 其他
+## 安装Snappy
 
 cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。
 
@@ -795,7 +795,7 @@ cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。
 	
 	ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 
-### 安装LZO
+## 安装LZO
 
 cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。
 
@@ -803,7 +803,7 @@ cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。
 
 	yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 
-## 10. 参考文章
+# 10. 参考文章
 
 * [1] [Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
 * [2] [Java Development Kit Installation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html)

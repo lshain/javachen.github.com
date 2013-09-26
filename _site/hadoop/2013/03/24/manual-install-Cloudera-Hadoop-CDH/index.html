@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>手动安装Cloudera Hadoop CDH </h2>
-	<div class="c9">
+  	<h1>手动安装Cloudera Hadoop CDH </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#cdh-ref">cdh</a>
 		| Time：<time date="2013-03-24">2013-03-24</time>
@@ -80,25 +80,14 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster" title="【笔记】Hadoop安装部署">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH" title="手动安装Cloudera HBase CDH">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h2>安装版本</h2>
+    <h1>安装版本</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop-2.0.0-cdh4.2.0
 hbase-0.94.2-cdh4.2.0
 hive-0.10.0-cdh4.2.0
 jdk1.6.0_38
 </code></pre></div>
-<h2>安装前说明</h2>
+<h1>安装前说明</h1>
 
 <ul>
 <li>安装目录为/opt</li>
@@ -107,7 +96,7 @@ jdk1.6.0_38
 <li>设置时钟同步</li>
 </ul>
 
-<h2>使用说明</h2>
+<h1>使用说明</h1>
 
 <p>安装hadoop、hbase、hive成功之后启动方式为：</p>
 
@@ -117,7 +106,7 @@ jdk1.6.0_38
 <li>启动hive: desktop1上执行hive</li>
 </ul>
 
-<h2>规划</h2>
+<h1>规划</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1             NameNode、Hive、ResourceManager
     192.168.0.2             SSNameNode
     192.168.0.3             DataNode、HBase、NodeManager
@@ -126,9 +115,9 @@ jdk1.6.0_38
     192.168.0.7             DataNode、HBase、NodeManager
     192.168.0.8             DataNode、HBase、NodeManager
 </code></pre></div>
-<h2>部署过程</h2>
+<h1>部署过程</h1>
 
-<h3>系统和网络配置</h3>
+<h2>系统和网络配置</h2>
 
 <ol>
 <li><p>修改每台机器的名称</p>
@@ -166,9 +155,9 @@ HOSTNAME=desktop1</p></li>
 </ol>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# service iptables stop
 </code></pre></div>
-<h3>安装Hadoop</h3>
+<h1>安装Hadoop</h1>
 
-<h4>配置Hadoop</h4>
+<h2>配置Hadoop</h2>
 
 <p>将jdk1.6.0_38.zip上传到/opt，并解压缩。
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。</p>
@@ -257,7 +246,7 @@ desktop6
 desktop7
 desktop8
 </code></pre></div>
-<h4>配置MapReduce</h4>
+<h2>配置MapReduce</h2>
 
 <ol>
 <li>mapred-site.xml
@@ -344,7 +333,7 @@ desktop8
  &lt;/property&gt;
 &lt;/configuration&gt;
 </code></pre></div>
-<h4>同步配置文件</h4>
+<h2>同步配置文件</h2>
 
 <p>修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~] # cat .bashrc 
@@ -379,7 +368,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 </code></pre></div>
 <p>将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上</p>
 
-<h4>启动脚本</h4>
+<h2>启动脚本</h2>
 
 <p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]hadoop namenode -format
@@ -400,7 +389,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 <div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop2:8042/
 http://desktop2:8042/node
 </code></pre></div>
-<h4>检查集群进程</h4>
+<h2>检查集群进程</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# jps
 5389 NameNode
 5980 Jps
@@ -465,7 +454,7 @@ http://desktop2:8042/node
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -486,7 +475,7 @@ http://desktop2:8042/node
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -512,7 +501,7 @@ http://desktop2:8042/node
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -599,7 +588,7 @@ http://desktop2:8042/node
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

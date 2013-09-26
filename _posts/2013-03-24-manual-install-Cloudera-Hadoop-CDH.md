@@ -7,28 +7,28 @@ keywords: hadoop, cdh, cloudera manager
 description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包括安装版本的说明、集群环境规划、安装过程等等。
 ---
 
-## 安装版本
+# 安装版本
 
 	hadoop-2.0.0-cdh4.2.0
 	hbase-0.94.2-cdh4.2.0
 	hive-0.10.0-cdh4.2.0
 	jdk1.6.0_38
 
-## 安装前说明
+# 安装前说明
 
 * 安装目录为/opt
 * 检查hosts文件
 * 关闭防火墙
 * 设置时钟同步
 
-## 使用说明
+# 使用说明
 安装hadoop、hbase、hive成功之后启动方式为：
 
 * 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh
 * 启动hbase: desktop3上执行start-hbase.xml
 * 启动hive: desktop1上执行hive
 
-## 规划
+# 规划
 ```
 	192.168.0.1             NameNode、Hive、ResourceManager
 	192.168.0.2             SSNameNode
@@ -39,8 +39,8 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 	192.168.0.8             DataNode、HBase、NodeManager
 ```
 
-## 部署过程
-### 系统和网络配置
+# 部署过程
+## 系统和网络配置
 1. 修改每台机器的名称
 
 	[root@desktop1 ~]# cat /etc/sysconfig/network
@@ -81,8 +81,8 @@ description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包�
 	[root@desktop1 ~]# service iptables stop
 ```
 
-### 安装Hadoop
-#### 配置Hadoop
+# 安装Hadoop
+## 配置Hadoop
 将jdk1.6.0_38.zip上传到/opt，并解压缩。
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。
 
@@ -175,7 +175,7 @@ desktop7
 desktop8
 ```
 
-#### 配置MapReduce
+## 配置MapReduce
 1. mapred-site.xml
 配置使用yarn计算框架，以及jobhistory的地址。
 
@@ -263,7 +263,7 @@ desktop8
 </configuration>
 ```
 
-#### 同步配置文件
+## 同步配置文件
 修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc
 
 ```
@@ -303,7 +303,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 
 将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上
 
-#### 启动脚本
+## 启动脚本
 第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化
 
 ```
@@ -341,7 +341,7 @@ http://desktop2:8042/
 http://desktop2:8042/node
 ```
 
-#### 检查集群进程 
+## 检查集群进程 
 
 ```
 [root@desktop1 ~]# jps

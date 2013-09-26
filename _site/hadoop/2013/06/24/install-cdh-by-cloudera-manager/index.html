@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>通过Cloudera Manager安装CDH </h2>
-	<div class="c9">
+  	<h1>通过Cloudera Manager安装CDH </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#cdh-ref">cdh</a>
 		| Time：<time date="2013-06-24">2013-06-24</time>
@@ -80,19 +80,8 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle" title="kettle访问IDH2.3中的HBase">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/07/20/install-rhadoop" title="安装RHadoop">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h2>1 方法一</h2>
+    <h1>1 方法一</h1>
 
 <p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
 
@@ -102,11 +91,11 @@
 
 <!-- more -->
 
-<h2>2 方法二</h2>
+<h1>2 方法二</h1>
 
 <p>这里还有一种方法，就是手动下载<code>Cloudera Manager</code>的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使<code>archive.cloudera.com</code>域名映射到本地ip。</p>
 
-<h2>3 方法三</h2>
+<h1>3 方法三</h1>
 
 <p>出于好奇，想破解<code>cloudera-manager-installer.bin</code>，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
@@ -135,7 +124,7 @@ yum install -y cloudera-manager-server-db
 </code></pre></div>
 <p>通过浏览器访问<code>http://IP:7180</code>登录cloudera manager界面：用户名/密码：<code>admin/admin</code>,按照界面提示完成hadoop集群安装。</p>
 
-<h2>4 排错</h2>
+<h1>4 排错</h1>
 
 <p>在执行下面一个命令时候可能会出现如下异常</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/cloudera-scm-server-db start
@@ -209,7 +198,7 @@ su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-s
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -230,7 +219,7 @@ su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-s
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -256,7 +245,7 @@ su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-s
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -343,7 +332,7 @@ su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-s
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

@@ -7,7 +7,7 @@ keywords: hadoop, hive
 description: 分析hive Driver类运行过程
 ---
 
-## 概括
+# 概括
 
 从《[hive cli的入口类](hive/2013/08/21/hive-CliDriver/)》中可以知道hive中处理hive命令的处理器一共有以下几种：
 
@@ -21,7 +21,7 @@ Driver类的主要作用是用来编译并执行hive命令，然后返回执行�
 
 <!-- more -->
 
-## 分析
+# 分析
 
 Driver类入口如下：
 
@@ -33,7 +33,7 @@ Driver类入口如下：
 
 运行命令之前，先编译命令，然后在运行任务。
 
-### compile方法过程
+## compile方法过程
 
 1、创建Context上下文
 
@@ -75,7 +75,7 @@ Driver类入口如下：
 
 7、授权校验工作。
 
-### run方法过程
+## run方法过程
 
 1、运行HiveDriverRunHook的前置方法preDriverRun
 
@@ -110,7 +110,7 @@ Driver类入口如下：
 
 4、运行HiveDriverRunHook的后置方法postDriverRun
 
-### hive中支持的hook
+## hive中支持的hook
 
 上面分析中，提到了hive的hook机制，hive中一共存在以下几种hook。
 
@@ -131,7 +131,7 @@ cloudera的github仓库[access](https://github.com/cloudera/access)中关于hive
 
 twitter的mapreduce可视化项目监控项目[ambrose](https://github.com/twitter/ambrose)也利用了hive的hook机制，有兴趣的话，你可以去看看其是如何使用hive的hook并且你也可以扩增hook做些自己想做的事情。
 
-## 总结
+# 总结
 
 本文主要介绍了hive运行过程，其中简单提到了hive语法词法解析以及hook机制，没有详细分析。
 
@@ -140,7 +140,7 @@ hive Driver类的执行过程如下：
 ![hive-driver](/files/2013/hive-driver.jpg)
 
 
-## 参考文章
+# 参考文章
 
 1. [hive 初始化运行流程](http://www.cnblogs.com/end/archive/2012/12/19/2825320.html)
 2. [Cloudera access](https://github.com/cloudera/access)

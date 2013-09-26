@@ -7,10 +7,10 @@ keywords: hadoop, hdfs
 description: 主要记录安装hadoop集群过程。
 ---
 
-### 安装虚拟机
+# 安装虚拟机
    VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份
 
-### 配置网络
+# 配置网络
 
 a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0
 
@@ -38,7 +38,7 @@ e.每个虚拟机中修改hosts：
 	rhel-june-1: 192.168.56.101
 	rhel-june-2: 192.168.56.102
 
-### 机群规划
+# 机群规划
 
 版本：
 
@@ -52,14 +52,14 @@ e.每个虚拟机中修改hosts：
 	DataNode:192.168.56.101
 	DataNode:192.168.56.102
 
-### 安装过程
+# 安装过程
 
    a.解压缩到/opt
 
    b.设置配置文件：
 
 	core-site.xml
-	hdfs-site.sml    
+	hdfs-site.sml
 	mapred-site.xml
 
    c.设置master、slaves
@@ -86,7 +86,7 @@ e.每个虚拟机中修改hosts：
 		
 	jps
 
-### 查看状态
+# 查看状态
 
 	http://rhel-june:50030/
 	http://rhel-june:50070/

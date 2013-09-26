@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>kettle访问IDH2.3中的HBase </h2>
-	<div class="c9">
+  	<h1>kettle访问IDH2.3中的HBase </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hbase-ref">hbase</a>
 		| Tags：<a href="/tags.html#kettle-ref">kettle</a>,<a href="/tags.html#idh-ref">idh</a>,<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#bigdata-ref">bigdata</a>,<a href="/tags.html#hbase-ref">hbase</a>
 		| Time：<time date="2013-04-17">2013-04-17</time>
@@ -80,23 +80,16 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output" title="kettle中添加一个参数字段到输出">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager" title="通过Cloudera Manager安装CDH">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
+    <h1>摘要</h1>
+
+<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
 
 <p>截至目前，kettle的版本为4.4.1，<code>big-data-plugin</code>插件支持<code>cloudera CDH3u4、CDH4.1</code>，暂不支持Intel的hadoop发行版本IDH。</p>
 
 <p>本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
+
+<h1>方法</h1>
 
 <p>假设你已经安装好IDH-2.3的集群，并已经拷贝出<code>/usr/lib/</code>下的hadoop、hbase、zookeeper目录。</p>
 
@@ -130,7 +123,7 @@ data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/li
 </code></pre></div>
 <p>修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。</p>
 
-<h3>验证是否可以访问IDH2.3中的hbase。</h3>
+<h3>验证</h3>
 
 <ol>
 <li>打开hbase output组件，配置zookeeper的host和port</li>
@@ -211,7 +204,7 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -238,7 +231,7 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -264,7 +257,7 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -351,7 +344,7 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

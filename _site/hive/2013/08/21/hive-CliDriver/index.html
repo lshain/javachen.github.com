@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>hive cli的入口类 </h2>
-	<div class="c9">
+  	<h1>hive cli的入口类 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hive-ref">hive</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#hive-ref">hive</a>
 		| Time：<time date="2013-08-21">2013-08-21</time>
@@ -80,19 +80,8 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/08/17/some-problems-about-hadoop" title="使用hadoop中遇到的一些问题">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hive/2013/08/22/hive-Driver" title="hive Driver类运行过程">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h2>启动脚本</h2>
+    <h1>启动脚本</h1>
 
 <p>从shell脚本<code>/usr/lib/hive/bin/ext/cli.sh</code>可以看到hive cli的入口类为<code>org.apache.hadoop.hive.cli.CliDriver</code></p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">cli () {
@@ -106,7 +95,7 @@ cli_help () {
 </code></pre></div>
 <!-- more -->
 
-<h2>入口类</h2>
+<h1>入口类</h1>
 
 <p>java中的类如果有main方法就能运行，故直接查找<code>org.apache.hadoop.hive.cli.CliDriver</code>中的main方法即可。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">public static void main(String[] args) throws Exception {
@@ -141,7 +130,7 @@ cli_help () {
 <li>处理hive命令。</li>
 </ul>
 
-<h3>处理hive命令过程</h3>
+<h2>处理hive命令过程</h2>
 
 <p>如果输入的是quit或者exit,则程序退出。</p>
 
@@ -178,13 +167,13 @@ SetProcessor
 </code></pre></div>
 <p><code>org.apache.hadoop.hive.ql.Driver</code>类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。</p>
 
-<h2>总结</h2>
+<h1>总结</h1>
 
 <p>作为尝试，第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑，如下图。以后还需要加强画图和表达能力。</p>
 
 <p><img src="/files/2013/hive-cli-clidriver.jpg" alt="hive-cli-clidriver"></p>
 
-<h2>参考文章</h2>
+<h1>参考文章</h1>
 
 <ul>
 <li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
@@ -241,7 +230,7 @@ SetProcessor
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -262,7 +251,7 @@ SetProcessor
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -288,7 +277,7 @@ SetProcessor
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -375,7 +364,7 @@ SetProcessor
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

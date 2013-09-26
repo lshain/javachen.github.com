@@ -12,12 +12,12 @@ description: 我的Jekyll配置
 注意：
 >使用时请删除{和%以及{和{之间的空格。
 
-## 预览文章
+# 预览文章
 
 	source ~/.bash_profile
 	jekyll server
 
-## 添加about me 边栏
+# 添加about me 边栏
 
 参考[the5fire的技术博客](http://www.the5fire.com/)在index.html页面加入如下代码：
 
@@ -37,7 +37,7 @@ description: 我的Jekyll配置
 
 <!-- more -->
 
-## 添加about页面
+# 添加about页面
 
 在根目录创建about.md并修改，注意：文件开头几行内容如下
 
@@ -45,19 +45,19 @@ description: 我的Jekyll配置
 	layout: page
 	group: navigation
 
-## 设置固定链接
+# 设置固定链接
 
 在 _config.yml 里，找到 permalink，设置如下：
 
 	permalink: /:categories/:year/:month/:day/:title 
 
-## 修改，markdown实现为redcarpet
+# 修改，markdown实现为redcarpet
 
 首先通过gem安装redcarpet，然后修改_config.yml：
 
 	markdown: redcarpet
 
-## 首页添加最近文章
+# 首页添加最近文章
 
 在index.html页面
 
@@ -72,7 +72,7 @@ description: 我的Jekyll配置
 </section>
 ```
 
-## 首页为每篇文章添加分类、标签、发表日期以及评论连接
+# 首页为每篇文章添加分类、标签、发表日期以及评论连接
 
 在index.html页面找到`<h3><a href="{ { BASE_PATH }}{ { post.url }}">{ { post.title }}</a></h3>`，在下面添加：
 
@@ -100,7 +100,7 @@ description: 我的Jekyll配置
 </div>
 ```
 
-## 修改h1、h2等标题字体
+# 修改h1、h2等标题字体
 
 主要是参考[图灵社区](http://www.ituring.com.cn/)的css，在`assets/themes/twitter/css/style.css`中添加如下css代码：
 
@@ -113,7 +113,7 @@ description: 我的Jekyll配置
 	h5{font-size:12px;}
 	h6{font-size:11px;color:#999999;text-transform:uppercase;}
 
-## 添加返回顶部功能
+# 添加返回顶部功能
 
 同样是参考了[图灵社区](http://www.ituring.com.cn/)的css和网上的一篇js实现。在`assets/themes/twitter/css/style.css`：
 
@@ -159,7 +159,7 @@ description: 我的Jekyll配置
 	});
 
 
-## 添加文章版权说明
+# 添加文章版权说明
 
 在`_includes/themes/twitter/post.html`中文章主体下面添加如下代码：
 
@@ -180,7 +180,7 @@ description: 我的Jekyll配置
 	}
 
 
-## 添加read more功能
+# 添加read more功能
 参考[Jekyll - Read More without plugin](http://truongtx.me/2013/05/01/jekyll-read-more-feature-without-any-plugin/)，在index.html找到 {{ post.content }}，然后修改为：
 
 	{ % if post.content contains "<!-- more -->" %}
@@ -192,7 +192,7 @@ description: 我的Jekyll配置
 
 然后，在文章中添加`<!-- more -->`即可。
 
-##添加搜索栏
+# 添加搜索栏
 
 参考[Jekyll Bootstrap - Create Simple Search box](http://truongtx.me/2012/12/28/jekyll-create-simple-search-box/)，在`_includes/themes/twitter/default.html`导航菜单下面添加：
 
@@ -207,12 +207,12 @@ description: 我的Jekyll配置
 		window.open("http://google.com/search?q=" + query+ "%20site:" + "http://blog.javachen.com");
 	});
 
-## 其他
+# 其他
 
 - 添加404页面
 - 使用多说评论
 - 修改博客主体为宽屏模式
 
-## TODO
+# TODO
 
 - 添加语法高亮，参考[Jekyll - Syntax highlighting](http://truongtx.me/2012/12/28/jekyll-bootstrap-syntax-highlighting/)

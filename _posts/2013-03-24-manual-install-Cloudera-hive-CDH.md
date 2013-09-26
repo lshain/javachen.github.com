@@ -9,13 +9,13 @@ description: 主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境
 
 本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
 
-### 安装hive
+# 安装hive
 hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。
 
-####  上传文件
+##  上传文件
 上传`hive-0.10.0-cdh4.2.0.tar`到desktop1的`/opt`，并解压缩
 
-#### 安装postgres
+## 安装postgres
 * 创建数据库
 
 这里创建数据库metastore并创建hiveuser用户，其密码为redhat。
@@ -54,7 +54,7 @@ su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postg
 
 * 拷贝postgres的jdbc驱动到`/opt/hive-0.10.0-cdh4.2.0/lib`
 
-####  修改配置文件
+##  修改配置文件
 * hive-site.xml 
 注意修改下面配置文件中postgres数据库的密码，注意配置`hive.aux.jars.path`，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。
 
@@ -154,7 +154,7 @@ hive-site.xml文件内容如下：
 在`hive-site.xml`中配置`hive.aux.jars.path`,在环境变量中配置hadoop、mapreduce的环境变量
 
 
-### 异常说明
+# 异常说明
 * 异常1：
 
 	FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
@@ -189,6 +189,6 @@ hive-site.xml文件内容如下：
 
 原因：classpath没有配置正确，检查环境变量以及yarn的classpath
 
-### 参考文章
+# 参考文章
 * [Hive安装与配置](http://kicklinux.com/hive-deploy/)
 * [Hive Installation](https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation)

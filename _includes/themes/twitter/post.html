@@ -1,7 +1,7 @@
 {% if page.title %}
 <div class="page-header">
-  	<h2>{{ page.title }} {% if page.tagline %} <small>{{ page.tagline }}</small> {% endif %}</h2>
-	<div class="c9">
+  	<h1>{{ page.title }} {% if page.tagline %} <small>{{ page.tagline }}</small> {% endif %}</h1>
+	<div class="info">
 		Categories：{%for cg in page.categories%}<a href="/categories.html#{{cg}}-ref">{{cg}}</a>{%if forloop.index < forloop.length %},{%endif%}{%endfor%}
 		| Tags：{%for cg in page.tags%}<a href="/tags.html#{{cg}}-ref">{{cg}}</a>{%if forloop.index < forloop.length %},{%endif%}{%endfor%}
 		| Time：<time date="{{ page.date|date: '%Y-%m-%d' }}">{{ page.date|date: "%Y-%m-%d"}}</time>
@@ -12,21 +12,6 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      {% if page.previous %}
-        <li class="prev"><a href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">&larr; Previous</a></li>
-      {% else %}
-        <li class="prev disabled"><a>&larr; Previous</a></li>
-      {% endif %}
-        <li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">Archive</a></li>
-      {% if page.next %}
-        <li class="next"><a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">Next &rarr;</a></li>
-      {% else %}
-        <li class="next disabled"><a>Next &rarr;</a>
-      {% endif %}
-      </ul>
-    </div>
     
     {{ content }}
 
@@ -84,7 +69,7 @@
   <div class="span3">
   <section>
   {% unless page.tags == empty %}
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     {% assign tags_list = page.tags %}
     {% include JB/tags_list %}
@@ -93,7 +78,7 @@
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    {% for post in site.related_posts limit:10 %}
    <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
@@ -101,7 +86,7 @@
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     {% for rpost in site.posts limit: 20 %}
       <li class="post" >
@@ -112,7 +97,7 @@
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

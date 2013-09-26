@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>安装impala过程 </h2>
-	<div class="c9">
+  	<h1>安装impala过程 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#impala-ref">impala</a>,<a href="/tags.html#cloudera-ref">cloudera</a>
 		| Time：<time date="2013-03-29">2013-03-29</time>
@@ -80,25 +80,14 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH" title="手动安装Cloudera Hive CDH">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum" title="从yum安装Cloudera CDH集群">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
 
-<h3>install</h3>
+<h1>install</h1>
 
 <p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
 
-<h3>安装过程</h3>
+<h1>安装过程</h1>
 
 <p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
 
@@ -118,9 +107,9 @@ impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6
 libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
 </ol>
 
-<h3>配置Impala</h3>
+<h1>配置Impala</h1>
 
-<h4>查看安装路径</h4>
+<h2>查看安装路径</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
 /var/run/impala
 /var/lib/alternatives/impala
@@ -130,7 +119,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 /etc/default/impala
 /etc/impala
 </code></pre></div>
-<h4>添加配置文件</h4>
+<h2>添加配置文件</h2>
 
 <p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
 
@@ -169,12 +158,12 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 [root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
 [root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
 </code></pre></div>
-<h4>hadoop中添加native包</h4>
+<h2>hadoop中添加native包</h2>
 
 <p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
 </code></pre></div>
-<h4>创建socket path</h4>
+<h2>创建socket path</h2>
 
 <p>在每个节点上创建/var/run/hadoop-hdfs:</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
@@ -187,7 +176,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 <p>拷贝postgres jdbc jar：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
 </code></pre></div>
-<h3>启动服务</h3>
+<h1>启动服务</h1>
 
 <ol>
 <li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
@@ -208,7 +197,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 
 <p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
 
-<h3>使用shell</h3>
+<h1>使用shell</h1>
 
 <p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
@@ -217,7 +206,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 [desktop3:21000] &gt;connect desktop4:21000
 [desktop4:21000] &gt;refresh
 </code></pre></div>
-<h3>注意：</h3>
+<h1>注意：</h1>
 
 <ol>
 <li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
@@ -226,7 +215,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 
 <p>可能是已经启动了statestored进程</p>
 
-<h3>参考文章</h3>
+<h1>参考文章</h1>
 
 <ul>
 <li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
@@ -285,7 +274,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -308,7 +297,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -334,7 +323,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -421,7 +410,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>从yum安装Cloudera CDH集群 </h2>
-	<div class="c9">
+  	<h1>从yum安装Cloudera CDH集群 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#impala-ref">impala</a>,<a href="/tags.html#cloudera-ref">cloudera</a>
 		| Time：<time date="2013-04-06">2013-04-06</time>
@@ -80,21 +80,10 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/03/29/install-impala" title="安装impala过程">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output" title="kettle中添加一个参数字段到输出">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
 
-<h2>0.环境准备</h2>
+<h1>0.环境准备</h1>
 
 <p>1.设置hosts
 临时设置hostname，以node1为例</p>
@@ -129,7 +118,7 @@ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 <p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">server $LOCAL_SERVER_IP OR HOSTNAME
 </code></pre></div>
-<h2>1. 安装jdk</h2>
+<h1>1. 安装jdk</h1>
 
 <p>检查jdk版本</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
@@ -168,20 +157,20 @@ Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vi /etc/sudoers
 Defaults env_keep+=JAVA_HOME
 </code></pre></div>
-<h2>2. 设置yum源</h2>
+<h1>2. 设置yum源</h1>
 
 <p>从<a href="http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz">这里</a> 下载压缩包解压并设置本地或ftp yum源，可以参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></p>
 
-<h2>3. 安装HDFS</h2>
+<h1>3. 安装HDFS</h1>
 
-<h3>在NameNode节点yum安装</h3>
+<h2>在NameNode节点yum安装</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
 yum install hadoop-hdfs-namenode
 yum install hadoop-hdfs-secondarynamenode
 yum install hadoop-yarn-resourcemanager
 yum install hadoop-mapreduce-historyserver
 </code></pre></div>
-<h3>在DataNode节点yum安装</h3>
+<h2>在DataNode节点yum安装</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
 yum install hadoop-hdfs-datanode
 yum install hadoop-yarn-nodemanager
@@ -190,16 +179,16 @@ yum install zookeeper-server
 yum install hadoop-httpfs
 yum install hadoop-debuginfo
 </code></pre></div>
-<h2>4. 配置hadoop</h2>
+<h1>4. 配置hadoop</h1>
 
-<h3>自定义hadoop配置文件</h3>
+<h2>自定义hadoop配置文件</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
 sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 </code></pre></div>
 <p>hadoop默认使用<code>/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code>/etc/hadoop/conf</code>会软连接到<code>/etc/hadoop/conf.my_cluster</code>目录</p>
 
-<h3>修改配置文件</h3>
+<h2>修改配置文件</h2>
 
 <p>进入/etc/hadoop/conf编辑配置文件。</p>
 
@@ -276,11 +265,11 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
 </blockquote>
 
-<h3>配置NameNode HA</h3>
+<h2>配置NameNode HA</h2>
 
 <p>请参考<a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">Introduction to HDFS High Availability</a></p>
 
-<h3>配置Secondary NameNode</h3>
+<h2>配置Secondary NameNode</h2>
 
 <p>在hdfs-site.xml中可以配置以下参数：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">dfs.namenode.checkpoint.check.period
@@ -289,11 +278,11 @@ dfs.namenode.checkpoint.dir
 dfs.namenode.checkpoint.edits.dir
 dfs.namenode.num.checkpoints.retained
 </code></pre></div>
-<h4>多个secondarynamenode的配置</h4>
+<h2>多个secondarynamenode的配置</h2>
 
 <p>设置多个secondarynamenode，请参考<a href="http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/">multi-host-secondarynamenode-configuration</a>.</p>
 
-<h3>文件路径配置清单</h3>
+<h2>文件路径配置清单</h2>
 
 <p>在hadoop中默认的文件路径以及权限要求如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">目录                          所有者       权限      默认路径
@@ -316,11 +305,11 @@ yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
 </code></pre></div>
 <p>在hadoop中<code>dfs.permissions.superusergroup</code>默认为hdfs，我的<code>hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
 
-<h3>配置CDH4组件端口</h3>
+<h2>配置CDH4组件端口</h2>
 
 <p>请参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html">Configuring Ports for CDH4</a></p>
 
-<h3>创建数据目录</h3>
+<h2>创建数据目录</h2>
 
 <p>在namenode节点创建name目录</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/name
@@ -342,28 +331,28 @@ chmod 700 /opt/data/hadoop/dfs/namesecondary
 chown -R yarn:yarn /opt/data/hadoop/yarn/local
 chmod 700 /opt/data/hadoop/yarn/local
 </code></pre></div>
-<h3>同步配置文件到整个集群</h3>
+<h2>同步配置文件到整个集群</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
 </code></pre></div>
-<h3>格式化NameNode</h3>
+<h2>格式化NameNode</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hdfs namenode -format
 </code></pre></div>
-<h3>定期检查datanode状态</h3>
+<h2>定期检查datanode状态</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#!/bin/bash
 if ! jps | grep -q DataNode ; then
  echo ERROR: datanode not up
 fi
 </code></pre></div>
-<h3>在每个节点启动hdfs</h3>
+<h2>在每个节点启动hdfs</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 </code></pre></div>
-<h3>验证测试</h3>
+<h2>验证测试</h2>
 
 <ul>
 <li>打开浏览器访问：http://node1:50070 </li>
 </ul>
 
-<h2>5. 安装YARN</h2>
+<h1>5. 安装YARN</h1>
 
 <p>先在一台机器上配置好，然后在做同步。</p>
 
@@ -474,11 +463,11 @@ fi
     &lt;/property&gt;
     &lt;/configuration&gt;
 </code></pre></div>
-<h3>HDFS创建临时目录</h3>
+<h2>HDFS创建临时目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /tmp
 sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 </code></pre></div>
-<h3>创建日志目录</h3>
+<h2>创建日志目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/history
 sudo -u hdfs hadoop fs -chmod 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
@@ -488,7 +477,7 @@ sudo -u hdfs hadoop fs -chown yarn /user/history/done
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 </code></pre></div>
-<h3>验证hdfs结构是否正确</h3>
+<h2>验证hdfs结构是否正确</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
@@ -498,27 +487,27 @@ drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
 drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 </code></pre></div>
-<h3>启动mapred-historyserver</h3>
+<h2>启动mapred-historyserver</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
 </code></pre></div>
-<h3>在每个节点启动YARN</h3>
+<h2>在每个节点启动YARN</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 </code></pre></div>
-<h3>验证</h3>
+<h2>验证</h2>
 
 <ul>
 <li>打开浏览器：http://node1:8088/</li>
 <li>运行测试程序</li>
 </ul>
 
-<h3>为每个MapReduce用户创建主目录</h3>
+<h2>为每个MapReduce用户创建主目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
 </code></pre></div>
-<h3>Set HADOOP<em>MAPRED</em>HOME</h3>
+<h2>Set HADOOP<em>MAPRED</em>HOME</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 </code></pre></div>
-<h3>设置开机启动</h3>
+<h2>设置开机启动</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo chkconfig hadoop-hdfs-namenode on
 sudo chkconfig hadoop-hdfs-datanode on
 sudo chkconfig hadoop-hdfs-secondarynamenode on
@@ -532,7 +521,7 @@ sudo chkconfig hive-server2 on
 sudo chkconfig zookeeper-server on
 sudo chkconfig hadoop-httpfs on
 </code></pre></div>
-<h2>6. 安装Zookeeper</h2>
+<h1>6. 安装Zookeeper</h1>
 
 <p>安装zookeeper</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install zookeeper*
@@ -562,19 +551,19 @@ server.3=node3:2888:3888
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service zookeeper-server init --myid=n
 service zookeeper-server restart
 </code></pre></div>
-<h2>7. 安装HBase</h2>
+<h1>7. 安装HBase</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install hbase*
 </code></pre></div>
-<h3>在hdfs中创建/hbase</h3>
+<h2>在hdfs中创建/hbase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /hbase
 sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 </code></pre></div>
-<h3>设置crontab：</h3>
+<h2>设置crontab：</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
 * 10 * * * cd /var/log/hbase/; rm -rf\
 `ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
 </code></pre></div>
-<h3>修改配置文件并同步到其他机器：</h3>
+<h2>修改配置文件并同步到其他机器：</h2>
 
 <p>修改hbase-site.xml文件：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
@@ -636,18 +625,18 @@ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
   &lt;/property&gt;
 &lt;/configuration&gt;
 </code></pre></div>
-<h3>修改regionserver文件</h3>
+<h2>修改regionserver文件</h2>
 
-<h3>启动HBase</h3>
+<h2>启动HBase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service hbase-master start
 service hbase-regionserver start
 </code></pre></div>
-<h2>8. 安装hive</h2>
+<h1>8. 安装hive</h1>
 
-<h3>在一个节点上安装hive</h3>
+<h2>在一个节点上安装hive</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install hive*
 </code></pre></div>
-<h3>安装postgresql</h3>
+<h2>安装postgresql</h2>
 
 <p>手动安装、配置postgresql数据库，请参考<a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2/">手动安装Cloudera Hive CDH4.2</a></p>
 
@@ -688,7 +677,7 @@ SET
 SET
 ..
 </code></pre></div>
-<h3>修改配置文件</h3>
+<h2>修改配置文件</h2>
 
 <p>修改hive-site.xml文件：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
@@ -766,7 +755,7 @@ SET
 &lt;/property&gt;
 &lt;/configuration&gt;
 </code></pre></div>
-<h3>在hdfs中创建hive数据仓库目录</h3>
+<h2>在hdfs中创建hive数据仓库目录</h2>
 
 <ul>
 <li>hive的数据仓库在hdfs中默认为<code>/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
@@ -779,12 +768,12 @@ SET
 sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
 sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 </code></pre></div>
-<h3>启动hive-server和metastore</h3>
+<h2>启动hive-server和metastore</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service hive-metastore start
 service hive-server start
 service hive-server2 start
 </code></pre></div>
-<h3>访问beeline</h3>
+<h2>访问beeline</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ /usr/lib/hive/bin/beeline
 beeline&gt; !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
 0: jdbc:hive2://localhost:10000&gt; SHOW TABLES;
@@ -798,7 +787,7 @@ No rows selected (0.238 seconds)
 </code></pre></div>
 <p>其 sql语法参考<a href="http://sqlline.sourceforge.net/">SQLLine CLI</a>，在这里，你不能使用HiveServer的sql语句</p>
 
-<h3>与hbase集成</h3>
+<h2>与hbase集成</h2>
 
 <p>需要在hive里添加以下jar包：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ADD JAR /usr/lib/hive/lib/zookeeper.jar;
@@ -806,9 +795,9 @@ ADD JAR /usr/lib/hive/lib/hbase.jar;
 ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
 ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 </code></pre></div>
-<h2>9. 其他</h2>
+<h1>9. 其他</h1>
 
-<h3>安装Snappy</h3>
+<h2>安装Snappy</h2>
 
 <p>cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。</p>
 
@@ -818,14 +807,14 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 <p>使snappy对hadoop可用</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 </code></pre></div>
-<h3>安装LZO</h3>
+<h2>安装LZO</h2>
 
 <p>cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。</p>
 
 <p>在每个节点安装：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 </code></pre></div>
-<h2>10. 参考文章</h2>
+<h1>10. 参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
@@ -887,7 +876,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -910,7 +899,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -936,7 +925,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -1023,7 +1012,7 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

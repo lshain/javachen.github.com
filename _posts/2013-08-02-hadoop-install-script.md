@@ -13,7 +13,7 @@ description: 自动化安装hadoop的shell脚本
 
 <!-- more -->
 
-## hadoop安装文章
+# hadoop安装文章
 博客中所有关于安装hadoop的文章列出如下：
 
 1. [【笔记】Hadoop安装部署](http://blog.javachen.com/hadoop/2013/03/08/note-about-installing-hadoop-cluster/)
@@ -31,14 +31,14 @@ description: 自动化安装hadoop的shell脚本
 7. [通过Cloudera Manager安装CDH](http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager/)
 
 
-## hadoop-install
+# hadoop-install
 [hadoop-install](https://github.com/javachen/hadoop-install)上脚本，all-in-one-install.sh是在一个节点上安装hdfs、hive、yarn、zookeeper和hbase，编写该脚本是为了在本机（fedora19系统）上调试mapreduce、hive和hbase；cluster-install.sh是在多个节点上安装hadoop集群，同样目前完成了hdfs、hive、yarn、zookeeper和hbase的自动安装。
 
 
-## 脚本片段
+# 脚本片段
 IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，供大家学习。
 
-### 检测操作系统版本
+## 检测操作系统版本
 
     ( grep -i "CentOS" /etc/issue > /dev/null ) && OS_DISTRIBUTOR=centos
     ( grep -i "Red[[:blank:]]*Hat[[:blank:]]*Enterprise[[:blank:]]*Linux" /etc/issue > /dev/null ) && OS_DISTRIBUTOR=rhel
@@ -51,12 +51,12 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
     minor_revision=`grep -oP '\d+' /etc/issue | sed -n "2,2p"`
     OS_RELEASE="$major_revision.$minor_revision"
 
-### 生成ssh公要
+## 生成ssh公要
 
 	yes|ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ""
 	[ ! -d /root/.ssh ] && ( mkdir /root/.ssh ) && ( chmod 700 /root/.ssh )
 
-### ssh设置无密码登陆
+## ssh设置无密码登陆
 
 	set timeout 20
 
@@ -81,7 +81,7 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	expect eof
 	#interact
 
-### 配置JAVA_HOME
+## 配置JAVA_HOME
 
 	# set JAVA_HOME and PATH
 	if [ -f /root/.bashrc ] ; then
@@ -95,11 +95,11 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
 	source /root/.bashrc
 
-### 格式化集群
+## 格式化集群
 
 	su -s /bin/bash hdfs -c 'yes Y | hadoop namenode -format >> /tmp/format.log 2>&1'
 
-### 创建hadoop目录
+## 创建hadoop目录
 
 	su -s /bin/bash hdfs -c "hadoop fs -chmod a+rw /"
 	while read dir user group perm
@@ -119,7 +119,7 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	/user/hive hive hadoop 777
 	EOF
 
-### hive中安装并初始化postgresql
+## hive中安装并初始化postgresql
 
 	yum install postgresql-server postgresql-jdbc -y >/dev/null
 	chkconfig postgresql on
@@ -144,7 +144,7 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	su -c "cd ; /usr/bin/psql -U hiveuser -d metastore -f /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql" postgres
 	su -c "cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data" postgres
 
-## 总结
+# 总结
 
 更多脚本，请关注github：[hadoop-install](https://github.com/javachen/hadoop-install)，你可以下载、使用并修改其中代码！
 

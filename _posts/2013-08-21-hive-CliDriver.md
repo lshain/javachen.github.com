@@ -7,7 +7,7 @@ keywords: hadoop, hive
 description: 分析hive cli入口类逻辑
 ---
 
-## 启动脚本
+# 启动脚本
 从shell脚本`/usr/lib/hive/bin/ext/cli.sh`可以看到hive cli的入口类为`org.apache.hadoop.hive.cli.CliDriver`
 
 	cli () {
@@ -21,7 +21,7 @@ description: 分析hive cli入口类逻辑
 
 <!-- more -->
 
-## 入口类
+# 入口类
 java中的类如果有main方法就能运行，故直接查找`org.apache.hadoop.hive.cli.CliDriver`中的main方法即可。
 
 	public static void main(String[] args) throws Exception {
@@ -57,7 +57,7 @@ java中的类如果有main方法就能运行，故直接查找`org.apache.hadoop
 - 处理hive命令。
 
 
-### 处理hive命令过程
+## 处理hive命令过程
 如果输入的是quit或者exit,则程序退出。
 
 如果命令开头是source，则会读取source 后面文件内容，然后执行该文件内容。通过这种方式，你可以在hive命令行模式运行一个文件中的hive命令。
@@ -96,13 +96,13 @@ shell_cmd的内容大概如下：
 
 `org.apache.hadoop.hive.ql.Driver`类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。
 
-## 总结
+# 总结
 
 作为尝试，第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑，如下图。以后还需要加强画图和表达能力。
 
 ![hive-cli-clidriver](/files/2013/hive-cli-clidriver.jpg)
 
-## 参考文章
+# 参考文章
 
 - [hive 初始化运行流程](http://www.cnblogs.com/end/archive/2012/12/19/2825320.html)
 

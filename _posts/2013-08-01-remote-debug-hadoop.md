@@ -11,7 +11,7 @@ description: 记录如何远程调试MapReduce、Hive和HBase
 
 为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。
 
-## JPDA 简介
+# JPDA 简介
 
 Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。
 
@@ -19,7 +19,7 @@ Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个�
 
 更详细的介绍，您可以参考[使用 Eclipse 远程调试 Java 应用程序](http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/)
 
-## JDWP 设置
+# JDWP 设置
 
 JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：
 
@@ -41,7 +41,7 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 	y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
  
 
-## 配置hbase远程调试
+# 配置hbase远程调试
 
 打开`/etc/hbase/conf/hbase-env.sh`，找到以下内容：
 
@@ -54,14 +54,14 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 如果想远程调式hbase-master进程，请去掉对`HBASE_MASTER_OPTS`的注释，其他依次类推。注意，我这里使用的是cdh-4.3.0中的hbase。
 
 ---
-### 注意（20130817更新）：
+## 注意（20130817更新）：
 如果启动hbase时提示` check your java command line for duplicate jdwp options`，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。
 
 例如，如果你想调试regionserver，请把下面代码加到`elif [ "$COMMAND" = "regionserver" ] ; then`中去：
 
 	export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071"
 
-## 配置hive远程调试
+# 配置hive远程调试
 
 停止hive-server2进程，然后以下面命令启动hive-server2
 
@@ -78,7 +78,7 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 	# Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
 	HADOOP_OPTS="$HADOOP_OPTS $HADOOP_CLIENT_OPTS"
 
-## 配置yarn远程调试
+# 配置yarn远程调试
 
 请在以下代码添加调试参数：
 
@@ -128,7 +128,7 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 注意：端口不要冲突。
 
 
-## 配置mapreduce远程调试
+# 配置mapreduce远程调试
 如果想要调试Map 或Reduce Task，则修改`bin/hadoop`已经没用了，因为`bin/hadoop`中没有Map Task的启动参数。
 
 此时需要修改mapred-site.xml
@@ -149,7 +149,7 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 		<value>0</value>
 	</property>
 
-## 在Eclipse中使用方法：
+# 在Eclipse中使用方法：
 
 1. 打开eclipse，找到`Debug Configurations...`，添加一个Remout Java Application:
 
@@ -160,7 +160,7 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 4. 在hive代码中设置一个断点，如`ExecDriver.java`的`execute`方法中设置断点，然后再运行jdbc测试类。
 
 
-## 参考文章
+# 参考文章
 
 1. [在Eclipse中远程调试Hadoop](http://zhangjie.me/eclipse-debug-hadoop/)
 2. [hive远程调试](http://long-xie.iteye.com/blog/1779072)

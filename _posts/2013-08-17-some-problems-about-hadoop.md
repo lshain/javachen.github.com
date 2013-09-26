@@ -9,7 +9,7 @@ description: 使用hadoop中遇到的一些问题
 
 本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。
 
-### 安装hadoop过程中需要注意以下几点：
+# 安装hadoop过程中需要注意以下几点：
 
 1. 每个节点配置hosts
 2. 每个节点配置时钟同步
@@ -20,7 +20,7 @@ description: 使用hadoop中遇到的一些问题
 
 <!-- more -->
 
-### 使用intel的hadoop发行版IDH过程遇到问题：
+# 使用intel的hadoop发行版IDH过程遇到问题：
 
 1、 IDH集群中需要配置管理节点到集群各节点的无密码登录，公钥文件存放路径为`/etc/intelcloud`目录下，文件名称为`idh-id_rsa`。
 
@@ -36,9 +36,9 @@ description: 使用hadoop中遇到的一些问题
 
 ---
 
-### 使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：
+# 使用CDH4.3.0的hadoop（通过rpm安装）过程中发现如下问题：
 
-#### 说明：以下问题不局限于CDH的hadoop版本。
+## 说明：以下问题不局限于CDH的hadoop版本。
 
 1、 在hive运行过程中会打印如下日志
 
@@ -76,9 +76,6 @@ hive脚本运行顺序：
 在`/etc/hadoop/conf/hadoop-env.sh`添加如下代码：
 
 	export HADOOP_JOB_HISTORYSERVER_HEAPSIZE=256
-
-
-
 
 
 

@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>【笔记】Hadoop安装部署 </h2>
-	<div class="c9">
+  	<h1>【笔记】Hadoop安装部署 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#cdh-ref">cdh</a>
 		| Time：<time date="2013-03-08">2013-03-08</time>
@@ -80,23 +80,12 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/work/2013/02/20/summary-of-the-work-in-2012" title="2012年度总结">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH" title="手动安装Cloudera Hadoop CDH">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h3>安装虚拟机</h3>
+    <h1>安装虚拟机</h1>
 
 <p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
 
-<h3>配置网络</h3>
+<h1>配置网络</h1>
 
 <p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0</p>
 
@@ -120,7 +109,7 @@ start_udev
 rhel-june-1: 192.168.56.101
 rhel-june-2: 192.168.56.102
 </code></pre></div>
-<h3>机群规划</h3>
+<h1>机群规划</h1>
 
 <p>版本：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop:1.1.1
@@ -132,13 +121,13 @@ NameSecondary:192.168.56.100
 DataNode:192.168.56.101
 DataNode:192.168.56.102
 </code></pre></div>
-<h3>安装过程</h3>
+<h1>安装过程</h1>
 
 <p>a.解压缩到/opt</p>
 
 <p>b.设置配置文件：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml
-hdfs-site.sml    
+hdfs-site.sml
 mapred-site.xml
 </code></pre></div>
 <p>c.设置master、slaves</p>
@@ -161,7 +150,7 @@ export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
 <p>h.查看节点进程</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">jps
 </code></pre></div>
-<h3>查看状态</h3>
+<h1>查看状态</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">http://rhel-june:50030/
 http://rhel-june:50070/
 </code></pre></div>
@@ -216,7 +205,7 @@ http://rhel-june:50070/
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -237,7 +226,7 @@ http://rhel-june:50070/
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -263,7 +252,7 @@ http://rhel-june:50070/
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -350,7 +339,7 @@ http://rhel-june:50070/
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

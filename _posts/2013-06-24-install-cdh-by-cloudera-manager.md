@@ -7,7 +7,7 @@ keywords: hadoop, cdh, cloudera manager
 description: 通过Cloudera Manager安装CDH
 ---
 
-## 1 方法一
+# 1 方法一
 你可以从[https://ccp.cloudera.com/display/SUPPORT/Downloads](https://ccp.cloudera.com/display/SUPPORT/Downloads)下载`cloudera-manager-installer.bin`，然后修改执行权限并执行该脚本。
 
 该脚本中配置的rhel6的yum源为：[http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/](http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/)，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。
@@ -16,11 +16,11 @@ description: 通过Cloudera Manager安装CDH
 
 <!-- more -->
 
-## 2 方法二
+# 2 方法二
 
 这里还有一种方法，就是手动下载`Cloudera Manager`的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使`archive.cloudera.com`域名映射到本地ip。
 
-## 3 方法三
+# 3 方法三
 出于好奇，想破解`cloudera-manager-installer.bin`，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：
 
 	[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
@@ -54,7 +54,7 @@ description: 通过Cloudera Manager安装CDH
 
 通过浏览器访问`http://IP:7180`登录cloudera manager界面：用户名/密码：`admin/admin`,按照界面提示完成hadoop集群安装。
 
-## 4 排错
+# 4 排错
 在执行下面一个命令时候可能会出现如下异常
 
 	/etc/init.d/cloudera-scm-server-db start

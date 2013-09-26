@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>手动安装Cloudera Hive CDH </h2>
-	<div class="c9">
+  	<h1>手动安装Cloudera Hive CDH </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#cdh-ref">cdh</a>,<a href="/tags.html#hive-ref">hive</a>
 		| Time：<time date="2013-03-24">2013-03-24</time>
@@ -80,29 +80,18 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH" title="手动安装Cloudera HBase CDH">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/03/29/install-impala" title="安装impala过程">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。</p>
 
-<h3>安装hive</h3>
+<h1>安装hive</h1>
 
 <p>hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。</p>
 
-<h4>上传文件</h4>
+<h2>上传文件</h2>
 
 <p>上传<code>hive-0.10.0-cdh4.2.0.tar</code>到desktop1的<code>/opt</code>，并解压缩</p>
 
-<h4>安装postgres</h4>
+<h2>安装postgres</h2>
 
 <ul>
 <li>创建数据库</li>
@@ -139,7 +128,7 @@
 <li>拷贝postgres的jdbc驱动到<code>/opt/hive-0.10.0-cdh4.2.0/lib</code></li>
 </ul>
 
-<h4>修改配置文件</h4>
+<h2>修改配置文件</h2>
 
 <ul>
 <li>hive-site.xml 
@@ -244,7 +233,7 @@
 在<code>hive-site.xml</code>中配置<code>hive.aux.jars.path</code>,在环境变量中配置hadoop、mapreduce的环境变量</li>
 </ul>
 
-<h3>异常说明</h3>
+<h1>异常说明</h1>
 
 <ul>
 <li><p>异常1：</p>
@@ -290,7 +279,7 @@ select count(*) from hive_userinfo
 
 <p>原因：classpath没有配置正确，检查环境变量以及yarn的classpath</p>
 
-<h3>参考文章</h3>
+<h1>参考文章</h1>
 
 <ul>
 <li><a href="http://kicklinux.com/hive-deploy/">Hive安装与配置</a></li>
@@ -348,7 +337,7 @@ select count(*) from hive_userinfo
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -371,7 +360,7 @@ select count(*) from hive_userinfo
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -397,7 +386,7 @@ select count(*) from hive_userinfo
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -484,7 +473,7 @@ select count(*) from hive_userinfo
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

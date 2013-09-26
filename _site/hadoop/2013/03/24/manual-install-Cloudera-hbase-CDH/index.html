@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>手动安装Cloudera HBase CDH </h2>
-	<div class="c9">
+  	<h1>手动安装Cloudera HBase CDH </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hbase-ref">hbase</a>,<a href="/tags.html#cdh-ref">cdh</a>
 		| Time：<time date="2013-03-24">2013-03-24</time>
@@ -80,21 +80,10 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH" title="手动安装Cloudera Hadoop CDH">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH" title="手动安装Cloudera Hive CDH">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。</p>
 
-<h3>安装HBase</h3>
+<h1>安装HBase</h1>
 
 <p>HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。</p>
 
@@ -127,11 +116,13 @@ desktop6
 desktop7
 desktop8
 </code></pre></div>
-<p>环境变量：参考hadoop中环境变量的设置</p>
+<h1>环境变量</h1>
+
+<p>参考hadoop中环境变量的设置</p>
 
 <p>然后，同步文件到其他4台机器上，可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p>
 
-<p>启动脚本：</p>
+<h1>启动脚本</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#start-hbase.sh 
 </code></pre></div>
 
@@ -185,7 +176,7 @@ desktop8
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -206,7 +197,7 @@ desktop8
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -232,7 +223,7 @@ desktop8
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -319,7 +310,7 @@ desktop8
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

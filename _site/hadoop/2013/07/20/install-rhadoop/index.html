@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>安装RHadoop </h2>
-	<div class="c9">
+  	<h1>安装RHadoop </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#R-ref">R</a>,<a href="/tags.html#rhadoop-ref">rhadoop</a>
 		| Time：<time date="2013-07-20">2013-07-20</time>
@@ -80,21 +80,10 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager" title="通过Cloudera Manager安装CDH">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/08/01/remote-debug-hadoop" title="远程调试hadoop各组件">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
-    <h2>1. R Language Install</h2>
+    <h1>1. R Language Install</h1>
 
-<h3>安装相关依赖</h3>
+<h2>安装相关依赖</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
 yum install libRmath-*
 rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
@@ -102,14 +91,14 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 </code></pre></div>
 <!-- more -->
 
-<h3>编译安装：R-3.0.1</h3>
+<h2>编译安装：R-3.0.1</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf R-3.0.1 
 ./configure
 make 
 make install #R运行
 export HADOOP_CMD=/usr/bin/hadoop
 </code></pre></div>
-<h3>排错</h3>
+<h2>排错</h2>
 
 <p>1、错误1</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">error: --with-readline=yes (default) 
@@ -133,7 +122,7 @@ export HADOOP_CMD=/usr/bin/hadoop
 </code></pre></div>
 <p>安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）</p>
 
-<h3>验证是否安装成功</h3>
+<h2>验证是否安装成功</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 bin]# R
 R version 3.0.1 (2013-05-16) -- &quot;Good Sport&quot;
 Copyright (C) 2013 The R Foundation for Statistical Computing
@@ -151,9 +140,9 @@ R是个合作计划，有许多人为之做出了贡献.
 用&#39;help.start()&#39;通过HTML浏览器来看帮助文件。
 用&#39;q()&#39;退出R.
 </code></pre></div>
-<h2>2. 安装Rhadoop</h2>
+<h1>2. 安装Rhadoop</h1>
 
-<h3>安装rhdfs，rmr2</h3>
+<h2>安装rhdfs，rmr2</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">cd Rhadoop/
 R CMD javareconf
 R CMD INSTALL &#39;plyr_1.8.tar.gz&#39;
@@ -172,7 +161,7 @@ R CMD INSTALL &#39;rmr2_2.2.0.tar.gz&#39;
 </code></pre></div>
 <p>R library(rhdfs)检查是否能正常工作</p>
 
-<h4>验证测试</h4>
+<h2>验证测试</h2>
 
 <p>Rmr测试命令： </p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&gt; train.mr&lt;-mapreduce( + train.hdfs, + map = function(k, v) { + keyval(k,v$item) + } + ,reduce=function(k,v){ + m&lt;-merge(v,v) + keyval(m$x,m$y) + } + )
@@ -195,13 +184,13 @@ INFO streaming.StreamJob: killJob... Streaming Command Failed! Error in mr(map =
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#ln -s /usr/loca/bin/R  /usr/bin
 #ln -s /usr/local/bin/Rscript  /usr/bin
 </code></pre></div>
-<h2>3. 安装rhbase</h2>
+<h1>3. 安装rhbase</h1>
 
-<h3>安装依赖</h3>
+<h2>安装依赖</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#yum install boost*
 #yum install openssl*
 </code></pre></div>
-<h3>安装thrift</h3>
+<h2>安装thrift</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#tar -zxvf thrift-0.9.0.tar.gz
 #mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
 #cd thrift-0.9.0
@@ -220,9 +209,9 @@ src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &quot;(The moc has changed
 <p>则运行下面命令：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
 </code></pre></div>
-<h3>配置PKG<em>CONFIG</em>PATH</h3>
+<h2>配置PKG<em>CONFIG</em>PATH</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
-pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
+pkg-config --cflags thrift    #返回：-I/usr/local/include/thrift为正确
 cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
 cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
 </code></pre></div>
@@ -231,10 +220,10 @@ cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
 </code></pre></div>
 <p>使用jps查看thrift进程</p>
 
-<h3>安装rhbase</h3>
+<h2>安装rhbase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">R CMD INSTALL &#39;rhbase_1.1.1.tar.gz&#39;
 </code></pre></div>
-<h3>验证并测试</h3>
+<h2>验证并测试</h2>
 
 <p>在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop27 hadoop]# R
@@ -266,9 +255,9 @@ Loading required package: reshape2
 &gt; library(rhbase)
 &gt;
 </code></pre></div>
-<h2>4. 装RHive</h2>
+<h1>4. 装RHive</h1>
 
-<h3>环境变量</h3>
+<h2>环境变量</h2>
 
 <p>设置环境变量 <code>vim /etc/profile</code>,末行添加如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_CMD=/usr/bin/hadoop
@@ -278,7 +267,7 @@ export HADOOP_HOME=/usr/lib/hadoop
 export RHIVE_DATA=/hadoop/dfs/rhive/data
 export HIVE_HOME=/usr/lib/hive
 </code></pre></div>
-<h3>安装Rserve：</h3>
+<h2>安装Rserve：</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL &#39;Rserve_1.7-1.tar.gz&#39;
 </code></pre></div>
 <p>在安装Rsever用户下，创建一目录，并创建Rserv.conf文件，写入``remote enable&#39;&#39;保存并退出。</p>
@@ -293,7 +282,7 @@ export HIVE_HOME=/usr/lib/hive
 </code></pre></div>
 <p>显示 Rsrv0103QAP1 则表示连接成功</p>
 
-<h3>安装RHive</h3>
+<h2>安装RHive</h2>
 
 <p>创建数据目录：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#R CMD INSTALL RHive_0.0-7.tar.gz
@@ -365,7 +354,7 @@ rhive.env()
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -388,7 +377,7 @@ rhive.env()
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -414,7 +403,7 @@ rhive.env()
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -501,7 +490,7 @@ rhive.env()
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

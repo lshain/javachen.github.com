@@ -68,8 +68,8 @@
         
 
 <div class="page-header">
-  	<h2>远程调试hadoop各组件 </h2>
-	<div class="c9">
+  	<h1>远程调试hadoop各组件 </h1>
+	<div class="info">
 		Categories：<a href="/categories.html#hadoop-ref">hadoop</a>
 		| Tags：<a href="/tags.html#hadoop-ref">hadoop</a>,<a href="/tags.html#hive-ref">hive</a>,<a href="/tags.html#hbase-ref">hbase</a>,<a href="/tags.html#mapreduce-ref">mapreduce</a>
 		| Time：<time date="2013-08-01">2013-08-01</time>
@@ -80,23 +80,12 @@
 
 <div class="row">
   <div class="span9">
-    <div class="pagination">
-      <ul>
-      
-        <li class="prev"><a href="/hadoop/2013/07/20/install-rhadoop" title="安装RHadoop">&larr; Previous</a></li>
-      
-        <li><a href="/archive.html">Archive</a></li>
-      
-        <li class="next"><a href="/hadoop/2013/08/02/hadoop-install-script" title="hadoop自动化安装shell脚本">Next &rarr;</a></li>
-      
-      </ul>
-    </div>
     
     <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
 
 <p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
 
-<h2>JPDA 简介</h2>
+<h1>JPDA 简介</h1>
 
 <p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
 
@@ -104,7 +93,7 @@
 
 <p>更详细的介绍，您可以参考<a href="http://www.ibm.com/developerworks/cn/opensource/os-eclipse-javadebug/">使用 Eclipse 远程调试 Java 应用程序</a></p>
 
-<h2>JDWP 设置</h2>
+<h1>JDWP 设置</h1>
 
 <p>JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的JVM启动时加载以下参数：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">-Xdebug -Xrunjdwp:transport=dt_socket, address=8000,server=y,suspend=y
@@ -123,7 +112,7 @@ y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试
 suspend=y
 y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
 </code></pre></div>
-<h2>配置hbase远程调试</h2>
+<h1>配置hbase远程调试</h1>
 
 <p>打开<code>/etc/hbase/conf/hbase-env.sh</code>，找到以下内容：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text"># Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
@@ -136,14 +125,14 @@ y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。s
 
 <hr>
 
-<h3>注意（20130817更新）：</h3>
+<h2>注意（20130817更新）：</h2>
 
 <p>如果启动hbase时提示<code>check your java command line for duplicate jdwp options</code>，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。</p>
 
 <p>例如，如果你想调试regionserver，请把下面代码加到<code>elif [ &quot;$COMMAND&quot; = &quot;regionserver&quot; ] ; then</code>中去：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HBASE_REGIONSERVER_OPTS=&quot;$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071&quot;
 </code></pre></div>
-<h2>配置hive远程调试</h2>
+<h1>配置hive远程调试</h1>
 
 <p>停止hive-server2进程，然后以下面命令启动hive-server2</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver --debug
@@ -157,7 +146,7 @@ y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。s
 <div class="highlight"><pre><code class="text language-text" data-lang="text"># Always respect HADOOP_OPTS and HADOOP_CLIENT_OPTS
 HADOOP_OPTS=&quot;$HADOOP_OPTS $HADOOP_CLIENT_OPTS&quot;
 </code></pre></div>
-<h2>配置yarn远程调试</h2>
+<h1>配置yarn远程调试</h1>
 
 <p>请在以下代码添加调试参数：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">if [ &quot;$COMMAND&quot; = &quot;classpath&quot; ] ; then
@@ -204,7 +193,7 @@ fi
 
 <p>注意：端口不要冲突。</p>
 
-<h2>配置mapreduce远程调试</h2>
+<h1>配置mapreduce远程调试</h1>
 
 <p>如果想要调试Map 或Reduce Task，则修改<code>bin/hadoop</code>已经没用了，因为<code>bin/hadoop</code>中没有Map Task的启动参数。</p>
 
@@ -224,7 +213,7 @@ fi
     &lt;value&gt;0&lt;/value&gt;
 &lt;/property&gt;
 </code></pre></div>
-<h2>在Eclipse中使用方法：</h2>
+<h1>在Eclipse中使用方法：</h1>
 
 <ol>
 <li><p>打开eclipse，找到<code>Debug Configurations...</code>，添加一个Remout Java Application:</p></li>
@@ -233,7 +222,7 @@ fi
 <li><p>在hive代码中设置一个断点，如<code>ExecDriver.java</code>的<code>execute</code>方法中设置断点，然后再运行jdbc测试类。</p></li>
 </ol>
 
-<h2>参考文章</h2>
+<h1>参考文章</h1>
 
 <ol>
 <li><a href="http://zhangjie.me/eclipse-debug-hadoop/">在Eclipse中远程调试Hadoop</a></li>
@@ -292,7 +281,7 @@ fi
   <div class="span3">
   <section>
   
-    <h3>Tags</h3>
+    <h2>Tags</h2>
     <ul class="tag_box">
     
     
@@ -317,7 +306,7 @@ fi
   </section>  
 
   <section>
-  <h3>Related Posts</h3>
+  <h2>Related Posts</h2>
   <ul>
    
    <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
@@ -343,7 +332,7 @@ fi
   </ul>
   </section>  
   <section>
-    <h3>Recent Posts</h3>
+    <h2>Recent Posts</h2>
     <ul id="recent_posts">
     
       <li class="post" >
@@ -430,7 +419,7 @@ fi
   </section>
   
   <section>
-    <h3>Links</h3>
+    <h2>Links</h2>
    	<ul>
 	<li>Java开发
 			<ul>

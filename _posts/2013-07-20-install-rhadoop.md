@@ -7,8 +7,9 @@ keywords: hadoop, rhadoop
 description: 安装RHadoop,RHBase,RHive,RMR
 ---
 
-## 1. R Language Install
-### 安装相关依赖
+# 1. R Language Install
+
+## 安装相关依赖
 
 	yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
 	yum install libRmath-*
@@ -17,7 +18,7 @@ description: 安装RHadoop,RHBase,RHive,RMR
 
 <!-- more -->
 
-### 编译安装：R-3.0.1
+## 编译安装：R-3.0.1
 
 	tar -zxvf R-3.0.1 
 	./configure
@@ -25,7 +26,7 @@ description: 安装RHadoop,RHBase,RHive,RMR
 	make install #R运行
 	export HADOOP_CMD=/usr/bin/hadoop
 
-### 排错
+## 排错
 
 1、错误1
 
@@ -55,7 +56,7 @@ description: 安装RHadoop,RHBase,RHive,RMR
 
 安装g++或build-essential（redhat6.2安装gcc-c++和glibc-headers）
 
-### 验证是否安装成功
+## 验证是否安装成功
 
 	[root@node1 bin]# R
 	R version 3.0.1 (2013-05-16) -- "Good Sport"
@@ -74,9 +75,9 @@ description: 安装RHadoop,RHBase,RHive,RMR
 	用'help.start()'通过HTML浏览器来看帮助文件。
 	用'q()'退出R.
 
-## 2. 安装Rhadoop
+# 2. 安装Rhadoop
 
-### 安装rhdfs，rmr2
+## 安装rhdfs，rmr2
 
 	cd Rhadoop/
 	R CMD javareconf
@@ -96,7 +97,7 @@ description: 安装RHadoop,RHBase,RHive,RMR
 
 R library(rhdfs)检查是否能正常工作
 
-#### 验证测试
+## 验证测试
 
 Rmr测试命令： 
 
@@ -122,13 +123,13 @@ Rmr测试命令：
 	#ln -s /usr/loca/bin/R  /usr/bin
 	#ln -s /usr/local/bin/Rscript  /usr/bin
 
-## 3. 安装rhbase    
-### 安装依赖
+# 3. 安装rhbase    
+## 安装依赖
 	
 	#yum install boost*
 	#yum install openssl*
 
-### 安装thrift ###
+## 安装thrift ##
 
 	#tar -zxvf thrift-0.9.0.tar.gz
 	#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
@@ -152,10 +153,10 @@ Rmr测试命令：
 
 	#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
 
-### 配置PKG_CONFIG_PATH
+## 配置PKG_CONFIG_PATH
 
 	export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
- 	pkg-config --cflags thrift    ##返回：-I/usr/local/include/thrift为正确
+ 	pkg-config --cflags thrift    #返回：-I/usr/local/include/thrift为正确
  	cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
  	cp /usr/local/lib/libthrift-0.9.0.so /usr/lib64/
  
@@ -165,11 +166,11 @@ Rmr测试命令：
 
 使用jps查看thrift进程
  
-### 安装rhbase
+## 安装rhbase
 
 	R CMD INSTALL 'rhbase_1.1.1.tar.gz'
 
-### 验证并测试 
+## 验证并测试 
 
 在R命令行中输入library(rmr2)、library(rhdfs)、library(rhbase)，载入成功即表示安装成功
 
@@ -202,9 +203,9 @@ Rmr测试命令：
 	> library(rhbase)
 	>
 
-## 4. 装RHive
+# 4. 装RHive
 
-### 环境变量
+## 环境变量
 设置环境变量 `vim /etc/profile`,末行添加如下：
 
 	export HADOOP_CMD=/usr/bin/hadoop
@@ -214,7 +215,7 @@ Rmr测试命令：
 	export RHIVE_DATA=/hadoop/dfs/rhive/data
 	export HIVE_HOME=/usr/lib/hive
 
-### 安装Rserve：
+## 安装Rserve：
 
 	#R CMD INSTALL 'Rserve_1.7-1.tar.gz'
 
@@ -233,7 +234,7 @@ Rmr测试命令：
 
 显示 Rsrv0103QAP1 则表示连接成功
 
-### 安装RHive
+## 安装RHive
 创建数据目录：
 
 	#R CMD INSTALL RHive_0.0-7.tar.gz
