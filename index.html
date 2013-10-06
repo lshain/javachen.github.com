@@ -58,13 +58,18 @@ tagline:
    	 <h2>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	<br/>
-	<br/>
-	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
-	<br/><br/>
-	联系博主：javachen.june[a]gmail.com
 	</div>
     </section>
+
+    <section>
+	  {% unless site.categories == empty %}
+	    <h2>Categories</h2>
+	    <ul id="category-list">
+	      {% assign categories_list = site.categories %}
+	      {% include JB/categories_list %}
+	    </ul>
+	  {% endunless %}
+     </section>
 
     <section>
     <h2>Recent Posts</h2>
@@ -102,15 +107,6 @@ tagline:
     </section>
     
     <section>
-	  {% unless site.categories == empty %}
-	    <h2>Categories</h2>
-	    <ul class="tag_box">
-	      {% assign categories_list = site.categories %}
-	      {% include JB/categories_list %}
-	    </ul>
-	  {% endunless %}
-     </section>
-       <section>
     <h2>Links</h2>
    	<ul>
 	<li>Java开发

@@ -41,20 +41,23 @@
         <div class="container">
           <a class="brand" href="/">JavaChen Blog</a>
           <div class="nav-collapse">
-            <ul class="nav">
+	    <ul class="nav">
 
 
               <li><a href="/sitemap.xml">Sitemap</a></li>
-              <li><a href="/categories.html">Categories</a></li>
               <li><a href="/about.html">About</a></li>
               <li><a href="/archive.html">Archive</a></li>
-              <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
-            </ul>
-		<!-- my custom google search -->
-		<form class="navbar-search pull-left" id="search-form">
-		  <input type="text" id="google-search" class="search-query" placeholder="Search">
-		</form>
+	    </ul>
+            <ul class="nav pull-right" data-subscription="rss">
+                 <li>
+			    <!-- my custom google search -->
+			    <form class="pull-right navbar-search" id="search-form">
+				<input type="text" id="google-search" class="search-query" placeholder="Search">
+			    </form>
+		 </li>
+	 	 <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+	    </ul>
           </div>
         </div>
       </div>
@@ -74,76 +77,10 @@
   <div class="span9">
   
   
-  <section id="java20120214this-expression-of-jsf-el">
+  <section id="javascript20110811export-dhtmlxgrid-to-pdf-in-java">
     <article>
       <header>
-      <h2><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#java-ref">java</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#jsf-ref">jsf</a>
-			
-			,
-			
-			
-			<a href="/tags.html#el-ref">el</a>
-			
-			
-		|
-		Time：<time date="2012-02-14">2012-02-14</time>
-		<a href='/java/2012/02/14/this-expression-of-jsf-el#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
-
-<p><strong>EL表达式this扩展</strong>
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
-
-<p>我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式</p>
-
-<p>我们将上述功能处理为“this”表达式。其功能模型为：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
-</div>
-页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
-&lt;!--more--&gt;</p>
-
-<p><strong>动作类和页面的一致性保证</strong>
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
-
-<p><strong>“this”EL表达式算法</strong>
-算法流程如下图：
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
-    <article>
-      <header>
-      <h2><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h2>
+      <h2><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h2>
       <div class="info">
 		Categories：
 			
@@ -153,7 +90,12 @@
 		|
 		Tags：
 			
-			<a href="/tags.html#extjs-ref">extjs</a>
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
 			
 			,
 			
@@ -162,330 +104,185 @@
 			
 			
 		|
-		Time：<time date="2012-01-31">2012-01-31</time>
-		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-08-11">2011-08-11</time>
+		<a href='/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
     <div class="content">
 	  
-	    <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
+	    <p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
+当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
 
-<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
-1.html文件，此处以SASC.search.MtrUse.html为例
-2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
-3.工具类，DomUtils.js
-4.核心js类:SASC.extjs.search.MtrUse.js
-5.java代码</p>
+<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
+需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
 
-<p>详细html和js代码见相关文件，这里先描述思路。</p>
-
-<p><strong>首先</strong>
-通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
-
-<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
-需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
-
-<p><strong>然后</strong></p>
-
-<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
-
-<p><strong>最后</strong>
-相关文件打包见：
-<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
-
-<p><strong>说明</strong>
-如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
-    <article>
-      <header>
-      <h2><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			,
-			
-			
-			<a href="/tags.html#etl-ref">etl</a>
-			
-			
-		|
-		Time：<time date="2012-01-05">2012-01-05</time>
-		<a href='/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。</p>
-
-<p>kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。</p>
-
-<p>这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，<strong>需要有主键和索引方便对比和加快查询速度</strong>。
-先来看看kettle中的一些组件。</p>
-
-<p>下图是kettle中的一个表输出组件。
+<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
 <div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="http://blog.javachen.com/files/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
-</div></p>
-
-<p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
-&lt;!--more--&gt;
-下图是kettle中纬度更新/查询的组件。
-<div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="http://blog.javachen.com/files/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
+<img src="/files/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
 </div>
-该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
-从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
+点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
+<pre lang="java">
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document dom = null;
+try {
+     dom = db.parse(new InputSource(new StringReader(xml)));
+}catch(SAXException se) {
+     se.printStackTrace();
+}catch(IOException ioe) { 
+     ioe.printStackTrace();
+}
+root = dom.getDocumentElement();
+</pre></p>
 
-<p>如果现在想使用kettle实现<strong>异构数据库的数据以及主键和索引的迁移</strong>，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
-<strong>1.</strong>使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
-<strong>2.</strong>针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
-<strong>3.</strong>扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。</p>
+<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
+为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
+<pre lang="java">
+public class PDFXMLParser {
+    Element root;
+    PDFColumn[][] columns;
+    PDFRow[] rows;
+    double[] widths;
+    private Boolean header = false;
+    private Boolean footer = false;
+    private String profile = &quot;gray&quot;;
+    private double[] orientation = null;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
+    SAXReader saxReader = new SAXReader();
 
-<p>方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。</p>
+    Document document = null;
+    try {
+        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+    } catch (DocumentException e) {
+        e.printStackTrace();
+    }
+    root = document.getRootElement();
 
-<p><strong>下面是方案3的具体的实现。</strong></p>
+    if ((root.attributeValue(&quot;header&quot;) != null)
+            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
+        header = true;
+    }
+    String footer_string = root.attributeValue(&quot;footer&quot;);
+    if ((footer_string != null)
+            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
+        footer = true;
+    }
+    String profile_string = root.attributeValue(&quot;profile&quot;);
+    if (profile_string != null) {
+        profile = profile_string;
+    }
 
-<p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
-多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
-    final List databases = spoon.getActiveDatabases();
-    if (databases.size() == 0)
-        return;&lt;/pre&gt;
+    String orientation_string = root.attributeValue(&quot;orientation&quot;);
+    if (orientation_string != null) {
+        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
+            orientation = A4.LANDSCAPE;
+        } else {
+            orientation = A4.PORTRAIT;
+        }
+    } else {
+        orientation = Letter.PORTRAIT;
+    }
+}
 
-    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
-            databases);
-    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
-    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
-            spoon.getRepository());
-    Wizard wizard = new Wizard() {
-        public boolean performFinish() {
-            try {
-                JobMeta jobMeta = ripDBByNo(no, databases,
-                    page3.getJobname(), page3.getRepositoryDirectory(),
-                    page3.getDirectory(), page1.getSourceDatabase(),
-                    page1.getTargetDatabase(), page2.getSelection());
-
-                if (jobMeta == null)
-                    return false;
-
-                if (page3.getRepositoryDirectory() != null) {
-                    spoon.saveToRepository(jobMeta, false);
-                } else {
-                    spoon.saveToFile(jobMeta);
+public PDFColumn[][] getColumnsInfo() {
+    PDFColumn[] colLine = null;
+    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
+    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
+        columns = new PDFColumn[n1.size()][];
+        for (int i = 0; i &amp;lt; n1.size(); i++) {
+            Element cols = (Element) n1.get(i);
+            List n2 = cols.elements(&quot;column&quot;);
+            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
+                colLine = new PDFColumn[n2.size()];
+                for (int j = 0; j &amp;lt; n2.size(); j++) {
+                    Element col_xml = (Element) n2.get(j);
+                    PDFColumn col = new PDFColumn();
+                    col.parse(col_xml);
+                    colLine[j] = col;
                 }
-
-                addJobGraph(jobMeta);
-                return true;
-            } catch (Exception e) {
-                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
-                        &quot;An unexpected error occurred!&quot;, e);
-                return false;
             }
+            columns[i] = colLine;
         }
-
-        public boolean canFinish() {
-            return page3.canFinish();
+    }
+    createWidthsArray();
+    optimizeColumns();
+    return columns;
+}
+    public PDFRow[] getGridContent() {
+    List nodes = root.elements(&quot;row&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        rows = new PDFRow[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            rows[i] = new PDFRow();
+            rows[i].parse((Element) nodes.get(i));
         }
-    };
+    }
+    return rows;
 
-    wizard.addPage(page1);
-    wizard.addPage(page2);
-    wizard.addPage(page3);
+}
 
-    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
-    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
-    wd.setMinimumPageSize(700, 400);
-    wd.updateSize();
-    wd.open();
+   *****
+</code></pre></div>
+<p>}
+</pre></p>
+
+<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
+<pre lang="java">
+public class PDFRow {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
+
+public void parse(Element parent) {
+    List nodes = ((Element) parent).elements(&quot;cell&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        cells = new String[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            cells[i] = ((Element) nodes.get(i)).getTextTrim();
+        }
+    }
+}
+
+public String[] getCells() {
+    return cells;
 }
 </code></pre></div>
-<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
-创建Jobmeta的方法为：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
-    RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
-    sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
- //此处省略若干代码
-}
-</code></pre></div>
-<p>该方法主要逻辑在下面代码内：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
-    public void run(IProgressMonitor monitor)
-     throws InvocationTargetException, InterruptedException {
-       //此处省略若干代码
+<p>}</p>
+
+<p>public class PDFColumn {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
+    colName = parent.getText();
+    String width_string = parent.attributeValue(&quot;width&quot;);
+    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
+        width = Integer.parseInt(width_string);
+    }
+    type = parent.attributeValue(&quot;type&quot;);
+    align = parent.attributeValue(&quot;align&quot;);
+    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
+    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
+        colspan = Integer.parseInt(colspan_string);
+    }
+    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
+    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
+        rowspan= Integer.parseInt(rowspan_string);
     }
 }
 </code></pre></div>
-<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
-    //此处省略若干代码
-}
-</code></pre></div>
-<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
-这部分的代码如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
-        sourceDbInfo, sourceCon, tables[i],
-        targetDbInfo, targetCon, tables[i]);
-if (!Const.isEmpty(pksql)) {
-    location.x += 300;
-    JobEntrySQL jesql = new JobEntrySQL(
-        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
-            + tables[i] + &quot;]&quot;);
-    jesql.setDatabase(targetDbInfo);
-    jesql.setSQL(pksql);
-    jesql.setDescription(BaseMessages.getString(PKG,
-            &quot;Spoon.RipDB.AddPkAndIndex&quot;)
-            + tables[i]
-            + &quot;]&quot;);
-    JobEntryCopy jecsql = new JobEntryCopy();
-    jecsql.setEntry(jesql);
-    jecsql.setLocation(new Point(location.x, location.y));
-    jecsql.setDrawn();
-    jobMeta.addJobEntry(jecsql);
-    // Add the hop too...
-    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
-    jobMeta.addJobHop(jhi);
-    previous = jecsql;
-}
-</code></pre></div>
-<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
-该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
+<p>}
+</pre></p>
 
-<p>最后的效果图如下：
+<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
 <div class="pic">
-<a href="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="http://blog.javachen.com/files/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
+<img src="/files/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
 </div></p>
 
-<div class="infor">说明：
-1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。
-2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的</div>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20120104some-problems-about-migrating-database-datas-with-kettle">
-    <article>
-      <header>
-      <h2><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Time：<time date="2012-01-04">2012-01-04</time>
-		<a href='/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
-
-<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+<h2>结论：</h2>
 
 <ul>
-<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
-<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
-</ul>
-
-<h4>关键字的问题。</h4>
-
-<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
-
-<ul>
-<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
-</ul>
-
-<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
-
-<ul>
-<li>解决办法：字段改名称，去掉#号</li>
-</ul>
-
-<h4>Db2初始化到mysql或是postgres出错</h4>
-
-<ul>
-<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
-<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
-</ul>
-
-<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
-
-<ul>
-<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
-</ul>
-
-<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
-
-<ul>
-<li>原因：pdi程序中没有对主键进行处理</li>
-<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
-</ul>
-
-<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
-
-<ul>
-<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
-<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
-</ul>
-
-<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
-
-<ul>
-<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
-<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
-</ul>
-
-<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
-
-<ul>
-<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
-</ul>
-
-<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
-
-<ul>
-<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
-<li>解决办法：使用最新的pdi程序。</li>
-</ul>
-
-<h4>导数据中途时没有报错，直接软件退出</h4>
-
-<ul>
-<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
-<li>解决办法：修改jvm参数</li>
-</ul>
-
-<h4>初次使用kettle做db2的初始化会报错</h4>
-
-<ul>
-<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
-<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+<li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
+<li>2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。</li>
+<li>3.导出的pdf为多页显示，每页有表头</li>
+<li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
 </ul>
 
 	  
@@ -494,67 +291,10 @@ if (!Const.isEmpty(pksql)) {
   </section>
   
   
-  <section id="pentaho20111207mondrian-and-olap">
+  <section id="javascript20110731custom-dhtmlxgrid-header-menu">
     <article>
       <header>
-      <h2><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#mondrian-ref">mondrian</a>
-			
-			,
-			
-			
-			<a href="/tags.html#olap-ref">olap</a>
-			
-			
-		|
-		Time：<time date="2011-12-07">2011-12-07</time>
-		<a href='/pentaho/2011/12/07/mondrian-and-olap#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
-
-<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
-联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
-
-<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
-
-<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
-
-<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
-
-<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
-
-<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
-
-<p><strong><span style="color: #00ff00;">结论</span></strong>
-我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
-现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
-
-<p><strong><span style="color: #00ff00;">说明</span></strong>
-<div class="note">
-这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="javascript20111125xml-user-interface-language-introuction">
-    <article>
-      <header>
-      <h2><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h2>
+      <h2><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu">自定义dhtmlxGrid表头菜单</a></h2>
       <div class="info">
 		Categories：
 			
@@ -564,69 +304,1147 @@ if (!Const.isEmpty(pksql)) {
 		|
 		Tags：
 			
-			<a href="/tags.html#xml-ref">xml</a>
+			<a href="/tags.html#javascript-ref">javascript</a>
 			
 			,
 			
 			
-			<a href="/tags.html#xul-ref">xul</a>
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
 			
 			
 		|
-		Time：<time date="2011-11-25">2011-11-25</time>
-		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+		Time：<time date="2011-07-31">2011-07-31</time>
+		<a href='/javascript/2011/07/31/custom-dhtmlxgrid-header-menu#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
     </header>
     <div class="content">
 	  
-	    <p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
-XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
-使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+	    <p>dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。
+以下是dhtmlxGrid的表头菜单效果：
+<div class="pic">
+<img class="aligncenter size-medium wp-image-2287" title="dhtmlxgrid-head-menu" src="/files/2011/07/dhtmlxgrid-head-menu.jpg" alt="" width="300" height="174" /></div>
+其功能过于单一，以下是表格右键菜单效果：
+<div class="pic"><img class="aligncenter size-medium wp-image-2288" title="dhtmlxgrid-context-menu" src="/files/2011/07/dhtmlxgrid-context-menu.jpg" alt="" width="300" height="126" /></div>
+如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。
+如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt;
+首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&quot;_&quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
+    return true;
+}
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.renderAsContextMenu();
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
+mygrid.enableAutoWidth(true);
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
+mygrid.enableContextMenu(menu);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
+</code></pre></div>
+<p>上面代码创建了一个menu并将其作为context menu附件到grid上面去，下面为最关键的两行行代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">menu.renderAsContextMenu();
+mygrid.enableContextMenu(menu);
+</code></pre></div>
+<p>上面对于context menu提供的方法太少，这时候可以看看dhtmlxMenu api，看看有没有设置context menu生效位置的方法（指定context menu在哪片区域有效）。在dhtmlxMenu API Methods里没有找到需要的方法，这时候在官网论坛搜搜，也许可以找到点什么。
+在论坛里可以找到一个例子，大致代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type) {
+    var data = mygrid.contextID.split(&quot;_&quot;);
+    //rowId_colInd;
+    mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]);
+    return true;
+}
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
 
-<p><span style="color: #339966;"><strong>XUL元素</strong></span>
-XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
-基层元素：例如视窗、page、对话框、向导<br />
-Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
-排版:例如方框、网格、堆栈、叠<br />
-事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
-数据源:例如template、rule<br />
-其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
-一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
-现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Author,Title&quot;);
+mygrid.setInitWidths(&quot;250,250&quot;);
+mygrid.enableAutoWidth(true);
+mygrid.setColAlign(&quot;left,left&quot;);
+mygrid.setColTypes(&quot;ro,link&quot;);
+mygrid.setColSorting(&quot;str,str&quot;);
+//mygrid.enableContextMenu(menu); //使其失效
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.loadXML(&quot;../common/grid_links.xml&quot;);
 
-<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
-Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
+mygrid.hdr.id = &quot;header_id&quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &amp;lt; header_row.cells.length; i++) {
+   header_row.cells[i].id = &quot;context_zone_&quot; + i;
+}
+menu.addContextZone(&quot;header_id&quot;);
+</code></pre></div>
+<p>上面最关键的代码在最后几行，给dhtmlxGrid表头设置了一个id，然后调用menu的addContextZone()方法指定centext的有效区域。视乎这就是我们所需要的，但是你执行以上代码你会发现onButtonClick方法里mygrid.contextID会报错，原因是mygrid没有contextID属性（在context menu中通过该属性可以获知鼠标焦点在哪一行，但是现在在表头上强加了该menu，所以并不存在该属性了）。
+剩下的问题是需要解决，菜单单击事件了。我们可以在表头的contextmenu事件处罚的时候获取鼠标焦点，并将自定义的菜单在该位置显示，该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != &quot;TABLE&quot;)
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
 
-<p><span style="color: #339966;"><strong>XUL应用</strong></span>
-虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
-Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
+    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
 
-<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
-可以选择 3 种方式来运行 XUL 应用程序：<br />
-1.使用基于 Mozilla 的浏览器进行简单测试<br />
-2.使用XULRunner<br />
-3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
+    if ((grid) &amp;amp;&amp;amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
+            colId = el._cellIndex + 1;//获得表头右键菜单焦点所在列索引
+    }
 
-<p><strong><span style="color: #339966;">总结</span></strong>
-XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {
+                x : ev.pageX,
+                y : ev.pageY
+            };
+        }
+        var d = _isIE &amp;amp;&amp;amp; document.compatMode != &quot;BackCompat&quot; ? 
+                document.documentElement: document.body;
+        return {
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
+        };
+    }
 
-<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&quot;header_id&quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
+</code></pre></div>
+<p>在上面的代码里，我们获得表头右键菜单焦点所在列索引，将其值赋给colId，然后在菜单单击事件的时候添加一新的列并将colId重置：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function onButtonClick(menuitemId, type, e) {
+    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
+    colId = 0;
+    return true;
+}
+</code></pre></div>
+<p>然后，需要禁止掉表格数据区域的菜单显示：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
+    return false;//禁止数据区域菜单
+});
+</code></pre></div>
+<p>最后的最后，最后的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">var mygrid, colId;
+
+function onButtonClick(menuitemId, type, e) {
+    mygrid.insertColumn(colId, &quot;12&quot;, &quot;ed&quot;, 80);
+    colId = 0;
+    return true;
+}
+
+menu = new dhtmlXMenuObject();
+menu.setIconsPath(&quot;../common/images/&quot;);
+menu.renderAsContextMenu();
+menu.attachEvent(&quot;onClick&quot;, onButtonClick);
+menu.loadXML(&quot;../common/_context.xml&quot;);
+menu.attachEvent(&quot;onBeforeContextMenu&quot;, function(zoneId, e) {
+    var hdr = document.getElementById(zoneId)
+    return true;
+});
+
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+//mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.enableContextMenu(menu);
+dhtmlxEvent(mygrid.hdr, &quot;contextmenu&quot;, function(ev) {
+    ev = ev || event;
+    var el = ev.target || ev.srcElement;
+    var zel = el;
+    while (zel.tagName != &quot;TABLE&quot;)
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+
+    el = grid.getFirstParentOfType(el, &quot;TD&quot;)
+
+    if ((grid) &amp;#038;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[el._cellIndex] == &quot;true&quot;))
+                            //获得表头右键菜单焦点所在列索引
+            colId = el._cellIndex + 1;
+    }
+
+    function mouseCoords(ev) {
+        if (ev.pageX || ev.pageY) {
+            return {
+                x : ev.pageX,
+                y : ev.pageY
+            };
+        }
+        var d = _isIE &amp;#038;&amp; document.compatMode != &quot;BackCompat&quot; ? 
+                         document.documentElement: document.body;
+        return {
+            x : ev.clientX + d.scrollLeft - d.clientLeft,
+            y : ev.clientY + d.scrollTop - d.clientTop
+        };
+    }
+
+    var coords = mouseCoords(ev);
+    menu.addContextZone(&quot;header_id&quot;);
+    menu.showContextMenu(coords.x, coords.y);//强制显示
+    return true;
+});
+
+mygrid.attachEvent(&quot;onBeforeContextMenu&quot;, function(rid, cid, e) {
+    return false;//禁止数据区域菜单
+});
+
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+
+mygrid.hdr.id = &quot;header_id&quot;;
+var header_row = mygrid.hdr.rows[1];
+for ( var i = 0; i &lt; header_row.cells.length; i++) {
+    header_row.cells[i].id = &quot;context_zone_&quot; + i;
+}
+</code></pre></div>
+<p>效果图如下;
+<div class="pic">
+<img src="/files/2011/07/dhtmlxgrid-custom-head-menu.jpg" alt="" title="dhtmlxgrid-custom-head-menu" width="300" height="154" class="aligncenter size-medium wp-image-2291" /></div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110724drag-an-item-to-dhtmlxgrid-and-add-a-column">
+    <article>
+      <header>
+      <h2><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-24">2011-07-24</time>
+		<a href='/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
+现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
+如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
+首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
+<pre escaped="true" lang="javascript" line="1">function maf() {
+    return false;
+}
+tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
+
+<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
+
+<p>function s<em>control() {
+    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.<em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this.</em>dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+}
+var sinput = document.getElementById(&#39;sInput&#39;);
+tree.dragger.addDragLanding(sinput, new s_control);
+</pre></p>
+
+<p>为了使tree支持拖拽功能，必须添加以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
+
+<p>为了实现自定义拖拽的输出，添加了以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
+
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.</em>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this._dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+</pre></p>
+
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
+
+<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
+
+<pre escaped="true" lang="javascript" line="1">
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+        targetHtmlObject, e) {
+    var zel = e;
+    while (zel.tagName != "TABLE")
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+    if (!grid._mCol || e.button == 2)
+        return;
+    e = grid.getFirstParentOfType(e, "TD")
+
+    if ((grid) &amp;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
+            insertId = e._cellIndex + 1;
+    }
+
+    mygrid.insertColumn(insertId, "12", "ed", 80);
+}
+</pre>
+
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
+<div class="pic">
+<img class="aligncenter" title="QQ20110724211631" src="/files/2011/07/QQ20110724211631.png" alt="" />
+</div></p>
+
+<p>本例最后的代码：
+<pre escaped="true" lang="javascript" line="1">
+    var mygrid;
+    function maf() {
+        return false;
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
+tree.setSkin(&#39;dhx_skyblue&#39;);
+tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+//tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
+tree.openAllItems(0);
+
+function s_control() {
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+            targetHtmlObject, e) {
+        var zel = e;
+        while (zel.tagName != &quot;TABLE&quot;)
+            zel = zel.parentNode;
+        var grid = zel.grid;
+        if (!grid)
+            return;
+        grid.setActive();
+        if (!grid._mCol || e.button == 2)
+            return;
+        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
+
+        if ((grid) &amp;&amp; (!grid._colInMove)) {
+            grid.resized = null;
+            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
+                insertId = e._cellIndex + 1;
+        }
+
+        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
+    }
+}
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.setColumnHidden(2, true);
+mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
+});
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</code></pre></div>
+<p></pre>
+本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
+
+<h2>参考文章</h2>
 
 <p><li>
-1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
 </li>
-<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
 </li>
-<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<em>Page</a>
-</li>
-<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</em>%E6%95%99%E7%A8%8B/1-2<em>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</em>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
-</li>
-<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
-</li>
-<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
-</li>
-<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
 </li></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20110719dhtmlxgrid-quick-start-guide">
+    <article>
+      <header>
+      <h2><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-19">2011-07-19</time>
+		<a href='/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><span style="color: #ff0000;">说明:</span></p>
+
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+</code></pre></div>
+<h2>Step 1 – 引入文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+    //we&#39;ll write script commands here
+&lt; /script&gt;
+</code></pre></div>
+<h2>Step 2 – 放置gird</h2>
+
+<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+</code></pre></div>
+<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
+ function doInitGrid(){
+ }
+</code></pre></div>
+<p>doInitGrid方法会包括以下代码：</p>
+
+<ul>
+<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
+<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
+<li>使用setHeader 方法定义表头；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
+<li>使用setSkin方法设置皮肤；</li>
+<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
+</ul>
+
+<p>目前，doInitGrid方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
+mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
+grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
+grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
+mygrid.setSkin(&quot;light&quot;); //设置皮肤
+grid.init(); //显示调用初始化方法，必须的
+</code></pre></div>
+<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
+</code></pre></div>
+<p>这样在该页面初始化之后会显示如下：</p>
+
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
+
+<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
+        parent:&quot;a_grid&quot;,
+        image_path:&quot;codebase/imgs&quot;,
+        columns:[
+            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
+            { label:[&quot;Book title&quot;,
+                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
+            { label:[&quot;Author&quot;,
+                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
+            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
+            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
+            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
+            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
+            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
+        ],
+        xml:&quot;data.xml&quot;
+    });
+</code></pre></div>
+<h2>Step 3 – 填充数据</h2>
+
+<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
+
+<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{
+rows:[
+    {
+        id: &quot;a&quot;,
+        data: [Model 1, 100, 399]
+    },
+    {
+    id: &quot;b&quot;,
+        data: [Model 2, 50, 649]
+    },
+    {
+        id: &quot;c&quot;,
+           data: [ Model 3, 70, 499]
+    }
+]
+}
+</code></pre></div>
+<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
+</code></pre></div>
+<p>这时候页面展示如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
+
+<h2>Step 4 – 客户端排序</h2>
+
+<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
+
+<p>该类型值有以下四种：</p>
+
+<ul>
+<li>str – 作为字符串排序</li>
+<li>int - 以Integer值排序 (通常可以是任何数字);</li>
+<li>date – 以日期排序</li>
+<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
+</ul>
+
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
+</code></pre></div>
+<p>这时候单击最后一列表头，结果如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
+
+<h2>Step 5 – 单元格格式化和编辑</h2>
+
+<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
+
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
+</code></pre></div>
+<p>Excells格式化有以下几种：</p>
+
+<ul>
+<li>link：超链接</li>
+<li>img：图片</li>
+<li>price：价格</li>
+<li>dyn：动态行</li>
+</ul>
+
+<p>Excell 复杂编辑器有以下几种：</p>
+
+<ul>
+<li>cp：colorpicker</li>
+<li>calck：允许调用grid.setNumberFormat的计算器</li>
+<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
+<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
+<li>calendar：YUI Calendar</li>
+<li>clist：多选组件</li>
+</ul>
+
+<p>使用其他组件作为单元格编辑器:</p>
+
+<ul>
+<li>grid：使用dhtmlxgrid</li>
+<li>stree ：使用dhtmlxtree</li>
+<li>context：使用dhtmlxmenu</li>
+<li>combo：使用dhtmlxCombo</li>
+</ul>
+
+<p>Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
+
+<p>两个扩展:</p>
+
+<ul>
+<li>sub<em>row</em>ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub<em>row</em>grid – 允许创建一个子表作为一个子行的内容</li>
+</ul>
+
+<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
+
+<h2>Step 6 – 行操作方法</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+</code></pre></div>
+<p>代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
+
+<p>代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行</p>
+
+<h2>Step 7 – 事件</h2>
+
+<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+</code></pre></div>
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Model,Qty,Price&quot;);
+mygrid.setInitWidths(&quot;*,150,150&quot;);
+mygrid.setColAlign(&quot;left,right,right&quot;)
+mygrid.setSkin(&quot;light&quot;);
+mygrid.setColSorting(&quot;str,int,int&quot;);
+mygrid.setColTypes(&quot;ed,ed,price&quot;);
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+&lt; /script&gt;
+&lt; body onload=&quot;doInitGrid()&quot;&gt;
+&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+&lt; /body&gt;
+</code></pre></div>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110707some-resources-about-openstack">
+    <article>
+      <header>
+      <h2><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
+			
+			
+		|
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/some-resources-about-openstack#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><li>
+<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
+</li>
+<li>
+OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
+</li>
+<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
+</li>
+<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
+</li>
+<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
+</li>
+<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
+</li>
+<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
+</li>
+<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
+</li>
+<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
+</li>
+<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
+</li>
+<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
+</li>
+<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
+</li>
+<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
+</li>
+<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
+</li>
+<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
+</li>
+<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
+</li>
+<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</li>
+<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+</li>
+<li>
+安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
+</li>
+<li>
+安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
+</li>
+<li>
+Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
+</li>
+<li>
+RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
+</li>
+<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
+</li></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110707openstack-architecture-overview">
+    <article>
+      <header>
+      <h2><a href="/cloud/2011/07/07/openstack-architecture-overview">OpenStack架构预览</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
+			
+			
+		|
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/openstack-architecture-overview#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><h2>What is OpenStack?</h2>
+OpenStack提供开放源码软件，建立公共和私有云。 OpenStack是一个社区和一个项目，以及开放源码软件，以帮助企业运行的虚拟计算或者存储云。 OpenStackd开源项目由社区维护，包括OpenStack计算（代号为Nova），OpenStack对象存储（代号为SWIFT），并OpenStack镜像服务（代号Glance）的集合。 OpenStack提供了一个操作平台，或工具包，用于编排云。
+<h2>Components of OpenStack</h2>
+OpenStack当前主要有三个组件：计算，存储，镜像。<br />
+OpenStack计算是一个云控制器，用来启动一个用户或一个组的虚拟实例，它也用于配置每个实例或项目中包含多个实例为某个特定项目的联网。<br />
+OpenStack对象存储是一个在具有内置冗余和容错的大容量系统中存储对象的系统。对象存储有各种应用，如备份或存档数据，存储图形或视频（流媒体数据传输到用户的浏览器），储存二级或三级静态数据，发展与数据存储集成新的应用程序，当预测存储容量困难时存储数据，创造弹性和灵活的云存储Web应用程序。<br />
+OpenStack镜像服务是一个查找和虚拟机图像检索系统。它可以配置三种方式：使用OpenStack对象存储来存储图像;使用亚马逊S3直接存储，或使用S3对象存储作为S3访问中间存储。
+<h2>OpenStack Project Architecture</h2>
+OpenStack当前包括三个子项目，三个项目相会独立，可以单独安装。<br />
+• Swift 提供对象存储。这是大致类似于Rackspace云文件（从它派生）或亚马逊S3。<br />
+• Glance 提供OpenStack Nova虚拟机镜像的发现，存储和检索。<br />
+• Nova 根据要求提供虚拟服务。这与Rackspace云服务器或亚马逊EC2类似。<br />
+将来会出现web 接口的子项目以及队列服务的子项目。
+<h2>Cloud Provider Conceptual Architecture</h2>
+构建自己的Iaas云环境并将其提供给用户，需要提供以下几个特性：<br />
+1. 允许应用用户注册云服务、查看使用情况以及账单。<br />
+2. 允许开发商和开发人员创建和存储自定义的镜像。<br />
+3. 允许开发商和开发人员启动、监控、停止虚拟机实例。<br />
+4. 允许操作人员配置和操作云基础设施。<!--more--></p>
+
+<p>上面只列出了基本的4个特性，当然还有其他一些特性，将这些特性列在一起，展示如下：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture.png"><img class="size-medium wp-image-2123 aligncenter" title="Cloud Provider Conceptual Architecture" src="http://blog.javachen.com/files/2011/07/Cloud-Provider-Conceptual-Architecture-300x219.png" alt="" width="300" height="219" /></a></p>
+
+<p>在上面的模型中，假定了与云交互的四种人员（开发商、开发人员、操作员、用户），还定义了三层架构（表现、逻辑、资源）和两个正交领域（集成和管理）。<br />
+表现层，组件与用户交互，接受并显示用户的信息。在这一层，为非开发人员提供了一个web 图形界面，为开发人员提供了API。在这一层，还存在负载均衡、控制台代理、安全、命名服务。<br />
+逻辑层，为我们的云和控制功能提供情报。这层内包括部业务流程（工作流程复杂的任务），调度（确定作业对资源的映射），政策（配额等），镜像注册表（例如镜像的元数据），日志（事件和计量）。<br />
+集成功能，大多数服务提供商已经有一个客户的身份和计费系统。任何云架构将需要与这些系统集成。<br />
+管理层，提供一个API来管理云并提供监控功能。<br />
+资源层，因为这是一个计算云，我们需要实际的计算，网络和存储资源，以提供给客户。这一层提供这些服务，他们可能是服务器，网络交换机，网络附加存储或其他资源。
+<h2>OpenStack Compute Logical Architecture</h2>
+OpenStack 中有两个守护进程：<br />
+接收和调解API调用的WSGI应用程序 （nova-api，glance-api等等）。<br />
+进行编排任务的工人守护进程（nova-compute， nova-network,，nova-schedule）。<br />
+OpenStack中还包含两个组件：消息队列服务和数据库。这两个组件方便异步编排复杂的任务通过消息传递和信息共享。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture.png"><img class="size-medium wp-image-2124 aligncenter" title="OpenStack Compute Logical Architecture" src="http://blog.javachen.com/files/2011/07/OpenStack-Compute-Logical-Architecture-300x220.png" alt="" width="300" height="220" /></a></p>
+这个复杂的，但不是太翔实的图表可以概括为三句话：<br />
+ 终端用户通过nova-api 接口与Openstack 计算交互。<br />
+ OpenStack计算守护进程通过队列的交换信息（行动）和数据库（信息）进行API请求。<br />
+ OpenStack Glance是一个完全独立的基础上设施。
+<strong>各个组件的介绍：</strong></p></p>
+
+<p><code><strong>nova-api</strong></code><code>：</code>是对外的接口。OpenStack 云计算的核心控制器（CloudController定义在trunk/nova/api/ec2/cloud.py）。它提供了一个为所有的API查询（OpenStack API或EC2 API）的端点，引发多数业务流程的活动（如运行一个实例），并实施一些政策（主要是配额检查）。</p>
+
+<p><code><strong>nova-schedule</strong></code><code><strong>：</strong></code>根据当前资源使用情况，决定计算节点分布到哪台计算节点上。目前实现很薄，目前已支持插件方式扩展，方便后面可能有采用更复杂算法。</p>
+
+<p><code><strong>nova-compute</strong></code><code><strong>：</strong></code>接收队列中的动作，然后执行一系列的系统命令（如启动KVM实例），同时更新数据库中的状态。</p>
+
+<p><code><strong>nova-volume</strong></code><code><strong>：</strong></code>给虚拟机分配额外持久化的存储，管理持久卷到计算实例的创建，连接和分离。</p>
+
+<p><code><strong>nova-network</strong></code><code><strong>：</strong></code>网络管理，给虚拟机分配网络和管理，使外部 PC 可以可直接访问。它接受队列中的网络任务，然后执行任务操纵网络（如设立桥接接口或更改iptables规则）。</p>
+
+<p><code><strong>queue</strong></code><code><strong>：</strong></code>提供了一个守护进程之间传递消息的中央枢纽。当前由 <a href="http://www.rabbitmq.com/" target="_top">RabbitMQ</a>实现，理论上可以是Python的ampqlib支持的任何AMPQ消息队列。</p>
+
+<p><code><strong>SQL database</strong></code><code><strong>：</strong></code>存储云基础设施的编译时和运行时的状态。这包括可用的实例类型，在使用中的实例，可用的网络和项目。</p>
+
+<p><code><strong>OpenStack Glance：</strong></code>OpenStack 单独的一个项目。
+<h2>Nova Conceptual Mapping</h2>
+<p align="left">OpenStack的架构示意图和目前已实现情况，蓝色是要 openstack概念上的架构图，红色是目前已实现的。</p>
+
+<p>上面的功能模块对应上面模型的映射：
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping.png"><img class="size-medium wp-image-2125 alignnone" title="Nova Conceptual Mapping" src="http://blog.javachen.com/files/2011/07/Nova-Conceptual-Mapping-300x209.png" alt="" width="300" height="209" /></a></p></p></p>
+
+<p><h2>Service Architecture</h2>
+管理和使用是走两个通道的。管理必须要经由 nova-api转发过去。而运行时，直接连接计算节点上的虚拟机即可。<strong></strong>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture.png"><img class="size-medium wp-image-2126 aligncenter" title="Service Architecture" src="http://blog.javachen.com/files/2011/07/Service-Architecture-300x295.png" alt="" width="300" height="295" /></a></p></p>
+
+<p><h2>部署</h2>
+部署时，除了Dashboard 必须部署在 nova-api server 上以外，所有的其它进程都可以部署在不同的机器上。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/Service-Architecture2.png"><img class="size-medium wp-image-2127 aligncenter" title="Service Architecture2" src="http://blog.javachen.com/files/2011/07/Service-Architecture2-300x140.png" alt="" width="300" height="140" /></a></p>
+
+<p>OpenStack提供了基于 Puppet 的自动部署工具。经过简单配置，就可以把各个组件部署到不同机器上。
+<h2>镜像管理</h2>
+<p align="left">OpenStack的镜像创建并没有纳入其职责列表。<br />
+你可以使用Ubuntu的已有image (https://help.ubuntu.com/community/UEC/)，或者直接重新自己通过KVM安装  ：</p>
+<p align="left"><a href="http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/">http://cssoss.wordpress.com/2011/04/27/openstack-beginners-guide-for-ubuntu-11-04-image-management/</a></p></p></p>
+
+<p><h2>网络模型</h2>
+Flat Network Manager, Flat DHCP Network Manager, VLAN Network Manager.<br />
+VLAN Network Manager 这种方式适合于共有云。<br />
+在私有云方面， IP充足，而且为了方便的互联互通，简单的Flat结构网络比较适合。<br />
+OpenStack支持 Floating IPs ,该特性可以方便的通过更改IP来Failover(容错转移）或者迁移。
+<div class="note">
+<h2>参考文章</h2>
+OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+nova code:<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a>
+openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110706opennebula-architecture">
+    <article>
+      <header>
+      <h2><a href="/cloud/2011/07/06/opennebula-architecture">OpenNebula的架构</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-07-06">2011-07-06</time>
+		<a href='/cloud/2011/07/06/opennebula-architecture#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><p align="left">OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。</p>
+
+<p align="left">目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。</p>
+
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-cloud.png"><img class="size-full wp-image-2106 alignnone" title="one cloud" src="http://blog.javachen.com/files/2011/07/one-cloud.png" alt="" width="332" height="166" /></a></p>
+
+<p align="center">图1  OpenNebula总体架构图</p>
+
+<p align="left">OpenNebula可以构建私有云、混合云、公开云。<!--more--></p></p>
+
+<p><h2>私有云</h2>
+私有云的目的是给本地的用户和管理员提供了一个灵活和敏捷的私人基础设施，以在可管理的域内运行虚拟化服务。 OpenNebula虚拟基础设施暴露虚拟化、网络、图像和物理资源的配置、管理、监督和会计的功能接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud1.png"><img class="size-medium wp-image-2107 alignnone" title="private cloud" src="http://blog.javachen.com/files/2011/07/private-cloud1-300x187.png" alt="" width="300" height="187" /></a></p>
+
+<p align="center">图2 私有云</p>
+
+<p>一个OpenNebula私有云为平台基础设施的用户提供了一个快速交付和可扩展性的平台，以满足最终用户的动态需求。服务托管在虚拟机，然后提交，监视和被云控制，通过使用OpenNebula运营中心或OpenNebula的任何接口。
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/private-cloud2.png"><img class="size-medium wp-image-2108 aligncenter" title="private cloud2" src="http://blog.javachen.com/files/2011/07/private-cloud2-300x206.png" alt="" width="300" height="206" /></a></p>
+<p align="center">图3 私有云内用户视图</p>
+&nbsp;
+<h2>混合云</h2>
+<p align="left">OpenNebula提供Deltacloud适配器与Amazon EC2相配合来管理混合云。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/hyb-cloud2.png"><img class="size-medium wp-image-2109 aligncenter" title="hyb cloud2" src="http://blog.javachen.com/files/2011/07/hyb-cloud2-300x203.png" alt="" width="300" height="203" /></a></p>
+<p align="center">图4 混合云</p>
+&nbsp;
+<h2>公开云</h2>
+<p align="left">OpenNebula公有云是私有云的一个扩展，是在私有云的基础上对外暴露REST接口。如果你要让合作伙伴或外部用户能够访问您的基础设施，或出售你的服务，云接口可以被添加到您的私有或混合云。显然，一个本地的云解决方案是任何公共云自然后端。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/public-cloud.png"><img class="size-medium wp-image-2110 aligncenter" title="public cloud" src="http://blog.javachen.com/files/2011/07/public-cloud-300x175.png" alt="" width="300" height="175" /></a></p>
+<p align="center">图5 公开云</p>
+<p align="left">OpenNebula的构架包括三个部分：驱动层、核心层、工具层。驱动层直接与操作系统打交道，负责虚拟机的创建、启动和关闭，为虚拟机分配存储，监控物理机和虚拟机的运行状况。核心层负责对虚拟机、存储设备、虚拟网络等进行管理。工具层通过命令行界面/浏览器界面方式提供用户交互接口，通过API方式提供程序调用接口。</p>
+<p style="text-align: center;"><a href="http://blog.javachen.com/files/2011/07/3-cloud.png"><img class="size-medium wp-image-2111 aligncenter" title="3 cloud" src="http://blog.javachen.com/files/2011/07/3-cloud-300x178.png" alt="" width="300" height="178" /></a></p>
+<p align="center">图6 三层架构图</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/3-cloud2.png"><img class="size-medium wp-image-2112 aligncenter" title="3 cloud2" src="http://blog.javachen.com/files/2011/07/3-cloud2-300x181.png" alt="" width="300" height="181" /></a></p>
+<p align="left">OpenNebula使用共享存储设备（例如NFS）来提供虚拟机映像服务，使得每一个计算节点都能够访问到相同的虚拟机映像资源。当用户需要启动或者是关闭某个虚拟机时，OpenNebula通过SSH登陆到计算节点，在计算节点上直接运行相对应的虚拟化管理命令。这种模式也称为无代理模式，由于不需要在计算节点上安装额外的软件（或者服务），系统的复杂度也相对降低了。</p>
+<p style="text-align: center;"> <a href="http://blog.javachen.com/files/2011/07/one-services.png"><img class="size-medium wp-image-2113 aligncenter" title="one services" src="http://blog.javachen.com/files/2011/07/one-services-300x189.png" alt="" width="300" height="189" /></a></p>
+<p align="center">图7 前端节点和集群节点之间交互</p>
+&nbsp;
+<h2>网络架构</h2>
+OpenNebula使用桥连接来构建虚拟网络，每个节点的IP和MAC地址在一定范围内生成。一个网络会连接到一个特定的桥。每一个网络有他自己的拥有者并且可以对外公开或私有。每一个虚拟网络之间是相互隔离的。</p></p>
+
+<p>虚拟网络里使用Ebtables来过滤数据链路层数据包。</p>
+
+<p>&nbsp;
+<div class="infor">
+<h2>参考资料</h2>
+* 1.虚拟化管理软件比较 －－ 构架篇：<a href="http://www.qyjohn.net/?p=1263">http://www.qyjohn.net/?p=1263</a>
+* 2.opennebula.org：<a href="http://opennebula.org/">http://opennebula.org/</a>
+* 3.OpenNebula Workshop：<a href="http://hpc.uamr.de/wissen/opennebula-workshop/">http://hpc.uamr.de/wissen/opennebula-workshop/</a>
+</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110629install-opennebula-management-console-in-centos5-6">
+    <article>
+      <header>
+      <h2><a href="/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6">Centos上安装 OpenNebula Management Console</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			
+		|
+		Time：<time date="2011-06-29">2011-06-29</time>
+		<a href='/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的<a href="http://dev.opennebula.org/projects/management-console" target="_blank">OpenNebula Management Console</a>，一个是<a href="http://opennebula.org/documentation:rel2.2:sunstone" target="_blank">The Cloud Operations Center</a>，前者需要额外<a href="http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz" target="_blank">下载</a>，后者内嵌与OpenNebula安装包内。</p>
+
+<p>OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章：<br />
+《<a href="http://www.vpsee.com/2011/03/install-opennebula-management-console-on-centos/" target="_blank">安装 OpenNebula 基于 Web 的管理控制台》</a>，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。</p>
+
+<p>我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。</p>
+
+<p><span style="color: #ff0000;"><!--more-->以下来自<a href="http://dev.opennebula.org/projects/management-console/wiki">官方文档</a>：</span>
+<h3><span style="color: #0000ff;">要求:</span></h3>
+<ul>
+    <li>Apache or whatever webserver.</li>
+    <li>php5 (May work with php4 but not tested)</li>
+    <li>php-adodb<br />
+And you need a db driver for adodb: php-mysql or php-pgsql.</li>
+    <li>Mysql or postgresql database</li>
+    <li>php-curl</li>
+    <li>php-xmlrpc</li>
+    <li>php-pear: pecl install uploadprogress (Only if you want a nice upload progress bar)</li>
+</ul>
+如果你想查看更多资料，您可以去官网：<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>；如果你想在ubutun上安装OpenNebula Management Console，参照这篇文章：<a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a></p>
+
+<p><span style="color: #ff0000;">以下为安装过程：</span>
+<h3><span style="color: #0000ff;">必要软件</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php mysql-server httpd mysql-connector-odbc mysql-devel libdbi-dbd-mysql</pre>
+<h3><span style="color: #ff0000; font-size: 15px;">安装php-adodb</span></h3>
+从<a href="http://sourceforge.net/projects/adodb/files/adodb-php5-only">http://sourceforge.net/projects/adodb/files/adodb-php5-only</a>下载
+<strong><span style="color: #ff0000;">注意：</span></strong>将adobd包解压拷贝到/var/www/html/onemc/include/，将文件名改为adobd
+<h3><span style="color: #0000ff;">安装php的扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc php-curl php-mysql</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">安装apache扩展</span></h3>
+<pre escaped="true" lang="shell"># yum -y install httpd-manual mod_ssl mod_perl mod_auth_mysql</pre>
+<h3><span style="color: #ff0000;">修改配置文件权限</span></h3>
+<pre escaped="true" lang="shell"># chmod 644 /var/www/html/onemc/include/config.php</pre>
+我下载的是OpenNebula 2.2其中/config.php的权限很特别，如果你从浏览器访问onemc时候页面都是空白的，你可以看看日志（我使用的是httpd，日志在httpd.log），可以看到日志中提示没有权限访问/var/www/html/onemc/include/config.php
+<h3><span style="color: #0000ff;">下载 onemc</span></h3>
+下载和解压 onemc-1.0.0.tar.gz 后直接放在 apache 的默认目录里：
+<pre escaped="true" lang="shell"># cd /var/www/html
+# wget http://dev.opennebula.org/attachments/download/128/onemc-1.0.0.tar.gz
+# tar zxvf onemc-1.0.0.tar.gz
+# cd onemc</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">配置数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -uroot -p
+Enter password:
+mysql&gt; create database onemc;
+mysql&gt; create user 'oneadmin'@'localhost' identified by 'oneadmin';
+mysql&gt; grant all privileges on onemc.* to 'oneadmin'@'localhost';
+mysql&gt; \q</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">初始化数据库</span></h3>
+<pre escaped="true" lang="shell"># mysql -u oneadmin -p onemc &lt; /var/www/html/onemc/include/mysql.sql</pre>
+<h3><span style="color: #0000ff;">配置 onemc</span></h3>
+<pre escaped="true" lang="shell"># vi /var/www/html/onemc/include/config.php
+...
+// vmm: kvm or xen
+$vmm = "xen";
+...
+// ADODB settings
+$adodb_type = "mysql";
+$adodb_server = "localhost";
+$adodb_user = "oneadmin";
+$adodb_pass = "oneadmin";
+$adodb_name = "onemc";</pre>
+<h3><span style="color: #0000ff; font-size: 15px;">登录</span></h3>
+如果系统设置了 http_proxy 环境变量的话一定要先关闭，然后重启 one 和 httpd：
+<pre escaped="true" lang="shell"># unset http_proxy
+# one stop; one start
+# /etc/init.d/httpd restar
+</pre>
+访问地址为http://localhost/onemc/index.php，用户名和密码在one_auth 中。
+<h3><span style="font-size: 15px;"><span style="color: #ff0000;">总结</span></span></h3>
+以上步骤最重要的是配置好centos的yum源，一次将php和mysql及相关组件安装成功，然后需要注意的是上面红色部分标出的部分。其实，除了红色那部分之外，其余和开头提到的那篇文章内容没什么差别。
+<h3><span style="color: #0000ff;">参考文章</span></h3>
+<li>
+<a href="http://www.javachen.com/?page_id=2073#date=2011-06-29 12:00:00,mode=month" target="_blank">Centos上安装 OpenNebula Management Console</a>
+</li>
+<li>
+<a href="http://dev.opennebula.org/projects/management-console/wiki">OpenNebula Management Console Wiki</a>
+</li>
+<li><a href="http://dev.opennebula.org/projects/management-console/wiki/onemc_install_ubuntu">Install onemc on ubuntu</a>
+</li>
+</p>
 
 	  
    </div>
@@ -647,13 +1465,70 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
    	 <h2>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	<br/>
-	<br/>
-	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
-	<br/><br/>
-	联系博主：javachen.june[a]gmail.com
 	</div>
     </section>
+
+    <section>
+	  
+	    <h2>Categories</h2>
+	    <ul id="category-list">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>(9)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>(7)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>(8)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>(2)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>(12)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>(1)</span>
+    	</a></li>
+    
+  
+
+
+
+	    </ul>
+	  
+     </section>
 
     <section>
     <h2>Recent Posts</h2>
@@ -748,66 +1623,6 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
     </section>
     
     <section>
-	  
-	    <h2>Categories</h2>
-	    <ul class="tag_box">
-	      
-	      
-
-
-  
-     
-    	<li><a href="/categories.html#cloud-ref">
-    		cloud <span>9</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#javascript-ref">
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#pentaho-ref">
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#kettle-ref">
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#java-ref">
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#cassandra-ref">
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#work-ref">
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hive-ref">
-    		hive <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#post-ref">
-    		post <span>1</span>
-    	</a></li>
-    
-  
-
-
-	    </ul>
-	  
-     </section>
-       <section>
     <h2>Links</h2>
    	<ul>
 	<li>Java开发

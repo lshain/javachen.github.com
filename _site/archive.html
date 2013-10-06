@@ -41,20 +41,23 @@
         <div class="container">
           <a class="brand" href="/">JavaChen Blog</a>
           <div class="nav-collapse">
-            <ul class="nav">
+	    <ul class="nav">
 
 
               <li><a href="/sitemap.xml">Sitemap</a></li>
-              <li><a href="/categories.html">Categories</a></li>
               <li><a href="/about.html">About</a></li>
               <li class="active"><a href="/archive.html" class="active">Archive</a></li>
-              <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
-            </ul>
-		<!-- my custom google search -->
-		<form class="navbar-search pull-left" id="search-form">
-		  <input type="text" id="google-search" class="search-query" placeholder="Search">
-		</form>
+	    </ul>
+            <ul class="nav pull-right" data-subscription="rss">
+                 <li>
+			    <!-- my custom google search -->
+			    <form class="pull-right navbar-search" id="search-form">
+				<input type="text" id="google-search" class="search-query" placeholder="Search">
+			    </form>
+		 </li>
+	 	 <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+	    </ul>
           </div>
         </div>
       </div>

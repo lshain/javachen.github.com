@@ -41,20 +41,23 @@
         <div class="container">
           <a class="brand" href="/">JavaChen Blog</a>
           <div class="nav-collapse">
-            <ul class="nav">
+	    <ul class="nav">
 
 
               <li><a href="/sitemap.xml">Sitemap</a></li>
-              <li><a href="/categories.html">Categories</a></li>
               <li><a href="/about.html">About</a></li>
               <li><a href="/archive.html">Archive</a></li>
-              <li><a href="/atom.xml">Feed</a></li>
               <li><a href="/tags.html">Tags</a></li>
-            </ul>
-		<!-- my custom google search -->
-		<form class="navbar-search pull-left" id="search-form">
-		  <input type="text" id="google-search" class="search-query" placeholder="Search">
-		</form>
+	    </ul>
+            <ul class="nav pull-right" data-subscription="rss">
+                 <li>
+			    <!-- my custom google search -->
+			    <form class="pull-right navbar-search" id="search-form">
+				<input type="text" id="google-search" class="search-query" placeholder="Search">
+			    </form>
+		 </li>
+	 	 <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+	    </ul>
           </div>
         </div>
       </div>
@@ -350,6 +353,115 @@ cli_help () {
     </article>
   </section>
   
+  
+  <section id="hadoop20130817some-problems-about-hadoop">
+    <article>
+      <header>
+      <h2><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-17">2013-08-17</time>
+		<a href='/hadoop/2013/08/17/some-problems-about-hadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
+
+<h1>安装hadoop过程中需要注意以下几点：</h1>
+
+<ol>
+<li>每个节点配置hosts</li>
+<li>每个节点配置时钟同步</li>
+<li>如果没有特殊要求，关闭防火墙</li>
+<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
+</ol>
+
+<hr>
+
+
+	    <h4><a href='/hadoop/2013/08/17/some-problems-about-hadoop' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130802hadoop-install-script">
+    <article>
+      <header>
+      <h2><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-02">2013-08-02</time>
+		<a href='/hadoop/2013/08/02/hadoop-install-script#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
+
+<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
+
+
+	    <h4><a href='/hadoop/2013/08/02/hadoop-install-script' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
   <div class="pagination">
       <ul>
         <li><a href="/archive.html">Archive</a></li>
@@ -363,13 +475,70 @@ cli_help () {
    	 <h2>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	<br/>
-	<br/>
-	<strong><font color="red"><a href="/atom.xml" target="_blank">订阅本站</a></font></strong>
-	<br/><br/>
-	联系博主：javachen.june[a]gmail.com
 	</div>
     </section>
+
+    <section>
+	  
+	    <h2>Categories</h2>
+	    <ul id="category-list">
+	      
+	      
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>(9)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>(7)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>(8)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>(2)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>(12)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>(3)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>(1)</span>
+    	</a></li>
+    
+  
+
+
+
+	    </ul>
+	  
+     </section>
 
     <section>
     <h2>Recent Posts</h2>
@@ -464,66 +633,6 @@ cli_help () {
     </section>
     
     <section>
-	  
-	    <h2>Categories</h2>
-	    <ul class="tag_box">
-	      
-	      
-
-
-  
-     
-    	<li><a href="/categories.html#cloud-ref">
-    		cloud <span>9</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#javascript-ref">
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#pentaho-ref">
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#kettle-ref">
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#java-ref">
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#cassandra-ref">
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#work-ref">
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hadoop-ref">
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>1</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#hive-ref">
-    		hive <span>3</span>
-    	</a></li>
-     
-    	<li><a href="/categories.html#post-ref">
-    		post <span>1</span>
-    	</a></li>
-    
-  
-
-
-	    </ul>
-	  
-     </section>
-       <section>
     <h2>Links</h2>
    	<ul>
 	<li>Java开发

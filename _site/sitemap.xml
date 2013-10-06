@@ -113,20 +113,6 @@
 		<priority>1.0</priority>
 	</url>
 
-	<url>
-		<loc>http://blog.javachen.com/page8/index.html</loc>
-		<lastmod></lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>1.0</priority>
-	</url>
-
-	<url>
-		<loc>http://blog.javachen.com/page9/index.html</loc>
-		<lastmod></lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>1.0</priority>
-	</url>
-
 
 	<url>
 		<loc>http://blog.javachen.com/work/2013/09/08/recent-work</loc>

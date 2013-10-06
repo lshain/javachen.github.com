@@ -8,7 +8,7 @@ pygments: true
 
 #markdown: rdiscount
 markdown: redcarpet
-paginate: 6
+paginate: 8
 
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
@@ -17,7 +17,7 @@ title : JavaChen Blog
 tagline: JavaChen Blog
 author :
   name : JavaChen
-  email : javachen.june@gmail.com
+  email : june.chan@foxmail.com
   github : javachen
   twitter : None
   feedburner : None
