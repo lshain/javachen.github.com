@@ -16,6 +16,8 @@ http://blog.javachen.com/page5/index.html
 http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
 
+http://blog.javachen.com/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2
+http://blog.javachen.com/hive/2013/10/17/cartesian-product-in-hive-inner-join
 http://blog.javachen.com/work/2013/09/08/recent-work
 http://blog.javachen.com/hive/2013/09/04/how-to-decide-map-number
 http://blog.javachen.com/post/2013/08/31/my-jekyll-config

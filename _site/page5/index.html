@@ -77,6 +77,135 @@
   <div class="span9">
   
   
+  <section id="java20120214this-expression-of-jsf-el">
+    <article>
+      <header>
+      <h2><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#java-ref">java</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#jsf-ref">jsf</a>
+			
+			,
+			
+			
+			<a href="/tags.html#el-ref">el</a>
+			
+			
+		|
+		Time：<time date="2012-02-14">2012-02-14</time>
+		<a href='/java/2012/02/14/this-expression-of-jsf-el#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
+
+<p><strong>EL表达式this扩展</strong>
+在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
+1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
+2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
+3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。</p>
+
+<p>我们需要一种新的功能，实现：
+1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
+2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
+3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
+4.兼容标准的EL表达式</p>
+
+<p>我们将上述功能处理为“this”表达式。其功能模型为：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
+</div>
+页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
+&lt;!--more--&gt;</p>
+
+<p><strong>动作类和页面的一致性保证</strong>
+为了有效实现this表达式，我们实现如下映射规则：
+1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
+2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
+
+<p><strong>“this”EL表达式算法</strong>
+算法流程如下图：
+<div class="pic">
+<a href="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el.jpg"><img src="http://blog.javachen.com/files/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
+</div></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20120131ext_readxml_in_bjsasc_wuzi_continue">
+    <article>
+      <header>
+      <h2><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#extjs-ref">extjs</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2012-01-31">2012-01-31</time>
+		<a href='/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
+
+<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码</p>
+
+<p>详细html和js代码见相关文件，这里先描述思路。</p>
+
+<p><strong>首先</strong>
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<em>MTRREPLACE</em>IMP.xml” .PC<em>MTRREPLACE</em>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
+
+<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
+
+<p><strong>然后</strong></p>
+
+<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
+
+<p><strong>最后</strong>
+相关文件打包见：
+<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
+
+<p><strong>说明</strong>
+如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="kettle20120105add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">
     <article>
       <header>
@@ -1155,112 +1284,6 @@ function getInsertForm() {
     </article>
   </section>
   
-  
-  <section id="pentaho20110926resolved-pentaho-problems-9-16">
-    <article>
-      <header>
-      <h2><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#pentaho-ref">pentaho</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#pentaho-ref">pentaho</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bi-ref">bi</a>
-			
-			
-		|
-		Time：<time date="2011-09-26">2011-09-26</time>
-		<a href='/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>很久没写文章了，最近在关注Pentaho。<br />
- 以下是9月16日现场提出的问题解决办法：<br />
-      1、PDF预览中文没显示，txt预览中文乱码：<br />
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
-           3）、如要发布到服务器，需要修改如下的配置：<br />
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
-     2、实现文件拷贝方式发布报表<br />
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
-     3、报表链接参数传递问题<br />
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
-     4、查询参数缺省值问题<br />
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
-     5、实现在pie chart上显示文字<br />
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
-     6、报表集成时候垂直滚动条是否可以去掉<br />
-          改变报表的高度：报表设计器 file-page setup<br />
-     7、报表中的chart不能导出到Excel2007<br />
-          目前为系统bug，excel2003能够正常导出<br />
-     8、实现隔行换色<br />
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="cloud20110820install-eucalyptus-on-fedora-15">
-    <article>
-      <header>
-      <h2><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#cloud-ref">cloud</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openNebula-ref">openNebula</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openStack-ref">openStack</a>
-			
-			
-		|
-		Time：<time date="2011-08-20">2011-08-20</time>
-		<a href='/cloud/2011/08/20/install-eucalyptus-on-fedora-15#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
-
-<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
-
-<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
-
-<p></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page4'>&larr; Previous</a></li>
@@ -1325,7 +1348,7 @@ function getInsertForm() {
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>(3)</span>
+    		hive <span>(5)</span>
     	</a></li>
      
     	<li><a href="/categories.html#post-ref">
@@ -1343,6 +1366,12 @@ function getInsertForm() {
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a>
+      </li>
       <li class="post">
         <a href="/work/2013/09/08/recent-work">最近的工作</a>
       </li>
@@ -1396,12 +1425,6 @@ function getInsertForm() {
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
-      </li>
-      <li class="post">
-        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
     </ul>
     </section>

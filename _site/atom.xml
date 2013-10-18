@@ -4,13 +4,426 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-10-06T21:21:33+08:00</updated>
+ <updated>2013-10-18T22:12:21+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
    <email>june.chan@foxmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>hive-server2中使用jdbc客户端用户运行mapreduce</title>
+   <link href="http://blog.javachen.com/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2"/>
+   <updated>2013-10-17T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2</id>
+   <content type="html">&lt;p&gt;最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的&lt;a href=&quot;https://github.com/anjuke/hwi&quot;&gt;hwi改进版&lt;/a&gt;和大众点评的&lt;a href=&quot;http://blog.csdn.net/lalaguozhe/article/details/9614061&quot;&gt;polestar&lt;/a&gt;(&lt;a href=&quot;https://github.com/dianping/polestar&quot;&gt;github地址&lt;/a&gt;)系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！&lt;/p&gt;
+
+&lt;h1&gt;hive-server2的启动&lt;/h1&gt;
+
+&lt;p&gt;先从hive-server2服务的启动开始说起。&lt;/p&gt;
+
+&lt;p&gt;如果你是以服务的方式启动hive-server2进程，则启动hive-server2的用户为hive,运行mapreduce的用户也为hive，启动脚本如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/hive-server2 start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果你以命令行方式启动hive-server2进程，则启动hive-server2的用户为root,运行mapreduce的用户也为root，启动脚本如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive --service hiveserver2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;为什么是上面的结论？这要从hive-server2的启动过程开始说明。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;查看HiveServer2.java的代码可以看到，hive-server2启动时会依次启动&lt;code&gt;cliService&lt;/code&gt;和&lt;code&gt;thriftCLIService&lt;/code&gt;，查看cliService的init()方法，可以看到如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public synchronized void init(HiveConf hiveConf) {
+    this.hiveConf = hiveConf;
+
+    sessionManager = new SessionManager();
+    addService(sessionManager);
+    try {
+      HiveAuthFactory.loginFromKeytab(hiveConf);
+      serverUserName = ShimLoader.getHadoopShims().
+          getShortUserName(ShimLoader.getHadoopShims().getUGIForConf(hiveConf));
+    } catch (IOException e) {
+      throw new ServiceException(&amp;quot;Unable to login to kerberos with given principal/keytab&amp;quot;, e);
+    } catch (LoginException e) {
+      throw new ServiceException(&amp;quot;Unable to login to kerberos with given principal/keytab&amp;quot;, e);
+    }
+    super.init(hiveConf);
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从上面的代码可以看到在cliService初始化过程中会做登陆（从kertab中登陆）和获取用户名的操作：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ShimLoader.getHadoopShims().getUGIForConf(hiveConf)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面代码最终会调用HadoopShimsSecure类的getUGIForConf方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;@Override
+public UserGroupInformation getUGIForConf(Configuration conf) throws IOException {
+  return UserGroupInformation.getCurrentUser();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;UserGroupInformation.getCurrentUser()代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; public synchronized
+  static UserGroupInformation getCurrentUser() throws IOException {
+    AccessControlContext context = AccessController.getContext();
+    Subject subject = Subject.getSubject(context);
+    if (subject == null || subject.getPrincipals(User.class).isEmpty()) {
+      return getLoginUser();
+    } else {
+      return new UserGroupInformation(subject);
+    }
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;因为这时候服务刚启动，subject为空，故if分支会调用&lt;code&gt;getLoginUser()&lt;/code&gt;方法，其代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;  public synchronized 
+  static UserGroupInformation getLoginUser() throws IOException {
+    if (loginUser == null) {
+      try {
+        Subject subject = new Subject();
+        LoginContext login;
+        if (isSecurityEnabled()) {
+          login = newLoginContext(HadoopConfiguration.USER_KERBEROS_CONFIG_NAME,
+              subject, new HadoopConfiguration());
+        } else {
+          login = newLoginContext(HadoopConfiguration.SIMPLE_CONFIG_NAME, 
+              subject, new HadoopConfiguration());
+        }
+        login.login();
+        loginUser = new UserGroupInformation(subject);
+        loginUser.setLogin(login);
+        loginUser.setAuthenticationMethod(isSecurityEnabled() ?
+                                          AuthenticationMethod.KERBEROS :
+                                          AuthenticationMethod.SIMPLE);
+        loginUser = new UserGroupInformation(login.getSubject());
+        String fileLocation = System.getenv(HADOOP_TOKEN_FILE_LOCATION);
+        if (fileLocation != null) {
+          // Load the token storage file and put all of the tokens into the
+          // user. Don&amp;#39;t use the FileSystem API for reading since it has a lock
+          // cycle (HADOOP-9212).
+          Credentials cred = Credentials.readTokenStorageFile(
+              new File(fileLocation), conf);
+          loginUser.addCredentials(cred);
+        }
+        loginUser.spawnAutoRenewalThreadForUserCreds();
+      } catch (LoginException le) {
+        LOG.debug(&amp;quot;failure to login&amp;quot;, le);
+        throw new IOException(&amp;quot;failure to login&amp;quot;, le);
+      }
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(&amp;quot;UGI loginUser:&amp;quot;+loginUser);
+      }
+    }
+    return loginUser;
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;因为是第一次调用getLoginUser(),故loginUser为空，接下来会创建LoginContext并调用其login方法，login方法最终会调用HadoopLoginModule的commit()方法。&lt;/p&gt;
+
+&lt;p&gt;下图是从hive-server2启动到执行HadoopLoginModule的commit()方法的调用图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;files/2013/hive-server2-invoke.png&quot; alt=&quot;hive-server2启动过程&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;获取登陆用户的关键代码就在commit()，逻辑如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果使用了kerberos，则为kerberos登陆用户。hive-server2中如何使用kerberos登陆，请查看官方文档。&lt;/li&gt;
+&lt;li&gt;如果kerberos用户为空并且没有开启security，则从系统环境变量中取&lt;code&gt;HADOOP_USER_NAME&lt;/code&gt;的值&lt;/li&gt;
+&lt;li&gt;如果环境变量中没有设置HADOOP&lt;em&gt;USER&lt;/em&gt;NAME，则使用系统用户，即启动hive-server2进程的用户。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;小结&lt;/h2&gt;
+
+&lt;p&gt;hive-server2启动过程中会做登陆操作并获取到登陆用户，启动之后再次调用&lt;code&gt;UserGroupInformation.getCurrentUser()&lt;/code&gt;取到的用户就为登陆用户了，这样会导致所有请求到hive-server2的hql最后都会以这个用户来运行mapreduce。&lt;/p&gt;
+
+&lt;h1&gt;提交hive任务&lt;/h1&gt;
+
+&lt;p&gt;现在来看hive任务是怎么提交到yarn服务端然后运行mapreduce的。&lt;/p&gt;
+
+&lt;p&gt;为了调试简单，我在本机eclipse的hive源代码中配置&lt;code&gt;hive-site.xml、core-site.xml、mapred.xml、yarn-site.xml&lt;/code&gt;连接测试集群,添加缺少的yarn依赖并解决hive-builtins中报错的问题，然后运行HiveServer2类的main方法。&lt;em&gt;注意&lt;/em&gt;，我的电脑当前登陆用户为june，故启动hive-server2的用户为june。&lt;/p&gt;
+
+&lt;p&gt;然后，在运行jdbc测试类，运行一个简单的sql语句，大概如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public static void test() {
+    try {
+        Class.forName(&amp;quot;org.apache.hive.jdbc.HiveDriver&amp;quot;);
+
+        Connection conn = DriverManager.getConnection(
+                &amp;quot;jdbc:hive2://june-mint:10000/default&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;&amp;quot;);
+
+        Statement stmt = conn.createStatement();
+
+        ResultSet rs = stmt.executeQuery(&amp;quot;select count(1) from t&amp;quot;);
+
+        while (rs.next())
+            System.out.println(rs.getString(1));
+
+        rs.close();
+        stmt.close();
+        conn.close();
+    } catch (SQLException se) {
+        se.printStackTrace();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;查看yarn监控地址&lt;code&gt;http://192.168.56.101:8088/cluster&lt;/code&gt;，可以看到提交的mapreduce任务由june用户来运行。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;files/2013/20131017-01.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;如何修改mapreduce任务的运行用户呢？如果了解hive提交mapreduce任务的过程的话，就应该知道hive任务会通过&lt;code&gt;org.apache.hadoop.mapred.JobClient&lt;/code&gt;来提交。在JobClient的init方法中有如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;  public void init(JobConf conf) throws IOException {
+    setConf(conf);
+    cluster = new Cluster(conf);
+    clientUgi = UserGroupInformation.getCurrentUser();
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;JobClient类中提交mapreduce任务的代码如下，见submitJobInternal方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Job job = clientUgi.doAs(new PrivilegedExceptionAction&amp;lt;Job&amp;gt; () {
+    @Override
+    public Job run() throws IOException, ClassNotFoundException, 
+      InterruptedException {
+      Job job = Job.getInstance(conf);
+      job.submit();
+      return job;
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从前面知道，hive-server2启动中会进行登陆操作并且登陆用户为june，故clientUgi对应的登陆用户也为june，故提交的mapreduce任务也通过june用户来运行。&lt;/p&gt;
+
+&lt;h1&gt;如何修改源代码&lt;/h1&gt;
+
+&lt;p&gt;从上面代码可以知道，修改clientUgi的获取方式就可以改变提交任务的用户。UserGroupInformation中存在如下静态方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;  public static UserGroupInformation createRemoteUser(String user) {
+    if (user == null || &amp;quot;&amp;quot;.equals(user)) {
+      throw new IllegalArgumentException(&amp;quot;Null user&amp;quot;);
+    }
+    Subject subject = new Subject();
+    subject.getPrincipals().add(new User(user));
+    UserGroupInformation result = new UserGroupInformation(subject);
+    result.setAuthenticationMethod(AuthenticationMethod.SIMPLE);
+    return result;
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;故可以尝试使用该方法，修改JobClient的init方法如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; public void init(JobConf conf) throws IOException {
+    setConf(conf);
+    cluster = new Cluster(conf);
+    if(UserGroupInformation.isSecurityEnabled()){
+        clientUgi = UserGroupInformation.getCurrentUser();
+    }else{
+        String user = conf.get(&amp;quot;myExecuteName&amp;quot;,&amp;quot;NoName&amp;quot;);
+        clientUgi = UserGroupInformation.createRemoteUser(user);
+    }
+  }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;编译代码、替换class文件，然后重新运行HiveServer2以及jdbc测试类，查看yarn监控地址&lt;code&gt;http://192.168.56.101:8088/cluster&lt;/code&gt;，截图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;files/2013/20131017-02.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;这时候mapreduce的运行用户变为NoName，这是因为从JobConf环境变量中找不到myExecuteName变量而使用默认值NoName的原因。&lt;/p&gt;
+
+&lt;p&gt;查看hive-server2运行日志，会发现任务运行失败，关键异常信息如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Caused by: org.apache.hadoop.security.AccessControlException: Permission denied: user=NoName, access=WRITE, inode=&amp;quot;/tmp/hive-june/hive_2013-10-18_21-18-12_812_378750610917949668/_tmp.-ext-10001&amp;quot;:june:hadoop:drwxr-xr-x
+    at org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:224)
+    at org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:204)
+    at org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:149)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.checkPermission(FSNamesystem.java:4705)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.checkPermission(FSNamesystem.java:4687)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.checkAncestorAccess(FSNamesystem.java:4661)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.renameToInternal(FSNamesystem.java:2696)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.renameToInt(FSNamesystem.java:2663)
+    at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.renameTo(FSNamesystem.java:2642)
+    at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.rename(NameNodeRpcServer.java:610)
+    at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.rename
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;出现上述异常是因为，mapreduce任务在运行过程中会生成一些临时文件，而NoName用户对临时文件没有写的权限，这些临时文件属于june用户。查看hdfs文件如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@edh1 lib]# hadoop fs -ls /tmp/
+Found 6 items
+drwx------   - june hadoop          0 2013-10-15 01:33 /tmp/hadoop-yarn
+drwxr-xr-x   - june hadoop          0 2013-10-16 06:52 /tmp/hive-june
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;/tmp/hive-june&lt;/code&gt;是hive执行过程中保存在hdfs的路径，由&lt;code&gt;hive.exec.scratchdir&lt;/code&gt;定义，其默认值为&lt;code&gt;/tmp/hive-${user.name}&lt;/code&gt;，而且这个文件是在&lt;code&gt;org.apache.hadoop.hive.ql.Context&lt;/code&gt;类的构造方法中获取并在ExecDriver类的execute(DriverContext driverContext)方法中创建的。&lt;/p&gt;
+
+&lt;p&gt;类似这样的权限问题还会出现在hdfs文件&lt;code&gt;重命名、删除临时目录的时候&lt;/code&gt;。为了避免出现这样的异常，需要修改&lt;code&gt;hive.exec.scratchdir&lt;/code&gt;为当前用户对应的临时目录路径，并使用当前登陆用户创建、重命名、删除临时目录。&lt;/p&gt;
+
+&lt;p&gt;修改获取&lt;code&gt;hive.exec.scratchdir&lt;/code&gt;对应的临时目录代码如下，在Context类的够找方法中修改：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    String user = conf.get(myExecuteName，“”);
+
+    if (user != null &amp;amp;&amp;amp; user.trim().length() &amp;gt; 0) {
+      nonLocalScratchPath =
+          new Path(&amp;quot;/tmp/hive-&amp;quot; + user, executionId);
+    } else {
+      nonLocalScratchPath =
+          new Path(HiveConf.getVar(conf, HiveConf.ConfVars.SCRATCHDIR),
+              executionId);
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;找到这些操作对应的代码似乎太过复杂了，修改的地方也有很多，因为这里是使用的hive-server2，故在对应的jdbc代码中修改似乎会简单很多，例如修改HiveSessionImpl类的以下三个方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public OperationHandle executeStatement(String statement, Map&amp;lt;String, String&amp;gt; confOverlay) throws HiveSQLException{}
+
+public void cancelOperation(final OperationHandle opHandle) throws HiveSQLException {}
+
+public void closeOperation(final OperationHandle opHandle) throws HiveSQLException {}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;第一个方法是运行sql语句，第二个方法是取消运行，第三个方法是关闭连接。&lt;/p&gt;
+
+&lt;p&gt;executeStatement中所做的修改如下，将&lt;code&gt;operation.run();&lt;/code&gt;改为：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    if (operation instanceof SQLOperation) {
+        try {
+          String user = hiveConf.getVar(ConfVars.HIVE_SERVER2_MAPREDUCE_USERNAME);
+          ugi = UserGroupInformation.createRemoteUser(user);
+          ugi.doAs(new PrivilegedExceptionAction&amp;lt;CommandProcessorResponse&amp;gt;() {
+            @Override
+            public CommandProcessorResponse run() throws HiveSQLException {
+              operation.run();
+              return null;
+            }
+          });
+        } catch (IOException e) {
+          e.printStackTrace();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      } else {
+        operation.run();
+      }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这里添加了判断，当operation操作时，才执行下面代码，这是为了保证从hive环境变量中获取myExecuteName的值不为空时才创建UserGroupInformation。&lt;/p&gt;
+
+&lt;p&gt;myExecuteName是新定义的hive变量，主要是用于jdbc客户端通过set语句设置myExecuteName的值为当前登陆用户名称，然后在执行sql语句。代码如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Statement stmt = conn.createStatement();
+
+stmt.execute(&amp;quot;set myExecuteName=aaaa&amp;quot;);
+ResultSet rs = stmt.executeQuery(&amp;quot;select count(1) from t&amp;quot;);
+
+while (rs.next())
+    System.out.println(rs.getString(1));
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;小结&lt;/h2&gt;
+
+&lt;p&gt;上面修改的类包括：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;org.apache.hadoop.mapred.JobClient //从环境变量获取从jdbc客户端传过来的用户，即myExecuteName的值，然后以该值运行mapreduce用户
+org.apache.hadoop.hive.ql.Context  //修改hive.exec.scratchdir的地址为从jdbc客户端传过来的用户对应的临时目录
+org.apache.hive.service.cli.session.HiveSessionImpl //修改运行sql、取消操作、关闭连接对应的方法
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;测试&lt;/h1&gt;
+
+&lt;p&gt;是用javachen用户测试,hdfs上的临时目录如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@edh1 lib]# hadoop fs -ls /tmp/
+Found 7 items
+drwx------   - june         hadoop          0 2013-10-15 01:33 /tmp/hadoop-yarn
+drwxr-xr-x   - javachen.com hadoop          0 2013-10-16 07:30 /tmp/hive-javachen.com
+drwxr-xr-x   - june         hadoop          0 2013-10-16 06:52 /tmp/hive-june
+drwxr-xr-x   - root         hadoop          0 2013-10-15 14:13 /tmp/hive-root
+drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;监控页面截图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;files/2013/20131017-03.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;除了简单测试之外，还需要测试修改后的代码是否影响源代码的运行以及hive cli的运行。&lt;/p&gt;
+
+&lt;h1&gt;Enjoy it ！&lt;/h1&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>hive连接产生笛卡尔集</title>
+   <link href="http://blog.javachen.com/hive/2013/10/17/cartesian-product-in-hive-inner-join"/>
+   <updated>2013-10-17T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hive/2013/10/17/cartesian-product-in-hive-inner-join</id>
+   <content type="html">&lt;p&gt;在使用hive过程中遇到这样的一个异常：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;FAILED: ParseException line 1:18 Failed to recognize predicate &amp;#39;a&amp;#39;. Failed rule: &amp;#39;kwInner&amp;#39; in join type specifier
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;执行的hql语句如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@javachen.com ~]# hive -e &amp;#39;select a.* from t a, t b where a.id=b.id&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从异常信息中很难看出出错原因，hive.log中也没有打印出详细的异常对战信息。改用jdbc连接hive-server2，可以看到hive-server2中提示如下异常信息：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;13/10/17 09:57:48 ERROR ql.Driver: FAILED: ParseException line 1:18 Failed to recognize predicate &amp;#39;a&amp;#39;. Failed rule: &amp;#39;kwInner&amp;#39; in join type specifier
+
+org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize predicate &amp;#39;a&amp;#39;. Failed rule: &amp;#39;kwInner&amp;#39; in join type specifier
+
+    at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:446)
+    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:441)
+    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:349)
+    at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:355)
+    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:95)
+    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:76)
+    at org.apache.hive.service.cli.operation.SQLOperation.run(SQLOperation.java:114)
+    at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatement(HiveSessionImpl.java:194)
+    at org.apache.hive.service.cli.CLIService.executeStatement(CLIService.java:155)
+    at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:191)
+    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1193)
+    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1)
+    at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+    at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+    at org.apache.hive.service.cli.thrift.TSetIpAddressProcessor.process(TSetIpAddressProcessor.java:38)
+    at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:206)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+    at java.lang.Thread.run(Thread.java:662)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
+&lt;p&gt;从异常信息可以看到是在编译hql语句进行语法解析时出现了错误，到底为什么会出现&lt;code&gt;Failed rule: &amp;#39;kwInner&amp;#39; in join type specifier&lt;/code&gt;这样的异常信息呢？&lt;/p&gt;
+
+&lt;p&gt;在eclipse中查找关键字并没有找到相应代码，在&lt;a href=&quot;http://svn.apache.org/repos/asf/hive/tags/release-0.10.0/ql/src/java/org/apache/hadoop/hive/ql/parse/Hive.g&quot;&gt;Hive.g&lt;/a&gt; 中查找关键字“kwInner”，可以看到如下内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;joinToken
+@init { msgs.push(&amp;quot;join type specifier&amp;quot;); }
+@after { msgs.pop(); }
+    :
+      KW_JOIN                     -&amp;gt; TOK_JOIN
+    | kwInner  KW_JOIN            -&amp;gt; TOK_JOIN
+    | KW_CROSS KW_JOIN            -&amp;gt; TOK_CROSSJOIN
+    | KW_LEFT  KW_OUTER KW_JOIN   -&amp;gt; TOK_LEFTOUTERJOIN
+    | KW_RIGHT KW_OUTER KW_JOIN   -&amp;gt; TOK_RIGHTOUTERJOIN
+    | KW_FULL  KW_OUTER KW_JOIN   -&amp;gt; TOK_FULLOUTERJOIN
+    | KW_LEFT  KW_SEMI  KW_JOIN   -&amp;gt; TOK_LEFTSEMIJOIN
+    ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;从上面可以看出hive支持的连接包括：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;join&lt;/li&gt;
+&lt;li&gt;inner join&lt;/li&gt;
+&lt;li&gt;cross join (as of Hive 0.10)&lt;/li&gt;
+&lt;li&gt;left outer join&lt;/li&gt;
+&lt;li&gt;right outer join&lt;/li&gt;
+&lt;li&gt;full outer join&lt;/li&gt;
+&lt;li&gt;left semi join&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;kwInner为什么是小写呢，其含义是什么呢？搜索关键字，找到如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;kwInner
+:
+{input.LT(1).getText().equalsIgnoreCase(&amp;quot;inner&amp;quot;)}? Identifier;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面的大概意思是找到输入左边的内容并判断其值在忽略大小写情况下是否等于inner，大概意思是hql语句中缺少inner关键字吧？修改下hql语句如下，然后执行：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@javachen.com ~]#  hive -e &amp;#39;select a.* from t a inner join t b where a.id=b.id&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;修改后的hql语句能够正常运行，并且变成了内连接。&lt;code&gt;在JION接连查询中没有ON连接key而通过WHERE条件语句会产生笛卡尔集。&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Hive本身是不支持笛卡尔集的，不能用&lt;code&gt;select T1.*, T2.* from table1, table2&lt;/code&gt;这种语法。但有时候确实需要用到笛卡尔集的时候，可以用下面的语法来实现同样的效果：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;select T1.*, T2.* from table1 T1 join table2 T2 where 1=1;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;注意在Hive的Strict模式下不能用这种语法，因为这样会产生笛卡尔集，而这种模式禁止产生笛卡尔集。需要先用&lt;code&gt;set hive.mapred.mode=nonstrict;&lt;/code&gt;设为非strict模式就可以用了，或者将where改为on连接。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;select T1.*, T2.* from table1 T1 join table2 T2 on  T1.id=T2.id;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;关于Strict Mode&lt;/h1&gt;
+
+&lt;p&gt;Hive中的严格模式可以防止用户发出（可以有问题）的查询无意中造成不良的影响。 将&lt;code&gt;hive.mapred.mode&lt;/code&gt;设置成strict可以禁止三种类型的查询： &lt;/p&gt;
+
+&lt;p&gt;1）、在一个分区表上，如果没有在WHERE条件中指明具体的分区，那么这是不允许的，换句话说，不允许在分区表上全表扫描。这种限制的原因是分区表通常会持非常大的数据集并且可能数据增长迅速，对这样的一个大表做全表扫描会消耗大量资源，必须要再WHERE过滤条件中具体指明分区才可以执行成功的查询。&lt;/p&gt;
+
+&lt;p&gt;2）、第二种是禁止执行有ORDER BY的排序要求但没有LIMIT语句的HiveQL查询。因为ORDER BY全局查询会导致有一个单一的reducer对所有的查询结果排序，如果对大数据集做排序，这将导致不可预期的执行时间，必须要加上limit条件才可以执行成功的查询。&lt;/p&gt;
+
+&lt;p&gt;3）、第三种是禁止产生笛卡尔集。在JION接连查询中没有ON连接key而通过WHERE条件语句会产生笛卡尔集，需要改为JOIN...ON语句。&lt;/p&gt;
+
+&lt;h1&gt;参考文章&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1871983&quot;&gt;深入学习《Programing Hive》：Tuning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://blog.hesey.net/2012/04/hive-tips.html&quot;&gt;Hive Tips&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>最近的工作</title>

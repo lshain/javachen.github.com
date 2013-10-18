@@ -77,6 +77,115 @@
   <div class="span9">
   
   
+  <section id="hadoop20130817some-problems-about-hadoop">
+    <article>
+      <header>
+      <h2><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-17">2013-08-17</time>
+		<a href='/hadoop/2013/08/17/some-problems-about-hadoop#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
+
+<h1>安装hadoop过程中需要注意以下几点：</h1>
+
+<ol>
+<li>每个节点配置hosts</li>
+<li>每个节点配置时钟同步</li>
+<li>如果没有特殊要求，关闭防火墙</li>
+<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
+</ol>
+
+<hr>
+
+
+	    <h4><a href='/hadoop/2013/08/17/some-problems-about-hadoop' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="hadoop20130802hadoop-install-script">
+    <article>
+      <header>
+      <h2><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h2>
+      <div class="info">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			,
+			
+			
+			<a href="/tags.html#mapreduce-ref">mapreduce</a>
+			
+			
+		|
+		Time：<time date="2013-08-02">2013-08-02</time>
+		<a href='/hadoop/2013/08/02/hadoop-install-script#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
+
+<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
+
+
+	    <h4><a href='/hadoop/2013/08/02/hadoop-install-script' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="hadoop20130801remote-debug-hadoop">
     <article>
       <header>
@@ -1181,431 +1290,6 @@ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
     </article>
   </section>
   
-  
-  <section id="hadoop20130329install-impala">
-    <article>
-      <header>
-      <h2><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#hadoop-ref">hadoop</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#impala-ref">impala</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cloudera-ref">cloudera</a>
-			
-			
-		|
-		Time：<time date="2013-03-29">2013-03-29</time>
-		<a href='/hadoop/2013/03/29/install-impala#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
-
-<h1>install</h1>
-
-<p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
-
-<h1>安装过程</h1>
-
-<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
-
-<ul>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
-</ul>
-
-<ol>
-<li><p>DataNode节点</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
-<li><p>在hive节点上</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm \
-impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm \
-libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
-</ol>
-
-<h1>配置Impala</h1>
-
-<h2>查看安装路径</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
-/var/run/impala
-/var/lib/alternatives/impala
-/var/log/impala
-/usr/lib/impala
-/etc/alternatives/impala
-/etc/default/impala
-/etc/impala
-</code></pre></div>
-<h2>添加配置文件</h2>
-
-<p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
-
-<p>在节点desktop1上 拷贝<code>hive-site.xml</code>、<code>core-site.xml</code>、<code>hdfs-site.xml</code>至<code>/usr/lib/impala/conf</code>目录下:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
-</code></pre></div>
-<p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
-    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<p>同步以上文件到其他节点</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
-</code></pre></div>
-<h2>hadoop中添加native包</h2>
-
-<p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
-</code></pre></div>
-<h2>创建socket path</h2>
-
-<p>在每个节点上创建/var/run/hadoop-hdfs:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
-</code></pre></div>
-<p>拷贝postgres jdbc jar：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
-</code></pre></div>
-<h1>启动服务</h1>
-
-<ol>
-<li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
-
-<p>GLOG<em>v=1 nohup statestored -state</em>store_port=24000 &amp;</p></li>
-</ol>
-
-<p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
-
-<ol>
-<li><p>在所有impalad节点上：</p>
-
-<p>HADOOP<em>CONF</em>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<em>store</em>host=desktop1 -nn=desktop1 \
-    -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
-</ol>
-
-<p>注意： 其中的<code>-hostname</code>和<code>-ipaddress</code>表示当前启动impalad实例所在机器的主机名和ip地址。</p>
-
-<p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
-
-<h1>使用shell</h1>
-
-<p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
-[Not connected] &gt;connect desktop3:21000
-[desktop3:21000] &gt;refresh
-[desktop3:21000] &gt;connect desktop4:21000
-[desktop4:21000] &gt;refresh
-</code></pre></div>
-<h1>注意：</h1>
-
-<ol>
-<li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
-<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
-</ol>
-
-<p>可能是已经启动了statestored进程</p>
-
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
-<li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
-<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
-</ul>
-
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="hadoop20130324manual-install-Cloudera-hive-CDH">
-    <article>
-      <header>
-      <h2><a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a></h2>
-      <div class="info">
-		Categories：
-			
-			<a href="/categories.html#hadoop-ref">hadoop</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#cdh-ref">cdh</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hive-ref">hive</a>
-			
-			
-		|
-		Time：<time date="2013-03-24">2013-03-24</time>
-		<a href='/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。</p>
-
-<h1>安装hive</h1>
-
-<p>hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。</p>
-
-<h2>上传文件</h2>
-
-<p>上传<code>hive-0.10.0-cdh4.2.0.tar</code>到desktop1的<code>/opt</code>，并解压缩</p>
-
-<h2>安装postgres</h2>
-
-<ul>
-<li>创建数据库</li>
-</ul>
-
-<p>这里创建数据库metastore并创建hiveuser用户，其密码为redhat。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    bash# sudo –u postgres psql
-    bash$ psql
-    postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
-    postgres=# CREATE DATABASE metastore owner=hiveuser;
-    postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
-    postgres=# \q;
-</code></pre></div>
-<ul>
-<li>初始化数据库</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">psql  -U hiveuser -d metastore
- \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
-</code></pre></div>
-<ul>
-<li>编辑postgresql配置文件(<code>/opt/PostgreSQL/9.1/data/pg_hba.conf</code>)，修改访问权限</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">host    all             all             0.0.0.0/0            md5
-</code></pre></div>
-<p>修改postgresql.conf</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">standard_conforming_strings = of
-</code></pre></div>
-<ul>
-<li>重起postgres</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">su -c &#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&#39; postgres
-</code></pre></div>
-<ul>
-<li>拷贝postgres的jdbc驱动到<code>/opt/hive-0.10.0-cdh4.2.0/lib</code></li>
-</ul>
-
-<h2>修改配置文件</h2>
-
-<ul>
-<li>hive-site.xml 
-注意修改下面配置文件中postgres数据库的密码，注意配置<code>hive.aux.jars.path</code>，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。</li>
-</ul>
-
-<p>hive-site.xml文件内容如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://127.0.0.1/metastore&lt;/value&gt;
-  &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-  &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-  &lt;description&gt;username to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-  &lt;description&gt;password to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;desktop1:8031&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.aux.jars.path&lt;/name&gt;
-  &lt;value&gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/warehouse-${user.name}&lt;/value&gt;
-  &lt;description&gt;location of default database for the warehouse&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.exec.scratchdir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hive-${user.name}&lt;/value&gt;
-  &lt;description&gt;Scratch space for Hive jobs&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.querylog.location&lt;/name&gt;
-  &lt;value&gt;/opt/data/querylog-${user.name}&lt;/value&gt;
-  &lt;description&gt;
-    Location of Hive run time structured log file
-  &lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;description&gt;Enable Hive&#39;s Table Lock Manager Service&lt;/description&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;description&gt;Zookeeper quorum used by Hive&#39;s Table Lock Manager&lt;/description&gt;
-  &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;desktop1&lt;/value&gt;
-  &lt;description&gt;This is the host address the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-  &lt;description&gt;This is the port the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-  &lt;description&gt;This is the WAR file with the jsp content for Hive Web Interface&lt;/description&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<ul>
-<li>环境变量</li>
-</ul>
-
-<p>参考hadoop中环境变量的设置</p>
-
-<ul>
-<li>启动脚本</li>
-</ul>
-
-<p>在启动完之后，执行一些sql语句可能会提示错误，如何解决错误可以参考<a href="http://kicklinux.com/hive-deploy/">Hive安装与配置</a>。</p>
-
-<ul>
-<li>hive与hbase集成
-在<code>hive-site.xml</code>中配置<code>hive.aux.jars.path</code>,在环境变量中配置hadoop、mapreduce的环境变量</li>
-</ul>
-
-<h1>异常说明</h1>
-
-<ul>
-<li><p>异常1：</p>
-
-<p>FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper</p></li>
-</ul>
-
-<p>原因：hadoop配置文件没有zk</p>
-
-<ul>
-<li><p>异常2</p>
-
-<p>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL<em>NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS</em>DATABASE<em>NAME&quot; ON &quot;THIS&quot;.&quot;DB</em>ID&quot; = &quot;THIS<em>DATABASE</em>NAME&quot;.&quot;DB<em>ID&quot; WHERE &quot;THIS</em>DATABASE<em>NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL</em>NAME&quot;) LIKE ? ESCAPE &#39;\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..</p></li>
-</ul>
-
-<p>参考：https://issues.apache.org/jira/browse/HIVE-3994</p>
-
-<ul>
-<li>异常3，以下语句没反应
-<code>
-select count(*) from hive_userinfo
-</code></li>
-<li><p>异常4</p>
-
-<p>zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)</p></li>
-</ul>
-
-<p>原因：hive中没有设置zk</p>
-
-<ul>
-<li><p>异常5</p>
-
-<p>hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</p></li>
-</ul>
-
-<p>原因：cloudera hadoop lib中没有hadoop的native jar</p>
-
-<ul>
-<li><p>异常6</p>
-
-<p>Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster</p></li>
-</ul>
-
-<p>原因：classpath没有配置正确，检查环境变量以及yarn的classpath</p>
-
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://kicklinux.com/hive-deploy/">Hive安装与配置</a></li>
-<li><a href="https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation">Hive Installation</a></li>
-</ul>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/'>&larr; Previous</a></li>
@@ -1670,7 +1354,7 @@ select count(*) from hive_userinfo
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
-    		hive <span>(3)</span>
+    		hive <span>(5)</span>
     	</a></li>
      
     	<li><a href="/categories.html#post-ref">
@@ -1688,6 +1372,12 @@ select count(*) from hive_userinfo
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a>
+      </li>
+      <li class="post">
+        <a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a>
+      </li>
       <li class="post">
         <a href="/work/2013/09/08/recent-work">最近的工作</a>
       </li>
@@ -1741,12 +1431,6 @@ select count(*) from hive_userinfo
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a>
-      </li>
-      <li class="post">
-        <a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a>
       </li>
     </ul>
     </section>
