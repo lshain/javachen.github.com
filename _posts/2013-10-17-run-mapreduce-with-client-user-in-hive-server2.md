@@ -238,7 +238,7 @@ Job job = clientUgi.doAs(new PrivilegedExceptionAction<Job> () {
 
 编译代码、替换class文件，然后重新运行HiveServer2以及jdbc测试类，查看yarn监控地址`http://192.168.56.101:8088/cluster`，截图如下：
 
-![yarn cluster monitor page](files/2013/20131017-02.png)
+![yarn cluster monitor page](/files/2013/20131017-02.png)
 
 这时候mapreduce的运行用户变为NoName，这是因为从JobConf环境变量中找不到myExecuteName变量而使用默认值NoName的原因。
 
