@@ -240,6 +240,13 @@ Job job = clientUgi.doAs(new PrivilegedExceptionAction<Job> () {
   }
 ```
 
+上面代码是在没有开启security的情况下，从环境变量（myExecuteName）获取jdbc客户端指定的用户名，然后创建一个远程的UserGroupInformation。
+
+## 为什么从环境变量中获取用户名称？
+
+1. 在不考虑安全的情况下，可以由客户端任意指定用户。
+2. 没有使用jdbc连接信息中的用户，是因为这样会导致每次获取jdbc连接的时候都要指定用户名，这样就没法使用已有的连接池。
+
 编译代码、替换class文件，然后重新运行HiveServer2以及jdbc测试类，查看yarn监控地址`http://192.168.56.101:8088/cluster`，截图如下：
 
 ![yarn cluster monitor page](/files/2013/20131017-02.png)
