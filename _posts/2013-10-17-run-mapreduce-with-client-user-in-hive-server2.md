@@ -377,6 +377,11 @@ drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
 
 除了简单测试之外，还需要测试修改后的代码是否影响源代码的运行以及hive cli的运行。
 
+# 参考文章
+
+1. [HiveServer2 Impersonation](https://cwiki.apache.org/confluence/display/Hive/Setting+up+HiveServer2)
+2. [CDH4 HiveServer2 Security Configuration]（http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html）
+
 # Enjoy it ！
 
 
