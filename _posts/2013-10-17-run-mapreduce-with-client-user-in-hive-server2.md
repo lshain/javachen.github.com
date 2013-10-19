@@ -8,6 +8,10 @@ description: 为了实现mapreduce任务中资源按用户调度，需要hive查
 
 最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的[hwi改进版](https://github.com/anjuke/hwi)和大众点评的[polestar](http://blog.csdn.net/lalaguozhe/article/details/9614061)([github地址](https://github.com/dianping/polestar))系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
 
+#环境说明
+
+集群环境使用的是cdh4.3，没有开启kerberos认证，注意：cdh4.3中hive-server2尚未实现[Impersonation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html)功能。
+
 # hive-server2的启动
 
 先从hive-server2服务的启动开始说起。
@@ -134,7 +138,7 @@ UserGroupInformation.getCurrentUser()代码如下：
 
 - 如果使用了kerberos，则为kerberos登陆用户。hive-server2中如何使用kerberos登陆，请查看官方文档。
 - 如果kerberos用户为空并且没有开启security，则从系统环境变量中取`HADOOP_USER_NAME`的值
-- 如果环境变量中没有设置HADOOP_USER_NAME，则使用系统用户，即启动hive-server2进程的用户。
+- 如果环境变量中没有设置`HADOOP_USER_NAME`，则使用系统用户，即启动hive-server2进程的用户。
 
 ## 小结
 
