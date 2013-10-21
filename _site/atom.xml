@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-10-18T22:12:21+08:00</updated>
+ <updated>2013-10-21T17:38:38+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -18,6 +18,14 @@
    <updated>2013-10-17T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2</id>
    <content type="html">&lt;p&gt;最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的&lt;a href=&quot;https://github.com/anjuke/hwi&quot;&gt;hwi改进版&lt;/a&gt;和大众点评的&lt;a href=&quot;http://blog.csdn.net/lalaguozhe/article/details/9614061&quot;&gt;polestar&lt;/a&gt;(&lt;a href=&quot;https://github.com/dianping/polestar&quot;&gt;github地址&lt;/a&gt;)系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！&lt;/p&gt;
+
+&lt;h1&gt;说明&lt;/h1&gt;
+
+&lt;p&gt;集群环境使用的是cdh4.3，没有开启kerberos认证。&lt;/p&gt;
+
+&lt;p&gt;写完这篇文章之后，在微博上收到&lt;a href=&quot;http://weibo.com/shanchao1?from=profile&amp;amp;wvr=5&amp;amp;loc=infdomain&quot;&gt;@单超eric&lt;/a&gt;的&lt;a href=&quot;http://weibo.com/1789178264/AeMItpBRk&quot;&gt;评论&lt;/a&gt;，发现cdh4.3中hive-server2已经实现&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4&quot;&gt;Impersonation&lt;/a&gt;功能，再此对@单超eric的帮助表示感谢。&lt;/p&gt;
+
+&lt;p&gt;so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。&lt;/p&gt;
 
 &lt;h1&gt;hive-server2的启动&lt;/h1&gt;
 
@@ -118,14 +126,14 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 
 &lt;p&gt;下图是从hive-server2启动到执行HadoopLoginModule的commit()方法的调用图：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;files/2013/hive-server2-invoke.png&quot; alt=&quot;hive-server2启动过程&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/files/2013/hive-server2-invoke.png&quot; alt=&quot;hive-server2启动过程&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;获取登陆用户的关键代码就在commit()，逻辑如下：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;如果使用了kerberos，则为kerberos登陆用户。hive-server2中如何使用kerberos登陆，请查看官方文档。&lt;/li&gt;
 &lt;li&gt;如果kerberos用户为空并且没有开启security，则从系统环境变量中取&lt;code&gt;HADOOP_USER_NAME&lt;/code&gt;的值&lt;/li&gt;
-&lt;li&gt;如果环境变量中没有设置HADOOP&lt;em&gt;USER&lt;/em&gt;NAME，则使用系统用户，即启动hive-server2进程的用户。&lt;/li&gt;
+&lt;li&gt;如果环境变量中没有设置&lt;code&gt;HADOOP_USER_NAME&lt;/code&gt;，则使用系统用户，即启动hive-server2进程的用户。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2&gt;小结&lt;/h2&gt;
@@ -165,7 +173,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;查看yarn监控地址&lt;code&gt;http://192.168.56.101:8088/cluster&lt;/code&gt;，可以看到提交的mapreduce任务由june用户来运行。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;files/2013/20131017-01.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/files/2013/20131017-01.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;如何修改mapreduce任务的运行用户呢？如果了解hive提交mapreduce任务的过程的话，就应该知道hive任务会通过&lt;code&gt;org.apache.hadoop.mapred.JobClient&lt;/code&gt;来提交。在JobClient的init方法中有如下代码：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;  public void init(JobConf conf) throws IOException {
@@ -213,9 +221,18 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
     }
   }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面代码是在没有开启security的情况下，从环境变量（myExecuteName）获取jdbc客户端指定的用户名，然后创建一个远程的UserGroupInformation。&lt;/p&gt;
+
+&lt;h2&gt;为什么从环境变量中获取用户名称？&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;在不考虑安全的情况下，可以由客户端任意指定用户。&lt;/li&gt;
+&lt;li&gt;没有使用jdbc连接信息中的用户，是因为这样会导致每次获取jdbc连接的时候都要指定用户名，这样就没法使用已有的连接池。&lt;/li&gt;
+&lt;/ol&gt;
+
 &lt;p&gt;编译代码、替换class文件，然后重新运行HiveServer2以及jdbc测试类，查看yarn监控地址&lt;code&gt;http://192.168.56.101:8088/cluster&lt;/code&gt;，截图如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;files/2013/20131017-02.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/files/2013/20131017-02.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;这时候mapreduce的运行用户变为NoName，这是因为从JobConf环境变量中找不到myExecuteName变量而使用默认值NoName的原因。&lt;/p&gt;
 
@@ -316,9 +333,16 @@ drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;监控页面截图：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;files/2013/20131017-03.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/files/2013/20131017-03.png&quot; alt=&quot;yarn cluster monitor page&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;除了简单测试之外，还需要测试修改后的代码是否影响源代码的运行以及hive cli的运行。&lt;/p&gt;
+
+&lt;h1&gt;参考文章&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Setting+up+HiveServer2&quot;&gt;HiveServer2 Impersonation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[CDH4 HiveServer2 Security Configuration]（http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg&lt;em&gt;topic&lt;/em&gt;9_1.html）&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;h1&gt;Enjoy it ！&lt;/h1&gt;
 </content>
@@ -3687,7 +3711,13 @@ export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
 &lt;h1&gt;查看状态&lt;/h1&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;http://rhel-june:50030/
 http://rhel-june:50070/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;推荐&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[]&lt;/li&gt;
+&lt;/ul&gt;
+</content>
  </entry>
  
  <entry>

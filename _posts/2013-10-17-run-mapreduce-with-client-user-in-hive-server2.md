@@ -8,9 +8,13 @@ description: 为了实现mapreduce任务中资源按用户调度，需要hive查
 
 最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的[hwi改进版](https://github.com/anjuke/hwi)和大众点评的[polestar](http://blog.csdn.net/lalaguozhe/article/details/9614061)([github地址](https://github.com/dianping/polestar))系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
 
-#环境说明
+# 说明
 
-集群环境使用的是cdh4.3，没有开启kerberos认证，注意：cdh4.3中hive-server2尚未实现[Impersonation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html)功能。
+集群环境使用的是cdh4.3，没有开启kerberos认证。
+
+写完这篇文章之后，在微博上收到[@单超eric](http://weibo.com/shanchao1?from=profile&wvr=5&loc=infdomain)的[评论](http://weibo.com/1789178264/AeMItpBRk)，发现cdh4.3中hive-server2已经实现[Impersonation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4)功能，再此对@单超eric的帮助表示感谢。
+
+so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。
 
 # hive-server2的启动
 
