@@ -28,7 +28,7 @@ border-bottom: 1px solid #e8e8e8;
 padding-bottom: 5px;
 }
 
-.info {
+.info_gray {
 color: #999;
 }
 
@@ -78,6 +78,34 @@ background: #f5f5f5;
      -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
           box-shadow: 0 1px 2px rgba(0,0,0,.15);
 }
+
+.content .info, .content .tip, .content .warning, .content .note {
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari */
+    border-radius: 5px; /* CSS3 (Opera?) */
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px 0;
+    padding: 10px 20px;
+}
+
+.info {
+    background-color: #E0EFFF;
+    border-color: #9EB6D4;
+}
+.tip {
+    background-color: #DDFADE;
+    border-color: #9EC49F;
+}
+.warning {
+    background-color: #FFE7E7;
+    border-color: #DF9898;
+}
+.note {
+    background-color: #FFFFDD;
+    border-color: #F7DF92;
+}
+
 
 /* Page header tweaks */
 .page-header {

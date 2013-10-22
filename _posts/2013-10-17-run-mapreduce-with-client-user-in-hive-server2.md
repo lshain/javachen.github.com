@@ -12,7 +12,9 @@ description: 为了实现mapreduce任务中资源按用户调度，需要hive查
 
 集群环境使用的是cdh4.3，没有开启kerberos认证。
 
-写完这篇文章之后，在微博上收到[@单超eric](http://weibo.com/shanchao1?from=profile&wvr=5&loc=infdomain)的[评论](http://weibo.com/1789178264/AeMItpBRk)，发现cdh4.3中hive-server2已经实现[Impersonation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4)功能，再此对@单超eric的帮助表示感谢。
+
+> 写完这篇文章之后，在微博上收到[@单超eric](http://weibo.com/shanchao1?from=profile&wvr=5&loc=infdomain)的[评论](http://weibo.com/1789178264/AeMItpBRk)，发现cdh4.3中hive-server2已经实现[Impersonation](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4)功能，再此对@单超eric的帮助表示感谢。
+
 
 so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。
 
@@ -384,7 +386,7 @@ drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
 # 参考文章
 
 1. [HiveServer2 Impersonation](https://cwiki.apache.org/confluence/display/Hive/Setting+up+HiveServer2)
-2. [CDH4 HiveServer2 Security Configuration]（http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html）
+2. [CDH4 HiveServer2 Security Configuration](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html)
 
 # Enjoy it ！
 

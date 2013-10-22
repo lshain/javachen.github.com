@@ -71,7 +71,7 @@
 
 <div class="page-header">
   	<h1>hive-server2中使用jdbc客户端用户运行mapreduce </h1>
-	<div class="info">
+	<div class="info_gray">
 		Categories：<a href="/categories.html#hive-ref">hive</a>
 		| Tags：<a href="/tags.html#hive-ref">hive</a>,<a href="/tags.html#hive-server2-ref">hive-server2</a>,<a href="/tags.html#hwi-ref">hwi</a>
 		| Time：<time date="2013-10-17">2013-10-17</time>
@@ -89,7 +89,9 @@
 
 <p>集群环境使用的是cdh4.3，没有开启kerberos认证。</p>
 
+<blockquote>
 <p>写完这篇文章之后，在微博上收到<a href="http://weibo.com/shanchao1?from=profile&amp;wvr=5&amp;loc=infdomain">@单超eric</a>的<a href="http://weibo.com/1789178264/AeMItpBRk">评论</a>，发现cdh4.3中hive-server2已经实现<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4">Impersonation</a>功能，再此对@单超eric的帮助表示感谢。</p>
+</blockquote>
 
 <p>so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。</p>
 
@@ -407,7 +409,7 @@ drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
 
 <ol>
 <li><a href="https://cwiki.apache.org/confluence/display/Hive/Setting+up+HiveServer2">HiveServer2 Impersonation</a></li>
-<li>[CDH4 HiveServer2 Security Configuration]（http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg<em>topic</em>9_1.html）</li>
+<li><a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.3.0/CDH4-Security-Guide/cdh4sg_topic_9_1.html">CDH4 HiveServer2 Security Configuration</a></li>
 </ol>
 
 <h1>Enjoy it ！</h1>
