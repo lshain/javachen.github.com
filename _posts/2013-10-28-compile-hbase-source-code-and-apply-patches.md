@@ -7,6 +7,8 @@ description: 编译hbase源代码并打补丁
 keywords: hbase、github、patch、git
 ---
 
+写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
+
 # 下载源代码
 
 从[Cloudera github](https://github.com/cloudera/hbase)上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0
@@ -162,7 +164,7 @@ MAVEN_OPTS="-Xmx2g" mvn clean install javadoc:aggregate site assembly:single -Ds
 git diff >../XXXXX.patch
 ```
 
-如果你已经将该动文件加入到提交缓存区，及执行了如下代码：
+如果你已经将该动文件加入到提交缓存区，即执行了如下代码：
 
 ```
 git add .
@@ -179,6 +181,8 @@ git diff --staged >../XXXXX.patch
 ```
 git format-patch -1
 ```
+
+`git format-patch`的详细说明请参考：[git patch操作](http://devillived.net/forum/home.php?mod=space&uid=2&do=blog&id=211)
 
 更多diff的命令如下：
 
@@ -227,6 +231,11 @@ dos2unix ../add-aggregate-in-hbase-shell.patch
 
 最后再尝试打补丁。
 
+注意：
+
+* 请注意，git apply 是一个事务性操作的命令，也就是说，要么所有补丁都打上去，要么全部放弃。
+* 对于传统的 diff 命令生成的补丁，则只能用 git apply 处理。对于 format-patch 制作的新式补丁，应当使用 git am 命令。
+
 # 升级版本
 
 当你fork了[Cloudera github](https://github.com/cloudera/hbase)代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为`cdh4-0.94.6_4.3.0`，而cdh最新分支为`cdh4-0.94.6_4.4.0`，现在如何将cdh上的分支下载到自己的参考呢？
@@ -270,7 +279,7 @@ git branch -r
 下载cdh上的分支：
 
 ```
-git branch cdh/cdh4-0.94.6_4.4.0
+git checkout cdh/cdh4-0.94.6_4.4.0
 ```
 
 将其提交到自己的远程仓库：
@@ -294,3 +303,6 @@ git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
 # 参考文章
 
 - [1] [Git常用命令备忘](http://robbinfan.com/blog/34/git-common-command)
+- [2] [git patch操作](http://devillived.net/forum/home.php?mod=space&uid=2&do=blog&id=211)
+- [3] [Git Fetch拉取他人分支](http://blog.tsnrose.com/blog/2012/04/18/git-fetch/)
+- [4] [git根据commit生成patch](http://smilejay.com/2012/08/generate-a-patch-from-a-commit/)
