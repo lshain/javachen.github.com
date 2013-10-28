@@ -48,6 +48,8 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 ```
  
+<!-- more -->
+
 下载并编译hadoop-snappy
 
 ```

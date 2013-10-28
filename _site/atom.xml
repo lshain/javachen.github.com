@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-10-28T23:02:48+08:00</updated>
+ <updated>2013-10-28T23:05:03+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -48,6 +48,8 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 &lt;p&gt;建立libjvm软连接&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
 &lt;p&gt;下载并编译hadoop-snappy&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
 cd hadoop-snappy
