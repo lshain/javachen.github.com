@@ -4,9 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <title>Getting Started Using the Cassandra CLI - JavaChen Blog</title>
-    <meta name="keywords" content="cassandra, cli" />
-    <meta name="description" content="这仅仅是一个Cassandra CLI使用方法的清单" />
+    <title>编译hbase源代码并打补丁 - JavaChen Blog</title>
+    <meta name="keywords" content="hbase、github、patch、git" />
+    <meta name="description" content="编译hbase源代码并打补丁" />
     <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
@@ -71,11 +71,11 @@
         
 
 <div class="page-header">
-  	<h1>Getting Started Using the Cassandra CLI </h1>
+  	<h1>编译hbase源代码并打补丁 </h1>
 	<div class="info_gray">
-		Categories：<a href="/categories.html#cassandra-ref">cassandra</a>
-		| Tags：<a href="/tags.html#cassandra-ref">cassandra</a>,<a href="/tags.html#cli-ref">cli</a>
-		| Time：<time date="2012-04-09">2012-04-09</time>
+		Categories：<a href="/categories.html#hbase-ref">hbase</a>
+		| Tags：<a href="/tags.html#hbase-ref">hbase</a>
+		| Time：<time date="2013-10-28">2013-10-28</time>
 		<a href='#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 </div>
@@ -84,166 +84,192 @@
 <div class="row">
   <div class="span9">
     
-    <p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
+    <h1>下载源代码</h1>
 
-<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+<p>从<a href="https://github.com/cloudera/hbase">Cloudera github</a>上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
+</code></pre></div>
+<p>说明：</p>
 
-<h1>Starting the CLI</h1>
+<ol>
+<li>-b 指定下载哪个分支</li>
+<li>最后一个参数指定下载下来的文件名称</li>
+</ol>
 
-<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
-如果你有一个但节点的集群，则使用以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
-</code></pre></div>
-<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
-</code></pre></div>
-<p>或者，可以直接执行以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
-</code></pre></div>
-<p>登录成功之后，可以看到：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
-Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
-</code></pre></div>
-<p>你必须指定连接一个节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
-</code></pre></div>
-<h1>Creating a Keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
-</code></pre></div>
-<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
-    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
-    and strategy_options = [{replication_factor:1}];
-</code></pre></div>
-<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+<h1>添加snappy压缩支持</h1>
 
-<h1>Use a keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
+<h2>编译snappy</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
+cd snappy
+sh autogen.sh
+./configure 
+sudo make install
 </code></pre></div>
-<h1>Creating a Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
-WITH comparator = UTF8Type
-AND key_validation_class=UTF8Type
-AND column_metadata = [
-{column_name: full_name, validation_class: UTF8Type}
-{column_name: email, validation_class: UTF8Type}
-{column_name: state, validation_class: UTF8Type}
-{column_name: gender, validation_class: UTF8Type}
-{column_name: birth_year, validation_class: LongType}
-];
-</code></pre></div>
-<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
-下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
-</code></pre></div>
-<h1>Creating a Counter Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
-      default_validation_class=CounterColumnType 
-      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
-</code></pre></div>
-<p>插入一行和计数列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
-</code></pre></div>
-<p>增加计数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
-</code></pre></div>
-<h1>Inserting Rows and Columns</h1>
+<h2>编译hadoop-snappy</h2>
 
-<p>以下命令以一个特点的行key值插入列到users中</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
+<p>降低gcc版本到4.4:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install gcc-4.4
+rm /usr/bin/gcc
+ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 </code></pre></div>
-<p>更新数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
+<p>建立libjvm软连接</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 </code></pre></div>
-<p>获取数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
+<p>下载并编译hadoop-snappy</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
+cd hadoop-snappy
+make package -Dsnappy.prefix=/usr/local/
 </code></pre></div>
-<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
+<p>安装jar包到本地仓库</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
+mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
+</code></pre></div>
+<h1>添加lzo压缩支持</h1>
 
-<p>查询数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
-</code></pre></div>
-<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
-</code></pre></div>
-<h1>Reading Rows and Columns</h1>
+<p>暂不在此列出，请参考网上文章。</p>
 
-<p>使用List命令查询记录，默认查询100条记录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
-</code></pre></div>
-<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
-<li>ascii</li>
-<li>bytes</li>
-<li>integer (a generic variable-length integer type)</li>
-<li>lexicalUUID</li>
-<li>long</li>
-<li>utf8</li>
-例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
-</code></pre></div>
-<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
-[default@demo] ASSUME users COMPARATOR AS ascii;
-[default@demo] ASSUME users VALIDATOR AS ascii;
-</code></pre></div>
-<h1>Setting an Expiring Column</h1>
+<h1>编译Protobuf</h1>
 
-<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
+<p>注意：目前只能装2.4.1版本的，装最新版本的可能会缺少文件。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
+unzip protobuf-2.4.1.zip
+cd protobuf-2.4.1
+./configure
+make
+sudo make install
 </code></pre></div>
-<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+<p>测试是否安装成功，如果成功你会看到：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ protoc
+Missing input file.
+</code></pre></div>
+<p>如果安装失败，你可能会看到：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ protoc
+protoc: error while loading shared libraries: libprotobuf.so.7: cannot open shared object file: No such file or directory
+</code></pre></div>
+<h1>编译hbase</h1>
 
-<h1>Indexing a Column</h1>
+<p>进入到cdh4-0.94.6_4.4.0 目录，然后运行mvn基本命令。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd cdh4-0.94.6_4.4.0
+mvn clean install
+</code></pre></div>
+<p>忽略测试，请添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-DskipTests
+</code></pre></div>
+<p>添加MAVEN运行时jvm大小，请在mvn前面添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">MAVEN_OPTS=&quot;-Xmx2g&quot;
+</code></pre></div>
+<p>生成javadoc和文档，请添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">javadoc:aggregate site assembly:single
+</code></pre></div>
+<p>生成release加入security和native包，请添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Prelease,security,native
+</code></pre></div>
+<p>基于hadoop2.0进行编译，请添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Dhadoop.profile=2.0
+</code></pre></div>
+<p>添加hadoop-snappy支持，请添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Prelease,hadoop-snappy -Dhadoop-snappy.version=0.0.1-SNAPSHOT
+</code></pre></div>
+<p>如果你添加了一些java代码，在每个文件头没有添加license，则需要添加如下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-Drat.numUnapprovedLicenses=200
+</code></pre></div>
+<p>综上，完整命令如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">MAVEN_OPTS=&quot;-Xmx2g&quot; mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
+</code></pre></div>
+<h1>生成patch</h1>
 
-<p>给birth_year添加一个二级索引：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
-        WITH comparator = UTF8Type AND column_metadata = 
-        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+<p>修改代码之后，在提交代码之前，运行如下命令生成patch：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &gt;../XXXXX.patch
 </code></pre></div>
-<p>由于该列被索引了，所以可以直接通过该列查询：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
+<p>如果你已经将该动文件加入到提交缓存区，及执行了如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git add .
 </code></pre></div>
-<h1>Deleting Rows and Columns</h1>
+<p>你可以使用如下代码打补丁：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git diff --staged &gt;../XXXXX.patch
+</code></pre></div>
+<p>如果在提交之后，想生成patch，执行如下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git format-patch -1
+</code></pre></div>
+<p>更多diff的命令如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &lt;file&gt;   # 比较当前文件和暂存区文件差异
+git diff
+git diff &lt;$id1&gt; &lt;$id2&gt;    # 比较两次提交之间的差异
+git diff &lt;branch1&gt;..&lt;branch2&gt;    # 在两个分支之间比较 
+git diff --staged   # 比较暂存区和版本库差异
+git diff --cached   # 比较暂存区和版本库差异
+git diff --stat     # 仅仅比较统计信息
+</code></pre></div>
+<h1>打patch</h1>
 
-<p>删除yomama索引的coupon_code列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
-[default@demo] GET users [&#39;yomama&#39;];
+<p>打patch：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git apply ../XXXXX.patch
 </code></pre></div>
-<p>或者删除整行：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
+<p>测试patch是否打成功：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git apply --check  ../add-aggregate-in-hbase-shell.patch
 </code></pre></div>
-<h1>Dropping Column Families and Keyspaces</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
-[default@demo] DROP KEYSPACE demo;
+<p>如果出现以下错误：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">june@javachen.com /chan/workspace/hadoop/hbase $ git apply ../XXXXX.patch
+fatal: git apply: bad git-diff - expected /dev/null on line 4
 </code></pre></div>
-<h1>For help</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
+<p>请安装dos2unix：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install dos2unix -y
 </code></pre></div>
-<p>查看某一个命令的详细说明：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
+<p>然后，执行如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dos2unix ../add-aggregate-in-hbase-shell.patch
 </code></pre></div>
-<h1>To Quit</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
+<p>最后再尝试打补丁。</p>
+
+<h1>升级版本</h1>
+
+<p>当你fork了<a href="https://github.com/cloudera/hbase">Cloudera github</a>代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为<code>cdh4-0.94.6_4.3.0</code>，而cdh最新分支为<code>cdh4-0.94.6_4.4.0</code>，现在如何将cdh上的分支下载到自己的参考呢？</p>
+
+<p>查看远程服务器地址和仓库名称：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+origin  git@github.com:javachen/hbase.git (fetch)
+origin  git@github.com:javachen/hbase.git (push)
 </code></pre></div>
-<h1>To Execute Script</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
+<p>添加远程仓库地址：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git remote add cdh git@github.com:cloudera/hbase.git
 </code></pre></div>
+<p>再一次查看远程服务器地址和仓库名称：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+cdh https://github.com/cloudera/hbase (fetch)
+cdh https://github.com/cloudera/hbase (push)
+origin  git@github.com:javachen/hbase.git (fetch)
+origin  git@github.com:javachen/hbase.git (push)
+</code></pre></div>
+<p>抓取远程仓库更新：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git fetch cdh
+</code></pre></div>
+<p>然后，再执行下面命令查看远程分支：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git branch -r
+</code></pre></div>
+<p>下载cdh上的分支：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git branch cdh/cdh4-0.94.6_4.4.0
+</code></pre></div>
+<p>将其提交到自己的远程仓库：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+</code></pre></div>
+<h1>排错</h1>
+
+<p>如果在启动hbase的服务过程中出现如下日志：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: HBase Unknown
+2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Subversion Unknown -r Unknown
+2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Compiled by Unknown on Unknown
+</code></pre></div>
+<p>请查看src/saveVersion.sh文件的编码及换行符是否和你的操作系统一致。编码应该设置为UTF-8，如果你使用的是linux系统，则换行符应该为unix/linux换行符，不应该为window换行符。</p>
+
 <h1>参考文章</h1>
 
 <ul>
-<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
-<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
+<li>[1] <a href="http://robbinfan.com/blog/34/git-common-command">Git常用命令备忘</a></li>
 </ul>
 
 
     <br/>
     <div class="copyright">
-	<p><strong>本文固定链接：</strong><a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli'>http://blog.javachen.com/cassandra/2012/04/09/getting-started-using-the-cassandra-cli</a></p>
-	<p><strong>原创文章,转载请注明出处：</strong><a href='/cassandra/2012/04/09/getting-started-using-the-cassandra-cli'>JavaChen Blog</a></p>
+	<p><strong>本文固定链接：</strong><a href='/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches'>http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches</a></p>
+	<p><strong>原创文章,转载请注明出处：</strong><a href='/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches'>JavaChen Blog</a></p>
     </div>
      
     <div style="float:right">
@@ -276,11 +302,11 @@ AND column_metadata = [
     <div class="pagination">
       <ul>
       
-        <li class="prev"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio" title="使用DataStax Community Edition安装Cassandra单节点">&larr; Previous</a></li>
+        <li class="prev"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2" title="hive-server2中使用jdbc客户端用户运行mapreduce">&larr; Previous</a></li>
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next"><a href="/kettle/2012/04/13/kettle-dependency-management" title="Kettle dependency management">Next &rarr;</a></li>
+        <li class="next disabled"><a>Next &rarr;</a>
       
       </ul>
     </div>
@@ -298,9 +324,7 @@ AND column_metadata = [
 
   
      
-    	<li><a href="/tags.html#cassandra-ref">cassandra <span>3</span></a></li>
-     
-    	<li><a href="/tags.html#cli-ref">cli <span>1</span></a></li>
+    	<li><a href="/tags.html#hbase-ref">hbase <span>6</span></a></li>
     
   
 
@@ -376,8 +400,6 @@ AND column_metadata = [
   <h2>Related Posts</h2>
   <ul>
    
-   <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-   
    <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
    
    <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
@@ -395,6 +417,8 @@ AND column_metadata = [
    <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
    
    <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
+   
+   <li><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></li>
    
   </ul>
   </section>  
@@ -490,7 +514,7 @@ AND column_metadata = [
 
 <div id="comments">
 	<!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread" data-title="Getting Started Using the Cassandra CLI" ></div>
+	<div class="ds-thread" data-title="编译hbase源代码并打补丁" ></div>
 	<script type="text/javascript">
 	var duoshuoQuery = {short_name:"javachen"};
 	(function() {
@@ -508,8 +532,8 @@ AND column_metadata = [
 <!-- wumi Button BEGIN -->
 <script type="text/javascript">
     var wumiiPermaLink = ""; //请用代码生成文章永久的链接
-    var wumiiTitle = "/cassandra/2012/04/09/getting-started-using-the-cassandra-cli"; //请用代码生成文章标题
-    var wumiiTags = "cassandracli"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiTitle = "/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"; //请用代码生成文章标题
+    var wumiiTags = "hbase"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
     var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
     var wumiiSitePrefix = "http://blog.javachen.com/";
     var wumiiParams = "&num=7&mode=2&pf=JAVASCRIPT";

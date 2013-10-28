@@ -79,6 +79,83 @@
   <div class="span9">
   
   
+  <section id="kettle20120413kettle-dependency-management">
+    <article>
+      <header>
+      <h2><a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#kettle-ref">kettle</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#kettle-ref">kettle</a>
+			
+			,
+			
+			
+			<a href="/tags.html#ivy-ref">ivy</a>
+			
+			
+		|
+		Time：<time date="2012-04-13">2012-04-13</time>
+		<a href='/kettle/2012/04/13/kettle-dependency-management#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.<br />
+使用ivy编译kettle的源代码却是非常容易的事情.</p>
+
+<p>该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>,文章标题没作修改.<br />
+编写此文,是为了记录编译kettle源码的方法和过程.</p>
+
+<p><strong>以下是对原文的一个简单翻译.</strong>
+将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.</p>
+
+<p>pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
+<!--more-->
+<strong>关于Ivy</strong>
+<a href="http://ant.apache.org/ivy/" target="_blank">Apache Ivy™</a>是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:<a href="http://ant.apache.org/ivy/features.html" target="_blank">enterprise features</a>, <a href="http://ant.apache.org/ivy/testimonials.html" target="_blank">what people say about it</a>, 以及 <a href="http://ant.apache.org/ivy/history/latest-milestone/index.html" target="_blank">how it can improve your build system</a></p>
+
+<p><strong>在kettle中使用ivyIDE</strong>
+首先,从svn上下载kettle的源代码:
+<pre>
+svn://source.pentaho.org/svnkettleroot/Kettle/trunk
+</pre>
+如果你想在Eclipse上使用<a href="http://ant.apache.org/ivy/ivyde/download.cgi" target="_blank">ivyde plugin</a>.<br />
+请参考相关文章安装该插件.</p>
+
+<p>如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.<br />
+1.执行<code>ant resolve</code>,这个命令将会创建一个叫做resolved-libs的文件夹.<br />
+2.使用下面命令更新classpath <br />
+  a.手动的添加这些jar文件到你的ide的classpath<br />
+  b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)<br />
+注意:kettle项目中的构建脚本会自动安装ivy插件.</p>
+
+<p><strong>构建Kettle</strong>
+你可以下载kettle源代码然后立即执行<code>ant distrib</code>命令<br />
+或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.</p>
+
+<p><strong>ivy中未完成的</strong>
+<strong>pentaho-database-</strong>这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
+<strong>swt-</strong>swt文件目前没有包括在ivy.xml文件中
+<strong>library configurations-</strong>每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
+<strong>checked-in plugins-</strong>当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.</p>
+
+<p><strong>参考文章</strong>
+<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>
+</p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="cassandra20120409getting-started-using-the-cassandra-cli">
     <article>
       <header>
@@ -1010,110 +1087,6 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
     </article>
   </section>
   
-  
-  <section id="kettle20120217step-error-handling-in-kettle">
-    <article>
-      <header>
-      <h2><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Time：<time date="2012-02-17">2012-02-17</time>
-		<a href='/kettle/2012/02/17/step-error-handling-in-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。</p>
-
-<p>下面例子中读取postgres数据库中的a0表数据，然后输出到a1表：
-<div class="pic">
-<img alt="" src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wck3m7j.jpg" class="alignnone" width="600" height="172" />
-</div></p>
-
-<p>a1表结构如下：
-<pre lang="sql">
-CREATE TABLE a1
-(
-  a double precision,
-  id integer NOT NULL,
-  CONSTRAINT id<em>pk PRIMARY KEY (id ),
-  CONSTRAINT id</em>unin UNIQUE (id )
-)
-</pre></p>
-
-<p>从表结构可以看出，a1表中id为主键、唯一。</p>
-
-<p>a0表数据预览：
-<div class="pic">
-<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wcr6c2j.jpg" class="alignnone" width="553" height="403" />
-</div></p>
-
-<p>现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。
-再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。</p>
-
-<p>现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。
-在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。
-<div class="pic">
-<img src="http://ww3.sinaimg.cn/mw600/48e24b4cjw1dq56wd5ckwj.jpg" alt="" />
-</div></p>
-
-<p><strong>相关字段说明：</strong></p>
-
-<ul>
-<li>目标步骤：指定处理错误的步骤</li>
-<li>启用错误处理？：设置是否启用错误处理</li>
-<li>错误数列名：出错的记录个数</li>
-<li>错误描述列名：描述错误信息的列名称</li>
-<li>错误列的列名：出错列的名称</li>
-<li>错误编码列名：描述错误的代码的列名</li>
-<li>允许的最大错误数：允许的最大错误数，超过此数，不在处理错误</li>
-<li>允许的最大错误百分比：</li>
-<li>在计算百分百前最少要读入的行数：</li>
-</ul>
-
-<p>添加错误处理后的转换如下：
-<div class="pic">
-<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56wdntipj.jpg" alt="" />
-</div></p>
-
-<p>记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。
-<div class="pic">
-<img src="http://ww2.sinaimg.cn/mw600/48e24b4cjw1dq56wdvk6uj.jpg" alt="" />
-</div></p>
-
-<p>记录的错误信息如下：
-<div class="pic">
-<img src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dq56we2sn2j.jpg" alt="" />
-</div></p>
-
-<p><strong>分析</strong>
-可以看到,错误日志里只是记录了出错的行里面的信息，并没有记录当前行所在的表名称以及执行时间等等，如果能够对此进行扩展，则该错误日志表才能更有实际意义。</p>
-
-<p><strong>说明</strong>
-1.错误日志的错误码含义（如：TOP001）含义见参考文章2.</p>
-
-<p><strong>参考文章</strong>
-<li><a href="http://wiki.pentaho.com/display/EAI/.09+Transformation+Steps#.09TransformationSteps-StepErrorHandling" target="_blank">Step Error Handling</a>
-</li>
-<li><a href="http://wiki.pentaho.com/display/COM/Step+error+handling+codes" target="_blank">Step error handling codes</a>
-</li></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page3'>&larr; Previous</a></li>
@@ -1174,7 +1147,7 @@ CREATE TABLE a1
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(1)</span>
+    		hbase <span>(2)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -1196,6 +1169,9 @@ CREATE TABLE a1
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
+      </li>
       <li class="post">
         <a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a>
       </li>
@@ -1252,9 +1228,6 @@ CREATE TABLE a1
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a>
       </li>
     </ul>
     </section>

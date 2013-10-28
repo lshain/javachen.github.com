@@ -4,13 +4,201 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-10-25T15:21:06+08:00</updated>
+ <updated>2013-10-28T23:02:48+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
    <email>june.chan@foxmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>编译hbase源代码并打补丁</title>
+   <link href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"/>
+   <updated>2013-10-28T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches</id>
+   <content type="html">&lt;h1&gt;下载源代码&lt;/h1&gt;
+
+&lt;p&gt;从&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;-b 指定下载哪个分支&lt;/li&gt;
+&lt;li&gt;最后一个参数指定下载下来的文件名称&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1&gt;添加snappy压缩支持&lt;/h1&gt;
+
+&lt;h2&gt;编译snappy&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
+cd snappy
+sh autogen.sh
+./configure 
+sudo make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;编译hadoop-snappy&lt;/h2&gt;
+
+&lt;p&gt;降低gcc版本到4.4:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo yum install gcc-4.4
+rm /usr/bin/gcc
+ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;建立libjvm软连接&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下载并编译hadoop-snappy&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
+cd hadoop-snappy
+make package -Dsnappy.prefix=/usr/local/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装jar包到本地仓库&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
+mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;添加lzo压缩支持&lt;/h1&gt;
+
+&lt;p&gt;暂不在此列出，请参考网上文章。&lt;/p&gt;
+
+&lt;h1&gt;编译Protobuf&lt;/h1&gt;
+
+&lt;p&gt;注意：目前只能装2.4.1版本的，装最新版本的可能会缺少文件。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
+unzip protobuf-2.4.1.zip
+cd protobuf-2.4.1
+./configure
+make
+sudo make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;测试是否安装成功，如果成功你会看到：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ protoc
+Missing input file.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果安装失败，你可能会看到：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ protoc
+protoc: error while loading shared libraries: libprotobuf.so.7: cannot open shared object file: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;编译hbase&lt;/h1&gt;
+
+&lt;p&gt;进入到cdh4-0.94.6_4.4.0 目录，然后运行mvn基本命令。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd cdh4-0.94.6_4.4.0
+mvn clean install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;忽略测试，请添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-DskipTests
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;添加MAVEN运行时jvm大小，请在mvn前面添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;MAVEN_OPTS=&amp;quot;-Xmx2g&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;生成javadoc和文档，请添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;javadoc:aggregate site assembly:single
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;生成release加入security和native包，请添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Prelease,security,native
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;基于hadoop2.0进行编译，请添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Dhadoop.profile=2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;添加hadoop-snappy支持，请添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Prelease,hadoop-snappy -Dhadoop-snappy.version=0.0.1-SNAPSHOT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果你添加了一些java代码，在每个文件头没有添加license，则需要添加如下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Drat.numUnapprovedLicenses=200
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;综上，完整命令如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;MAVEN_OPTS=&amp;quot;-Xmx2g&amp;quot; mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;生成patch&lt;/h1&gt;
+
+&lt;p&gt;修改代码之后，在提交代码之前，运行如下命令生成patch：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;gt;../XXXXX.patch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果你已经将该动文件加入到提交缓存区，及执行了如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git add .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你可以使用如下代码打补丁：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff --staged &amp;gt;../XXXXX.patch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果在提交之后，想生成patch，执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git format-patch -1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;更多diff的命令如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;lt;file&amp;gt;   # 比较当前文件和暂存区文件差异
+git diff
+git diff &amp;lt;$id1&amp;gt; &amp;lt;$id2&amp;gt;    # 比较两次提交之间的差异
+git diff &amp;lt;branch1&amp;gt;..&amp;lt;branch2&amp;gt;    # 在两个分支之间比较 
+git diff --staged   # 比较暂存区和版本库差异
+git diff --cached   # 比较暂存区和版本库差异
+git diff --stat     # 仅仅比较统计信息
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;打patch&lt;/h1&gt;
+
+&lt;p&gt;打patch：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git apply ../XXXXX.patch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;测试patch是否打成功：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git apply --check  ../add-aggregate-in-hbase-shell.patch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果出现以下错误：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git apply ../XXXXX.patch
+fatal: git apply: bad git-diff - expected /dev/null on line 4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;请安装dos2unix：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install dos2unix -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，执行如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;dos2unix ../add-aggregate-in-hbase-shell.patch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最后再尝试打补丁。&lt;/p&gt;
+
+&lt;h1&gt;升级版本&lt;/h1&gt;
+
+&lt;p&gt;当你fork了&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为&lt;code&gt;cdh4-0.94.6_4.3.0&lt;/code&gt;，而cdh最新分支为&lt;code&gt;cdh4-0.94.6_4.4.0&lt;/code&gt;，现在如何将cdh上的分支下载到自己的参考呢？&lt;/p&gt;
+
+&lt;p&gt;查看远程服务器地址和仓库名称：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+origin  git@github.com:javachen/hbase.git (fetch)
+origin  git@github.com:javachen/hbase.git (push)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;添加远程仓库地址：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git remote add cdh git@github.com:cloudera/hbase.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;再一次查看远程服务器地址和仓库名称：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+cdh https://github.com/cloudera/hbase (fetch)
+cdh https://github.com/cloudera/hbase (push)
+origin  git@github.com:javachen/hbase.git (fetch)
+origin  git@github.com:javachen/hbase.git (push)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;抓取远程仓库更新：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git fetch cdh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，再执行下面命令查看远程分支：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git branch -r
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;下载cdh上的分支：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git branch cdh/cdh4-0.94.6_4.4.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;将其提交到自己的远程仓库：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;排错&lt;/h1&gt;
+
+&lt;p&gt;如果在启动hbase的服务过程中出现如下日志：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: HBase Unknown
+2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Subversion Unknown -r Unknown
+2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Compiled by Unknown on Unknown
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;请查看src/saveVersion.sh文件的编码及换行符是否和你的操作系统一致。编码应该设置为UTF-8，如果你使用的是linux系统，则换行符应该为unix/linux换行符，不应该为window换行符。&lt;/p&gt;
+
+&lt;h1&gt;参考文章&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://robbinfan.com/blog/34/git-common-command&quot;&gt;Git常用命令备忘&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>hive-server2中使用jdbc客户端用户运行mapreduce</title>
