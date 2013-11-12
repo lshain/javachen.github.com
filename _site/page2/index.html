@@ -79,6 +79,102 @@
   <div class="span9">
   
   
+  <section id="hadoop20130823publish-proerties-using-zookeeper">
+    <article>
+      <header>
+      <h2><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#hadoop-ref">hadoop</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#ZooKeeper-ref">ZooKeeper</a>
+			
+			
+		|
+		Time：<time date="2013-08-23">2013-08-23</time>
+		<a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <h1>前言</h1>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h1>ZooKeeper</h1>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+
+	    <h4><a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="hive20130822hive-Driver">
+    <article>
+      <header>
+      <h2><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#hive-ref">hive</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hadoop-ref">hadoop</a>
+			
+			,
+			
+			
+			<a href="/tags.html#hive-ref">hive</a>
+			
+			
+		|
+		Time：<time date="2013-08-22">2013-08-22</time>
+		<a href='/hive/2013/08/22/hive-Driver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <h1>概括</h1>
+
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
+
+
+	    <h4><a href='/hive/2013/08/22/hive-Driver' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="hive20130821hive-CliDriver">
     <article>
       <header>
@@ -382,181 +478,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     </article>
   </section>
   
-  
-  <section id="hbase20130417access-idh-2.3-hbase-in-kettle">
-    <article>
-      <header>
-      <h2><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#hbase-ref">hbase</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			,
-			
-			
-			<a href="/tags.html#idh-ref">idh</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#bigdata-ref">bigdata</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hbase-ref">hbase</a>
-			
-			
-		|
-		Time：<time date="2013-04-17">2013-04-17</time>
-		<a href='/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <h1>摘要</h1>
-
-<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
-
-<p>截至目前，kettle的版本为4.4.1，<code>big-data-plugin</code>插件支持<code>cloudera CDH3u4、CDH4.1</code>，暂不支持Intel的hadoop发行版本IDH。</p>
-
-<p>本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
-
-<h1>方法</h1>
-
-<p>假设你已经安装好IDH-2.3的集群，并已经拷贝出<code>/usr/lib/</code>下的hadoop、hbase、zookeeper目录。</p>
-
-<p>首先，下载一个kettle版本，如社区版data-integration，然后进入<code>data-integration/plugins/pentaho-big-data-plugin</code>目录，修改plugin.properties文件中的<code>active.hadoop.configuration</code>属性，将其值改为cdh4</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">active.hadoop.configuration=cdh4
-</code></pre></div>
-<p>修改kettle的log4j日志等级，并启动kettle，检查启动过程中是否报错，如有错误，请修正错误。</p>
-
-<p>进入hadoop-configurations目录，copy and paste cdh3u4并命名为idh2.3。</p>
-
-<p>因为IDH和CDH的hadoop版本不一致，故需要替换hadoop和hbase、zookeeper为IDH的版本，涉及到需要替换、增加的jar有，这些jar文件从IDH安装后的目录中拷贝即可：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.94.1-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/protobuf-java-2.4.0a.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.4.5-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-ant-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-examples-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-test-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-tools-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.8.0.jar
-</code></pre></div>
-<p>其他依赖包可以尝试添加，并删除多版本的jar文件。</p>
-
-<p>需要删除CDH的jar有：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.90.6-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.3.5-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-client-0.20.2-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-0.20.2-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libfb303-0.5.0-cdh.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.5.0-cdh.jar
-</code></pre></div>
-<p>修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。</p>
-
-<h3>验证</h3>
-
-<ol>
-<li>打开hbase output组件，配置zookeeper的host和port</li>
-</ol>
-
-<p><img src="/files/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
-
-<ol>
-<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
-retrying after sleep of 1000
-java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
-at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
-at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
-at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
-at $Proxy5.getProtocolVersion(Unknown Source)
-at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
-at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
-at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
-at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
-Caused by: java.io.EOFException
-at java.io.DataInputStream.readInt(DataInputStream.java:375)
-at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
-at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
-</code></pre></div>
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="kettle20130407add-a-field-from-paramter-to-output">
-    <article>
-      <header>
-      <h2><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#kettle-ref">kettle</a>
-			
-			
-		|
-		Time：<time date="2013-04-07">2013-04-07</time>
-		<a href='/kettle/2013/04/07/add-a-field-from-paramter-to-output#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？</p>
-
-<p>上述问题可以拆分为两个问题：</p>
-
-<ol>
-<li>从命令行接受一个参数作为一个字段</li>
-<li>合并输入流和这个字段</li>
-</ol>
-
-<h2>问题1</h2>
-
-<p>第一个问题可以使用kettle中<code>获取系统信息</code>组件，定义一个变量，该值来自命令行参数，见下图：</p>
-
-<p><img src="/files/2013/get-a-field-from-paramter.png" alt="get-a-field-from-paramter"></p>
-
-<h2>问题2</h2>
-
-<p>第二个问题可以使用kettle中<code>记录关联 (笛卡尔输出)</code>组件将两个组件关联起来，输出一个笛卡尔结果集，关联条件设定恒为true，在运行前设置第一个参数的值，然后运行即可。</p>
-
-<p><img src="/files/2013/run-kettle-for-join-two-inputs.png" alt="run-kettle-for-join-two-inputs"></p>
-
-<h2>下载脚本</h2>
-
-<p>最后，kettle转换文件下载地址：<a href="/files/2013/join-a-paramter-to-input-in-kettle.zip">在这里</a>。</p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/'>&larr; Previous</a></li>
@@ -617,7 +538,7 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(2)</span>
+    		hbase <span>(3)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -626,6 +547,10 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
      
     	<li><a href="/categories.html#post-ref">
     		post <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>(1)</span>
     	</a></li>
     
   
@@ -639,6 +564,12 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a>
+      </li>
       <li class="post">
         <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
       </li>
@@ -692,12 +623,6 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>

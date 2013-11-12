@@ -738,6 +738,14 @@ yum方式安装：
 	</property>
 	</configuration>
 
+## 修改`/etc/hadoop/conf/hadoop-env.sh`
+
+添加环境变量`HADOOP_MAPRED_HOME`，如果不添加，则当你使用yarn运行mapreduce时候会出现`UNKOWN RPC TYPE`的异常
+
+```
+export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+```
+
 
 ## 在hdfs中创建hive数据仓库目录
 

@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/atom.xml" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-10-28T23:05:03+08:00</updated>
+ <updated>2013-11-12T18:54:03+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -13,11 +13,253 @@
 
  
  <entry>
+   <title>安装saltstack和halite</title>
+   <link href="http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite"/>
+   <updated>2013-11-11T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</id>
+   <content type="html">&lt;p&gt;本文记录安装saltstack和halite过程。&lt;/p&gt;
+
+&lt;p&gt;首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。&lt;/p&gt;
+
+&lt;h1&gt;下载yum源&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;安装依赖&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install python-jinja2 -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;安装saltstack&lt;/h1&gt;
+
+&lt;p&gt;在sk1上安装master：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在sk1上安装minion：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-minion
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;关闭防火墙&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;iptables -F
+setenforce 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
+&lt;h1&gt;修改配置文件&lt;/h1&gt;
+
+&lt;p&gt;/etc/salt/master
+interface: 0.0.0.0
+auto_accept: True&lt;/p&gt;
+
+&lt;p&gt;/etc/salt/minion
+master: sk1
+id: sk2&lt;/p&gt;
+
+&lt;h1&gt;启动&lt;/h1&gt;
+
+&lt;p&gt;分别在sk1和sk2上配置开机启动：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chkconfig salt-master on
+chkconfig salt-minion on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;分别在sk1和sk2上以service方式启动：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/salt-master start
+/etc/init.d/salt-minion start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你可以在sk2上以后台运行salt-minion&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-minion -d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;或者在sk2上debug方式运行：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-minion -l debug
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;排错&lt;/h1&gt;
+
+&lt;p&gt;如果启动提示如下错误：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 vagrant]# /etc/init.d/salt-master start
+Starting salt-master daemon: Traceback (most recent call last):
+ File &amp;quot;/usr/bin/salt-master&amp;quot;, line 10, in &amp;lt;module&amp;gt;
+   salt_master()
+ File &amp;quot;/usr/lib/python2.6/site-packages/salt/scripts.py&amp;quot;, line 20, in salt_master
+   master.start()
+ File &amp;quot;/usr/lib/python2.6/site-packages/salt/__init__.py&amp;quot;, line 114, in start
+   if check_user(self.config[&amp;#39;user&amp;#39;]):
+ File &amp;quot;/usr/lib/python2.6/site-packages/salt/utils/verify.py&amp;quot;, line 296, in check_user
+   if user in e.gr_mem] + [pwuser.gid])
+AttributeError: &amp;#39;pwd.struct_passwd&amp;#39; object has no attribute &amp;#39;gid&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;请下载saltstack源码重新编译：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://github.com/saltstack/salt/archive/develop.zip
+unzip develop
+cd salt-develop/
+python2.6 setup.py install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;salt minion和master的认证过程&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;minion在第一次启动时，会在/etc/salt/pki/minion/下自动生成minion.pem(private key), minion.pub(public key)，然后将minion.pub发送给master&lt;/li&gt;
+&lt;li&gt;master在接收到minion的public key后，通过salt-key命令accept minion public key，这样在master的/etc/salt/pki/master/minions下的将会存放以minion id命名的public key, 然后master就能对minion发送指令了&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;master上执行：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+Unaccepted Keys:
+Rejected Keys:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接受所有的认证请求：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;再次查看：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+sk2
+Unaccepted Keys:
+Rejected Keys:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;salt-key&lt;/code&gt;更多说明：&lt;a href=&quot;http://docs.saltstack.com/ref/cli/salt-key.html&quot;&gt;http://docs.saltstack.com/ref/cli/salt-key.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1&gt;测试运行&lt;/h1&gt;
+
+&lt;p&gt;在master上运行ping：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt &amp;#39;*&amp;#39; test.ping
+sk2:salt &amp;#39;*&amp;#39; test.ping
+    True
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;True表明测试成功。&lt;/p&gt;
+
+&lt;h1&gt;安装halite&lt;/h1&gt;
+
+&lt;h2&gt;下载代码&lt;/h2&gt;
+
+&lt;h2&gt;安装salt-api&lt;/h2&gt;
+
+&lt;h2&gt;配置salt master文件&lt;/h2&gt;
+
+&lt;h2&gt;添加登陆用户&lt;/h2&gt;
+
+&lt;h2&gt;启动 salt-api&lt;/h2&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>在eclipse中调试运行hbase</title>
+   <link href="http://blog.javachen.com/hbase/2013/11/01/debug-hbase-in-eclipse"/>
+   <updated>2013-11-01T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hbase/2013/11/01/debug-hbase-in-eclipse</id>
+   <content type="html">&lt;p&gt;这篇文章记录一下如何在eclipse中调试运行hbase。&lt;/p&gt;
+
+&lt;h1&gt;下载并编译源代码&lt;/h1&gt;
+
+&lt;p&gt;请参考&lt;a href=&quot;http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/&quot;&gt;编译hbase源代码并打补丁&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1&gt;修改配置文件&lt;/h1&gt;
+
+&lt;p&gt;修改 &lt;code&gt;conf/hbase-site.xml&lt;/code&gt;文件：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.defaults.for.version&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;0.94.6-cdh4.4.0&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+
+&amp;lt;property&amp;gt;
+&amp;lt;name&amp;gt;hbase.rootdir&amp;lt;/name&amp;gt;
+&amp;lt;value&amp;gt;file:///home/june/tmp/data&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;把conf文件夹加到Classpath中&lt;/p&gt;
+
+&lt;h1&gt;运行HMaster&lt;/h1&gt;
+
+&lt;p&gt;新建一个&lt;code&gt;Debug Configuration&lt;/code&gt;,  main class 是&lt;code&gt;org.apache.hadoop.hbase.master.HMaster&lt;/code&gt;,  参数填start&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;调试运行该类，运行成功之后日志如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;13/10/29 14:38:29 WARN zookeeper.RecoverableZooKeeper: Node /hbase/table/.META. already deleted, and this is not a retry
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Received request to open region: .META.,,1.1028785192
+13/10/29 14:38:29 INFO regionserver.HRegion: Setting up tabledescriptor config now ...
+13/10/29 14:38:29 INFO regionserver.Store: time to purge deletes set to 0ms in store info
+13/10/29 14:38:29 INFO regionserver.HRegion: Onlined .META.,,1.1028785192; next sequenceid=1
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Post open deploy tasks for region=.META.,,1.1028785192, daughter=false
+13/10/29 14:38:29 INFO catalog.MetaEditor: Updated row .META.,,1.1028785192 with server=june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Done with post open deploy task for region=.META.,,1.1028785192, daughter=false
+13/10/29 14:38:29 INFO handler.OpenedRegionHandler: Handling OPENED event for .META.,,1.1028785192 from june-mint,47477,1383028701871; deleting unassigned node
+13/10/29 14:38:29 INFO master.AssignmentManager: The master has opened the region .META.,,1.1028785192 that was online on june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO master.HMaster: .META. assigned=2, rit=false, location=june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO catalog.MetaMigrationRemovingHTD: Meta version=0; migrated=true
+13/10/29 14:38:29 INFO catalog.MetaMigrationRemovingHTD: ROOT/Meta already up-to date with new HRI.
+13/10/29 14:38:29 INFO master.AssignmentManager: Clean cluster startup. Assigning userregions
+13/10/29 14:38:29 INFO master.HMaster: Registered HMaster MXBean
+13/10/29 14:38:29 INFO master.HMaster: Master has completed initialization
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果想修改日志级别，请修改&lt;code&gt;conf/log4j.properties&lt;/code&gt;中级别为INFO:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;#Logging Threshold
+log4j.threshold=INFO
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;运行HRegionServer&lt;/h1&gt;
+
+&lt;p&gt;参考上面的方法，运行HRegionServer，这时候会出现如下日志：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;13/11/04 11:50:47 INFO util.VersionInfo: HBase 0.94.6-cdh4.4.0
+13/11/04 11:50:47 INFO util.VersionInfo: Subversion git://june-mint/chan/workspace/hadoop/hbase -r 979969e1d0d95ce3b8c1d14593f55148da8bc98f
+13/11/04 11:50:47 INFO util.VersionInfo: Compiled by june on Tue Oct 29 15:11:51 CST 2013
+13/11/04 11:50:47 WARN regionserver.HRegionServerCommandLine: Not starting a distinct region server because hbase.cluster.distributed is false
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这是因为当&lt;code&gt;hbase.cluster.distributed=false&lt;/code&gt;时，hbase为本地模式，master和regionserver在同一个jvm启动，并且会启动一个最小化的zookeeper集群。请参看：&lt;code&gt;HMasterCommandLine.java&lt;/code&gt;的startMaster()方法。&lt;/p&gt;
+
+&lt;p&gt;如果你把该值设为true，则hbase集群为分布式模式，这时候默认会连接&lt;code&gt;127.0.0.1：2181&lt;/code&gt;对应的zookeeper集群（该集群需要在master启动之前启动）。当然，你可以修改参数让hbase自己维护一个zookeeper集群。&lt;/p&gt;
+
+&lt;h1&gt;调试hbase shell&lt;/h1&gt;
+
+&lt;p&gt;新建一个&lt;code&gt;Debug Configuration&lt;/code&gt;,  main class 是&lt;code&gt;org.jruby.Main&lt;/code&gt;，在程序参数中添加&lt;code&gt;bin/hirb.rb&lt;/code&gt;,然后运行即可。&lt;/p&gt;
+
+&lt;h1&gt;一些技巧&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;调试java代码的时候, byte[]的变量总是显示成数字,如果要显示对应的字符&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Window-&amp;gt;Preference-&amp;gt;Java-&amp;gt;Debug-&amp;gt;Primitive Display Options-&amp;gt;Check some of them
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;hbase源码中默认依赖的是hadoop 1.0.x版本，所以mavne依赖中会引入hadoop-core-1.0.4.jar，你可以修改pom.xml文件，将默认的profile修改为你需要的hadoop版本，如2.0版本的hadoop。这样做之后，当你看HMaster的源代码时，你会很方便的关联并浏览ToolRunner类中的源代码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;默认的profile是hadoop-1.0，配置文件如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;  &amp;lt;!-- profile for building against Hadoop 1.0.x: This is the default. --&amp;gt;
+    &amp;lt;profile&amp;gt;
+      &amp;lt;id&amp;gt;hadoop-1.0&amp;lt;/id&amp;gt;
+      &amp;lt;activation&amp;gt;
+        &amp;lt;property&amp;gt;
+          &amp;lt;name&amp;gt;!hadoop.profile&amp;lt;/name&amp;gt;
+        &amp;lt;/property&amp;gt;
+
+   &amp;lt;profile&amp;gt;
+      &amp;lt;id&amp;gt;hadoop-2.0&amp;lt;/id&amp;gt;
+      &amp;lt;activation&amp;gt;
+        &amp;lt;property&amp;gt;
+          &amp;lt;name&amp;gt;hadoop.profile&amp;lt;/name&amp;gt;
+          &amp;lt;value&amp;gt;2.0&amp;lt;/value&amp;gt;
+        &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你可以将默认的profile改为hadoop-2.0,修改之后的配置文件如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;    &amp;lt;profile&amp;gt;
+      &amp;lt;id&amp;gt;hadoop-1.0&amp;lt;/id&amp;gt;
+      &amp;lt;activation&amp;gt;
+        &amp;lt;property&amp;gt;
+          &amp;lt;name&amp;gt;hadoop.profile&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;1.0&amp;lt;/value&amp;gt;
+        &amp;lt;/property&amp;gt;
+
+   &amp;lt;profile&amp;gt;
+      &amp;lt;id&amp;gt;hadoop-2.0&amp;lt;/id&amp;gt;
+      &amp;lt;activation&amp;gt;
+        &amp;lt;property&amp;gt;
+          &amp;lt;name&amp;gt;!hadoop.profile&amp;lt;/name&amp;gt;
+        &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+ </entry>
+ 
+ <entry>
    <title>编译hbase源代码并打补丁</title>
    <link href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"/>
    <updated>2013-10-28T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches</id>
-   <content type="html">&lt;h1&gt;下载源代码&lt;/h1&gt;
+   <content type="html">&lt;p&gt;写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！&lt;/p&gt;
+
+&lt;h1&gt;下载源代码&lt;/h1&gt;
 
 &lt;p&gt;从&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
@@ -116,7 +358,7 @@ mvn clean install
 &lt;p&gt;修改代码之后，在提交代码之前，运行如下命令生成patch：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;gt;../XXXXX.patch
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果你已经将该动文件加入到提交缓存区，及执行了如下代码：&lt;/p&gt;
+&lt;p&gt;如果你已经将该动文件加入到提交缓存区，即执行了如下代码：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git add .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;你可以使用如下代码打补丁：&lt;/p&gt;
@@ -125,6 +367,8 @@ mvn clean install
 &lt;p&gt;如果在提交之后，想生成patch，执行如下命令：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git format-patch -1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;git format-patch&lt;/code&gt;的详细说明请参考：&lt;a href=&quot;http://devillived.net/forum/home.php?mod=space&amp;amp;uid=2&amp;amp;do=blog&amp;amp;id=211&quot;&gt;git patch操作&lt;/a&gt;&lt;/p&gt;
+
 &lt;p&gt;更多diff的命令如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;lt;file&amp;gt;   # 比较当前文件和暂存区文件差异
 git diff
@@ -154,6 +398,13 @@ fatal: git apply: bad git-diff - expected /dev/null on line 4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;最后再尝试打补丁。&lt;/p&gt;
 
+&lt;p&gt;注意：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;请注意，git apply 是一个事务性操作的命令，也就是说，要么所有补丁都打上去，要么全部放弃。&lt;/li&gt;
+&lt;li&gt;对于传统的 diff 命令生成的补丁，则只能用 git apply 处理。对于 format-patch 制作的新式补丁，应当使用 git am 命令。&lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h1&gt;升级版本&lt;/h1&gt;
 
 &lt;p&gt;当你fork了&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为&lt;code&gt;cdh4-0.94.6_4.3.0&lt;/code&gt;，而cdh最新分支为&lt;code&gt;cdh4-0.94.6_4.4.0&lt;/code&gt;，现在如何将cdh上的分支下载到自己的参考呢？&lt;/p&gt;
@@ -180,7 +431,7 @@ origin  git@github.com:javachen/hbase.git (push)
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git branch -r
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;下载cdh上的分支：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git branch cdh/cdh4-0.94.6_4.4.0
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git checkout cdh/cdh4-0.94.6_4.4.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;将其提交到自己的远程仓库：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
@@ -198,6 +449,9 @@ origin  git@github.com:javachen/hbase.git (push)
 
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href=&quot;http://robbinfan.com/blog/34/git-common-command&quot;&gt;Git常用命令备忘&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://devillived.net/forum/home.php?mod=space&amp;amp;uid=2&amp;amp;do=blog&amp;amp;id=211&quot;&gt;git patch操作&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://blog.tsnrose.com/blog/2012/04/18/git-fetch/&quot;&gt;Git Fetch拉取他人分支&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href=&quot;http://smilejay.com/2012/08/generate-a-patch-from-a-commit/&quot;&gt;git根据commit生成patch&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
@@ -3012,6 +3266,11 @@ SET
   &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
 &amp;lt;/property&amp;gt;
 &amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;修改&lt;code&gt;/etc/hadoop/conf/hadoop-env.sh&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;添加环境变量&lt;code&gt;HADOOP_MAPRED_HOME&lt;/code&gt;，如果不添加，则当你使用yarn运行mapreduce时候会出现&lt;code&gt;UNKOWN RPC TYPE&lt;/code&gt;的异常&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;在hdfs中创建hive数据仓库目录&lt;/h2&gt;
 

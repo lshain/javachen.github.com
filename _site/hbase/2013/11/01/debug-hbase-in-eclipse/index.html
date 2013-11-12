@@ -4,9 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <title>Seam的启动过程 - JavaChen Blog</title>
-    <meta name="keywords" content="seam, jboss" />
-    <meta name="description" content="Seam的启动过程" />
+    <title>在eclipse中调试运行hbase - JavaChen Blog</title>
+    <meta name="keywords" content="hbase、eclipse、debug" />
+    <meta name="description" content="在eclipse中调试运行hbase" />
     <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
@@ -71,11 +71,11 @@
         
 
 <div class="page-header">
-  	<h1>Seam的启动过程 </h1>
+  	<h1>在eclipse中调试运行hbase </h1>
 	<div class="info_gray">
-		Categories：<a href="/categories.html#java-ref">java</a>
-		| Tags：<a href="/tags.html#seam-ref">seam</a>
-		| Time：<time date="2012-02-23">2012-02-23</time>
+		Categories：<a href="/categories.html#hbase-ref">hbase</a>
+		| Tags：<a href="/tags.html#hbase-ref">hbase</a>
+		| Time：<time date="2013-11-01">2013-11-01</time>
 		<a href='#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 </div>
@@ -84,60 +84,120 @@
 <div class="row">
   <div class="span9">
     
-    <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
+    <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
+
+<h1>下载并编译源代码</h1>
+
+<p>请参考<a href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/">编译hbase源代码并打补丁</a></p>
+
+<h1>修改配置文件</h1>
+
+<p>修改 <code>conf/hbase-site.xml</code>文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+&lt;name&gt;hbase.defaults.for.version&lt;/name&gt;
+&lt;value&gt;0.94.6-cdh4.4.0&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+&lt;name&gt;hbase.rootdir&lt;/name&gt;
+&lt;value&gt;file:///home/june/tmp/data&lt;/value&gt;
+&lt;/property&gt;
 </code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+<p>把conf文件夹加到Classpath中</p>
 
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
+<h1>运行HMaster</h1>
 
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
 
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
+<!-- more -->
 
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
+<p>调试运行该类，运行成功之后日志如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">13/10/29 14:38:29 WARN zookeeper.RecoverableZooKeeper: Node /hbase/table/.META. already deleted, and this is not a retry
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Received request to open region: .META.,,1.1028785192
+13/10/29 14:38:29 INFO regionserver.HRegion: Setting up tabledescriptor config now ...
+13/10/29 14:38:29 INFO regionserver.Store: time to purge deletes set to 0ms in store info
+13/10/29 14:38:29 INFO regionserver.HRegion: Onlined .META.,,1.1028785192; next sequenceid=1
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Post open deploy tasks for region=.META.,,1.1028785192, daughter=false
+13/10/29 14:38:29 INFO catalog.MetaEditor: Updated row .META.,,1.1028785192 with server=june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO regionserver.HRegionServer: Done with post open deploy task for region=.META.,,1.1028785192, daughter=false
+13/10/29 14:38:29 INFO handler.OpenedRegionHandler: Handling OPENED event for .META.,,1.1028785192 from june-mint,47477,1383028701871; deleting unassigned node
+13/10/29 14:38:29 INFO master.AssignmentManager: The master has opened the region .META.,,1.1028785192 that was online on june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO master.HMaster: .META. assigned=2, rit=false, location=june-mint,47477,1383028701871
+13/10/29 14:38:29 INFO catalog.MetaMigrationRemovingHTD: Meta version=0; migrated=true
+13/10/29 14:38:29 INFO catalog.MetaMigrationRemovingHTD: ROOT/Meta already up-to date with new HRI.
+13/10/29 14:38:29 INFO master.AssignmentManager: Clean cluster startup. Assigning userregions
+13/10/29 14:38:29 INFO master.HMaster: Registered HMaster MXBean
+13/10/29 14:38:29 INFO master.HMaster: Master has completed initialization
+</code></pre></div>
+<p>如果想修改日志级别，请修改<code>conf/log4j.properties</code>中级别为INFO:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#Logging Threshold
+log4j.threshold=INFO
+</code></pre></div>
+<h1>运行HRegionServer</h1>
 
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+<p>参考上面的方法，运行HRegionServer，这时候会出现如下日志：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">13/11/04 11:50:47 INFO util.VersionInfo: HBase 0.94.6-cdh4.4.0
+13/11/04 11:50:47 INFO util.VersionInfo: Subversion git://june-mint/chan/workspace/hadoop/hbase -r 979969e1d0d95ce3b8c1d14593f55148da8bc98f
+13/11/04 11:50:47 INFO util.VersionInfo: Compiled by june on Tue Oct 29 15:11:51 CST 2013
+13/11/04 11:50:47 WARN regionserver.HRegionServerCommandLine: Not starting a distinct region server because hbase.cluster.distributed is false
+</code></pre></div>
+<p>这是因为当<code>hbase.cluster.distributed=false</code>时，hbase为本地模式，master和regionserver在同一个jvm启动，并且会启动一个最小化的zookeeper集群。请参看：<code>HMasterCommandLine.java</code>的startMaster()方法。</p>
 
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+<p>如果你把该值设为true，则hbase集群为分布式模式，这时候默认会连接<code>127.0.0.1：2181</code>对应的zookeeper集群（该集群需要在master启动之前启动）。当然，你可以修改参数让hbase自己维护一个zookeeper集群。</p>
 
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
+<h1>调试hbase shell</h1>
 
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
+<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.jruby.Main</code>，在程序参数中添加<code>bin/hirb.rb</code>,然后运行即可。</p>
 
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
+<h1>一些技巧</h1>
 
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
+<ul>
+<li>调试java代码的时候, byte[]的变量总是显示成数字,如果要显示对应的字符</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Window-&gt;Preference-&gt;Java-&gt;Debug-&gt;Primitive Display Options-&gt;Check some of them
+</code></pre></div>
+<ul>
+<li>hbase源码中默认依赖的是hadoop 1.0.x版本，所以mavne依赖中会引入hadoop-core-1.0.4.jar，你可以修改pom.xml文件，将默认的profile修改为你需要的hadoop版本，如2.0版本的hadoop。这样做之后，当你看HMaster的源代码时，你会很方便的关联并浏览ToolRunner类中的源代码。</li>
+</ul>
 
+<p>默认的profile是hadoop-1.0，配置文件如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;!-- profile for building against Hadoop 1.0.x: This is the default. --&gt;
+    &lt;profile&gt;
+      &lt;id&gt;hadoop-1.0&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;
+          &lt;name&gt;!hadoop.profile&lt;/name&gt;
+        &lt;/property&gt;
+
+   &lt;profile&gt;
+      &lt;id&gt;hadoop-2.0&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;
+          &lt;name&gt;hadoop.profile&lt;/name&gt;
+          &lt;value&gt;2.0&lt;/value&gt;
+        &lt;/property&gt;
+</code></pre></div>
+<p>你可以将默认的profile改为hadoop-2.0,修改之后的配置文件如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;profile&gt;
+      &lt;id&gt;hadoop-1.0&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;
+          &lt;name&gt;hadoop.profile&lt;/name&gt;
+      &lt;value&gt;1.0&lt;/value&gt;
+        &lt;/property&gt;
+
+   &lt;profile&gt;
+      &lt;id&gt;hadoop-2.0&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;
+          &lt;name&gt;!hadoop.profile&lt;/name&gt;
+        &lt;/property&gt;
+</code></pre></div>
 
     <br/>
     <div class="copyright">
-	<p><strong>本文固定链接：</strong><a href='/java/2012/02/23/the-process-of-seam-initiation'>http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation</a></p>
-	<p><strong>原创文章,转载请注明出处：</strong><a href='/java/2012/02/23/the-process-of-seam-initiation'>JavaChen Blog</a></p>
+	<p><strong>本文固定链接：</strong><a href='/hbase/2013/11/01/debug-hbase-in-eclipse'>http://blog.javachen.com/hbase/2013/11/01/debug-hbase-in-eclipse</a></p>
+	<p><strong>原创文章,转载请注明出处：</strong><a href='/hbase/2013/11/01/debug-hbase-in-eclipse'>JavaChen Blog</a></p>
     </div>
      
     <div style="float:right">
@@ -170,11 +230,11 @@
     <div class="pagination">
       <ul>
       
-        <li class="prev"><a href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">&larr; Previous</a></li>
+        <li class="prev"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches" title="编译hbase源代码并打补丁">&larr; Previous</a></li>
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next"><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2" title="如何在kettle4.2上面实现cassandra的输入与输出">Next &rarr;</a></li>
+        <li class="next"><a href="/saltstack/2013/11/11/install-saltstack-and-halite" title="安装saltstack和halite">Next &rarr;</a></li>
       
       </ul>
     </div>
@@ -192,7 +252,7 @@
 
   
      
-    	<li><a href="/tags.html#seam-ref">seam <span>1</span></a></li>
+    	<li><a href="/tags.html#hbase-ref">hbase <span>7</span></a></li>
     
   
 
@@ -274,8 +334,6 @@
    
    <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
    
-   <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
-   
    <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
    
    <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
@@ -291,6 +349,8 @@
    <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
    
    <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+   
+   <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
    
   </ul>
   </section>  
@@ -386,7 +446,7 @@
 
 <div id="comments">
 	<!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread" data-title="Seam的启动过程" ></div>
+	<div class="ds-thread" data-title="在eclipse中调试运行hbase" ></div>
 	<script type="text/javascript">
 	var duoshuoQuery = {short_name:"javachen"};
 	(function() {
@@ -404,8 +464,8 @@
 <!-- wumi Button BEGIN -->
 <script type="text/javascript">
     var wumiiPermaLink = ""; //请用代码生成文章永久的链接
-    var wumiiTitle = "/java/2012/02/23/the-process-of-seam-initiation"; //请用代码生成文章标题
-    var wumiiTags = "seam"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiTitle = "/hbase/2013/11/01/debug-hbase-in-eclipse"; //请用代码生成文章标题
+    var wumiiTags = "hbase"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
     var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
     var wumiiSitePrefix = "http://blog.javachen.com/";
     var wumiiParams = "&num=7&mode=2&pf=JAVASCRIPT";

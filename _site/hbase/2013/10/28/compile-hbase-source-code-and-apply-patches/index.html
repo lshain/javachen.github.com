@@ -84,7 +84,9 @@
 <div class="row">
   <div class="span9">
     
-    <h1>下载源代码</h1>
+    <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
+
+<h1>下载源代码</h1>
 
 <p>从<a href="https://github.com/cloudera/hbase">Cloudera github</a>上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
@@ -183,7 +185,7 @@ mvn clean install
 <p>修改代码之后，在提交代码之前，运行如下命令生成patch：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &gt;../XXXXX.patch
 </code></pre></div>
-<p>如果你已经将该动文件加入到提交缓存区，及执行了如下代码：</p>
+<p>如果你已经将该动文件加入到提交缓存区，即执行了如下代码：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git add .
 </code></pre></div>
 <p>你可以使用如下代码打补丁：</p>
@@ -192,6 +194,8 @@ mvn clean install
 <p>如果在提交之后，想生成patch，执行如下命令：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git format-patch -1
 </code></pre></div>
+<p><code>git format-patch</code>的详细说明请参考：<a href="http://devillived.net/forum/home.php?mod=space&amp;uid=2&amp;do=blog&amp;id=211">git patch操作</a></p>
+
 <p>更多diff的命令如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &lt;file&gt;   # 比较当前文件和暂存区文件差异
 git diff
@@ -221,6 +225,13 @@ fatal: git apply: bad git-diff - expected /dev/null on line 4
 </code></pre></div>
 <p>最后再尝试打补丁。</p>
 
+<p>注意：</p>
+
+<ul>
+<li>请注意，git apply 是一个事务性操作的命令，也就是说，要么所有补丁都打上去，要么全部放弃。</li>
+<li>对于传统的 diff 命令生成的补丁，则只能用 git apply 处理。对于 format-patch 制作的新式补丁，应当使用 git am 命令。</li>
+</ul>
+
 <h1>升级版本</h1>
 
 <p>当你fork了<a href="https://github.com/cloudera/hbase">Cloudera github</a>代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为<code>cdh4-0.94.6_4.3.0</code>，而cdh最新分支为<code>cdh4-0.94.6_4.4.0</code>，现在如何将cdh上的分支下载到自己的参考呢？</p>
@@ -247,7 +258,7 @@ origin  git@github.com:javachen/hbase.git (push)
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git branch -r
 </code></pre></div>
 <p>下载cdh上的分支：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git branch cdh/cdh4-0.94.6_4.4.0
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git checkout cdh/cdh4-0.94.6_4.4.0
 </code></pre></div>
 <p>将其提交到自己的远程仓库：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
@@ -265,6 +276,9 @@ origin  git@github.com:javachen/hbase.git (push)
 
 <ul>
 <li>[1] <a href="http://robbinfan.com/blog/34/git-common-command">Git常用命令备忘</a></li>
+<li>[2] <a href="http://devillived.net/forum/home.php?mod=space&amp;uid=2&amp;do=blog&amp;id=211">git patch操作</a></li>
+<li>[3] <a href="http://blog.tsnrose.com/blog/2012/04/18/git-fetch/">Git Fetch拉取他人分支</a></li>
+<li>[4] <a href="http://smilejay.com/2012/08/generate-a-patch-from-a-commit/">git根据commit生成patch</a></li>
 </ul>
 
 
@@ -308,7 +322,7 @@ origin  git@github.com:javachen/hbase.git (push)
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next disabled"><a>Next &rarr;</a>
+        <li class="next"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse" title="在eclipse中调试运行hbase">Next &rarr;</a></li>
       
       </ul>
     </div>
@@ -326,7 +340,7 @@ origin  git@github.com:javachen/hbase.git (push)
 
   
      
-    	<li><a href="/tags.html#hbase-ref">hbase <span>6</span></a></li>
+    	<li><a href="/tags.html#hbase-ref">hbase <span>7</span></a></li>
     
   
 
@@ -379,7 +393,7 @@ origin  git@github.com:javachen/hbase.git (push)
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(2)</span>
+    		hbase <span>(3)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -388,6 +402,10 @@ origin  git@github.com:javachen/hbase.git (push)
      
     	<li><a href="/categories.html#post-ref">
     		post <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>(1)</span>
     	</a></li>
     
   
@@ -401,6 +419,10 @@ origin  git@github.com:javachen/hbase.git (push)
   <section>
   <h2>Related Posts</h2>
   <ul>
+   
+   <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
+   
+   <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
    
    <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
    
@@ -418,15 +440,19 @@ origin  git@github.com:javachen/hbase.git (push)
    
    <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
    
-   <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
-   
-   <li><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></li>
-   
   </ul>
   </section>  
   <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+    
+      <li class="post" >
+        <a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a>
+      </li>
+    
+      <li class="post" >
+        <a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a>
+      </li>
     
       <li class="post" >
         <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
@@ -498,14 +524,6 @@ origin  git@github.com:javachen/hbase.git (push)
     
       <li class="post" >
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
-      </li>
-    
-      <li class="post" >
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     
     </ul>

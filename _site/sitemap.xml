@@ -113,6 +113,27 @@
 		<priority>1.0</priority>
 	</url>
 
+	<url>
+		<loc>http://blog.javachen.com/page8/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+
+	<url>
+		<loc>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</loc>
+		<lastmod>2013-11-11</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
+
+	<url>
+		<loc>http://blog.javachen.com/hbase/2013/11/01/debug-hbase-in-eclipse</loc>
+		<lastmod>2013-11-01</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>1.0</priority>
+	</url>
 
 	<url>
 		<loc>http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches</loc>

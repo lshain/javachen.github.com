@@ -79,6 +79,120 @@
   <div class="span9">
   
   
+  <section id="saltstack20131111install-saltstack-and-halite">
+    <article>
+      <header>
+      <h2><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#saltstack-ref">saltstack</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#saltstack-ref">saltstack</a>
+			
+			,
+			
+			
+			<a href="/tags.html#halite-ref">halite</a>
+			
+			
+		|
+		Time：<time date="2013-11-11">2013-11-11</time>
+		<a href='/saltstack/2013/11/11/install-saltstack-and-halite#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>本文记录安装saltstack和halite过程。</p>
+
+<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
+
+<h1>下载yum源</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
+</code></pre></div>
+<h1>安装依赖</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+</code></pre></div>
+<h1>安装saltstack</h1>
+
+<p>在sk1上安装master：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+</code></pre></div>
+<p>在sk1上安装minion：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+</code></pre></div>
+<h1>关闭防火墙</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
+setenforce 0
+</code></pre></div>
+
+	    <h4><a href='/saltstack/2013/11/11/install-saltstack-and-halite' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="hbase20131101debug-hbase-in-eclipse">
+    <article>
+      <header>
+      <h2><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#hbase-ref">hbase</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#hbase-ref">hbase</a>
+			
+			
+		|
+		Time：<time date="2013-11-01">2013-11-01</time>
+		<a href='/hbase/2013/11/01/debug-hbase-in-eclipse#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
+
+<h1>下载并编译源代码</h1>
+
+<p>请参考<a href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/">编译hbase源代码并打补丁</a></p>
+
+<h1>修改配置文件</h1>
+
+<p>修改 <code>conf/hbase-site.xml</code>文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+&lt;name&gt;hbase.defaults.for.version&lt;/name&gt;
+&lt;value&gt;0.94.6-cdh4.4.0&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+&lt;name&gt;hbase.rootdir&lt;/name&gt;
+&lt;value&gt;file:///home/june/tmp/data&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<p>把conf文件夹加到Classpath中</p>
+
+<h1>运行HMaster</h1>
+
+<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
+
+
+	    <h4><a href='/hbase/2013/11/01/debug-hbase-in-eclipse' title='Read more...'>Read more...</a></h4>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="hbase20131028compile-hbase-source-code-and-apply-patches">
     <article>
       <header>
@@ -102,7 +216,9 @@
     </header>
     <div class="content">
 	  
-	    <h1>下载源代码</h1>
+	    <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
+
+<h1>下载源代码</h1>
 
 <p>从<a href="https://github.com/cloudera/hbase">Cloudera github</a>上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
@@ -400,102 +516,6 @@ jekyll server
     </article>
   </section>
   
-  
-  <section id="hadoop20130823publish-proerties-using-zookeeper">
-    <article>
-      <header>
-      <h2><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#hadoop-ref">hadoop</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#ZooKeeper-ref">ZooKeeper</a>
-			
-			
-		|
-		Time：<time date="2013-08-23">2013-08-23</time>
-		<a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <h1>前言</h1>
-
-<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
-
-<h1>ZooKeeper</h1>
-
-<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
-
-<ul>
-<li>数据发布与订阅（配置中心）</li>
-<li>负载均衡</li>
-<li>命名服务(Naming Service)</li>
-<li>分布式通知/协调</li>
-<li>集群管理与Master选举</li>
-<li>分布式锁</li>
-<li>分布式队列</li>
-</ul>
-
-
-	    <h4><a href='/hadoop/2013/08/23/publish-proerties-using-zookeeper' title='Read more...'>Read more...</a></h4>
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="hive20130822hive-Driver">
-    <article>
-      <header>
-      <h2><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#hive-ref">hive</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#hadoop-ref">hadoop</a>
-			
-			,
-			
-			
-			<a href="/tags.html#hive-ref">hive</a>
-			
-			
-		|
-		Time：<time date="2013-08-22">2013-08-22</time>
-		<a href='/hive/2013/08/22/hive-Driver#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <h1>概括</h1>
-
-<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
-（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
-（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
-（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
-（5）其他       Driver 
-</code></pre></div>
-<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
-
-
-	    <h4><a href='/hive/2013/08/22/hive-Driver' title='Read more...'>Read more...</a></h4>
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li><a href="/archive.html">Archive</a></li>
@@ -555,7 +575,7 @@ jekyll server
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(2)</span>
+    		hbase <span>(3)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -564,6 +584,10 @@ jekyll server
      
     	<li><a href="/categories.html#post-ref">
     		post <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>(1)</span>
     	</a></li>
     
   
@@ -577,6 +601,12 @@ jekyll server
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a>
+      </li>
       <li class="post">
         <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
       </li>
@@ -630,12 +660,6 @@ jekyll server
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>

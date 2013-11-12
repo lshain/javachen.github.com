@@ -79,6 +79,409 @@
   <div class="span9">
   
   
+  <section id="javascript20110719dhtmlxgrid-quick-start-guide">
+    <article>
+      <header>
+      <h2><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#javascript-ref">javascript</a>
+			
+			,
+			
+			
+			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			
+		|
+		Time：<time date="2011-07-19">2011-07-19</time>
+		<a href='/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><span style="color: #ff0000;">说明:</span></p>
+
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+</code></pre></div>
+<h2>Step 1 – 引入文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+    //we&#39;ll write script commands here
+&lt; /script&gt;
+</code></pre></div>
+<h2>Step 2 – 放置gird</h2>
+
+<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+</code></pre></div>
+<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
+ function doInitGrid(){
+ }
+</code></pre></div>
+<p>doInitGrid方法会包括以下代码：</p>
+
+<ul>
+<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
+<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
+<li>使用setHeader 方法定义表头；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
+<li>使用setSkin方法设置皮肤；</li>
+<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
+</ul>
+
+<p>目前，doInitGrid方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
+mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
+grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
+grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
+mygrid.setSkin(&quot;light&quot;); //设置皮肤
+grid.init(); //显示调用初始化方法，必须的
+</code></pre></div>
+<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
+</code></pre></div>
+<p>这样在该页面初始化之后会显示如下：</p>
+
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
+
+<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
+        parent:&quot;a_grid&quot;,
+        image_path:&quot;codebase/imgs&quot;,
+        columns:[
+            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
+            { label:[&quot;Book title&quot;,
+                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
+            { label:[&quot;Author&quot;,
+                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
+            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
+            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
+            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
+            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
+            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
+        ],
+        xml:&quot;data.xml&quot;
+    });
+</code></pre></div>
+<h2>Step 3 – 填充数据</h2>
+
+<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
+
+<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{
+rows:[
+    {
+        id: &quot;a&quot;,
+        data: [Model 1, 100, 399]
+    },
+    {
+    id: &quot;b&quot;,
+        data: [Model 2, 50, 649]
+    },
+    {
+        id: &quot;c&quot;,
+           data: [ Model 3, 70, 499]
+    }
+]
+}
+</code></pre></div>
+<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
+</code></pre></div>
+<p>这时候页面展示如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
+
+<h2>Step 4 – 客户端排序</h2>
+
+<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
+
+<p>该类型值有以下四种：</p>
+
+<ul>
+<li>str – 作为字符串排序</li>
+<li>int - 以Integer值排序 (通常可以是任何数字);</li>
+<li>date – 以日期排序</li>
+<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
+</ul>
+
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
+</code></pre></div>
+<p>这时候单击最后一列表头，结果如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
+
+<h2>Step 5 – 单元格格式化和编辑</h2>
+
+<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
+
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
+</code></pre></div>
+<p>Excells格式化有以下几种：</p>
+
+<ul>
+<li>link：超链接</li>
+<li>img：图片</li>
+<li>price：价格</li>
+<li>dyn：动态行</li>
+</ul>
+
+<p>Excell 复杂编辑器有以下几种：</p>
+
+<ul>
+<li>cp：colorpicker</li>
+<li>calck：允许调用grid.setNumberFormat的计算器</li>
+<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
+<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
+<li>calendar：YUI Calendar</li>
+<li>clist：多选组件</li>
+</ul>
+
+<p>使用其他组件作为单元格编辑器:</p>
+
+<ul>
+<li>grid：使用dhtmlxgrid</li>
+<li>stree ：使用dhtmlxtree</li>
+<li>context：使用dhtmlxmenu</li>
+<li>combo：使用dhtmlxCombo</li>
+</ul>
+
+<p>Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
+
+<p>两个扩展:</p>
+
+<ul>
+<li>sub<em>row</em>ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub<em>row</em>grid – 允许创建一个子表作为一个子行的内容</li>
+</ul>
+
+<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
+
+<h2>Step 6 – 行操作方法</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+</code></pre></div>
+<p>代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
+
+<p>代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行</p>
+
+<h2>Step 7 – 事件</h2>
+
+<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+</code></pre></div>
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Model,Qty,Price&quot;);
+mygrid.setInitWidths(&quot;*,150,150&quot;);
+mygrid.setColAlign(&quot;left,right,right&quot;)
+mygrid.setSkin(&quot;light&quot;);
+mygrid.setColSorting(&quot;str,int,int&quot;);
+mygrid.setColTypes(&quot;ed,ed,price&quot;);
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+&lt; /script&gt;
+&lt; body onload=&quot;doInitGrid()&quot;&gt;
+&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+&lt; /body&gt;
+</code></pre></div>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="cloud20110707some-resources-about-openstack">
+    <article>
+      <header>
+      <h2><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#cloud-ref">cloud</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openNebula-ref">openNebula</a>
+			
+			,
+			
+			
+			<a href="/tags.html#openStack-ref">openStack</a>
+			
+			
+		|
+		Time：<time date="2011-07-07">2011-07-07</time>
+		<a href='/cloud/2011/07/07/some-resources-about-openstack#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p><li>
+<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
+</li>
+<li>
+OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
+</li>
+<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
+</li>
+<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
+</li>
+<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
+</li>
+<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
+</li>
+<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
+</li>
+<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
+</li>
+<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
+</li>
+<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
+</li>
+<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
+</li>
+<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
+</li>
+<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
+</li>
+<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
+</li>
+<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
+</li>
+<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
+</li>
+<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
+</li>
+<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
+</li>
+<li>
+安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
+</li>
+<li>
+安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
+</li>
+<li>
+Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
+</li>
+<li>
+RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
+</li>
+<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
+</li>
+<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
+</li></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="cloud20110707openstack-architecture-overview">
     <article>
       <header>
@@ -904,84 +1307,11 @@ CC连接着云控制器CLC和控制节点NC。</td>
     </article>
   </section>
   
-  
-  <section id="cloud20110616touch-cloud-environment-which-it-is-eucalyptus">
-    <article>
-      <header>
-      <h2><a href="/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus">接触云服务环境Eucalyptus</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#cloud-ref">cloud</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			
-		|
-		Time：<time date="2011-06-16">2011-06-16</time>
-		<a href='/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p>最近在接触云计算平台，熟悉了<a href="http://www.eucalyptus.com/">Eucalyptus</a>，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用<a href="http://www.eucalyptus.com/">Eucalyptus</a>搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。
-<h2>Eucalyptus</h2>
-Elastic Utility Computing Architecture for Linking Your Programs To Useful Systems （Eucalyptus） 是一种开源的软件基础结构，用来通过<span style="color: #ff0000;">计算集群或工作站群实现弹性的、实用的云计算</span>。它最初是美国加利福尼亚大学 Santa Barbara 计算机科学学院的一个研究项目，现在已经商业化，发展成为了 Eucalyptus Systems Inc。不过，Eucalyptus 仍然按开源项目那样维护和开发。Eucalyptus Systems 还在基于开源的 Eucalyptus 构建额外的产品；它还提供支持服务。
-<!--more--> 它提供了如下这些高级特性：
-<blockquote>与 EC2 和 S3 的接口兼容性（<span style="color: #ff0000;">SOAP 接口和 REST 接口</span>）。使用这些接口的几乎所有现有工具都将可以与基于 Eucalyptus 的云协作。<br />
-支持运行在<span style="color: #ff0000;"> Xen hypervisor</span> 或 <span style="color: #ff0000;">KVM</span> 之上的 VM 的运行。未来版本还有望支持其他类型的 VM，比如 VMware。<br />
-用来进行<span style="color: #ff0000;">系统管理和用户结算</span>的云管理工具。<br />
-能够将多个分别具有各自私有的内部网络地址的<span style="color: #ff0000;">集群</span>配置到一个云内。</blockquote>
-<h2>架构</h2>
-Eucalyptus 包含五个主要组件，它们能相互协作共同提供所需的云服务。这些组件使用具有 WS-Security 的 SOAP 消息传递安全地相互通信。</p>
-
-<p><strong>Cloud Controller (CLC)</strong>
-在 Eucalyptus 云内，这是主要的控制器组件，负责管理整个系统。它是所有用户和管理员进入 Eucalyptus 云的主要入口。所有客户机通过基于 SOAP 或 REST 的 API 只与 CLC 通信。由 CLC 负责将请求传递给正确的组件、收集它们并将来自这些组件的响应发送回至该客户机。这是 Eucalyptus 云的对外 “窗口”。
-<strong>Cluster Controller (CC)</strong>
-Eucalyptus 内的这个控制器组件负责管理整个虚拟实例网络。请求通过基于 SOAP 或 REST 的接口被送至 CC。CC 维护有关运行在系统内的 Node Controller 的全部信息，并负责控制这些实例的生命周期。它将开启虚拟实例的请求路由到具有可用资源的 Node Controller。
-<strong>Node Controller (NC)</strong>
-它控制主机操作系统及相应的 hypervisor（Xen 或最近的 KVM，很快就会支持 VMWare）。必须在托管了实际的虚拟实例（根据来自 CC 的请求实例化）的每个机器上运行 NC 的一个实例。
-<strong>Walrus (W)</strong>
-这个控制器组件管理对 Eucalyptus 内的存储服务的访问。请求通过基于 SOAP 或 REST 的接口传递至 Walrus。
-<strong>Storage Controller (SC)</strong>
-Eucalyptus 内的这个存储服务实现 Amazon 的 S3 接口。SC 与 Walrus 联合工作，用于存储和访问虚拟机映像、内核映像、RAM 磁盘映像和用户数据。其中，VM 映像可以是公共的，也可以是私有的，并最初以压缩和加密的格式存储。这些映像只有在某个节点需要启动一个新的实例并请求访问此映像时才会被解密。<br />
-一个 Eucalyptus 云安装可以聚合和管理来自一个或多个集群的资源。一个集群 是连接到相同 LAN 的一组机器。在一个集群中，可以有一个或多个 NC 实例，每个实例管理虚拟实例的实例化和终止。
-<div class="info">
-<h2>参考文章</h2>
-在安装的过程中，参考了一些网上的文章：<br />
-<li>Eucalyptus 开启云端：
-<a href="http://blog.163.com/firstsko@126/blog/static/132168891201022935737810/">http://blog.163.com/firstsko@126/blog/static/132168891201022935737810/</a>
-</li>
-<li>
-Installing Eucalyptus (2.0) on Fedora 12
-<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0">http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0</a>
-</li>
-<li>
- 在Fedora 13 上搭建Eucalyptus
-<a href="http://blog.csdn.net/hispania/archive/2010/09/24/5902926.aspx">http://blog.csdn.net/hispania/archive/2010/09/24/5902926.aspx</a>
-</li>
-<li>ubuntu 9.04 (server)下 eucalyptus 安装（推荐）：
-<a href="http://bbs.chinacloud.cn/archiver/showtopic-230.aspx">http://bbs.chinacloud.cn/archiver/showtopic-230.aspx</a></div></p>
-
-<p></li></p>
-
-<p><p>
-<h2>Eucalyptus java源代码</h2>
-在安装过程中，我把Eucalyptus的java源代码（eucalyptus-2.0.3-src-offline.tar.gz）下下来了，并按照<a href="http://open.eucalyptus.com/participate/sourcecode">http://open.eucalyptus.com/participate/sourcecode</a>的说明好不容易把java代码通过ant编译然后手动复制粘贴导入eclipse了，现在这些代码能够通过编译了，并能够清楚的看到Eucalyptus的java代码部分的实现方式。<br /></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page6'>&larr; Previous</a></li>
         <li><a href="/archive.html">Archive</a></li>
+        <li class="prev"><a href='/page8'>Next &rarr;</a></li>
       </ul>
   </div>
   </div>
@@ -1037,7 +1367,7 @@ Installing Eucalyptus (2.0) on Fedora 12
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(2)</span>
+    		hbase <span>(3)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -1046,6 +1376,10 @@ Installing Eucalyptus (2.0) on Fedora 12
      
     	<li><a href="/categories.html#post-ref">
     		post <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>(1)</span>
     	</a></li>
     
   
@@ -1059,6 +1393,12 @@ Installing Eucalyptus (2.0) on Fedora 12
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a>
+      </li>
       <li class="post">
         <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
       </li>
@@ -1112,12 +1452,6 @@ Installing Eucalyptus (2.0) on Fedora 12
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>

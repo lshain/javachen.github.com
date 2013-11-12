@@ -79,6 +79,669 @@
   <div class="span9">
   
   
+  <section id="javascript20111125xml-user-interface-language-introuction">
+    <article>
+      <header>
+      <h2><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#xml-ref">xml</a>
+			
+			,
+			
+			
+			<a href="/tags.html#xul-ref">xul</a>
+			
+			
+		|
+		Time：<time date="2011-11-25">2011-11-25</time>
+		<a href='/javascript/2011/11/25/xml-user-interface-language-introuction#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
+XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
+使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+
+<p><span style="color: #339966;"><strong>XUL元素</strong></span>
+XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
+基层元素：例如视窗、page、对话框、向导<br />
+Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
+排版:例如方框、网格、堆栈、叠<br />
+事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
+数据源:例如template、rule<br />
+其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
+一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
+现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
+
+<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
+Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
+
+<p><span style="color: #339966;"><strong>XUL应用</strong></span>
+虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
+Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
+
+<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
+可以选择 3 种方式来运行 XUL 应用程序：<br />
+1.使用基于 Mozilla 的浏览器进行简单测试<br />
+2.使用XULRunner<br />
+3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
+
+<p><strong><span style="color: #339966;">总结</span></strong>
+XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
+
+<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
+
+<p><li>
+1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+</li>
+<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+</li>
+<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<em>Page</a>
+</li>
+<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</em>%E6%95%99%E7%A8%8B/1-2<em>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</em>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
+</li>
+<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
+</li>
+<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
+</li>
+<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+</li></p>
+
+	  
+   </div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20111022ext_readxml_in_bjsasc_wuzi">
+    <article>
+      <header>
+      <h2><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h2>
+      <div class="info_gray">
+		Categories：
+			
+			<a href="/categories.html#javascript-ref">javascript</a>
+			
+			
+		|
+		Tags：
+			
+			<a href="/tags.html#extjs-ref">extjs</a>
+			
+			
+		|
+		Time：<time date="2011-10-22">2011-10-22</time>
+		<a href='/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+	</div>
+    </header>
+    <div class="content">
+	  
+	    <p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
+获取弹出窗口url后的参数方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
+function getQueryStringValue(name) {
+    var url = window.location.search;
+    if (url.indexOf(&#39;?&#39;) &lt; 0) {
+        return null
+    }
+    var index = url.indexOf(name + &quot;=&quot;);
+    if (index &lt; 0) {
+        return null
+    }
+    var args = url.indexOf(&#39;&amp;&#39;, index);
+    var value;
+    if (args &gt; 0) {
+        value = url.substring(index + name.length + 1, args);
+    } else {
+        value = url.substring(index + name.length + 1, url.length);
+    }
+    return value;
+}
+// 获取xml的服务器路径
+function getXmlUrl(xmlFile) {
+    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
+}
+</code></pre></div>
+<p>用到的一些辅助方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
+function cleanWhitespaces(elem) {
+    var elem = elem || document;
+    var childElem = elem.childNodes;
+    var childElemArray = new Array;
+    for (var i = 0; i &lt; childElem.length; i++) {
+        if (childElem[i].nodeType == 1) {
+            childElemArray.push(childElem[i]);
+        }
+    }
+    return childElemArray;
+}
+// 取得父窗口表单中键值对
+function getParentFormValues() {
+    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
+    var formValues = &quot;&quot;;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
+                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
+                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
+        }
+    }
+    formValues += opener.getBindValue(formObj.elements);
+    return formValues;
+}
+// 取得过滤条件表单的键值对
+function getCondictionValues() {
+    var condictionString = &quot;&quot;;
+    var formObj = form.getForm().getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
+                    + formObj.elements[i].value + &#39;}&#39;
+                    + formObj.elements[i].name + &#39;_ &#39;;
+        }
+    }
+    // alert(&quot;condictionString&quot;+condictionString);
+    return condictionString;
+}
+// 判读Ext表单是否有输入
+function isFormInputed(ExtForm) {
+    var flag = false;
+    var formObj = ExtForm.getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
+}
+// 将计算得到的结果四舍五入
+/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
+function ForDight(Dight, How) {
+    var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
+    return Dight;
+}
+</code></pre></div>
+<p>xml文件格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
+&lt; dictionary&gt;
+    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
+    &lt;sql&gt;
+    select V_stores_list.* 
+    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
+        AND CANUSEQTY&gt;0 AND ??? and isblock=0
+    &lt;/sql&gt;
+    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
+    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
+    &lt;line&gt;20&lt;/line&gt;
+    &lt;!-- 条件区开始--&gt;
+    &lt;condition&gt;
+        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
+        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
+        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
+        &lt;comparetype&gt;&lt; ![CDATA[like
+        MTRNAME
+        单行
+        &lt; ![CDATA[]]&gt;       
+        &lt;/comparetype&gt;
+    &lt;/ condition&gt;
+&lt;/ dictionary&gt;
+</code></pre></div>
+<p>然后，弹出窗口页面Ext入口代码：
+    // 全局变量
+    var result = {};
+    var grid;
+    var form;
+    var viewport;
+    var store;
+    var sm = new Ext.grid.CheckboxSelectionModel();
+    var autoStore;
+    var tempItems1 = [];
+    var tempItems2 = [];
+    var tempItems3 = [];
+    var flag = 1;
+    // 程序入口
+    Ext.onReady(function() {
+        Ext.QuickTips.init();// 初始化
+        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
+        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<em>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
+        Ext.BLANK</em>IMAGE<em>URL = &#39;../aws</em>js/extjs2/images/default/s.gif&#39;;
+        Ext.Ajax.request({
+            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
+            method : &#39;post&#39;,
+            success : function(res, opt) {
+                var xmlObj = res.responseXML;
+                initStoreData(xmlObj); // 访问成功后执行后续工作
+            }
+        })
+    });
+    function initStoreData(xmlObj) {
+        getInitData(xmlObj);
+        document.title = result.winTitle;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+    // 获取表格数据部分
+    store = new Ext.data.Store({
+        idProperty : &#39;ID&#39;,
+        proxy : new Ext.data.HttpProxy({
+            url : &#39;../search.do?method=findAll&#39;,
+            failure : function() {
+                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
+            },
+            success : function(response) {
+                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
+            }
+        }),
+
+        // baseParams : {
+        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+        // // cmd:&#39;search&#39;
+        // },
+        reader : new Ext.data.JsonReader({
+            totalProperty : &#39;totalCount&#39;,
+            root : &#39;data&#39;
+        }, dataRecorder)
+    });
+    // 要分页，第一次加载数据必须传start和limit两参数
+    // store.load({
+    // params : {
+    // start : 0,
+    // limit : result.limit
+    // }
+    // });
+    initViewport();
+}
+// 获得界面初始化的一些数据
+function getInitData(xmlObj) {
+    // result.formItems = {};
+    result.columnHeaders = [];
+    result.gridRecords = [];
+    result.dbFilterRecords = [];
+    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
+    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
+    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
+    // 获取过滤条件表单的界面数据
+    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
+    var row = ForDight(conections.length / 3, 0);
+    for (var i = 0; i &lt; conections.length; i++) {
+        var item = {};
+        var condition = cleanWhitespaces(conections[i]);
+        item.id = condition[0].firstChild.nodeValue;
+        item.fieldLabel = condition[1].firstChild.nodeValue;
+        item.name = condition[4].firstChild.nodeValue;
+        item.anchor = &#39;95%&#39;;
+        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
+            item.xtype = &#39;textfield&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
+            item.xtype = &#39;datefield&#39;;
+            item.format = &#39;Y-m-d&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
+            item.xtype = &#39;numberfield&#39;;
+            item.minValue = 0;
+            item.minText = &#39;请输入有效的数字&#39;;
+            item.decimalPrecision = 6;
+        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
+            var autoStore = new Ext.data.SimpleStore({
+                proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
+                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
+                    failure : function() {
+                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
+                    }
+                }),
+                fields : [&#39;property&#39;],
+                baseParams : {
+                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
+                            + result.fromTable
+                }
+            });
+            item.xtype = &#39;combo&#39;;
+            item.store = autoStore;
+            item.displayField = &#39;property&#39;;
+            item.typeAhead = true;
+            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
+            item.queryParam = &#39;keyword&#39;;// 查询的名字
+            item.mode = &#39;remote&#39;;
+            item.minChars = 3;// 默认最少输入4
+            item.forceSelection = true;
+            item.queryDelay = 0;// 查询延迟时间
+            item.triggerAction = &#39;all&#39;;
+            item.emptyText = &#39;&#39;;
+            item.resizable = true;
+            item.selectOnFocus = true;
+        }
+        if (i / row &lt; 1) {
+            tempItems1.push(item);
+        }
+        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
+            tempItems2.push(item);
+        } else if (i / row &gt;= 2) {
+            tempItems3.push(item);
+        }
+    }
+    // alert(Ext.util.JSON.encode(result));
+
+    // 获取表格表头的界面数据和rcord记录的数据格式
+    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
+    result.columnHeaders.push(sm);// 插入多选框
+    result.columnHeaders.push(new Ext.grid.RowNumberer({
+        width : 20
+    }));// 插入行号
+    for (var i = 0; i &lt; fields.length; i++) {
+        var item = {};
+        var record = {};
+        var array = [];
+        var field = cleanWhitespaces(fields[i]);
+        var renderDate = function(value) {
+            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
+        }
+        // 生成grid表格中store数据记录
+        record.name = field[0].firstChild.nodeValue;
+        record.mapping = field[0].firstChild.nodeValue;
+        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
+            record.type = &#39;date&#39;;
+            record.dateFormat = &#39;Y-m-d&#39;;
+            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
+        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
+            record.type = &#39;auto&#39;;
+        } else {
+            record.type = &#39;string&#39;;
+        }
+        result.gridRecords.push(record);
+
+        // 生成grid表格表头数据记录
+        item.dataIndex = field[0].firstChild.nodeValue;
+        item.header = field[2].firstChild.nodeValue;
+        // item.width=field[3].firstChild.nodeValue;
+        item.sortable = true;
+        if (field.length == 7
+                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            item.hidden = true;
+            // item.hideable=false;
+        }
+        if (field.length == 6) {
+            item.hidden = false;
+        }
+        result.columnHeaders.push(item);
+
+        // 生成模糊过滤store的记录
+        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            array.push(field[2].firstChild.nodeValue);// fieldName
+            array.push(field[0].firstChild.nodeValue);// fieldValue
+        }
+        result.dbFilterRecords.push(array);
+    }
+    return result;
+};
+</code></pre></div>
+<p>渲染Ext界面代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
+    if (!form) {
+        form = getInsertForm();
+    }
+
+    if (!grid) {
+        grid = getInsertGrid();
+    }
+
+    if (!viewport) {
+        var formPanel = new Ext.Panel({
+            title : &#39;查询条件&#39;,
+            region : &#39;north&#39;,
+            split : true,
+            frame : true,
+            border : true,
+            layout : &#39;fit&#39;,
+            height : 280,
+            collapsible : true,
+            items : [form]
+
+        });
+        viewport = new Ext.Viewport({
+            layout : &#39;border&#39;,
+            modal : true,// 是否为模式窗口
+            border : false,
+            items : [formPanel, grid]
+        });
+    }
+}
+
+function searchByFilter() {
+    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
+    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
+    if (dbfilter == null || dbfilter == &quot;&quot;) {
+        alert(&quot;请输入一个关键字&quot;);
+        Ext.get(&quot;dbFilter&quot;).focus();
+    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
+        alert(&quot;请选择一个过滤字段&quot;);
+        Ext.get(&quot;search-type&quot;).focus();
+    } else {
+        form.getForm().reset();
+        if (flag == 1) {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.load({
+                params : {
+                    start : 0,
+                    limit : result.limit
+                }
+            });
+            form.getForm().reset();
+            flag = 0;
+        } else {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.reload();
+
+        }
+        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+    }
+}
+// 获取过滤条件部分的表单控件
+function getInsertForm() {
+    form = new Ext.form.FormPanel({
+        name : &#39;frmMain&#39;,
+        height : 260,
+        labelAlign : &#39;left&#39;,
+        labelWidth : 110,
+        layout : &#39;fit&#39;,
+        waitMsgTarget : true,
+        items : [{
+            xtype : &#39;fieldset&#39;,
+            frame : true,
+            title : &#39;高级查询&#39;,
+            autoHeight : true,
+            layout : &#39;column&#39;,
+            items : [{
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems1
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems2
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems3
+            }]
+        }],
+        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
+            xtype : &#39;textfield&#39;,
+            width : 200,
+            id : &#39;dbFilter&#39;,
+            listeners : {
+                specialkey : function(field, e) {
+                    if (e.getKey() == Ext.EventObject.ENTER) {
+                        searchByFilter();
+                    }
+                }
+            }
+        }, &#39;-&#39;, {
+            xtype : &#39;combo&#39;,
+            id : &#39;search-type&#39;,
+            anchor : &#39;60%&#39;,
+            hiddenName : &#39;hiddenValue&#39;,
+            width : 120,
+            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
+            store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
+                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
+                data : result.dbFilterRecords
+            }),// 设置数据源
+            displayField : &#39;fieldName&#39;,// 定义要显示的字段
+            valueField : &#39;fieldValue&#39;,// 定义值字段
+            mode : &#39;local&#39;,// 本地模式
+            forceSelection : true,// 要求输入值必须在列表中存在
+            typeAhead : true,// 允许自动选择匹配的剩余部分文本
+            // value : &#39;==选择过滤字段==&#39;,
+            value : &#39;==选择过滤字段==&#39;,
+            handleHeight : 10
+                // 下拉列表中拖动手柄的高度
+                }, &#39;-&#39;, {
+                    xtype : &#39;button&#39;,
+                    text : &#39;筛选&#39;,
+                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
+                    iconCls : &#39;find&#39;,
+                    handler : searchByFilter
+                }, &#39;-&gt;&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;确认插入&#39;,
+                    enableToggle : true,
+                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
+                    handler : function() {
+                        if (sm.hasSelection()) {
+                            var records = sm.getSelections();
+                            var jsonObj = &quot;{data:[&quot;;
+                            for (var i = 0; i &lt; records.length; i++) {
+                                jsonObj += Ext.encode(records[i].data);
+                                if (i != records.length - 1) {
+                                    jsonObj += &quot;,&quot;;
+                                }
+                            }
+                            jsonObj += &quot;]}&quot;
+                            Ext.Ajax.request({
+                                url : &#39;../search.do?method=insertChoices&#39;,
+                                method : &#39;post&#39;,
+                                params : {
+                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+                                            .toString(),
+                                    jsonObj : jsonObj,
+                                    parentFormValues : getParentFormValues()
+                                },
+                                callback : function(options, success, response) {
+                                    if (response.responseText == &quot;success&quot;) {
+
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
+                                            window.close();
+                                            // opener.location.reload();
+                                        opener.saveForm();
+                                        });
+                                    } else {
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
+                                    }
+                                }
+                            })
+
+                        } else {
+                            alert(&quot;请选择一行或多行数据&quot;);
+                        }
+                    },
+                    scope : this
+                }, &#39;-&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;取消&#39;,
+                    tooltip : &#39;取消选择，直接退出&#39;,
+                    handler : function() {
+                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
+                            if (id == &quot;yes&quot;)
+                                window.close();
+                        });
+                    },
+                    scope : this
+                }],
+        buttons : [{
+            text : &#39;执行查询条件&#39;,
+            handler : function() {
+                var connections = getCondictionValues();
+                if (!form.getForm().isValid()) {
+                    return;
+                };
+                if (isFormInputed(form.getForm()) == false) {
+                    alert(&quot;请输入查询条件&quot;);
+                    form.getForm().focus();
+                    return;
+                } else {
+                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+                    if (flag == 1) {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.load({
+                            params : {
+                                start : 0,
+                                limit : result.limit
+                            }
+                        });
+                        form.getForm().reset();
+                        flag = 0;
+                    } else {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.reload();
+                    }
+
+                    form.getForm().reset();
+                }
+            }
+        }, {
+            text : &#39;重置&#39;,
+            handler : function() {
+                form.getForm().reset();
+            }
+        }]
+    });
+    return form;
+}
+</code></pre></div>
+	  
+   </div>
+    </article>
+  </section>
+  
+  
   <section id="pentaho20110928build-pentaho-bi-server-source-code-in-eclipse">
     <article>
       <header>
@@ -918,409 +1581,6 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
     </article>
   </section>
   
-  
-  <section id="javascript20110719dhtmlxgrid-quick-start-guide">
-    <article>
-      <header>
-      <h2><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#javascript-ref">javascript</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#javascript-ref">javascript</a>
-			
-			,
-			
-			
-			<a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a>
-			
-			,
-			
-			
-			<a href="/tags.html#xml-ref">xml</a>
-			
-			
-		|
-		Time：<time date="2011-07-19">2011-07-19</time>
-		<a href='/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p><span style="color: #ff0000;">说明:</span></p>
-
-<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
-
-<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
-使用JavaScript API进行控制
-Ajax支持
-简单的JavaScript 或者XML 配置
-与HTML集成
-内建过滤、排序、查询、分组功能
-表格 footer/header自动计算
-行内编辑
-准备使用大数据集解决方案：分页，动态加载，智能渲染
-序列化为XML或CSV
-从 XML或CSV加载
-列锁定
-剪贴板支持
-简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
-支持子表格
-列拖拽和移动
-行或列拖拽
-dhtmlxTree PRO Edition支持拖拽
-可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
-组合框，日历以及更多的预定义eXcells
-Cell支持数学方程式
-不同的键盘映射
-简单的CSS风格或是预定义的皮肤
-对于rows/entire grid不可见的数据块 (用户数据)
-客户端排序(string, integer, date, custom)
-服务器端排序
-广泛的事件处理
-</code></pre></div>
-<h2>Step 1 – 引入文件</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
-&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
-&lt; script&gt;
-    //we&#39;ll write script commands here
-&lt; /script&gt;
-</code></pre></div>
-<h2>Step 2 – 放置gird</h2>
-
-<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
-</code></pre></div>
-<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
- function doInitGrid(){
- }
-</code></pre></div>
-<p>doInitGrid方法会包括以下代码：</p>
-
-<ul>
-<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
-<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
-<li>使用setHeader 方法定义表头；</li>
-<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
-<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
-<li>使用setSkin方法设置皮肤；</li>
-<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
-</ul>
-
-<p>目前，doInitGrid方法如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
-mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
-mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
-grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
-grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
-mygrid.setSkin(&quot;light&quot;); //设置皮肤
-grid.init(); //显示调用初始化方法，必须的
-</code></pre></div>
-<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
-</code></pre></div>
-<p>这样在该页面初始化之后会显示如下：</p>
-
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
-
-<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
-        parent:&quot;a_grid&quot;,
-        image_path:&quot;codebase/imgs&quot;,
-        columns:[
-            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
-            { label:[&quot;Book title&quot;,
-                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
-            { label:[&quot;Author&quot;,
-                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
-            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
-            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
-            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
-            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
-            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
-        ],
-        xml:&quot;data.xml&quot;
-    });
-</code></pre></div>
-<h2>Step 3 – 填充数据</h2>
-
-<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
-
-<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">{
-rows:[
-    {
-        id: &quot;a&quot;,
-        data: [Model 1, 100, 399]
-    },
-    {
-    id: &quot;b&quot;,
-        data: [Model 2, 50, 649]
-    },
-    {
-        id: &quot;c&quot;,
-           data: [ Model 3, 70, 499]
-    }
-]
-}
-</code></pre></div>
-<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
-</code></pre></div>
-<p>这时候页面展示如下：
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
-
-<h2>Step 4 – 客户端排序</h2>
-
-<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
-
-<p>该类型值有以下四种：</p>
-
-<ul>
-<li>str – 作为字符串排序</li>
-<li>int - 以Integer值排序 (通常可以是任何数字);</li>
-<li>date – 以日期排序</li>
-<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
-</ul>
-
-<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
-</code></pre></div>
-<p>这时候单击最后一列表头，结果如下：
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
-
-<h2>Step 5 – 单元格格式化和编辑</h2>
-
-<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
-
-<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
-默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
-</code></pre></div>
-<p>Excells格式化有以下几种：</p>
-
-<ul>
-<li>link：超链接</li>
-<li>img：图片</li>
-<li>price：价格</li>
-<li>dyn：动态行</li>
-</ul>
-
-<p>Excell 复杂编辑器有以下几种：</p>
-
-<ul>
-<li>cp：colorpicker</li>
-<li>calck：允许调用grid.setNumberFormat的计算器</li>
-<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
-<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
-<li>calendar：YUI Calendar</li>
-<li>clist：多选组件</li>
-</ul>
-
-<p>使用其他组件作为单元格编辑器:</p>
-
-<ul>
-<li>grid：使用dhtmlxgrid</li>
-<li>stree ：使用dhtmlxtree</li>
-<li>context：使用dhtmlxmenu</li>
-<li>combo：使用dhtmlxCombo</li>
-</ul>
-
-<p>Excells特别用途
-sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
-
-<p>两个扩展:</p>
-
-<ul>
-<li>sub<em>row</em>ajax – 单元格数据被认为是ajax请求的url</li>
-<li>sub<em>row</em>grid – 允许创建一个子表作为一个子行的内容</li>
-</ul>
-
-<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
-<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
-
-<h2>Step 6 – 行操作方法</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
-var newId = (new Date()).valueOf()
-mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
-mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
-}
-function removeRow(){
-var selId = mygrid.getSelectedId()
-mygrid.deleteRow(selId);
-}
-</code></pre></div>
-<p>代码中addRow() 方法的一些说明：
-* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
-* 在最后一行后面添加一新行，该行有新的id，值为空；
-* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
-
-<p>代码中removeRow() 的一些说明（一行行的）:
-* 得到选中行id；
-* 删除指定行id的行</p>
-
-<h2>Step 7 – 事件</h2>
-
-<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
-alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
-}
-mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
-</code></pre></div>
-<h2>Step 8 – Code</h2>
-
-<p>最后的代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
-&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
-&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
-&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
-&lt; script&gt;
-var mygrid;
-function doInitGrid(){
-mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
-mygrid.setImagePath(&quot;codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Model,Qty,Price&quot;);
-mygrid.setInitWidths(&quot;*,150,150&quot;);
-mygrid.setColAlign(&quot;left,right,right&quot;)
-mygrid.setSkin(&quot;light&quot;);
-mygrid.setColSorting(&quot;str,int,int&quot;);
-mygrid.setColTypes(&quot;ed,ed,price&quot;);
-mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
-mygrid.init();
-mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
-}
-function addRow(){
-var newId = (new Date()).valueOf()
-mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
-mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
-}
-function removeRow(){
-var selId = mygrid.getSelectedId()
-mygrid.deleteRow(selId);
-}
-function doOnRowSelected(rowID,celInd){
-alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
-}
-&lt; /script&gt;
-&lt; body onload=&quot;doInitGrid()&quot;&gt;
-&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
-&lt; /body&gt;
-</code></pre></div>
-	  
-   </div>
-    </article>
-  </section>
-  
-  
-  <section id="cloud20110707some-resources-about-openstack">
-    <article>
-      <header>
-      <h2><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h2>
-      <div class="info_gray">
-		Categories：
-			
-			<a href="/categories.html#cloud-ref">cloud</a>
-			
-			
-		|
-		Tags：
-			
-			<a href="/tags.html#eucalyptus-ref">eucalyptus</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openNebula-ref">openNebula</a>
-			
-			,
-			
-			
-			<a href="/tags.html#openStack-ref">openStack</a>
-			
-			
-		|
-		Time：<time date="2011-07-07">2011-07-07</time>
-		<a href='/cloud/2011/07/07/some-resources-about-openstack#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
-	</div>
-    </header>
-    <div class="content">
-	  
-	    <p><li>
-<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
-</li>
-<li>
-OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
-</li>
-<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<em>getting-started-with-openstack.html</a>
-</li>
-<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</em>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
-</li>
-<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
-</li>
-<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
-</li>
-<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
-</li>
-<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<em>software.php?sw</em>id=1733</a>
-</li>
-<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
-</li>
-<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
-</li>
-<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<em>6b98772b0100pk7p.html</a>
-</li>
-<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
-</li>
-<li>新浪上openstack<em>object</em>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<em>1805154091</em>2<em>1.html</a>
-</li>
-<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</em>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
-</li>
-<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
-</li>
-<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
-</li>
-<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
-</li>
-<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
-</li>
-<li>
-安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
-</li>
-<li>
-安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
-</li>
-<li>
-Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
-</li>
-<li>
-RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
-</li>
-<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
-</li></p>
-
-	  
-   </div>
-    </article>
-  </section>
-  
   <div class="pagination">
       <ul>
         <li class="next"><a href='/page5'>&larr; Previous</a></li>
@@ -1381,7 +1641,7 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
     	</a></li>
      
     	<li><a href="/categories.html#hbase-ref">
-    		hbase <span>(2)</span>
+    		hbase <span>(3)</span>
     	</a></li>
      
     	<li><a href="/categories.html#hive-ref">
@@ -1390,6 +1650,10 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
      
     	<li><a href="/categories.html#post-ref">
     		post <span>(1)</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>(1)</span>
     	</a></li>
     
   
@@ -1403,6 +1667,12 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
     <section>
     <h2>Recent Posts</h2>
     <ul id="recent_posts">
+      <li class="post">
+        <a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a>
+      </li>
+      <li class="post">
+        <a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a>
+      </li>
       <li class="post">
         <a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a>
       </li>
@@ -1456,12 +1726,6 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
       </li>
       <li class="post">
         <a href="/hadoop/2013/03/29/install-impala">安装impala过程</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a>
-      </li>
-      <li class="post">
-        <a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a>
       </li>
     </ul>
     </section>

@@ -4,9 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <title>Seam的启动过程 - JavaChen Blog</title>
-    <meta name="keywords" content="seam, jboss" />
-    <meta name="description" content="Seam的启动过程" />
+    <title>安装saltstack和halite - JavaChen Blog</title>
+    <meta name="keywords" content="saltstack,halite" />
+    <meta name="description" content="安装saltstack和halite" />
     <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta property="wb:webmaster" content="61eb31a6e636506d" />
@@ -71,11 +71,11 @@
         
 
 <div class="page-header">
-  	<h1>Seam的启动过程 </h1>
+  	<h1>安装saltstack和halite </h1>
 	<div class="info_gray">
-		Categories：<a href="/categories.html#java-ref">java</a>
-		| Tags：<a href="/tags.html#seam-ref">seam</a>
-		| Time：<time date="2012-02-23">2012-02-23</time>
+		Categories：<a href="/categories.html#saltstack-ref">saltstack</a>
+		| Tags：<a href="/tags.html#saltstack-ref">saltstack</a>,<a href="/tags.html#halite-ref">halite</a>
+		| Time：<time date="2013-11-11">2013-11-11</time>
 		<a href='#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
 	</div>
 </div>
@@ -84,60 +84,128 @@
 <div class="row">
   <div class="span9">
     
-    <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
+    <p>本文记录安装saltstack和halite过程。</p>
+
+<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
+
+<h1>下载yum源</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
 </code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+<h1>安装依赖</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+</code></pre></div>
+<h1>安装saltstack</h1>
 
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
+<p>在sk1上安装master：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+</code></pre></div>
+<p>在sk1上安装minion：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+</code></pre></div>
+<h1>关闭防火墙</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
+setenforce 0
+</code></pre></div>
+<!-- more -->
 
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+<h1>修改配置文件</h1>
 
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
+<p>/etc/salt/master
+interface: 0.0.0.0
+auto_accept: True</p>
 
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
+<p>/etc/salt/minion
+master: sk1
+id: sk2</p>
 
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+<h1>启动</h1>
 
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+<p>分别在sk1和sk2上配置开机启动：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig salt-master on
+chkconfig salt-minion on
+</code></pre></div>
+<p>分别在sk1和sk2上以service方式启动：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master start
+/etc/init.d/salt-minion start
+</code></pre></div>
+<p>你可以在sk2上以后台运行salt-minion</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -d
+</code></pre></div>
+<p>或者在sk2上debug方式运行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -l debug
+</code></pre></div>
+<h1>排错</h1>
 
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
+<p>如果启动提示如下错误：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 vagrant]# /etc/init.d/salt-master start
+Starting salt-master daemon: Traceback (most recent call last):
+ File &quot;/usr/bin/salt-master&quot;, line 10, in &lt;module&gt;
+   salt_master()
+ File &quot;/usr/lib/python2.6/site-packages/salt/scripts.py&quot;, line 20, in salt_master
+   master.start()
+ File &quot;/usr/lib/python2.6/site-packages/salt/__init__.py&quot;, line 114, in start
+   if check_user(self.config[&#39;user&#39;]):
+ File &quot;/usr/lib/python2.6/site-packages/salt/utils/verify.py&quot;, line 296, in check_user
+   if user in e.gr_mem] + [pwuser.gid])
+AttributeError: &#39;pwd.struct_passwd&#39; object has no attribute &#39;gid&#39;
+</code></pre></div>
+<p>请下载saltstack源码重新编译：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://github.com/saltstack/salt/archive/develop.zip
+unzip develop
+cd salt-develop/
+python2.6 setup.py install
+</code></pre></div>
+<h1>salt minion和master的认证过程</h1>
 
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
+<ul>
+<li>minion在第一次启动时，会在/etc/salt/pki/minion/下自动生成minion.pem(private key), minion.pub(public key)，然后将minion.pub发送给master</li>
+<li>master在接收到minion的public key后，通过salt-key命令accept minion public key，这样在master的/etc/salt/pki/master/minions下的将会存放以minion id命名的public key, 然后master就能对minion发送指令了</li>
+</ul>
 
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
+<p>master上执行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+Unaccepted Keys:
+Rejected Keys:
+</code></pre></div>
+<p>接受所有的认证请求：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -A
+</code></pre></div>
+<p>再次查看：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+sk2
+Unaccepted Keys:
+Rejected Keys:
+</code></pre></div>
+<p><code>salt-key</code>更多说明：<a href="http://docs.saltstack.com/ref/cli/salt-key.html">http://docs.saltstack.com/ref/cli/salt-key.html</a></p>
 
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
+<h1>测试运行</h1>
+
+<p>在master上运行ping：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt &#39;*&#39; test.ping
+sk2:salt &#39;*&#39; test.ping
+    True
+</code></pre></div>
+<p>True表明测试成功。</p>
+
+<h1>安装halite</h1>
+
+<h2>下载代码</h2>
+
+<h2>安装salt-api</h2>
+
+<h2>配置salt master文件</h2>
+
+<h2>添加登陆用户</h2>
+
+<h2>启动 salt-api</h2>
 
 
     <br/>
     <div class="copyright">
-	<p><strong>本文固定链接：</strong><a href='/java/2012/02/23/the-process-of-seam-initiation'>http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation</a></p>
-	<p><strong>原创文章,转载请注明出处：</strong><a href='/java/2012/02/23/the-process-of-seam-initiation'>JavaChen Blog</a></p>
+	<p><strong>本文固定链接：</strong><a href='/saltstack/2013/11/11/install-saltstack-and-halite'>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</a></p>
+	<p><strong>原创文章,转载请注明出处：</strong><a href='/saltstack/2013/11/11/install-saltstack-and-halite'>JavaChen Blog</a></p>
     </div>
      
     <div style="float:right">
@@ -170,11 +238,11 @@
     <div class="pagination">
       <ul>
       
-        <li class="prev"><a href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">&larr; Previous</a></li>
+        <li class="prev"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse" title="在eclipse中调试运行hbase">&larr; Previous</a></li>
       
         <li><a href="/archive.html">Archive</a></li>
       
-        <li class="next"><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2" title="如何在kettle4.2上面实现cassandra的输入与输出">Next &rarr;</a></li>
+        <li class="next disabled"><a>Next &rarr;</a>
       
       </ul>
     </div>
@@ -192,7 +260,9 @@
 
   
      
-    	<li><a href="/tags.html#seam-ref">seam <span>1</span></a></li>
+    	<li><a href="/tags.html#saltstack-ref">saltstack <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#halite-ref">halite <span>1</span></a></li>
     
   
 
@@ -272,8 +342,6 @@
   <h2>Related Posts</h2>
   <ul>
    
-   <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
-   
    <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
    
    <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
@@ -291,6 +359,8 @@
    <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
    
    <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+   
+   <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
    
   </ul>
   </section>  
@@ -386,7 +456,7 @@
 
 <div id="comments">
 	<!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread" data-title="Seam的启动过程" ></div>
+	<div class="ds-thread" data-title="安装saltstack和halite" ></div>
 	<script type="text/javascript">
 	var duoshuoQuery = {short_name:"javachen"};
 	(function() {
@@ -404,8 +474,8 @@
 <!-- wumi Button BEGIN -->
 <script type="text/javascript">
     var wumiiPermaLink = ""; //请用代码生成文章永久的链接
-    var wumiiTitle = "/java/2012/02/23/the-process-of-seam-initiation"; //请用代码生成文章标题
-    var wumiiTags = "seam"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiTitle = "/saltstack/2013/11/11/install-saltstack-and-halite"; //请用代码生成文章标题
+    var wumiiTags = "saltstackhalite"; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
     var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
     var wumiiSitePrefix = "http://blog.javachen.com/";
     var wumiiParams = "&num=7&mode=2&pf=JAVASCRIPT";
