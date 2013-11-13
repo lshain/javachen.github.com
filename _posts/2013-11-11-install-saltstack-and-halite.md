@@ -131,13 +131,47 @@ True表明测试成功。
 
 ## 下载代码
 
+	git clone https://github.com/saltstack/halite
+
+## 生成index.html
+
+	cd halite/halite
+	./genindex.py -C
+
 ## 安装salt-api
+
+	yum install salt-api
 
 ## 配置salt master文件
 
+配置salt的master文件，添加：
+
+	rest_cherrypy:
+	 host: 0.0.0.0
+	 port: 8080
+	 debug: true
+	 static: /root/halite/halite
+	 app: /root/halite/halite/index.html
+	external_auth:
+	   pam:
+	     admin:
+		 - .*
+		 - '@runner'
+		 - '@wheel'
+
+重启master;
+
+	/etc/init.d/salt-master restart
+
 ## 添加登陆用户
+
+	useradd admin
+	echo admin|passwd –stdin admin
 
 ## 启动 salt-api
 
+	cd halite/halite
+	python2.6 server_bottle.py -d -C -l debug -s cherrypy
 
+然后打开`http://ip:8080/app`，通过admin/admin登陆即可。
 
