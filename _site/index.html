@@ -191,7 +191,7 @@
 <div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
 </code></pre></div>
 <h1>安装依赖</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash">yum install python-jinja2 -y
 </code></pre></div>
 <h1>安装saltstack</h1>
 
@@ -200,10 +200,6 @@
 </code></pre></div>
 <p>在sk1上安装minion：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
-</code></pre></div>
-<h1>关闭防火墙</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
-setenforce 0
 </code></pre></div>
 
     

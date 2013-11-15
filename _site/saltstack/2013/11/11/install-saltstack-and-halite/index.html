@@ -186,7 +186,7 @@
 <div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
 </code></pre></div>
 <h1>安装依赖</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash">yum install python-jinja2 -y
 </code></pre></div>
 <h1>安装saltstack</h1>
 
@@ -196,22 +196,20 @@
 <p>在sk1上安装minion：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
 </code></pre></div>
+<!-- more -->
+
 <h1>关闭防火墙</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
 setenforce 0
 </code></pre></div>
-<!-- more -->
-
 <h1>修改配置文件</h1>
-
-<p>/etc/salt/master
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/salt/master
 interface: 0.0.0.0
-auto_accept: True</p>
-
-<p>/etc/salt/minion
+auto_accept: True
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/salt/minion
 master: sk1
-id: sk2</p>
-
+id: sk2
+</code></pre></div>
 <h1>启动</h1>
 
 <p>分别在sk1和sk2上配置开机启动：</p>
@@ -298,18 +296,18 @@ sk2:salt &#39;*&#39; test.ping
 <h2>配置salt master文件</h2>
 
 <p>配置salt的master文件，添加：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rest_cherrypy:
- host: 0.0.0.0
- port: 8080
- debug: true
- static: /root/halite/halite
- app: /root/halite/halite/index.html
-external_auth:
-   pam:
-     admin:
-     - .*
-     - &#39;@runner&#39;
-     - &#39;@wheel&#39;
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">rest_cherrypy</span><span class="p">:</span>
+ <span class="n">host</span><span class="p">:</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+ <span class="n">port</span><span class="p">:</span> <span class="mi">8080</span>
+ <span class="n">debug</span><span class="p">:</span> <span class="n">true</span>
+ <span class="n">static</span><span class="p">:</span> <span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">halite</span><span class="o">/</span><span class="n">halite</span>
+ <span class="n">app</span><span class="p">:</span> <span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">halite</span><span class="o">/</span><span class="n">halite</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">html</span>
+<span class="n">external_auth</span><span class="p">:</span>
+   <span class="n">pam</span><span class="p">:</span>
+     <span class="n">admin</span><span class="p">:</span>
+     <span class="o">-</span> <span class="o">.*</span>
+     <span class="o">-</span> <span class="s">&#39;@runner&#39;</span>
+     <span class="o">-</span> <span class="s">&#39;@wheel&#39;</span>
 </code></pre></div>
 <p>重启master;</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master restart
