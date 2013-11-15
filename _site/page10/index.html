@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JavaChen Blog</title>
+    <meta name="description" content="开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化-人生苦短，我用Java。">
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript">
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet">
+    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="http://blog.javachen.com/page10/" />
+    <!-- fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed">
+
+    
+
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+          <li>
+	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
+      <div class="col-lg-12 form-group">
+        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
+      </div>
+    </form>
+
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-9">
+    <div class="page-header-wrapper">
+      <div class="page-header">
+        <h2>  <small>王者不可刚，阴柔三寸力，铁指寸进，劲断霸阳</small></h2>
+      </div>
+    </div>
+    
+
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h2>
+    
+      将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《Grid-to-Excel, Grid-to-PDF Available for Java》，你可以从以下地址下载导出程序源码： Export to Excel Export to PDF 当然，还有一个示例工程： .zip archive with an example XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。 需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。 将上面三个工程导入到一个工程然后打开sample.html页面，效果如下： 点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance (); DocumentBuilder db = dbf.newDocumentBuilder(); Document dom = null; try { dom = db.parse(new InputSource(new StringReader(xml))); }catch(SAXException se) { se.printStackTrace(); }catch(IOException ioe) {...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-08-11 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu">自定义dhtmlxGrid表头菜单</a></h2>
+    
+      dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。 以下是dhtmlxGrid的表头菜单效果： 其功能过于单一，以下是表格右键菜单效果： 如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。 如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt; 首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码： function onButtonClick(menuitemId, type) { var data = mygrid.contextID.split(&quot;_&quot;); //rowId_colInd; mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]); return true; } menu = new dhtmlXMenuObject(); menu.setIconsPath(&quot;../common/images/&quot;); menu.renderAsContextMenu(); menu.attachEvent(&quot;onClick&quot;, onButtonClick); menu.loadXML(&quot;../common/_context.xml&quot;); mygrid = new dhtmlXGridObject(&#39;gridbox&#39;); mygrid.setImagePath(&quot;../../codebase/imgs/&quot;); mygrid.setHeader(&quot;Author,Title&quot;); mygrid.setInitWidths(&quot;250,250&quot;); mygrid.enableAutoWidth(true); mygrid.setColAlign(&quot;left,left&quot;); mygrid.setColTypes(&quot;ro,link&quot;); mygrid.setColSorting(&quot;str,str&quot;); mygrid.enableContextMenu(menu); mygrid.init(); mygrid.setSkin(&quot;dhx_skyblue&quot;); mygrid.loadXML(&quot;../common/grid_links.xml&quot;); 上面代码创建了一个menu并将其作为context...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-07-31 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h2>
+    
+      dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？ 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？ 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。 首先看看dhtmlxTree 关于Drag-n-Drop的例子，其中有这样一个例子Custom Drag Out。 上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下： function maf() { return false; } tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0); tree.setSkin(&#39;dhxskyblue&#39;); tree.setImagePath(&quot;../../codebase/imgs/cshyellowbooks/&quot;); tree.enableDragAndDrop(true); tree.setDragHandler(maf); tree.enableSmartXMLParsing(true); tree.loadXML(&quot;../common/tree05dragndrop.xml&quot;); function scontrol() { this.drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) { targetHtmlObject.style.backgroundColor = &quot;&quot;; targetHtmlObject.value = sourceHtmlObject.parentObject.label; } this.dragIn = function(htmlObject, shtmlObject) { htmlObject.style.backgroundColor =...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-07-24 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
+    
+      说明: 本文来源于http://dhtmlx.com/docs/products/dhtmlxGrid/，本人对其进行翻译整理成下文，贴出此文，紧供分享。 dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。 跨浏览器 使用JavaScript API进行控制 Ajax支持 简单的JavaScript 或者XML 配置 与HTML集成 内建过滤、排序、查询、分组功能 表格 footer/header自动计算 行内编辑 准备使用大数据集解决方案：分页，动态加载，智能渲染 序列化为XML或CSV 从 XML或CSV加载 列锁定 剪贴板支持 简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion) 支持子表格 列拖拽和移动 行或列拖拽 dhtmlxTree PRO Edition支持拖拽 可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象) 组合框，日历以及更多的预定义eXcells Cell支持数学方程式 不同的键盘映射 简单的CSS风格或是预定义的皮肤...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-07-19 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h2>
+    
+      OpenStack Nova code：https://bugs.launchpad.net/nova OpenStack Blog：http://planet.openstack.org/ OpenStack 官方文档：http://docs.openstack.org/cactus/openstack-compute/admin/content/chgetting-started-with-openstack.html OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php 在 Ubuntu 上安装和配置 OpenStack Nova：http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/ Centos安装过程：http://wiki.openstack.org/NovaInstall/CentOSNotes Running OpenStack Compute (Nova)：http://wiki.openstack.org/RunningNova 开源黄页 -  OpenStack：http://yp.oss.org.cn/appcenter/software/showsoftware.php?swid=1733 Installation on Debian, Fedora orCentOS：http://nova.openstack.org/adminguide/distros/others.html Installing Nova on a Single Host：http://nova.openstack.org/adminguide/single.node.install.html openstack swift 典型架构和openstack swift 简要说明：http://blog.sina.com.cn/s/blog6b98772b0100pk7p.html Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;blank&quot;&gt;http://www.douban.com/group/topic/17621229/ 新浪上openstackobjectstorage的一些文章：http://blog.sina.com.cn/s/articlelist180515409121.html 豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;blank&quot;&gt;http://www.douban.com/group/openstack/ OpenStack服务部署： http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-07-07 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/07/07/some-resources-about-openstack#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+
+<!-- Pagination links -->
+<div class="pull-right">
+  
+    
+    <a class="btn btn-default btn-sm" href="/">Home</a>
+    <a class="btn btn-default btn-sm" href="/page9/">&laquo; Prev</a>
+    
+  
+  <span><a class="btn btn-default btn-sm disabled">Page: 10 of 11</a></span>
+  
+    <a class="btn btn-default btn-sm" href="/page11/">Next &raquo;</a>
+    <a class="btn btn-default btn-sm" href="/page11/">Last</a>
+  
+</div>
+
+  </div>
+
+  <div class="col-md-3 visible-lg visible-md">
+                <section>
+   	 <h2>About me</h2>
+	<div>
+   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
+	</div>
+       </section>
+
+
+            <section>
+        <h2>Categories</h2>
+        <div class="tag_box">
+          <ul>
+          
+          
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>5</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>1</span>
+    	</a></li>
+    
+  
+
+ 
+          </ul>
+        </div>
+      </section>
+
+
+            <section>
+       <h2>Recently Posts</h2>
+       <div class="category">
+         <ul>
+           
+           <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
+           
+           <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
+           
+           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
+           
+           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
+           
+           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
+           
+           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
+           
+           <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
+           
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+           
+         </ul>
+       </div>
+      </section>
+
+
+            <section>
+        <h2>Recently Comments</h2>
+        <div class="category">
+          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+        </div>
+      </section>
+
+
+            <section>
+        <h2>Recently Visitors</h2>
+          <ul class="ds-recent-visitors" data-num-items="15"></ul>
+      </section>
+
+
+            <section>
+        <h2>Sina Weibo</h2>
+        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+      </section>
+
+
+            
+      <section>
+        <h2>Blogroll</h2>
+        <div class="category">
+          <ul>
+            
+              <li><a href="//blog.frankel.ch" target="_blank">A Java geek</a></li>
+            
+              <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+            
+              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
+            
+              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
+            
+              <li><a href="//blog.boluotou.com/" target="_blank">圆木菠萝罐</a></li>
+            
+              <li><a href="//log4d.com/" target="_blank">Log4D</a></li>
+            
+          </ul>
+        </div>
+      </section>
+      
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript></p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+        <script type="text/javascript">
+    function tmtxt_search_google()
+    {
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
+
+    <script src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="/assets/themes/havee/js/main.js"></script>
+
+    <script>
+    jQuery(document).ready(function() {
+      jQuery("p img").each(function() {
+        var strA = "<a id='fancyBox' href='" + this.src + "'></a>";
+        jQuery(this).wrapAll(strA);
+      });
+    });
+
+    jQuery("#fancyBox").fancybox({
+      openEffect	: 'elastic',
+      closeEffect	: 'elastic',
+    });
+    </script>
+
+        <!--多说js加载开始，一个页面只需要加载一次 -->
+    <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+    <!--多说js加载结束，一个页面只需要加载一次 -->
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'wbUid':2074421551,
+        'review':'normal',
+        'snsKey':{
+          'tsina':'722958853'
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+  </body>
+</html>
+

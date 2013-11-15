@@ -1,0 +1,499 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>安装saltstack和halite - JavaChen Blog</title>
+    <meta name="description" content="安装saltstack和halite">
+    <meta name="keywords" content="saltstack,halite">
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet">
+    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite" />
+    <!-- fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed">
+
+    
+
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+          <li>
+	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
+      <div class="col-lg-12 form-group">
+        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
+      </div>
+    </form>
+
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-9">
+    <div class="page-header">
+      <h2>
+        安装saltstack和halite 
+        
+      </h2>
+    </div>
+    <p>本文记录安装saltstack和halite过程。</p>
+
+<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
+
+<h1>下载yum源</h1>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+</code></pre></div>
+<h1>安装依赖</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+</code></pre></div>
+<h1>安装saltstack</h1>
+
+<p>在sk1上安装master：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+</code></pre></div>
+<p>在sk1上安装minion：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+</code></pre></div>
+<h1>关闭防火墙</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
+setenforce 0
+</code></pre></div>
+<!-- more -->
+
+<h1>修改配置文件</h1>
+
+<p>/etc/salt/master
+interface: 0.0.0.0
+auto_accept: True</p>
+
+<p>/etc/salt/minion
+master: sk1
+id: sk2</p>
+
+<h1>启动</h1>
+
+<p>分别在sk1和sk2上配置开机启动：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig salt-master on
+chkconfig salt-minion on
+</code></pre></div>
+<p>分别在sk1和sk2上以service方式启动：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master start
+/etc/init.d/salt-minion start
+</code></pre></div>
+<p>你可以在sk2上以后台运行salt-minion</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -d
+</code></pre></div>
+<p>或者在sk2上debug方式运行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -l debug
+</code></pre></div>
+<h1>排错</h1>
+
+<p>如果启动提示如下错误：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 vagrant]# /etc/init.d/salt-master start
+Starting salt-master daemon: Traceback (most recent call last):
+ File &quot;/usr/bin/salt-master&quot;, line 10, in &lt;module&gt;
+   salt_master()
+ File &quot;/usr/lib/python2.6/site-packages/salt/scripts.py&quot;, line 20, in salt_master
+   master.start()
+ File &quot;/usr/lib/python2.6/site-packages/salt/__init__.py&quot;, line 114, in start
+   if check_user(self.config[&#39;user&#39;]):
+ File &quot;/usr/lib/python2.6/site-packages/salt/utils/verify.py&quot;, line 296, in check_user
+   if user in e.gr_mem] + [pwuser.gid])
+AttributeError: &#39;pwd.struct_passwd&#39; object has no attribute &#39;gid&#39;
+</code></pre></div>
+<p>请下载saltstack源码重新编译：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://github.com/saltstack/salt/archive/develop.zip
+unzip develop
+cd salt-develop/
+python2.6 setup.py install
+</code></pre></div>
+<h1>salt minion和master的认证过程</h1>
+
+<ul>
+<li>minion在第一次启动时，会在/etc/salt/pki/minion/下自动生成minion.pem(private key), minion.pub(public key)，然后将minion.pub发送给master</li>
+<li>master在接收到minion的public key后，通过salt-key命令accept minion public key，这样在master的/etc/salt/pki/master/minions下的将会存放以minion id命名的public key, 然后master就能对minion发送指令了</li>
+</ul>
+
+<p>master上执行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+Unaccepted Keys:
+Rejected Keys:
+</code></pre></div>
+<p>接受所有的认证请求：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -A
+</code></pre></div>
+<p>再次查看：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt-key -L
+Accepted Keys:
+sk2
+Unaccepted Keys:
+Rejected Keys:
+</code></pre></div>
+<p><code>salt-key</code>更多说明：<a href="http://docs.saltstack.com/ref/cli/salt-key.html">http://docs.saltstack.com/ref/cli/salt-key.html</a></p>
+
+<h1>测试运行</h1>
+
+<p>在master上运行ping：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 pillar]# salt &#39;*&#39; test.ping
+sk2:salt &#39;*&#39; test.ping
+    True
+</code></pre></div>
+<p>True表明测试成功。</p>
+
+<h1>安装halite</h1>
+
+<h2>下载代码</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone https://github.com/saltstack/halite
+</code></pre></div>
+<h2>生成index.html</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd halite/halite
+./genindex.py -C
+</code></pre></div>
+<h2>安装salt-api</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-api
+</code></pre></div>
+<h2>配置salt master文件</h2>
+
+<p>配置salt的master文件，添加：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rest_cherrypy:
+ host: 0.0.0.0
+ port: 8080
+ debug: true
+ static: /root/halite/halite
+ app: /root/halite/halite/index.html
+external_auth:
+   pam:
+     admin:
+     - .*
+     - &#39;@runner&#39;
+     - &#39;@wheel&#39;
+</code></pre></div>
+<p>重启master;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master restart
+</code></pre></div>
+<h2>添加登陆用户</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">useradd admin
+echo admin|passwd –stdin admin
+</code></pre></div>
+<h2>启动 salt-api</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd halite/halite
+python2.6 server_bottle.py -d -C -l debug -s cherrypy
+</code></pre></div>
+<p>然后打开<code>http://ip:8080/app</code>，通过admin/admin登陆即可。</p>
+
+    <br/>
+    <div class="copyright">
+	<p><strong>本文固定链接：</strong><a href='/saltstack/2013/11/11/install-saltstack-and-halite'>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</a></p>
+	<p><strong>原创文章,转载请注明出处：</strong><a href='/saltstack/2013/11/11/install-saltstack-and-halite'>JavaChen Blog</a></p>
+    </div>
+
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/hbase/2013/11/01/debug-hbase-in-eclipse" title="在eclipse中调试运行hbase">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+  
+<div id="comments">
+  <div class="ds-thread" data-title="安装saltstack和halite - JavaChen Blog"></div>
+</div>
+
+
+
+
+  </div>
+
+  <div class="col-md-3 visible-lg visible-md">
+    <section>
+      <h4>Published</h4>
+      <ul>
+        <li>2013-11-11 00:00</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h4>Categories</h4>
+      <ul>
+        
+        
+
+
+  
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>1</span>
+    	</a></li>
+    
+  
+
+
+      </ul>
+    </section>
+    
+    
+    <section>
+      <h4>Tags</h4>
+      <ul class="tag_box">
+        
+        
+
+
+  
+     
+    	<li><a href="/tags.html#saltstack-ref">saltstack <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#halite-ref">halite <span>1</span></a></li>
+    
+  
+
+
+
+      </ul>
+    </section>
+    
+
+          <section>
+        <h2>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript></p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+        <script type="text/javascript">
+    function tmtxt_search_google()
+    {
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
+
+    <script src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="/assets/themes/havee/js/main.js"></script>
+
+    <script>
+    jQuery(document).ready(function() {
+      jQuery("p img").each(function() {
+        var strA = "<a id='fancyBox' href='" + this.src + "'></a>";
+        jQuery(this).wrapAll(strA);
+      });
+    });
+
+    jQuery("#fancyBox").fancybox({
+      openEffect	: 'elastic',
+      closeEffect	: 'elastic',
+    });
+    </script>
+
+        <!--多说js加载开始，一个页面只需要加载一次 -->
+    <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+    <!--多说js加载结束，一个页面只需要加载一次 -->
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'wbUid':2074421551,
+        'review':'normal',
+        'snsKey':{
+          'tsina':'722958853'
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+  </body>
+</html>
+

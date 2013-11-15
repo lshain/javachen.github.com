@@ -1,0 +1,9 @@
+      <section>
+        <h2>Categories</h2>
+        <div class="tag_box">
+          <ul>
+          {% assign categories_list = site.categories %}
+          {% include JB/categories_list %} 
+          </ul>
+        </div>
+      </section>
