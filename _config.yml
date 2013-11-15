@@ -17,7 +17,7 @@ redcarpet:
 title : JavaChen Blog
 tagline: Site Tagline
 keywords : pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript
-description: 关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化-人生苦短，我用Java。
+description: 关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化
 author :
   name : JavaChen
   email : june.chan@foxmail.com
@@ -150,6 +150,10 @@ JB :
 
   blogroll : true
   brlist :
+    - text : 圆木菠萝罐
+      url : //blog.boluotou.com/
+    - text : Log4D
+      url : //log4d.com/
     - text : A Java geek
       url : //blog.frankel.ch
     - text : Kohsuke Kawaguchi
@@ -158,7 +162,3 @@ JB :
       url : //www.longtask.com/blog/
     - text : 莫多泡泡
       url : //jdkcn.com/
-    - text : 圆木菠萝罐
-      url : //blog.boluotou.com/
-    - text : Log4D
-      url : //log4d.com/

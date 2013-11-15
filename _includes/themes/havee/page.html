@@ -7,5 +7,7 @@
       </div>
     </div>
     {{ content }}
+ 
+    {% if page.comment %} {% include JB/comments %} {% endif %}
   </div>
 </div>

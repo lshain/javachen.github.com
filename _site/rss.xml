@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<channel>
 		<title>JavaChen Blog</title>
-		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化-人生苦短，我用Java。</description>
+		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Fri, 15 Nov 2013 14:11:34 +0800</lastBuildDate>
-		<pubDate>Fri, 15 Nov 2013 14:11:34 +0800</pubDate>
+		<lastBuildDate>Fri, 15 Nov 2013 15:13:49 +0800</lastBuildDate>
+		<pubDate>Fri, 15 Nov 2013 15:13:49 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
