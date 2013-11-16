@@ -2,43 +2,40 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
     <title>hadoop自动化安装shell脚本 - JavaChen Blog</title>
-    <meta name="description" content="自动化安装hadoop的shell脚本">
-    <meta name="keywords" content="hadoop, hive, remote debug, mapreduce">
-    <meta name="author" content="JavaChen">
+    <meta name="description" content="自动化安装hadoop的shell脚本"/>
+    <meta name="keywords" content="hadoop, hive, remote debug, mapreduce"/>
+    <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="baidu-site-verification" content="34e02d96b4a6e91ed6e5126fa602cea4"/>
     <meta property="wb:webmaster" content="b6081b2b8ab84c60" />
+
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet">
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
+    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
     <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/08/02/hadoop-install-script" />
     <!-- fav and touch icons -->
-  <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
-  -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/08/02/hadoop-install-script" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
 
     <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed">
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed">
-
-    
-
-
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
@@ -150,6 +147,12 @@
         <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
       </div>
     </form>
+    <script type="text/javascript">
+    function tmtxt_search_google(){
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
 
           </li>
         </ul>
@@ -345,13 +348,19 @@ su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot;
     
 
 
-  <script type="text/javascript" id="wumiiComments">
-    var wumiiPermaLink = "/hadoop/2013/08/02/hadoop-install-script"; 
-    var wumiiTitle = "http://blog.javachen.comhadoop自动化安装shell脚本";
-    var wumiiSitePrefix = "http://blog.javachen.com/"; 
-    var wumiiParams = "&pf=JAVASCRIPT";
-</script>
-<script type="text/javascript" src="http://widget.wumii.cn/ext/cw/widget"></script>
+     <div id="comments">
+  	<div class="ds-thread" data-title="hadoop自动化安装shell脚本 - JavaChen Blog"></div>
+   </div> 
+   <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
 
 
 
@@ -429,41 +438,19 @@ su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot;
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
-<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript></p>
+        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
       </footer>
             <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
 
     </div> <!-- /container -->
 
-        <script type="text/javascript">
-    function tmtxt_search_google()
-    {
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-    <script src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script src="/assets/themes/havee/js/main.js"></script>
-
-    <script>
-    jQuery(document).ready(function() {
-      jQuery("p img").each(function() {
-        var strA = "<a id='fancyBox' href='" + this.src + "'></a>";
-        jQuery(this).wrapAll(strA);
-      });
-    });
-
-    jQuery("#fancyBox").fancybox({
-      openEffect	: 'elastic',
-      closeEffect	: 'elastic',
-    });
-    </script>
-
+    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -476,6 +463,23 @@ su -c &quot;cd ; /usr/bin/pg_ctl restart -w -m fast -D /var/lib/pgsql/data&quot;
       document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
     </script>
     <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
 
   </body>
 </html>

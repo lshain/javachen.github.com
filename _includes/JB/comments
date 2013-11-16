@@ -1,10 +1,6 @@
 {% if site.JB.comments.provider and page.comments != false %}
 
 {% case site.JB.comments.provider %}
-{% when "duoshuo" %}
-  {% include JB/comments-providers/duoshuo %}
-{% when "wumi" %}
-  {% include JB/comments-providers/wumi %}
 {% when "disqus" %}
   {% include JB/comments-providers/disqus %}
 {% when "livefyre" %}
@@ -13,8 +9,10 @@
   {% include JB/comments-providers/intensedebate %}
 {% when "facebook" %}
   {% include JB/comments-providers/facebook %}
+{% when "duoshuo" %}
+  {% include custom/comments-providers/duoshuo %}
 {% when "custom" %}
-  {% include custom/comments %}
+  {% include custom/comments-providers/custom %}
 {% endcase %}
 
 {% endif %}

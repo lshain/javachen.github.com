@@ -1,4 +1,4 @@
-{% if site.safe and site.JB.analytics.provider and page.JB.analytics != false %}
+{% if site.JB.analytics.provider and page.JB.analytics != false %}
 
 {% case site.JB.analytics.provider %}
 {% when "google" %}
@@ -10,7 +10,7 @@
 {% when "piwik" %}
   {% include JB/analytics-providers/piwik %}
 {% when "custom" %}
-  {% include custom/analytics %}
+  {% include custom/analytics-providers/custom %}
 {% endcase %}
 
 {% endif %}

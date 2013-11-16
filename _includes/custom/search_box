@@ -1,0 +1,11 @@
+    <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
+      <div class="col-lg-12 form-group">
+        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
+      </div>
+    </form>
+    <script type="text/javascript">
+    function tmtxt_search_google(){
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
