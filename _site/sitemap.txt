@@ -19,6 +19,7 @@ http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
 http://blog.javachen.com/page10/index.html
 http://blog.javachen.com/page11/index.html
+http://blog.javachen.com/page12/index.html
 
 http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack
 http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite
@@ -69,6 +70,7 @@ http://blog.javachen.com/cloud/2011/08/20/install-eucalyptus-on-fedora-15
 http://blog.javachen.com/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java
 http://blog.javachen.com/javascript/2011/07/31/custom-dhtmlxgrid-header-menu
 http://blog.javachen.com/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column
+http://blog.javachen.com/javascript/2011/07/19/dhtmlxgrid-quick-start-guide
 http://blog.javachen.com/cloud/2011/07/07/some-resources-about-openstack
 http://blog.javachen.com/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6
 http://blog.javachen.com/cloud/2011/06/26/opennebula-2-2-features
