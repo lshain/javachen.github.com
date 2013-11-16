@@ -20,7 +20,7 @@ rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rp
 
 # 安装依赖
 
-```bash
+```
 yum install python-jinja2 -y
 ```
 
