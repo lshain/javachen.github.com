@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>通过Cloudera Manager安装CDH - JavaChen Blog</title>
+    <meta name="description" content="通过Cloudera Manager安装CDH">
+    <meta name="keywords" content="hadoop, cdh, cloudera manager">
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="baidu-site-verification" content="34e02d96b4a6e91ed6e5126fa602cea4"/>
+    <meta property="wb:webmaster" content="b6081b2b8ab84c60" />
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet">
+    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager" />
+    <!-- fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed">
+
+    
+
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+          <li>
+	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
+      <div class="col-lg-12 form-group">
+        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
+      </div>
+    </form>
+
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-9">
+    <div class="page-header">
+      <h2>
+        通过Cloudera Manager安装CDH 
+        
+      </h2>
+    </div>
+    <h1>1 方法一</h1>
+
+<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
+
+<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
+
+<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+<!-- more -->
+
+<h1>2 方法二</h1>
+
+<p>这里还有一种方法，就是手动下载<code>Cloudera Manager</code>的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使<code>archive.cloudera.com</code>域名映射到本地ip。</p>
+
+<h1>3 方法三</h1>
+
+<p>出于好奇，想破解<code>cloudera-manager-installer.bin</code>，然后看看其中做了哪些操作。通过以下脚本即可解压该文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cdh]$ mv cloudera-manager-installer.bin cloudera-manager-installer.zip
+[june@june-fedora cdh]$ unzip cloudera-manager-installer.zip 
+</code></pre></div>
+<p>解压之后的目录如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[june@june-fedora cloudera-manager-installer]$ ll
+总用量 512
+-rwxrwxr-x. 1 june june 501698 5月  25 09:53 cloudera-manager-installer.zip
+drwxr-xr-x. 2 june june   4096 5月  23 03:05 data
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 guis
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 meta
+drwxr-xr-x. 2 june june   4096 5月  22 21:48 scripts
+</code></pre></div>
+<p>查看解压之后的文件可以看到安装脚本是用lua编写并用MojoSetup编译的，从<code>scripts/config.lua</code>脚本中大概可以看出安装脚本的执行过程。</p>
+
+<p>整理下该脚本逻辑，主要是做了以下操作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y jdk.x86_64 
+yum install -y cloudera-manager-server 
+yum install -y cloudera-manager-server-db
+/etc/init.d/cloudera-scm-server start
+/etc/init.d/cloudera-scm-server-db start
+</code></pre></div>
+<p>知道了上面这点之后，就可以在本地的cloudera-manager yum中，执行以上操作完成cloudera-manager的安装，安装成功之后查看7180端口是否打开：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">netstat -na| grep 7180
+</code></pre></div>
+<p>通过浏览器访问<code>http://IP:7180</code>登录cloudera manager界面：用户名/密码：<code>admin/admin</code>,按照界面提示完成hadoop集群安装。</p>
+
+<h1>4 排错</h1>
+
+<p>在执行下面一个命令时候可能会出现如下异常</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/cloudera-scm-server-db start
+</code></pre></div>
+<p>异常信息如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@cdh1 cloudera-scm-server-db]# /etc/init.d/cloudera-scm-server-db start
+    属于此数据库系统的文件宿主为用户 &quot;cloudera-scm&quot;.
+    此用户也必须为服务器进程的宿主.
+    数据库簇将带有 locale en_US.UTF8 初始化.
+    缺省的文本搜索配置将会被设置到&quot;english&quot;
+
+    修复已存在目录 /var/lib/cloudera-scm-server-db/data 的权限 ... initdb: 无法改变目录 &quot;/var/lib/cloudera-scm-server-db/data&quot; 的权限: 权限不够
+    Could not initialize database server.
+      This usually means that your PostgreSQL installation failed or isn&#39;t working properly.
+      PostgreSQL is installed using the set of repositories found on this machine. Please
+      ensure that PostgreSQL can be installed. Please also uninstall any other instances of
+      PostgreSQL and then try again., giving up
+</code></pre></div>
+<p>这时候，请执行如下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash cloudera-scm -c &quot;touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log&quot;
+su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log&quot;
+</code></pre></div>
+    <br/>
+    <div class="copyright">
+	<p><strong>本文固定链接：</strong><a href='/hadoop/2013/06/24/install-cdh-by-cloudera-manager'>http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager</a></p>
+	<p><strong>原创文章，转载请注明出处：</strong><a href='/hadoop/2013/06/24/install-cdh-by-cloudera-manager'>JavaChen Blog</a></p>
+    </div>
+
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle" title="kettle访问IDH2.3中的HBase">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/hadoop/2013/07/20/install-rhadoop" title="安装RHadoop">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+  
+<div id="comments">
+  <div class="ds-thread" data-title="通过Cloudera Manager安装CDH - JavaChen Blog"></div>
+</div>
+
+
+
+
+  </div>
+
+  <div class="col-md-3 visible-lg visible-md">
+    <section>
+      <h4>Published</h4>
+      <ul>
+        <li>2013-06-24 00:00</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h4>Categories</h4>
+      <ul>
+        
+        
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+    
+  
+
+
+      </ul>
+    </section>
+    
+    
+    <section>
+      <h4>Tags</h4>
+      <ul class="tag_box">
+        
+        
+
+
+  
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop <span>14</span></a></li>
+     
+    	<li><a href="/tags.html#cdh-ref">cdh <span>5</span></a></li>
+    
+  
+
+
+
+      </ul>
+    </section>
+    
+
+          <section>
+        <h2>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript></p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+        <script type="text/javascript">
+    function tmtxt_search_google()
+    {
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
+
+    <script src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="/assets/themes/havee/js/main.js"></script>
+
+    <script>
+    jQuery(document).ready(function() {
+      jQuery("p img").each(function() {
+        var strA = "<a id='fancyBox' href='" + this.src + "'></a>";
+        jQuery(this).wrapAll(strA);
+      });
+    });
+
+    jQuery("#fancyBox").fancybox({
+      openEffect	: 'elastic',
+      closeEffect	: 'elastic',
+    });
+    </script>
+
+        <!--多说js加载开始，一个页面只需要加载一次 -->
+    <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+    <!--多说js加载结束，一个页面只需要加载一次 -->
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+  </body>
+</html>
+

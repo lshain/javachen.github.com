@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JavaChen Blog</title>
+    <meta name="description" content="开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化">
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript">
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="baidu-site-verification" content="34e02d96b4a6e91ed6e5126fa602cea4"/>
+    <meta property="wb:webmaster" content="b6081b2b8ab84c60" />
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet">
+    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="http://blog.javachen.com/page8/" />
+    <!-- fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed">
+
+    
+
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+          <li>
+	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
+      <div class="col-lg-12 form-group">
+        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
+      </div>
+    </form>
+
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-9">
+    <div class="page-header-wrapper">
+      <div class="page-header">
+        <h2>  <small>Life is short,we need running.</small></h2>
+      </div>
+    </div>
+    
+
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h2>
+    
+      在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。 下面例子中读取postgres数据库中的a0表数据，然后输出到a1表： a1表结构如下： CREATE TABLE a1 ( a double precision, id integer NOT NULL, CONSTRAINT idpk PRIMARY KEY (id ), CONSTRAINT idunin UNIQUE (id ) ) 从表结构可以看出，a1表中id为主键、唯一。 a0表数据预览： 现在a1表数据为空，执行上面的转换，执行成功之后，a1表数据和a0表数据一致。 再次执行，上面的转换会报错，程序停止运行，会报主键重复的异常。 现在，我想报错之后，程序继续往下执行，并记录错误的记录的相关信息，这时候可以使用“定义错误处理”的功能。 在“表输出”的步骤上右键选择“定义错误处理”，弹出如下对话框。 相关字段说明： 目标步骤：指定处理错误的步骤 启用错误处理？：设置是否启用错误处理 错误数列名：出错的记录个数 错误描述列名：描述错误信息的列名称 错误列的列名：出错列的名称 错误编码列名：描述错误的代码的列名 允许的最大错误数：允许的最大错误数，超过此数，不在处理错误 允许的最大错误百分比： 在计算百分百前最少要读入的行数： 添加错误处理后的转换如下： 记录错误信息的字段列表如下，可以看出，errorNum、errorDesc、errorName、errorCode都是在定义错误处理时候填入的列名称，a、id来自于输入的记录的列。 记录的错误信息如下：...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-02-17 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/02/17/step-error-handling-in-kettle#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h2>
+    
+      本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。
+
+EL表达式this扩展
+在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
+1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
+2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
+3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。
+&lt;!--more--&gt;
+
+我们需要一种新的功能，实现：
+1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
+2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
+3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
+4.兼容标准的EL表达式
+
+我们将上述功能处理为“this”表达式。其功能模型为：
+
+
+
+页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
+
+动作类和页面的一致性保证
+为了有效实现this表达式，我们实现如下映射规则：
+1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
+2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”
+
+“this”EL表达式算法
+算法流程如下图：
+
+
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-02-14 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/java/2012/02/14/this-expression-of-jsf-el#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h2>
+    
+      很多人向我要《Ext读取xml文件生成动态表格和表单》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。
+
+《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码
+
+详细html和js代码见相关文件，这里先描述思路。
+
+首先
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PCMTRREPLACEIMP.xml” .PCMTRREPLACEIMP.xml文件的放置路径见DomUtils.js文件中的说明。
+
+在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。
+
+然后
+
+初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。
+
+最后
+相关文件打包见：
+http://vdisk.weibo.com/s/2enQS
+
+说明
+如果还有什么不懂，欢迎email：javachen.june#gmail.com
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-01-31 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
+    
+      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于数据抽取、转换、装载。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。 kettle的数据抽取主要在于抽取数据，而没有考虑数据库的函数、存储过程、视图、表结构以及索引、约束等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。 这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，需要有主键和索引方便对比和加快查询速度。 先来看看kettle中的一些组件。 下图是kettle中的一个表输出组件。 在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。 &lt;!--more--&gt; 下图是kettle中纬度更新/查询的组件。 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。 如果现在想使用kettle实现异构数据库的数据以及主键和索引的迁移，有没有一个完整方便的解决方案呢？我能想到的解决方案如下： 1.使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。 2.针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。 3.扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。 方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。 下面是方案3的具体的实现。 首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下： public void ripDBWizard(final int no) { final List databases = spoon.getActiveDatabases(); if (databases.size() == 0) return;&lt;/pre&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;, databases); final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-01-05 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
+    
+      使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
+
+同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行
+
+
+原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。
+解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。
+
+
+关键字的问题。
+
+Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。
+
+
+解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。
+
+
+oracle中的字段名从中可以有#号，但是到mysql会报错
+
+
+解决办法：字段改名称，去掉#号
+
+
+Db2初始化到mysql或是postgres出错
+
+
+原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母
+解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。
+
+
+Oracle到mysql和pg时日期类型数据值有偏差
+
+
+原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。
+
+
+主键从ORACLE导入不到MYSQL和POSTGRES
+
+
+原因：pdi程序中没有对主键进行处理
+解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据
+
+
+Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00
+
+
+原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。
+解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString
+
+
+异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。
+
+
+原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。
+解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。
+
+
+Db2中没有主键的数据初始化到mysql和postgres需要添加索引
+
+
+解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。
+
+
+Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。
+
+
+原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。
+解决办法：使用最新的pdi程序。
+
+
+导数据中途时没有报错，直接软件退出
+
+
+原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误
+解决办法：修改jvm参数
+
+
+初次使用kettle做db2的初始化会报错
+
+
+原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。
+解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-01-04 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+
+<!-- Pagination links -->
+<div class="pull-right">
+  
+    
+    <a class="btn btn-default btn-sm" href="/">Home</a>
+    <a class="btn btn-default btn-sm" href="/page7/">&laquo; Prev</a>
+    
+  
+  <span><a class="btn btn-default btn-sm disabled">Page: 8 of 12</a></span>
+  
+    <a class="btn btn-default btn-sm" href="/page9/">Next &raquo;</a>
+    <a class="btn btn-default btn-sm" href="/page12/">Last</a>
+  
+</div>
+
+  </div>
+
+  <div class="col-md-3 visible-lg visible-md">
+                <section>
+   	 <h2>About me</h2>
+	<div>
+   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
+	</div>
+       </section>
+
+
+            <section>
+        <h2>Categories</h2>
+        <div class="tag_box">
+          <ul>
+          
+          
+
+
+  
+     
+    	<li><a href="/categories.html#cloud-ref">
+    		cloud <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>7</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#kettle-ref">
+    		kettle <span>8</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#java-ref">
+    		java <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#cassandra-ref">
+    		cassandra <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#work-ref">
+    		work <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop <span>12</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hbase-ref">
+    		hbase <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#hive-ref">
+    		hive <span>5</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#post-ref">
+    		post <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#saltstack-ref">
+    		saltstack <span>2</span>
+    	</a></li>
+    
+  
+
+ 
+          </ul>
+        </div>
+      </section>
+
+
+            <section>
+       <h2>Recently Posts</h2>
+       <div class="category">
+         <ul>
+           
+           <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
+           
+           <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
+           
+           <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
+           
+           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
+           
+           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
+           
+           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
+           
+           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
+           
+           <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
+           
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+         </ul>
+       </div>
+      </section>
+
+
+            <section>
+        <h2>Recently Comments</h2>
+        <div class="category">
+          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+        </div>
+      </section>
+
+
+            <section>
+        <h2>Recently Visitors</h2>
+          <ul class="ds-recent-visitors" data-num-items="15"></ul>
+      </section>
+
+
+            <section>
+        <h2>Sina Weibo</h2>
+        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
+      </section>
+
+
+            
+      <section>
+        <h2>Blogroll</h2>
+        <div class="category">
+          <ul>
+            
+              <li><a href="//blog.boluotou.com/" target="_blank">圆木菠萝罐</a></li>
+            
+              <li><a href="//log4d.com/" target="_blank">Log4D</a></li>
+            
+              <li><a href="//blog.frankel.ch" target="_blank">A Java geek</a></li>
+            
+              <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
+            
+              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
+            
+              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
+            
+          </ul>
+        </div>
+      </section>
+      
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript></p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+        <script type="text/javascript">
+    function tmtxt_search_google()
+    {
+      var query = document.getElementById("my-google-search").value;
+      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
+    }
+    </script>
+
+    <script src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="/assets/themes/havee/js/main.js"></script>
+
+    <script>
+    jQuery(document).ready(function() {
+      jQuery("p img").each(function() {
+        var strA = "<a id='fancyBox' href='" + this.src + "'></a>";
+        jQuery(this).wrapAll(strA);
+      });
+    });
+
+    jQuery("#fancyBox").fancybox({
+      openEffect	: 'elastic',
+      closeEffect	: 'elastic',
+    });
+    </script>
+
+        <!--多说js加载开始，一个页面只需要加载一次 -->
+    <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+    <!--多说js加载结束，一个页面只需要加载一次 -->
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+  </body>
+</html>
+
