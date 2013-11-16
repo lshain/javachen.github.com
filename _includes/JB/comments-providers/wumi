@@ -1,6 +1,6 @@
 <script type="text/javascript" id="wumiiComments">
     var wumiiPermaLink = "{{page.url}}"; 
-    var wumiiTitle = "{{page.title}}";
+    var wumiiTitle = "{{ site.production_url }}{{page.title}}";
     var wumiiSitePrefix = "http://blog.javachen.com/"; 
     var wumiiParams = "&pf=JAVASCRIPT";
 </script>
