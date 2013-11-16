@@ -1,0 +1,7 @@
+<script type="text/javascript" id="wumiiComments">
+    var wumiiPermaLink = "{{page.url}}"; 
+    var wumiiTitle = "{{page.title}}";
+    var wumiiSitePrefix = "http://blog.javachen.com/"; 
+    var wumiiParams = "&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/cw/widget"></script>
