@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
+    
+      本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra. 检查java环境 Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本. 1.检查是否安装java: java -version 如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法. 2.安装jdk 下载Oracle JRE 1）修改执行权限: $ cd /tmp $ chmod a+x jre-6u25-linux-x64-rpm.bin 2）解压执行RPM文件,例如: $ sudo ./jre-6u25-linux-x64-rpm.bin 这样JRE会安装在/usr/java/ 3）配置Oracle JRE取代OpenJDK JRE 可以使用alternatives命令添加一个链接到Oracle JRE. $ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000 4）确认是否安装JRE $ java -version java version &quot;1.6.0_25&quot; Java(TM) SE Runtime Environment...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-04-06 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/java/2012/03/26/hash-and-hash-functions">哈希表</a></h2>
     
       定义 一般的线性表、树，数据在结构中的相对位置是随机的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。 哈希表又称散列表。 哈希表存储的基本思想是：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即数组空间）的单元地址（即下标），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为哈希表或散列表。 哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。 哈希表是基于数组结构实现的，所以它也存在一些缺点： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即冲突现象：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： 不需要有序遍历数据，并且可以提前预测数据量的大小。 冲突 理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。 把这种具有不同关键字值而具有相同哈希地址的对象称同义词。 在大多数情况下，冲突是不能完全避免的。这是因为所有可能的关键字的集合可能比较大，而对应的地址数则可能比较少。 对于哈希技术，主要研究两个问题： （1）如何设计哈希函数以使冲突尽可能少地发生。 （2）发生冲突后如何解决。 哈希函数的构造方法 构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。 1．直接定址法 直接定址法是以关键字k本身或关键字加上某个数值常量c作为哈希地址的方法。 该哈希函数H(k)为： H(k)=k+c (c≥0) 这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费 2．除留余数法 取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即： H(k)=k％m 这是一种较简单、也是较常见的构造方法。 这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。 理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。 3．平方取中法 取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。 设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。 4．折叠法 这种方法适合在关键字的位数较多，而地址区间较小的情况。 将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。 例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。 5．数值分析法 若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。 例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。 6. 随机数法 选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。 7....
@@ -244,22 +260,6 @@
         <div class="col-md-6 date visible-lg visible-md">
           <span class="glyphicon glyphicon-time"></span> 2012-02-22 00:00
           <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/02/22/the-init-process-before-job-execution#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h2>
-    
-      How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-02-21 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job#comments"> Comments</a>
         </div>
         
         <div class="clearfix"></div>
@@ -348,7 +348,7 @@
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -363,6 +363,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -381,8 +383,6 @@
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

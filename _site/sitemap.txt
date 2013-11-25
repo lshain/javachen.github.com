@@ -21,6 +21,7 @@ http://blog.javachen.com/page10/index.html
 http://blog.javachen.com/page11/index.html
 http://blog.javachen.com/page12/index.html
 
+http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack
 http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack
 http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite
 http://blog.javachen.com/hbase/2013/11/01/debug-hbase-in-eclipse

@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h2>
+    
+      记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。 0.环境准备 1.设置hosts 临时设置hostname，以node1为例 sudo hostname node1 确保/etc/hosts中包含ip和FQDN，如果你在使用DNS，保存这些信息到/etc/hosts不是必要的，却是最佳实践。 确保/etc/sysconfig/network中包含hostname=node1 检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。 host -v -t A `hostname` hadoop的配置文件core-site.xml、mapred-site.xml和yarn-site.xml配置节点时，请使用hostname和不是ip 2.关闭防火墙 setenforce 0 vim /etc/sysconfig/selinux #修改SELINUX=disabled 3.清空iptables iptables -F 4.检查每个节点上的/tmp目录权限是否为1777，如果不是请修改。 5.设置时钟同步服务 在所有节点安装ntp yum install ntp 设置开机启动 chkconfig ntpd on 在所有节点启动ntp /etc/init.d/ntpd start 是client使用local NTP server，修改/etc/ntp.conf，添加以下内容： server $LOCAL_SERVER_IP OR HOSTNAME 1. 安装jdk 检查jdk版本 java...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-04-06 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h2>
     
       与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。 install 下载 impala，目前最新版本为0.6-1，下载地址。 安装过程 安装前提：先安装好hadoop集群以及hive，可以参考我的文章： 手动安装Cloudera Hadoop CDH4.2 手动安装Cloudera Hive CDH4.2 DataNode节点 yum install -y impala-0.6-1.p0.548.el6.x8664.rpm impala-server-0.6-1.p0.548.el6.x8664.rpm impala-state-store-0.6-1.p0.548.el6.x8664.rpm impala-shell-0.6-1.p0.548.el6.x8664.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken 在hive节点上 yum install -y impala-0.6-1.p0.548.el6.x8664.rpm impala-server-0.6-1.p0.548.el6.x8664.rpm \ impala-state-store-0.6-1.p0.548.el6.x8664.rpm impala-shell-0.6-1.p0.548.el6.x8664.rpm \ libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm 配置Impala 查看安装路径 [root@desktop1 conf]# find / -name impala /var/run/impala /var/lib/alternatives/impala /var/log/impala /usr/lib/impala /etc/alternatives/impala /etc/default/impala /etc/impala...
@@ -293,22 +309,6 @@ desktop8
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
-    
-      安装虚拟机 VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份 配置网络 a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0 b. 设置每一个虚拟机的网络为Host-Only c.分别修改每个虚拟机的ip，DHCP或手动设置 vim /etc/sysconfig/network-scripts/ifcfg-eth0 vim /etc/udev/rules.d/70-persistent-net.rules #删掉第一个，修改第二个名字为eth0 start_udev d.修改主机名 vim /etc/sysconfig/network e.每个虚拟机中修改hosts： 192.168.56.100 rhel-june 192.168.56.101 rhel-june-1 192.168.56.102 rhel-june-2 最后机器列表为： rhel-june: 192.168.56.100 rhel-june-1: 192.168.56.101 rhel-june-2: 192.168.56.102 机群规划 版本： hadoop:1.1.1 JDK:1.6.0_38 集群各节点： NameNode:192.168.56.100 NameSecondary:192.168.56.100 DataNode:192.168.56.101 DataNode:192.168.56.102 安装过程 a.解压缩到/opt b.设置配置文件： core-site.xml hdfs-site.sml mapred-site.xml c.设置master、slaves d.设置环境变量 方便执行java命令及hadoop命令. 使用root登录，vi...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-03-08 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -391,7 +391,7 @@ desktop8
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -406,6 +406,8 @@ desktop8
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -424,8 +426,6 @@ desktop8
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

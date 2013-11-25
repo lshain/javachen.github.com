@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2013-11-18T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-11-16T00:00:00+08:00</lastmod>

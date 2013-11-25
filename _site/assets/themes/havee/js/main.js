@@ -15,7 +15,7 @@ jQuery(document).ready(function(){
 		jQuery(this).scrollTop() > 200 ? jQuery("#toTop").fadeIn() : jQuery("#toTop").fadeOut()
 	});
 	
-	jQuery('.content div.row a').attr('target', '_blank');
+	jQuery('.content div.col-md-9 a').attr('target', '_blank');
 
  	jQuery("p img").each(function() {
 		var strA = "<a id='fancyBox' href='" + this.src + "'></a>";

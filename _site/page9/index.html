@@ -187,6 +187,105 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
+    
+      使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
+
+同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行
+
+
+原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。
+解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。
+
+
+关键字的问题。
+
+Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。
+
+
+解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。
+
+
+oracle中的字段名从中可以有#号，但是到mysql会报错
+
+
+解决办法：字段改名称，去掉#号
+
+
+Db2初始化到mysql或是postgres出错
+
+
+原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母
+解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。
+
+
+Oracle到mysql和pg时日期类型数据值有偏差
+
+
+原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。
+
+
+主键从ORACLE导入不到MYSQL和POSTGRES
+
+
+原因：pdi程序中没有对主键进行处理
+解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据
+
+
+Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00
+
+
+原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。
+解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString
+
+
+异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。
+
+
+原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。
+解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。
+
+
+Db2中没有主键的数据初始化到mysql和postgres需要添加索引
+
+
+解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。
+
+
+Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。
+
+
+原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。
+解决办法：使用最新的pdi程序。
+
+
+导数据中途时没有报错，直接软件退出
+
+
+原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误
+解决办法：修改jvm参数
+
+
+初次使用kettle做db2的初始化会报错
+
+
+原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。
+解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-01-04 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h2>
     
       Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
@@ -305,45 +404,6 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
-    
-      很久没写文章了，最近在关注Pentaho。
- 以下是9月16日现场提出的问题解决办法：
-      1、PDF预览中文没显示，txt预览中文乱码：
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体
-           3）、如要发布到服务器，需要修改如下的配置：
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H
-     2、实现文件拷贝方式发布报表
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了
-     3、报表链接参数传递问题
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决
-     4、查询参数缺省值问题
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。
-     5、实现在pie chart上显示文字
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。
-     6、报表集成时候垂直滚动条是否可以去掉
-          改变报表的高度：报表设计器 file-page setup
-     7、报表中的chart不能导出到Excel2007
-          目前为系统bug，excel2003能够正常导出
-     8、实现隔行换色
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数
-
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-09-26 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -426,7 +486,7 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -441,6 +501,8 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -459,8 +521,6 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

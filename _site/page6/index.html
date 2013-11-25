@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
+    
+      安装虚拟机 VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份 配置网络 a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0 b. 设置每一个虚拟机的网络为Host-Only c.分别修改每个虚拟机的ip，DHCP或手动设置 vim /etc/sysconfig/network-scripts/ifcfg-eth0 vim /etc/udev/rules.d/70-persistent-net.rules #删掉第一个，修改第二个名字为eth0 start_udev d.修改主机名 vim /etc/sysconfig/network e.每个虚拟机中修改hosts： 192.168.56.100 rhel-june 192.168.56.101 rhel-june-1 192.168.56.102 rhel-june-2 最后机器列表为： rhel-june: 192.168.56.100 rhel-june-1: 192.168.56.101 rhel-june-2: 192.168.56.102 机群规划 版本： hadoop:1.1.1 JDK:1.6.0_38 集群各节点： NameNode:192.168.56.100 NameSecondary:192.168.56.100 DataNode:192.168.56.101 DataNode:192.168.56.102 安装过程 a.解压缩到/opt b.设置配置文件： core-site.xml hdfs-site.sml mapred-site.xml c.设置master、slaves d.设置环境变量 方便执行java命令及hadoop命令. 使用root登录，vi...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-03-08 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h2>
     
       2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。
@@ -284,22 +300,6 @@
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
-    
-      本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra. 检查java环境 Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本. 1.检查是否安装java: java -version 如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法. 2.安装jdk 下载Oracle JRE 1）修改执行权限: $ cd /tmp $ chmod a+x jre-6u25-linux-x64-rpm.bin 2）解压执行RPM文件,例如: $ sudo ./jre-6u25-linux-x64-rpm.bin 这样JRE会安装在/usr/java/ 3）配置Oracle JRE取代OpenJDK JRE 可以使用alternatives命令添加一个链接到Oracle JRE. $ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000 4）确认是否安装JRE $ java -version java version &quot;1.6.0_25&quot; Java(TM) SE Runtime Environment...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-04-06 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -382,7 +382,7 @@
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -397,6 +397,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -415,8 +417,6 @@
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

@@ -187,6 +187,32 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h2>
+    
+      <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
+
+<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
+
+<h1>JPDA 简介</h1>
+
+<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-08-01 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/08/01/remote-debug-hadoop#comments"> Comments</a>
+        </div>
+        
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">Read More &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h2>
     
       <h1>1. R Language Install</h1>
@@ -294,22 +320,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h2>
-    
-      记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。 0.环境准备 1.设置hosts 临时设置hostname，以node1为例 sudo hostname node1 确保/etc/hosts中包含ip和FQDN，如果你在使用DNS，保存这些信息到/etc/hosts不是必要的，却是最佳实践。 确保/etc/sysconfig/network中包含hostname=node1 检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。 host -v -t A `hostname` hadoop的配置文件core-site.xml、mapred-site.xml和yarn-site.xml配置节点时，请使用hostname和不是ip 2.关闭防火墙 setenforce 0 vim /etc/sysconfig/selinux #修改SELINUX=disabled 3.清空iptables iptables -F 4.检查每个节点上的/tmp目录权限是否为1777，如果不是请修改。 5.设置时钟同步服务 在所有节点安装ntp yum install ntp 设置开机启动 chkconfig ntpd on 在所有节点启动ntp /etc/init.d/ntpd start 是client使用local NTP server，修改/etc/ntp.conf，添加以下内容： server $LOCAL_SERVER_IP OR HOSTNAME 1. 安装jdk 检查jdk版本 java...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-04-06 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -392,7 +402,7 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -407,6 +417,8 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -425,8 +437,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

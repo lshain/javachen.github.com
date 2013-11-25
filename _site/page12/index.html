@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions">Eucalyptus EE的介绍及功能说明</a></h2>
+    
+      Eucalyptus企业版2.0是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。 Eucalyptus的设计目的是从根本上易于安装和尽可能没有侵扰。该软件高度模块化，具有行业标准，和语言无关。它提供了可以与EC2兼容的云计算平台和与S3兼容的云存储平台。 功能亮点 无缝管理多个管理程序环境（Xen的，vSphere的，KVM，ESX，ESXi的）下一个管理控制台 启用跨平台的客户机操作系统包括微软Windows和Linux 高级存储集成器（iSCSI，SAN，NAS），您可以轻松地连接和管理Eucalyptus云内现有的存储系统 完善的用户和组管理，允许私有云资源的精确控制 测试，开发和部署能够顺利过渡到公共云或反之亦然，没有任何修改 快速，轻松地建立与基于VMware的虚拟化环境和其他公共云混合云 启用先进设备，最先进的企业，如可扩展的存储整合，监控，审计，报表 利用充满活力的生态系统围绕亚马逊AWS构建，提供解决方案，无缝地与Eucalyptus兼容 优点 建立一个私有云，让你接入到亚马逊AWS 允许云在原有的所有硬件和软件类型很容易的部署 客户可以利用其全球用户社区 Eucalyptus是与Linux和多个管理程序兼容 Eucalyptus还支持商业Linux发行版本：红帽企业Linux（RHEL）和SUSE Linux企业服务器（SLES） 对于IT管理员的好处 提供自助服务的IT基础设施供应到最终用户需要的IT资源迅速 没有额外的资金保持现有的基础设施费用，降低运营成本 保持防火墙后面的关键数据 技术是对现有的硬件和软件基础设施覆盖，而不是替代 避免锁定在第三方公共云供应商 可轻松转换之间来回私人和公共云 &nbsp; Eucalyptus EE新特性 对windows VM的支持 1.  运行windows 虚拟机在Eucalyptus 云环境上运行，目前支持Windows 2003 Server,Windows 2008 Server和Windows 7。 2.  试用Euca2ools管理和控制windows虚拟机。 3.  试用EC2兼容的命令从正在运行的windows虚拟机创建新的虚拟机 4.  在Eucalyptus中通过标准的RDP客户端工具，使用AWS “get-password”访问虚拟机实例 5.  在多个hypervisors环境中部署windows虚拟机，包括Xen、Kvm、VMware（ESX/ESXi） 6.  基于windows...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-06-22 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus">接触云服务环境Eucalyptus</a></h2>
     
       最近在接触云计算平台，熟悉了Eucalyptus，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用Eucalyptus搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。 Eucalyptus Elastic Utility Computing Architecture for Linking Your Programs To Useful Systems （Eucalyptus） 是一种开源的软件基础结构，用来通过计算集群或工作站群实现弹性的、实用的云计算。它最初是美国加利福尼亚大学 Santa Barbara 计算机科学学院的一个研究项目，现在已经商业化，发展成为了 Eucalyptus Systems Inc。不过，Eucalyptus 仍然按开源项目那样维护和开发。Eucalyptus Systems 还在基于开源的 Eucalyptus 构建额外的产品；它还提供支持服务。 它提供了如下这些高级特性： 与 EC2 和 S3 的接口兼容性（SOAP 接口和 REST 接口）。使用这些接口的几乎所有现有工具都将可以与基于 Eucalyptus 的云协作。 支持运行在 Xen hypervisor 或 KVM 之上的 VM 的运行。未来版本还有望支持其他类型的 VM，比如 VMware。 用来进行系统管理和用户结算的云管理工具。 能够将多个分别具有各自私有的内部网络地址的集群配置到一个云内。 架构...
@@ -284,7 +300,7 @@
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -299,6 +315,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -317,8 +335,6 @@
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

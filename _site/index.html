@@ -187,6 +187,41 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h2>
+    
+      <h1>1. 关于本文档</h1>
+
+<p>这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。</p>
+
+<p>希望这篇文章能够让你快速了解并使用saltstack。文章还在编写中。</p>
+
+<h1>2. 关于SaltStack</h1>
+
+<h2>2.1. 什么是SaltStack</h2>
+
+<p>SaltStack是开源的管理基础设置的轻量级工具，容易搭建，为远程管理服务器提供一种更好、更快速、更有扩展性的解决方案。通过简单、可管理的接口，Salt实现了可以管理成千上百的服务器和处理大数据的能力。</p>
+
+<ul>
+<li>轻量级配置管理系统，能够维持远端节点运行在预定状态（例如，确保指定的软件包已经安装和特定的系统服务正在运行）</li>
+<li>分布式远程执行系统，用于在远端节点执行命令和查询数据，可以是单独，也可以是选定的条件</li>
+</ul>
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-11-18 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/saltstack/2013/11/18/study-note-of-saltstack#comments"> Comments</a>
+        </div>
+        
+        <a class="btn btn-default btn-sm pull-right" href="/saltstack/2013/11/18/study-note-of-saltstack"><span class="readmore">Read More &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h2>
     
       <p>Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。</p>
@@ -342,48 +377,6 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h2>
-    
-      <p>最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的<a href="https://github.com/anjuke/hwi">hwi改进版</a>和大众点评的<a href="http://blog.csdn.net/lalaguozhe/article/details/9614061">polestar</a>(<a href="https://github.com/dianping/polestar">github地址</a>)系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！</p>
-
-<h1>说明</h1>
-
-<p>集群环境使用的是cdh4.3，没有开启kerberos认证。</p>
-
-<blockquote>
-<p>写完这篇文章之后，在微博上收到<a href="http://weibo.com/shanchao1?from=profile&amp;wvr=5&amp;loc=infdomain">@单超eric</a>的<a href="http://weibo.com/1789178264/AeMItpBRk">评论</a>，发现cdh4.3中hive-server2已经实现<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4">Impersonation</a>功能，再此对@单超eric的帮助表示感谢。</p>
-</blockquote>
-
-<p>so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。</p>
-
-<h1>hive-server2的启动</h1>
-
-<p>先从hive-server2服务的启动开始说起。</p>
-
-<p>如果你是以服务的方式启动hive-server2进程，则启动hive-server2的用户为hive,运行mapreduce的用户也为hive，启动脚本如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hive-server2 start
-</code></pre></div>
-<p>如果你以命令行方式启动hive-server2进程，则启动hive-server2的用户为root,运行mapreduce的用户也为root，启动脚本如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver2
-</code></pre></div>
-<p>为什么是上面的结论？这要从hive-server2的启动过程开始说明。</p>
-
-
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-10-17 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2#comments"> Comments</a>
-        </div>
-        
-        <a class="btn btn-default btn-sm pull-right" href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2"><span class="readmore">Read More &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -464,7 +457,7 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -479,6 +472,8 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -497,8 +492,6 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

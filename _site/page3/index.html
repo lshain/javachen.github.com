@@ -187,6 +187,42 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h2>
+    
+      <h1>前言</h1>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h1>ZooKeeper</h1>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-08-23 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper#comments"> Comments</a>
+        </div>
+        
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">Read More &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
     
       <h1>概括</h1>
@@ -298,32 +334,6 @@ cli_help () {
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h2>
-    
-      <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
-
-<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
-
-<h1>JPDA 简介</h1>
-
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
-
-
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-08-01 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/08/01/remote-debug-hadoop#comments"> Comments</a>
-        </div>
-        
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">Read More &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -406,7 +416,7 @@ cli_help () {
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -421,6 +431,8 @@ cli_help () {
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -439,8 +451,6 @@ cli_help () {
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

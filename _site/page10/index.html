@@ -187,6 +187,45 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
+    
+      很久没写文章了，最近在关注Pentaho。
+ 以下是9月16日现场提出的问题解决办法：
+      1、PDF预览中文没显示，txt预览中文乱码：
+           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H
+           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体
+           3）、如要发布到服务器，需要修改如下的配置：
+             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：
+             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H
+     2、实现文件拷贝方式发布报表
+           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了
+     3、报表链接参数传递问题
+          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决
+     4、查询参数缺省值问题
+          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。
+     5、实现在pie chart上显示文字
+          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。
+     6、报表集成时候垂直滚动条是否可以去掉
+          改变报表的高度：报表设计器 file-page setup
+     7、报表中的chart不能导出到Excel2007
+          目前为系统bug，excel2003能够正常导出
+     8、实现隔行换色
+          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"
+     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-09-26 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h2>
     
       
@@ -252,22 +291,6 @@
         <div class="col-md-6 date visible-lg visible-md">
           <span class="glyphicon glyphicon-time"></span> 2011-07-24 00:00
           <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
-    
-      说明: 本文来源于http://dhtmlx.com/docs/products/dhtmlxGrid/，本人对其进行翻译整理成下文，贴出此文，紧供分享。 dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。 跨浏览器 使用JavaScript API进行控制 Ajax支持 简单的JavaScript 或者XML 配置 与HTML集成 内建过滤、排序、查询、分组功能 表格 footer/header自动计算 行内编辑 准备使用大数据集解决方案：分页，动态加载，智能渲染 序列化为XML或CSV 从 XML或CSV加载 列锁定 剪贴板支持 简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion) 支持子表格 列拖拽和移动 行或列拖拽 dhtmlxTree PRO Edition支持拖拽 可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象) 组合框，日历以及更多的预定义eXcells Cell支持数学方程式 不同的键盘映射 简单的CSS风格或是预定义的皮肤...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-07-19 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments"> Comments</a>
         </div>
         
         <div class="clearfix"></div>
@@ -356,7 +379,7 @@
     	</a></li>
      
     	<li><a href="/categories.html#saltstack-ref">
-    		saltstack <span>2</span>
+    		saltstack <span>3</span>
     	</a></li>
     
   
@@ -371,6 +394,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
@@ -389,8 +414,6 @@
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>
