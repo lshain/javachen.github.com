@@ -51,10 +51,51 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
     minor_revision=`grep -oP '\d+' /etc/issue | sed -n "2,2p"`
     OS_RELEASE="$major_revision.$minor_revision"
 
+## 修改root密码
+
+	echo 'redhat'|passwd root --stdin
+
+## 修改dns
+
+	# Set up nameservers.
+	# http://ithelpblog.com/os/linux/redhat/centos-redhat/howto-fix-couldnt-resolve-host-on-centos-redhat-rhel-fedora/
+	# http://stackoverflow.com/a/850731/1486325
+	echo "nameserver 8.8.8.8" | tee -a /etc/resolv.conf
+	echo "nameserver 8.8.4.4" | tee -a /etc/resolv.conf
+
+## 修改操作系统时区
+
+	cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+## 修改hosts文件
+
+	cat > /etc/hosts <<EOF
+	127.0.0.1       localhost
+
+	192.168.56.121 cdh1
+	192.168.56.122 cdh2
+	192.168.56.123 cdh3
+	EOF
+
+## 去掉b文件中包括a文件的内容
+
+	grep -vf a b >result.log
+
+## 修改file-max
+
+	echo -e "Global file limit ..."
+	rst=`grep "^fs.file-max" /etc/sysctl.conf`
+	if [ "x$rst" = "x" ] ; then
+		echo "fs.file-max = 727680" >> /etc/sysctl.conf || exit $?
+	else
+		sed -i "s:^fs.file-max.*:fs.file-max = 727680:g" /etc/sysctl.conf
+	fi
+
 ## 生成ssh公要
 
-	yes|ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ""
-	[ ! -d /root/.ssh ] && ( mkdir /root/.ssh ) && ( chmod 700 /root/.ssh )
+	[ ! -d ~/.ssh ] && ( mkdir ~/.ssh ) && ( chmod 600 ~/.ssh )
+	yes|ssh-keygen -f ~/.ssh/id_rsa -t rsa -N "" && ( chmod 600 ~/.ssh/id_rsa.pub )
+
 
 ## ssh设置无密码登陆
 
@@ -83,17 +124,20 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 
 ## 配置JAVA_HOME
 
-	# set JAVA_HOME and PATH
-	if [ -f /root/.bashrc ] ; then
-	    sed -i '/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d' /root/.bashrc
-	    sed -i '/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d' /root/.bashrc
-	    sed -i '/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d' /root/.bashrc
+	### JAVA_HOME ###
+	if [ -f ~/.bashrc ] ; then
+	    sed -i '/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d' ~/.bashrc
+	    sed -i '/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d' ~/.bashrc
+	    sed -i '/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d' ~/.bashrc
 	fi
-	echo "" >>/root/.bashrc
-	echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
-	echo "export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar">>/root/.bashrc
-	echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
-	source /root/.bashrc
+	echo "" >>~/.bashrc
+	echo "export JAVA_HOME=/usr/java/latest" >>~/.bashrc
+	echo "export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar">>~/.bashrc
+	echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> ~/.bashrc
+
+	alternatives --install /usr/bin/java java /usr/java/latest 5
+	alternatives --set java /usr/java/latest 
+	source ~/.bashrc
 
 ## 格式化集群
 
@@ -127,10 +171,10 @@ IDH安装脚本中有一些写的比较好的shell代码片段，摘出如下，
 	rm -rf /var/run/postgresql/.s.PGSQL.5432
 	service postgresql initdb
 
-	sed -i '/listen/s/#//;/listen/s/localhost/*/' /var/lib/pgsql/data/postgresql.conf
-	sed -i "s|#standard_coffforming_strings = on|standard_conforming_strings = off|g" /var/lib/pgsql/data/postgresql.conf
-	echo "local    all             all             		               trust" > /var/lib/pgsql/data/pg_hba.conf
-	echo "host     all             all             0.0.0.0/0	       trust" >> /var/lib/pgsql/data/pg_hba.conf
+	sed -i "s/max_connections = 100/max_connections = 600/" /var/lib/pgsql/data/postgresql.conf
+	sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /var/lib/pgsql/data/postgresql.conf
+	sed -i "s/shared_buffers = 32MB/shared_buffers = 256MB/" /var/lib/pgsql/data/postgresql.conf
+	sed -i "s/127.0.0.1\/32/0.0.0.0\/0/" /var/lib/pgsql/data/pg_hba.conf
 
 	sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
 
