@@ -194,23 +194,23 @@
 }
 tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
 
-<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
-tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
+<p>tree.setSkin(&#39;dhx<u>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</u>yellowbooks/&quot;);
 tree.enableDragAndDrop(true);
 tree.setDragHandler(maf);
 tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
+tree.loadXML(&quot;../common/tree<u>05</u>drag<u>n</u>drop.xml&quot;);</p>
 
-<p>function s<em>control() {
-    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+<p>function s<u>control() {
+    this.</u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
         targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this.<em>dragIn = function(htmlObject, shtmlObject) {
+    this.<u>dragIn = function(htmlObject, shtmlObject) {
         htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
-    this.</em>dragOut = function(htmlObject) {
+    this.</u>dragOut = function(htmlObject) {
         htmlObject.style.backgroundColor = &quot;&quot;;
         return this;
     }
@@ -226,11 +226,11 @@ tree.dragger.addDragLanding(sinput, new s_control);
 <pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
 
 <p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
-<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+<pre escaped="true" lang="javascript" line="1">    this.<u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
         targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this.</em>dragIn = function(htmlObject, shtmlObject) {
+    this.</u>dragIn = function(htmlObject, shtmlObject) {
         htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
@@ -338,7 +338,7 @@ tree.dragger.addDragLanding(mygrid.hdr, new s_control);
 <h2>参考文章</h2>
 
 <p><li>
-Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<em>drag</em>n<em>drop/08</em>pro<em>drag</em>out.html</a>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<u>drag</u>n<u>drop/08</u>pro<u>drag</u>out.html</a>
 </li>
 <li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
 </li>

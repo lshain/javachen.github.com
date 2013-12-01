@@ -232,8 +232,8 @@ AND column_metadata = [
 {column_name: birth_year, validation_class: LongType}
 ];
 </code></pre></div>
-<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
-下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
+<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<u>name，email,state,gender,birth</u>year.comparator, key<u>validation</u>class和validation<u>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog</u>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 </code></pre></div>
 <h1>Creating a Counter Column Family</h1>

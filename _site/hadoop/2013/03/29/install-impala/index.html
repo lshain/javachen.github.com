@@ -202,11 +202,11 @@
 <ol>
 <li><p>DataNode节点</p>
 
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
 <li><p>在hive节点上</p>
 
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<em>64.rpm   impala-server-0.6-1.p0.548.el6.x86</em>64.rpm \
-impala-state-store-0.6-1.p0.548.el6.x86<em>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</em>64.rpm \
+<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm \
+impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm \
 libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
 </ol>
 
@@ -284,7 +284,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 <ol>
 <li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
 
-<p>GLOG<em>v=1 nohup statestored -state</em>store_port=24000 &amp;</p></li>
+<p>GLOG<u>v=1 nohup statestored -state</u>store_port=24000 &amp;</p></li>
 </ol>
 
 <p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
@@ -292,7 +292,7 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 <ol>
 <li><p>在所有impalad节点上：</p>
 
-<p>HADOOP<em>CONF</em>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<em>store</em>host=desktop1 -nn=desktop1 \
+<p>HADOOP<u>CONF</u>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<u>store</u>host=desktop1 -nn=desktop1 \
     -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
 </ol>
 

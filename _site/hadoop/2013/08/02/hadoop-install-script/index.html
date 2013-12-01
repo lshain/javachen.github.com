@@ -224,9 +224,43 @@ major_revision=`grep -oP &#39;\d+&#39; /etc/issue | sed -n &quot;1,1p&quot;`
 minor_revision=`grep -oP &#39;\d+&#39; /etc/issue | sed -n &quot;2,2p&quot;`
 OS_RELEASE=&quot;$major_revision.$minor_revision&quot;
 </code></pre></div>
+<h2>修改root密码</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &#39;redhat&#39;|passwd root --stdin
+</code></pre></div>
+<h2>修改dns</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Set up nameservers.
+# http://ithelpblog.com/os/linux/redhat/centos-redhat/howto-fix-couldnt-resolve-host-on-centos-redhat-rhel-fedora/
+# http://stackoverflow.com/a/850731/1486325
+echo &quot;nameserver 8.8.8.8&quot; | tee -a /etc/resolv.conf
+echo &quot;nameserver 8.8.4.4&quot; | tee -a /etc/resolv.conf
+</code></pre></div>
+<h2>修改操作系统时区</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+</code></pre></div>
+<h2>修改hosts文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cat &gt; /etc/hosts &lt;&lt;EOF
+127.0.0.1       localhost
+
+192.168.56.121 cdh1
+192.168.56.122 cdh2
+192.168.56.123 cdh3
+EOF
+</code></pre></div>
+<h2>去掉b文件中包括a文件的内容</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">grep -vf a b &gt;result.log
+</code></pre></div>
+<h2>修改file-max</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo -e &quot;Global file limit ...&quot;
+rst=`grep &quot;^fs.file-max&quot; /etc/sysctl.conf`
+if [ &quot;x$rst&quot; = &quot;x&quot; ] ; then
+    echo &quot;fs.file-max = 727680&quot; &gt;&gt; /etc/sysctl.conf || exit $?
+else
+    sed -i &quot;s:^fs.file-max.*:fs.file-max = 727680:g&quot; /etc/sysctl.conf
+fi
+</code></pre></div>
 <h2>生成ssh公要</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yes|ssh-keygen -t rsa -f /root/.ssh/id_rsa -N &quot;&quot;
-[ ! -d /root/.ssh ] &amp;&amp; ( mkdir /root/.ssh ) &amp;&amp; ( chmod 700 /root/.ssh )
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[ ! -d ~/.ssh ] &amp;&amp; ( mkdir ~/.ssh ) &amp;&amp; ( chmod 600 ~/.ssh )
+yes|ssh-keygen -f ~/.ssh/id_rsa -t rsa -N &quot;&quot; &amp;&amp; ( chmod 600 ~/.ssh/id_rsa.pub )
 </code></pre></div>
 <h2>ssh设置无密码登陆</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">set timeout 20
@@ -253,17 +287,20 @@ expect eof
 #interact
 </code></pre></div>
 <h2>配置JAVA_HOME</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"># set JAVA_HOME and PATH
-if [ -f /root/.bashrc ] ; then
-    sed -i &#39;/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d&#39; /root/.bashrc
-    sed -i &#39;/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d&#39; /root/.bashrc
-    sed -i &#39;/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d&#39; /root/.bashrc
+<div class="highlight"><pre><code class="text language-text" data-lang="text">### JAVA_HOME ###
+if [ -f ~/.bashrc ] ; then
+    sed -i &#39;/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d&#39; ~/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d&#39; ~/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d&#39; ~/.bashrc
 fi
-echo &quot;&quot; &gt;&gt;/root/.bashrc
-echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;/root/.bashrc
-echo &quot;export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar&quot;&gt;&gt;/root/.bashrc
-echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; /root/.bashrc
-source /root/.bashrc
+echo &quot;&quot; &gt;&gt;~/.bashrc
+echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;~/.bashrc
+echo &quot;export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar&quot;&gt;&gt;~/.bashrc
+echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; ~/.bashrc
+
+alternatives --install /usr/bin/java java /usr/java/latest 5
+alternatives --set java /usr/java/latest 
+source ~/.bashrc
 </code></pre></div>
 <h2>格式化集群</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash hdfs -c &#39;yes Y | hadoop namenode -format &gt;&gt; /tmp/format.log 2&gt;&amp;1&#39;
@@ -294,10 +331,10 @@ rm -rf /var/lib/pgsql/data
 rm -rf /var/run/postgresql/.s.PGSQL.5432
 service postgresql initdb
 
-sed -i &#39;/listen/s/#//;/listen/s/localhost/*/&#39; /var/lib/pgsql/data/postgresql.conf
-sed -i &quot;s|#standard_coffforming_strings = on|standard_conforming_strings = off|g&quot; /var/lib/pgsql/data/postgresql.conf
-echo &quot;local    all             all                                 trust&quot; &gt; /var/lib/pgsql/data/pg_hba.conf
-echo &quot;host     all             all             0.0.0.0/0           trust&quot; &gt;&gt; /var/lib/pgsql/data/pg_hba.conf
+sed -i &quot;s/max_connections = 100/max_connections = 600/&quot; /var/lib/pgsql/data/postgresql.conf
+sed -i &quot;s/#listen_addresses = &#39;localhost&#39;/listen_addresses = &#39;*&#39;/&quot; /var/lib/pgsql/data/postgresql.conf
+sed -i &quot;s/shared_buffers = 32MB/shared_buffers = 256MB/&quot; /var/lib/pgsql/data/postgresql.conf
+sed -i &quot;s/127.0.0.1\/32/0.0.0.0\/0/&quot; /var/lib/pgsql/data/pg_hba.conf
 
 sudo cat /var/lib/pgsql/data/postgresql.conf | grep -e listen -e standard_conforming_strings
 

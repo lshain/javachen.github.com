@@ -313,7 +313,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 
 <p>现在来看hive任务是怎么提交到yarn服务端然后运行mapreduce的。</p>
 
-<p>为了调试简单，我在本机eclipse的hive源代码中配置<code>hive-site.xml、core-site.xml、mapred.xml、yarn-site.xml</code>连接测试集群,添加缺少的yarn依赖并解决hive-builtins中报错的问题，然后运行HiveServer2类的main方法。<em>注意</em>，我的电脑当前登陆用户为june，故启动hive-server2的用户为june。</p>
+<p>为了调试简单，我在本机eclipse的hive源代码中配置<code>hive-site.xml、core-site.xml、mapred.xml、yarn-site.xml</code>连接测试集群,添加缺少的yarn依赖并解决hive-builtins中报错的问题，然后运行HiveServer2类的main方法。<u>注意</u>，我的电脑当前登陆用户为june，故启动hive-server2的用户为june。</p>
 
 <p>然后，在运行jdbc测试类，运行一个简单的sql语句，大概如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">public static void test() {

@@ -314,7 +314,7 @@ __pillar__[&#39;profile_port&#39;][&#39;default1&#39;][&#39;jmx_port&#39;]
 
 <p>1.上面文件中创建了jboss ID，其包括两部分：拷贝文件和解压缩，分别对应file.managed和cmd.run。</p>
 
-<p>2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile<em>port的值，然后创建多个profile。profile</em>port变量在<code>/srv/pillar/jboss/params.sls</code>中定义。</p>
+<p>2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile<u>port的值，然后创建多个profile。profile</u>port变量在<code>/srv/pillar/jboss/params.sls</code>中定义。</p>
 
 <p>编写完sates文件之后，你可以通过执行以下命令让所有minion执行sates文件中定义的state：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; state.highstate

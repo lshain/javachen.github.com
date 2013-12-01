@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-11-25T22:36:54+08:00</updated>
+ <updated>2013-12-01T20:15:41+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -195,7 +195,7 @@ python2.6 setup.py install
 &lt;li&gt;interface&lt;/li&gt;
 &lt;li&gt;publish_port&lt;/li&gt;
 &lt;li&gt;user&lt;/li&gt;
-&lt;li&gt;max&lt;em&gt;open&lt;/em&gt;files&lt;/li&gt;
+&lt;li&gt;max&lt;u&gt;open&lt;/u&gt;files&lt;/li&gt;
 &lt;li&gt;worker_threads&lt;/li&gt;
 &lt;li&gt;ret_port&lt;/li&gt;
 &lt;li&gt;pidfile&lt;/li&gt;
@@ -204,9 +204,9 @@ python2.6 setup.py install
 &lt;li&gt;cachedir&lt;/li&gt;
 &lt;li&gt;keep_jobs&lt;/li&gt;
 &lt;li&gt;job_cache&lt;/li&gt;
-&lt;li&gt;ext&lt;em&gt;job&lt;/em&gt;cache&lt;/li&gt;
-&lt;li&gt;minion&lt;em&gt;data&lt;/em&gt;cache&lt;/li&gt;
-&lt;li&gt;enforce&lt;em&gt;mine&lt;/em&gt;cache&lt;/li&gt;
+&lt;li&gt;ext&lt;u&gt;job&lt;/u&gt;cache&lt;/li&gt;
+&lt;li&gt;minion&lt;u&gt;data&lt;/u&gt;cache&lt;/li&gt;
+&lt;li&gt;enforce&lt;u&gt;mine&lt;/u&gt;cache&lt;/li&gt;
 &lt;li&gt;sock_dir&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -217,7 +217,7 @@ python2.6 setup.py install
 &lt;li&gt;auto_accept&lt;/li&gt;
 &lt;li&gt;autosign_file&lt;/li&gt;
 &lt;li&gt;client_acl&lt;/li&gt;
-&lt;li&gt;client&lt;em&gt;acl&lt;/em&gt;blacklist&lt;/li&gt;
+&lt;li&gt;client&lt;u&gt;acl&lt;/u&gt;blacklist&lt;/li&gt;
 &lt;li&gt;external_auth&lt;/li&gt;
 &lt;li&gt;token_expire&lt;/li&gt;
 &lt;/ul&gt;
@@ -247,7 +247,7 @@ python2.6 setup.py install
 &lt;li&gt;fileserver_backend&lt;/li&gt;
 &lt;li&gt;file_roots&lt;/li&gt;
 &lt;li&gt;hash_type&lt;/li&gt;
-&lt;li&gt;file&lt;em&gt;buffer&lt;/em&gt;size&lt;/li&gt;
+&lt;li&gt;file&lt;u&gt;buffer&lt;/u&gt;size&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Pillar配置&lt;/p&gt;
@@ -262,8 +262,8 @@ python2.6 setup.py install
 &lt;ul&gt;
 &lt;li&gt;order_masters&lt;/li&gt;
 &lt;li&gt;syndic_master&lt;/li&gt;
-&lt;li&gt;syndic&lt;em&gt;master&lt;/em&gt;port&lt;/li&gt;
-&lt;li&gt;syndic&lt;em&gt;log&lt;/em&gt;file&lt;/li&gt;
+&lt;li&gt;syndic&lt;u&gt;master&lt;/u&gt;port&lt;/li&gt;
+&lt;li&gt;syndic&lt;u&gt;log&lt;/u&gt;file&lt;/li&gt;
 &lt;li&gt;syndic_pidfile&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -281,12 +281,12 @@ python2.6 setup.py install
 &lt;ul&gt;
 &lt;li&gt;log_file&lt;/li&gt;
 &lt;li&gt;log_level&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;level&lt;/em&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;level&lt;/u&gt;logfile&lt;/li&gt;
 &lt;li&gt;log_datefmt&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;datefmt&lt;/em&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;fmt&lt;/em&gt;console&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;fmt&lt;/em&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;granular&lt;/em&gt;levels&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;datefmt&lt;/u&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;console&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;granular&lt;/u&gt;levels&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Include配置&lt;/p&gt;
@@ -314,13 +314,13 @@ python2.6 setup.py install
 &lt;li&gt;cache_jobs&lt;/li&gt;
 &lt;li&gt;sock_dir&lt;/li&gt;
 &lt;li&gt;backup_mode&lt;/li&gt;
-&lt;li&gt;acceptance&lt;em&gt;wait&lt;/em&gt;time&lt;/li&gt;
-&lt;li&gt;random&lt;em&gt;reauth&lt;/em&gt;delay&lt;/li&gt;
-&lt;li&gt;cceptance&lt;em&gt;wait&lt;/em&gt;time_max&lt;/li&gt;
+&lt;li&gt;acceptance&lt;u&gt;wait&lt;/u&gt;time&lt;/li&gt;
+&lt;li&gt;random&lt;u&gt;reauth&lt;/u&gt;delay&lt;/li&gt;
+&lt;li&gt;cceptance&lt;u&gt;wait&lt;/u&gt;time_max&lt;/li&gt;
 &lt;li&gt;dns_check&lt;/li&gt;
 &lt;li&gt;ipc_mode&lt;/li&gt;
-&lt;li&gt;tcp&lt;em&gt;pub&lt;/em&gt;port&lt;/li&gt;
-&lt;li&gt;tcp&lt;em&gt;pull&lt;/em&gt;port&lt;/li&gt;
+&lt;li&gt;tcp&lt;u&gt;pub&lt;/u&gt;port&lt;/li&gt;
+&lt;li&gt;tcp&lt;u&gt;pull&lt;/u&gt;port&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Minion Module管理&lt;/p&gt;
@@ -342,7 +342,7 @@ python2.6 setup.py install
 &lt;li&gt;renderer&lt;/li&gt;
 &lt;li&gt;state_verbose&lt;/li&gt;
 &lt;li&gt;state_output&lt;/li&gt;
-&lt;li&gt;autoload&lt;em&gt;dynamic&lt;/em&gt;modules&lt;/li&gt;
+&lt;li&gt;autoload&lt;u&gt;dynamic&lt;/u&gt;modules&lt;/li&gt;
 &lt;li&gt;environment&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -372,12 +372,12 @@ python2.6 setup.py install
 &lt;ul&gt;
 &lt;li&gt;log_file&lt;/li&gt;
 &lt;li&gt;log_level&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;level&lt;/em&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;level&lt;/u&gt;logfile&lt;/li&gt;
 &lt;li&gt;log_datefmt&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;datefmt&lt;/em&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;fmt&lt;/em&gt;console&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;fmt&lt;/em&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;em&gt;granular&lt;/em&gt;levels&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;datefmt&lt;/u&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;console&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;logfile&lt;/li&gt;
+&lt;li&gt;log&lt;u&gt;granular&lt;/u&gt;levels&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Include配置&lt;/p&gt;
@@ -391,7 +391,7 @@ python2.6 setup.py install
 
 &lt;ul&gt;
 &lt;li&gt;update_url&lt;/li&gt;
-&lt;li&gt;update&lt;em&gt;restart&lt;/em&gt;services&lt;/li&gt;
+&lt;li&gt;update&lt;u&gt;restart&lt;/u&gt;services&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1&gt;5. 初识SaltStack&lt;/h1&gt;
@@ -754,7 +754,7 @@ __pillar__[&amp;#39;profile_port&amp;#39;][&amp;#39;default1&amp;#39;][&amp;#39;
 
 &lt;p&gt;1.上面文件中创建了jboss ID，其包括两部分：拷贝文件和解压缩，分别对应file.managed和cmd.run。&lt;/p&gt;
 
-&lt;p&gt;2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile&lt;em&gt;port的值，然后创建多个profile。profile&lt;/em&gt;port变量在&lt;code&gt;/srv/pillar/jboss/params.sls&lt;/code&gt;中定义。&lt;/p&gt;
+&lt;p&gt;2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile&lt;u&gt;port的值，然后创建多个profile。profile&lt;/u&gt;port变量在&lt;code&gt;/srv/pillar/jboss/params.sls&lt;/code&gt;中定义。&lt;/p&gt;
 
 &lt;p&gt;编写完sates文件之后，你可以通过执行以下命令让所有minion执行sates文件中定义的state：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; state.highstate
@@ -1490,7 +1490,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 
 &lt;p&gt;现在来看hive任务是怎么提交到yarn服务端然后运行mapreduce的。&lt;/p&gt;
 
-&lt;p&gt;为了调试简单，我在本机eclipse的hive源代码中配置&lt;code&gt;hive-site.xml、core-site.xml、mapred.xml、yarn-site.xml&lt;/code&gt;连接测试集群,添加缺少的yarn依赖并解决hive-builtins中报错的问题，然后运行HiveServer2类的main方法。&lt;em&gt;注意&lt;/em&gt;，我的电脑当前登陆用户为june，故启动hive-server2的用户为june。&lt;/p&gt;
+&lt;p&gt;为了调试简单，我在本机eclipse的hive源代码中配置&lt;code&gt;hive-site.xml、core-site.xml、mapred.xml、yarn-site.xml&lt;/code&gt;连接测试集群,添加缺少的yarn依赖并解决hive-builtins中报错的问题，然后运行HiveServer2类的main方法。&lt;u&gt;注意&lt;/u&gt;，我的电脑当前登陆用户为june，故启动hive-server2的用户为june。&lt;/p&gt;
 
 &lt;p&gt;然后，在运行jdbc测试类，运行一个简单的sql语句，大概如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public static void test() {

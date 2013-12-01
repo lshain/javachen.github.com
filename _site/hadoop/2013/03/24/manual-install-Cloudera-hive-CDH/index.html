@@ -349,7 +349,7 @@
 <ul>
 <li><p>异常2</p>
 
-<p>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL<em>NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS</em>DATABASE<em>NAME&quot; ON &quot;THIS&quot;.&quot;DB</em>ID&quot; = &quot;THIS<em>DATABASE</em>NAME&quot;.&quot;DB<em>ID&quot; WHERE &quot;THIS</em>DATABASE<em>NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL</em>NAME&quot;) LIKE ? ESCAPE &#39;\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..</p></li>
+<p>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL<u>NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS</u>DATABASE<u>NAME&quot; ON &quot;THIS&quot;.&quot;DB</u>ID&quot; = &quot;THIS<u>DATABASE</u>NAME&quot;.&quot;DB<u>ID&quot; WHERE &quot;THIS</u>DATABASE<u>NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL</u>NAME&quot;) LIKE ? ESCAPE &#39;\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..</p></li>
 </ul>
 
 <p>参考：https://issues.apache.org/jira/browse/HIVE-3994</p>
