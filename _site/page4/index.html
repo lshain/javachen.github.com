@@ -186,7 +186,7 @@
     
 
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h2>
     
       <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
@@ -197,18 +197,15 @@
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-08-02 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/08/02/hadoop-install-script#comments"> Comments</a>
-        </div>
         
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">Read More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">More &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h2>
     
       <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
@@ -223,18 +220,15 @@
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-08-01 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/08/01/remote-debug-hadoop#comments"> Comments</a>
-        </div>
         
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">Read More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">More &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h2>
     
       <h1>1. R Language Install</h1>
@@ -249,18 +243,15 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-07-20 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/07/20/install-rhadoop#comments"> Comments</a>
-        </div>
         
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">Read More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">More &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h2>
     
       <h1>1 方法一</h1>
@@ -275,32 +266,26 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-06-24 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager#comments"> Comments</a>
-        </div>
         
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">Read More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">More &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h2>
     
       摘要 Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。big-data-plugin是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。 截至目前，kettle的版本为4.4.1，big-data-plugin插件支持cloudera CDH3u4、CDH4.1，暂不支持Intel的hadoop发行版本IDH。 本文主要介绍如何让kettle支持IDH的hadoop版本。 方法 假设你已经安装好IDH-2.3的集群，并已经拷贝出/usr/lib/下的hadoop、hbase、zookeeper目录。 首先，下载一个kettle版本，如社区版data-integration，然后进入data-integration/plugins/pentaho-big-data-plugin目录，修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为cdh4 active.hadoop.configuration=cdh4 修改kettle的log4j日志等级，并启动kettle，检查启动过程中是否报错，如有错误，请修正错误。 进入hadoop-configurations目录，copy and paste cdh3u4并命名为idh2.3。 因为IDH和CDH的hadoop版本不一致，故需要替换hadoop和hbase、zookeeper为IDH的版本，涉及到需要替换、增加的jar有，这些jar文件从IDH安装后的目录中拷贝即可： data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.94.1-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/protobuf-java-2.4.0a.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.4.5-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-ant-1.0.3-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-1.0.3-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-examples-1.0.3-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-test-1.0.3-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-tools-1.0.3-Intel.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.8.0.jar 其他依赖包可以尝试添加，并删除多版本的jar文件。 需要删除CDH的jar有： data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.90.6-cdh3u4.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.3.5-cdh3u4.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-client-0.20.2-cdh3u4.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-0.20.2-cdh3u4.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libfb303-0.5.0-cdh.jar data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.5.0-cdh.jar 修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。 验证 打开hbase output组件，配置zookeeper的host和port 在Create/Edit mappings tab页点击Get table names，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致： INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; retrying...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-04-17 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
 
 <!-- Pagination links -->
@@ -322,7 +307,7 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2>About me</h2>
+   	 <h2><i class="icon-home icon-large"></i>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
@@ -330,68 +315,69 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 
 
             <section>
-        <h2>Categories</h2>
+        <h2><i class="icon-home icon-large"></i>Categories</h2>
         <div class="tag_box">
-          <ul>
+          <ul class="list-group list-group-flush">
           
           
 
 
   
      
-    	<li><a href="/categories.html#cloud-ref">
+    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
     		cloud <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#javascript-ref">
+    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
     		javascript <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#pentaho-ref">
+    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
     		pentaho <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#kettle-ref">
+    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#java-ref">
+    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
     		java <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#cassandra-ref">
+    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#work-ref">
+    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
     		work <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hadoop-ref">
+    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
     		hadoop <span>12</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hbase-ref">
+    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
     		hbase <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hive-ref">
+    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
     		hive <span>5</span>
     	</a></li>
      
-    	<li><a href="/categories.html#post-ref">
+    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
     		post <span>1</span>
     	</a></li>
      
-    	<li><a href="/categories.html#saltstack-ref">
+    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
     		saltstack <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#git-ref">
+    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
     		git <span>1</span>
     	</a></li>
     
   
+
 
  
           </ul>
@@ -400,7 +386,7 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 
 
             <section>
-       <h2>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
            
@@ -430,28 +416,16 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
 
 
             <section>
-        <h2>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
         </div>
       </section>
 
 
-            <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="15"></ul>
-      </section>
-
-
-            <section>
-        <h2>Sina Weibo</h2>
-        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
-      </section>
-
-
             
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             

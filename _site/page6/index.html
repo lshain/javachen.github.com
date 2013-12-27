@@ -186,39 +186,33 @@
     
 
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h2>
     
       安装版本 hadoop-2.0.0-cdh4.2.0 hbase-0.94.2-cdh4.2.0 hive-0.10.0-cdh4.2.0 jdk1.6.0_38 安装前说明 安装目录为/opt 检查hosts文件 关闭防火墙 设置时钟同步 使用说明 安装hadoop、hbase、hive成功之后启动方式为： 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh 启动hbase: desktop3上执行start-hbase.xml 启动hive: desktop1上执行hive 规划 192.168.0.1 NameNode、Hive、ResourceManager 192.168.0.2 SSNameNode 192.168.0.3 DataNode、HBase、NodeManager 192.168.0.4 DataNode、HBase、NodeManager 192.168.0.6 DataNode、HBase、NodeManager 192.168.0.7 DataNode、HBase、NodeManager 192.168.0.8 DataNode、HBase、NodeManager 部署过程 系统和网络配置 修改每台机器的名称 [root@desktop1 ~]# cat /etc/sysconfig/network NETWORKING=yes HOSTNAME=desktop1 在各个节点上修改/etc/hosts增加以下内容: [root@desktop1 ~]# cat /etc/hosts 127.0.0.1 localhost localhost.localdomain...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-03-24 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
     
       安装虚拟机 VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份 配置网络 a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0 b. 设置每一个虚拟机的网络为Host-Only c.分别修改每个虚拟机的ip，DHCP或手动设置 vim /etc/sysconfig/network-scripts/ifcfg-eth0 vim /etc/udev/rules.d/70-persistent-net.rules #删掉第一个，修改第二个名字为eth0 start_udev d.修改主机名 vim /etc/sysconfig/network e.每个虚拟机中修改hosts： 192.168.56.100 rhel-june 192.168.56.101 rhel-june-1 192.168.56.102 rhel-june-2 最后机器列表为： rhel-june: 192.168.56.100 rhel-june-1: 192.168.56.101 rhel-june-2: 192.168.56.102 机群规划 版本： hadoop:1.1.1 JDK:1.6.0_38 集群各节点： NameNode:192.168.56.100 NameSecondary:192.168.56.100 DataNode:192.168.56.101 DataNode:192.168.56.102 安装过程 a.解压缩到/opt b.设置配置文件： core-site.xml hdfs-site.sml mapred-site.xml c.设置master、slaves d.设置环境变量 方便执行java命令及hadoop命令. 使用root登录，vi...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-03-08 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h2>
     
       2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。
@@ -259,46 +253,37 @@
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-02-20 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/work/2013/02/20/summary-of-the-work-in-2012#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a></h2>
     
       Step1 - 在本机安装Octopress 首先，必须先在本机安装配置Git和Ruby,Octopress需要Ruby版本至少为1.9.2。你可以使用RVM或rbenv安装ruby，安装方法见Octopress官方文档：http://octopress.org/docs/setup/ 我使用rvm安装： rvm install 1.9.2 &amp;&amp; rvm use 1.9.2 安装完之后可以查看ruby版本： ruby --version 结果为： ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux] 然后需要从github下载Octopress： git clone git://github.com/imathis/octopress.git octopress 因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下： git clone git@github.com:javachen/octopress.git 运行上面的代码后，你会看到： Cloning into &#39;octopress&#39;... remote: Counting objects: 6579, done. remote: Compressing objects: 100% (2361/2361), done. remote: Total 6579 (delta...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-06-03 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/kettle/2012/04/13/kettle-dependency-management">Kettle dependency management</a></h2>
     
       pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功. 使用ivy编译kettle的源代码却是非常容易的事情. 该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的Kettle dependency management,文章标题没作修改. 编写此文,是为了记录编译kettle源码的方法和过程. 以下是对原文的一个简单翻译. 将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新. pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的. 关于Ivy Apache Ivy™是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:enterprise features, what people say about it, 以及 how it can improve your build system 在kettle中使用ivyIDE 首先,从svn上下载kettle的源代码: svn://source.pentaho.org/svnkettleroot/Kettle/trunk 如果你想在Eclipse上使用ivyde plugin. 请参考相关文章安装该插件. 如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码. 1.执行ant resolve,这个命令将会创建一个叫做resolved-libs的文件夹. 2.使用下面命令更新classpath a.手动的添加这些jar文件到你的ide的classpath b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效) 注意:kettle项目中的构建脚本会自动安装ivy插件. 构建Kettle 你可以下载kettle源代码然后立即执行ant distrib命令 或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件. ivy中未完成的 pentaho-database-这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖....
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-04-13 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/04/13/kettle-dependency-management#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
 
 <!-- Pagination links -->
@@ -320,7 +305,7 @@
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2>About me</h2>
+   	 <h2><i class="icon-home icon-large"></i>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
@@ -328,68 +313,69 @@
 
 
             <section>
-        <h2>Categories</h2>
+        <h2><i class="icon-home icon-large"></i>Categories</h2>
         <div class="tag_box">
-          <ul>
+          <ul class="list-group list-group-flush">
           
           
 
 
   
      
-    	<li><a href="/categories.html#cloud-ref">
+    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
     		cloud <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#javascript-ref">
+    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
     		javascript <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#pentaho-ref">
+    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
     		pentaho <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#kettle-ref">
+    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#java-ref">
+    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
     		java <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#cassandra-ref">
+    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#work-ref">
+    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
     		work <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hadoop-ref">
+    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
     		hadoop <span>12</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hbase-ref">
+    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
     		hbase <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hive-ref">
+    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
     		hive <span>5</span>
     	</a></li>
      
-    	<li><a href="/categories.html#post-ref">
+    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
     		post <span>1</span>
     	</a></li>
      
-    	<li><a href="/categories.html#saltstack-ref">
+    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
     		saltstack <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#git-ref">
+    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
     		git <span>1</span>
     	</a></li>
     
   
+
 
  
           </ul>
@@ -398,7 +384,7 @@
 
 
             <section>
-       <h2>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
            
@@ -428,28 +414,16 @@
 
 
             <section>
-        <h2>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
         </div>
       </section>
 
 
-            <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="15"></ul>
-      </section>
-
-
-            <section>
-        <h2>Sina Weibo</h2>
-        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
-      </section>
-
-
             
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             

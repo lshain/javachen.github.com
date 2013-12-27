@@ -186,23 +186,20 @@
     
 
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
     
       Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于数据抽取、转换、装载。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。 kettle的数据抽取主要在于抽取数据，而没有考虑数据库的函数、存储过程、视图、表结构以及索引、约束等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。 这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，需要有主键和索引方便对比和加快查询速度。 先来看看kettle中的一些组件。 下图是kettle中的一个表输出组件。 在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。 &lt;!--more--&gt; 下图是kettle中纬度更新/查询的组件。 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。 如果现在想使用kettle实现异构数据库的数据以及主键和索引的迁移，有没有一个完整方便的解决方案呢？我能想到的解决方案如下： 1.使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。 2.针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。 3.扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。 方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。 下面是方案3的具体的实现。 首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下： public void ripDBWizard(final int no) { final List databases = spoon.getActiveDatabases(); if (databases.size() == 0) return;&lt;/pre&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;, databases); final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-01-05 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
     
       使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
@@ -292,16 +289,13 @@ Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五�
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-01-04 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h2>
     
       Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
@@ -330,46 +324,37 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-12-07 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/pentaho/2011/12/07/mondrian-and-olap#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h2>
     
       XUL[1]是英文“XML User Interface Language”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。 XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。 使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。 XUL元素 XUL定义了一套丰富的元素。它们大致上可分为以下几种： 基层元素：例如视窗、page、对话框、向导 Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter 排版:例如方框、网格、堆栈、叠 事件和脚本:例如脚本、命令、key、broadcaster、observer 数据源:例如template、rule 其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器 一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。 现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。 XUL是如何处理的[4] Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。 XUL应用 虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。 Firefox里内置的一些XUL 地址见：http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html 运行XUL应用程序 可以选择 3 种方式来运行 XUL 应用程序： 1.使用基于 Mozilla 的浏览器进行简单测试 2.使用XULRunner 3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似 总结 XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。 参考资料 1.XUL Wiki :http://zh.wikipedia.org/wiki/XUL...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-11-25 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/11/25/xml-user-interface-language-introuction#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h2>
     
       最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章 获取弹出窗口url后的参数方法： // 获取url后的参数值 function getQueryStringValue(name) { var url = window.location.search; if (url.indexOf(&#39;?&#39;) &lt; 0) { return null } var index = url.indexOf(name + &quot;=&quot;); if (index &lt; 0) { return null } var args = url.indexOf(&#39;&amp;&#39;, index); var value; if (args &gt; 0) { value = url.substring(index +...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-10-22 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
 
 <!-- Pagination links -->
@@ -391,7 +376,7 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2>About me</h2>
+   	 <h2><i class="icon-home icon-large"></i>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
@@ -399,68 +384,69 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 
 
             <section>
-        <h2>Categories</h2>
+        <h2><i class="icon-home icon-large"></i>Categories</h2>
         <div class="tag_box">
-          <ul>
+          <ul class="list-group list-group-flush">
           
           
 
 
   
      
-    	<li><a href="/categories.html#cloud-ref">
+    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
     		cloud <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#javascript-ref">
+    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
     		javascript <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#pentaho-ref">
+    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
     		pentaho <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#kettle-ref">
+    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#java-ref">
+    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
     		java <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#cassandra-ref">
+    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#work-ref">
+    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
     		work <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hadoop-ref">
+    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
     		hadoop <span>12</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hbase-ref">
+    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
     		hbase <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hive-ref">
+    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
     		hive <span>5</span>
     	</a></li>
      
-    	<li><a href="/categories.html#post-ref">
+    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
     		post <span>1</span>
     	</a></li>
      
-    	<li><a href="/categories.html#saltstack-ref">
+    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
     		saltstack <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#git-ref">
+    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
     		git <span>1</span>
     	</a></li>
     
   
+
 
  
           </ul>
@@ -469,7 +455,7 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 
 
             <section>
-       <h2>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
            
@@ -499,28 +485,16 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 
 
             <section>
-        <h2>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
         </div>
       </section>
 
 
-            <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="15"></ul>
-      </section>
-
-
-            <section>
-        <h2>Sina Weibo</h2>
-        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
-      </section>
-
-
             
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             

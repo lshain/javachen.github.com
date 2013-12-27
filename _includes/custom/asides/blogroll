@@ -1,6 +1,6 @@
       {% if site.JB.blogroll != false %}
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             {% for link in site.JB.brlist %}

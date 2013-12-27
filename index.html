@@ -6,7 +6,7 @@ tagline: Life is short,we need running.
 {% include JB/setup %}
 
 {% for post in paginator.posts %}
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
     {% if post.content contains "<!-- more -->" %}
       {{ post.content | split:'<!-- more -->' |first }}
@@ -15,16 +15,13 @@ tagline: Life is short,we need running.
     {% endif %}
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> {{ post.date | date: "%Y-%m-%d %H:%M" }}
-          <span class="glyphicon glyphicon-comment"></span><a href="{{ post.url }}#comments"> Comments</a>
-        </div>
         {% if post.content contains "<!-- more -->" %}
-        <a class="btn btn-default btn-sm pull-right" href="{{ post.url }}"><span class="readmore">Read More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-right" href="{{ post.url }}"><span class="readmore">More &raquo; </span></a>
         {% endif %}
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 {% endfor %}
 
 <!-- Pagination links -->

@@ -186,85 +186,70 @@
     
 
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h2>
     
       这仅仅是一个Cassandra CLI使用方法的清单。 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于/usr/bin/cassandra-cli，如果是试用包安装，或者是$CASSANDRA_HOME/bin/cassandra-cli，如果使用二进制文件安装。 Starting the CLI 使用cassandra-cli -host -port 命令启动 Cassandra CLI，他将会连接cassandra.yaml文件中定义的集群名称，默认为“Test Cluster”。 如果你有一个但节点的集群，则使用以下命令： $ cassandra-cli -host localhost -port 9160 如果想连接多节点集群中的一个节点，可以使用以下命令: $ cassandra-cli -host 110.123.4.5 -port 9160 或者，可以直接执行以下命令： $ cassandra-cli 登录成功之后，可以看到： Welcome to cassandra CLI. Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit. 你必须指定连接一个节点：...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-04-09 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
     
       本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra. 检查java环境 Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本. 1.检查是否安装java: java -version 如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法. 2.安装jdk 下载Oracle JRE 1）修改执行权限: $ cd /tmp $ chmod a+x jre-6u25-linux-x64-rpm.bin 2）解压执行RPM文件,例如: $ sudo ./jre-6u25-linux-x64-rpm.bin 这样JRE会安装在/usr/java/ 3）配置Oracle JRE取代OpenJDK JRE 可以使用alternatives命令添加一个链接到Oracle JRE. $ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000 4）确认是否安装JRE $ java -version java version &quot;1.6.0_25&quot; Java(TM) SE Runtime Environment...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-04-06 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/java/2012/03/26/hash-and-hash-functions">哈希表</a></h2>
     
       定义 一般的线性表、树，数据在结构中的相对位置是随机的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。 哈希表又称散列表。 哈希表存储的基本思想是：以数据表中的每个记录的关键字 k为自变量，通过一种函数H(k)计算出函数值。把这个值解释为一块连续存储空间（即数组空间）的单元地址（即下标），将该记录存储到这个单元中。在此称该函数H为哈希函数或散列函数。按这种方法建立的表称为哈希表或散列表。 哈希表是一种数据结构，它可以提供快速的插入操作和查找操作。 哈希表是基于数组结构实现的，所以它也存在一些缺点： 数组创建后难于扩展，某些哈希表被基本填满时，性能下降得非常严重。 这个问题是哈希表不可避免的，即冲突现象：对不同的关键字可能得到同一哈希地址。 所以在以下情况下可以优先考虑使用哈希表： 不需要有序遍历数据，并且可以提前预测数据量的大小。 冲突 理想情况下，哈希函数在关键字和地址之间建立了一个一一对应关系，从而使得查找只需一次计算即可完成。由于关键字值的某种随机性，使得这种一一对应关系难以发现或构造。因而可能会出现不同的关键字对应一个存储地址。即k1≠k2，但H(k1)=H(k2)，这种现象称为冲突。 把这种具有不同关键字值而具有相同哈希地址的对象称同义词。 在大多数情况下，冲突是不能完全避免的。这是因为所有可能的关键字的集合可能比较大，而对应的地址数则可能比较少。 对于哈希技术，主要研究两个问题： （1）如何设计哈希函数以使冲突尽可能少地发生。 （2）发生冲突后如何解决。 哈希函数的构造方法 构造好的哈希函数的方法，应能使冲突尽可能地少，因而应具有较好的随机性。这样可使一组关键字的散列地址均匀地分布在整个地址空间。根据关键字的结构和分布的不同，可构造出许多不同的哈希函数。 1．直接定址法 直接定址法是以关键字k本身或关键字加上某个数值常量c作为哈希地址的方法。 该哈希函数H(k)为： H(k)=k+c (c≥0) 这种哈希函数计算简单，并且不可能有冲突发生。当关键字的分布基本连续时，可使用直接定址法的哈希函数。否则，若关键字分布不连续将造成内存单元的大量浪费 2．除留余数法 取关键字k除以哈希表长度m所得余数作为哈希函数地址的方法。即： H(k)=k％m 这是一种较简单、也是较常见的构造方法。 这种方法的关键是选择好哈希表的长度m。使得数据集合中的每一个关键字通过该函数转化后映射到哈希表的任意地址上的概率相等。 理论研究表明，在m取值为素数（质数）时，冲突可能性相对较少。 3．平方取中法 取关键字平方后的中间几位作为哈希函数地址（若超出范围时，可再取模）。 设有一组关键字ABC，BCD,CDE，DEF，……其对应的机内码如表所示。假定地址空间的大小为1000，编号为0-999。现按平方取中法构造哈希函数，则可取关键字机内码平方后的中间三位作为存储位置。 4．折叠法 这种方法适合在关键字的位数较多，而地址区间较小的情况。 将关键字分隔成位数相同的几部分。然后将这几部分的叠加和作为哈希地址（若超出范围，可再取模）。 例如，假设关键字为某人身份证号码430104681015355，则可以用4位为一组进行叠加。即有5355+8101+1046+430=14932，舍去高位。 则有H(430104681015355)=4932 为该身份证关键字的哈希函数地址。 5．数值分析法 若事先知道所有可能的关键字的取值时，可通过对这些关键字进行分析，发现其变化规律，构造出相应的哈希函数。 例：对如下一组关键字通过分析可知：每个关键字从左到右的第l，2，3位和第6位取值较集中，不宜作哈希地址。 剩余的第4，5，7和8位取值较分散，可根据实际需要取其中的若干位作为哈希地址。 6. 随机数法 选择一个随机函数，取关键字的随机函数值为它的哈希地址，即H(key)＝random(key)，其中random为随机函数。 7....
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-03-26 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/java/2012/03/26/hash-and-hash-functions#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h2>
     
       这是在QQ群里有人问到的一个问题. 如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出? 在kettle中实现cassandra的输入与输出有以下两种方式: 第一种方式:自己编写cassandra输入输出组件 第二种方式:使用别人编写好的插件,将其集成进来 当然还有第三种方法,直接使用4.3版本的pdi. 第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成. 在pdi-ce-big-data-4.3.0-preview(下载页面)版本中可以看到kettle开始支持cassandra的输入和输出. 故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable. 在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件: . |-- databases |-- hour-partitioner.jar |-- jobentries |-- kettle-gpload-plugin |-- kettle-hl7-plugin |-- kettle-palo-plugin |-- pentaho-big-data-plugin |-- repositories |-- spoon |-- steps `-- versioncheck pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下 . |-- databases |-- hour-partitioner.jar |-- jobentries | `-- DummyJob | |-- DPL.png | |-- dummyjob.jar...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-03-23 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h2>
     
       了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. &lt;listener&gt; &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt; &lt;/listener&gt; 该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。 Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. 从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。 该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。 该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。 第一步，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。 第二步，扫描配置文件完成seam组件的初始化（Initialization的create方法）。 其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。 添加命名空间 从/WEBINF/components. xml加载组件 从/WEBINF/events. xml加载组件 从METAINF/components. xml加载组件 从ServletContext初始化Properties 从/seam. properties初始化Properties 初始化jndi Properties...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-02-23 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/java/2012/02/23/the-process-of-seam-initiation#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
 
 <!-- Pagination links -->
@@ -286,7 +271,7 @@
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2>About me</h2>
+   	 <h2><i class="icon-home icon-large"></i>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
@@ -294,68 +279,69 @@
 
 
             <section>
-        <h2>Categories</h2>
+        <h2><i class="icon-home icon-large"></i>Categories</h2>
         <div class="tag_box">
-          <ul>
+          <ul class="list-group list-group-flush">
           
           
 
 
   
      
-    	<li><a href="/categories.html#cloud-ref">
+    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
     		cloud <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#javascript-ref">
+    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
     		javascript <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#pentaho-ref">
+    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
     		pentaho <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#kettle-ref">
+    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#java-ref">
+    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
     		java <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#cassandra-ref">
+    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#work-ref">
+    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
     		work <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hadoop-ref">
+    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
     		hadoop <span>12</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hbase-ref">
+    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
     		hbase <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hive-ref">
+    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
     		hive <span>5</span>
     	</a></li>
      
-    	<li><a href="/categories.html#post-ref">
+    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
     		post <span>1</span>
     	</a></li>
      
-    	<li><a href="/categories.html#saltstack-ref">
+    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
     		saltstack <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#git-ref">
+    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
     		git <span>1</span>
     	</a></li>
     
   
+
 
  
           </ul>
@@ -364,7 +350,7 @@
 
 
             <section>
-       <h2>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
            
@@ -394,28 +380,16 @@
 
 
             <section>
-        <h2>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
         </div>
       </section>
 
 
-            <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="15"></ul>
-      </section>
-
-
-            <section>
-        <h2>Sina Weibo</h2>
-        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
-      </section>
-
-
             
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             

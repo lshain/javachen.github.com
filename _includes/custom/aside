@@ -6,8 +6,4 @@
 
       {% include custom/asides/recently_comments %}
 
-      {% include custom/asides/recently_visitors %}
-
-      {% include custom/asides/sina_weibo %}
-
       {% include custom/asides/blogroll %}

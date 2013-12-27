@@ -1,5 +1,5 @@
       <section>
-        <h2>Tags Cloud</h2>
+        <h2><i class="icon-home icon-large"></i>Tags Cloud</h2>
 <div id="myCanvasContainer">
   <canvas width="240" height="240" id="myCanvas">
     <p>Anything in here will be replaced on browsers that support the canvas element</p>

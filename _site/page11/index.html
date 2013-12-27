@@ -186,85 +186,70 @@
     
 
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h2>
     
       dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？ 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？ 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。 首先看看dhtmlxTree 关于Drag-n-Drop的例子，其中有这样一个例子Custom Drag Out。 上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下： function maf() { return false; } tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0); tree.setSkin(&#39;dhxskyblue&#39;); tree.setImagePath(&quot;../../codebase/imgs/cshyellowbooks/&quot;); tree.enableDragAndDrop(true); tree.setDragHandler(maf); tree.enableSmartXMLParsing(true); tree.loadXML(&quot;../common/tree05dragndrop.xml&quot;); function scontrol() { this.drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) { targetHtmlObject.style.backgroundColor = &quot;&quot;; targetHtmlObject.value = sourceHtmlObject.parentObject.label; } this.dragIn = function(htmlObject, shtmlObject) { htmlObject.style.backgroundColor =...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-07-24 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
     
       说明: 本文来源于http://dhtmlx.com/docs/products/dhtmlxGrid/，本人对其进行翻译整理成下文，贴出此文，紧供分享。 dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。 跨浏览器 使用JavaScript API进行控制 Ajax支持 简单的JavaScript 或者XML 配置 与HTML集成 内建过滤、排序、查询、分组功能 表格 footer/header自动计算 行内编辑 准备使用大数据集解决方案：分页，动态加载，智能渲染 序列化为XML或CSV 从 XML或CSV加载 列锁定 剪贴板支持 简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion) 支持子表格 列拖拽和移动 行或列拖拽 dhtmlxTree PRO Edition支持拖拽 可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象) 组合框，日历以及更多的预定义eXcells Cell支持数学方程式 不同的键盘映射 简单的CSS风格或是预定义的皮肤...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-07-19 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h2>
     
       OpenStack Nova code：https://bugs.launchpad.net/nova OpenStack Blog：http://planet.openstack.org/ OpenStack 官方文档：http://docs.openstack.org/cactus/openstack-compute/admin/content/chgetting-started-with-openstack.html OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php 在 Ubuntu 上安装和配置 OpenStack Nova：http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/ Centos安装过程：http://wiki.openstack.org/NovaInstall/CentOSNotes Running OpenStack Compute (Nova)：http://wiki.openstack.org/RunningNova 开源黄页 -  OpenStack：http://yp.oss.org.cn/appcenter/software/showsoftware.php?swid=1733 Installation on Debian, Fedora orCentOS：http://nova.openstack.org/adminguide/distros/others.html Installing Nova on a Single Host：http://nova.openstack.org/adminguide/single.node.install.html openstack swift 典型架构和openstack swift 简要说明：http://blog.sina.com.cn/s/blog6b98772b0100pk7p.html Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;blank&quot;&gt;http://www.douban.com/group/topic/17621229/ 新浪上openstackobjectstorage的一些文章：http://blog.sina.com.cn/s/articlelist180515409121.html 豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;blank&quot;&gt;http://www.douban.com/group/openstack/ OpenStack服务部署： http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-07-07 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/07/07/some-resources-about-openstack#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6">Centos上安装 OpenNebula Management Console</a></h2>
     
       我们可以通过onehost/onevm/onevnet等等 这些命令行工具来管理 OpenNebula 云计算平台，也可以通过OpenNebula项目组开发的web控制台来访问OpenNebula。OpenNebula项目组提供了两个web程序来管理OpenNebula，一个即本文提到的OpenNebula Management Console，一个是The Cloud Operations Center，前者需要额外下载，后者内嵌与OpenNebula安装包内。 OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一篇关于OpenNebula Management Console安装的文章： 安装 OpenNebula 基于 Web 的管理控制台，我的这篇文章参考了这篇文章并加以完善，这篇文章对我完成OpenNebula Management Console的安装起到很大帮助，感谢原文作者。 我的安装环境：centos5.6 ，OpenNebula2.2，在安装OpenNebula2.2之前，我执行了yum update，即更新系统的软件。 以下来自官方文档： 要求: Apache or whatever webserver. php5 (May work with php4 but not tested) php-adodb And you need a db driver for adodb: php-mysql or php-pgsql. Mysql...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-06-29 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/06/29/install-opennebula-management-console-in-centos5-6#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
-<div class="wrapper">
+<article>
     <h2 class="h2 entry-title"><a href="/cloud/2011/06/26/opennebula-2-2-features">OpenNebula 2.2的特性</a></h2>
     
       以下这篇文章由OpenNebula 2.2 Features翻译而来。 OpenNebula是一款为云计算而打造的开源工具箱。它允许你与Xen，KVM或VMware ESX一起建立和管理私有云，同时还提供Deltacloud适配器与Amazon EC2相配合来管理混合云。除了像Amazon一样的商业云服务提供商，在不同OpenNebula实例上运行私有云的Amazon合作伙伴也同样可以作为远程云服务供应商。 目前版本，可支持XEN、KVM和VMware，以及实时存取EC2和 ElasticHosts，它也支持印象档的传输、复制和虚拟网络管理网络。 主要特点和优势 私有云计算 为私有数据中心或集群（管理功能私有云计算）上运行的Xen，KVM和VMware的。 模块 功能 用户管理 用户管理，认证框架，多个云用户和管理员角色，会计，配额管理，安全的多租户。 VM图像管理 带目录的镜像仓库和镜像管理，访问控制，以及从正在运行的虚拟机创建镜像。 虚拟网络管理 对互联的虚拟机;一定范围或固定的网络;虚拟网络共享;相关的第2层虚拟网络和网络隔离的通用属性定义提供虚拟网络管理。 虚拟机管理 虚拟机管理功能，支持在同一物理结构中的多个hypervisors，分布式环境的多个hypervisor管理，虚拟机自动配置，以及脚本在虚拟机的状态变化时的触发管理。 服务管理 部署由多层次的相互联系的虚拟机组成的群体服务;在启动时自动配置，以及对微软Windows和Linux镜像的支持。 基础设施管理 管理物理主机;创建本地集群，占地面积小，占用空间不到700KB。 存储管理 虚拟机映像管理，支持多种硬件平台（FibreChannel, iSCSI, NAS shared storage…）和存储后端传输镜像。 信息管理 虚拟机和物理基础设施的监控，并与数据监测工具集成，如 调度 强大和灵活的竞价/排名调度、工作量和资源分配政策，如包装，分割，负载感知..... 用户界面 Unix类似的云基础设施管理命令行。 运营中心 图形化管理的云基础设施。 混合云计算 本地基础设施与远程云资源的扩展（混合云计算） 模块 功能 Cloudbursting 本地的基础设施，可以辅从外部云计算能力，以满足高峰需求，更好地服务用户的访问请求，或者为了实现高可用性策略。支持亚马逊EC2，并同时访问多个云。 Federation 不同的云实例以构建一个独立的虚拟化集群层次;更高水平的可扩展性。 &nbsp; 公共云计算 暴露云接口给私有的基础设施功能（公共云计算）...
     
 
       <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-06-26 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/06/26/opennebula-2-2-features#comments"> Comments</a>
-        </div>
         
         <div class="clearfix"></div>
       </div>
-</div>
+</article>
+<hr/>
 
 
 <!-- Pagination links -->
@@ -286,7 +271,7 @@
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2>About me</h2>
+   	 <h2><i class="icon-home icon-large"></i>About me</h2>
 	<div>
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
@@ -294,68 +279,69 @@
 
 
             <section>
-        <h2>Categories</h2>
+        <h2><i class="icon-home icon-large"></i>Categories</h2>
         <div class="tag_box">
-          <ul>
+          <ul class="list-group list-group-flush">
           
           
 
 
   
      
-    	<li><a href="/categories.html#cloud-ref">
+    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
     		cloud <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#javascript-ref">
+    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
     		javascript <span>7</span>
     	</a></li>
      
-    	<li><a href="/categories.html#pentaho-ref">
+    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
     		pentaho <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#kettle-ref">
+    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
     		kettle <span>8</span>
     	</a></li>
      
-    	<li><a href="/categories.html#java-ref">
+    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
     		java <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#cassandra-ref">
+    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
     		cassandra <span>2</span>
     	</a></li>
      
-    	<li><a href="/categories.html#work-ref">
+    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
     		work <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hadoop-ref">
+    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
     		hadoop <span>12</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hbase-ref">
+    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
     		hbase <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#hive-ref">
+    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
     		hive <span>5</span>
     	</a></li>
      
-    	<li><a href="/categories.html#post-ref">
+    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
     		post <span>1</span>
     	</a></li>
      
-    	<li><a href="/categories.html#saltstack-ref">
+    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
     		saltstack <span>3</span>
     	</a></li>
      
-    	<li><a href="/categories.html#git-ref">
+    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
     		git <span>1</span>
     	</a></li>
     
   
+
 
  
           </ul>
@@ -364,7 +350,7 @@
 
 
             <section>
-       <h2>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
            
@@ -394,28 +380,16 @@
 
 
             <section>
-        <h2>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
         </div>
       </section>
 
 
-            <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="15"></ul>
-      </section>
-
-
-            <section>
-        <h2>Sina Weibo</h2>
-        <iframe id="sina_widget_1222789964" style="width:100%; height:500px;" frameborder="0" scrolling="no" src="http://v.t.sina.com.cn/widget/widget_blog.php?uid=1222789964&height=500&skin=wd_01&showpic=0"></iframe>
-      </section>
-
-
             
       <section>
-        <h2>Blogroll</h2>
+        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
         <div class="category">
           <ul>
             
