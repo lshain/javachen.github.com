@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h2>
+    
+      dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？ 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？ 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。 首先看看dhtmlxTree 关于Drag-n-Drop的例子，其中有这样一个例子Custom Drag Out。 上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下： function maf() { return false; } tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0); tree.setSkin(&#39;dhxskyblue&#39;); tree.setImagePath(&quot;../../codebase/imgs/cshyellowbooks/&quot;); tree.enableDragAndDrop(true); tree.setDragHandler(maf); tree.enableSmartXMLParsing(true); tree.loadXML(&quot;../common/tree05dragndrop.xml&quot;); function scontrol() { this.drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) { targetHtmlObject.style.backgroundColor = &quot;&quot;; targetHtmlObject.value = sourceHtmlObject.parentObject.label; } this.dragIn = function(htmlObject, shtmlObject) { htmlObject.style.backgroundColor =...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-07-24 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h2>
     
       说明: 本文来源于http://dhtmlx.com/docs/products/dhtmlxGrid/，本人对其进行翻译整理成下文，贴出此文，紧供分享。 dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。 跨浏览器 使用JavaScript API进行控制 Ajax支持 简单的JavaScript 或者XML 配置 与HTML集成 内建过滤、排序、查询、分组功能 表格 footer/header自动计算 行内编辑 准备使用大数据集解决方案：分页，动态加载，智能渲染 序列化为XML或CSV 从 XML或CSV加载 列锁定 剪贴板支持 简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion) 支持子表格 列拖拽和移动 行或列拖拽 dhtmlxTree PRO Edition支持拖拽 可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象) 组合框，日历以及更多的预定义eXcells Cell支持数学方程式 不同的键盘映射 简单的CSS风格或是预定义的皮肤...
@@ -244,22 +260,6 @@
         <div class="col-md-6 date visible-lg visible-md">
           <span class="glyphicon glyphicon-time"></span> 2011-06-26 00:00
           <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/06/26/opennebula-2-2-features#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/cloud/2011/06/22/the-technology-used-in-eucalyptus">Eucalyptus使用的技术</a></h2>
-    
-      libvirt Libvirt 库是一种实现 Linux 虚拟化功能的 Linux® API，它支持各种虚拟机监控程序，包括 Xen 和 KVM，以及 QEMU 和用于其他操作系统的一些虚拟产品。 Netty Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。 Axis2 Axis2是下一代 Apache Axis。Axis2 虽然由 Axis 1.x 处理程序模型提供支持，但它具有更强的灵活性并可扩展到新的体系结构。Axis2 基于新的体系结构进行了全新编写，而且没有采用 Axis 1.x 的常用代码。支持开发 Axis2 的动力是探寻模块化更强、灵活性更高和更有效的体系结构，这种体系结构可以很容易地插入到其他相关 Web 服务标准和协议（如 WS-Security、WS-ReliableMessaging 等）的实现中。 Axis2c Apache Axis2/C is a Web services engine implemented in the C programming language. It is based...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-06-22 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cloud/2011/06/22/the-technology-used-in-eucalyptus#comments"> Comments</a>
         </div>
         
         <div class="clearfix"></div>
@@ -350,6 +350,10 @@
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -363,6 +367,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -381,8 +387,6 @@
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

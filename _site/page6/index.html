@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -185,6 +185,22 @@
     </div>
     
 
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h2>
+    
+      安装版本 hadoop-2.0.0-cdh4.2.0 hbase-0.94.2-cdh4.2.0 hive-0.10.0-cdh4.2.0 jdk1.6.0_38 安装前说明 安装目录为/opt 检查hosts文件 关闭防火墙 设置时钟同步 使用说明 安装hadoop、hbase、hive成功之后启动方式为： 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh 启动hbase: desktop3上执行start-hbase.xml 启动hive: desktop1上执行hive 规划 192.168.0.1 NameNode、Hive、ResourceManager 192.168.0.2 SSNameNode 192.168.0.3 DataNode、HBase、NodeManager 192.168.0.4 DataNode、HBase、NodeManager 192.168.0.6 DataNode、HBase、NodeManager 192.168.0.7 DataNode、HBase、NodeManager 192.168.0.8 DataNode、HBase、NodeManager 部署过程 系统和网络配置 修改每台机器的名称 [root@desktop1 ~]# cat /etc/sysconfig/network NETWORKING=yes HOSTNAME=desktop1 在各个节点上修改/etc/hosts增加以下内容: [root@desktop1 ~]# cat /etc/hosts 127.0.0.1 localhost localhost.localdomain...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-03-24 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
 
 <div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
@@ -284,22 +300,6 @@
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h2>
-    
-      这仅仅是一个Cassandra CLI使用方法的清单。 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于/usr/bin/cassandra-cli，如果是试用包安装，或者是$CASSANDRA_HOME/bin/cassandra-cli，如果使用二进制文件安装。 Starting the CLI 使用cassandra-cli -host -port 命令启动 Cassandra CLI，他将会连接cassandra.yaml文件中定义的集群名称，默认为“Test Cluster”。 如果你有一个但节点的集群，则使用以下命令： $ cassandra-cli -host localhost -port 9160 如果想连接多节点集群中的一个节点，可以使用以下命令: $ cassandra-cli -host 110.123.4.5 -port 9160 或者，可以直接执行以下命令： $ cassandra-cli 登录成功之后，可以看到： Welcome to cassandra CLI. Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit. 你必须指定连接一个节点：...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-04-09 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -384,6 +384,10 @@
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -397,6 +401,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -415,8 +421,6 @@
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

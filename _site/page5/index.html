@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -187,6 +187,46 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h2>
+    
+      kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？
+
+上述问题可以拆分为两个问题：
+
+
+从命令行接受一个参数作为一个字段
+合并输入流和这个字段
+
+
+问题1
+
+第一个问题可以使用kettle中获取系统信息组件，定义一个变量，该值来自命令行参数，见下图：
+
+
+
+问题2
+
+第二个问题可以使用kettle中记录关联 (笛卡尔输出)组件将两个组件关联起来，输出一个笛卡尔结果集，关联条件设定恒为true，在运行前设置第一个参数的值，然后运行即可。
+
+
+
+下载脚本
+
+最后，kettle转换文件下载地址：在这里。
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2013-04-07 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h2>
     
       记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。 0.环境准备 1.设置hosts 临时设置hostname，以node1为例 sudo hostname node1 确保/etc/hosts中包含ip和FQDN，如果你在使用DNS，保存这些信息到/etc/hosts不是必要的，却是最佳实践。 确保/etc/sysconfig/network中包含hostname=node1 检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。 host -v -t A `hostname` hadoop的配置文件core-site.xml、mapred-site.xml和yarn-site.xml配置节点时，请使用hostname和不是ip 2.关闭防火墙 setenforce 0 vim /etc/sysconfig/selinux #修改SELINUX=disabled 3.清空iptables iptables -F 4.检查每个节点上的/tmp目录权限是否为1777，如果不是请修改。 5.设置时钟同步服务 在所有节点安装ntp yum install ntp 设置开机启动 chkconfig ntpd on 在所有节点启动ntp /etc/init.d/ntpd start 是client使用local NTP server，修改/etc/ntp.conf，添加以下内容： server $LOCAL_SERVER_IP OR HOSTNAME 1. 安装jdk 检查jdk版本 java...
@@ -221,7 +261,7 @@
 <div class="wrapper">
     <h2 class="h2 entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a></h2>
     
-      本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。 安装hive hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。 上传文件 上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩 安装postgres 创建数据库 这里创建数据库metastore并创建hiveuser用户，其密码为redhat。 bash# sudo –u postgres psql bash$ psql postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;; postgres=# CREATE DATABASE metastore owner=hiveuser; postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser; postgres=# \q; 初始化数据库 psql -U hiveuser -d metastore \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 编辑postgresql配置文件(/opt/PostgreSQL/9.1/data/pg_hba.conf)，修改访问权限...
+      本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。CDH版本cdh4.2.0，该篇文章也可以使用于其他版本的CDH。 安装hive hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。 上传文件 上传hive-0.10.0-cdh4.2.0.tar到desktop1的/opt，并解压缩 安装postgres 创建数据库 这里创建数据库metastore并创建hiveuser用户，其密码为redhat。 bash# sudo -u postgres psql bash$ psql postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;; postgres=# CREATE DATABASE metastore owner=hiveuser; postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser; postgres=# \q; 初始化数据库 psql -U hiveuser -d metastore \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 编辑postgresql配置文件(/opt/PostgreSQL/9.1/data/pg_hba.conf)，修改访问权限 host...
     
 
       <div class="status">
@@ -287,22 +327,6 @@ desktop8
         <div class="col-md-6 date visible-lg visible-md">
           <span class="glyphicon glyphicon-time"></span> 2013-03-24 00:00
           <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h2>
-    
-      安装版本 hadoop-2.0.0-cdh4.2.0 hbase-0.94.2-cdh4.2.0 hive-0.10.0-cdh4.2.0 jdk1.6.0_38 安装前说明 安装目录为/opt 检查hosts文件 关闭防火墙 设置时钟同步 使用说明 安装hadoop、hbase、hive成功之后启动方式为： 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh 启动hbase: desktop3上执行start-hbase.xml 启动hive: desktop1上执行hive 规划 192.168.0.1 NameNode、Hive、ResourceManager 192.168.0.2 SSNameNode 192.168.0.3 DataNode、HBase、NodeManager 192.168.0.4 DataNode、HBase、NodeManager 192.168.0.6 DataNode、HBase、NodeManager 192.168.0.7 DataNode、HBase、NodeManager 192.168.0.8 DataNode、HBase、NodeManager 部署过程 系统和网络配置 修改每台机器的名称 [root@desktop1 ~]# cat /etc/sysconfig/network NETWORKING=yes HOSTNAME=desktop1 在各个节点上修改/etc/hosts增加以下内容: [root@desktop1 ~]# cat /etc/hosts 127.0.0.1 localhost localhost.localdomain...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2013-03-24 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH#comments"> Comments</a>
         </div>
         
         <div class="clearfix"></div>
@@ -393,6 +417,10 @@ desktop8
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -406,6 +434,8 @@ desktop8
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -424,8 +454,6 @@ desktop8
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

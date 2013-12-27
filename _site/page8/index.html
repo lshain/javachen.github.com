@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -185,6 +185,22 @@
     </div>
     
 
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h2>
+    
+      本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。 之前用英文写了一篇文章《The execution process of kettle’s job》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。 在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。 public void runFile() { executeFile(true, false, false, false, false, null, false); } public void executeFile(boolean local, boolean remote, boolean cluster, boolean preview, boolean debug, Date replayDate, boolean safe) { TransMeta transMeta = getActiveTransformation(); if (transMeta != null) executeTransformation(transMeta, local, remote,...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-02-22 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/02/22/the-init-process-before-job-execution#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
 
 <div class="wrapper">
     <h2 class="h2 entry-title"><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h2>
@@ -309,22 +325,6 @@ http://vdisk.weibo.com/s/2enQS
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
-    
-      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于数据抽取、转换、装载。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。 kettle的数据抽取主要在于抽取数据，而没有考虑数据库的函数、存储过程、视图、表结构以及索引、约束等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。 这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，需要有主键和索引方便对比和加快查询速度。 先来看看kettle中的一些组件。 下图是kettle中的一个表输出组件。 在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。 &lt;!--more--&gt; 下图是kettle中纬度更新/查询的组件。 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。 如果现在想使用kettle实现异构数据库的数据以及主键和索引的迁移，有没有一个完整方便的解决方案呢？我能想到的解决方案如下： 1.使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。 2.针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。 3.扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。 方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。 下面是方案3的具体的实现。 首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下： public void ripDBWizard(final int no) { final List databases = spoon.getActiveDatabases(); if (databases.size() == 0) return;&lt;/pre&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;, databases); final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-01-05 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -409,6 +409,10 @@ http://vdisk.weibo.com/s/2enQS
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -422,6 +426,8 @@ http://vdisk.weibo.com/s/2enQS
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -440,8 +446,6 @@ http://vdisk.weibo.com/s/2enQS
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

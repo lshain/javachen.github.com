@@ -69,11 +69,6 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 	  <value>true</value>
 	</property>
 
-	<property>
-	  <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
-	  <value>true</value>
-	</property>
-
 同步以上文件到其他节点
 
 	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/

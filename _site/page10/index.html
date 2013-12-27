@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -185,6 +185,55 @@
     </div>
     
 
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h2>
+    
+      首先需要说明的是，Pentaho BI Server源代码在svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。
+
+当然，您可以参考官方文档构建源码。
+
+Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。
+
+将biserver-ce-3.9.0-stable.zip解压之后执行biserver-ce/start-pentaho.bat（或是再linux环境下：biserver-ce/start-pentaho.sh），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？
+
+以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。
+
+在eclipse中创建一个web项目，名称为pentaho，然后将biserver-ce/tomcat/webapps下的pentaho-style和sw-style拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改WEB-INF/web.xml文件你的以下配置，用于指定pentaho-solutions的路径：
+&lt; context-param &gt;
+    &lt; param-name &gt;solution-path&lt; /param-name&gt;
+    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
+&lt; /context-param &gt;
+
+现在即可部署项目，运行biserver-ce/data/start_hypersonic.bat（用于启动数据库），然后启动tomcat，就可以通过http://localhost:8080/pentaho访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib）。
+现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。
+
+接下来，构建源代码。
+在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。
+
+需要注意的是：
+1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件
+2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。
+3.
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。
+
+4.biserver-ce-3.9.0-stable.zip的lib（biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误
+
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2011-09-28 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
 
 <div class="wrapper">
     <h2 class="h2 entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
@@ -281,22 +330,6 @@
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h2>
-    
-      dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？ 现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？ 如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。 首先看看dhtmlxTree 关于Drag-n-Drop的例子，其中有这样一个例子Custom Drag Out。 上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下： function maf() { return false; } tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0); tree.setSkin(&#39;dhxskyblue&#39;); tree.setImagePath(&quot;../../codebase/imgs/cshyellowbooks/&quot;); tree.enableDragAndDrop(true); tree.setDragHandler(maf); tree.enableSmartXMLParsing(true); tree.loadXML(&quot;../common/tree05dragndrop.xml&quot;); function scontrol() { this.drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) { targetHtmlObject.style.backgroundColor = &quot;&quot;; targetHtmlObject.value = sourceHtmlObject.parentObject.label; } this.dragIn = function(htmlObject, shtmlObject) { htmlObject.style.backgroundColor =...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-07-24 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -381,6 +414,10 @@
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -394,6 +431,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -412,8 +451,6 @@
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

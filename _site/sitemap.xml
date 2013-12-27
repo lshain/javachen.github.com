@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2013-12-27T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-11-18T00:00:00+08:00</lastmod>
@@ -408,6 +415,18 @@
     
     
     
+    <url>
+      <loc>http://blog.javachen.com/tags.html</loc>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
+    </url>
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -435,24 +454,6 @@
     
     
     <url>
-      <loc>http://blog.javachen.com/about.html</loc>
-      <changefreq>monthly</changefreq>
-      <priority>0.6</priority>
-    </url>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <url>
       <loc>http://blog.javachen.com/archive.html</loc>
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
@@ -472,8 +473,14 @@
     
     
     
+    
+    
+    
+    
+    
+    
     <url>
-      <loc>http://blog.javachen.com/tags.html</loc>
+      <loc>http://blog.javachen.com/about.html</loc>
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
     </url>

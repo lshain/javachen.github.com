@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -184,7 +184,7 @@
         
       </h2>
     </div>
-    <p>本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。</p>
+    <p>本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。CDH版本cdh4.2.0，该篇文章也可以使用于其他版本的CDH。</p>
 
 <h1>安装hive</h1>
 
@@ -201,7 +201,7 @@
 </ul>
 
 <p>这里创建数据库metastore并创建hiveuser用户，其密码为redhat。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    bash# sudo –u postgres psql
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    bash# sudo -u postgres psql
     bash$ psql
     postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
     postgres=# CREATE DATABASE metastore owner=hiveuser;
@@ -339,47 +339,43 @@
 <h1>异常说明</h1>
 
 <ul>
-<li><p>异常1：</p>
-
-<p>FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper</p></li>
+<li>异常1：</li>
 </ul>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
+</code></pre></div>
 <p>原因：hadoop配置文件没有zk</p>
 
 <ul>
-<li><p>异常2</p>
-
-<p>FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL<u>NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS</u>DATABASE<u>NAME&quot; ON &quot;THIS&quot;.&quot;DB</u>ID&quot; = &quot;THIS<u>DATABASE</u>NAME&quot;.&quot;DB<u>ID&quot; WHERE &quot;THIS</u>DATABASE<u>NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL</u>NAME&quot;) LIKE ? ESCAPE &#39;\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..</p></li>
+<li>异常2</li>
 </ul>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL_NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS_DATABASE_NAME&quot; ON &quot;THIS&quot;.&quot;DB_ID&quot; = &quot;THIS_DATABASE_NAME&quot;.&quot;DB_ID&quot; WHERE &quot;THIS_DATABASE_NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL_NAME&quot;) LIKE ? ESCAPE &#39;\\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..
+</code></pre></div>
 <p>参考：https://issues.apache.org/jira/browse/HIVE-3994</p>
 
 <ul>
-<li>异常3，以下语句没反应
-<code>
-select count(*) from hive_userinfo
-</code></li>
-<li><p>异常4</p>
-
-<p>zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)</p></li>
+<li>异常3，以下语句没反应</li>
 </ul>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">select count(*) from hive_userinfo
+</code></pre></div>
+<ul>
+<li>异常4</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)
+</code></pre></div>
 <p>原因：hive中没有设置zk</p>
 
 <ul>
-<li><p>异常5</p>
-
-<p>hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</p></li>
+<li>异常5</li>
 </ul>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+</code></pre></div>
 <p>原因：cloudera hadoop lib中没有hadoop的native jar</p>
 
 <ul>
-<li><p>异常6</p>
-
-<p>Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster</p></li>
+<li>异常6</li>
 </ul>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
+</code></pre></div>
 <p>原因：classpath没有配置正确，检查环境变量以及yarn的classpath</p>
 
 <h1>参考文章</h1>

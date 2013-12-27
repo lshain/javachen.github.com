@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -185,6 +185,22 @@
     </div>
     
 
+
+<div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
+    
+      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于数据抽取、转换、装载。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。 kettle的数据抽取主要在于抽取数据，而没有考虑数据库的函数、存储过程、视图、表结构以及索引、约束等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。 这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，需要有主键和索引方便对比和加快查询速度。 先来看看kettle中的一些组件。 下图是kettle中的一个表输出组件。 在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。 &lt;!--more--&gt; 下图是kettle中纬度更新/查询的组件。 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。 如果现在想使用kettle实现异构数据库的数据以及主键和索引的迁移，有没有一个完整方便的解决方案呢？我能想到的解决方案如下： 1.使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。 2.针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。 3.扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。 方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。 下面是方案3的具体的实现。 首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下： public void ripDBWizard(final int no) { final List databases = spoon.getActiveDatabases(); if (databases.size() == 0) return;&lt;/pre&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;, databases); final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-01-05 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
 
 <div class="wrapper">
     <h2 class="h2 entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
@@ -355,55 +371,6 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
       </div>
 </div>
 
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h2>
-    
-      首先需要说明的是，Pentaho BI Server源代码在svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。
-
-当然，您可以参考官方文档构建源码。
-
-Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。
-
-将biserver-ce-3.9.0-stable.zip解压之后执行biserver-ce/start-pentaho.bat（或是再linux环境下：biserver-ce/start-pentaho.sh），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？
-
-以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。
-
-在eclipse中创建一个web项目，名称为pentaho，然后将biserver-ce/tomcat/webapps下的pentaho-style和sw-style拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改WEB-INF/web.xml文件你的以下配置，用于指定pentaho-solutions的路径：
-&lt; context-param &gt;
-    &lt; param-name &gt;solution-path&lt; /param-name&gt;
-    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
-&lt; /context-param &gt;
-
-现在即可部署项目，运行biserver-ce/data/start_hypersonic.bat（用于启动数据库），然后启动tomcat，就可以通过http://localhost:8080/pentaho访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib）。
-现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。
-
-接下来，构建源代码。
-在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。
-
-需要注意的是：
-1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件
-2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。
-3.
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。
-
-4.biserver-ce-3.9.0-stable.zip的lib（biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误
-
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2011-09-28 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -488,6 +455,10 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -501,6 +472,8 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -519,8 +492,6 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

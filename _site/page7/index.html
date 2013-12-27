@@ -62,12 +62,20 @@
   
     
       
-    
-  
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
     
   
     
       
+    
+  
+    
+      
+    
+  
     
   
     
@@ -75,18 +83,6 @@
       	
       	<li><a href="/categories.html">Categories</a></li>
       	
-      
-    
-  
-    
-      
-      	
-      	<li><a href="/about.html">About</a></li>
-      	
-      
-    
-  
-    
       
     
   
@@ -108,8 +104,12 @@
   
     
       
+    
+  
+    
+      
       	
-      	<li><a href="/tags.html">Tags</a></li>
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -187,6 +187,22 @@
 
 
 <div class="wrapper">
+    <h2 class="h2 entry-title"><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h2>
+    
+      这仅仅是一个Cassandra CLI使用方法的清单。 Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于/usr/bin/cassandra-cli，如果是试用包安装，或者是$CASSANDRA_HOME/bin/cassandra-cli，如果使用二进制文件安装。 Starting the CLI 使用cassandra-cli -host -port 命令启动 Cassandra CLI，他将会连接cassandra.yaml文件中定义的集群名称，默认为“Test Cluster”。 如果你有一个但节点的集群，则使用以下命令： $ cassandra-cli -host localhost -port 9160 如果想连接多节点集群中的一个节点，可以使用以下命令: $ cassandra-cli -host 110.123.4.5 -port 9160 或者，可以直接执行以下命令： $ cassandra-cli 登录成功之后，可以看到： Welcome to cassandra CLI. Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit. 你必须指定连接一个节点：...
+    
+
+      <div class="status">
+        <div class="col-md-6 date visible-lg visible-md">
+          <span class="glyphicon glyphicon-time"></span> 2012-04-09 00:00
+          <span class="glyphicon glyphicon-comment"></span><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli#comments"> Comments</a>
+        </div>
+        
+        <div class="clearfix"></div>
+      </div>
+</div>
+
+<div class="wrapper">
     <h2 class="h2 entry-title"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
     
       本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra. 检查java环境 Cassandra由java编写,需要运行中jvm虚拟机之上.如果用于生产环境,则需要jre 1.6.0-19或更高版本. 1.检查是否安装java: java -version 如果你没有安装java,可以参考网上相关文章.这里主要记录在RHEL系统上安装jdk的方法. 2.安装jdk 下载Oracle JRE 1）修改执行权限: $ cd /tmp $ chmod a+x jre-6u25-linux-x64-rpm.bin 2）解压执行RPM文件,例如: $ sudo ./jre-6u25-linux-x64-rpm.bin 这样JRE会安装在/usr/java/ 3）配置Oracle JRE取代OpenJDK JRE 可以使用alternatives命令添加一个链接到Oracle JRE. $ sudo alternatives --install /usr/bin/java java /usr/java/jre1.6.0_25/bin/java 20000 4）确认是否安装JRE $ java -version java version &quot;1.6.0_25&quot; Java(TM) SE Runtime Environment...
@@ -244,22 +260,6 @@
         <div class="col-md-6 date visible-lg visible-md">
           <span class="glyphicon glyphicon-time"></span> 2012-02-23 00:00
           <span class="glyphicon glyphicon-comment"></span><a href="/java/2012/02/23/the-process-of-seam-initiation#comments"> Comments</a>
-        </div>
-        
-        <div class="clearfix"></div>
-      </div>
-</div>
-
-<div class="wrapper">
-    <h2 class="h2 entry-title"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h2>
-    
-      本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。 之前用英文写了一篇文章《The execution process of kettle’s job》 ，这篇文章只是用于英语写技术博客的一个尝试。由于很久没有使用英语写作了，故那篇文章只是简单的通过UML的序列图描述kettle运行job的一个java类调用过程。将上篇文章的序列图和这篇文章联系起来，会更加容易理解本文。 在Spoon界面点击运行按钮，Spoon GUI会调用Spoon.runFile()方法，这可以从xul文件（ui/menubar.xul）中的描述看出来。关于kettle中的xul的使用，不是本文重点故不在此说明。 public void runFile() { executeFile(true, false, false, false, false, null, false); } public void executeFile(boolean local, boolean remote, boolean cluster, boolean preview, boolean debug, Date replayDate, boolean safe) { TransMeta transMeta = getActiveTransformation(); if (transMeta != null) executeTransformation(transMeta, local, remote,...
-    
-
-      <div class="status">
-        <div class="col-md-6 date visible-lg visible-md">
-          <span class="glyphicon glyphicon-time"></span> 2012-02-22 00:00
-          <span class="glyphicon glyphicon-comment"></span><a href="/kettle/2012/02/22/the-init-process-before-job-execution#comments"> Comments</a>
         </div>
         
         <div class="clearfix"></div>
@@ -350,6 +350,10 @@
     	<li><a href="/categories.html#saltstack-ref">
     		saltstack <span>3</span>
     	</a></li>
+     
+    	<li><a href="/categories.html#git-ref">
+    		git <span>1</span>
+    	</a></li>
     
   
 
@@ -363,6 +367,8 @@
        <h2>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -381,8 +387,6 @@
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

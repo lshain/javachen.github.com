@@ -7,7 +7,7 @@ keywords: hadoop, cdh, cloudera manager, hive
 description: 主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
 ---
 
-本文主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
+本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。CDH版本cdh4.2.0，该篇文章也可以使用于其他版本的CDH。
 
 # 安装hive
 hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。
@@ -21,7 +21,7 @@ hive安装在desktop1上，注意hive默认是使用derby数据库保存元数�
 这里创建数据库metastore并创建hiveuser用户，其密码为redhat。
 
 ```
-	bash# sudo –u postgres psql
+	bash# sudo -u postgres psql
 	bash$ psql
 	postgres=# CREATE USER hiveuser WITH PASSWORD 'redhat';
 	postgres=# CREATE DATABASE metastore owner=hiveuser;
@@ -157,38 +157,50 @@ hive-site.xml文件内容如下：
 # 异常说明
 * 异常1：
 
-	FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
+```
+FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
+```
 
 原因：hadoop配置文件没有zk
 
 * 异常2
 
-	FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query "SELECT "THIS"."TBL_NAME" AS NUCORDER0 FROM "TBLS" "THIS" LEFT OUTER JOIN "DBS" "THIS_DATABASE_NAME" ON "THIS"."DB_ID" = "THIS_DATABASE_NAME"."DB_ID" WHERE "THIS_DATABASE_NAME"."NAME" = ? AND (LOWER("THIS"."TBL_NAME") LIKE ? ESCAPE '\\' ) ORDER BY NUCORDER0 " : ERROR: invalid escape string 建议：Escape string must be empty or one character..
+```
+FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query "SELECT "THIS"."TBL_NAME" AS NUCORDER0 FROM "TBLS" "THIS" LEFT OUTER JOIN "DBS" "THIS_DATABASE_NAME" ON "THIS"."DB_ID" = "THIS_DATABASE_NAME"."DB_ID" WHERE "THIS_DATABASE_NAME"."NAME" = ? AND (LOWER("THIS"."TBL_NAME") LIKE ? ESCAPE '\\' ) ORDER BY NUCORDER0 " : ERROR: invalid escape string 建议：Escape string must be empty or one character..
+```
 
 参考：https://issues.apache.org/jira/browse/HIVE-3994
 
 * 异常3，以下语句没反应
+
 ```	
-	select count(*) from hive_userinfo
+select count(*) from hive_userinfo
 ```
 * 异常4
 
-	zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)
+```
+zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)
+```
 
 原因：hive中没有设置zk
 
 * 异常5
 
-	hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+```
+hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+```
 
 原因：cloudera hadoop lib中没有hadoop的native jar
 
 * 异常6
-	
-	Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
+
+```	
+Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
+```
 
 原因：classpath没有配置正确，检查环境变量以及yarn的classpath
 
 # 参考文章
+
 * [Hive安装与配置](http://kicklinux.com/hive-deploy/)
 * [Hive Installation](https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation)
