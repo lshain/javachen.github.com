@@ -21,6 +21,7 @@ http://blog.javachen.com/page10/index.html
 http://blog.javachen.com/page11/index.html
 http://blog.javachen.com/page12/index.html
 
+http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy
 http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands
 http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack
 http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack

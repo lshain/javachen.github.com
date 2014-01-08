@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -177,14 +163,13 @@
         
 <div class="row">
 
-  <div class="col-md-9">
-    <div class="page-header">
-      <h2>
-        SaltStack学习笔记[未完成] 
-        
-      </h2>
-    </div>
-    <h1>1. 关于本文档</h1>
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1>SaltStack学习笔记[未完成] </h1>
+      </header>
+	<div class="entry-content">
+	<h1>1. 关于本文档</h1>
 
 <p>这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。</p>
 
@@ -785,12 +770,8 @@ salt.states.cmd.run(name, onlyif=None, unless=None, cwd=None, user=None, group=N
 <li>[1]<a href="http://zhoulg.blog.51cto.com/48455/1140178">Saltstack服务器集中管理和并行下发命令工具</a></li>
 </ul>
 
-    <br/>
-    <div class="copyright">
-	<p><strong>本文固定链接：</strong><a href='/saltstack/2013/11/18/study-note-of-saltstack'>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</a></p>
-	<p><strong>原创文章，转载请注明出处：</strong><a href='/saltstack/2013/11/18/study-note-of-saltstack'>JavaChen Blog</a></p>
-    </div>
-
+	</div>
+    </article>
     <hr>
     <div class="row status">
       <div class="col-md-6">
@@ -838,72 +819,13 @@ salt.states.cmd.run(name, onlyif=None, unless=None, cwd=None, user=None, group=N
 
   </div>
 
-  <div class="col-md-3 visible-lg visible-md">
-    <section>
-      <h4><i class="icon-home icon-large"></i>Published</h4>
-      <ul>
-        <li>2013-11-18 00:00</li>
-      </ul>
-    </section>
-    
-    <section>
-      <h4><i class="icon-home icon-large"></i>Categories</h4>
-      <ul>
-        
-        
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
-    	</a></li>
-    
-  
-
-
-
-      </ul>
-    </section>
-    
-    
-    <section>
-      <h4><i class="icon-home icon-large"></i>Tags</h4>
-      <ul class="tag_box">
-        
-        
-
-
-  
-     
-    	<li><a href="/tags.html#saltstack-ref">saltstack <span>3</span></a></li>
-    
-  
-
-
-
-      </ul>
-    </section>
-    
-
-          <section>
-        <h2><i class="icon-home icon-large"></i>License</h2>
-        <ul>
-          <li>
-            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
-          </li>
-        </ul>
-      </section>
-
-  </div>
-
 </div>
 
 
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -912,10 +834,10 @@ salt.states.cmd.run(name, onlyif=None, unless=None, cwd=None, user=None, group=N
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

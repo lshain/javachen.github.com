@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -178,86 +164,612 @@
 <div class="row">
 
   <div class="col-md-9">
-    <div class="page-header-wrapper">
-      <div class="page-header">
+    <article class="page-header-wrapper">
+      <header class="page-header">
         <h2>  <small>Life is short,we need running.</small></h2>
-      </div>
-    </div>
-    
+      </header>
+	
 
 
 <article>
-    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h2>
+    <h1><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h1>
     
-      首先需要说明的是，Pentaho BI Server源代码在svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。
+      <p>最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
+获取弹出窗口url后的参数方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 获取url后的参数值
+function getQueryStringValue(name) {
+    var url = window.location.search;
+    if (url.indexOf(&#39;?&#39;) &lt; 0) {
+        return null
+    }
+    var index = url.indexOf(name + &quot;=&quot;);
+    if (index &lt; 0) {
+        return null
+    }
+    var args = url.indexOf(&#39;&amp;&#39;, index);
+    var value;
+    if (args &gt; 0) {
+        value = url.substring(index + name.length + 1, args);
+    } else {
+        value = url.substring(index + name.length + 1, url.length);
+    }
+    return value;
+}
+// 获取xml的服务器路径
+function getXmlUrl(xmlFile) {
+    return &#39;../bjsasc_dictionary/&#39; + getQueryStringValue(&#39;xmlFile&#39;);
+}
+</code></pre></div>
+<p>用到的一些辅助方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 去掉Dom节点中的空白字符
+function cleanWhitespaces(elem) {
+    var elem = elem || document;
+    var childElem = elem.childNodes;
+    var childElemArray = new Array;
+    for (var i = 0; i &lt; childElem.length; i++) {
+        if (childElem[i].nodeType == 1) {
+            childElemArray.push(childElem[i]);
+        }
+    }
+    return childElemArray;
+}
+// 取得父窗口表单中键值对
+function getParentFormValues() {
+    var formObj = window.opener.document.forms[&quot;frmMain&quot;].elements;
+    var formValues = &quot;&quot;;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            formValues += &#39;_&#39; + formObj.elements[i].name.toUpperCase() + &#39;{&#39;
+                    + formObj.elements[i].value.toUpperCase() + &#39;}&#39;
+                    + formObj.elements[i].name.toUpperCase() + &#39;_ &#39;;
+        }
+    }
+    formValues += opener.getBindValue(formObj.elements);
+    return formValues;
+}
+// 取得过滤条件表单的键值对
+function getCondictionValues() {
+    var condictionString = &quot;&quot;;
+    var formObj = form.getForm().getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            condictionString += &#39;_&#39; + formObj.elements[i].name + &#39;{&#39;
+                    + formObj.elements[i].value + &#39;}&#39;
+                    + formObj.elements[i].name + &#39;_ &#39;;
+        }
+    }
+    // alert(&quot;condictionString&quot;+condictionString);
+    return condictionString;
+}
+// 判读Ext表单是否有输入
+function isFormInputed(ExtForm) {
+    var flag = false;
+    var formObj = ExtForm.getEl().dom;
+    for (var i = 0; i &lt; formObj.elements.length; i++) {
+        if (formObj.elements[i].value != null
+                &amp;&amp; formObj.elements[i].value != &quot;&quot;
+                &amp;&amp; formObj.elements[i].value.length != 0) {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
+}
+// 将计算得到的结果四舍五入
+/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */
+function ForDight(Dight, How) {
+    var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
+    return Dight;
+}
+</code></pre></div>
+<p>xml文件格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; ?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;
+&lt; dictionary&gt;
+    &lt;title&gt;领用出库-物资选择&lt;/title&gt;
+    &lt;sql&gt;
+    select V_stores_list.* 
+    from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
+        AND CANUSEQTY&gt;0 AND ??? and isblock=0
+    &lt;/sql&gt;
+    &lt;fromtable&gt;V_stores_list&lt;/fromtable&gt;
+    &lt;targettable&gt;BO_IC_EXPORT_S&lt;/targettable&gt;
+    &lt;line&gt;20&lt;/line&gt;
+    &lt;!-- 条件区开始--&gt;
+    &lt;condition&gt;
+        &lt;fieldname&gt;MTRNAME&lt;/fieldname&gt;
+        &lt;fieldtitle&gt;物资名称&lt;/fieldtitle&gt;
+        &lt;fieldtype&gt;文本&lt;/fieldtype&gt;
+        &lt;comparetype&gt;&lt; ![CDATA[like
+        MTRNAME
+        单行
+        &lt; ![CDATA[]]&gt;       
+        &lt;/comparetype&gt;
+    &lt;/ condition&gt;
+&lt;/ dictionary&gt;
+</code></pre></div>
+<p>然后，弹出窗口页面Ext入口代码：
+    // 全局变量
+    var result = {};
+    var grid;
+    var form;
+    var viewport;
+    var store;
+    var sm = new Ext.grid.CheckboxSelectionModel();
+    var autoStore;
+    var tempItems1 = [];
+    var tempItems2 = [];
+    var tempItems3 = [];
+    var flag = 1;
+    // 程序入口
+    Ext.onReady(function() {
+        Ext.QuickTips.init();// 初始化
+        Ext.form.Field.prototype.msgTarget = &#39;qtip&#39;;// 统一指定错误信息提示方式
+        Ext.util.CSS    .swapStyleSheet(&#39;theme&#39;, &#39;../aws<u>js/extjs2/css/xtheme-gray.css&#39;);// 更换皮肤
+        Ext.BLANK</u>IMAGE<u>URL = &#39;../aws</u>js/extjs2/images/default/s.gif&#39;;
+        Ext.Ajax.request({
+            url : getXmlUrl(getQueryStringValue(&#39;xmlFile&#39;)), // 访问数据字典
+            method : &#39;post&#39;,
+            success : function(res, opt) {
+                var xmlObj = res.responseXML;
+                initStoreData(xmlObj); // 访问成功后执行后续工作
+            }
+        })
+    });
+    function initStoreData(xmlObj) {
+        getInitData(xmlObj);
+        document.title = result.winTitle;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    var dataRecorder = Ext.data.Record.create(result.gridRecords);// 指定记录集格式
+    // 获取表格数据部分
+    store = new Ext.data.Store({
+        idProperty : &#39;ID&#39;,
+        proxy : new Ext.data.HttpProxy({
+            url : &#39;../search.do?method=findAll&#39;,
+            failure : function() {
+                // Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);
+            },
+            success : function(response) {
+                // Ext.Msg.alert(&quot;Notice&quot;, response.responseText);
+            }
+        }),
 
-当然，您可以参考官方文档构建源码。
+        // baseParams : {
+        // parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名
+        // xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+        // // cmd:&#39;search&#39;
+        // },
+        reader : new Ext.data.JsonReader({
+            totalProperty : &#39;totalCount&#39;,
+            root : &#39;data&#39;
+        }, dataRecorder)
+    });
+    // 要分页，第一次加载数据必须传start和limit两参数
+    // store.load({
+    // params : {
+    // start : 0,
+    // limit : result.limit
+    // }
+    // });
+    initViewport();
+}
+// 获得界面初始化的一些数据
+function getInitData(xmlObj) {
+    // result.formItems = {};
+    result.columnHeaders = [];
+    result.gridRecords = [];
+    result.dbFilterRecords = [];
+    result.winTitle = xmlObj.getElementsByTagName(&quot;title&quot;)[0].firstChild.nodeValue; // 窗口title名称
+    result.limit = xmlObj.getElementsByTagName(&quot;line&quot;)[0].firstChild.nodeValue;// 分页数据
+    result.fromTable = xmlObj.getElementsByTagName(&quot;fromTable&quot;)[0].firstChild.nodeValue;// 来自哪个表
+    // 获取过滤条件表单的界面数据
+    var conections = xmlObj.getElementsByTagName(&quot;condition&quot;);
+    var row = ForDight(conections.length / 3, 0);
+    for (var i = 0; i &lt; conections.length; i++) {
+        var item = {};
+        var condition = cleanWhitespaces(conections[i]);
+        item.id = condition[0].firstChild.nodeValue;
+        item.fieldLabel = condition[1].firstChild.nodeValue;
+        item.name = condition[4].firstChild.nodeValue;
+        item.anchor = &#39;95%&#39;;
+        if (condition[6].firstChild.nodeValue == &#39;单行&#39;) {
+            item.xtype = &#39;textfield&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;日期&#39;) {
+            item.xtype = &#39;datefield&#39;;
+            item.format = &#39;Y-m-d&#39;;
+        } else if (condition[6].firstChild.nodeValue == &#39;数值&#39;) {
+            item.xtype = &#39;numberfield&#39;;
+            item.minValue = 0;
+            item.minText = &#39;请输入有效的数字&#39;;
+            item.decimalPrecision = 6;
+        } else if (condition[6].firstChild.nodeValue == &#39;自动填充&#39;) {
+            var autoStore = new Ext.data.SimpleStore({
+                proxy : new Ext.data.HttpProxy({// 读取远程数据的代理
+                    url : &#39;../ajax/autoComplete.do?method=autoComplete&#39;,
+                    failure : function() {
+                        Ext.Msg.alert(&quot;Notice&quot;, &quot;no records&quot;);
+                    }
+                }),
+                fields : [&#39;property&#39;],
+                baseParams : {
+                    &#39;sqlString&#39; : condition[4].firstChild.nodeValue + &#39; | &#39;
+                            + result.fromTable
+                }
+            });
+            item.xtype = &#39;combo&#39;;
+            item.store = autoStore;
+            item.displayField = &#39;property&#39;;
+            item.typeAhead = true;
+            item.allQuery = &#39;all&#39;;// 查询信息的查询字符串
+            item.queryParam = &#39;keyword&#39;;// 查询的名字
+            item.mode = &#39;remote&#39;;
+            item.minChars = 3;// 默认最少输入4
+            item.forceSelection = true;
+            item.queryDelay = 0;// 查询延迟时间
+            item.triggerAction = &#39;all&#39;;
+            item.emptyText = &#39;&#39;;
+            item.resizable = true;
+            item.selectOnFocus = true;
+        }
+        if (i / row &lt; 1) {
+            tempItems1.push(item);
+        }
+        if (i / row &lt; 2 &amp;&amp; i / row &gt;= 1) {
+            tempItems2.push(item);
+        } else if (i / row &gt;= 2) {
+            tempItems3.push(item);
+        }
+    }
+    // alert(Ext.util.JSON.encode(result));
 
-Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。
+    // 获取表格表头的界面数据和rcord记录的数据格式
+    var fields = xmlObj.getElementsByTagName(&quot;field&quot;);
+    result.columnHeaders.push(sm);// 插入多选框
+    result.columnHeaders.push(new Ext.grid.RowNumberer({
+        width : 20
+    }));// 插入行号
+    for (var i = 0; i &lt; fields.length; i++) {
+        var item = {};
+        var record = {};
+        var array = [];
+        var field = cleanWhitespaces(fields[i]);
+        var renderDate = function(value) {
+            return value ? value.dateFormat(&#39;Y-m-d&#39;) : &#39;&#39;;
+        }
+        // 生成grid表格中store数据记录
+        record.name = field[0].firstChild.nodeValue;
+        record.mapping = field[0].firstChild.nodeValue;
+        if (field[1].firstChild.nodeValue == &#39;日期&#39;) {
+            record.type = &#39;date&#39;;
+            record.dateFormat = &#39;Y-m-d&#39;;
+            item.renderer = Ext.util.Format.dateRenderer(&#39;Y-m-d&#39;)
+        } else if (field[1].firstChild.nodeValue == &#39;数值&#39;) {
+            record.type = &#39;auto&#39;;
+        } else {
+            record.type = &#39;string&#39;;
+        }
+        result.gridRecords.push(record);
 
-将biserver-ce-3.9.0-stable.zip解压之后执行biserver-ce/start-pentaho.bat（或是再linux环境下：biserver-ce/start-pentaho.sh），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？
+        // 生成grid表格表头数据记录
+        item.dataIndex = field[0].firstChild.nodeValue;
+        item.header = field[2].firstChild.nodeValue;
+        // item.width=field[3].firstChild.nodeValue;
+        item.sortable = true;
+        if (field.length == 7
+                &amp;&amp; field[5].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            item.hidden = true;
+            // item.hideable=false;
+        }
+        if (field.length == 6) {
+            item.hidden = false;
+        }
+        result.columnHeaders.push(item);
 
-以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。
+        // 生成模糊过滤store的记录
+        if (field[4].firstChild.nodeValue.toUpperCase() == &#39;TRUE&#39;) {
+            array.push(field[2].firstChild.nodeValue);// fieldName
+            array.push(field[0].firstChild.nodeValue);// fieldValue
+        }
+        result.dbFilterRecords.push(array);
+    }
+    return result;
+};
+</code></pre></div>
+<p>渲染Ext界面代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function initViewport() {
+    if (!form) {
+        form = getInsertForm();
+    }
 
-在eclipse中创建一个web项目，名称为pentaho，然后将biserver-ce/tomcat/webapps下的pentaho-style和sw-style拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改WEB-INF/web.xml文件你的以下配置，用于指定pentaho-solutions的路径：
-&lt; context-param &gt;
+    if (!grid) {
+        grid = getInsertGrid();
+    }
+
+    if (!viewport) {
+        var formPanel = new Ext.Panel({
+            title : &#39;查询条件&#39;,
+            region : &#39;north&#39;,
+            split : true,
+            frame : true,
+            border : true,
+            layout : &#39;fit&#39;,
+            height : 280,
+            collapsible : true,
+            items : [form]
+
+        });
+        viewport = new Ext.Viewport({
+            layout : &#39;border&#39;,
+            modal : true,// 是否为模式窗口
+            border : false,
+            items : [formPanel, grid]
+        });
+    }
+}
+
+function searchByFilter() {
+    var dbfilter = Ext.get(&quot;dbFilter&quot;).getValue();
+    var fieldMame = Ext.get(&quot;search-type&quot;).getValue();
+    if (dbfilter == null || dbfilter == &quot;&quot;) {
+        alert(&quot;请输入一个关键字&quot;);
+        Ext.get(&quot;dbFilter&quot;).focus();
+    } else if (fieldMame == &quot;==选择过滤字段==&quot;) {
+        alert(&quot;请选择一个过滤字段&quot;);
+        Ext.get(&quot;search-type&quot;).focus();
+    } else {
+        form.getForm().reset();
+        if (flag == 1) {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.load({
+                params : {
+                    start : 0,
+                    limit : result.limit
+                }
+            });
+            form.getForm().reset();
+            flag = 0;
+        } else {
+            store.baseParams = {
+                dbfilter : dbfilter,
+                parentFormValues : getParentFormValues(),
+                fieldMame : Ext.get(&quot;hiddenValue&quot;).dom.value,
+                xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                cmd : &#39;filter&#39;
+            };
+            store.reload();
+
+        }
+        Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+    }
+}
+// 获取过滤条件部分的表单控件
+function getInsertForm() {
+    form = new Ext.form.FormPanel({
+        name : &#39;frmMain&#39;,
+        height : 260,
+        labelAlign : &#39;left&#39;,
+        labelWidth : 110,
+        layout : &#39;fit&#39;,
+        waitMsgTarget : true,
+        items : [{
+            xtype : &#39;fieldset&#39;,
+            frame : true,
+            title : &#39;高级查询&#39;,
+            autoHeight : true,
+            layout : &#39;column&#39;,
+            items : [{
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems1
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems2
+            }, {
+                columnWidth : .333,
+                layout : &#39;form&#39;,
+                items : tempItems3
+            }]
+        }],
+        tbar : [&#39;请输入模糊值: &#39;, &#39; &#39;, {
+            xtype : &#39;textfield&#39;,
+            width : 200,
+            id : &#39;dbFilter&#39;,
+            listeners : {
+                specialkey : function(field, e) {
+                    if (e.getKey() == Ext.EventObject.ENTER) {
+                        searchByFilter();
+                    }
+                }
+            }
+        }, &#39;-&#39;, {
+            xtype : &#39;combo&#39;,
+            id : &#39;search-type&#39;,
+            anchor : &#39;60%&#39;,
+            hiddenName : &#39;hiddenValue&#39;,
+            width : 120,
+            triggerAction : &#39;all&#39;,// 单击触发按钮显示全部数据
+            store : new Ext.data.SimpleStore({// 定义组合框中显示的数据源
+                fields : [&#39;fieldName&#39;, &#39;fieldValue&#39;],
+                data : result.dbFilterRecords
+            }),// 设置数据源
+            displayField : &#39;fieldName&#39;,// 定义要显示的字段
+            valueField : &#39;fieldValue&#39;,// 定义值字段
+            mode : &#39;local&#39;,// 本地模式
+            forceSelection : true,// 要求输入值必须在列表中存在
+            typeAhead : true,// 允许自动选择匹配的剩余部分文本
+            // value : &#39;==选择过滤字段==&#39;,
+            value : &#39;==选择过滤字段==&#39;,
+            handleHeight : 10
+                // 下拉列表中拖动手柄的高度
+                }, &#39;-&#39;, {
+                    xtype : &#39;button&#39;,
+                    text : &#39;筛选&#39;,
+                    tooltip : &#39;先选择查询条件，再输入模糊值&#39;,
+                    iconCls : &#39;find&#39;,
+                    handler : searchByFilter
+                }, &#39;-&gt;&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;确认插入&#39;,
+                    enableToggle : true,
+                    tooltip : &#39;请选中一行或多行记录，再选择确认插入&#39;,
+                    handler : function() {
+                        if (sm.hasSelection()) {
+                            var records = sm.getSelections();
+                            var jsonObj = &quot;{data:[&quot;;
+                            for (var i = 0; i &lt; records.length; i++) {
+                                jsonObj += Ext.encode(records[i].data);
+                                if (i != records.length - 1) {
+                                    jsonObj += &quot;,&quot;;
+                                }
+                            }
+                            jsonObj += &quot;]}&quot;
+                            Ext.Ajax.request({
+                                url : &#39;../search.do?method=insertChoices&#39;,
+                                method : &#39;post&#39;,
+                                params : {
+                                    xmlFile : getQueryStringValue(&#39;xmlFile&#39;)
+                                            .toString(),
+                                    jsonObj : jsonObj,
+                                    parentFormValues : getParentFormValues()
+                                },
+                                callback : function(options, success, response) {
+                                    if (response.responseText == &quot;success&quot;) {
+
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入成功&quot;, function() {
+                                            window.close();
+                                            // opener.location.reload();
+                                        opener.saveForm();
+                                        });
+                                    } else {
+                                        Ext.Msg.alert(&quot;提示&quot;, &quot;插入失败&quot;);
+                                    }
+                                }
+                            })
+
+                        } else {
+                            alert(&quot;请选择一行或多行数据&quot;);
+                        }
+                    },
+                    scope : this
+                }, &#39;-&#39;, {
+                    pressed : true,
+                    xtype : &#39;button&#39;,
+                    text : &#39;取消&#39;,
+                    tooltip : &#39;取消选择，直接退出&#39;,
+                    handler : function() {
+                        Ext.Msg.confirm(&#39;Notice&#39;, &#39;确认退出？&#39;, function(id) {
+                            if (id == &quot;yes&quot;)
+                                window.close();
+                        });
+                    },
+                    scope : this
+                }],
+        buttons : [{
+            text : &#39;执行查询条件&#39;,
+            handler : function() {
+                var connections = getCondictionValues();
+                if (!form.getForm().isValid()) {
+                    return;
+                };
+                if (isFormInputed(form.getForm()) == false) {
+                    alert(&quot;请输入查询条件&quot;);
+                    form.getForm().focus();
+                    return;
+                } else {
+                    Ext.get(&quot;dbFilter&quot;).dom.value = &quot;&quot;;
+                    if (flag == 1) {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.load({
+                            params : {
+                                start : 0,
+                                limit : result.limit
+                            }
+                        });
+                        form.getForm().reset();
+                        flag = 0;
+                    } else {
+                        store.baseParams = {
+                            xmlFile : getQueryStringValue(&#39;xmlFile&#39;),
+                            condictions : connections,
+                            parentFormValues : getParentFormValues(),
+                            cmd : &#39;search&#39;
+                        };
+                        store.reload();
+                    }
+
+                    form.getForm().reset();
+                }
+            }
+        }, {
+            text : &#39;重置&#39;,
+            handler : function() {
+                form.getForm().reset();
+            }
+        }]
+    });
+    return form;
+}
+</code></pre></div>
+    
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h1>
+    
+      <p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
+
+<p>当然，您可以参考<a href="http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse" target="_blank">官方文档</a>构建源码。</p>
+
+<p>Pentaho BI Server打包后的文件存于<a href="http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/" target="_blank">这里</a>，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。</p>
+
+<p>将biserver-ce-3.9.0-stable.zip解压之后执行<em>biserver-ce/start-pentaho.bat</em>（或是再linux环境下：<em>biserver-ce/start-pentaho.sh</em>），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？</p>
+
+<p><strong>以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。</strong></p>
+
+<p>在eclipse中创建一个web项目，名称为pentaho，然后将<em>biserver-ce/tomcat/webapps</em>下的<code>pentaho-style</code>和<code>sw-style</code>拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改<code>WEB-INF/web.xml</code>文件你的以下配置，用于指定pentaho-solutions的路径：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; context-param &gt;
     &lt; param-name &gt;solution-path&lt; /param-name&gt;
     &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
 &lt; /context-param &gt;
+</code></pre></div>
+<p>现在即可部署项目，运行<code>biserver-ce/data/start_hypersonic.bat</code>（用于启动数据库），然后启动tomcat，就可以通过<em>http://localhost:8080/pentaho</em>访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（<em>\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib</em>）。<br />
+现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。</p>
 
-现在即可部署项目，运行biserver-ce/data/start_hypersonic.bat（用于启动数据库），然后启动tomcat，就可以通过http://localhost:8080/pentaho访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib）。
-现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。
+<p><strong>接下来，构建源代码。</strong>
+在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。</p>
 
-接下来，构建源代码。
-在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。
-
-需要注意的是：
-1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件
-2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。
+<p><strong><font color="red">需要注意的是：</font></strong>
+1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件<br />
+2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。<br />
 3.
 * biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
 * biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
 * biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
 * biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
-* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。</p>
 
-4.biserver-ce-3.9.0-stable.zip的lib（biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误
-
-    
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h2 class="h2 entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
-    
-      很久没写文章了，最近在关注Pentaho。
- 以下是9月16日现场提出的问题解决办法：
-      1、PDF预览中文没显示，txt预览中文乱码：
-           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H
-           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体
-           3）、如要发布到服务器，需要修改如下的配置：
-             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：
-             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H
-     2、实现文件拷贝方式发布报表
-           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了
-     3、报表链接参数传递问题
-          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决
-     4、查询参数缺省值问题
-          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。
-     5、实现在pie chart上显示文字
-          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。
-     6、报表集成时候垂直滚动条是否可以去掉
-          改变报表的高度：报表设计器 file-page setup
-     7、报表中的chart不能导出到Excel2007
-          目前为系统bug，excel2003能够正常导出
-     8、实现隔行换色
-          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"
-     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数
+<p>4.biserver-ce-3.9.0-stable.zip的lib（<code>biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib</code>）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误</p>
 
     
 
@@ -269,16 +781,31 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h2>
+    <h1><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h1>
     
-      
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章Installing Eucalyptus (2.0) on Fedora 12，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.
-
-毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。
-
-如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。
-
-
+      <p>很久没写文章了，最近在关注Pentaho。<br />
+ 以下是9月16日现场提出的问题解决办法：<br />
+      1、PDF预览中文没显示，txt预览中文乱码：<br />
+           1）、设置File->Configuration ->output-pageable-pdf的encoding 为Identity-H<br />
+           2）、将需要输出中文的报表项目的字体设置为中文字体，例如宋体<br />
+           3）、如要发布到服务器，需要修改如下的配置：<br />
+             pentaho/server/biserver-ee/tomcat/webapps/pentaho/WEB-INF/classes/classic-engine.properties：<br />
+             org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.Encoding=Identity-H<br />
+     2、实现文件拷贝方式发布报表<br />
+           可以通过文件方式发布，只要将报表的prpt文件拷贝到Solution的目录（Pentaho安装路径的server\biserver-ee\pentaho-solutions）下就可以了<br />
+     3、报表链接参数传递问题<br />
+          由于参数带中文造成的，可以对参数的值URLENCODE("value"; "utf-8")来解决<br />
+     4、查询参数缺省值问题<br />
+          关于日期的默认值。可以使用报表系统提供的日期变量设置，如TODAY，DATE，YEAR。。。<br />
+     5、实现在pie chart上显示文字<br />
+          以把label默认显示的百分比改为文字：label-formate = {0}， 但是label显示百分比，同时在pie图的划分区域显示文字是不能的。<br />
+     6、报表集成时候垂直滚动条是否可以去掉<br />
+          改变报表的高度：报表设计器 file-page setup<br />
+     7、报表中的chart不能导出到Excel2007<br />
+          目前为系统bug，excel2003能够正常导出<br />
+     8、实现隔行换色<br />
+          选中Details中的field再attribute面板上设置name的名称（如“row-band”），然后通过Format-->Row-Banding，可以设置Visible Color 、Inisible Color，再Element中输入"row-band"<br />
+     9、显示top N  ：托一个message field，在里面输入表达式，如，$（topn）,topn为传入的参数</p>
 
     
 
@@ -290,9 +817,17 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h2>
+    <h1><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h1>
     
-      将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《Grid-to-Excel, Grid-to-PDF Available for Java》，你可以从以下地址下载导出程序源码： Export to Excel Export to PDF 当然，还有一个示例工程： .zip archive with an example XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。 需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。 将上面三个工程导入到一个工程然后打开sample.html页面，效果如下： 点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance (); DocumentBuilder db = dbf.newDocumentBuilder(); Document dom = null; try { dom = db.parse(new InputSource(new StringReader(xml))); }catch(SAXException se) { se.printStackTrace(); }catch(IOException ioe) {...
+      <p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
+在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
+
+<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
+
+<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
+
+<p></p>
+
     
 
       <div class="status">
@@ -303,9 +838,183 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/javascript/2011/07/31/custom-dhtmlxgrid-header-menu">自定义dhtmlxGrid表头菜单</a></h2>
+    <h1><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h1>
     
-      dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。 以下是dhtmlxGrid的表头菜单效果： 其功能过于单一，以下是表格右键菜单效果： 如果能够像表格菜单一样自定义表头菜单，那会是一件非常有意义的事情，因为dhtmlxGrid菜单都是一些针对行和单元格的操作，没有提过针对列的操作，比如我可能需要在某一列上实现该列的显示与隐藏、排序、改变列属性以及在该列右边添加一新的列，等等。 如何实现表头菜单的自定义呢？可不可将表格右键菜单移到表头上去呢？&lt;!--more--&gt; 首先，来看看context menu的实现方式，下面代码来自dhtmlxGrid Samples中的Context menu例子源码： function onButtonClick(menuitemId, type) { var data = mygrid.contextID.split(&quot;_&quot;); //rowId_colInd; mygrid.setRowTextStyle(data[0], &quot;color:&quot; + menuitemId.split(&quot;_&quot;)[1]); return true; } menu = new dhtmlXMenuObject(); menu.setIconsPath(&quot;../common/images/&quot;); menu.renderAsContextMenu(); menu.attachEvent(&quot;onClick&quot;, onButtonClick); menu.loadXML(&quot;../common/_context.xml&quot;); mygrid = new dhtmlXGridObject(&#39;gridbox&#39;); mygrid.setImagePath(&quot;../../codebase/imgs/&quot;); mygrid.setHeader(&quot;Author,Title&quot;); mygrid.setInitWidths(&quot;250,250&quot;); mygrid.enableAutoWidth(true); mygrid.setColAlign(&quot;left,left&quot;); mygrid.setColTypes(&quot;ro,link&quot;); mygrid.setColSorting(&quot;str,str&quot;); mygrid.enableContextMenu(menu); mygrid.init(); mygrid.setSkin(&quot;dhx_skyblue&quot;); mygrid.loadXML(&quot;../common/grid_links.xml&quot;); 上面代码创建了一个menu并将其作为context...
+      <p>将DhtmlxGrid数据导出到pdf这是很常见的需求，dhtmlx官网提供了php和java版本的例子，你可以去官网查看这篇文章《<a href="http://www.dhtmlx.com/blog/?p=855">Grid-to-Excel, Grid-to-PDF Available for Java</a>》，你可以从以下地址下载导出程序源码：
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2Excel.war">Export to Excel</a>
+<a href="http://www.dhtmlx.com/x/download/regular/export/XML2PDF.war">Export to PDF</a>
+当然，还有一个示例工程：<a href="http://www.dhtmlx.com/x/download/regular/export/javaexport_sample.zip"> .zip archive with an example</a></p>
+
+<p>XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar导出PDF，而XML2Excel使用JXL导出Excel。
+需要说明的是，还需要引入dhtmlxgrid_export.js文件，该文件是导出grid的js源码，主要用于将表格数据，包括表头、样式等，序列化为xml字符串，然后模拟一个Form表单提交数据。</p>
+
+<p>将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
+<div class="pic">
+<img src="/assets/images/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
+</div>
+点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
+<pre lang="java">
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document dom = null;
+try {
+     dom = db.parse(new InputSource(new StringReader(xml)));
+}catch(SAXException se) {
+     se.printStackTrace();
+}catch(IOException ioe) { 
+     ioe.printStackTrace();
+}
+root = dom.getDocumentElement();
+</pre></p>
+
+<p>上面的代码，DocumentBuilder解析xml字符串后dom对象内并没有数据。
+为了能够看到DhtmlxGrid导出pdf的效果，决定将上面的代码用dom4j改写，于是有了下面的代码：
+<pre lang="java">
+public class PDFXMLParser {
+    Element root;
+    PDFColumn[][] columns;
+    PDFRow[] rows;
+    double[] widths;
+    private Boolean header = false;
+    private Boolean footer = false;
+    private String profile = &quot;gray&quot;;
+    private double[] orientation = null;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void setXML(String xml) {
+    SAXReader saxReader = new SAXReader();
+
+    Document document = null;
+    try {
+        document = saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+    } catch (DocumentException e) {
+        e.printStackTrace();
+    }
+    root = document.getRootElement();
+
+    if ((root.attributeValue(&quot;header&quot;) != null)
+            &amp;amp;&amp;amp; (root.attributeValue(&quot;header&quot;).equalsIgnoreCase(&quot;true&quot;) == true)) {
+        header = true;
+    }
+    String footer_string = root.attributeValue(&quot;footer&quot;);
+    if ((footer_string != null)
+            &amp;amp;&amp;amp; (footer_string.equalsIgnoreCase(&quot;true&quot;) == true)) {
+        footer = true;
+    }
+    String profile_string = root.attributeValue(&quot;profile&quot;);
+    if (profile_string != null) {
+        profile = profile_string;
+    }
+
+    String orientation_string = root.attributeValue(&quot;orientation&quot;);
+    if (orientation_string != null) {
+        if (orientation_string.equalsIgnoreCase(&quot;landscape&quot;)) {
+            orientation = A4.LANDSCAPE;
+        } else {
+            orientation = A4.PORTRAIT;
+        }
+    } else {
+        orientation = Letter.PORTRAIT;
+    }
+}
+
+public PDFColumn[][] getColumnsInfo() {
+    PDFColumn[] colLine = null;
+    List n1 = root.element(&quot;head&quot;).elements(&quot;columns&quot;);
+    if ((n1 != null) &amp;amp;&amp;amp; (n1.size() &amp;gt; 0)) {
+        columns = new PDFColumn[n1.size()][];
+        for (int i = 0; i &amp;lt; n1.size(); i++) {
+            Element cols = (Element) n1.get(i);
+            List n2 = cols.elements(&quot;column&quot;);
+            if ((n2 != null) &amp;amp;&amp;amp; (n2.size() &amp;gt; 0)) {
+                colLine = new PDFColumn[n2.size()];
+                for (int j = 0; j &amp;lt; n2.size(); j++) {
+                    Element col_xml = (Element) n2.get(j);
+                    PDFColumn col = new PDFColumn();
+                    col.parse(col_xml);
+                    colLine[j] = col;
+                }
+            }
+            columns[i] = colLine;
+        }
+    }
+    createWidthsArray();
+    optimizeColumns();
+    return columns;
+}
+    public PDFRow[] getGridContent() {
+    List nodes = root.elements(&quot;row&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        rows = new PDFRow[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            rows[i] = new PDFRow();
+            rows[i].parse((Element) nodes.get(i));
+        }
+    }
+    return rows;
+
+}
+
+   *****
+</code></pre></div>
+<p>}
+</pre></p>
+
+<p>还需要修改PDFRow类的parse方法和PDFColumn的parse方法。
+<pre lang="java">
+public class PDFRow {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">private String[] cells;
+
+public void parse(Element parent) {
+    List nodes = ((Element) parent).elements(&quot;cell&quot;);
+    if ((nodes != null) &amp;amp;&amp;amp; (nodes.size() &amp;gt; 0)) {
+        cells = new String[nodes.size()];
+        for (int i = 0; i &amp;lt; nodes.size(); i++) {
+            cells[i] = ((Element) nodes.get(i)).getTextTrim();
+        }
+    }
+}
+
+public String[] getCells() {
+    return cells;
+}
+</code></pre></div>
+<p>}</p>
+
+<p>public class PDFColumn {</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void parse(Element parent) {
+    colName = parent.getText();
+    String width_string = parent.attributeValue(&quot;width&quot;);
+    if (width_string!=null&amp;&amp;width_string.length() &gt; 0) {
+        width = Integer.parseInt(width_string);
+    }
+    type = parent.attributeValue(&quot;type&quot;);
+    align = parent.attributeValue(&quot;align&quot;);
+    String colspan_string = parent.attributeValue(&quot;colspan&quot;);
+    if (colspan_string!=null&amp;&amp;colspan_string.length() &gt; 0) {
+        colspan = Integer.parseInt(colspan_string);
+    }
+    String rowspan_string = parent.attributeValue(&quot;rowspan&quot;);
+    if (rowspan_string!=null&amp;&amp;rowspan_string.length() &gt; 0) {
+        rowspan= Integer.parseInt(rowspan_string);
+    }
+}
+</code></pre></div>
+<p>}
+</pre></p>
+
+<p>这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
+<div class="pic">
+<img src="/assets/images/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
+</div></p>
+
+<h2>结论：</h2>
+
+<ul>
+<li>1.导出pdf和导出Excel代码差不多，这里不做说明。</li>
+<li>2.使用上面的工具，可以将dhtmlxgrid的数据导出到pdf，并且导出的pdf还保持了grid表格的样式（包括颜色、多表头、表头合并、复选框等等），这点很不错。</li>
+<li>3.导出的pdf为多页显示，每页有表头</li>
+<li>4.导出后的pdf页面可以直接打印，当然如果在代码上做点处理，可以直接将pdf保存为一个文件，让用户下载。</li>
+</ul>
+
     
 
       <div class="status">
@@ -331,92 +1040,24 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
   
 </div>
 
+    </article>
   </div>
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
    	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div>
+	<div class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
        </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Categories</h2>
-        <div class="tag_box">
-          <ul class="list-group list-group-flush">
-          
-          
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
-    		cloud <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
-    		hbase <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
-    		hive <span>5</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
-    		post <span>1</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
-    	</a></li>
-    
-  
-
-
- 
-          </ul>
-        </div>
-      </section>
-
-
-            <section>
        <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
            <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
@@ -438,6 +1079,16 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+           
+           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
+           
+           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
+           
          </ul>
        </div>
       </section>
@@ -446,7 +1097,7 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
             <section>
         <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
-          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+          <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>
       </section>
 
@@ -475,6 +1126,16 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
       
 
 
+            <section>
+        <h2><i class="icon-home icon-large"></i>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+
        <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};
       (function() {
@@ -494,7 +1155,7 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -503,10 +1164,10 @@ Pentaho BI Server打包后的文件存于这里，其中包括（本文使用的
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

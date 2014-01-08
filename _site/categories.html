@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -176,14 +162,12 @@
       <div class="content">
         
 <div class="row">
-
-  <div class="col-md-9">
-    <div class="page-header-wrapper">
-      <div class="page-header">
-        <h2>Categories </h2>
-      </div>
-    </div>
-    
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1>Categories </h1>
+      </header>
+	
 
 <ul class="tag_box list-inline">
   
@@ -193,55 +177,55 @@
   
      
     	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
-    		cloud <span>7</span>
+    		cloud
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
-    		javascript <span>7</span>
+    		javascript
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
-    		pentaho <span>3</span>
+    		pentaho
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
-    		kettle <span>8</span>
+    		kettle
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
-    		java <span>3</span>
+    		java
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
-    		cassandra <span>2</span>
+    		cassandra
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
-    		work <span>3</span>
+    		work
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
-    		hadoop <span>12</span>
+    		hadoop
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
-    		hbase <span>3</span>
+    		hbase
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
-    		hive <span>5</span>
+    		hive
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
-    		post <span>1</span>
+    		post
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
+    		saltstack
     	</a></li>
      
     	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
+    		git
     	</a></li>
     
   
@@ -763,6 +747,14 @@
     
       
       	
+      	<li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
+      	
+      
+    
+  
+    
+      
+      	
       	<li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
       	
       
@@ -887,8 +879,7 @@
 
 
 
- 
-    
+    </article>
   </div>
 </div>
 
@@ -896,7 +887,7 @@
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -905,10 +896,10 @@
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

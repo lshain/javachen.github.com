@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -178,16 +164,44 @@
 <div class="row">
 
   <div class="col-md-9">
-    <div class="page-header-wrapper">
-      <div class="page-header">
+    <article class="page-header-wrapper">
+      <header class="page-header">
         <h2>  <small>Life is short,we need running.</small></h2>
-      </div>
-    </div>
-    
+      </header>
+	
 
 
 <article>
-    <h2 class="h2 entry-title"><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h2>
+    <h1><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></h1>
+    
+      <p>HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）和HTTP（第七层）应用的代理软件，HAProxy是完全免费的、借助HAProxy可以快速并且可靠的提供基于TCP和HTTP应用的代理解决方案。</p>
+
+<ul>
+<li>免费开源，稳定性也是非常好，这个可通过我做的一些小项目可以看出来，单Haproxy也跑得不错，稳定性可以与硬件级的F5相媲美。
+根据官方文档，HAProxy可以跑满10Gbps-New benchmark of HAProxy at 10 Gbps using Myricom&#39;s 10GbE NICs （Myri-10G PCI-Express），这个数值作为软件级负载均衡器是相当惊人的。</li>
+<li>HAProxy 支持连接拒绝 : 因为维护一个连接的打开的开销是很低的，有时我们很需要限制攻击蠕虫（attack bots），也就是说限制它们的连接打开从而限制它们的危害。 这个已经为一个陷于小型DDoS攻击的网站开发了而且已经拯救了很多站点，这个优点也是其它负载均衡器没有的。</li>
+<li>HAProxy 支持全透明代理（已具备硬件防火墙的典型特点）: 可以用客户端IP地址或者任何其他地址来连接后端服务器. 这个特性仅在Linux 2.4/2.6内核打了cttproxy补丁后才可以使用. 这个特性也使得为某特殊服务器处理部分流量同时又不修改服务器的地址成为可能。</li>
+<li>HAProxy现多于线上的Mysql集群环境，我们常用于它作为MySQL（读）负载均衡；</li>
+<li>自带强大的监控服务器状态的页面，实际环境中我们结合Nagios进行邮件或短信报警，这个也是我非常喜欢它的原因之一；</li>
+<li>HAProxy支持虚拟主机，许多朋友说它不支持虚拟主机是错误的，通过测试我们知道，HAProxy是支持虚拟主机的。</li>
+</ul>
+
+<p>HAProxy特别适用于那些负载特大的web站点， 这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。</p>
+
+
+    
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2014/01/08/hive-ha-by-haproxy"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
     
       <h1>Git配置</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
@@ -204,7 +218,7 @@ git config -l  # 列举所有配置
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/git/2013/12/27/some-git-configs-and-cammands"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/git/2013/12/27/some-git-configs-and-cammands"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -212,7 +226,7 @@ git config -l  # 列举所有配置
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h2>
+    <h1><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h1>
     
       <h1>1. 关于本文档</h1>
 
@@ -236,7 +250,7 @@ git config -l  # 列举所有配置
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/saltstack/2013/11/18/study-note-of-saltstack"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/18/study-note-of-saltstack"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -244,7 +258,7 @@ git config -l  # 列举所有配置
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h2>
+    <h1><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h1>
     
       <p>Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。</p>
 
@@ -259,7 +273,7 @@ git config -l  # 列举所有配置
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/saltstack/2013/11/16/install-jboss-with-saltstack"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/16/install-jboss-with-saltstack"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -267,7 +281,7 @@ git config -l  # 列举所有配置
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h2>
+    <h1><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h1>
     
       <p>本文记录安装saltstack和halite过程。</p>
 
@@ -292,47 +306,7 @@ git config -l  # 列举所有配置
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/saltstack/2013/11/11/install-saltstack-and-halite"><span class="readmore">More &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h2 class="h2 entry-title"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h2>
-    
-      <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
-
-<h1>下载并编译源代码</h1>
-
-<p>请参考<a href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/">编译hbase源代码并打补丁</a></p>
-
-<h1>修改配置文件</h1>
-
-<p>修改 <code>conf/hbase-site.xml</code>文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-&lt;name&gt;hbase.defaults.for.version&lt;/name&gt;
-&lt;value&gt;0.94.6-cdh4.4.0&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-&lt;name&gt;hbase.rootdir&lt;/name&gt;
-&lt;value&gt;file:///home/june/tmp/data&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<p>把conf文件夹加到Classpath中</p>
-
-<h1>运行HMaster</h1>
-
-<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
-
-
-    
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-right" href="/hbase/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -353,92 +327,24 @@ git config -l  # 列举所有配置
   
 </div>
 
+    </article>
   </div>
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
    	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div>
+	<div class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
        </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Categories</h2>
-        <div class="tag_box">
-          <ul class="list-group list-group-flush">
-          
-          
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
-    		cloud <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
-    		hbase <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
-    		hive <span>5</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
-    		post <span>1</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
-    	</a></li>
-    
-  
-
-
- 
-          </ul>
-        </div>
-      </section>
-
-
-            <section>
        <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
            <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
@@ -460,6 +366,16 @@ git config -l  # 列举所有配置
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+           
+           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
+           
+           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
+           
          </ul>
        </div>
       </section>
@@ -468,7 +384,7 @@ git config -l  # 列举所有配置
             <section>
         <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
-          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+          <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>
       </section>
 
@@ -497,6 +413,16 @@ git config -l  # 列举所有配置
       
 
 
+            <section>
+        <h2><i class="icon-home icon-large"></i>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+
        <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};
       (function() {
@@ -516,7 +442,7 @@ git config -l  # 列举所有配置
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -525,10 +451,10 @@ git config -l  # 列举所有配置
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

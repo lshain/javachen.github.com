@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -177,14 +163,13 @@
         
 <div class="row">
 
-  <div class="col-md-9">
-    <div class="page-header">
-      <h2>
-        git配置和一些常用命令 
-        
-      </h2>
-    </div>
-    <h1>Git配置</h1>
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1>git配置和一些常用命令 </h1>
+      </header>
+	<div class="entry-content">
+	<h1>Git配置</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
 git config --global user.email &quot;june.chan@foxmail.com&quot;
 git config --global color.ui true
@@ -356,12 +341,8 @@ git status
 git diff --cached &gt;XXX.patch
 git ci -m &#39;add patch&#39;
 </code></pre></div>
-    <br/>
-    <div class="copyright">
-	<p><strong>本文固定链接：</strong><a href='/git/2013/12/27/some-git-configs-and-cammands'>http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands</a></p>
-	<p><strong>原创文章，转载请注明出处：</strong><a href='/git/2013/12/27/some-git-configs-and-cammands'>JavaChen Blog</a></p>
-    </div>
-
+	</div>
+    </article>
     <hr>
     <div class="row status">
       <div class="col-md-6">
@@ -371,7 +352,7 @@ git ci -m &#39;add patch&#39;
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/hive/2014/01/08/hive-ha-by-haproxy" title="Hive使用HAProxy配置HA">Next &raquo;</a>
           
         </div>
       </div>
@@ -409,72 +390,13 @@ git ci -m &#39;add patch&#39;
 
   </div>
 
-  <div class="col-md-3 visible-lg visible-md">
-    <section>
-      <h4><i class="icon-home icon-large"></i>Published</h4>
-      <ul>
-        <li>2013-12-27 00:00</li>
-      </ul>
-    </section>
-    
-    <section>
-      <h4><i class="icon-home icon-large"></i>Categories</h4>
-      <ul>
-        
-        
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
-    	</a></li>
-    
-  
-
-
-
-      </ul>
-    </section>
-    
-    
-    <section>
-      <h4><i class="icon-home icon-large"></i>Tags</h4>
-      <ul class="tag_box">
-        
-        
-
-
-  
-     
-    	<li><a href="/tags.html#git-ref">git <span>1</span></a></li>
-    
-  
-
-
-
-      </ul>
-    </section>
-    
-
-          <section>
-        <h2><i class="icon-home icon-large"></i>License</h2>
-        <ul>
-          <li>
-            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
-          </li>
-        </ul>
-      </section>
-
-  </div>
-
 </div>
 
 
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -483,10 +405,10 @@ git ci -m &#39;add patch&#39;
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -178,113 +164,44 @@
 <div class="row">
 
   <div class="col-md-9">
-    <div class="page-header-wrapper">
-      <div class="page-header">
+    <article class="page-header-wrapper">
+      <header class="page-header">
         <h2>  <small>Life is short,we need running.</small></h2>
-      </div>
-    </div>
-    
+      </header>
+	
 
 
 <article>
-    <h2 class="h2 entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
+    <h1><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h1>
     
-      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于数据抽取、转换、装载。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。 kettle的数据抽取主要在于抽取数据，而没有考虑数据库的函数、存储过程、视图、表结构以及索引、约束等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。 这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，需要有主键和索引方便对比和加快查询速度。 先来看看kettle中的一些组件。 下图是kettle中的一个表输出组件。 在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。 &lt;!--more--&gt; 下图是kettle中纬度更新/查询的组件。 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。 如果现在想使用kettle实现异构数据库的数据以及主键和索引的迁移，有没有一个完整方便的解决方案呢？我能想到的解决方案如下： 1.使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。 2.针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。 3.扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。 方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。 下面是方案3的具体的实现。 首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。 多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下： public void ripDBWizard(final int no) { final List databases = spoon.getActiveDatabases(); if (databases.size() == 0) return;&lt;/pre&gt; final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;, databases); final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);...
-    
+      <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
 
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
+<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+1.html文件，此处以SASC.search.MtrUse.html为例
+2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
+3.工具类，DomUtils.js
+4.核心js类:SASC.extjs.search.MtrUse.js
+5.java代码</p>
 
-<article>
-    <h2 class="h2 entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
-    
-      使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
+<p>详细html和js代码见相关文件，这里先描述思路。</p>
 
-同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行
+<p><strong>首先</strong>
+通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<u>MTRREPLACE</u>IMP.xml” .PC<u>MTRREPLACE</u>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
 
+<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
+需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
 
-原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。
-解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。
+<p><strong>然后</strong></p>
 
+<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
 
-关键字的问题。
+<p><strong>最后</strong>
+相关文件打包见：
+<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
 
-Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。
-
-
-解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。
-
-
-oracle中的字段名从中可以有#号，但是到mysql会报错
-
-
-解决办法：字段改名称，去掉#号
-
-
-Db2初始化到mysql或是postgres出错
-
-
-原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母
-解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。
-
-
-Oracle到mysql和pg时日期类型数据值有偏差
-
-
-原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。
-
-
-主键从ORACLE导入不到MYSQL和POSTGRES
-
-
-原因：pdi程序中没有对主键进行处理
-解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据
-
-
-Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00
-
-
-原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。
-解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString
-
-
-异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。
-
-
-原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。
-解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。
-
-
-Db2中没有主键的数据初始化到mysql和postgres需要添加索引
-
-
-解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。
-
-
-Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。
-
-
-原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。
-解决办法：使用最新的pdi程序。
-
-
-导数据中途时没有报错，直接软件退出
-
-
-原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误
-解决办法：修改jvm参数
-
-
-初次使用kettle做db2的初始化会报错
-
-
-原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。
-解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下
-
+<p><strong>说明</strong>
+如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
 
     
 
@@ -296,30 +213,151 @@ Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五�
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h2>
+    <h1><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h1>
     
-      Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
+      <p>Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。</p>
 
-Online Analytical Processing
-联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。
+<p>kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。</p>
 
-OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：
+<p>这篇文章主要是讲述在使用kettle进行数据库的迁移的时候如何迁移主键和索引，为什么要迁移主键和索引？异构数据库之间的迁移很难无缝的实现自定义函数、存储过程、视图、表结构、索引、约束以及数据的迁移，所以多数情况下只需要异构数据库之间类型兼容、数据一致就可以了。但是在有些情况下需要对输出表进行查询以及数据比对的时候，<strong>需要有主键和索引方便对比和加快查询速度</strong>。
+先来看看kettle中的一些组件。</p>
 
+<p>下图是kettle中的一个表输出组件。
+<div class="pic">
+<a href="/assets/images/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="/assets/images/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
+</div></p>
 
+<p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
+&lt;!--more--&gt;
+下图是kettle中纬度更新/查询的组件。
+<div class="pic">
+<a href="/assets/images/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="/assets/images/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
+</div>
+该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
+从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
 
-行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。
+<p>如果现在想使用kettle实现<strong>异构数据库的数据以及主键和索引的迁移</strong>，有没有一个完整方便的解决方案呢？我能想到的解决方案如下：
+<strong>1.</strong>使用kettle向导中的多表复制菜单进行数据库的迁移，这只能实现数据的迁移还需要额外的方法添加主键和索引，你可以手动执行一些脚步添加约束。
+<strong>2.</strong>针对源数据库中的每一张表创建一个转换，转换中使用纬度更新/查询组件，在该主键中指定主键。创建完所有的转换之后，创建一个作业将这些转换串联起来即可。
+<strong>3.</strong>扩展kettle向导中的多表复制菜单里的功能，在该功能创建的作业中添加一些节点用于添加输出表的主键和索引。这些节点可以是执行sql语句的主键，故只需要通过jdbc代码获取添加主键和索引的sql语句。</p>
 
-这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。
+<p>方案1需要单独执行脚步实现添加主键和索引，创建或生成这些脚步需要些时间；方案2需要针对每个表认为的指定主键，工作量大，而且无法实现添加索引；方案3最容易实现和扩展。</p>
 
-该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。
+<p><strong>下面是方案3的具体的实现。</strong></p>
 
-结论
-我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。
-现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php
+<p>首先需要在每一个表的建表语句节点和复制数据节点之后添加一个执行sql语句的节点，该节点用于添加主键和索引。
+多表复制向导的核心代码在src-db/org.pentaho.di.ui.spoon.delegates.SpoonJobDelegate.java的public void ripDBWizard()方法中。该方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public void ripDBWizard(final int no) {
+    final List databases = spoon.getActiveDatabases();
+    if (databases.size() == 0)
+        return;&lt;/pre&gt;
 
-说明
+    final RipDatabaseWizardPage1 page1 = new RipDatabaseWizardPage1(&quot;1&quot;,
+            databases);
+    final RipDatabaseWizardPage2 page2 = new RipDatabaseWizardPage2(&quot;2&quot;);
+    final RipDatabaseWizardPage3 page3 = new RipDatabaseWizardPage3(&quot;3&quot;,
+            spoon.getRepository());
+    Wizard wizard = new Wizard() {
+        public boolean performFinish() {
+            try {
+                JobMeta jobMeta = ripDBByNo(no, databases,
+                    page3.getJobname(), page3.getRepositoryDirectory(),
+                    page3.getDirectory(), page1.getSourceDatabase(),
+                    page1.getTargetDatabase(), page2.getSelection());
 
-这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。
+                if (jobMeta == null)
+                    return false;
+
+                if (page3.getRepositoryDirectory() != null) {
+                    spoon.saveToRepository(jobMeta, false);
+                } else {
+                    spoon.saveToFile(jobMeta);
+                }
+
+                addJobGraph(jobMeta);
+                return true;
+            } catch (Exception e) {
+                new ErrorDialog(spoon.getShell(), &quot;Error&quot;,
+                        &quot;An unexpected error occurred!&quot;, e);
+                return false;
+            }
+        }
+
+        public boolean canFinish() {
+            return page3.canFinish();
+        }
+    };
+
+    wizard.addPage(page1);
+    wizard.addPage(page2);
+    wizard.addPage(page3);
+
+    WizardDialog wd = new WizardDialog(spoon.getShell(), wizard);
+    WizardDialog.setDefaultImage(GUIResource.getInstance().getImageWizard());
+    wd.setMinimumPageSize(700, 400);
+    wd.updateSize();
+    wd.open();
+}
+</code></pre></div>
+<p>该方法主要是创建一个向导，该向导中包括三个向导页，第一个向导页用于<strong>选择数据库连接</strong>：源数据库和目标数据库连接；第二个向导页用于<strong>选表</strong>；第三个向导页用于<strong>指定作业保存路径</strong>。在向导完成的时候，即performFinish()方法里，会根据选择的数据源和表生成一个作业，即JobMeta对象。
+创建Jobmeta的方法为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public JobMeta ripDB(final List databases,final String jobname, final
+    RepositoryDirectoryInterface repdir,final String directory, final DatabaseMeta
+    sourceDbInfo,final DatabaseMeta targetDbInfo, final String[] tables){
+ //此处省略若干代码
+}
+</code></pre></div>
+<p>该方法主要逻辑在下面代码内：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">IRunnableWithProgress op = new IRunnableWithProgress() {
+    public void run(IProgressMonitor monitor)
+     throws InvocationTargetException, InterruptedException {
+       //此处省略若干代码
+    }
+}
+</code></pre></div>
+<p>上面代码中有以下代码用于遍历所选择的表生成作业中的一些节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (int i = 0; i &amp;lt; tables.length &amp;amp;&amp;amp; !monitor.isCanceled(); i++) {
+    //此处省略若干代码
+}
+</code></pre></div>
+<p>针对每一张表先会创建一个JobEntrySQL节点，然后创建一个转换JobEntryTrans，可以在创建转换之后再创建一个JobEntrySQL节点，该节点用于添加主键和索引。
+这部分的代码如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String pksql = JdbcDataMetaUtil.exportPkAndIndex(
+        sourceDbInfo, sourceCon, tables[i],
+        targetDbInfo, targetCon, tables[i]);
+if (!Const.isEmpty(pksql)) {
+    location.x += 300;
+    JobEntrySQL jesql = new JobEntrySQL(
+        BaseMessages.getString(PKG,&quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i] + &quot;]&quot;);
+    jesql.setDatabase(targetDbInfo);
+    jesql.setSQL(pksql);
+    jesql.setDescription(BaseMessages.getString(PKG,
+            &quot;Spoon.RipDB.AddPkAndIndex&quot;)
+            + tables[i]
+            + &quot;]&quot;);
+    JobEntryCopy jecsql = new JobEntryCopy();
+    jecsql.setEntry(jesql);
+    jecsql.setLocation(new Point(location.x, location.y));
+    jecsql.setDrawn();
+    jobMeta.addJobEntry(jecsql);
+    // Add the hop too...
+    JobHopMeta jhi = new JobHopMeta(previous, jecsql);
+    jobMeta.addJobHop(jhi);
+    previous = jecsql;
+}
+</code></pre></div>
+<p>获取添加主键和索引的sql语句，主要是采用jdbc的方式读取两个数据库，判断源数据库的表中是否存在主键和索引，如果有则返回添加主键或索引的sql语句。这部分代码封装在JdbcDataMetaUtil类中。
+该代码见：<a href="https://gist.github.com/1564353.js" target="_blank">https://gist.github.com/1564353.js</a></p>
+
+<p>最后的效果图如下：
+<div class="pic">
+<a href="/assets/images/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="/assets/images/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
+</div></p>
+
+<div class="infor">说明：
+1.以上代码使用的是jdbc的方法获取主键或索引，不同的数据库的jdbc驱动实现可能不同而且不同数据库的语法可能不同，故上面代码可能有待完善。
+2.如果一个数据库中存在多库并且这多个库中有相同的表，使用上面的代码针对一个表名会查出多个主键或索引。这一点也是可以改善的</div>
 
     
 
@@ -331,9 +369,92 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h2>
+    <h1><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h1>
     
-      XUL[1]是英文“XML User Interface Language”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。 XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。 使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。 XUL元素 XUL定义了一套丰富的元素。它们大致上可分为以下几种： 基层元素：例如视窗、page、对话框、向导 Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter 排版:例如方框、网格、堆栈、叠 事件和脚本:例如脚本、命令、key、broadcaster、observer 数据源:例如template、rule 其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器 一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。 现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。 XUL是如何处理的[4] Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。 XUL应用 虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。 Firefox里内置的一些XUL 地址见：http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html 运行XUL应用程序 可以选择 3 种方式来运行 XUL 应用程序： 1.使用基于 Mozilla 的浏览器进行简单测试 2.使用XULRunner 3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似 总结 XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。 参考资料 1.XUL Wiki :http://zh.wikipedia.org/wiki/XUL...
+      <p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+
+<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+
+<ul>
+<li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
+<li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
+</ul>
+
+<h4>关键字的问题。</h4>
+
+<p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
+
+<ul>
+<li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
+</ul>
+
+<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
+
+<ul>
+<li>解决办法：字段改名称，去掉#号</li>
+</ul>
+
+<h4>Db2初始化到mysql或是postgres出错</h4>
+
+<ul>
+<li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
+<li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
+</ul>
+
+<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
+
+<ul>
+<li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
+</ul>
+
+<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
+
+<ul>
+<li>原因：pdi程序中没有对主键进行处理</li>
+<li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
+</ul>
+
+<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
+
+<ul>
+<li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
+<li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
+</ul>
+
+<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
+
+<ul>
+<li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
+<li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
+</ul>
+
+<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
+
+<ul>
+<li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
+</ul>
+
+<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
+
+<ul>
+<li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
+<li>解决办法：使用最新的pdi程序。</li>
+</ul>
+
+<h4>导数据中途时没有报错，直接软件退出</h4>
+
+<ul>
+<li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
+<li>解决办法：修改jvm参数</li>
+</ul>
+
+<h4>初次使用kettle做db2的初始化会报错</h4>
+
+<ul>
+<li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
+<li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
+</ul>
+
     
 
       <div class="status">
@@ -344,9 +465,92 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h2>
+    <h1><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h1>
     
-      最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章 获取弹出窗口url后的参数方法： // 获取url后的参数值 function getQueryStringValue(name) { var url = window.location.search; if (url.indexOf(&#39;?&#39;) &lt; 0) { return null } var index = url.indexOf(name + &quot;=&quot;); if (index &lt; 0) { return null } var args = url.indexOf(&#39;&amp;&#39;, index); var value; if (args &gt; 0) { value = url.substring(index +...
+      <p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>
+
+<p><strong><span style="color: #00ff00;">Online Analytical Processing</span></strong>
+联机分析处理（OLAP）指在线实时的分析大量数据。与联机事务处理系统（On-<wbr>Line Transaction Processing，简称OLTP）不同，OLTP中典型的操作如读和修改单个的少量的记录，而OLAP批量处理数据并且所有操作都是只读的。“online”意味着即使是处理大量的数据----百万条数据记录，占有几个GB内存----系统必须足够快的反回查询结果以允许数据的交互式响应。正如我们将看到，数据展示面临相当大的技术挑战。</wbr></p>
+
+<p>OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行和列的形式存储所有数据，一个多维数据集包括轴和列。考虑下面的数据集：</p>
+
+<p><a href="/file/2011/12/olap_examples20111217.jpg"><img class="size-medium wp-image-2469 aligncenter" title="olap_examples20111217" src="/file/2011/12/olap_examples20111217-300x129.jpg" alt="olap多维视图" width="300" height="129" /></a></p>
+
+<p>行轴包括"All products", "Books","Fiction"等等，并且列轴包括生产年份"2000"”和"2001"、"Growth"的计算值以及"Unit sales"和"Dollar sales"的测量值。每个单元代表在某一年的一个产品类别的销售额，例如2001年Magazines的$销售额是2426美元。</p>
+
+<p>这是一个比关系型数据库展现出来的更加丰富的视图。多维数据集的只不是永远都来自于一个关系数据库的列。 'Total', 'Books' and 'Fiction' 是一个具有层次结构连续的成员，每一个成员都包括其下一层的成员。即使是在"2000"和"2001"一行，"Growth"是一个计算出来的值，它引入一个公式从其他列计算当前列的值。</p>
+
+<p>该例中使用的维度有：产品、生产线和测量值，仅仅是这个数据集可以分类和过滤的许多维度中的三个。维度，层次结构和测量值的集合被称为一个立方体。</p>
+
+<p><strong><span style="color: #00ff00;">结论</span></strong>
+我希望我已经证明垛位是一个首选的数据显示方式。虽然一些多维数据库以多维度的格式存储数据库，我仍然认为这比以关系的格式存储数据要简单。<br />
+现在，你可以看看OLAP系统的架构。查看Mondrian architecture。http://mondrian.pentaho.com/documentation/architecture.php</p>
+
+<p><strong><span style="color: #00ff00;">说明</span></strong>
+<div class="note">
+这是一篇翻译，原文来自http://mondrian.pentaho.com/documentation/olap.php。翻译水平有限，难免翻译不当，请见谅。</div></p>
+
+    
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h1>
+    
+      <p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
+XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
+使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
+
+<p><span style="color: #339966;"><strong>XUL元素</strong></span>
+XUL定义了一套丰富的元素。它们大致上可分为以下几种：<br />
+基层元素：例如视窗、page、对话框、向导<br />
+Widget:例如标签、按钮、文字方块、条列式菜单、组合方块、选择钮、复选框、树、菜单、工具栏、分组框、标签页、色彩选择器、spacer、splitter<br />
+排版:例如方框、网格、堆栈、叠<br />
+事件和脚本:例如脚本、命令、key、broadcaster、observer<br />
+数据源:例如template、rule<br />
+其他:例如overlay（类似SSI，但在客户端运作，而且更为强大）、iframe、浏览器、编辑器<br />
+一个XUL文件中也可以包含其他XML命名空间的元素，例如XHTML、SVG和MathML。<br />
+现时的XUL还未在提供一些普遍的widget，例如spinbox、slider和canvas。XUL 2.0[3]计划中将会包括这些缺乏的控件。</p>
+
+<p><span style="color: #339966;"><strong>XUL是如何处理的</strong></span>[4]<br />
+Mozilla浏览器内部使用跟HTML的处理非常相似的方法来处理XUL：当你在浏览器的地址栏里面输入HTML页面的URL以后，浏览器就定位这个网址并下载页面内容，然后Mozilla将页面内容转换成树的数据结构，最后再将树转换成对象集合，集合中的对象最终被展现在屏幕上就成了我们所见的网页。CSS, 图片以及其他技术被用来控制页面的展现。XUL的处理过程与此非常类似。</p>
+
+<p><span style="color: #339966;"><strong>XUL应用</strong></span>
+虽然XUL的设计原意是为了创作Mozilla程序及其扩展，但事实上人们也能利用它来编写基于HTTP的网络应用程序和基于swt/swing/gwt的客户端程序。一些开源的架构使用了XUL，例如Pentaho XUL Framework[5]。Pentaho XUL使用XUl跨多种技术（Swing, SWT, GWT）渲染用户界面，来实现业务逻辑的可重用性。shandor-xul[6]项目也是基于XUl开发的,项目地址见参考资料[6]。<br />
+Firefox里内置的一些XUL 地址见：<a href="http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html" target="_blank">http://www.cnblogs.com/jxsoft/archive/2011/04/07/2008202.html</a></p>
+
+<p><span style="color: #339966;"><strong>运行XUL应用程序</strong></span>
+可以选择 3 种方式来运行 XUL 应用程序：<br />
+1.使用基于 Mozilla 的浏览器进行简单测试<br />
+2.使用XULRunner<br />
+3.使用Firefox 3.0作为XUL运行时，它的功能和 XULRunner很相似</p>
+
+<p><strong><span style="color: #339966;">总结</span></strong>
+XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览器扩展的通用语言，还可以用来实现跨多种UI技术的用户接口，提高业务逻辑代码的重用性，第二点视乎是更值得推荐使用的。关于XUl的教程见参考资料。</p>
+
+<p><span style="color: #339966;"><strong>参考资料</strong></span></p>
+
+<p><li>
+1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+</li>
+<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+</li>
+<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<u>Page</a>
+</li>
+<li>4.XUL结构: &lt;a href=&quot;https://developer.mozilla.org/cn/XUL</u>%E6%95%99%E7%A8%8B/1-2<u>XUL%E7%9A%84%E7%BB%93%E6%9E%84&quot; target=&quot;</u>blank&quot;&gt;https://developer.mozilla.org/cn/</a>
+</li>
+<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
+</li>
+<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
+</li>
+<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+</li></p>
+
     
 
       <div class="status">
@@ -372,92 +576,24 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
   
 </div>
 
+    </article>
   </div>
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
    	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div>
+	<div class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
        </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Categories</h2>
-        <div class="tag_box">
-          <ul class="list-group list-group-flush">
-          
-          
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
-    		cloud <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
-    		hbase <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
-    		hive <span>5</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
-    		post <span>1</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
-    	</a></li>
-    
-  
-
-
- 
-          </ul>
-        </div>
-      </section>
-
-
-            <section>
        <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
            <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
@@ -479,6 +615,16 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+           
+           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
+           
+           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
+           
          </ul>
        </div>
       </section>
@@ -487,7 +633,7 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
             <section>
         <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
-          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+          <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>
       </section>
 
@@ -516,6 +662,16 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
       
 
 
+            <section>
+        <h2><i class="icon-home icon-large"></i>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+
        <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};
       (function() {
@@ -535,7 +691,7 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -544,10 +700,10 @@ OLAP引入了一种多维度查询的技术。鉴于一个关系数据库以行�
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>

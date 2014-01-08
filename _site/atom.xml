@@ -4,12 +4,102 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2013-12-27T18:33:45+08:00</updated>
+ <updated>2014-01-08T18:17:37+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
  </author>
 
+ 
+ <entry>
+   <title><![CDATA[Hive使用HAProxy配置HA]]></title>
+   <link href="http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy"/>
+   <updated>2014-01-08T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy</id>
+   <content type="html">&lt;p&gt;HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）和HTTP（第七层）应用的代理软件，HAProxy是完全免费的、借助HAProxy可以快速并且可靠的提供基于TCP和HTTP应用的代理解决方案。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;免费开源，稳定性也是非常好，这个可通过我做的一些小项目可以看出来，单Haproxy也跑得不错，稳定性可以与硬件级的F5相媲美。
+根据官方文档，HAProxy可以跑满10Gbps-New benchmark of HAProxy at 10 Gbps using Myricom&amp;#39;s 10GbE NICs （Myri-10G PCI-Express），这个数值作为软件级负载均衡器是相当惊人的。&lt;/li&gt;
+&lt;li&gt;HAProxy 支持连接拒绝 : 因为维护一个连接的打开的开销是很低的，有时我们很需要限制攻击蠕虫（attack bots），也就是说限制它们的连接打开从而限制它们的危害。 这个已经为一个陷于小型DDoS攻击的网站开发了而且已经拯救了很多站点，这个优点也是其它负载均衡器没有的。&lt;/li&gt;
+&lt;li&gt;HAProxy 支持全透明代理（已具备硬件防火墙的典型特点）: 可以用客户端IP地址或者任何其他地址来连接后端服务器. 这个特性仅在Linux 2.4/2.6内核打了cttproxy补丁后才可以使用. 这个特性也使得为某特殊服务器处理部分流量同时又不修改服务器的地址成为可能。&lt;/li&gt;
+&lt;li&gt;HAProxy现多于线上的Mysql集群环境，我们常用于它作为MySQL（读）负载均衡；&lt;/li&gt;
+&lt;li&gt;自带强大的监控服务器状态的页面，实际环境中我们结合Nagios进行邮件或短信报警，这个也是我非常喜欢它的原因之一；&lt;/li&gt;
+&lt;li&gt;HAProxy支持虚拟主机，许多朋友说它不支持虚拟主机是错误的，通过测试我们知道，HAProxy是支持虚拟主机的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HAProxy特别适用于那些负载特大的web站点， 这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h1&gt;安装配置&lt;/h1&gt;
+
+&lt;p&gt;在&lt;a href=&quot;http://haproxy.1wt.eu/&quot;&gt;HAProxy&lt;/a&gt;官网下载安装包并编译&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget http://haproxy.1wt.eu/download/1.4/src/haproxy-1.4.24.tar.gz|tar zxvf
+mv haproxy-1.4.24 /opt/haproxy-1.4.24
+cd /opt/haproxy-1.4.24
+make TARGET=linux26
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;添加配置文件&lt;/h1&gt;
+
+&lt;p&gt;在/opt/haproxy-1.4.24目录下创建一个config.cfg文件，添加如下内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;global
+        daemon
+        nbproc 1
+        pidfile /var/run/haproxy.pid
+        ulimit-n 65535
+
+defaults
+        mode tcp                        #mode { tcp|http|health }，tcp 表示4层，http表示7层(对我们没用)，health仅作为健康检查使用
+        retries 2                       #尝试2次失败则从集群摘除
+        option redispatch               #如果失效则强制转换其他服务器
+        option abortonclose             #连接数过大自动关闭
+        maxconn 1024                    #最大连接数
+        timeout connect 1d              #连接超时时间，重要，hive查询数据能返回结果的保证
+        timeout client 1d               #同上
+        timeout server 1d               #同上
+        timeout check 2000              #健康检查时间
+        log 127.0.0.1 local0 err #[err warning info debug]
+
+listen  admin_stats                     #定义管理界面
+        bind 0.0.0.0:1090               #管理界面访问IP和端口
+        mode http                       #管理界面所使用的协议
+        maxconn 10          #最大连接数
+        stats refresh 30s               #30秒自动刷新
+        stats uri /                     #访问url
+        stats realm Hive\ Haproxy       #验证窗口提示
+        stats auth admin:123456         #401验证用户名密码
+
+listen hive             #hive后端定义
+        bind 0.0.0.0:10001              #ha作为proxy所绑定的IP和端口
+        mode tcp                        #以4层方式代理，重要
+        balance leastconn               #调度算法 &amp;#39;leastconn&amp;#39; 最少连接数分配，或者 &amp;#39;roundrobin&amp;#39;，轮询分配
+        maxconn 1024                    #最大连接数
+        server hive_1 192.168.1.1:10000 check inter 180000 rise 1 fall 2
+        server hive_2 192.168.1.2:10000 check inter 180000 rise 1 fall 2
+    #释义：server 主机代名(你自己能看懂就行)，IP:端口 每180000毫秒检查一次。也就是三分钟。
+    #hive每有10000端口的请求就会创建一个log，设置短了，/tmp下面会有无数个log文件，删不完。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;如何启动&lt;/h1&gt;
+
+&lt;p&gt;在HAProxy目录下执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;haproxy -f conf.cfg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;如何使用&lt;/h1&gt;
+
+&lt;p&gt;在hive-server或者hive-server2中jdbc的连接信息修改url和port，如hive-server2:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;jdbc:hive2://${haproxy.hostname}:${haproxy.hive.bind.port}/${hive.database}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面haproxy.hostname为你安装haproxy的机器名；haproxy.hive.bind.port为conf.cfg中定义的监听hive的端口（上面中定义的为10001）&lt;/p&gt;
+
+&lt;h1&gt;参考资料&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://blog.csdn.net/xiyf2046/article/details/11686873&quot;&gt;HAProxy---HAProxy简介&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://slaytanic.blog.51cto.com/2057708/803626&quot;&gt;HAProxy+Hive构建高可用数据挖掘集群&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title><![CDATA[git配置和一些常用命令]]></title>
@@ -2004,342 +2094,6 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
 &lt;p&gt;其他工作：hive和mapreduce调优。&lt;/p&gt;
 
 &lt;p&gt;上面是最近在做的一些事情，包括暂停没做的、正在做的以及还未做的。有时候觉得有些事情很简单，但没有时间、没有精力也没有自由一下子做完，有些时候人在江湖，身不由己。&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title><![CDATA[hive中如何确定map数]]></title>
-   <link href="http://blog.javachen.com/hive/2013/09/04/how-to-decide-map-number"/>
-   <updated>2013-09-04T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hive/2013/09/04/how-to-decide-map-number</id>
-   <content type="html">&lt;p&gt;hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h1&gt;hive默认的input format&lt;/h1&gt;
-
-&lt;p&gt;在&lt;code&gt;cdh-4.3.0&lt;/code&gt;的hive中查看&lt;code&gt;hive.input.format&lt;/code&gt;值（为什么是&lt;code&gt;hive.input.format&lt;/code&gt;？）：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set hive.input.format;
-hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;可以看到默认值为CombineHiveInputFormat，如果你使用的是&lt;code&gt;IDH&lt;/code&gt;的hive，则默认值为：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set hive.input.format;
-hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;CombineHiveInputFormat类继承自HiveInputFormat，而HiveInputFormat实现了org.apache.hadoop.mapred.InputFormat接口，关于InputFormat的分析，可以参考&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h1&gt;InputFormat接口功能&lt;/h1&gt;
-
-&lt;p&gt;简单来说，InputFormat主要用于描述输入数据的格式，提供了以下两个功能： &lt;/p&gt;
-
-&lt;p&gt;1)、数据切分，按照某个策略将输入数据且分成若干个split，以便确定Map Task的个数即Mapper的个数，在MapReduce框架中，一个split就意味着需要一个Map Task; &lt;/p&gt;
-
-&lt;p&gt;2)、为Mapper提供输入数据，即给定一个split(使用其中的RecordReader对象)将之解析为一个个的key/value键值对。 &lt;/p&gt;
-
-&lt;p&gt;该类接口定义如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public interface InputFormat&amp;lt;K,V&amp;gt;{
-    public InputSplit[] getSplits(JobConf job,int numSplits) throws IOException; 
-    public RecordReader&amp;lt;K,V&amp;gt; getRecordReader(InputSplit split,JobConf job,Reporter reporter) throws IOException; 
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;其中，getSplit()方法主要用于切分数据，每一份数据由，split只是在逻辑上对数据分片，并不会在磁盘上将数据切分成split物理分片，实际上数据在HDFS上还是以block为基本单位来存储数据的。InputSplit只记录了Mapper要处理的数据的元数据信息，如起始位置、长度和所在的节点。&lt;/p&gt;
-
-&lt;p&gt;MapReduce自带了一些InputFormat的实现类： &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://dl2.iteye.com/upload/attachment/0085/0423/fa2e8c9f-f26a-3184-98e7-277c1b56fda1.jpg&quot; alt=&quot;InputFormat实现类&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;hive中有一些InputFormat的实现类，如：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;AvroContainerInputFormat
-RCFileBlockMergeInputFormat
-RCFileInputFormat
-FlatFileInputFormat
-OneNullRowInputFormat
-ReworkMapredInputFormat
-SymbolicInputFormat
-SymlinkTextInputFormat
-HiveInputFormat
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;HiveInputFormat的子类有：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2013/implement-of-hiveinputformat.png&quot; alt=&quot;HiveInputFormat的子类&quot;&gt;&lt;/p&gt;
-
-&lt;h1&gt;HiveInputFormat&lt;/h1&gt;
-
-&lt;p&gt;以HiveInputFormat为例，看看其getSplit()方法逻辑：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;for (Path dir : dirs) {
-  PartitionDesc part = getPartitionDescFromPath(pathToPartitionInfo, dir);
-  // create a new InputFormat instance if this is the first time to see this
-  // class
-  Class inputFormatClass = part.getInputFileFormatClass();
-  InputFormat inputFormat = getInputFormatFromCache(inputFormatClass, job);
-  Utilities.copyTableJobPropertiesToConf(part.getTableDesc(), newjob);
-
-  // Make filter pushdown information available to getSplits.
-  ArrayList&amp;lt;String&amp;gt; aliases =
-      mrwork.getPathToAliases().get(dir.toUri().toString());
-  if ((aliases != null) &amp;amp;&amp;amp; (aliases.size() == 1)) {
-    Operator op = mrwork.getAliasToWork().get(aliases.get(0));
-    if ((op != null) &amp;amp;&amp;amp; (op instanceof TableScanOperator)) {
-      TableScanOperator tableScan = (TableScanOperator) op;
-      pushFilters(newjob, tableScan);
-    }
-  }
-
-  FileInputFormat.setInputPaths(newjob, dir);
-  newjob.setInputFormat(inputFormat.getClass());
-  InputSplit[] iss = inputFormat.getSplits(newjob, numSplits / dirs.length);
-  for (InputSplit is : iss) {
-    result.add(new HiveInputSplit(is, inputFormatClass.getName()));
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面代码主要过程是：&lt;/p&gt;
-
-&lt;blockquote&gt;遍历每个输入目录，然后获得PartitionDesc对象，从该对象调用getInputFileFormatClass方法得到实际的InputFormat类，并调用其`getSplits(newjob, numSplits / dirs.length)`方法。
-&lt;/blockquote&gt;
-
-&lt;p&gt;按照上面代码逻辑，似乎hive中每一个表都应该有一个InputFormat实现类。在hive中运行下面代码，可以查看建表语句：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; show create table info; 
-OK
-CREATE  TABLE info(
-  statist_date string, 
-  statistics_date string, 
-  inner_code string, 
-  office_no string, 
-  window_no string, 
-  ticket_no string, 
-  id_kind string, 
-  id_no string, 
-  id_name string, 
-  area_center_code string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY &amp;#39;\;&amp;#39; 
-  LINES TERMINATED BY &amp;#39;\n&amp;#39; 
-STORED AS INPUTFORMAT 
-  &amp;#39;org.apache.hadoop.mapred.TextInputFormat&amp;#39; 
-OUTPUTFORMAT 
-  &amp;#39;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&amp;#39;
-LOCATION
-  &amp;#39;hdfs://node:8020/user/hive/warehouse/info&amp;#39;
-TBLPROPERTIES (
-  &amp;#39;numPartitions&amp;#39;=&amp;#39;0&amp;#39;, 
-  &amp;#39;numFiles&amp;#39;=&amp;#39;1&amp;#39;, 
-  &amp;#39;transient_lastDdlTime&amp;#39;=&amp;#39;1378245263&amp;#39;, 
-  &amp;#39;numRows&amp;#39;=&amp;#39;0&amp;#39;, 
-  &amp;#39;totalSize&amp;#39;=&amp;#39;301240320&amp;#39;, 
-  &amp;#39;rawDataSize&amp;#39;=&amp;#39;0&amp;#39;)
-Time taken: 0.497 seconds
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;从上面可以看到info表的INPUTFORMAT为&lt;code&gt;org.apache.hadoop.mapred.TextInputFormat&lt;/code&gt;，TextInputFormat继承自FileInputFormat。FileInputFormat是一个抽象类，它最重要的功能是为各种InputFormat提供统一的getSplits()方法，该方法最核心的是文件切分算法和Host选择算法。&lt;/p&gt;
-
-&lt;p&gt;算法如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;long length = file.getLen();
-long goalSize = totalSize / (numSplits == 0 ? 1 : numSplits);
-long minSize = Math.max(job.getLong(org.apache.hadoop.mapreduce.lib.input.
-FileInputFormat.SPLIT_MINSIZE, 1), minSplitSize);
-
-long blockSize = file.getBlockSize();
-long splitSize = computeSplitSize(goalSize, minSize, blockSize);
-long bytesRemaining = length;
-while (((double) bytesRemaining)/splitSize &amp;gt; SPLIT_SLOP) {
-String[] splitHosts = getSplitHosts(blkLocations, 
-    length-bytesRemaining, splitSize, clusterMap);
-    splits.add(makeSplit(path, length-bytesRemaining, splitSize, 
-               splitHosts));
-    bytesRemaining -= splitSize;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-
-&lt;p&gt;&lt;code&gt;华丽的分割线&lt;/code&gt;：以下摘抄自&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1）、文件切分算法&lt;/strong&gt; &lt;/p&gt;
-
-&lt;p&gt;文件切分算法主要用于确定InputSplit的个数以及每个InputSplit对应的数据段，FileInputSplit以文件为单位切分生成InputSplit。有三个属性值来确定InputSplit的个数：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;goalSize：该值由totalSize/numSplits来确定InputSplit的长度，它是根据用户的期望的InputSplit个数计算出来的；numSplits为用户设定的Map Task的个数，默认为1。 &lt;/li&gt;
-&lt;li&gt;minSize：由配置参数mapred.min.split.size（或者 &lt;code&gt;mapreduce.input.fileinputformat.split.minsize&lt;/code&gt;）决定的InputFormat的最小长度，默认为1。 &lt;/li&gt;
-&lt;li&gt;blockSize：HDFS中的文件存储块block的大小，默认为64MB。&lt;/li&gt;
-&lt;li&gt;numSplits=&lt;code&gt;mapred.map.tasks&lt;/code&gt; 或者 &lt;code&gt;mapreduce.job.maps&lt;/code&gt; &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这三个参数决定一个InputFormat分片的最终的长度，计算方法如下： &lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;splitSize = max{minSize,min{goalSize,blockSize}} 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;计算出了分片的长度后，也就确定了InputFormat的数目。 &lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2）、host选择算法&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;InputFormat的切分方案确定后，接下来就是要确定每一个InputSplit的元数据信息。InputSplit元数据通常包括四部分，&lt;code&gt;&amp;lt;file,start,length,hosts&amp;gt;&lt;/code&gt;其意义为： &lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;file标识InputSplit分片所在的文件； &lt;/li&gt;
-&lt;li&gt;InputSplit分片在文件中的的起始位置； &lt;/li&gt;
-&lt;li&gt;InputSplit分片的长度； &lt;/li&gt;
-&lt;li&gt;分片所在的host节点的列表。 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-InputSplit的host列表的算作策略直接影响到运行作业的本地性。&lt;br/&gt;
-
-我们知道，由于大文件存储在HDFS上的block可能会遍布整个Hadoop集群，而一个InputSplit分片的划分算法可能会导致一个split分片对应多个不在同一个节点上的blocks，这就会使得在Map Task执行过程中会涉及到读其他节点上的属于该Task的block中的数据，从而不能实现数据本地性，而造成更多的网络传输开销。&lt;br/&gt;
- 
-一个InputSplit分片对应的blocks可能位于多个数据节点地上，但是基于任务调度的效率，通常情况下，不会把一个分片涉及的所有的节点信息都加到其host列表中，而是选择包含该分片的数据总量的最大的前几个节点，作为任务调度时判断是否具有本地性的主要凭证。&lt;br/&gt;
- 
-FileInputFormat使用了一个启发式的host选择算法：首先按照rack机架包含的数据量对rack排序，然后再在rack内部按照每个node节点包含的数据量对node排序，最后选取前N个(N为block的副本数)node的host作为InputSplit分片的host列表。当任务地调度Task作业时，只要将Task调度给host列表上的节点，就可以认为该Task满足了本地性。 &lt;br/&gt;
-
-从上面的信息我们可以知道，当InputSplit分片的大小大于block的大小时，Map Task并不能完全满足数据的本地性，总有一本分的数据要通过网络从远程节点上读数据，故为了提高Map Task的数据本地性，减少网络传输的开销，应尽量是InputFormat的大小和HDFS的block块大小相同。
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;CombineHiveInputFormat&lt;/h1&gt;
-
-&lt;p&gt;&lt;code&gt;getSplits(JobConf job, int numSplits)&lt;/code&gt;代码运行过程如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;init(job);
-CombineFileInputFormatShim combine = ShimLoader.getHadoopShims().getCombineFileInputFormat();
-    ShimLoader.loadShims(HADOOP_SHIM_CLASSES, HadoopShims.class);
-        Hadoop23Shims
-            HadoopShimsSecure.getCombineFileInputFormat()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;CombineFileInputFormatShim继承了&lt;code&gt;org.apache.hadoop.mapred.lib.CombineFileInputFormat&lt;/code&gt;,CombineFileInputFormatShim的getSplits方法代码如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;public InputSplitShim[] getSplits(JobConf job, int numSplits) throws IOException {
-  long minSize = job.getLong(&amp;quot;mapred.min.split.size&amp;quot;, 0);
-
-  // For backward compatibility, let the above parameter be used
-  if (job.getLong(&amp;quot;mapred.min.split.size.per.node&amp;quot;, 0) == 0) {
-    super.setMinSplitSizeNode(minSize);
-  }
-
-  if (job.getLong(&amp;quot;mapred.min.split.size.per.rack&amp;quot;, 0) == 0) {
-    super.setMinSplitSizeRack(minSize);
-  }
-
-  if (job.getLong(&amp;quot;mapred.max.split.size&amp;quot;, 0) == 0) {
-    super.setMaxSplitSize(minSize);
-  }
-
-  InputSplit[] splits = (InputSplit[]) super.getSplits(job, numSplits);
-
-  InputSplitShim[] isplits = new InputSplitShim[splits.length];
-  for (int pos = 0; pos &amp;lt; splits.length; pos++) {
-    isplits[pos] = new InputSplitShim((CombineFileSplit)splits[pos]);
-  }
-
-  return isplits;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;从上面代码可以看出，如果为CombineHiveInputFormat，则以下四个参数起作用：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;mapred.min.split.size 或者 mapreduce.input.fileinputformat.split.minsize&lt;/li&gt;
-&lt;li&gt;mapred.max.split.size 或者 mapreduce.input.fileinputformat.split.maxsize&lt;/li&gt;
-&lt;li&gt;mapred.min.split.size.per.rack 或者 mapreduce.input.fileinputformat.split.minsize.per.rack&lt;/li&gt;
-&lt;li&gt;mapred.min.split.size.per.node 或者 mapreduce.input.fileinputformat.split.minsize.per.node&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;CombineFileInputFormatShim的getSplits方法最终会调用父类的getSplits方法，拆分算法如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;long left = locations[i].getLength();
-long myOffset = locations[i].getOffset();
-long myLength = 0;
-do {
-    if (maxSize == 0) {
-        myLength = left;
-    } else {
-    if (left &amp;gt; maxSize &amp;amp;&amp;amp; left &amp;lt; 2 * maxSize) {
-      myLength = left / 2;
-    } else {
-      myLength = Math.min(maxSize, left);
-    }
-    }
-    OneBlockInfo oneblock = new OneBlockInfo(path, myOffset,
-      myLength, locations[i].getHosts(), locations[i]
-          .getTopologyPaths());
-    left -= myLength;
-    myOffset += myLength;
-
-    blocksList.add(oneblock);
-} while (left &amp;gt; 0);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;hive中如何确定map数&lt;/h1&gt;
-
-&lt;p&gt;总上总结如下：&lt;/p&gt;
-
-&lt;p&gt;如果&lt;code&gt;hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat&lt;/code&gt;，则这时候的参数如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set mapred.min.split.size;
-mapred.min.split.size=1
-hive&amp;gt; set mapred.map.tasks;
-mapred.map.tasks=2
-hive&amp;gt; set dfs.blocksize;
-dfs.blocksize=134217728
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面参数中mapred.map.tasks为2，dfs.blocksize（使用的是cdh-4.3.0版本的hadoop，这里block和size之间没有逗号）为128M。&lt;/p&gt;
-
-&lt;p&gt;假设有一个文件为200M，则按上面HiveInputFormat的split算法：&lt;/p&gt;
-
-&lt;p&gt;1、文件总大小为200M，goalSize=200M /2 =100M，minSize=1 ，splitSize = max{1,min{100M,128M}} =100M&lt;/p&gt;
-
-&lt;p&gt;2、200M / 100M &amp;gt;1.1,故第一块大小为100M&lt;/p&gt;
-
-&lt;p&gt;3、剩下文件大小为100M，小于128M，故第二块大小为100M。&lt;/p&gt;
-
-&lt;p&gt;如果&lt;code&gt;hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat&lt;/code&gt;，则这时候的参数如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;hive&amp;gt; set mapred.min.split.size;
-mapred.min.split.size=1
-hive&amp;gt; set mapred.max.split.size;
-mapred.max.split.size=67108864
-hive&amp;gt; set mapred.min.split.size.per.rack;
-mapred.min.split.size.per.rack=1
-hive&amp;gt; set mapred.min.split.size.per.node;
-mapred.min.split.size.per.node=1
-hive&amp;gt; set dfs.blocksize;
-dfs.blocksize=134217728
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面参数中mapred.max.split.size为64M，dfs.blocksize（使用的是cdh-4.3.0版本的hadoop，这里block和size之间没有逗号）为128M。&lt;/p&gt;
-
-&lt;p&gt;假设有一个文件为200M，则按上面CombineHiveInputFormat的split算法：&lt;/p&gt;
-
-&lt;p&gt;1、128M &amp;lt; 200M &amp;lt;128M X 2，故第一个block大小为128M&lt;/p&gt;
-
-&lt;p&gt;2、剩下文件大小为200M-128M=72M，72M &amp;lt; 128M,故第二块大小为72M&lt;/p&gt;
-
-&lt;h1&gt;总结&lt;/h1&gt;
-
-&lt;p&gt;网上有一些文章关于hive中如何控制map数的文章是否考虑的不够全面，没有具体情况具体分析。简而言之，当InputFormat的实现类为不同类时，拆分块算法都不一样，相关设置参数也不一样，需要具体分析。&lt;/p&gt;
-
-&lt;h2&gt;1. map数不是越多越好&lt;/h2&gt;
-
-&lt;p&gt;如果一个任务有很多小文件（远远小于块大小128m）,则每个小文件也会被当做一个块，用一个map任务来完成，而一个map任务启动和初始化的时间远远大于逻辑处理的时间，就会造成很大的资源浪费。
-而且，同时可执行的map数是受限的。&lt;/p&gt;
-
-&lt;h2&gt;2. 如何适当的增加map数？&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;将数据导入到hive前，手动将大文件拆分为小文件&lt;/li&gt;
-&lt;li&gt;指定map数，使用insert或者create as select语句将一个表导入到另一个表，然后对另一张表做查询&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;3. 一些经验&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;合并小文件可以减少map数，但是会增加网络IO。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;尽量使拆分块大小和hdfs的块大小接近，避免一个拆分块大小上的多个hdfs块位于不同数据节点，从而降低网络IO。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;根据实际情况，控制map数量需要遵循两个原则：&lt;code&gt;使大数据量利用合适的map数&lt;/code&gt;；&lt;code&gt;使单个map任务处理合适的数据量。&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;参考文章&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;[1] &lt;a href=&quot;http://f.dataguru.cn/thread-149820-1-1.html&quot;&gt;【hive】hive的查询注意事项以及优化总结&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[2] &lt;a href=&quot;http://blog.sina.com.cn/s/blog_6ff05a2c010178qd.html&quot;&gt;Hadoop中map数的计算&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[3] &lt;a href=&quot;http://blog.sina.com.cn/s/blog_6ff05a2c0101aqvv.html&quot;&gt;[Hive]从一个经典案例看优化mapred.map.tasks的重要性&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[4] &lt;a href=&quot;http://superlxw1234.iteye.com/blog/1582880&quot;&gt;hive优化之------控制hive任务中的map数和reduce数&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[5] &lt;a href=&quot;http://www.searchtb.com/2010/12/hadoop-job-tuning.html&quot;&gt;Hadoop Job Tuning&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[6] &lt;a href=&quot;http://www.tuicool.com/articles/77f2Af&quot;&gt;Hive配置项的含义详解（2）&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[7] &lt;a href=&quot;http://blog.csdn.net/lalaguozhe/article/details/9053645&quot;&gt;Hive小文件合并调研&lt;/a&gt;
-&lt;a href=&quot;http://flyingdutchman.iteye.com/blog/1876400&quot;&gt;Hadoop深入学习：InputFormat组件&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
 </content>
  </entry>
  

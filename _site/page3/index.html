@@ -18,9 +18,9 @@
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
-    <link href="/assets/themes/havee/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/havee/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -140,20 +140,6 @@
 
 
 
-          <li>
-	        <form class="form-inline" role="form" onsubmit="tmtxt_search_google()">
-      <div class="col-lg-12 form-group">
-        <input type="text" class="form-control input-sm" placeholder="Search..." id="my-google-search">
-      </div>
-    </form>
-    <script type="text/javascript">
-    function tmtxt_search_google(){
-      var query = document.getElementById("my-google-search").value;
-      window.open("http://google.com/search?q=" + query + "%20site:blog.javachen.com");
-    }
-    </script>
-
-          </li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -178,16 +164,32 @@
 <div class="row">
 
   <div class="col-md-9">
-    <div class="page-header-wrapper">
-      <div class="page-header">
+    <article class="page-header-wrapper">
+      <header class="page-header">
         <h2>  <small>Life is short,we need running.</small></h2>
-      </div>
-    </div>
-    
+      </header>
+	
 
 
 <article>
-    <h2 class="h2 entry-title"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h2>
+    <h1><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
+    
+      <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
+
+
+    
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/09/04/how-to-decide-map-number"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
     
       <p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
 
@@ -221,7 +223,7 @@ jekyll server
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/post/2013/08/31/my-jekyll-config"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/post/2013/08/31/my-jekyll-config"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -229,7 +231,7 @@ jekyll server
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h2>
+    <h1><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
     
       <h1>前言</h1>
 
@@ -254,7 +256,7 @@ jekyll server
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -262,7 +264,7 @@ jekyll server
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
+    <h1><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h1>
     
       <h1>概括</h1>
 
@@ -280,7 +282,7 @@ jekyll server
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/hive/2013/08/22/hive-Driver"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -288,7 +290,7 @@ jekyll server
 <hr/>
 
 <article>
-    <h2 class="h2 entry-title"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h2>
+    <h1><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h1>
     
       <h1>启动脚本</h1>
 
@@ -307,35 +309,7 @@ cli_help () {
 
       <div class="status">
         
-        <a class="btn btn-default btn-sm pull-right" href="/hive/2013/08/21/hive-CliDriver"><span class="readmore">More &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h2 class="h2 entry-title"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h2>
-    
-      <p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
-
-<h1>安装hadoop过程中需要注意以下几点：</h1>
-
-<ol>
-<li>每个节点配置hosts</li>
-<li>每个节点配置时钟同步</li>
-<li>如果没有特殊要求，关闭防火墙</li>
-<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
-</ol>
-
-<hr>
-
-
-    
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-right" href="/hadoop/2013/08/17/some-problems-about-hadoop"><span class="readmore">More &raquo; </span></a>
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/21/hive-CliDriver"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -358,92 +332,24 @@ cli_help () {
   
 </div>
 
+    </article>
   </div>
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
    	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div>
+	<div class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
 	</div>
        </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Categories</h2>
-        <div class="tag_box">
-          <ul class="list-group list-group-flush">
-          
-          
-
-
-  
-     
-    	<li class="list-group-item"><a href="/categories.html#cloud-ref"><i class="icon-folder-open icon-large"></i>
-    		cloud <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#javascript-ref"><i class="icon-folder-open icon-large"></i>
-    		javascript <span>7</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#pentaho-ref"><i class="icon-folder-open icon-large"></i>
-    		pentaho <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#kettle-ref"><i class="icon-folder-open icon-large"></i>
-    		kettle <span>8</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#java-ref"><i class="icon-folder-open icon-large"></i>
-    		java <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#cassandra-ref"><i class="icon-folder-open icon-large"></i>
-    		cassandra <span>2</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#work-ref"><i class="icon-folder-open icon-large"></i>
-    		work <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hadoop-ref"><i class="icon-folder-open icon-large"></i>
-    		hadoop <span>12</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hbase-ref"><i class="icon-folder-open icon-large"></i>
-    		hbase <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#hive-ref"><i class="icon-folder-open icon-large"></i>
-    		hive <span>5</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#post-ref"><i class="icon-folder-open icon-large"></i>
-    		post <span>1</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#saltstack-ref"><i class="icon-folder-open icon-large"></i>
-    		saltstack <span>3</span>
-    	</a></li>
-     
-    	<li class="list-group-item"><a href="/categories.html#git-ref"><i class="icon-folder-open icon-large"></i>
-    		git <span>1</span>
-    	</a></li>
-    
-  
-
-
- 
-          </ul>
-        </div>
-      </section>
-
-
-            <section>
        <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
            <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
@@ -465,6 +371,16 @@ cli_help () {
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
+           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
+           
+           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
+           
+           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
+           
+           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
+           
+           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
+           
          </ul>
        </div>
       </section>
@@ -473,7 +389,7 @@ cli_help () {
             <section>
         <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
         <div class="category">
-          <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="25"></ul>
+          <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>
       </section>
 
@@ -502,6 +418,16 @@ cli_help () {
       
 
 
+            <section>
+        <h2><i class="icon-home icon-large"></i>License</h2>
+        <ul>
+          <li>
+            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
+          </li>
+        </ul>
+      </section>
+
+
        <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};
       (function() {
@@ -521,7 +447,7 @@ cli_help () {
       </div>
 
       <footer class="text-left">
-        <p>&copy; 2009-2013 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
 </p>
       </footer>
@@ -530,10 +456,10 @@ cli_help () {
     </div> <!-- /container -->
 
     <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/assets/themes/havee/js/jquery.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/themes/havee/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-    <script type="text/javascript" src="/assets/themes/havee/js/main.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
