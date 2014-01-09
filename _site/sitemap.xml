@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-01-09T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-08T00:00:00+08:00</lastmod>

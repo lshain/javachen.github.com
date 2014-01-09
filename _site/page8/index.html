@@ -172,7 +172,138 @@
 
 
 <article>
-    <h1><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h1>
+    <h1 class="entry-title"><a href="/kettle/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h1>
+    
+      <p>这是在QQ群里有人问到的一个问题.</p>
+
+<p>如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?</p>
+
+<p>在kettle中实现cassandra的输入与输出有以下两种方式:</p>
+
+<ul>
+<li>第一种方式:自己编写cassandra输入输出组件</li>
+<li>第二种方式:使用别人编写好的插件,将其集成进来</li>
+</ul>
+
+<p>当然还有第三种方法,直接使用4.3版本的pdi.</p>
+
+<p>第一种方法需要对cassandra很熟悉编写插件才可以做到,第二种方法可以通过拷贝pdi-ce-big-data-4.3.0-preview中的文件来完成.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">(下载页面</a>)版本中可以看到kettle开始支持cassandra的输入和输出.</p>
+
+<p>故我们可以将4.3版本中的cassandra相关文件拷贝到4.2.1中.我使用的是pdi-ce-4.2.1-stable.</p>
+
+<p>在pdi-ce-big-data-4.3.0-preview/plugins目录下有以下目录或文件:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|-- kettle-gpload-plugin
+|-- kettle-hl7-plugin
+|-- kettle-palo-plugin
+|-- pentaho-big-data-plugin
+|-- repositories
+|-- spoon
+|-- steps
+`-- versioncheck
+</code></pre></div>
+<p>pentaho-big-data-plugin目录是kettle对大数据的集成与支持,我们只需要将该目录拷贝到pdi-ce-4.2.1-stable/plugins目录下即可.最后的结构如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">.
+|-- databases
+|-- hour-partitioner.jar
+|-- jobentries
+|   `-- DummyJob
+|       |-- DPL.png
+|       |-- dummyjob.jar
+|       `-- plugin.xml
+|-- pentaho-big-data-plugin
+|   |-- lib
+|   |   |-- apache-cassandra-1.0.0.jar
+|   |   |-- apache-cassandra-thrift-1.0.0.jar
+|   |   |-- aws-java-sdk-1.0.008.jar
+|   |   |-- commons-cli-1.2.jar
+|   |   |-- guava-r08.jar
+|   |   |-- hbase-comparators-TRUNK-SNAPSHOT.jar
+|   |   |-- jline-0.9.94.jar
+|   |   |-- libthrift-0.6.jar
+|   |   |-- mongo-java-driver-2.7.2.jar
+|   |   |-- pig-0.8.1.jar
+|   |   |-- xpp3_min-1.1.4c.jar
+|   |   `-- xstream-1.3.1.jar
+|   `-- pentaho-big-data-plugin-TRUNK-SNAPSHOT.jar
+|-- repositories
+|-- spoon
+|-- steps
+|   |-- DummyPlugin
+|   |   |-- DPL.png
+|   |   |-- dummy.jar
+|   |   `-- plugin.xml
+|   |-- S3CsvInput
+|   |   |-- jets3t-0.7.0.jar
+|   |   |-- plugin.xml
+|   |   |-- S3CIN.png
+|   |   `-- s3csvinput.jar
+|   `-- ShapeFileReader3
+|       |-- plugin.xml
+|       |-- SFR.png
+|       `-- shapefilereader3.jar
+`-- versioncheck
+    |-- kettle-version-checker-0.2.0.jar
+    `-- lib
+    `-- pentaho-versionchecker.jar
+
+13 directories, 29 files
+</code></pre></div>
+<p>启动pdi-ce-4.2.1-stable之后,打开一个转换,在核心对象窗口就可以看到Big Data步骤目录了.
+<div class="pic">
+<a href="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" target="_blank">
+<img alt="" src="http://ww4.sinaimg.cn/mw600/48e24b4cjw1dr9zaa66nbj.jpg" title="pdi big data plugin in kette 4.2" class="aligncenter" width="600" height="375" />
+</a>
+</div></p>
+
+<p><strong>获取pentaho-big-data-plugin源码</strong>
+如果想在eclipse中查看或修改pentaho-big-data-plugin源码,该怎么做呢?
+你可以从<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/pentaho-big-data-plugin-TRUNK-SNAPSHOT-sources.zip" target="_blank">这里</a>下载到源码,然后将src下的文件拷贝到你的pdi-ce-4.2.1-stable源码工程中.</p>
+
+<p>然后,需要在kettle-steps.xml中注册步骤节点
+例如,下面是MongoDbInput步骤的注册方法,请针对不同插件的不同类路径加以修改.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;step id=&quot;MongoDbInput&quot;&gt;
+&lt;description&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeLongDesc.MongoDbInput
+&lt;classname&gt;org.pentaho.di.trans.steps.mongodbinput.MongoDbInputMeta
+&lt;category&gt;i18n:org.pentaho.di.trans.step:BaseStep.Category.Input
+&lt;tooltip&gt;i18n:org.pentaho.di.trans.step:BaseStep.TypeTooltipDesc.MongoDbInput
+&lt;iconfile&gt;ui/images/mongodb-input.png
+&lt;/iconfile&gt;&lt;/tooltip&gt;
+&lt;/category&gt;
+&lt;/classname&gt;
+&lt;/description&gt;
+&lt;/step&gt;
+</code></pre></div>
+<div class="note">
+<h>注意:
+由于pdi-ce-4.2.1-stable中存在hive组件,故添加pentaho-big-data-plugin插件之后有可能会出现找不到类的情况,这是由于jar重复版本不一致导致的,按照异常信息,找到重复的jar并按情况删除一个jar包即可.
+</h></div>
+
+<p><strong>扩展阅读:</strong></p>
+
+<ul>
+<li>Pentaho Big Data Plugin <a href="http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers" target="_blank">http://wiki.pentaho.com/display/BAD/Getting+Started+for+Java+Developers</a></li>
+<li>pentaho-big-data-plugin ci
+<a href="http://ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/" target="_blank">http://- - ci.pentaho.com/job/pentaho-big-data-plugin/lastSuccessfulBuild/artifact/pentaho-big-data-plugin/dist/</a></li>
+<li>Pentaho Community Edition (CE) downloads <a href="http://wiki.pentaho.com/display/BAD/Downloads" target="_blank">http://wiki.pentaho.com/display/BAD/Downloads</a></li>
+</ul>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1 class="entry-title"><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h1>
     
       <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
@@ -223,7 +354,7 @@
 
 <p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
 
-    
+     
 
       <div class="status">
         
@@ -233,7 +364,7 @@
 <hr/>
 
 <article>
-    <h1><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h1>
+    <h1 class="entry-title"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h1>
     
       <p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
 
@@ -308,7 +439,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 
 <p>Job继承自Thread类，该类的run方法内部会递归执行该作业内部的作业项，限于篇幅，本文不做深究。</p>
 
-    
+     
 
       <div class="status">
         
@@ -318,7 +449,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 <hr/>
 
 <article>
-    <h1><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h1>
+    <h1 class="entry-title"><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h1>
     
       <p>How to execute a kettle job in Spoon GUI or command line after we create a job in Spoon GUI? In Spoon GUI,the main class is "org.pentaho.di.ui.spoon.Spoon.java".This class handles the main window of the Spoon graphical transformation editor.Many operations about a job or transformation such as run,debug,preview,zoomIn,etc,are all in this class.This post just writes about the code execution process.</p>
 
@@ -332,7 +463,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 
 <p>What is the detail process of job execution? You should look into the Job.run() method for detail information.</p>
 
-    
+     
 
       <div class="status">
         
@@ -342,7 +473,7 @@ public void executeJob(JobMeta jobMeta, boolean local, boolean remote,
 <hr/>
 
 <article>
-    <h1><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h1>
+    <h1 class="entry-title"><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h1>
     
       <p>在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。</p>
 
@@ -419,51 +550,7 @@ CREATE TABLE a1
 <li><a href="http://wiki.pentaho.com/display/COM/Step+error+handling+codes" target="_blank">Step error handling codes</a>
 </li></p>
 
-    
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1><a href="/java/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h1>
-    
-      <p>本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。</p>
-
-<p><strong>EL表达式this扩展</strong>
-在业务系统中，大量页面具有大量区域是相似或者相同的，或者可能根据某些局部特征的变化具有一定的变化，jsf中通过facelet模板功能可以达到一定程度的页面重用，从而减轻开发人员编辑和拷贝一些页面代码，达到重用的目的。然而，她们具有如下限制：
-1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
-2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
-3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。
-&lt;!--more--&gt;</p>
-
-<p>我们需要一种新的功能，实现：
-1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
-2.多个页面和多个独立java后台程序相同部分完全可以抽离出来，不依赖它们是否继承关系、只需保证他们具有相同的属性或者方法
-3.动态映射功能，即在满足上述基础上可以实现页面和后台实现类的属性和方法的自动映射
-4.兼容标准的EL表达式</p>
-
-<p>我们将上述功能处理为“this”表达式。其功能模型为：
-<div class="pic">
-<a href="/assets/images/2012/02/this-expression-of-el.jpg"><img src="/assets/images/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
-</div>
-页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。</p>
-
-<p><strong>动作类和页面的一致性保证</strong>
-为了有效实现this表达式，我们实现如下映射规则：
-1.名称为小写方式，不管页面如何命名，对应的后台类的jsf标识符都转换为小写
-2.页面和相应的后台类以相同命名方式，页面的目录转化为后台类的包名，名称通过点分隔包名，如根目录的a.xhtml对应的后台类名称为A.java，其唯一jsf标识名称为“a”，test/b.xhtml的后台类为test/B.java，其唯一jsf标识为“test.b”</p>
-
-<p><strong>“this”EL表达式算法</strong>
-算法流程如下图：
-<div class="pic">
-<a href="/assets/images/2012/02/this-expression-flow-of-el.jpg"><img src="/assets/images/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
-</div></p>
-
-    
+     
 
       <div class="status">
         
@@ -493,17 +580,19 @@ CREATE TABLE a1
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div class="entry-content">
+   	 <h2><i class="icon-home icon-large"></i>About</h2>
+	 <p class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</div>
+	</p>
        </section>
 
 
             <section>
-       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
@@ -535,15 +624,13 @@ CREATE TABLE a1
            
            <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
            
-           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
-           
          </ul>
        </div>
       </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>

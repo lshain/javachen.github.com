@@ -172,7 +172,40 @@
 
 
 <article>
-    <h1><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h1>
+    <h1 class="entry-title"><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h1>
+    
+      <p>本文记录安装saltstack和halite过程。</p>
+
+<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
+
+<h1>下载yum源</h1>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+</code></pre></div>
+<h1>安装依赖</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+</code></pre></div>
+<h1>安装saltstack</h1>
+
+<p>在sk1上安装master：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+</code></pre></div>
+<p>在sk1上安装minion：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1 class="entry-title"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h1>
     
       <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
 
@@ -200,7 +233,7 @@
 <p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
 
 
-    
+     
 
       <div class="status">
         
@@ -212,7 +245,7 @@
 <hr/>
 
 <article>
-    <h1><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h1>
+    <h1 class="entry-title"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h1>
     
       <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
 
@@ -248,7 +281,7 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 </code></pre></div>
 
-    
+     
 
       <div class="status">
         
@@ -260,7 +293,7 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 <hr/>
 
 <article>
-    <h1><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h1>
+    <h1 class="entry-title"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h1>
     
       <p>最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的<a href="https://github.com/anjuke/hwi">hwi改进版</a>和大众点评的<a href="http://blog.csdn.net/lalaguozhe/article/details/9614061">polestar</a>(<a href="https://github.com/dianping/polestar">github地址</a>)系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！</p>
 
@@ -287,7 +320,7 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 <p>为什么是上面的结论？这要从hive-server2的启动过程开始说明。</p>
 
 
-    
+     
 
       <div class="status">
         
@@ -299,7 +332,7 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 <hr/>
 
 <article>
-    <h1><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></h1>
+    <h1 class="entry-title"><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></h1>
     
       <p>在使用hive过程中遇到这样的一个异常：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: ParseException line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
@@ -333,32 +366,11 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
     at java.lang.Thread.run(Thread.java:662)
 </code></pre></div>
 
-    
+     
 
       <div class="status">
         
         <a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/cartesian-product-in-hive-inner-join"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
-    
-      <p>最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。</p>
-
-<p>最近半年多一直在做hadoop方面的工作，也就是接触hadoop才半年多时间。最开始接触hadoop是去年的11月21日，那天去Intel公司参加了两天的hadoop培训。培训的内容很多干货也有很多枯燥的东西，所以边听边瞌睡的听完了两天的培训内容。培训的ppt打印出来了，时不时地会翻看上面讲述的内容，然后在网上搜索些相关的资料。</p>
-
-<p>最先接触的hadoop发行版是Intel的IDH，刚开始使用IDH也就是用他的管理界面安装、部署hadoop集群，然后在8节点的集群上作hive两表关联的测试。测试结果不是很满意，但是对IDH倒是印象深刻。IDH的前端使用GWT开发，界面简洁，操作也比较方便，只是同步配置文件有时候非常慢，要等上一杯咖啡的时间。</p>
-
-
-    
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -386,17 +398,19 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div class="entry-content">
+   	 <h2><i class="icon-home icon-large"></i>About</h2>
+	 <p class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</div>
+	</p>
        </section>
 
 
             <section>
-       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
@@ -428,15 +442,13 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
            
            <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
            
-           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
-           
          </ul>
        </div>
       </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>

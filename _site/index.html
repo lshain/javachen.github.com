@@ -172,7 +172,35 @@
 
 
 <article>
-    <h1><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></h1>
+    <h1 class="entry-title"><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></h1>
+    
+      <h1>安装常用工具</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
+</code></pre></div>
+<h1>安装ibus</h1>
+
+<p>只需要安装gnome-language-selector ，不用安装im-switch，然后再允许im-config，设置之后注销登陆即可。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install gnome-language-selector 
+</code></pre></div>
+<h1>安装gedit-markdown</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://gitorious.org/projets-divers/gedit-markdown/archive/master.zip
+cd master
+./gedit-markdown.sh install
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/post/2014/01/09/after-reinstall-the-system"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <h1 class="entry-title"><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></h1>
     
       <p>HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）和HTTP（第七层）应用的代理软件，HAProxy是完全免费的、借助HAProxy可以快速并且可靠的提供基于TCP和HTTP应用的代理解决方案。</p>
 
@@ -189,7 +217,7 @@
 <p>HAProxy特别适用于那些负载特大的web站点， 这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。</p>
 
 
-    
+     
 
       <div class="status">
         
@@ -201,7 +229,7 @@
 <hr/>
 
 <article>
-    <h1><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
+    <h1 class="entry-title"><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
     
       <h1>Git配置</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
@@ -214,7 +242,7 @@ git config --global alias.br branch
 git config -l  # 列举所有配置
 </code></pre></div>
 
-    
+     
 
       <div class="status">
         
@@ -226,7 +254,7 @@ git config -l  # 列举所有配置
 <hr/>
 
 <article>
-    <h1><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h1>
+    <h1 class="entry-title"><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h1>
     
       <h1>1. 关于本文档</h1>
 
@@ -246,7 +274,7 @@ git config -l  # 列举所有配置
 </ul>
 
 
-    
+     
 
       <div class="status">
         
@@ -258,7 +286,7 @@ git config -l  # 列举所有配置
 <hr/>
 
 <article>
-    <h1><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h1>
+    <h1 class="entry-title"><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h1>
     
       <p>Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。</p>
 
@@ -269,44 +297,11 @@ git config -l  # 列举所有配置
 <p>安装过程请参考：<a href="/saltstack/2013/11/11/install-saltstack-and-halite/">安装saltstack和halite</a></p>
 
 
-    
+     
 
       <div class="status">
         
         <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/16/install-jboss-with-saltstack"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h1>
-    
-      <p>本文记录安装saltstack和halite过程。</p>
-
-<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
-
-<h1>下载yum源</h1>
-<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
-</code></pre></div>
-<h1>安装依赖</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
-</code></pre></div>
-<h1>安装saltstack</h1>
-
-<p>在sk1上安装master：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
-</code></pre></div>
-<p>在sk1上安装minion：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
-</code></pre></div>
-
-    
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -332,17 +327,19 @@ git config -l  # 列举所有配置
 
   <div class="col-md-3 visible-lg visible-md">
                 <section>
-   	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div class="entry-content">
+   	 <h2><i class="icon-home icon-large"></i>About</h2>
+	 <p class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</div>
+	</p>
        </section>
 
 
             <section>
-       <h2><i class="icon-home icon-large"></i>Recently Posts</h2>
+       <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
@@ -374,15 +371,13 @@ git config -l  # 列举所有配置
            
            <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
            
-           <li><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></li>
-           
          </ul>
        </div>
       </section>
 
 
             <section>
-        <h2><i class="icon-home icon-large"></i>Recently Comments</h2>
+        <h2><i class="icon-home icon-large"></i>Comments</h2>
         <div class="category">
           <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
         </div>

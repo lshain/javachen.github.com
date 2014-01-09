@@ -3,9 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>在Fedora 15 上搭建Eucalyptus - JavaChen Blog</title>
-    <meta name="description" content="在Fedora 15 上搭建Eucalyptus"/>
-    <meta name="keywords" content="eucalyptus, openNebula, openStack, fedora"/>
+    <title>重装系统之后 - JavaChen Blog</title>
+    <meta name="description" content="记录重装系统之后的一些操作"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/cloud/2011/08/20/install-eucalyptus-on-fedora-15" />
+    <link rel="canonical" href="http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -166,18 +166,98 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">在Fedora 15 上搭建Eucalyptus </h1>
+        <h1 class="entry-title">重装系统之后 </h1>
       </header>
 	<div class="entry-content">
-	<p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
-在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
+	<h1>安装常用工具</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
+</code></pre></div>
+<h1>安装ibus</h1>
 
-<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
+<p>只需要安装gnome-language-selector ，不用安装im-switch，然后再允许im-config，设置之后注销登陆即可。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install gnome-language-selector 
+</code></pre></div>
+<h1>安装gedit-markdown</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://gitorious.org/projets-divers/gedit-markdown/archive/master.zip
+cd master
+./gedit-markdown.sh install
+</code></pre></div>
+<!-- more -->
 
-<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
+<h1>安装wiz</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo add-apt-repository ppa:wiznote-team
+sudo apt-get update
+sudo apt-get install wiznote
+</code></pre></div>
+<h1>安装 oh-my-zsh</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+</code></pre></div>
+<h1>安装 RVM &amp; Ruby</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">curl -sSL https://get.rvm.io | bash --ruby=1.9.3
+</code></pre></div>
+<h1>安装jekyll</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">gem install jekyll redcarpet
+</code></pre></div>
+<h1>安装 virtualbox</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install virtualbox-4.3
+</code></pre></div>
+<h1>安装fortune-zh</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install fortune-zh
+</code></pre></div>
+<p><code>/usr/bin/mint-fortune</code>中调用语句改为:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/usr/games/fortune 70% tang300 30% song100 | $command -f $cow -n
+</code></pre></div>
+<p>这里的70%与30%是显示唐诗与宋词的概率。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">gsettings set com.linuxmint.terminal show-fortunes true
+</code></pre></div>
+<h1>修改分区权限</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo chown -R june:june /chan
+</code></pre></div>
+<h1>配置ant、mavne和ivy仓库</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chmod +x /chan/opt/apache-maven-3.0.5/bin/mvn
+chmod +x /chan/opt/apache-ant-1.9.2/bin/ant
 
-<p></p>
+rm -rf /home/june/.ivy2/cache /home/june/.m2/repository
+mkdir -p /home/june/.ivy2 /home/june/.m2
+ln -s /chan/opt/repository/cache/  /home/june/.ivy2/cache
+ln -s /chan/opt/repository/m2/  /home/june/.m2/repository
+</code></pre></div>
+<h1>安装jdk1.6.0_31</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">wget http://archive.cloudera.com/cm4/ubuntu/precise/amd64/cm/pool/contrib/o/oracle-j2sdk1.6/oracle-j2sdk1.6_1.6.0+update31_amd64.deb
+dpkg -i oracle-j2sdk1.6_1.6.0+update31_amd64.deb
+</code></pre></div>
+<p>配置环境变量：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if [ -f ~/.bashrc ] ; then
+    sed -i &#39;/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d&#39; ~/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d&#39; ~/.bashrc
+    sed -i &#39;/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d&#39; ~/.bashrc
+fi
+echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt; ~/.bashrc
+echo &quot;export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar&quot;&gt;&gt;~/.bashrc
+echo &quot;export MVN_HOME=/chan/opt/apache-maven-3.0.5&quot; &gt;&gt; ~/.bashrc
 
+echo &quot;export ANT_HOME=/chan/opt/apache-ant-1.9.2&quot; &gt;&gt; ~/.bashrc
+echo &quot;export PATH=\$JAVA_HOME/bin:\$MVN_HOME/bin:\$ANT_HOME/bin:\$PATH&quot; &gt;&gt; ~/.bashrc
+
+update-alternatives --install /usr/bin/java java /usr/java/latest 5
+update-alternatives --set java /usr/java/latest 
+source ~/.bashrc
+</code></pre></div>
+<h1>重命名home下目录</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mv ~/文档 ~/projects
+mv ~/音乐 ~/opt
+mv ~/图片 ~/tmp
+mv ~/视频 ~/workspace
+mv ~/下载 ~/download
+
+ln -s /chan/opt  ~/opt
+ln -s /chan/tmp   ~/tmp
+ln -s /chan/projects  ~/projects
+ln -s /chan/workspace  ~/workspace
+ln -s /chan/download    ~/download
+</code></pre></div>
 	</div>
     </article>
     <hr>
@@ -185,11 +265,11 @@
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java" title="Export DhtmlxGrid to PDF in Java">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm" href="/hive/2014/01/08/hive-ha-by-haproxy" title="Hive使用HAProxy配置HA">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16" title="Pentaho现场支持遇到问题及解决办法">Next &raquo;</a>
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
           
         </div>
       </div>
@@ -207,7 +287,7 @@
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="在Fedora 15 上搭建Eucalyptus - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="重装系统之后 - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

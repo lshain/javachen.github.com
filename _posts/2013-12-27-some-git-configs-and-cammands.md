@@ -23,6 +23,7 @@ git config -l  # 列举所有配置
 
 用户的git配置文件在`~/.gitconfig`，我的配置：
 
+
 ```
 june@june-mint ~/workspace/snippets/dotfiles $ cat .gitconfig 
 [user]

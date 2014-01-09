@@ -18,10 +18,13 @@ embed,object,iframe{display:block;margin:4px auto}
 .entry-content a{text-decoration:none;border-bottom:1px dotted}
 .entry-content a:hover{text-decoration:none;border-bottom:1px solid}
 .entry-content img{max-width:100%;height:auto}
+.entry-title {font-family: SecretTypewriterRegular,"Helvetica Neue",Helvetica,Arial,sans-serif;font-size: 32px;line-height: normal;text-shadow: 1px 1px 3px rgba(0,0,0,0.3);}
 #sidebar{padding-top:0}
 #sidebar a{color:inherit}
 i{margin-right:10px}
 #toTop{width:40px;height:64px;background:#555;background:rgba(85,85,85,0.3);position:fixed;bottom:20px;right:20px;text-align:center;cursor:pointer;display:none}
 #toTop a{display:block;width:40px;height:32px;font-size:26px;line-height:32px;font-family:verdana,arial;color:#fff;text-decoration:none;background:0}
 #toTop a:hover{background:#3d5998}
+article p ,section p{text-indent: 2em;}
+
 

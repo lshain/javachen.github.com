@@ -7,12 +7,12 @@ tagline: Life is short,we need running.
 
 {% for post in paginator.posts %}
 <article>
-    <h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
+    <h1 class="entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
     {% if post.content contains "<!-- more -->" %}
       {{ post.content | split:'<!-- more -->' |first }}
     {% else %}
       {{ post.content }}
-    {% endif %}
+    {% endif %} 
 
       <div class="status">
         {% if post.content contains "<!-- more -->" %}

@@ -1,6 +1,6 @@
       <section>
-   	 <h2><i class="icon-home icon-large"></i>About me</h2>
-	<div class="entry-content">
+   	 <h2><i class="icon-home icon-large"></i>About</h2>
+	 <p class="entry-content">
    	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</div>
+	</p>
        </section>
