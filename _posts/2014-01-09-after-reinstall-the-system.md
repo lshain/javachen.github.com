@@ -88,7 +88,7 @@ gsettings set com.linuxmint.terminal show-fortunes true
 sudo chown -R june:june /chan
 ```
 
-# 配置ant、mavne和ivy仓库
+# 配置ant、maven和ivy仓库
 
 ```
 chmod +x /chan/opt/apache-maven-3.0.5/bin/mvn

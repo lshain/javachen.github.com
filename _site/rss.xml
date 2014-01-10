@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Thu, 09 Jan 2014 12:42:13 +0800</lastBuildDate>
-		<pubDate>Thu, 09 Jan 2014 12:42:13 +0800</pubDate>
+		<lastBuildDate>Fri, 10 Jan 2014 10:34:15 +0800</lastBuildDate>
+		<pubDate>Fri, 10 Jan 2014 10:34:15 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -57,7 +57,7 @@ sudo apt-get install virtualbox-4.3
 &lt;h1&gt;修改分区权限&lt;/h1&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo chown -R june:june /chan
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;配置ant、mavne和ivy仓库&lt;/h1&gt;
+&lt;h1&gt;配置ant、maven和ivy仓库&lt;/h1&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chmod +x /chan/opt/apache-maven-3.0.5/bin/mvn
 chmod +x /chan/opt/apache-ant-1.9.2/bin/ant
 
@@ -197,7 +197,9 @@ listen hive             #hive后端定义
 
 		<item>
 			<title><![CDATA[git配置和一些常用命令]]></title>
-			<description>&lt;h1&gt;Git配置&lt;/h1&gt;
+			<description>&lt;p&gt;Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。&lt;/p&gt;
+
+&lt;h1&gt;Git配置&lt;/h1&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git config --global user.name &amp;quot;javachen&amp;quot;
 git config --global user.email &amp;quot;june.chan@foxmail.com&amp;quot;
 git config --global color.ui true
