@@ -44,6 +44,16 @@ sudo apt-get install wiznote
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
 ```
 
+# 编辑 ~/.zshrc
+
+```
+PATH=$PATH:$HOME/.rvm/bin
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+source ~/.bashrc
+source ~/.bash_profile
+```
+
 # 安装 RVM & Ruby
 
 ```

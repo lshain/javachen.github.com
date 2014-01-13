@@ -136,6 +136,8 @@
   
     
   
+    
+  
 
 
 
@@ -170,6 +172,27 @@
       </header>
 	
 
+
+<article>
+    <h1 class="entry-title"><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h1>
+    
+      <p><div class="pic"><img src="http://open.eucalyptus.com/themes/eucalyptus/img/eucalyptus_logo_awh.png" alt="" /></div>
+在Fedora 15 上搭建Eucalyptus平台，在Fedora 15 上搭建Eucalyptus与在Centos上搭建Eucalyptus有什么区别呢？参照这篇文章<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0" target="_blank">Installing Eucalyptus (2.0) on Fedora 12</a>，然后注意一些细节，视乎就能安装成功。不管你信不信，我是在虚拟机中安装fedora15，然后安装Eucalyptus失败了，失败的原因是xen的网络没有配置好，查看资源的时候free / max都为0000.</p>
+
+<p>毕竟是第一次接触云计算，第一次接触XEN，第一次接触Eucalyptus，Eucalyptus改装的都装了，就是XEN的网络没有配置好，当时很是迷糊。在接触了OpenNebula 和OpenStack之后，横向对比，视乎明白了很多千丝万缕的关联与奥秘。在安装OpenNebula，最主要是安装OpenStack成功之后，想到了之前Eucalyptus安装失败的原因。限于现在精力不在云计算上，暂且不去重新安装Eucalyptus，等之后再去尝试。下次尝试，定是醍醐灌顶，行云流水，很是期待。</p>
+
+<p>如果你也在Fedora上安装Eucalyptus平台，咱们可以交流交流，等到时机成熟，会将在Fedora 15 上搭建Eucalyptus的过程及遇到的问题发表在博客上；如果你想研究Eucalyptus平台java部分的代码，咱们也可以彼此分享各自的心得。</p>
+
+<p></p>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
 
 <article>
     <h1 class="entry-title"><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h1>
@@ -1032,79 +1055,6 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h1>
-    
-      <p><li>
-<span class="Apple-style-span" style="font-size: 13px; font-weight: normal;">OpenStack Nova code：<a href="https://bugs.launchpad.net/nova" target="_blank">https://bugs.launchpad.net/nova</a></span>
-</li>
-<li>
-OpenStack Blog：<a href="http://planet.openstack.org/" target="_blank">http://planet.openstack.org/</a>
-</li>
-<li>OpenStack 官方文档：<a href="http://docs.openstack.org/cactus/openstack-compute/admin/content/ch_getting-started-with-openstack.html" target="_blank">http://docs.openstack.org/cactus/openstack-compute/admin/content/ch<u>getting-started-with-openstack.html</a>
-</li>
-<li>OpenStack 中国门户：&lt;a href=&quot;http://blu001068.chinaw3.com/bbs/portal.php&quot; target=&quot;</u>blank&quot;&gt;http://blu001068.chinaw3.com/bbs/portal.php</a>
-</li>
-<li>在 Ubuntu 上安装和配置 OpenStack Nova：<a href="http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/" target="_blank">http://www.vpsee.com/2011/05/install-openstack-nova-on-ubuntu/</a>
-</li>
-<li>Centos安装过程：<a href="http://wiki.openstack.org/NovaInstall/CentOSNotes" target="_blank">http://wiki.openstack.org/NovaInstall/CentOSNotes</a>
-</li>
-<li>Running OpenStack Compute (Nova)：<a href="http://wiki.openstack.org/RunningNova" target="_blank">http://wiki.openstack.org/RunningNova</a>
-</li>
-<li>开源黄页 -  OpenStack：<a href="http://yp.oss.org.cn/appcenter/software/show_software.php?sw_id=1733" target="_blank">http://yp.oss.org.cn/appcenter/software/show<u>software.php?sw</u>id=1733</a>
-</li>
-<li>Installation on Debian, Fedora orCentOS：<a href="http://nova.openstack.org/adminguide/distros/others.html" target="_blank">http://nova.openstack.org/adminguide/distros/others.html</a>
-</li>
-<li>Installing Nova on a Single Host：<a href="http://nova.openstack.org/adminguide/single.node.install.html" target="_blank">http://nova.openstack.org/adminguide/single.node.install.html</a>
-</li>
-<li>openstack swift 典型架构和openstack swift 简要说明：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/blog<u>6b98772b0100pk7p.html</a>
-</li>
-<li>Swift 技术验证简单报告 :&lt;a href=&quot;http://www.douban.com/group/topic/17621229/&quot; target=&quot;</u>blank&quot;&gt;http://www.douban.com/group/topic/17621229/</a>
-</li>
-<li>新浪上openstack<u>object</u>storage的一些文章：<a href="http://blog.sina.com.cn/s/blog_6b98772b0100pk7p.html" target="_blank">http://blog.sina.com.cn/s/articlelist<u>1805154091</u>2<u>1.html</a>
-</li>
-<li>豆瓣上OpenStack收集资源：&lt;a href=&quot;http://www.douban.com/group/openstack/&quot; target=&quot;</u>blank&quot;&gt;http://www.douban.com/group/openstack/</a>
-</li>
-<li>OpenStack服务部署： <a href="http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html" target="_blank">http://hi.baidu.com/juacm/blog/item/bd05d154e7581e451138c277.html</a>
-</li>
-<li>陈沙克日志：<a href="http://hi.baidu.com/chenshake/home" target="_blank">http://hi.baidu.com/chenshake/home</a>
-</li>
-<li>Openstack-nova-architecture：<a href="http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/" target="_blank">http://ken.pepple.info/openstack/2011/04/22/openstack-nova-architecture/</a>
-</li>
-<li>OpenStack 架构：<a href="http://blog.csdn.net/anghlq/article/details/6543880" target="_blank">http://blog.csdn.net/anghlq/article/details/6543880</a>
-</li>
-<li>
-安装OpenStack：<a href="http://blog.csdn.net/anghlq/article/details/6566370" target="_blank">http://blog.csdn.net/anghlq/article/details/6566370</a>
-</li>
-<li>
-安装OpenStack-dashboard：<a href="http://blog.csdn.net/anghlq/article/details/6572868" target="_blank">http://blog.csdn.net/anghlq/article/details/6572868</a>
-</li>
-<li>
-Centos-nova-install.sh： <a href="https://gist.github.com/837797" target="_blank">https://gist.github.com/837797</a>
-</li>
-<li>
-RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/" target="_blank">http://blog.163.com/clevertanglei900@126/blog/static/11135225920101110393888/</a>
-</li>
-<li>OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)：<a href="http://blog.livedoor.jp/techpub/archives/3797358.html" target="_blank">OpenStack(diablo-2)のNovaをインストール@CentOS6　メモ(1/n)</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-内容列表（0）：<a href="http://bbs.chinaunix.net/thread-3563033-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563033-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-基础部分（1）：<a href="http://bbs.chinaunix.net/thread-3563017-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563017-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-增强部分（2）：<a href="http://bbs.chinaunix.net/thread-3563046-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563046-1-1.html</a>
-</li>
-<li>openstack nova部署完整实例-参考手册-增强部分（3）：<a href="http://bbs.chinaunix.net/thread-3563049-1-1.html" target="_blank">http://bbs.chinaunix.net/thread-3563049-1-1.html</a>
-</li></p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -1114,10 +1064,10 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
     <a class="btn btn-default btn-sm" href="/page10/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 11 of 12</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 11 of 13</a></span>
   
     <a class="btn btn-default btn-sm" href="/page12/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page12/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
   
 </div>
 
@@ -1137,6 +1087,8 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
            <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
            
@@ -1167,8 +1119,6 @@ RabbitMQ and Nova：<a href="http://blog.163.com/clevertanglei900@126/blog/stati
            <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
            <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
-           
-           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
            
          </ul>
        </div>

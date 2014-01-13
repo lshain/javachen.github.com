@@ -136,6 +136,8 @@
   
     
   
+    
+  
 
 
 
@@ -170,6 +172,32 @@
       </header>
 	
 
+
+<article>
+    <h1 class="entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h1>
+    
+      <h1>概括</h1>
+
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
 
 <article>
     <h1 class="entry-title"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h1>
@@ -268,29 +296,6 @@ cli_help () {
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h1>
-    
-      <h1>1. R Language Install</h1>
-
-<h2>安装相关依赖</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
-yum install libRmath-*
-rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
-rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -300,10 +305,10 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     <a class="btn btn-default btn-sm" href="/page3/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 12</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 13</a></span>
   
     <a class="btn btn-default btn-sm" href="/page5/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page12/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
   
 </div>
 
@@ -323,6 +328,8 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
            <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
            
@@ -353,8 +360,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
            <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
            <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
-           
-           <li><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></li>
            
          </ul>
        </div>

@@ -136,6 +136,8 @@
   
     
   
+    
+  
 
 
 
@@ -191,6 +193,13 @@ sudo apt-get install wiznote
 </code></pre></div>
 <h1>安装 oh-my-zsh</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+</code></pre></div>
+<h1>编辑 ~/.zshrc</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/.rvm/bin
+[[ -s &quot;$HOME/.rvm/scripts/rvm&quot; ]] &amp;&amp; . &quot;$HOME/.rvm/scripts/rvm&quot;
+
+source ~/.bashrc
+source ~/.bash_profile
 </code></pre></div>
 <h1>安装 RVM &amp; Ruby</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">curl -sSL https://get.rvm.io | bash --ruby=1.9.3
@@ -269,7 +278,7 @@ ln -s /chan/download    ~/download
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/java/2014/01/13/about-sitemesh" title="SiteMesh介绍">Next &raquo;</a>
           
         </div>
       </div>

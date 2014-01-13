@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/page3/" />
+    <link rel="canonical" href="http://blog.javachen.com/page13/" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -174,158 +174,51 @@
 
 
 <article>
-    <h1 class="entry-title"><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></h1>
+    <h1 class="entry-title"><a href="/cloud/2011/06/16/touch-cloud-environment-which-it-is-eucalyptus">接触云服务环境Eucalyptus</a></h1>
     
-      <p>在使用hive过程中遇到这样的一个异常：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: ParseException line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
-</code></pre></div>
-<p>执行的hql语句如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@javachen.com ~]# hive -e &#39;select a.* from t a, t b where a.id=b.id&#39;
-</code></pre></div>
-<p>从异常信息中很难看出出错原因，hive.log中也没有打印出详细的异常对战信息。改用jdbc连接hive-server2，可以看到hive-server2中提示如下异常信息：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">13/10/17 09:57:48 ERROR ql.Driver: FAILED: ParseException line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
+      <p>最近在接触云计算平台，熟悉了<a href="http://www.eucalyptus.com/">Eucalyptus</a>，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用Eucalyptus搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。</p>
 
-org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
+<h1>Eucalyptus</h1>
 
-    at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:446)
-    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:441)
-    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:349)
-    at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:355)
-    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:95)
-    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:76)
-    at org.apache.hive.service.cli.operation.SQLOperation.run(SQLOperation.java:114)
-    at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatement(HiveSessionImpl.java:194)
-    at org.apache.hive.service.cli.CLIService.executeStatement(CLIService.java:155)
-    at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:191)
-    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1193)
-    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1)
-    at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
-    at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
-    at org.apache.hive.service.cli.thrift.TSetIpAddressProcessor.process(TSetIpAddressProcessor.java:38)
-    at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:206)
-    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
-    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
-    at java.lang.Thread.run(Thread.java:662)
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/cartesian-product-in-hive-inner-join"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
-    
-      <p>最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。</p>
-
-<p>最近半年多一直在做hadoop方面的工作，也就是接触hadoop才半年多时间。最开始接触hadoop是去年的11月21日，那天去Intel公司参加了两天的hadoop培训。培训的内容很多干货也有很多枯燥的东西，所以边听边瞌睡的听完了两天的培训内容。培训的ppt打印出来了，时不时地会翻看上面讲述的内容，然后在网上搜索些相关的资料。</p>
-
-<p>最先接触的hadoop发行版是Intel的IDH，刚开始使用IDH也就是用他的管理界面安装、部署hadoop集群，然后在8节点的集群上作hive两表关联的测试。测试结果不是很满意，但是对IDH倒是印象深刻。IDH的前端使用GWT开发，界面简洁，操作也比较方便，只是同步配置文件有时候非常慢，要等上一杯咖啡的时间。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
-    
-      <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/09/04/how-to-decide-map-number"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
-    
-      <p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
-
-<p>注意：</p>
-
-<blockquote>
-<p>使用时请删除{和%以及{和{之间的空格。</p>
-</blockquote>
-
-<h1>预览文章</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">source ~/.bash_profile
-jekyll server
-</code></pre></div>
-<h1>添加about me 边栏</h1>
-
-<p>参考<a href="http://www.the5fire.com/">the5fire的技术博客</a>在index.html页面加入如下代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;section&gt;
-&lt;h4&gt;About me&lt;/h4&gt;
-&lt;div&gt;
- 一个Java方案架构师，主要从事hadoop相关工作。&lt;a href=&quot;/about.html&quot;&gt;更多信息&lt;/a&gt; 
-&lt;br/&gt;
-&lt;br/&gt;
-&lt;strong&gt;&lt;font color=&quot;red&quot;&gt;&lt;a href=&quot;/atom.xml&quot; target=&quot;_blank&quot;&gt;订阅本站&lt;/a&gt;&lt;/font&gt;&lt;/strong&gt;
-&lt;br/&gt;&lt;br/&gt;
-联系博主：javachen.june[a]gmail.com
-&lt;/div&gt;
-&lt;/section&gt;
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/post/2013/08/31/my-jekyll-config"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
-    
-      <h1>前言</h1>
-
-<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
-
-<h1>ZooKeeper</h1>
-
-<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+<p>Elastic Utility Computing Architecture for Linking Your Programs To Useful Systems （Eucalyptus） 是一种开源的软件基础结构，用来通过计算集群或工作站群实现弹性的、实用的云计算。它最初是美国加利福尼亚大学 Santa Barbara 计算机科学学院的一个研究项目，现在已经商业化，发展成为了 Eucalyptus Systems Inc。不过，Eucalyptus 仍然按开源项目那样维护和开发。Eucalyptus Systems 还在基于开源的 Eucalyptus 构建额外的产品；它还提供支持服务。 它提供了如下这些高级特性：</p>
 
 <ul>
-<li>数据发布与订阅（配置中心）</li>
-<li>负载均衡</li>
-<li>命名服务(Naming Service)</li>
-<li>分布式通知/协调</li>
-<li>集群管理与Master选举</li>
-<li>分布式锁</li>
-<li>分布式队列</li>
+<li>与 EC2 和 S3 的接口兼容性（SOAP 接口和 REST 接口）。使用这些接口的几乎所有现有工具都将可以与基于 Eucalyptus 的云协作。</li>
+<li>支持运行在 Xen hypervisor 或 KVM 之上的 VM 的运行。未来版本还有望支持其他类型的 VM，比如 VMware。</li>
+<li>用来进行系统管理和用户结算的云管理工具。</li>
+<li>能够将多个分别具有各自私有的内部网络地址的集群配置到一个云内。</li>
 </ul>
 
+<h1>架构</h1>
+
+<p>Eucalyptus 包含五个主要组件，它们能相互协作共同提供所需的云服务。这些组件使用具有 WS-Security 的 SOAP 消息传递安全地相互通信。</p>
+
+<p>Cloud Controller (CLC) 在 Eucalyptus 云内，这是主要的控制器组件，负责管理整个系统。它是所有用户和管理员进入 Eucalyptus 云的主要入口。所有客户机通过基于 SOAP 或 REST 的 API 只与 CLC 通信。由 CLC 负责将请求传递给正确的组件、收集它们并将来自这些组件的响应发送回至该客户机。这是 Eucalyptus 云的对外 “窗口”。 </p>
+
+<p>Cluster Controller (CC) Eucalyptus 内的这个控制器组件负责管理整个虚拟实例网络。请求通过基于 SOAP 或 REST 的接口被送至 CC。CC 维护有关运行在系统内的 Node Controller 的全部信息，并负责控制这些实例的生命周期。它将开启虚拟实例的请求路由到具有可用资源的 Node Controller。 </p>
+
+<p>Node Controller (NC) 它控制主机操作系统及相应的 hypervisor（Xen 或最近的 KVM，很快就会支持 VMWare）。必须在托管了实际的虚拟实例（根据来自 CC 的请求实例化）的每个机器上运行 NC 的一个实例。 Walrus (W) 这个控制器组件管理对 Eucalyptus 内的存储服务的访问。请求通过基于 SOAP 或 REST 的接口传递至 Walrus。 </p>
+
+<p>Storage Controller (SC) Eucalyptus 内的这个存储服务实现 Amazon 的 S3 接口。SC 与 Walrus 联合工作，用于存储和访问虚拟机映像、内核映像、RAM 磁盘映像和用户数据。其中，VM 映像可以是公共的，也可以是私有的，并最初以压缩和加密的格式存储。这些映像只有在某个节点需要启动一个新的实例并请求访问此映像时才会被解密。</p>
+
+<p>一个 Eucalyptus 云安装可以聚合和管理来自一个或多个集群的资源。一个集群 是连接到相同 LAN 的一组机器。在一个集群中，可以有一个或多个 NC 实例，每个实例管理虚拟实例的实例化和终止。</p>
+
+<h1>Eucalyptus java源代码</h1>
+
+<p>在安装过程中，我把Eucalyptus的java源代码（eucalyptus-2.0.3-src-offline.tar.gz）下下来了，并按照<a href="http://open.eucalyptus.com/participate/sourcecode">官方文档</a>的说明好不容易把java代码通过ant编译然后手动复制粘贴导入eclipse了，现在这些代码能够通过编译了，并能够清楚的看到Eucalyptus的java代码部分的实现方式</p>
+
+<h1>参考文章</h1>
+
+<ul>
+<li>[1]<a href="http://blog.163.com/firstsko@126/blog/static/132168891201022935737810/">Eucalyptus 开启云端</a></li>
+<li>[2]<a href="http://open.eucalyptus.com/wiki/EucalyptusInstallationFedora_v2.0">Installing Eucalyptus (2.0) on Fedora 12 </a></li>
+<li>[3]<a href="http://blog.csdn.net/hispania/archive/2010/09/24/5902926.aspx">在Fedora 13 上搭建Eucalyptus</a></li>
+<li>[4]<a href="http://bbs.chinacloud.cn/archiver/showtopic-230.aspx">ubuntu 9.04 (server)下 eucalyptus 安装（推荐）</a></li>
+</ul>
 
      
 
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -338,13 +231,13 @@ jekyll server
   
     
     <a class="btn btn-default btn-sm" href="/">Home</a>
-    <a class="btn btn-default btn-sm" href="/page2/">&laquo; Prev</a>
+    <a class="btn btn-default btn-sm" href="/page12/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 3 of 13</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 13 of 13</a></span>
   
-    <a class="btn btn-default btn-sm" href="/page4/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
+    <span><a class="btn btn-default btn-sm disabled">Next &raquo;</a></span>
+    <span><a class="btn btn-default btn-sm disabled">Last</a></span>
   
 </div>
 

@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/java/2014/01/13/about-sitemesh</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-01-13T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-09T00:00:00+08:00</lastmod>
@@ -498,6 +505,12 @@
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
     </url>
+    
+    
+    
+    
+    
+    
     
     
     
