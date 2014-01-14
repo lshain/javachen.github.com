@@ -174,6 +174,282 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h1>
+    
+      <p><span style="color: #ff0000;">说明:</span></p>
+
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+
+<p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
+使用JavaScript API进行控制
+Ajax支持
+简单的JavaScript 或者XML 配置
+与HTML集成
+内建过滤、排序、查询、分组功能
+表格 footer/header自动计算
+行内编辑
+准备使用大数据集解决方案：分页，动态加载，智能渲染
+序列化为XML或CSV
+从 XML或CSV加载
+列锁定
+剪贴板支持
+简单的客户端到服务器端配置 (使用 dhtmlxConnector, 可用于 PHP, Java, .NET, ColdFusion)
+支持子表格
+列拖拽和移动
+行或列拖拽
+dhtmlxTree PRO Edition支持拖拽
+可以创建一个编辑器或是列格式化 (使用 eXcell – 继承自 cell 对象)
+组合框，日历以及更多的预定义eXcells
+Cell支持数学方程式
+不同的键盘映射
+简单的CSS风格或是预定义的皮肤
+对于rows/entire grid不可见的数据块 (用户数据)
+客户端排序(string, integer, date, custom)
+服务器端排序
+广泛的事件处理
+</code></pre></div>
+<h2>Step 1 – 引入文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; link rel =&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+    //we&#39;ll write script commands here
+&lt; /script&gt;
+</code></pre></div>
+<h2>Step 2 – 放置gird</h2>
+
+<p>有两种方式在一个页面放置grid，这里减少最常用的方法：创建一个div并给id熟悉设置一个惟一值。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+</code></pre></div>
+<p>下面初始化参数，首先定一个mygrid变量，然后定一个doInitGrid方法，方法内部进行mygrid初始化工作：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> var mygrid;
+ function doInitGrid(){
+ }
+</code></pre></div>
+<p>doInitGrid方法会包括以下代码：</p>
+
+<ul>
+<li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
+<li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
+<li>使用setHeader 方法定义表头；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
+<li>使用setSkin方法设置皮肤；</li>
+<li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
+</ul>
+
+<p>目前，doInitGrid方法如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;); //指定图片路径
+mygrid.setHeader(&quot;Model,Qty,Price&quot;); //设置表头显示
+grid.setInitWidths(&quot;*,150,150&quot;); //设置列的初始宽度
+grid.setColAlign(&quot;left,right,right&quot;); //设置列的水平对其方式
+mygrid.setSkin(&quot;light&quot;); //设置皮肤
+grid.init(); //显示调用初始化方法，必须的
+</code></pre></div>
+<p>现在需要做的是运行该方法，可以将该方法加入body的onload方法里或是使用jquery的方法。下面使用body的onload方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; body onload=&quot;doInitGrid();&quot;&gt;&lt; /body&gt;
+</code></pre></div>
+<p>这样在该页面初始化之后会显示如下：</p>
+
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_2_last.png" alt="" /></div>
+
+<p>说明：除了调用set方法之外，还可以如下风格定义：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid = new dhtmlXGridObject({
+        parent:&quot;a_grid&quot;,
+        image_path:&quot;codebase/imgs&quot;,
+        columns:[
+            { label: &quot;Sales&quot;,           width:50,   type:&quot;ed&quot; },
+            { label:[&quot;Book title&quot;,
+                 &quot;#text_filter&quot;],   width:150,  type:&quot;ed&quot; },
+            { label:[&quot;Author&quot;,
+                 &quot;#select_filter&quot;], width:150,  type:&quot;ed&quot; },
+            { label: &quot;Price&quot;,       width:50,   type:&quot;ed&quot; },
+            { label:&quot;In store&quot; ,    width:80,   type:&quot;ch&quot; },
+            { label:&quot;Shipping&quot; ,    width:50,   type:&quot;ed&quot; },
+            { label:&quot;Bestseller&quot; ,  width:50,   type:&quot;ed&quot; },
+            { label:&quot;Date&quot; ,    width:50,   type:&quot;ed&quot; }
+        ],
+        xml:&quot;data.xml&quot;
+    });
+</code></pre></div>
+<h2>Step 3 – 填充数据</h2>
+
+<p>你已经知道了dhtmlxGrid可以加载xml或cvs或json数据，这里主要演示dhtmlxGrid加载json数据。</p>
+
+<p>在上面的例子中每行有三列，故我们的json数据如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">{
+rows:[
+    {
+        id: &quot;a&quot;,
+        data: [Model 1, 100, 399]
+    },
+    {
+    id: &quot;b&quot;,
+        data: [Model 2, 50, 649]
+    },
+    {
+        id: &quot;c&quot;,
+           data: [ Model 3, 70, 499]
+    }
+]
+}
+</code></pre></div>
+<p>将上面存于data.json文件，然后在doInitGrid方法里调用以下方法：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.load (&quot;data.json&quot;，,&quot;json&quot;);
+</code></pre></div>
+<p>这时候页面展示如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?cache=&amp;media=dhtmlxgrid:step_3.png" alt="" /></div></p>
+
+<h2>Step 4 – 客户端排序</h2>
+
+<p>为了能够实习表格的客户端排序，必须调用grid的setColSorting（sortTypesStr）方法。sortTypesStr是一个类型列表，以逗号分隔。</p>
+
+<p>该类型值有以下四种：</p>
+
+<ul>
+<li>str – 作为字符串排序</li>
+<li>int - 以Integer值排序 (通常可以是任何数字);</li>
+<li>date – 以日期排序</li>
+<li>custom sorting –自定义的更加复杂的排序方式(for example to sort days of week).</li>
+</ul>
+
+<p>接下来我们对上面的例子进行排序。上例中每行有三列，第一列为字符串，后两列为数字，故可以调用以下方法进行排序。注意，该方法应该在init方法之前执行。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColSorting(&quot;str,int,int&quot;);
+</code></pre></div>
+<p>这时候单击最后一列表头，结果如下：
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_4.png" alt="" /></div></p>
+
+<h2>Step 5 – 单元格格式化和编辑</h2>
+
+<p>Grid中使用单元格的编辑器（或是eXcells – 继承自 Cells, Cell 或 Columns types）来定义值的格式和编辑方式。你可以根据你的需要创建eXcells。</p>
+
+<p>设定单元格的类型非常容易，其可以用一行代码定义。这里有一些常见的编辑器，如简单的编辑器代码为“ed”，多行编辑“txt”，只读单元格“ro”，复选框“ch”，价格的格式化“price”。
+默认情况下所有的列是“ro”，也可以使用以下方法类设置编辑类型：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mygrid.setColTypes(&quot;ed,ed,price&quot;);
+</code></pre></div>
+<p>Excells格式化有以下几种：</p>
+
+<ul>
+<li>link：超链接</li>
+<li>img：图片</li>
+<li>price：价格</li>
+<li>dyn：动态行</li>
+</ul>
+
+<p>Excell 复杂编辑器有以下几种：</p>
+
+<ul>
+<li>cp：colorpicker</li>
+<li>calck：允许调用grid.setNumberFormat的计算器</li>
+<li>dhxCalendar：日历，日期格式可以通过grid.setDateFormat设置</li>
+<li>dhxCalendarA：日历，日期格式可以通过grid.setDateFormat设置，单元格可以编辑</li>
+<li>calendar：YUI Calendar</li>
+<li>clist：多选组件</li>
+</ul>
+
+<p>使用其他组件作为单元格编辑器:</p>
+
+<ul>
+<li>grid：使用dhtmlxgrid</li>
+<li>stree ：使用dhtmlxtree</li>
+<li>context：使用dhtmlxmenu</li>
+<li>combo：使用dhtmlxCombo</li>
+</ul>
+
+<p>Excells特别用途
+sub_row：允许单元格作为一个可展开的子单元格，就想查看明细一样。</p>
+
+<p>两个扩展:</p>
+
+<ul>
+<li>sub<u>row</u>ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub<u>row</u>grid – 允许创建一个子表作为一个子行的内容</li>
+</ul>
+
+<p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
+<div class="pic"><img src="http://docs.dhtmlx.com/lib/exe/fetch.php?media=dhtmlxgrid:step_5.png" alt="" /></div></p>
+
+<h2>Step 6 – 行操作方法</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+</code></pre></div>
+<p>代码中addRow() 方法的一些说明：
+* 创建一个惟一值 (number of millisecond since 1970) 来作为row的标识；
+* 在最后一行后面添加一新行，该行有新的id，值为空；
+* 选中最近创建的行 (by index), 不掉用 On-Select事件，不掉用选中行之前事件并且聚焦到选中行(如果垂直滚动条存在，则滚动对应位置)。</p>
+
+<p>代码中removeRow() 的一些说明（一行行的）:
+* 得到选中行id；
+* 删除指定行id的行</p>
+
+<h2>Step 7 – 事件</h2>
+
+<p>添加事件调用attachEvent 方法，如下行选中事件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+</code></pre></div>
+<h2>Step 8 – Code</h2>
+
+<p>最后的代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; title&gt;dhtmlxGrid Sample Page&lt; /title&gt;
+&lt; link rel=&quot;STYLESHEET&quot; type=&quot;text/css&quot; href=&quot;codebase/dhtmlxgrid.css&quot; /&gt;
+&lt; script src=&quot;codebase/dhtmlxcommon.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgrid.js&quot;&gt;&lt; /script&gt;
+&lt; script src=&quot;codebase/dhtmlxgridcell.js&quot;&gt;&lt; /script&gt;
+&lt; script&gt;
+var mygrid;
+function doInitGrid(){
+mygrid = new dhtmlXGridObject(&#39;mygrid_container&#39;);
+mygrid.setImagePath(&quot;codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Model,Qty,Price&quot;);
+mygrid.setInitWidths(&quot;*,150,150&quot;);
+mygrid.setColAlign(&quot;left,right,right&quot;)
+mygrid.setSkin(&quot;light&quot;);
+mygrid.setColSorting(&quot;str,int,int&quot;);
+mygrid.setColTypes(&quot;ed,ed,price&quot;);
+mygrid.attachEvent(&quot;onRowSelect&quot;,doOnRowSelected);
+mygrid.init();
+mygrid.load (&quot;data.json&quot;,&quot;json&quot;);
+}
+function addRow(){
+var newId = (new Date()).valueOf()
+mygrid.addRow(newId,&quot;&quot;,mygrid.getRowsNum())
+mygrid.selectRow(mygrid.getRowIndex(newId),false,false,true);
+}
+function removeRow(){
+var selId = mygrid.getSelectedId()
+mygrid.deleteRow(selId);
+}
+function doOnRowSelected(rowID,celInd){
+alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index &quot;+celInd);
+}
+&lt; /script&gt;
+&lt; body onload=&quot;doInitGrid()&quot;&gt;
+&lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
+&lt; /body&gt;
+</code></pre></div>
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/cloud/2011/07/07/some-resources-about-openstack">网上收集的关于OpenStack的一些资源</a></h1>
     
       <p><li>
@@ -643,209 +919,6 @@ $adodb_name = &quot;onemc&quot;;
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/cloud/2011/06/22/the-introduction-of-eucalyptus-ee-features-and-functions">Eucalyptus EE的介绍及功能说明</a></h1>
-    
-      <p>Eucalyptus企业版2.0是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。</p>
-
-<p>Eucalyptus的设计目的是从根本上易于安装和尽可能没有侵扰。该软件高度模块化，具有行业标准，和语言无关。它提供了可以与EC2兼容的云计算平台和与S3兼容的云存储平台。<!--more-->
-<h1>功能亮点</h1>
-<ul>
-    <li>无缝管理多个管理程序环境（Xen的，vSphere的，KVM，ESX，ESXi的）下一个管理控制台</li>
-    <li>启用跨平台的客户机操作系统包括微软Windows和Linux</li>
-    <li>高级存储集成器（iSCSI，SAN，NAS），您可以轻松地连接和管理Eucalyptus云内现有的存储系统</li>
-    <li>完善的用户和组管理，允许私有云资源的精确控制</li>
-    <li>测试，开发和部署能够顺利过渡到公共云或反之亦然，没有任何修改</li>
-    <li>快速，轻松地建立与基于VMware的虚拟化环境和其他公共云混合云</li>
-    <li>启用先进设备，最先进的企业，如可扩展的存储整合，监控，审计，报表</li>
-    <li>利用充满活力的生态系统围绕亚马逊AWS构建，提供解决方案，无缝地与Eucalyptus兼容</li>
-</ul>
-<h1>优点</h1>
-<ul>
-    <li>建立一个私有云，让你接入到亚马逊AWS</li>
-    <li>允许云在原有的所有硬件和软件类型很容易的部署</li>
-    <li>客户可以利用其全球用户社区</li>
-    <li>Eucalyptus是与Linux和多个管理程序兼容</li>
-    <li>Eucalyptus还支持商业Linux发行版本：红帽企业Linux（RHEL）和SUSE Linux企业服务器（SLES）</li>
-</ul>
-<h1>对于IT管理员的好处</h1>
-<ul>
-    <li>提供自助服务的IT基础设施供应到最终用户需要的IT资源迅速</li>
-    <li>没有额外的资金保持现有的基础设施费用，降低运营成本</li>
-    <li>保持防火墙后面的关键数据</li>
-    <li>技术是对现有的硬件和软件基础设施覆盖，而不是替代</li>
-    <li>避免锁定在第三方公共云供应商</li>
-    <li>可轻松转换之间来回私人和公共云</li>
-</ul>
-&nbsp;
-<h1>Eucalyptus EE新特性</h1>
-<h2><strong><span style="color: #0000ff;">对windows VM的支持</span></strong></h2>
-1.  运行windows 虚拟机在Eucalyptus 云环境上运行，目前支持Windows 2003 Server,Windows 2008 Server和Windows 7。<br />
-2.  试用Euca2ools管理和控制windows虚拟机。<br />
-3.  试用EC2兼容的命令从正在运行的windows虚拟机创建新的虚拟机<br />
-4.  在Eucalyptus中通过标准的RDP客户端工具，使用AWS “get-password”访问虚拟机实例<br />
-5.  在多个hypervisors环境中部署windows虚拟机，包括Xen、Kvm、VMware（ESX/ESXi）<br />
-6.  基于windows 操作系统安装文件（ISO镜像、CD/DVD）创建新的windows虚拟机
-<h2><strong><span style="color: #0000ff;">对VMware的支持</span></strong></h2>
-1.支持VMware vCenter 4.0,ESX/ESXi 4.0!<br />
-2.与VMware vSphere 客户端兼容<br />
-3.能够合并VMware(ESX/ESXi)和开源的hypervisors（Xen、Kvm）到一个单独的云环境<br />
-4.通过Eucalyptus的软件扩展一些云的基本特性（例如IPs，安全组，S3）到一个VMware基础架构</p>
-
-<p>&nbsp;
-<h2><strong><span style="color: #0000ff;">引入SAN的支持</span></strong></h2>
-Eucalyptus EE引入对SAN的支持，使你能够整合enterprise-grade SAN(Storage Area Network) 硬件设备到Eucalyptus云环境。SAN扩展SC并在Eucalyptus中运行的虚拟机和SAN设备之间提供高性能的数据通道。Eucalyptus EE的SAN支持为Eucalyptus云环境提供了一个企业级的EBS解决方案。</p>
-
-<p>&nbsp;
-<h1>Eucalyptus的功能</h1>
-<h2><strong><span style="color: #0000ff;">基本组成部分及功能</span></strong></h2>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">云控制器（CLC）</td>
-<td width="279" valign="top">1.对外提供EC2和Web接口，管理各类组件中的可用虚拟资源（服务、网络、存储）。<br />
-2.资源抽象，决定哪个簇将提供给实例，分发请求给CC。<br />
-3.管理运行的实例。</td>
-<td width="234" valign="top">CLC是整个云结构的前端。CLC为客户工具提供与EC2/S3兼容的网络接口，与Eucalyptus的组件通信。</td>
-</tr>
-<tr>
-<td width="102" valign="top">存储控制器（SC）</td>
-<td width="279" valign="top">1.提供与EBS类似的存储功能，能够与大量的文件存储系统交互。<br />
-2.使用AoE或者iSCSI协议为实例提供块存储。<br />
-3.允许在存储系统中（如Walrus）建立快照。</td>
-<td width="234" valign="top">SC提供实例使用的块存储。<br />
-与EBS类似。&nbsp;</td></tr></tbody></table></p>
-
-<p>&nbsp;
-
-<tr>
-<td width="102" valign="top">Walrus控制器（WS3）</td>
-<td width="279" valign="top">1.允许用户存储持久化的数据。<br />
-2.提供REST接口操作数据，设置数据访问策略。<br />
-3.使用S3 API存储和获取虚拟镜像和数据。</td>
-<td width="234" valign="top">WS3使用与S3 API兼容的REST和SOAP   API提供简单的存储服务</td>
-</tr>
-<tr>
-<td width="102" valign="top">控制簇（CC）</td>
-<td width="279" valign="top">1.接收CLC的请求，然后部署实例。<br />
-2.收集虚拟机的信息并决定在哪个节点控制上执行虚拟机。<br />
-3.为实例提供有效的虚拟网络。<br />
-4.收集NCs提交的信息，并报告给CLC。</td>
-<td width="234" valign="top">CC管理NC，部署和管理在节点上的实例，在Eucalyptus联网模型的类型下管理在控制节点上运行的实例的联网。<br />
-CC连接着云控制器CLC和控制节点NC。</td>
-</tr>
-<tr>
-<td width="102" valign="top">节点控制器（NC）&nbsp;</td></tr></p>
-
-<p>&nbsp;
-<td width="279" valign="top">1.托管虚拟机实例<br />
-2.收集节点上相关的数据资源的可用性和利用率，并报告给控制簇CC。<br />
-3.管理虚拟机的生命周期，能够获取和清除镜像的本地拷贝。<br />
-4.维护虚拟网络</td>
-<td width="234" valign="top">UEC的节点使用虚拟化技术使KVM能作为管理程序在服务器上运行。当用户安装UEC节点时，UEC将自动安装KVM。UEC的实例就是在管理程序下运行的虚拟机。Eucalyptus支持其他管理程序，如Xen。<br />
-节点控制器在每一个节点上运行，控制着节点上实例的生命周期。</td>
-
-<tr>
-<td width="102" valign="top">VMware   Broker</td>
-<td width="279" valign="top">允许 Eucalyptus直接地或通过 VMware<strong> </strong>Vcenter在   VMware设备部署虚拟机，在CC和 VMware  hypervisors(ESX/ESXi)起一个连接作用<strong> </strong></td>
-<td width="234" valign="top">Eucalyptus   EE额外的一个组件，用于对VMware的支持</td>
-</tr>
-
-
-&nbsp;</p>
-
-<p><span style="font-size: 20px; font-weight: bold; color: #0000ff;">管理员拥有的功能</span>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">用户管理</td>
-<td width="279" valign="top">1.  添加用户（邮件通知，设置管理员）<br />
-2.  查看用户，设置账户是否激活<br />
-3.  删除用户</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">组管理</td>
-<td width="279" valign="top">1.  添加用户组<br />
-2.  查看用户组<br />
-3.  删除用户组<br />
-4.  添加/删除组员</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">权限管理</td>
-<td width="279" valign="top">1.给组设置权限</td>
-<td width="234" valign="top"></td>
-</tr>
-<tr>
-<td width="102" valign="top">Web接口</td>
-<td width="279" valign="top">1.  查看、下载证书<br />
-2.  查看上传的镜像，并能修改镜像状态<br />
-3.  配置管理。可以设置云主机IP、DNS、Walrus、Cluster和SAN<br />
-4.  审计报表。查看用户状态、资源使用率、系统日志、已注册的组件</td>
-<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
-</tr>
-<tr>
-<td width="102" valign="top">组件管理</td>
-<td width="279" valign="top">1.  可以注册Cloud、Walrus、Storage、Node，并可以查看、删除<br />
-2.  启动、停止云服务<br />
-3.  允许转换卷的实现方式<br />
-4.  可以查看、修改配置文件</td>
-<td width="234" valign="top">对外以SOAP和REST提供接口</td>
-</tr>
-</tbody>
-</table>
-&nbsp;</p>
-
-<p>&nbsp;
-<h2><strong><span style="color: #0000ff;">使用者拥有的功能</span></strong></h2>
-<table border="1" cellspacing="0" cellpadding="0" width="614" align="left">
-<tbody>
-<tr>
-<td width="102" valign="top">模块</td>
-<td width="279" valign="top">功能</td>
-<td width="234" valign="top">说明</td>
-</tr>
-<tr>
-<td width="102" valign="top">Web接口</td>
-<td width="279" valign="top">1.  用户可以注册帐号，修改信息及密码<br />
-2.  查看、下载证书<br />
-3.  查看上传的镜像</td>
-<td width="234" valign="top">这部分是web 管理界面提供的功能</td>
-</tr>
-<tr>
-<td width="102" valign="top">组件管理</td>
-<td width="279" valign="top">1.  启动、停止节点<br />
-2.  可以绑定、上传、注册、查看镜像，也可以删除、取消绑定镜像<br />
-3.  查看本地可用的资源<br />
-4.  可以查看、启动、停止、重启虚拟机<br />
-5.  可以登入到一个windows虚拟机实例<br />
-6.  创建、附件、脱离、删除快照和卷</td>
-<td width="234" valign="top">通过Euca2ools工具完成这些功能</td>
-</tr>
-</tbody>
-</table>
-&nbsp;</p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -879,9 +952,11 @@ CC连接着云控制器CLC和控制节点NC。</td>
        <div class="category">
          <ul>
            
+           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
+           
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
+           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
@@ -908,8 +983,6 @@ CC连接着云控制器CLC和控制节点NC。</td>
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
            <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
-           
-           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
            
          </ul>
        </div>

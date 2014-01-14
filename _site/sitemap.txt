@@ -22,6 +22,7 @@ http://blog.javachen.com/page11/index.html
 http://blog.javachen.com/page12/index.html
 http://blog.javachen.com/page13/index.html
 
+http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins
 http://blog.javachen.com/java/2014/01/13/about-sitemesh
 http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system
 http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy

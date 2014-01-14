@@ -147,7 +147,7 @@ SiteMesh3只有Alpha2版本而且很久没更新了，和SpringMVC配合，有�
 
 ## 测试
 
-访问test.jsp页面，查看源代码会现实如下：
+访问test.jsp页面，查看源代码会显示如下：
 
 ```html
 <html>

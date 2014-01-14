@@ -1,15 +1,15 @@
 ---
 layout: post
-title: 重装系统之后
+title: 重装linux-mint系统之后
 category: post
 tags: [gnome、 linux]
-description: 记录重装系统之后的一些操作
+description: 记录重装linux-mint系统之后的一些操作
 ---
 
 # 安装常用工具
 
 ```
-sudo apt-get install curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
+sudo apt-get install ctags curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
 ```
 
 # 安装ibus

@@ -174,6 +174,39 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
+    
+      <h1>前言</h1>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h1>ZooKeeper</h1>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h1>
     
       <h1>概括</h1>
@@ -273,29 +306,6 @@ cli_help () {
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h1>
-    
-      <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
-
-<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
-
-<h1>JPDA 简介</h1>
-
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -329,9 +339,11 @@ cli_help () {
        <div class="category">
          <ul>
            
+           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
+           
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装系统之后</a></li>
+           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
@@ -358,8 +370,6 @@ cli_help () {
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
            <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
-           
-           <li><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></li>
            
          </ul>
        </div>
