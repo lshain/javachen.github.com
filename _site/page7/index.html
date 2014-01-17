@@ -174,6 +174,340 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h1>
+    
+      <h1>安装版本</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop-2.0.0-cdh4.2.0
+hbase-0.94.2-cdh4.2.0
+hive-0.10.0-cdh4.2.0
+jdk1.6.0_38
+</code></pre></div>
+<h1>安装前说明</h1>
+
+<ul>
+<li>安装目录为/opt</li>
+<li>检查hosts文件</li>
+<li>关闭防火墙</li>
+<li>设置时钟同步</li>
+</ul>
+
+<h1>使用说明</h1>
+
+<p>安装hadoop、hbase、hive成功之后启动方式为：</p>
+
+<ul>
+<li>启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh</li>
+<li>启动hbase: desktop3上执行start-hbase.xml</li>
+<li>启动hive: desktop1上执行hive</li>
+</ul>
+
+<h1>规划</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1             NameNode、Hive、ResourceManager
+    192.168.0.2             SSNameNode
+    192.168.0.3             DataNode、HBase、NodeManager
+    192.168.0.4             DataNode、HBase、NodeManager
+    192.168.0.6             DataNode、HBase、NodeManager
+    192.168.0.7             DataNode、HBase、NodeManager
+    192.168.0.8             DataNode、HBase、NodeManager
+</code></pre></div>
+<h1>部署过程</h1>
+
+<h2>系统和网络配置</h2>
+
+<ol>
+<li><p>修改每台机器的名称</p>
+
+<p>[root@desktop1 ~]# cat /etc/sysconfig/network
+NETWORKING=yes
+HOSTNAME=desktop1</p></li>
+<li><p>在各个节点上修改/etc/hosts增加以下内容:</p></li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# cat /etc/hosts
+    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+    192.168.0.1     desktop1
+    192.168.0.2     desktop2
+    192.168.0.3     desktop3
+    192.168.0.4     desktop4
+    192.168.0.6     desktop6
+    192.168.0.7     desktop7
+    192.168.0.8     desktop8
+</code></pre></div>
+<ol>
+<li>配置ssh无密码登陆
+以下是设置desktop1上可以无密码登陆到其他机器上。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# ssh-keygen
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
+    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
+</code></pre></div>
+<ol>
+<li>每台机器上关闭防火墙：</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# service iptables stop
+</code></pre></div>
+<h1>安装Hadoop</h1>
+
+<h2>配置Hadoop</h2>
+
+<p>将jdk1.6.0_38.zip上传到/opt，并解压缩。
+将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。</p>
+
+<p>在NameNode上配置以下文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
+hdfs-site.xml 
+    dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
+    dfs.datanode.data.dir指定DataNode存储blocks的目录，
+    dfs.namenode.secondary.http-address指定Secondary NameNode地址。
+    开启WebHDFS。
+slaves 添加DataNode节点主机
+</code></pre></div>
+<ol>
+<li>core-site.xml
+该文件指定fs.defaultFS连接desktop1，即NameNode节点。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# pwd
+/opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
+[root@desktop1 hadoop]# cat core-site.xml 
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+&lt;!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) --&gt;
+&lt;property&gt;
+     &lt;name&gt;fs.defaultFS&lt;/name&gt;
+         &lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&gt;
+     &lt;value&gt;hdfs://desktop1&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;fs.trash.interval&lt;/name&gt;
+&lt;value&gt;10080&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
+&lt;value&gt;10080&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre></div>
+<ol>
+<li>hdfs-site.xml
+该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat hdfs-site.xml 
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;1&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+  &lt;value&gt;/opt/data/hadoop-${user.name}&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
+&lt;value&gt;desktop1:50070&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+&lt;value&gt;desktop2:50090&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+&lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre></div>
+<ol>
+<li>masters
+设置namenode和secondary namenode节点。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat masters 
+desktop1
+desktop2
+</code></pre></div>
+<ol>
+<li>slaves
+设置哪些机器上安装datanode节点。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat slaves 
+desktop3
+desktop4
+desktop6
+desktop7
+desktop8
+</code></pre></div>
+<h2>配置MapReduce</h2>
+
+<ol>
+<li>mapred-site.xml
+配置使用yarn计算框架，以及jobhistory的地址。</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat mapred-site.xml
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+&lt;property&gt;
+ &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+ &lt;value&gt;yarn&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+ &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+ &lt;value&gt;desktop1:10020&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+ &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+ &lt;value&gt;desktop1:19888&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre></div>
+<ol>
+<li>yarn-site.xml
+主要配置resourcemanager地址以及<code>yarn.application.classpath</code>（这个路径很重要，要不然集成hive时候会提示找不到class）</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat yarn-site.xml 
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;configuration&gt;
+&lt;property&gt;
+    &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+    &lt;value&gt;desktop1:8031&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+    &lt;value&gt;desktop1:8032&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+    &lt;value&gt;desktop1:8030&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
+    &lt;value&gt;desktop1:8033&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
+    &lt;value&gt;desktop1:8088&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
+    &lt;name&gt;yarn.application.classpath&lt;/name&gt;
+    &lt;value&gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
+    $HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
+    $HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
+    $YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
+    $YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+    &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+    &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
+    &lt;value&gt;/opt/data/yarn/local&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
+    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;description&gt;Where to aggregate logs&lt;/description&gt;
+    &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
+    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
+    &lt;value&gt;/user&lt;/value&gt;
+ &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre></div>
+<h2>同步配置文件</h2>
+
+<p>修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~] # cat .bashrc 
+# .bashrc
+alias rm=&#39;rm -i&#39;
+alias cp=&#39;cp -i&#39;
+alias mv=&#39;mv -i&#39;
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+# User specific environment and startup programs
+export LANG=zh_CN.utf8
+export JAVA_HOME=/opt/jdk1.6.0_38
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
+export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
+export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
+export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
+export HADOOP_MAPRED_HOME=${HADOOP_HOME}
+export HADOOP_COMMON_HOME=${HADOOP_HOME}
+export HADOOP_HDFS_HOME=${HADOOP_HOME}
+export YARN_HOME=${HADOOP_HOME}
+export HADOOP_YARN_HOME=${HADOOP_HOME}
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
+</code></pre></div>
+<p>修改配置文件之后，使其生效。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# source .bashrc 
+</code></pre></div>
+<p>将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上</p>
+
+<h2>启动脚本</h2>
+
+<p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]hadoop namenode -format
+</code></pre></div>
+<p>在desktop1上启动hdfs：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#start-dfs.sh
+</code></pre></div>
+<p>在desktop1上启动mapreduce：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#start-yarn.sh
+</code></pre></div>
+<p>在desktop1上启动historyserver：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
+</code></pre></div>
+<p>查看MapReduce：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop1:8088/cluster
+</code></pre></div>
+<p>查看节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop2:8042/
+http://desktop2:8042/node
+</code></pre></div>
+<h2>检查集群进程</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# jps
+5389 NameNode
+5980 Jps
+5710 ResourceManager
+7032 JobHistoryServer
+[root@desktop2 ~]# jps
+3187 Jps
+3124 SecondaryNameNode
+[root@desktop3 ~]# jps
+3187 Jps
+3124 DataNode
+5711 NodeManager
+</code></pre></div>
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h1>
     
       <h1>安装虚拟机</h1>
@@ -526,173 +860,6 @@ svn://source.pentaho.org/svnkettleroot/Kettle/trunk
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h1>
-    
-      <p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
-
-<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
-
-<h1>Starting the CLI</h1>
-
-<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
-如果你有一个但节点的集群，则使用以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
-</code></pre></div>
-<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
-</code></pre></div>
-<p>或者，可以直接执行以下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
-</code></pre></div>
-<p>登录成功之后，可以看到：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
-Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
-</code></pre></div>
-<p>你必须指定连接一个节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
-</code></pre></div>
-<h1>Creating a Keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
-</code></pre></div>
-<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
-    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
-    and strategy_options = [{replication_factor:1}];
-</code></pre></div>
-<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
-
-<h1>Use a keyspace</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
-</code></pre></div>
-<h1>Creating a Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
-WITH comparator = UTF8Type
-AND key_validation_class=UTF8Type
-AND column_metadata = [
-{column_name: full_name, validation_class: UTF8Type}
-{column_name: email, validation_class: UTF8Type}
-{column_name: state, validation_class: UTF8Type}
-{column_name: gender, validation_class: UTF8Type}
-{column_name: birth_year, validation_class: LongType}
-];
-</code></pre></div>
-<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<u>name，email,state,gender,birth</u>year.comparator, key<u>validation</u>class和validation<u>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
-下面命令创建一个名称为 blog</u>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
-</code></pre></div>
-<h1>Creating a Counter Column Family</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
-      default_validation_class=CounterColumnType 
-      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
-</code></pre></div>
-<p>插入一行和计数列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
-</code></pre></div>
-<p>增加计数：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
-</code></pre></div>
-<h1>Inserting Rows and Columns</h1>
-
-<p>以下命令以一个特点的行key值插入列到users中</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
-[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
-</code></pre></div>
-<p>更新数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
-</code></pre></div>
-<p>获取数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
-</code></pre></div>
-<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
-
-<p>查询数据： </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
-</code></pre></div>
-<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
-</code></pre></div>
-<h1>Reading Rows and Columns</h1>
-
-<p>使用List命令查询记录，默认查询100条记录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
-</code></pre></div>
-<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
-<li>ascii</li>
-<li>bytes</li>
-<li>integer (a generic variable-length integer type)</li>
-<li>lexicalUUID</li>
-<li>long</li>
-<li>utf8</li>
-例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
-</code></pre></div>
-<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
-[default@demo] ASSUME users COMPARATOR AS ascii;
-[default@demo] ASSUME users VALIDATOR AS ascii;
-</code></pre></div>
-<h1>Setting an Expiring Column</h1>
-
-<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
-</code></pre></div>
-<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
-
-<h1>Indexing a Column</h1>
-
-<p>给birth_year添加一个二级索引：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
-        WITH comparator = UTF8Type AND column_metadata = 
-        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
-</code></pre></div>
-<p>由于该列被索引了，所以可以直接通过该列查询：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
-</code></pre></div>
-<h1>Deleting Rows and Columns</h1>
-
-<p>删除yomama索引的coupon_code列：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
-[default@demo] GET users [&#39;yomama&#39;];
-</code></pre></div>
-<p>或者删除整行：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
-</code></pre></div>
-<h1>Dropping Column Families and Keyspaces</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
-[default@demo] DROP KEYSPACE demo;
-</code></pre></div>
-<h1>For help</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
-</code></pre></div>
-<p>查看某一个命令的详细说明：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
-</code></pre></div>
-<h1>To Quit</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
-</code></pre></div>
-<h1>To Execute Script</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
-</code></pre></div>
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
-<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
-</ul>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -726,6 +893,8 @@ AND column_metadata = [
        <div class="category">
          <ul>
            
+           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
+           
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
@@ -755,8 +924,6 @@ AND column_metadata = [
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

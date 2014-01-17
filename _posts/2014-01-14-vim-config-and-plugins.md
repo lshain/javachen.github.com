@@ -96,7 +96,9 @@ map <leader>n <plug>NERDTreeTabsToggle <CR>         "设置打开目录树的快
 
 快捷键：`ctrl+p`
 
-# 3. 参考
+# 3. 安装oh-my-zsh
+
+# 4. 参考
 
 - [https://github.com/wklken/k-vim](https://github.com/wklken/k-vim)
 - [http://www.zhihu.com/question/19989337](http://www.zhihu.com/question/19989337)

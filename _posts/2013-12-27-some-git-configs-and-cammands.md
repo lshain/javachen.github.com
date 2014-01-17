@@ -202,6 +202,8 @@ git pull                         # 抓取远程仓库所有分支更新并合并
 git pull --no-ff                 # 抓取远程仓库所有分支更新并合并到本地，不要快进合并
 git fetch origin                 # 抓取远程仓库所有更新
 git fetch origin remote-branch:local-branch #抓取remote-branch分支的更新
+git fetch origin --tags 		 # 抓取远程上的所有分支
+git checkout -b <new-branch> <remote_tag> # 抓取远程上的分支
 git merge origin/master          # 将远程主分支合并到本地当前分支
 git co --track origin/branch     # 跟踪某个远程分支创建相应的本地分支
 git co -b <local_branch> origin/<remote_branch>  # 基于远程分支创建本地分支，功能同上

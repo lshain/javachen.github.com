@@ -174,6 +174,43 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></h1>
+    
+      <h1>Region 概念</h1>
+
+<p>Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Table       (HBase table)
+    Region       (Regions for the table)
+         Store          (Store per ColumnFamily for each Region for the table)
+              MemStore        (MemStore for each Store for each Region for the table)
+              StoreFile       (StoreFiles for each Store for each Region for the table)
+                    Block     (Blocks within a StoreFile within a Store for each Region for the table)
+</code></pre></div>
+<h1>Region 大小</h1>
+
+<p>Region的大小是一个棘手的问题，需要考量如下几个因素。</p>
+
+<ul>
+<li>Regions是可用性和分布式的最基本单位</li>
+<li>HBase通过将region切分在许多机器上实现分布式。也就是说，你如果有16GB的数据，只分了2个region， 你却有20台机器，有18台就浪费了。</li>
+<li>region数目太多就会造成性能下降，现在比以前好多了。但是对于同样大小的数据，700个region比3000个要好。</li>
+<li>region数目太少就会妨碍可扩展性，降低并行能力。有的时候导致压力不够分散。这就是为什么，你向一个10节点的HBase集群导入200MB的数据，大部分的节点是idle的。</li>
+<li>RegionServer中1个region和10个region索引需要的内存量没有太多的差别。</li>
+</ul>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hbase/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h1>
     
       <p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
@@ -291,33 +328,6 @@ cd master
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
-    
-      <p>Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。</p>
-
-<h1>Git配置</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
-git config --global user.email &quot;june.chan@foxmail.com&quot;
-git config --global color.ui true
-git config --global alias.co checkout
-git config --global alias.ci commit
-git config --global alias.st status
-git config --global alias.br branch
-git config -l  # 列举所有配置
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/git/2013/12/27/some-git-configs-and-cammands"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -349,6 +359,8 @@ git config -l  # 列举所有配置
        <div class="category">
          <ul>
            
+           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
+           
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
@@ -378,8 +390,6 @@ git config -l  # 列举所有配置
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

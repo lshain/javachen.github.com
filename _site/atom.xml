@@ -4,12 +4,118 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-14T22:41:06+08:00</updated>
+ <updated>2014-01-17T11:12:34+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
  </author>
 
+ 
+ <entry>
+   <title><![CDATA[HBase Region split策略]]></title>
+   <link href="http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy"/>
+   <updated>2014-01-16T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy</id>
+   <content type="html">&lt;h1&gt;Region 概念&lt;/h1&gt;
+
+&lt;p&gt;Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Table       (HBase table)
+    Region       (Regions for the table)
+         Store          (Store per ColumnFamily for each Region for the table)
+              MemStore        (MemStore for each Store for each Region for the table)
+              StoreFile       (StoreFiles for each Store for each Region for the table)
+                    Block     (Blocks within a StoreFile within a Store for each Region for the table)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Region 大小&lt;/h1&gt;
+
+&lt;p&gt;Region的大小是一个棘手的问题，需要考量如下几个因素。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Regions是可用性和分布式的最基本单位&lt;/li&gt;
+&lt;li&gt;HBase通过将region切分在许多机器上实现分布式。也就是说，你如果有16GB的数据，只分了2个region， 你却有20台机器，有18台就浪费了。&lt;/li&gt;
+&lt;li&gt;region数目太多就会造成性能下降，现在比以前好多了。但是对于同样大小的数据，700个region比3000个要好。&lt;/li&gt;
+&lt;li&gt;region数目太少就会妨碍可扩展性，降低并行能力。有的时候导致压力不够分散。这就是为什么，你向一个10节点的HBase集群导入200MB的数据，大部分的节点是idle的。&lt;/li&gt;
+&lt;li&gt;RegionServer中1个region和10个region索引需要的内存量没有太多的差别。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;最好是使用默认的配置，可以把热的表配小一点(或者受到split热点的region把压力分散到集群中)。如果你的cell的大小比较大(100KB或更大)，就可以把region的大小调到1GB。region的最大大小在hbase配置文件中定义：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; &amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;hbase.hregion.max.filesize&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;10 * 1024 * 1024 * 1024&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;说明：&lt;/em&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;当region的大小超过了上面配置的值的时候，该region就会被拆分，具体的拆分策略见下文。&lt;/li&gt;
+&lt;li&gt;上面的值也可以针对每个表单独设置，例如在hbase shell中设置：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;create &amp;#39;t&amp;#39;,&amp;#39;f&amp;#39;
+disable &amp;#39;t&amp;#39;
+alter &amp;#39;t&amp;#39;, METHOD =&amp;gt; &amp;#39;table_att&amp;#39;, MAX_FILESIZE =&amp;gt; &amp;#39;134217728&amp;#39;
+enable &amp;#39;t&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Region 拆分策略&lt;/h1&gt;
+
+&lt;p&gt;Region的分割操作是不可见的，因为Master不会参与其中。RegionServer拆分region的步骤是，先将该region下线，然后拆分，将其子region加入到META元信息中，再将他们加入到原本的RegionServer中，最后汇报Master。&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;执行split的是CompactSplitThread线程类。&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2&gt;自定义拆分策略&lt;/h2&gt;
+
+&lt;p&gt;可以通过设置&lt;code&gt;RegionSplitPolicy&lt;/code&gt;的实现类来指定拆分策略，RegionSplitPolicy类的实现类有：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ConstantSizeRegionSplitPolicy
+    IncreasingToUpperBoundRegionSplitPolicy
+        DelimitedKeyPrefixRegionSplitPolicy
+        KeyPrefixRegionSplitPolicy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;对于split，并不是设置了&lt;code&gt;hbase.hregion.max.filesize&lt;/code&gt;（默认10G）为很大就保证不split了，需要有以下的算法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;IncreasingToUpperBoundRegionSplitPolicy是0.94.0默认region split策略。这里的split有一个判断条件，先计算这tableRegionsCount（regionserver上的这个table的online的region个数），然后循环计算此region的所有store是否太大，这是通过getSizeToCheck方法计算出一个size,若当前的store总大小大于这个值，则表示此region需要split。getSizeToCheck的计算方法首先判断tableRegionsCount是否等于0，若是则返回&lt;code&gt;hbase.hregion.max.filesize&lt;/code&gt;，若不是，则计算&lt;code&gt;Math.min(getDesiredMaxFileSize(),this.flushSize * (tableRegionsCount * tableRegionsCount)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ConstantSizeRegionSplitPolicy，仅仅当region大小超过常量值（&lt;code&gt;hbase.hregion.max.filesize&lt;/code&gt;大小）时，才进行拆分。&lt;/li&gt;
+&lt;li&gt;DelimitedKeyPrefixRegionSplitPolicy，保证以分隔符前面的前缀为splitPoint，保证相同RowKey前缀的数据在一个Region中&lt;/li&gt;
+&lt;li&gt;KeyPrefixRegionSplitPolicy，保证具有相同前缀的row在一个region中（要求设计中前缀具有同样长度）。指定rowkey前缀位数划分region，通过读取&lt;code&gt;table的prefix_split_key_policy.prefix_length&lt;/code&gt;属性，该属性为数字类型，表示前缀长度，在进行split时，按此长度对splitPoint进行截取。此种策略比较适合固定前缀的rowkey。当table中没有设置该属性，或其属性不为Integer类型时，指定此策略效果等同与使用IncreasingToUpperBoundRegionSplitPolicy。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;举个例子：&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;假设使用hbase.hregion.memstore.flush.size 128M, hregion.max.filesize为10G， 那么每次region增长情况为：512M,1152M,2G,3,2G,4,6G,6,2G,etc。当region增长到9个时，9&lt;em&gt;9&lt;/em&gt;128M/1024=10.125G &amp;gt;10G,至此以后region split大小都固定为10G。&lt;/p&gt;
+
+&lt;h2&gt;配置拆分策略&lt;/h2&gt;
+
+&lt;p&gt;你可以在hbase配置文件中定义全局的拆分策略，设置&lt;code&gt;hbase.regionserver.region.split.policy&lt;/code&gt;的值即可，也可以在创建和修改表时候指定：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;// 更新现有表的split策略
+HBaseAdmin admin = new HBaseAdmin( conf);
+HTable hTable = new HTable( conf, &amp;quot;test&amp;quot; );
+HTableDescriptor htd = hTable.getTableDescriptor();
+HTableDescriptor newHtd = new HTableDescriptor(htd);
+newHtd.setValue(HTableDescriptor. SPLIT_POLICY, KeyPrefixRegionSplitPolicy.class .getName());// 指定策略
+newHtd.setValue(&amp;quot;prefix_split_key_policy.prefix_length&amp;quot;, &amp;quot;2&amp;quot;);
+newHtd.setValue(&amp;quot;MEMSTORE_FLUSHSIZE&amp;quot;, &amp;quot;5242880&amp;quot;); // 5M
+admin.disableTable( &amp;quot;test&amp;quot;);
+admin.modifyTable(Bytes. toBytes(&amp;quot;test&amp;quot;), newHtd);
+admin.enableTable( &amp;quot;test&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;说明：&lt;/em&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;上面的不同策略可以在不同的业务场景下使用，特别是第三种和第四种一般关注和使用的比较少。&lt;/li&gt;
+&lt;li&gt;如果想关闭自动拆分改为手动拆分，建议同时修改&lt;code&gt;hbase.hregion.max.filesize&lt;/code&gt;和&lt;code&gt;hbase.regionserver.region.split.policy&lt;/code&gt;值。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1&gt;参考文章&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://blog.csdn.net/doliu6/article/details/13505319&quot;&gt;HBase的Compact和Split源码分析与应用--基于0.94.5&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;http://blog.csdn.net/yangbutao/article/details/8930126&quot;&gt;HBase源码分析之org.apache.hadoop.hbase.regionserver包&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://abloz.com/hbase/book.html&quot;&gt;HBase 官方文档中文版&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href=&quot;http://blog.toby941.sinaapp.com/hbase-region-split.html&quot;&gt;hbase region split策略&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title><![CDATA[vim配置和插件管理]]></title>
@@ -97,7 +203,9 @@ map &amp;lt;leader&amp;gt;n &amp;lt;plug&amp;gt;NERDTreeTabsToggle &amp;lt;CR&am
 
 &lt;p&gt;快捷键：&lt;code&gt;ctrl+p&lt;/code&gt;&lt;/p&gt;
 
-&lt;h1&gt;3. 参考&lt;/h1&gt;
+&lt;h1&gt;3. 安装oh-my-zsh&lt;/h1&gt;
+
+&lt;h1&gt;4. 参考&lt;/h1&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/wklken/k-vim&quot;&gt;https://github.com/wklken/k-vim&lt;/a&gt;&lt;/li&gt;
@@ -599,6 +707,8 @@ git stash drop                   # 删除暂存区
 git pull --no-ff                 # 抓取远程仓库所有分支更新并合并到本地，不要快进合并
 git fetch origin                 # 抓取远程仓库所有更新
 git fetch origin remote-branch:local-branch #抓取remote-branch分支的更新
+git fetch origin --tags          # 抓取远程上的所有分支
+git checkout -b &amp;lt;new-branch&amp;gt; &amp;lt;remote_tag&amp;gt; # 抓取远程上的分支
 git merge origin/master          # 将远程主分支合并到本地当前分支
 git co --track origin/branch     # 跟踪某个远程分支创建相应的本地分支
 git co -b &amp;lt;local_branch&amp;gt; origin/&amp;lt;remote_branch&amp;gt;  # 基于远程分支创建本地分支，功能同上
@@ -1769,210 +1879,6 @@ log4j.threshold=INFO
           &amp;lt;name&amp;gt;!hadoop.profile&amp;lt;/name&amp;gt;
         &amp;lt;/property&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
- </entry>
- 
- <entry>
-   <title><![CDATA[编译hbase源代码并打补丁]]></title>
-   <link href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"/>
-   <updated>2013-10-28T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches</id>
-   <content type="html">&lt;p&gt;写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！&lt;/p&gt;
-
-&lt;h1&gt;下载源代码&lt;/h1&gt;
-
-&lt;p&gt;从&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;说明：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;-b 指定下载哪个分支&lt;/li&gt;
-&lt;li&gt;最后一个参数指定下载下来的文件名称&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1&gt;添加snappy压缩支持&lt;/h1&gt;
-
-&lt;h2&gt;编译snappy&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
-cd snappy
-sh autogen.sh
-./configure 
-sudo make install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;编译hadoop-snappy&lt;/h2&gt;
-
-&lt;p&gt;降低gcc版本到4.4:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo yum install gcc-4.4
-rm /usr/bin/gcc
-ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;建立libjvm软连接&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;!-- more --&gt;
-
-&lt;p&gt;下载并编译hadoop-snappy&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
-cd hadoop-snappy
-make package -Dsnappy.prefix=/usr/local/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;安装jar包到本地仓库&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
-mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;添加lzo压缩支持&lt;/h1&gt;
-
-&lt;p&gt;暂不在此列出，请参考网上文章。&lt;/p&gt;
-
-&lt;h1&gt;编译Protobuf&lt;/h1&gt;
-
-&lt;p&gt;注意：目前只能装2.4.1版本的，装最新版本的可能会缺少文件。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
-unzip protobuf-2.4.1.zip
-cd protobuf-2.4.1
-./configure
-make
-sudo make install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;测试是否安装成功，如果成功你会看到：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ protoc
-Missing input file.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果安装失败，你可能会看到：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ protoc
-protoc: error while loading shared libraries: libprotobuf.so.7: cannot open shared object file: No such file or directory
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;编译hbase&lt;/h1&gt;
-
-&lt;p&gt;进入到cdh4-0.94.6_4.4.0 目录，然后运行mvn基本命令。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd cdh4-0.94.6_4.4.0
-mvn clean install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;忽略测试，请添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-DskipTests
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;添加MAVEN运行时jvm大小，请在mvn前面添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;MAVEN_OPTS=&amp;quot;-Xmx2g&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;生成javadoc和文档，请添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;javadoc:aggregate site assembly:single
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;生成release加入security和native包，请添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Prelease,security,native
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;基于hadoop2.0进行编译，请添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Dhadoop.profile=2.0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;添加hadoop-snappy支持，请添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Prelease,hadoop-snappy -Dhadoop-snappy.version=0.0.1-SNAPSHOT
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果你添加了一些java代码，在每个文件头没有添加license，则需要添加如下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;-Drat.numUnapprovedLicenses=200
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;综上，完整命令如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;MAVEN_OPTS=&amp;quot;-Xmx2g&amp;quot; mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;生成patch&lt;/h1&gt;
-
-&lt;p&gt;修改代码之后，在提交代码之前，运行如下命令生成patch：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;gt;../XXXXX.patch
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果你已经将该动文件加入到提交缓存区，即执行了如下代码：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git add .
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;你可以使用如下代码打补丁：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff --staged &amp;gt;../XXXXX.patch
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果在提交之后，想生成patch，执行如下命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git format-patch -1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;git format-patch&lt;/code&gt;的详细说明请参考：&lt;a href=&quot;http://devillived.net/forum/home.php?mod=space&amp;amp;uid=2&amp;amp;do=blog&amp;amp;id=211&quot;&gt;git patch操作&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;更多diff的命令如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;lt;file&amp;gt;   # 比较当前文件和暂存区文件差异
-git diff
-git diff &amp;lt;$id1&amp;gt; &amp;lt;$id2&amp;gt;    # 比较两次提交之间的差异
-git diff &amp;lt;branch1&amp;gt;..&amp;lt;branch2&amp;gt;    # 在两个分支之间比较 
-git diff --staged   # 比较暂存区和版本库差异
-git diff --cached   # 比较暂存区和版本库差异
-git diff --stat     # 仅仅比较统计信息
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;打patch&lt;/h1&gt;
-
-&lt;p&gt;打patch：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git apply ../XXXXX.patch
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;测试patch是否打成功：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git apply --check  ../add-aggregate-in-hbase-shell.patch
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果出现以下错误：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git apply ../XXXXX.patch
-fatal: git apply: bad git-diff - expected /dev/null on line 4
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;请安装dos2unix：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install dos2unix -y
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后，执行如下代码：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;dos2unix ../add-aggregate-in-hbase-shell.patch
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;最后再尝试打补丁。&lt;/p&gt;
-
-&lt;p&gt;注意：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;请注意，git apply 是一个事务性操作的命令，也就是说，要么所有补丁都打上去，要么全部放弃。&lt;/li&gt;
-&lt;li&gt;对于传统的 diff 命令生成的补丁，则只能用 git apply 处理。对于 format-patch 制作的新式补丁，应当使用 git am 命令。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;升级版本&lt;/h1&gt;
-
-&lt;p&gt;当你fork了&lt;a href=&quot;https://github.com/cloudera/hbase&quot;&gt;Cloudera github&lt;/a&gt;代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为&lt;code&gt;cdh4-0.94.6_4.3.0&lt;/code&gt;，而cdh最新分支为&lt;code&gt;cdh4-0.94.6_4.4.0&lt;/code&gt;，现在如何将cdh上的分支下载到自己的参考呢？&lt;/p&gt;
-
-&lt;p&gt;查看远程服务器地址和仓库名称：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
-origin  git@github.com:javachen/hbase.git (fetch)
-origin  git@github.com:javachen/hbase.git (push)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;添加远程仓库地址：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git remote add cdh git@github.com:cloudera/hbase.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;再一次查看远程服务器地址和仓库名称：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
-cdh https://github.com/cloudera/hbase (fetch)
-cdh https://github.com/cloudera/hbase (push)
-origin  git@github.com:javachen/hbase.git (fetch)
-origin  git@github.com:javachen/hbase.git (push)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;抓取远程仓库更新：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git fetch cdh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后，再执行下面命令查看远程分支：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git branch -r
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;下载cdh上的分支：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git checkout cdh/cdh4-0.94.6_4.4.0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;将其提交到自己的远程仓库：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;排错&lt;/h1&gt;
-
-&lt;p&gt;如果在启动hbase的服务过程中出现如下日志：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: HBase Unknown
-2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Subversion Unknown -r Unknown
-2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: Compiled by Unknown on Unknown
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;请查看src/saveVersion.sh文件的编码及换行符是否和你的操作系统一致。编码应该设置为UTF-8，如果你使用的是linux系统，则换行符应该为unix/linux换行符，不应该为window换行符。&lt;/p&gt;
-
-&lt;h1&gt;参考文章&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;[1] &lt;a href=&quot;http://robbinfan.com/blog/34/git-common-command&quot;&gt;Git常用命令备忘&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[2] &lt;a href=&quot;http://devillived.net/forum/home.php?mod=space&amp;amp;uid=2&amp;amp;do=blog&amp;amp;id=211&quot;&gt;git patch操作&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[3] &lt;a href=&quot;http://blog.tsnrose.com/blog/2012/04/18/git-fetch/&quot;&gt;Git Fetch拉取他人分支&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[4] &lt;a href=&quot;http://smilejay.com/2012/08/generate-a-patch-from-a-commit/&quot;&gt;git根据commit生成patch&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</content>
  </entry>
  
  

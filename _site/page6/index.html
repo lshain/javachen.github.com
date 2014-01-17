@@ -174,6 +174,43 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h1>
+    
+      <p>kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？</p>
+
+<p>上述问题可以拆分为两个问题：</p>
+
+<ol>
+<li>从命令行接受一个参数作为一个字段</li>
+<li>合并输入流和这个字段</li>
+</ol>
+
+<h2>问题1</h2>
+
+<p>第一个问题可以使用kettle中<code>获取系统信息</code>组件，定义一个变量，该值来自命令行参数，见下图：</p>
+
+<p><img src="/assets/images/2013/get-a-field-from-paramter.png" alt="get-a-field-from-paramter"></p>
+
+<h2>问题2</h2>
+
+<p>第二个问题可以使用kettle中<code>记录关联 (笛卡尔输出)</code>组件将两个组件关联起来，输出一个笛卡尔结果集，关联条件设定恒为true，在运行前设置第一个参数的值，然后运行即可。</p>
+
+<p><img src="/assets/images/2013/run-kettle-for-join-two-inputs.png" alt="run-kettle-for-join-two-inputs"></p>
+
+<h2>下载脚本</h2>
+
+<p>最后，kettle转换文件下载地址：<a href="/assets/images/2013/join-a-paramter-to-input-in-kettle.zip">在这里</a>。</p>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h1>
     
       <p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
@@ -1352,340 +1389,6 @@ desktop8
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h1>
-    
-      <h1>安装版本</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop-2.0.0-cdh4.2.0
-hbase-0.94.2-cdh4.2.0
-hive-0.10.0-cdh4.2.0
-jdk1.6.0_38
-</code></pre></div>
-<h1>安装前说明</h1>
-
-<ul>
-<li>安装目录为/opt</li>
-<li>检查hosts文件</li>
-<li>关闭防火墙</li>
-<li>设置时钟同步</li>
-</ul>
-
-<h1>使用说明</h1>
-
-<p>安装hadoop、hbase、hive成功之后启动方式为：</p>
-
-<ul>
-<li>启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh</li>
-<li>启动hbase: desktop3上执行start-hbase.xml</li>
-<li>启动hive: desktop1上执行hive</li>
-</ul>
-
-<h1>规划</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1             NameNode、Hive、ResourceManager
-    192.168.0.2             SSNameNode
-    192.168.0.3             DataNode、HBase、NodeManager
-    192.168.0.4             DataNode、HBase、NodeManager
-    192.168.0.6             DataNode、HBase、NodeManager
-    192.168.0.7             DataNode、HBase、NodeManager
-    192.168.0.8             DataNode、HBase、NodeManager
-</code></pre></div>
-<h1>部署过程</h1>
-
-<h2>系统和网络配置</h2>
-
-<ol>
-<li><p>修改每台机器的名称</p>
-
-<p>[root@desktop1 ~]# cat /etc/sysconfig/network
-NETWORKING=yes
-HOSTNAME=desktop1</p></li>
-<li><p>在各个节点上修改/etc/hosts增加以下内容:</p></li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# cat /etc/hosts
-    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-    192.168.0.1     desktop1
-    192.168.0.2     desktop2
-    192.168.0.3     desktop3
-    192.168.0.4     desktop4
-    192.168.0.6     desktop6
-    192.168.0.7     desktop7
-    192.168.0.8     desktop8
-</code></pre></div>
-<ol>
-<li>配置ssh无密码登陆
-以下是设置desktop1上可以无密码登陆到其他机器上。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# ssh-keygen
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-    [root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
-</code></pre></div>
-<ol>
-<li>每台机器上关闭防火墙：</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# service iptables stop
-</code></pre></div>
-<h1>安装Hadoop</h1>
-
-<h2>配置Hadoop</h2>
-
-<p>将jdk1.6.0_38.zip上传到/opt，并解压缩。
-将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。</p>
-
-<p>在NameNode上配置以下文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
-hdfs-site.xml 
-    dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
-    dfs.datanode.data.dir指定DataNode存储blocks的目录，
-    dfs.namenode.secondary.http-address指定Secondary NameNode地址。
-    开启WebHDFS。
-slaves 添加DataNode节点主机
-</code></pre></div>
-<ol>
-<li>core-site.xml
-该文件指定fs.defaultFS连接desktop1，即NameNode节点。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# pwd
-/opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
-[root@desktop1 hadoop]# cat core-site.xml 
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;!--fs.default.name for MRV1 ,fs.defaultFS for MRV2(yarn) --&gt;
-&lt;property&gt;
-     &lt;name&gt;fs.defaultFS&lt;/name&gt;
-         &lt;!--这个地方的值要和hdfs-site.xml文件中的dfs.federation.nameservices一致--&gt;
-     &lt;value&gt;hdfs://desktop1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
-&lt;value&gt;10080&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<ol>
-<li>hdfs-site.xml
-该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat hdfs-site.xml 
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;dfs.replication&lt;/name&gt;
-  &lt;value&gt;1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hadoop-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
-&lt;value&gt;desktop1:50070&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
-&lt;value&gt;desktop2:50090&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-&lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
-&lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<ol>
-<li>masters
-设置namenode和secondary namenode节点。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat masters 
-desktop1
-desktop2
-</code></pre></div>
-<ol>
-<li>slaves
-设置哪些机器上安装datanode节点。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat slaves 
-desktop3
-desktop4
-desktop6
-desktop7
-desktop8
-</code></pre></div>
-<h2>配置MapReduce</h2>
-
-<ol>
-<li>mapred-site.xml
-配置使用yarn计算框架，以及jobhistory的地址。</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat mapred-site.xml
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
- &lt;value&gt;desktop1:10020&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
- &lt;value&gt;desktop1:19888&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<ol>
-<li>yarn-site.xml
-主要配置resourcemanager地址以及<code>yarn.application.classpath</code>（这个路径很重要，要不然集成hive时候会提示找不到class）</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]# cat yarn-site.xml 
-&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8031&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8032&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8030&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8033&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
-    &lt;value&gt;desktop1:8088&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;description&gt;Classpath for typical applications.&lt;/description&gt;
-    &lt;name&gt;yarn.application.classpath&lt;/name&gt;
-    &lt;value&gt;$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,
-    $HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
-    $HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
-    $YARN_HOME/share/hadoop/yarn/*,$YARN_HOME/share/hadoop/yarn/lib/*,
-    $YARN_HOME/share/hadoop/mapreduce/*,$YARN_HOME/share/hadoop/mapreduce/lib/*&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
-    &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
-    &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/local&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;description&gt;Where to aggregate logs&lt;/description&gt;
-    &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
-    &lt;value&gt;/opt/data/yarn/logs&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;yarn.app.mapreduce.am.staging-dir&lt;/name&gt;
-    &lt;value&gt;/user&lt;/value&gt;
- &lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<h2>同步配置文件</h2>
-
-<p>修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~] # cat .bashrc 
-# .bashrc
-alias rm=&#39;rm -i&#39;
-alias cp=&#39;cp -i&#39;
-alias mv=&#39;mv -i&#39;
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-        . /etc/bashrc
-fi
-# User specific environment and startup programs
-export LANG=zh_CN.utf8
-export JAVA_HOME=/opt/jdk1.6.0_38
-export JRE_HOME=$JAVA_HOME/jre
-export CLASSPATH=./:$JAVA_HOME/lib:$JRE_HOME/lib:$JRE_HOME/lib/tools.jar
-export HADOOP_HOME=/opt/hadoop-2.0.0-cdh4.2.0
-export HIVE_HOME=/opt/hive-0.10.0-cdh4.2.0
-export HBASE_HOME=/opt/hbase-0.94.2-cdh4.2.0
-export HADOOP_MAPRED_HOME=${HADOOP_HOME}
-export HADOOP_COMMON_HOME=${HADOOP_HOME}
-export HADOOP_HDFS_HOME=${HADOOP_HOME}
-export YARN_HOME=${HADOOP_HOME}
-export HADOOP_YARN_HOME=${HADOOP_HOME}
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HIVE_HOME/bin
-</code></pre></div>
-<p>修改配置文件之后，使其生效。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# source .bashrc 
-</code></pre></div>
-<p>将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上</p>
-
-<h2>启动脚本</h2>
-
-<p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]hadoop namenode -format
-</code></pre></div>
-<p>在desktop1上启动hdfs：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#start-dfs.sh
-</code></pre></div>
-<p>在desktop1上启动mapreduce：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#start-yarn.sh
-</code></pre></div>
-<p>在desktop1上启动historyserver：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 hadoop]#mr-jobhistory-daemon.sh start historyserver
-</code></pre></div>
-<p>查看MapReduce：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop1:8088/cluster
-</code></pre></div>
-<p>查看节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop2:8042/
-http://desktop2:8042/node
-</code></pre></div>
-<h2>检查集群进程</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# jps
-5389 NameNode
-5980 Jps
-5710 ResourceManager
-7032 JobHistoryServer
-[root@desktop2 ~]# jps
-3187 Jps
-3124 SecondaryNameNode
-[root@desktop3 ~]# jps
-3187 Jps
-3124 DataNode
-5711 NodeManager
-</code></pre></div>
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -1719,6 +1422,8 @@ http://desktop2:8042/node
        <div class="category">
          <ul>
            
+           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
+           
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
@@ -1748,8 +1453,6 @@ http://desktop2:8042/node
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

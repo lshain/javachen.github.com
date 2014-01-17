@@ -174,6 +174,52 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h1>
+    
+      <p>首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。</p>
+
+<p>当然，您可以参考<a href="http://wiki.pentaho.com/display/ServerDoc2x/Building+and+Debugging+Pentaho+with+Eclipse" target="_blank">官方文档</a>构建源码。</p>
+
+<p>Pentaho BI Server打包后的文件存于<a href="http://sourceforge.net/projects/pentaho/files/Business%20Intelligence%20Server/" target="_blank">这里</a>，其中包括（本文使用的是3.9.0版本）：biserver-ce-3.9.0-stable.zip，bi-platform-3.9.0-stable-sources.zip，biserver-ce-3.9.0-stable-javadoc.zip。</p>
+
+<p>将biserver-ce-3.9.0-stable.zip解压之后执行<em>biserver-ce/start-pentaho.bat</em>（或是再linux环境下：<em>biserver-ce/start-pentaho.sh</em>），即可成功启动biserver。现在我想将这个工程导入到eclipse然后调式跟踪代码，怎么做呢？</p>
+
+<p><strong>以下操作是在eclipse3.7+tomcat 6.20的环境中进行的。</strong></p>
+
+<p>在eclipse中创建一个web项目，名称为pentaho，然后将<em>biserver-ce/tomcat/webapps</em>下的<code>pentaho-style</code>和<code>sw-style</code>拷贝到你的tomcat 6服务器的webapps目录下，将pentaho文件下的所有文件拷贝到工程下的WebContent目录下。由于biserver需要访问pentaho-solutions下的文件，故还需要修改<code>WEB-INF/web.xml</code>文件你的以下配置，用于指定pentaho-solutions的路径：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt; context-param &gt;
+    &lt; param-name &gt;solution-path&lt; /param-name&gt;
+    &lt; param-value &gt;/home/june.chan/opt/biserver-ce/pentaho-solutions&lt; /param-value&gt;
+&lt; /context-param &gt;
+</code></pre></div>
+<p>现在即可部署项目，运行<code>biserver-ce/data/start_hypersonic.bat</code>（用于启动数据库），然后启动tomcat，就可以通过<em>http://localhost:8080/pentaho</em>访问biserver。如果启动报错，需要将hsqldb-1.8.0.7.jar包，拷贝到应用路径下（<em>\tomcat-pci-test\biserver-ce\tomcat\webapps\pentaho\WEB-INF\lib</em>）。<br />
+现在可以看到biserver的登录页面，但是还是没有看到biserver的源代码。</p>
+
+<p><strong>接下来，构建源代码。</strong>
+在biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib下面有很多名称为pentaho-bi-platform-########-3.9.0-stable.jar的jar文件，这些即是biserver源码编译之后的class文件。在bi-platform-3.9.0-stable-sources.zip压缩文件你即可以看到这些class文件的源代码。将这些src包解压然后拷贝到之前新建的pentaho工程的src目录下。</p>
+
+<p><strong><font color="red">需要注意的是：</font></strong>
+1.这些src jar包你只报告java文件，不包括配置文件：log4j配置文件，hibernate配置和实体映射文件，ehcache配置文件<br />
+2.上面的配置文件需要到biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib目录下的pentaho-bi-platform-########-3.9.0-stable.jar文件中寻找。<br />
+3.
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-security-3.9.0-stable.jar文件中有ldap的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-engine-services-3.9.0-stable.jar文件中有ehcache的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-plugin-actions-3.9.0-stable.jar文件中有log4j的配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-repository-3.9.0-stable.jar文件中有hibernate配置文件，
+* biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib/pentaho-bi-platform-security-userroledao-3.9.0-stable.jar文件中有hibernated的实体映射文件。</p>
+
+<p>4.biserver-ce-3.9.0-stable.zip的lib（<code>biserver-ce/tomcat/webapps/pentaho/WEB-INF/lib</code>）目录下的servlete jar包的版本为2.3，版本过低需要替换为更高版本知道源码中不在有servlete编译错误</p>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h1>
     
       <p>很久没写文章了，最近在关注Pentaho。<br />
@@ -642,179 +688,6 @@ for ( var i = 0; i &lt; header_row.cells.length; i++) {
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h1>
-    
-      <p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
-现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
-如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
-首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
-上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
-<pre escaped="true" lang="javascript" line="1">function maf() {
-    return false;
-}
-tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
-
-<p>tree.setSkin(&#39;dhx<u>skyblue&#39;);
-tree.setImagePath(&quot;../../codebase/imgs/csh</u>yellowbooks/&quot;);
-tree.enableDragAndDrop(true);
-tree.setDragHandler(maf);
-tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../common/tree<u>05</u>drag<u>n</u>drop.xml&quot;);</p>
-
-<p>function s<u>control() {
-    this.</u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
-        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
-    }
-    this.<u>dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
-        return htmlObject;
-    }
-    this.</u>dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
-        return this;
-    }
-}
-var sinput = document.getElementById(&#39;sInput&#39;);
-tree.dragger.addDragLanding(sinput, new s_control);
-</pre></p>
-
-<p>为了使tree支持拖拽功能，必须添加以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
-
-<p>为了实现自定义拖拽的输出，添加了以下代码：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
-
-<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
-<pre escaped="true" lang="javascript" line="1">    this.<u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
-        targetHtmlObject.style.backgroundColor = &quot;&quot;;
-        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
-    }
-    this.</u>dragIn = function(htmlObject, shtmlObject) {
-        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
-        return htmlObject;
-    }
-    this._dragOut = function(htmlObject) {
-        htmlObject.style.backgroundColor = &quot;&quot;;
-        return this;
-    }
-</pre></p>
-
-<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
-<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
-
-<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
-
-<pre escaped="true" lang="javascript" line="1">
-    var insertId;
-    this._drag = function(sourceHtmlObject, dhtmlObject,
-        targetHtmlObject, e) {
-    var zel = e;
-    while (zel.tagName != "TABLE")
-        zel = zel.parentNode;
-    var grid = zel.grid;
-    if (!grid)
-        return;
-    grid.setActive();
-    if (!grid._mCol || e.button == 2)
-        return;
-    e = grid.getFirstParentOfType(e, "TD")
-
-    if ((grid) &amp;&amp; (!grid._colInMove)) {
-        grid.resized = null;
-        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
-            insertId = e._cellIndex + 1;
-    }
-
-    mygrid.insertColumn(insertId, "12", "ed", 80);
-}
-</pre>
-
-<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
-<div class="pic">
-<img class="aligncenter" title="QQ20110724211631" src="/assets/images/2011/07/QQ20110724211631.png" alt="" />
-</div></p>
-
-<p>本例最后的代码：
-<pre escaped="true" lang="javascript" line="1">
-    var mygrid;
-    function maf() {
-        return false;
-    }</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
-tree.setSkin(&#39;dhx_skyblue&#39;);
-tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
-tree.enableDragAndDrop(true);
-//tree.setDragHandler(maf);
-tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
-tree.openAllItems(0);
-
-function s_control() {
-    var insertId;
-    this._drag = function(sourceHtmlObject, dhtmlObject,
-            targetHtmlObject, e) {
-        var zel = e;
-        while (zel.tagName != &quot;TABLE&quot;)
-            zel = zel.parentNode;
-        var grid = zel.grid;
-        if (!grid)
-            return;
-        grid.setActive();
-        if (!grid._mCol || e.button == 2)
-            return;
-        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
-
-        if ((grid) &amp;&amp; (!grid._colInMove)) {
-            grid.resized = null;
-            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
-                insertId = e._cellIndex + 1;
-        }
-
-        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
-    }
-}
-mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
-mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
-mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
-          Date of Publication&quot;);
-mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
-mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
-mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
-mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
-mygrid.init();
-mygrid.setSkin(&quot;dhx_skyblue&quot;);
-mygrid.enableHeaderMenu();
-mygrid.enableColumnMove(true);
-mygrid.setColumnHidden(2, true);
-mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
-});
-mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
-tree.dragger.addDragLanding(mygrid.hdr, new s_control);
-</code></pre></div>
-<p></pre>
-本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
-
-<h2>参考文章</h2>
-
-<p><li>
-Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<u>drag</u>n<u>drop/08</u>pro<u>drag</u>out.html</a>
-</li>
-<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
-</li>
-<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
-</li></p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -848,6 +721,8 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
        <div class="category">
          <ul>
            
+           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
+           
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
@@ -877,8 +752,6 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>

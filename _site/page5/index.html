@@ -174,6 +174,25 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h1>
+    
+      <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
+
+<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h1>
     
       <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
@@ -326,43 +345,6 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h1>
-    
-      <p>kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？</p>
-
-<p>上述问题可以拆分为两个问题：</p>
-
-<ol>
-<li>从命令行接受一个参数作为一个字段</li>
-<li>合并输入流和这个字段</li>
-</ol>
-
-<h2>问题1</h2>
-
-<p>第一个问题可以使用kettle中<code>获取系统信息</code>组件，定义一个变量，该值来自命令行参数，见下图：</p>
-
-<p><img src="/assets/images/2013/get-a-field-from-paramter.png" alt="get-a-field-from-paramter"></p>
-
-<h2>问题2</h2>
-
-<p>第二个问题可以使用kettle中<code>记录关联 (笛卡尔输出)</code>组件将两个组件关联起来，输出一个笛卡尔结果集，关联条件设定恒为true，在运行前设置第一个参数的值，然后运行即可。</p>
-
-<p><img src="/assets/images/2013/run-kettle-for-join-two-inputs.png" alt="run-kettle-for-join-two-inputs"></p>
-
-<h2>下载脚本</h2>
-
-<p>最后，kettle转换文件下载地址：<a href="/assets/images/2013/join-a-paramter-to-input-in-kettle.zip">在这里</a>。</p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -396,6 +378,8 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
        <div class="category">
          <ul>
            
+           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
+           
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
@@ -425,8 +409,6 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
            <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
-           
-           <li><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></li>
            
          </ul>
        </div>
