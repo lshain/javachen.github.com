@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-21T10:30:59+08:00</updated>
+ <updated>2014-01-21T11:35:20+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -176,6 +176,309 @@
 &lt;li&gt;&lt;a href=&quot;http://havee.me/&quot;&gt;Havee&amp;#39;s Space&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://mytharcher.github.io/&quot;&gt;闭门造轮子&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title><![CDATA[ssh连接环境变量问题]]></title>
+   <link href="http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access"/>
+   <updated>2014-01-18T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access</id>
+   <content type="html">&lt;h1&gt;1. 问题&lt;/h1&gt;
+
+&lt;p&gt;RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Localhost_ip=$(ifconfig |awk -F &amp;#39;addr:|Bcast&amp;#39; &amp;#39;/Bcast/{print $2}&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;由于普通用户jboss不能直接识别ifconfig命令，只能使用全路径&lt;code&gt;/sbin/ifconfig&lt;/code&gt;，目前处理方式为修改&lt;code&gt;~/.bash_profile&lt;/code&gt;文件添加环境变量如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;PATH=$PATH:$HOME/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;改成如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;PATH=$PATH:$HOME/bin:/sbin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。&lt;/p&gt;
+
+&lt;p&gt;出现如下问题：&lt;/p&gt;
+
+&lt;p&gt;远程主机B通过ssh远程执行启动脚本XX.sh，报错如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;bash: ifconfg: command not found
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;2. 问题分析&lt;/h1&gt;
+
+&lt;p&gt;测试前准备，追加调用说明语句，如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/profile
+[root@node3 ~]# vim /etc/profile
+echo &amp;quot;/etc/profile begin:&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+...
+
+unset i
+unset pathmunge
+
+echo &amp;quot;invoke /etc/profile&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# vim /etc/bashrc
+...
+# vim:ts=4:sw=4
+
+echo &amp;quot;invoke /etc/bashrc&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# vim /root/.bash_profile
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+export PATH
+
+echo &amp;quot;invoke ~/.bash_profile&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# vim /root/.bashrc
+...
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+echo &amp;quot;invoke ~/.bashrc&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# vim /home/user01/.bash_profile
+...
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+export PATH
+
+echo &amp;quot;invoke ~/.bashrc&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# vim /home/user01/.bashrc
+...
+# User specific aliases and functions
+
+echo &amp;quot;invoke ~/.bashrc&amp;quot;
+echo &amp;quot;$PATH&amp;quot;
+echo &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;分 user 和 root 用户，3 种场景进行测试，如下：&lt;/p&gt;
+
+&lt;h2&gt;普通用户 User&lt;/h2&gt;
+
+&lt;h3&gt;场景1：&lt;/h3&gt;
+
+&lt;p&gt;本机使用 su 命令切换到普通用户 （属于 Login 方式）&lt;/p&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
+&lt;li&gt;Login 方式，文件调用顺序为： /etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/li&gt;
+&lt;li&gt;Login 之后，系统 PATH 为：/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su - user
+[root@node3 ~]# hostname -i
+192.168.122.33
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# su - user01
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bash_profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;场景2：&lt;/h3&gt;
+
+&lt;p&gt;远程机使用 ssh 命令以普通用户身份登陆到主机 （属于 Login 方式）&lt;/p&gt;
+
+&lt;h3&gt;结论：&lt;/h3&gt;
+
+&lt;p&gt;与在本机使用 su 命令切换到普通用户的效果完全一样！&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh user@remote_server_ip
+[root@node1 ~]# hostname -i
+192.168.122.31
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 ~]# ssh user01@192.168.122.33
+user01@192.168.122.33&amp;#39;s password: 
+Last login: Tue Jul  9 16:23:33 2013 from 192.168.122.31
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bash_profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;场景3：&lt;/h2&gt;
+
+&lt;p&gt;远程机使用 ssh 命令以普通用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）&lt;/p&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，文件调用顺序为：/etc/bashrc -&amp;gt; ~/.bashrc&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，目标主机 User 用户 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh user@remote_server_ip command
+[root@node1 ~]# hostname -i
+192.168.122.31
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 ~]# echo $PATH
+/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+
+[root@node1 ~]# ssh user01@192.168.122.33 &amp;quot;echo $PATH&amp;quot;
+user01@192.168.122.33&amp;#39;s password: 
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin
+
+/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;对比 root 用户&lt;/h2&gt;
+
+&lt;h3&gt;场景1：&lt;/h3&gt;
+
+&lt;p&gt;本机使用 su 命令切换到 root （属于 Login 方式）&lt;/p&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
+&lt;li&gt;Login 方式，root 用户，文件调用顺序为：/etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/li&gt;
+&lt;li&gt;Login 之后，系统 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su - root
+[root@node3 ~]# hostname -i
+192.168.122.33
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node3 ~]# su - root
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bash_profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;场景2：&lt;/h3&gt;
+
+&lt;p&gt;远程机使用 ssh 命令以 root 用户身份登陆到主机 （属于 Login 方式）&lt;/p&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;与在本机使用 su 命令切换到 root 用户的效果完全一样！&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh root@remote_server_ip
+[root@node1 ~]# hostname -i
+192.168.122.31
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 ~]# ssh root@192.168.122.33
+root@192.168.122.33&amp;#39;s password: 
+Last login: Tue Jul  9 15:54:53 2013 from 192.168.122.1
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bash_profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;场景3&lt;/h3&gt;
+
+&lt;p&gt;远程机使用 ssh 命令以 root 用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）&lt;/p&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，文件调用顺序为：/etc/bashrc -&amp;gt; ~/.bashrc&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，目标主机 root 用户 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh root@remote_server_ip command
+[root@node1 ~]# hostname -i
+192.168.122.31
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@node1 ~]# echo $PATH
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+
+[root@node1 ~]# ssh root@192.168.122.33 &amp;quot;echo $PATH&amp;quot;
+root@192.168.122.33&amp;#39;s password: 
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;关于/etc/profile 文件部分代码分析&lt;/h3&gt;
+
+&lt;p&gt;结论：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，/etc/profile 文件才会被调用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;pathmunge () {
+    case &amp;quot;:${PATH}:&amp;quot; in
+        *:&amp;quot;$1&amp;quot;:*)
+            ;;
+        *)
+            if [ &amp;quot;$2&amp;quot; = &amp;quot;after&amp;quot; ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+
+if [ -x /usr/bin/id ]; then
+    if [ -z &amp;quot;$EUID&amp;quot; ]; then
+        # ksh workaround
+        EUID=`id -u`
+        UID=`id -ru`
+    fi
+    USER=&amp;quot;`id -un`&amp;quot;
+    LOGNAME=$USER
+    MAIL=&amp;quot;/var/spool/mail/$USER&amp;quot;
+fi
+
+
+# Path manipulation
+if [ &amp;quot;$EUID&amp;quot; = &amp;quot;0&amp;quot; ]; then
+    pathmunge /sbin
+    pathmunge /usr/sbin
+    pathmunge /usr/local/sbin
+else
+    pathmunge /usr/local/sbin after
+    pathmunge /usr/sbin after
+    pathmunge /sbin after
+
+fi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。&lt;/p&gt;
 </content>
  </entry>
  
@@ -1780,157 +2083,6 @@ __pillar__[&amp;#39;profile_port&amp;#39;][&amp;#39;default1&amp;#39;][&amp;#39;
      &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jmx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;properties&lt;/span&gt;
      &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jinja&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
- </entry>
- 
- <entry>
-   <title><![CDATA[安装saltstack和halite]]></title>
-   <link href="http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite"/>
-   <updated>2013-11-11T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</id>
-   <content type="html">&lt;p&gt;本文记录安装saltstack和halite过程。&lt;/p&gt;
-
-&lt;p&gt;首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。&lt;/p&gt;
-
-&lt;h1&gt;下载yum源&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;rpm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ivh&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;//mi&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rrors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sohu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fedora&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x86_64&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;noarch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rpm&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;安装依赖&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install python-jinja2 -y
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;安装saltstack&lt;/h1&gt;
-
-&lt;p&gt;在sk1上安装master：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在sk1上安装minion：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-minion
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;!-- more --&gt;
-
-&lt;h1&gt;关闭防火墙&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;iptables -F
-setenforce 0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;修改配置文件&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/salt/master
-interface: 0.0.0.0
-auto_accept: True
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/salt/minion
-master: sk1
-id: sk2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;启动&lt;/h1&gt;
-
-&lt;p&gt;分别在sk1和sk2上配置开机启动：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chkconfig salt-master on
-chkconfig salt-minion on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;分别在sk1和sk2上以service方式启动：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/salt-master start
-/etc/init.d/salt-minion start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;你可以在sk2上以后台运行salt-minion&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-minion -d
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;或者在sk2上debug方式运行：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-minion -l debug
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;排错&lt;/h1&gt;
-
-&lt;p&gt;如果启动提示如下错误：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 vagrant]# /etc/init.d/salt-master start
-Starting salt-master daemon: Traceback (most recent call last):
- File &amp;quot;/usr/bin/salt-master&amp;quot;, line 10, in &amp;lt;module&amp;gt;
-   salt_master()
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/scripts.py&amp;quot;, line 20, in salt_master
-   master.start()
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/__init__.py&amp;quot;, line 114, in start
-   if check_user(self.config[&amp;#39;user&amp;#39;]):
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/utils/verify.py&amp;quot;, line 296, in check_user
-   if user in e.gr_mem] + [pwuser.gid])
-AttributeError: &amp;#39;pwd.struct_passwd&amp;#39; object has no attribute &amp;#39;gid&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;请下载saltstack源码重新编译：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://github.com/saltstack/salt/archive/develop.zip
-unzip develop
-cd salt-develop/
-python2.6 setup.py install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;salt minion和master的认证过程&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;minion在第一次启动时，会在/etc/salt/pki/minion/下自动生成minion.pem(private key), minion.pub(public key)，然后将minion.pub发送给master&lt;/li&gt;
-&lt;li&gt;master在接收到minion的public key后，通过salt-key命令accept minion public key，这样在master的/etc/salt/pki/master/minions下的将会存放以minion id命名的public key, 然后master就能对minion发送指令了&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;master上执行：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -L
-Accepted Keys:
-Unaccepted Keys:
-Rejected Keys:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;接受所有的认证请求：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -A
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;再次查看：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -L
-Accepted Keys:
-sk2
-Unaccepted Keys:
-Rejected Keys:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code&gt;salt-key&lt;/code&gt;更多说明：&lt;a href=&quot;http://docs.saltstack.com/ref/cli/salt-key.html&quot;&gt;http://docs.saltstack.com/ref/cli/salt-key.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1&gt;测试运行&lt;/h1&gt;
-
-&lt;p&gt;在master上运行ping：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt &amp;#39;*&amp;#39; test.ping
-sk2:salt &amp;#39;*&amp;#39; test.ping
-    True
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;True表明测试成功。&lt;/p&gt;
-
-&lt;h1&gt;安装halite&lt;/h1&gt;
-
-&lt;h2&gt;下载代码&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/saltstack/halite
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;生成index.html&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd halite/halite
-./genindex.py -C
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;安装salt-api&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-api
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;配置salt master文件&lt;/h2&gt;
-
-&lt;p&gt;配置salt的master文件，添加：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;rest_cherrypy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8080&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;halite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;halite&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;halite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;halite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;html&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;external_auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-   &lt;span class=&quot;n&quot;&gt;pam&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-     &lt;span class=&quot;n&quot;&gt;admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.*&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;@runner&amp;#39;&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;@wheel&amp;#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;重启master;&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/salt-master restart
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;添加登陆用户&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;useradd admin
-echo admin|passwd –stdin admin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;启动 salt-api&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd halite/halite
-python2.6 server_bottle.py -d -C -l debug -s cherrypy
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后打开&lt;code&gt;http://ip:8080/app&lt;/code&gt;，通过admin/admin登陆即可。&lt;/p&gt;
-</content>
  </entry>
  
  

@@ -174,6 +174,29 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h1>
+    
+      <h1>1 方法一</h1>
+
+<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
+
+<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
+
+<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h1>
     
       <h1>摘要</h1>
@@ -1204,219 +1227,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH">手动安装Cloudera Hive CDH</a></h1>
-    
-      <p>本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。CDH版本cdh4.2.0，该篇文章也可以使用于其他版本的CDH。</p>
-
-<h1>安装hive</h1>
-
-<p>hive安装在desktop1上，注意hive默认是使用derby数据库保存元数据，这里替换为postgresql，下面会提到postgresql的安装说明，并且需要拷贝postgres的jdbc jar文件导hive的lib目录下。</p>
-
-<h2>上传文件</h2>
-
-<p>上传<code>hive-0.10.0-cdh4.2.0.tar</code>到desktop1的<code>/opt</code>，并解压缩</p>
-
-<h2>安装postgres</h2>
-
-<ul>
-<li>创建数据库</li>
-</ul>
-
-<p>这里创建数据库metastore并创建hiveuser用户，其密码为redhat。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    bash# sudo -u postgres psql
-    bash$ psql
-    postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
-    postgres=# CREATE DATABASE metastore owner=hiveuser;
-    postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
-    postgres=# \q;
-</code></pre></div>
-<ul>
-<li>初始化数据库</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">psql  -U hiveuser -d metastore
- \i /opt/hive-0.10.0-cdh4.2.0/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql 
-</code></pre></div>
-<ul>
-<li>编辑postgresql配置文件(<code>/opt/PostgreSQL/9.1/data/pg_hba.conf</code>)，修改访问权限</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">host    all             all             0.0.0.0/0            md5
-</code></pre></div>
-<p>修改postgresql.conf</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">standard_conforming_strings = of
-</code></pre></div>
-<ul>
-<li>重起postgres</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">su -c &#39;/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart&#39; postgres
-</code></pre></div>
-<ul>
-<li>拷贝postgres的jdbc驱动到<code>/opt/hive-0.10.0-cdh4.2.0/lib</code></li>
-</ul>
-
-<h2>修改配置文件</h2>
-
-<ul>
-<li>hive-site.xml 
-注意修改下面配置文件中postgres数据库的密码，注意配置<code>hive.aux.jars.path</code>，在hive集成hbase时候需要从该路径家在hbase的一些jar文件。</li>
-</ul>
-
-<p>hive-site.xml文件内容如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://127.0.0.1/metastore&lt;/value&gt;
-  &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-  &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-  &lt;description&gt;username to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-  &lt;description&gt;password to use against metastore database&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;desktop1:8031&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.aux.jars.path&lt;/name&gt;
-  &lt;value&gt;file:///opt/hive-0.10.0-cdh4.2.0/lib/zookeeper-3.4.5-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/hbase-0.94.2-cdh4.2.0.jar,
-    file:///opt/hive-0.10.0-cdh4.2.0/lib/guava-11.0.2.jar&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-  &lt;value&gt;/opt/data/warehouse-${user.name}&lt;/value&gt;
-  &lt;description&gt;location of default database for the warehouse&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.exec.scratchdir&lt;/name&gt;
-  &lt;value&gt;/opt/data/hive-${user.name}&lt;/value&gt;
-  &lt;description&gt;Scratch space for Hive jobs&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.querylog.location&lt;/name&gt;
-  &lt;value&gt;/opt/data/querylog-${user.name}&lt;/value&gt;
-  &lt;description&gt;
-    Location of Hive run time structured log file
-  &lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;description&gt;Enable Hive&#39;s Table Lock Manager Service&lt;/description&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;description&gt;Zookeeper quorum used by Hive&#39;s Table Lock Manager&lt;/description&gt;
-  &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;desktop1&lt;/value&gt;
-  &lt;description&gt;This is the host address the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-  &lt;description&gt;This is the port the Hive Web Interface will listen on&lt;/description&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-  &lt;description&gt;This is the WAR file with the jsp content for Hive Web Interface&lt;/description&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<ul>
-<li>环境变量</li>
-</ul>
-
-<p>参考hadoop中环境变量的设置</p>
-
-<ul>
-<li>启动脚本</li>
-</ul>
-
-<p>在启动完之后，执行一些sql语句可能会提示错误，如何解决错误可以参考<a href="http://kicklinux.com/hive-deploy/">Hive安装与配置</a>。</p>
-
-<ul>
-<li>hive与hbase集成
-在<code>hive-site.xml</code>中配置<code>hive.aux.jars.path</code>,在环境变量中配置hadoop、mapreduce的环境变量</li>
-</ul>
-
-<h1>异常说明</h1>
-
-<ul>
-<li>异常1：</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: Error in metadata: MetaException(message:org.apache.hadoop.hbase.ZooKeeperConnectionException: An error is preventing HBase from connecting to ZooKeeper
-</code></pre></div>
-<p>原因：hadoop配置文件没有zk</p>
-
-<ul>
-<li>异常2</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: Error in metadata: MetaException(message:Got exception: org.apache.hadoop.hive.metastore.api.MetaException javax.jdo.JDODataStoreException: Error executing JDOQL query &quot;SELECT &quot;THIS&quot;.&quot;TBL_NAME&quot; AS NUCORDER0 FROM &quot;TBLS&quot; &quot;THIS&quot; LEFT OUTER JOIN &quot;DBS&quot; &quot;THIS_DATABASE_NAME&quot; ON &quot;THIS&quot;.&quot;DB_ID&quot; = &quot;THIS_DATABASE_NAME&quot;.&quot;DB_ID&quot; WHERE &quot;THIS_DATABASE_NAME&quot;.&quot;NAME&quot; = ? AND (LOWER(&quot;THIS&quot;.&quot;TBL_NAME&quot;) LIKE ? ESCAPE &#39;\\&#39; ) ORDER BY NUCORDER0 &quot; : ERROR: invalid escape string 建议：Escape string must be empty or one character..
-</code></pre></div>
-<p>参考：https://issues.apache.org/jira/browse/HIVE-3994</p>
-
-<ul>
-<li>异常3，以下语句没反应</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">select count(*) from hive_userinfo
-</code></pre></div>
-<ul>
-<li>异常4</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">zookeeper.ClientCnxn (ClientCnxn.java:logStartConnect(966)) - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (无法定位登录配置)
-</code></pre></div>
-<p>原因：hive中没有设置zk</p>
-
-<ul>
-<li>异常5</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hbase 中提示：WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-</code></pre></div>
-<p>原因：cloudera hadoop lib中没有hadoop的native jar</p>
-
-<ul>
-<li>异常6</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/hadoop/mapreduce/v2/app/MRAppMaster
-</code></pre></div>
-<p>原因：classpath没有配置正确，检查环境变量以及yarn的classpath</p>
-
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://kicklinux.com/hive-deploy/">Hive安装与配置</a></li>
-<li><a href="https://ccp.cloudera.com/display/CDH4DOC/Hive+Installation">Hive Installation</a></li>
-</ul>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -1452,6 +1262,8 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
            
            <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
            
+           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -1479,8 +1291,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
            <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
            
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
-           
-           <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
          </ul>
        </div>

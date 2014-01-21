@@ -3,8 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>JavaChen Blog</title>
-    <meta name="description" content="开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化"/>
+    <title>ssh连接环境变量问题 - JavaChen Blog</title>
+    <meta name="description" content="ssh shell"/>
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/" />
+    <link rel="canonical" href="http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -165,46 +165,13 @@
         
 <div class="row">
 
-  <div class="col-md-9">
+  <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h2>  <small>Life is short,we need passion.</small></h2>
+        <h1 class="entry-title">ssh连接环境变量问题 </h1>
       </header>
-	
-
-
-<article>
-    <h1 class="entry-title"><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></h1>
-    
-      <p>Jekyll是一个简洁的、特别针对博客平台的静态网站生成器。它使用一个模板目录作为网站布局的基础框架，并在其上运行Textile、Markdown或Liquid标记语言的转换器，最终生成一个完整的静态Web站点，可以被放置在Apache或者你喜欢的其他任何Web服务器上。它同时也是GitHub Pages、一个由GitHub提供的用于托管项目主页或博客的服务，在后台所运行的引擎。</p>
-
-<h1>1. 安装</h1>
-
-<p>Jekyll使用动态脚本语言Ruby写成。请首先下载并安装Ruby，目前需要的ruby版本为<code>1.9.1</code>。</p>
-
-<p>在使用Jekyll之前，你可能想要对Ruby语言有一些初步了解（非必需）。</p>
-
-<p>安装Jekyll的最好方式是通过<code>RubyGems</code>：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">gem install jekyll
-</code></pre></div>
-<p>Jekyll依赖以下的gems模块：liquid、fast-stemmer、classifier、directory_watcher、syntax、maruku、kramdown、posix-spawn和albino。它们会被<code>gem install</code>命令自动安装。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/post/2014/01/21/all-things-about-jekyll"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></h1>
-    
-      <h1>1. 问题</h1>
+	<div class="entry-content">
+	<h1>1. 问题</h1>
 
 <p>RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">Localhost_ip=$(ifconfig |awk -F &#39;addr:|Bcast&#39; &#39;/Bcast/{print $2}&#39;)
@@ -500,224 +467,40 @@ fi
 </code></pre></div>
 <p>综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。</p>
 
-     
 
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h1>
-    
-      <h1>Region 概念</h1>
-
-<p>Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Table       (HBase table)
-    Region       (Regions for the table)
-         Store          (Store per ColumnFamily for each Region for the table)
-              MemStore        (MemStore for each Store for each Region for the table)
-              StoreFile       (StoreFiles for each Store for each Region for the table)
-                    Block     (Blocks within a StoreFile within a Store for each Region for the table)
-</code></pre></div>
-<h1>Region 大小</h1>
-
-<p>Region的大小是一个棘手的问题，需要考量如下几个因素。</p>
-
-<ul>
-<li>Regions是可用性和分布式的最基本单位</li>
-<li>HBase通过将region切分在许多机器上实现分布式。也就是说，你如果有16GB的数据，只分了2个region， 你却有20台机器，有18台就浪费了。</li>
-<li>region数目太多就会造成性能下降，现在比以前好多了。但是对于同样大小的数据，700个region比3000个要好。</li>
-<li>region数目太少就会妨碍可扩展性，降低并行能力。有的时候导致压力不够分散。这就是为什么，你向一个10节点的HBase集群导入200MB的数据，大部分的节点是idle的。</li>
-<li>RegionServer中1个region和10个region索引需要的内存量没有太多的差别。</li>
-</ul>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hbase/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h1>
-    
-      <p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
-
-<h1>1. vim配置</h1>
-
-<p>目前我的vimrc配置放置在:<a href="https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc">https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc</a>，其中大多数用英文注释。</p>
-
-<h1>2. 插件管理</h1>
-
-<h2>pathogen</h2>
-
-<p>项目地址:   <a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a></p>
-
-<p>首选需要安装神器 pathogen 来管理所有的插件，具体安装可以看官网的介绍。</p>
-
-<p>要记得把以下内容加入到vimrc文件中:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">execute pathogen#infect()
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/java/2014/01/14/vim-config-and-plugins"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></h1>
-    
-      <h1>1. SiteMesh简介</h1>
-
-<p>SiteMesh是由一个基于Web页面布局、装饰以及与现存Web应用整合的框架。它能帮助我们在由大量页面构成的项目中创建一致的页面布局和外观，如一致的导航条，一致的banner，一致的版权等等。它不仅仅能处理动态的内容，如jsp，php，asp等产生的内容，它也能处理静态的内容，如htm的内容，使得它的内容也符合你的页面结构的要求。甚至于它能将HTML文件象include那样将该文件作为一个面板的形式嵌入到别的文件中去。所有的这些，都是GOF的Decorator模式的最生动的实现。尽管它是由java语言来实现的，但它能与其他Web应用很好地集成。</p>
-
-<h1>2. SiteMesh原理</h1>
-
-<p>SiteMesh框架是OpenSymphony团队开发的一个非常优秀的页面装饰器框架，它通过对用户请求进行过滤，并对服务器向客户端响应也进行过滤，然后给原始页面加入一定的装饰(header,footer等)，然后把结果返回给客户端。通过SiteMesh的页面装饰，可以提供更好的代码复用，所有的页面装饰效果耦合在目标页面中，无需再使用include指令来包含装饰效果，目标页与装饰页完全分离，如果所有页面使用相同的装饰器，可以是整个Web应用具有统一的风格。</p>
-
-<h1>3. SiteMesh3</h1>
-
-<p>SiteMesh3只有Alpha2版本而且很久没更新了，和SpringMVC配合，有些静态内容会出现NO Content的错误。 虽然它号称性能快3倍内存少1倍，但还是保险起见依然用SiteMesh2了。</p>
-
-<p>另外，Atlassian公司因为在自己的产品中使用了SiteMesh2，所以后来也一直有维护，出到了2.5-atlassian-9版，不过不在maven中央库中，可以在<a href="https://maven-us.nuxeo.org/nexus/content/groups/public/opensymphony/sitemesh/2.5-atlassian-9/">这里</a>下载。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/java/2014/01/13/about-sitemesh"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-
-<!-- Pagination links -->
-<div class="pull-right">
-  
-    <span><a class="btn btn-default btn-sm disabled" href="/">Home</a></span>
-    <span><a class="btn btn-default btn-sm disabled">&laquo; Prev</a></span>
-  
-  <span><a class="btn btn-default btn-sm disabled">Page: 1 of 13</a></span>
-  
-    <a class="btn btn-default btn-sm" href="/page2/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
-  
-</div>
-
+	-EOF-
+	</div>
     </article>
-  </div>
-
-  <div class="col-md-3 visible-lg visible-md">
-                <section>
-   	 <h2><i class="icon-home icon-large"></i>About</h2>
-	 <p class="entry-content">
-   	 一个Java方案架构师，主要从事hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</p>
-       </section>
-
-
-            <section>
-       <h2><i class="icon-home icon-large"></i>Posts</h2>
-       <div class="category">
-         <ul>
-           
-           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
-           
-           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
-           
-           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
-           
-           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
-           
-           <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
-           
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
-           
-           <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
-           
-           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
-           
-           <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
-           
-           <li><a href="/saltstack/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
-           
-           <li><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
-           
-           <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
-           
-           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-           
-           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
-           
-           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
-           
-           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
-           
-         </ul>
-       </div>
-      </section>
-
-
-            <section>
-        <h2><i class="icon-home icon-large"></i>Comments</h2>
-        <div class="category">
-          <ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="14"></ul>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/hbase/2014/01/16/hbase-region-split-policy" title="HBase Region Split策略">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/post/2014/01/21/all-things-about-jekyll" title="All Things About Jekyll">Next &raquo;</a>
+          
         </div>
-      </section>
-
-
-            
-      <section>
-        <h2><i class="icon-home icon-large"></i>Blogroll</h2>
-        <div class="category">
-          <ul>
-            
-              <li><a href="//blog.boluotou.com/" target="_blank">圆木菠萝罐</a></li>
-            
-              <li><a href="//log4d.com/" target="_blank">Log4D</a></li>
-            
-              <li><a href="//blog.frankel.ch" target="_blank">A Java geek</a></li>
-            
-              <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
-            
-              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
-            
-              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
-            
-          </ul>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
         </div>
-      </section>
-      
+      </div>
+    </div>
+    
 
 
-            <section>
-        <h2><i class="icon-home icon-large"></i>License</h2>
-        <ul>
-          <li>
-            <a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank"><img alt="License" src="http://blog.javachen.com/assets/images/CC.png" title="署名-非商业性使用-相同方式共享 3.0 中国大陆"></a>
-          </li>
-        </ul>
-      </section>
-
-
-       <script type="text/javascript">
+     <div id="comments">
+  	<div class="ds-thread" data-title="ssh连接环境变量问题 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};
       (function() {
         var ds = document.createElement('script');
@@ -727,6 +510,11 @@ fi
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
       })();
     </script>
+
+
+
+
+
 
   </div>
 

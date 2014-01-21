@@ -174,6 +174,27 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
+    
+      <p>最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。</p>
+
+<p>最近半年多一直在做hadoop方面的工作，也就是接触hadoop才半年多时间。最开始接触hadoop是去年的11月21日，那天去Intel公司参加了两天的hadoop培训。培训的内容很多干货也有很多枯燥的东西，所以边听边瞌睡的听完了两天的培训内容。培训的ppt打印出来了，时不时地会翻看上面讲述的内容，然后在网上搜索些相关的资料。</p>
+
+<p>最先接触的hadoop发行版是Intel的IDH，刚开始使用IDH也就是用他的管理界面安装、部署hadoop集群，然后在8节点的集群上作hive两表关联的测试。测试结果不是很满意，但是对IDH倒是印象深刻。IDH的前端使用GWT开发，界面简洁，操作也比较方便，只是同步配置文件有时候非常慢，要等上一杯咖啡的时间。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
     
       <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
@@ -291,33 +312,6 @@ jekyll server
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h1>
-    
-      <h1>启动脚本</h1>
-
-<p>从shell脚本<code>/usr/lib/hive/bin/ext/cli.sh</code>可以看到hive cli的入口类为<code>org.apache.hadoop.hive.cli.CliDriver</code></p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cli () {
-  CLASS=org.apache.hadoop.hive.cli.CliDriver
-  execHiveCmd $CLASS &quot;$@&quot;
-}
-cli_help () {
-  CLASS=org.apache.hadoop.hive.cli.CliDriver
-  execHiveCmd $CLASS &quot;--help&quot;
-}
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/21/hive-CliDriver"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -353,6 +347,8 @@ cli_help () {
            
            <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
            
+           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -380,8 +376,6 @@ cli_help () {
            <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
            
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
-           
-           <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
          </ul>
        </div>

@@ -237,6 +237,8 @@ yum install -y cloudera-manager-server-db
 <div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash cloudera-scm -c &quot;touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log&quot;
 su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log&quot;
 </code></pre></div>
+
+	-EOF-
 	</div>
     </article>
     <hr>

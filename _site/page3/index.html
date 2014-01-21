@@ -174,6 +174,39 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/saltstack/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h1>
+    
+      <p>本文记录安装saltstack和halite过程。</p>
+
+<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
+
+<h1>下载yum源</h1>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+</code></pre></div>
+<h1>安装依赖</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+</code></pre></div>
+<h1>安装saltstack</h1>
+
+<p>在sk1上安装master：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+</code></pre></div>
+<p>在sk1上安装minion：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/saltstack/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h1>
     
       <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
@@ -346,27 +379,6 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
-    
-      <p>最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。</p>
-
-<p>最近半年多一直在做hadoop方面的工作，也就是接触hadoop才半年多时间。最开始接触hadoop是去年的11月21日，那天去Intel公司参加了两天的hadoop培训。培训的内容很多干货也有很多枯燥的东西，所以边听边瞌睡的听完了两天的培训内容。培训的ppt打印出来了，时不时地会翻看上面讲述的内容，然后在网上搜索些相关的资料。</p>
-
-<p>最先接触的hadoop发行版是Intel的IDH，刚开始使用IDH也就是用他的管理界面安装、部署hadoop集群，然后在8节点的集群上作hive两表关联的测试。测试结果不是很满意，但是对IDH倒是印象深刻。IDH的前端使用GWT开发，界面简洁，操作也比较方便，只是同步配置文件有时候非常慢，要等上一杯咖啡的时间。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -402,6 +414,8 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
            
            <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
            
+           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -429,8 +443,6 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
            <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
            
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
-           
-           <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
            
          </ul>
        </div>
