@@ -174,6 +174,23 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
+    
+      <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/09/04/how-to-decide-map-number"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
     
       <p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
@@ -301,34 +318,6 @@ cli_help () {
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h1>
-    
-      <p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
-
-<h1>安装hadoop过程中需要注意以下几点：</h1>
-
-<ol>
-<li>每个节点配置hosts</li>
-<li>每个节点配置时钟同步</li>
-<li>如果没有特殊要求，关闭防火墙</li>
-<li>hadoop需要在<code>/tmp</code>目录下存放一些日志和临时文件，要求<code>/tmp</code>目录权限必须为<code>1777</code></li>
-</ol>
-
-<hr>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/17/some-problems-about-hadoop"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -362,6 +351,8 @@ cli_help () {
        <div class="category">
          <ul>
            
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -391,8 +382,6 @@ cli_help () {
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

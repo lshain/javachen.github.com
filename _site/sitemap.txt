@@ -22,6 +22,7 @@ http://blog.javachen.com/page11/index.html
 http://blog.javachen.com/page12/index.html
 http://blog.javachen.com/page13/index.html
 
+http://blog.javachen.com/post/2014/01/21/all-things-about-jekyll
 http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy
 http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins
 http://blog.javachen.com/java/2014/01/13/about-sitemesh

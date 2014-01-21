@@ -174,6 +174,46 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h1>
+    
+      <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
+
+<h1>下载并编译源代码</h1>
+
+<p>请参考<a href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/">编译hbase源代码并打补丁</a></p>
+
+<h1>修改配置文件</h1>
+
+<p>修改 <code>conf/hbase-site.xml</code>文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
+&lt;name&gt;hbase.defaults.for.version&lt;/name&gt;
+&lt;value&gt;0.94.6-cdh4.4.0&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+&lt;name&gt;hbase.rootdir&lt;/name&gt;
+&lt;value&gt;file:///home/june/tmp/data&lt;/value&gt;
+&lt;/property&gt;
+</code></pre></div>
+<p>把conf文件夹加到Classpath中</p>
+
+<h1>运行HMaster</h1>
+
+<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hbase/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h1>
     
       <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
@@ -327,23 +367,6 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
-    
-      <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/09/04/how-to-decide-map-number"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -377,6 +400,8 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
        <div class="category">
          <ul>
            
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -406,8 +431,6 @@ org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize pr
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

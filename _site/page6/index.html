@@ -174,6 +174,90 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h1>
+    
+      <h1>摘要</h1>
+
+<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
+
+<p>截至目前，kettle的版本为4.4.1，<code>big-data-plugin</code>插件支持<code>cloudera CDH3u4、CDH4.1</code>，暂不支持Intel的hadoop发行版本IDH。</p>
+
+<p>本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
+
+<h1>方法</h1>
+
+<p>假设你已经安装好IDH-2.3的集群，并已经拷贝出<code>/usr/lib/</code>下的hadoop、hbase、zookeeper目录。</p>
+
+<p>首先，下载一个kettle版本，如社区版data-integration，然后进入<code>data-integration/plugins/pentaho-big-data-plugin</code>目录，修改plugin.properties文件中的<code>active.hadoop.configuration</code>属性，将其值改为cdh4</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">active.hadoop.configuration=cdh4
+</code></pre></div>
+<p>修改kettle的log4j日志等级，并启动kettle，检查启动过程中是否报错，如有错误，请修正错误。</p>
+
+<p>进入hadoop-configurations目录，copy and paste cdh3u4并命名为idh2.3。</p>
+
+<p>因为IDH和CDH的hadoop版本不一致，故需要替换hadoop和hbase、zookeeper为IDH的版本，涉及到需要替换、增加的jar有，这些jar文件从IDH安装后的目录中拷贝即可：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.94.1-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/protobuf-java-2.4.0a.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.4.5-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-ant-1.0.3-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-1.0.3-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-examples-1.0.3-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-test-1.0.3-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-tools-1.0.3-Intel.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.8.0.jar
+</code></pre></div>
+<p>其他依赖包可以尝试添加，并删除多版本的jar文件。</p>
+
+<p>需要删除CDH的jar有：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.90.6-cdh3u4.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.3.5-cdh3u4.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-client-0.20.2-cdh3u4.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-0.20.2-cdh3u4.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libfb303-0.5.0-cdh.jar
+data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.5.0-cdh.jar
+</code></pre></div>
+<p>修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。</p>
+
+<h3>验证</h3>
+
+<ol>
+<li>打开hbase output组件，配置zookeeper的host和port</li>
+</ol>
+
+<p><img src="/assets/images/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
+
+<ol>
+<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
+retrying after sleep of 1000
+java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
+at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
+at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
+at $Proxy5.getProtocolVersion(Unknown Source)
+at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
+at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
+at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
+at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
+at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
+Caused by: java.io.EOFException
+at java.io.DataInputStream.readInt(DataInputStream.java:375)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
+at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
+</code></pre></div>
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h1>
     
       <p>kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？</p>
@@ -1333,62 +1417,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a></h1>
-    
-      <p>本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。</p>
-
-<h1>安装HBase</h1>
-
-<p>HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。</p>
-
-<p>上传hbase-0.94.2-cdh4.2.0.zip到desktop3上的/opt目录，先在desktop3上修改好配置文件，在同步到其他机器上。</p>
-
-<p>hbase-site.xml内容如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.rootdir&lt;/name&gt;
-    &lt;value&gt;hdfs://desktop1/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-    &lt;value&gt;/opt/data/hbase-${user.name}&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-    &lt;value&gt;desktop3,desktop4,desktop6,desktop7,desktop8&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
-</code></pre></div>
-<p>regionservers内容如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">desktop3
-desktop4
-desktop6
-desktop7
-desktop8
-</code></pre></div>
-<h1>环境变量</h1>
-
-<p>参考hadoop中环境变量的设置</p>
-
-<p>然后，同步文件到其他4台机器上，可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase</p>
-
-<h1>启动脚本</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">#start-hbase.sh 
-</code></pre></div>
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -1422,6 +1450,8 @@ desktop8
        <div class="category">
          <ul>
            
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -1451,8 +1481,6 @@ desktop8
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>

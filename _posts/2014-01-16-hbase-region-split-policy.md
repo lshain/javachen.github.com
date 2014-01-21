@@ -1,6 +1,6 @@
 ---
 layout: post
-title: HBase Region split策略
+title: HBase Region Split策略
 category: hbase
 tags: [hbase、region、split]
 description: 这篇文章主要是介绍hbase中region拆分策略

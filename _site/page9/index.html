@@ -174,6 +174,67 @@
 
 
 <article>
+    <h1 class="entry-title"><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h1>
+    
+      <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
+    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
+&lt;/listener&gt;
+</code></pre></div>
+<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+
+<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
+
+<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+
+<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
+
+<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
+
+<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+
+<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
+其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+
+<ol>
+<li>添加命名空间</li>
+<li>从/WEBINF/components. xml加载组件</li>
+<li>从/WEBINF/events. xml加载组件</li>
+<li>从METAINF/components. xml加载组件</li>
+<li>从ServletContext初始化Properties</li>
+<li>从/seam. properties初始化Properties</li>
+<li>初始化jndi Properties</li>
+<li>从system加载Properties</li>
+</ol>
+
+<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
+
+<ol>
+<li>ServletLifecycle开始初始化</li>
+<li>设置Application上下文</li>
+<li>添加Init组件</li>
+<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
+<li>判断jbpm是否安装</li>
+<li>检查默认拦截器</li>
+<li>添加特别组件</li>
+<li>添加war root部署、热部署</li>
+<li>安装组件</li>
+<li>导入命名空间</li>
+<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
+</ol>
+
+<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
     <h1 class="entry-title"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h1>
     
       <p>本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的。</p>
@@ -413,47 +474,6 @@ CREATE TABLE a1
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h1>
-    
-      <p>很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。</p>
-
-<p>《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
-1.html文件，此处以SASC.search.MtrUse.html为例
-2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
-3.工具类，DomUtils.js
-4.核心js类:SASC.extjs.search.MtrUse.js
-5.java代码</p>
-
-<p>详细html和js代码见相关文件，这里先描述思路。</p>
-
-<p><strong>首先</strong>
-通过一个事件打开一个弹出窗口，该窗口的url指向SASC.search.MtrUse.html文件，并附带参数xmlFile，xmlFile的值为xml文件名称，其存于服务器的某一路径下面。如：“../SASC.search.MtrUse.html?xmlFile=PC<u>MTRREPLACE</u>IMP.xml” .PC<u>MTRREPLACE</u>IMP.xml文件的放置路径见DomUtils.js文件中的说明。</p>
-
-<p>在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用getForwardXmlUrl(getQsValue(&#39;xmlFile&#39;))），得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见SASC.extjs.search.MtrUse.js文件内的initStoreData(xmlObj) 方法。
-需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。</p>
-
-<p><strong>然后</strong></p>
-
-<p>初始化完ext界面之后，会获取表格数据，这部分使用了struts，这不是本文重点，故不做介绍。</p>
-
-<p><strong>最后</strong>
-相关文件打包见：
-<a href="http://vdisk.weibo.com/s/2enQS" target="_blank">http://vdisk.weibo.com/s/2enQS</a></p>
-
-<p><strong>说明</strong>
-如果还有什么不懂，欢迎email：javachen.june#gmail.com</p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -487,6 +507,8 @@ CREATE TABLE a1
        <div class="category">
          <ul>
            
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region split策略</a></li>
            
            <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
@@ -516,8 +538,6 @@ CREATE TABLE a1
            <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
            <li><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></li>
-           
-           <li><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></li>
            
          </ul>
        </div>
