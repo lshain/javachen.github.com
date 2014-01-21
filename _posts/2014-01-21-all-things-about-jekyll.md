@@ -22,6 +22,8 @@ gem install jekyll
 
 Jekyll依赖以下的gems模块：liquid、fast-stemmer、classifier、directory_watcher、syntax、maruku、kramdown、posix-spawn和albino。它们会被`gem install`命令自动安装。
 
+<!-- more -->
+
 # 2. 模板引擎
 
 ## 2.1 RDiscount
