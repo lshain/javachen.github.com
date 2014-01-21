@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-21T10:21:38+08:00</updated>
+ <updated>2014-01-21T10:30:59+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -28,6 +28,8 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;gem install jekyll
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Jekyll依赖以下的gems模块：liquid、fast-stemmer、classifier、directory_watcher、syntax、maruku、kramdown、posix-spawn和albino。它们会被&lt;code&gt;gem install&lt;/code&gt;命令自动安装。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;h1&gt;2. 模板引擎&lt;/h1&gt;
 
@@ -178,7 +180,7 @@
  </entry>
  
  <entry>
-   <title><![CDATA[HBase Region split策略]]></title>
+   <title><![CDATA[HBase Region Split策略]]></title>
    <link href="http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy"/>
    <updated>2014-01-16T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy</id>

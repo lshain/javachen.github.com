@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Tue, 21 Jan 2014 10:21:38 +0800</lastBuildDate>
-		<pubDate>Tue, 21 Jan 2014 10:21:38 +0800</pubDate>
+		<lastBuildDate>Tue, 21 Jan 2014 10:30:59 +0800</lastBuildDate>
+		<pubDate>Tue, 21 Jan 2014 10:30:59 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -23,6 +23,8 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;gem install jekyll
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Jekyll依赖以下的gems模块：liquid、fast-stemmer、classifier、directory_watcher、syntax、maruku、kramdown、posix-spawn和albino。它们会被&lt;code&gt;gem install&lt;/code&gt;命令自动安装。&lt;/p&gt;
+
+&lt;!-- more --&gt;
 
 &lt;h1&gt;2. 模板引擎&lt;/h1&gt;
 
@@ -176,7 +178,7 @@
 		</item>
 
 		<item>
-			<title><![CDATA[HBase Region split策略]]></title>
+			<title><![CDATA[HBase Region Split策略]]></title>
 			<description>&lt;h1&gt;Region 概念&lt;/h1&gt;
 
 &lt;p&gt;Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：&lt;/p&gt;
