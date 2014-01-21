@@ -122,9 +122,9 @@ echo ""
 
 结论：
 
-- Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin
-- Login 方式，文件调用顺序为： /etc/profile -> /etc/bashrc -> ~/.bashrc -> ~/.bash_profile
-- Login 之后，系统 PATH 为：/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
+- Login 之前，系统 PATH 为：`/usr/local/bin:/bin:/usr/bin`
+- Login 方式，文件调用顺序为： `/etc/profile -> /etc/bashrc -> ~/.bashrc -> ~/.bash_profile`
+- Login 之后，系统 PATH 为：`/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin`
 
 ```
 su - user
@@ -189,8 +189,8 @@ invoke ~/.bash_profile
 结论：
 
 - NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH
-- NoLogin 方式，文件调用顺序为：/etc/bashrc -> ~/.bashrc
-- NoLogin 方式，目标主机 User 用户 PATH 为：/usr/local/bin:/bin:/usr/bin
+- NoLogin 方式，文件调用顺序为：`/etc/bashrc -> ~/.bashrc`
+- NoLogin 方式，目标主机 User 用户 PATH 为：`/usr/local/bin:/bin:/usr/bin`
 
 ```
 ssh user@remote_server_ip command
@@ -222,9 +222,9 @@ invoke ~/.bashrc
 
 结论：
 
-- Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin
-- Login 方式，root 用户，文件调用顺序为：/etc/profile -> /etc/bashrc -> ~/.bashrc -> ~/.bash_profile
-- Login 之后，系统 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+- Login 之前，系统 PATH 为：`/usr/local/bin:/bin:/usr/bin`
+- Login 方式，root 用户，文件调用顺序为：`/etc/profile -> /etc/bashrc -> ~/.bashrc -> ~/.bash_profile`
+- Login 之后，系统 PATH 为：`/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin`
 
 ```
 su - root
@@ -289,8 +289,8 @@ invoke ~/.bash_profile
 结论：
 
 - NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH
-- NoLogin 方式，文件调用顺序为：/etc/bashrc -> ~/.bashrc
-- NoLogin 方式，目标主机 root 用户 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+- NoLogin 方式，文件调用顺序为：`/etc/bashrc -> ~/.bashrc`
+- NoLogin 方式，目标主机 root 用户 PATH 为：`/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin`
 
 ```
 ssh root@remote_server_ip command
@@ -317,7 +317,7 @@ invoke ~/.bashrc
 
 结论：
 
-- 无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，/etc/profile 文件才会被调用。
+- 无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，`/etc/profile` 文件才会被调用。
 
 ```
 pathmunge () {
