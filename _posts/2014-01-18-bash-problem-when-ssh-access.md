@@ -14,7 +14,7 @@ RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifc
 Localhost_ip=$(ifconfig |awk -F 'addr:|Bcast' '/Bcast/{print $2}')
 ```
 
-由于普通用户jboss不能直接识别ifconfig命令，只能使用全路径`/sbin/ifconfig`，目前处理方式为修改`~/.bash_profile`文件添加环境变量如下：
+由于普通用户user01不能直接识别ifconfig命令，只能使用全路径`/sbin/ifconfig`，目前处理方式为修改`~/.bash_profile`文件添加环境变量如下：
 
 ```
 PATH=$PATH:$HOME/bin
@@ -25,6 +25,7 @@ PATH=$PATH:$HOME/bin
 ```
 PATH=$PATH:$HOME/bin:/sbin
 ```
+<!-- more -->
 
 经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。
 
