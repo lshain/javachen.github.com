@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>ssh连接环境变量问题 - JavaChen Blog</title>
-    <meta name="description" content="ssh shell"/>
+    
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access" />
+    <link rel="canonical" href="http://blog.javachen.com/linux/2014/01/18/bash-problem-when-ssh-access" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -138,6 +138,8 @@
   
     
   
+    
+  
 
 
 
@@ -176,12 +178,14 @@
 <p>RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">Localhost_ip=$(ifconfig |awk -F &#39;addr:|Bcast&#39; &#39;/Bcast/{print $2}&#39;)
 </code></pre></div>
-<p>由于普通用户jboss不能直接识别ifconfig命令，只能使用全路径<code>/sbin/ifconfig</code>，目前处理方式为修改<code>~/.bash_profile</code>文件添加环境变量如下：</p>
+<p>由于普通用户user01不能直接识别ifconfig命令，只能使用全路径<code>/sbin/ifconfig</code>，目前处理方式为修改<code>~/.bash_profile</code>文件添加环境变量如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin
 </code></pre></div>
 <p>改成如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin:/sbin
 </code></pre></div>
+<!-- more -->
+
 <p>经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。</p>
 
 <p>出现如下问题：</p>
@@ -257,9 +261,9 @@ echo &quot;&quot;
 <p>结论：</p>
 
 <ul>
-<li>Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
-<li>Login 方式，文件调用顺序为： /etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</li>
-<li>Login 之后，系统 PATH 为：/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin</li>
+<li>Login 之前，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
+<li>Login 方式，文件调用顺序为： <code>/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</code></li>
+<li>Login 之后，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin</code></li>
 </ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">su - user
 [root@node3 ~]# hostname -i
@@ -283,9 +287,11 @@ invoke ~/.bash_profile
 
 <p>远程机使用 ssh 命令以普通用户身份登陆到主机 （属于 Login 方式）</p>
 
-<h3>结论：</h3>
+<p>结论：</p>
 
-<p>与在本机使用 su 命令切换到普通用户的效果完全一样！</p>
+<ul>
+<li>与在本机使用 su 命令切换到普通用户的效果完全一样！</li>
+</ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip
 [root@node1 ~]# hostname -i
 192.168.122.31
@@ -314,8 +320,8 @@ invoke ~/.bash_profile
 
 <ul>
 <li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
-<li>NoLogin 方式，文件调用顺序为：/etc/bashrc -&gt; ~/.bashrc</li>
-<li>NoLogin 方式，目标主机 User 用户 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
+<li>NoLogin 方式，文件调用顺序为：<code>/etc/bashrc -&gt; ~/.bashrc</code></li>
+<li>NoLogin 方式，目标主机 User 用户 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
 </ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip command
 [root@node1 ~]# hostname -i
@@ -343,9 +349,9 @@ invoke ~/.bashrc
 <p>结论：</p>
 
 <ul>
-<li>Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
-<li>Login 方式，root 用户，文件调用顺序为：/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</li>
-<li>Login 之后，系统 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin</li>
+<li>Login 之前，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
+<li>Login 方式，root 用户，文件调用顺序为：<code>/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</code></li>
+<li>Login 之后，系统 PATH 为：<code>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin</code></li>
 </ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">su - root
 [root@node3 ~]# hostname -i
@@ -402,8 +408,8 @@ invoke ~/.bash_profile
 
 <ul>
 <li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
-<li>NoLogin 方式，文件调用顺序为：/etc/bashrc -&gt; ~/.bashrc</li>
-<li>NoLogin 方式，目标主机 root 用户 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin</li>
+<li>NoLogin 方式，文件调用顺序为：<code>/etc/bashrc -&gt; ~/.bashrc</code></li>
+<li>NoLogin 方式，目标主机 root 用户 PATH 为：<code>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin</code></li>
 </ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ssh root@remote_server_ip command
 [root@node1 ~]# hostname -i
@@ -426,7 +432,7 @@ invoke ~/.bashrc
 <p>结论：</p>
 
 <ul>
-<li>无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，/etc/profile 文件才会被调用。</li>
+<li>无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，<code>/etc/profile</code> 文件才会被调用。</li>
 </ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">pathmunge () {
     case &quot;:${PATH}:&quot; in
@@ -465,6 +471,8 @@ else
 
 fi
 </code></pre></div>
+<h1>3. 总结</h1>
+
 <p>综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。</p>
 
 
@@ -480,7 +488,7 @@ fi
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/post/2014/01/21/all-things-about-jekyll" title="All Things About Jekyll">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/post/2014/01/21/all-things-about-jekyll" title="All Things Jekyll">Next &raquo;</a>
           
         </div>
       </div>

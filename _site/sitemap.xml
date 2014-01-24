@@ -5,6 +5,20 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-01-24T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/post/2014/01/22/all-things-opentsdb</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-01-22T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/post/2014/01/21/all-things-about-jekyll</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-21T00:00:00+08:00</lastmod>
@@ -12,7 +26,7 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access</loc>
+      <loc>http://blog.javachen.com/linux/2014/01/18/bash-problem-when-ssh-access</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-18T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -26,7 +40,7 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins</loc>
+      <loc>http://blog.javachen.com/linux/2014/01/14/vim-config-and-plugins</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-14T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -40,7 +54,7 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system</loc>
+      <loc>http://blog.javachen.com/linux/2014/01/09/after-reinstall-the-system</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-09T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -54,7 +68,7 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands</loc>
+      <loc>http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-12-27T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -533,6 +547,12 @@
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
     </url>
+    
+    
+    
+    
+    
+    
     
     
     

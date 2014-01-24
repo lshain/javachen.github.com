@@ -3,8 +3,6 @@ layout: post
 title:  kettle中添加一个参数字段到输出
 category: Kettle
 tags: [kettle]
-keywords: kettle
-description: kettle中添加一个参数字段到输出
 ---
 
 kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？

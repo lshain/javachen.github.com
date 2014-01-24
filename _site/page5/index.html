@@ -138,6 +138,8 @@
   
     
   
+    
+  
 
 
 
@@ -174,7 +176,72 @@
 
 
 <article>
-    <h1 class="entry-title"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
+    </header>
+    
+      <h1>前言</h1>
+
+<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
+
+<h1>ZooKeeper</h1>
+
+<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
+
+<ul>
+<li>数据发布与订阅（配置中心）</li>
+<li>负载均衡</li>
+<li>命名服务(Naming Service)</li>
+<li>分布式通知/协调</li>
+<li>集群管理与Master选举</li>
+<li>分布式锁</li>
+<li>分布式队列</li>
+</ul>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h1>
+    </header>
+    
+      <h1>概括</h1>
+
+<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
+（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
+（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
+（5）其他       Driver 
+</code></pre></div>
+<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h1>
+    </header>
     
       <h1>启动脚本</h1>
 
@@ -201,7 +268,9 @@ cli_help () {
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h1>
+    </header>
     
       <p>本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。</p>
 
@@ -229,7 +298,9 @@ cli_help () {
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h1>
+    </header>
     
       <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
 
@@ -247,52 +318,6 @@ cli_help () {
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h1>
-    
-      <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
-
-<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
-
-<h1>JPDA 简介</h1>
-
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h1>
-    
-      <h1>1. R Language Install</h1>
-
-<h2>安装相关依赖</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
-yum install libRmath-*
-rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
-rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -302,10 +327,10 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
     <a class="btn btn-default btn-sm" href="/page4/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 5 of 13</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 5 of 14</a></span>
   
     <a class="btn btn-default btn-sm" href="/page6/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
   
 </div>
 
@@ -326,21 +351,25 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
        <div class="category">
          <ul>
            
-           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
-           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
+           
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
+           
+           <li><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
            
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
-           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
+           <li><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
+           <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
-           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
+           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -353,10 +382,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
            <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
-           
-           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
-           
-           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
          </ul>
        </div>
@@ -385,9 +410,9 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
             
               <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
             
-              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
+              <li><a href="http://www.parallellabs.com/" target="_blank">并行实验室</a></li>
             
-              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
+              <li><a href="http://www.yanjiuyanjiu.com/" target="_blank">研究研究</a></li>
             
           </ul>
         </div>

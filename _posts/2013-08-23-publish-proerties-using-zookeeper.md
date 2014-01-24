@@ -3,8 +3,6 @@ layout: post
 title: 使用ZooKeeper实现配置同步
 category: hadoop
 tags: [ZooKeeper]
-keywords: ZooKeeper
-description: 使用ZooKeeper实现配置同步
 ---
 
 # 前言

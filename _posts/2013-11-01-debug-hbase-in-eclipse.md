@@ -3,8 +3,6 @@ layout: post
 title: 在eclipse中调试运行hbase
 category: hbase
 tags: [hbase]
-description: 在eclipse中调试运行hbase
-keywords: hbase、eclipse、debug
 ---
 
 这篇文章记录一下如何在eclipse中调试运行hbase。

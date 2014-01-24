@@ -4,13 +4,269 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Tue, 21 Jan 2014 11:35:20 +0800</lastBuildDate>
-		<pubDate>Tue, 21 Jan 2014 11:35:20 +0800</pubDate>
+		<lastBuildDate>Fri, 24 Jan 2014 15:36:51 +0800</lastBuildDate>
+		<pubDate>Fri, 24 Jan 2014 15:36:51 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
 		<item>
-			<title><![CDATA[All Things About Jekyll]]></title>
+			<title><![CDATA[在rhel系统上安装Nagios]]></title>
+			<description>&lt;h1&gt;在管理机上安装rpm包&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
+chkconfig httpd on &amp;amp;&amp;amp; chkconfig nagios on
+service httpd start &amp;amp;&amp;amp; service nagios start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;设置管理界面密码&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;htpasswd -c /etc/nagios/passwd admin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;密码和用户名保持一致（都设置为admin），否则你需要修改&lt;code&gt;/etc/nagios/cgi.cfg&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1&gt;访问Nagios&lt;/h1&gt;
+
+&lt;p&gt;打开&lt;code&gt;http://ip/nagios&lt;/code&gt;，输入用户名和密码即可访问&lt;/p&gt;
+
+&lt;h1&gt;在客户端上安装NRPE&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nrpe
+chkconfig nrpe on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;修改配置&lt;code&gt;/etc/nagios/nrpe.cfg&lt;/code&gt;，例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;log_facility=daemon
+pid_file=/var/run/nrpe/nrpe.pid
+server_port=5666
+nrpe_user=nrpe
+nrpe_group=nrpe
+allowed_hosts=198.211.117.251
+dont_blame_nrpe=1
+debug=0
+command_timeout=60
+connection_timeout=300
+include_dir=/etc/nrpe.d/
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s $ARG3$
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;请注意修改&lt;code&gt;allowed_hosts&lt;/code&gt;值为你的nagios监控机ip&lt;/p&gt;
+
+&lt;p&gt;设置iptables：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;iptables -N NRPE
+iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+iptables -I NRPE -s 198.211.117.251 -j ACCEPT
+iptables -A NRPE -s 0/0 -j DROP
+/etc/init.d/iptables save
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;或者，关闭iptables：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/iptables stop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;启动NRPE：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;service nrpe start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;在管理机上添加配置文件&lt;/h1&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;echo &amp;quot;cfg_dir=/etc/nagios/servers&amp;quot; &amp;gt;&amp;gt; /etc/nagios/nagios.cfg
+cd /etc/nagios/servers
+touch hadoop.tk.cfg
+touch hbase.tk.cfg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后修改每一个配置文件：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vim /etc/nagios/servers/hadoop.tk.cfg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;添加内容如下，你也可以稍作修改：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;define host {
+        use                     linux-server
+        host_name               cloudmail.tk
+        alias                   cloudmail.tk
+        address                 192.168.56.122
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             PING
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             SSH
+        check_command                   check_ssh
+        notifications_enabled           0
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             Current Load
+        check_command                   check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;重启nagios：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chown -R nagios. /etc/nagios
+service nagios restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+			<link>http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6</link>
+			<guid>http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6</guid>
+			<pubDate>Fri, 24 Jan 2014 00:00:00 +0800</pubDate>
+		</item>
+
+		<item>
+			<title><![CDATA[All Things OpenTSDB]]></title>
+			<description>&lt;h1&gt;OpenTSDB介绍&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://opentsdb.net/index.html&quot;&gt;OpenTSDB&lt;/a&gt;用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。&lt;/p&gt;
+
+&lt;p&gt;对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。&lt;/p&gt;
+
+&lt;p&gt;OpenTSDB使用LGPLv2.1+开源协议。&lt;/p&gt;
+
+&lt;h1&gt;安装OpenTSDB&lt;/h1&gt;
+
+&lt;h2&gt;依赖&lt;/h2&gt;
+
+&lt;p&gt;OpenTSDB依赖jdk和&lt;a href=&quot;http://www.gnuplot.info/&quot;&gt;Gnuplot&lt;/a&gt;，Gnuplot需要提前安装，版本要求为最小4.2,最大4.4,执行以下命令安装即可：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install gnuplot autoconf
+apt-get install gnuplot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是使用的C、C++程序员构建项目的方式。运行时依赖：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;JDK 1.6&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://github.com/OpenTSDB/asynchbase&quot;&gt;asynchbase&lt;/a&gt; 1.3.0 (BSD)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://code.google.com/p/guava-libraries/&quot;&gt;Guava&lt;/a&gt; 12.0 (ASLv2)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://logback.qos.ch/&quot;&gt;logback&lt;/a&gt; 1.0 (LGPLv2.1 / EPL)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://jboss.org/netty&quot;&gt;Netty&lt;/a&gt; 3.4 (ASLv2)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://slf4j.org/&quot;&gt;SLF4J&lt;/a&gt; 1.6 (MIT) with Log4J and JCL adapters&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://github.com/OpenTSDB/async&quot;&gt;suasync&lt;/a&gt; 1.2 (BSD)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://hadoop.apache.org/zookeeper/&quot;&gt;ZooKeeper&lt;/a&gt; 3.3 (ASLv2)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可选的编译时依赖：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://gwt.google.com/&quot;&gt;GWT&lt;/a&gt; 2.4 (ASLv2)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可选的单元测试依赖：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.javassist.org/&quot;&gt;Javassist&lt;/a&gt; 3.15 (MPL / LGPL)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.junit.org/&quot;&gt;JUnit&lt;/a&gt; 4.10 (CPL)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://mockito.org/&quot;&gt;Mockito&lt;/a&gt; 1.9 (MIT)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://code.google.com/p/powermock/&quot;&gt;PowerMock&lt;/a&gt; 1.4 (ASLv2)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;下载并编译源代码&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git://github.com/OpenTSDB/opentsdb.git
+cd opentsdb
+./build.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94&lt;/li&gt;
+&lt;li&gt;设置环境变量并创建opentsdb使用的表，需要设置的环境变量为&lt;code&gt;COMPRESSION&lt;/code&gt;和&lt;code&gt;HBASE_HOME&lt;/code&gt;，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo&lt;/li&gt;
+&lt;li&gt;执行建表语句&lt;code&gt;src/create_table.sh&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动TSD&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tsdtmp=${TMPDIR-&amp;#39;/tmp&amp;#39;}/tsd    # For best performance, make sure
+mkdir -p &amp;quot;$tsdtmp&amp;quot;             # your temporary directory uses tmpfs
+./build/tsdb tsd --port=4242 --staticroot=build/staticroot --cachedir=&amp;quot;$tsdtmp&amp;quot; --auto-metric
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果你使用的是hbase集群，则你还需要设置&lt;code&gt;--zkquorum&lt;/code&gt;，&lt;code&gt;--cachedir&lt;/code&gt;对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加&lt;code&gt;--auto-metric&lt;/code&gt;，则当新的数据被搜集时自动创建指标。
+5. 启动成功之后，你可以通过&lt;a href=&quot;http://127.0.0.1:4242&quot;&gt;127.0.0.1:4242&lt;/a&gt;进行访问。&lt;/p&gt;
+
+&lt;p&gt;从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：&lt;a href=&quot;http://www.adintellig.com/blog/14&quot;&gt;OpenTSDB &amp;amp; tcollector 安装部署（Installation and Deployment）&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1&gt;使用OpenTSDB&lt;/h1&gt;
+
+&lt;h2&gt;命令说明&lt;/h2&gt;
+
+&lt;p&gt;tsdb支持以下参数：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@cdh1 build]# ./tsdb 
+usage: tsdb &amp;lt;command&amp;gt; [args]
+Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;创建指标&lt;/h2&gt;
+
+&lt;p&gt;通过以下命令创建指标：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;执行上述命令的结果如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;metrics mysql.bytes_received: [0, 0, -93]
+metrics mysql.bytes_sent: [0, 0, -92]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。&lt;/p&gt;
+
+&lt;h2&gt;Schema&lt;/h2&gt;
+
+&lt;p&gt;OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;myservice.latency.avg 1292148123 42 reqtype=foo host=web42
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;对于指标myservice.latency.avg的ID为：[0, 0, -69],reqtype标签名称的ID为：[0, 0, 1], foo标签值的ID为：[0, 1, 11], 标签名称的ID为：[0, 0, 2] web42标签值的ID为：[0, -7, 42]，他们组成rowkey：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[0, 0, -69, 77, 4, -99, 32, 0, 0, 1, 0, 1, 11, 0, 0, 2, 0, -7, 42]
+ `-------&amp;#39;  `------------&amp;#39;  `-----&amp;#39;  `------&amp;#39;  `-----&amp;#39;  `-------&amp;#39;
+ metric ID  base timestamp  name ID  value ID  name ID  value ID
+                            `---------------&amp;#39;  `---------------&amp;#39;
+                                first tag         second tag
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;row表示格式为： 每个数字对应1 byte&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[0, 0, -69] metric ID&lt;/li&gt;
+&lt;li&gt;[77, 4, -99, 32] base timestamp = 1292148000. timestamps in the row key are rounded down to a 60 minute boundary。也就是说对于同一个小时的metric + tags相同的数据都会存放在一个row下面&lt;/li&gt;
+&lt;li&gt;[0, 0, 1] &amp;quot;reqtype&amp;quot; index&lt;/li&gt;
+&lt;li&gt;[0, 1, 11] &amp;quot;foo&amp;quot; index&lt;/li&gt;
+&lt;li&gt;[0, 0, 2] &amp;quot;host&amp;quot; index&lt;/li&gt;
+&lt;li&gt;[0, -7, 42] &amp;quot;web42&amp;quot; index&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NOTE（dirlt）：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助&lt;/p&gt;
+
+&lt;p&gt;column qualifier占用2 bytes，表示格式为：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;12 bits delta in seconds.(相对row表示的小时的delta, 最多2^ 12 = 4096 &amp;gt; 3600因此没有问题）&lt;/li&gt;
+&lt;li&gt;4 bits&lt;/li&gt;
+&lt;li&gt;1 bit (long or double)&lt;/li&gt;
+&lt;li&gt;3 bits (reserved)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;value使用8bytes存储，既可以存储long,也可以存储double。&lt;/p&gt;
+
+&lt;h2&gt;查询&lt;/h2&gt;
+
+&lt;h2&gt;HTTP API&lt;/h2&gt;
+
+&lt;h1&gt;谁在用OpenTSDB&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.stumbleupon.com/&quot;&gt;StumbleUpon&lt;/a&gt; StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.box.com/&quot;&gt;box&lt;/a&gt; Box simplifies online file storage, replaces FTP and connects teams in online workspaces.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.tumblr.com/&quot;&gt;tumblr&lt;/a&gt; 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;参考资料&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;http://luoshi0801.iteye.com/blog/1938835&lt;/li&gt;
+&lt;li&gt;http://blog.csdn.net/bingjie1217/article/category/1751285&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.binospace.com/index.php/opentsdb-design-road/&quot;&gt;OpenTSDB的设计之道&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://dirlt.com/opentsdb.html&quot;&gt;opentsdb&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+			<link>http://blog.javachen.com/post/2014/01/22/all-things-opentsdb</link>
+			<guid>http://blog.javachen.com/post/2014/01/22/all-things-opentsdb</guid>
+			<pubDate>Wed, 22 Jan 2014 00:00:00 +0800</pubDate>
+		</item>
+
+		<item>
+			<title><![CDATA[All Things Jekyll]]></title>
 			<description>&lt;p&gt;Jekyll是一个简洁的、特别针对博客平台的静态网站生成器。它使用一个模板目录作为网站布局的基础框架，并在其上运行Textile、Markdown或Liquid标记语言的转换器，最终生成一个完整的静态Web站点，可以被放置在Apache或者你喜欢的其他任何Web服务器上。它同时也是GitHub Pages、一个由GitHub提供的用于托管项目主页或博客的服务，在后台所运行的引擎。&lt;/p&gt;
 
 &lt;h1&gt;1. 安装&lt;/h1&gt;
@@ -184,12 +440,14 @@
 &lt;p&gt;RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Localhost_ip=$(ifconfig |awk -F &amp;#39;addr:|Bcast&amp;#39; &amp;#39;/Bcast/{print $2}&amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;由于普通用户jboss不能直接识别ifconfig命令，只能使用全路径&lt;code&gt;/sbin/ifconfig&lt;/code&gt;，目前处理方式为修改&lt;code&gt;~/.bash_profile&lt;/code&gt;文件添加环境变量如下：&lt;/p&gt;
+&lt;p&gt;由于普通用户user01不能直接识别ifconfig命令，只能使用全路径&lt;code&gt;/sbin/ifconfig&lt;/code&gt;，目前处理方式为修改&lt;code&gt;~/.bash_profile&lt;/code&gt;文件添加环境变量如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;PATH=$PATH:$HOME/bin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;改成如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;PATH=$PATH:$HOME/bin:/sbin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
 &lt;p&gt;经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。&lt;/p&gt;
 
 &lt;p&gt;出现如下问题：&lt;/p&gt;
@@ -265,9 +523,9 @@ echo &amp;quot;&amp;quot;
 &lt;p&gt;结论：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
-&lt;li&gt;Login 方式，文件调用顺序为： /etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/li&gt;
-&lt;li&gt;Login 之后，系统 PATH 为：/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin&lt;/li&gt;
+&lt;li&gt;Login 之前，系统 PATH 为：&lt;code&gt;/usr/local/bin:/bin:/usr/bin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Login 方式，文件调用顺序为： &lt;code&gt;/etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Login 之后，系统 PATH 为：&lt;code&gt;/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su - user
 [root@node3 ~]# hostname -i
@@ -291,9 +549,11 @@ invoke ~/.bash_profile
 
 &lt;p&gt;远程机使用 ssh 命令以普通用户身份登陆到主机 （属于 Login 方式）&lt;/p&gt;
 
-&lt;h3&gt;结论：&lt;/h3&gt;
+&lt;p&gt;结论：&lt;/p&gt;
 
-&lt;p&gt;与在本机使用 su 命令切换到普通用户的效果完全一样！&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;与在本机使用 su 命令切换到普通用户的效果完全一样！&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh user@remote_server_ip
 [root@node1 ~]# hostname -i
 192.168.122.31
@@ -322,8 +582,8 @@ invoke ~/.bash_profile
 
 &lt;ul&gt;
 &lt;li&gt;NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH&lt;/li&gt;
-&lt;li&gt;NoLogin 方式，文件调用顺序为：/etc/bashrc -&amp;gt; ~/.bashrc&lt;/li&gt;
-&lt;li&gt;NoLogin 方式，目标主机 User 用户 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，文件调用顺序为：&lt;code&gt;/etc/bashrc -&amp;gt; ~/.bashrc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，目标主机 User 用户 PATH 为：&lt;code&gt;/usr/local/bin:/bin:/usr/bin&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh user@remote_server_ip command
 [root@node1 ~]# hostname -i
@@ -351,9 +611,9 @@ invoke ~/.bashrc
 &lt;p&gt;结论：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin&lt;/li&gt;
-&lt;li&gt;Login 方式，root 用户，文件调用顺序为：/etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/li&gt;
-&lt;li&gt;Login 之后，系统 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin&lt;/li&gt;
+&lt;li&gt;Login 之前，系统 PATH 为：&lt;code&gt;/usr/local/bin:/bin:/usr/bin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Login 方式，root 用户，文件调用顺序为：&lt;code&gt;/etc/profile -&amp;gt; /etc/bashrc -&amp;gt; ~/.bashrc -&amp;gt; ~/.bash_profile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Login 之后，系统 PATH 为：&lt;code&gt;/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;su - root
 [root@node3 ~]# hostname -i
@@ -410,8 +670,8 @@ invoke ~/.bash_profile
 
 &lt;ul&gt;
 &lt;li&gt;NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH&lt;/li&gt;
-&lt;li&gt;NoLogin 方式，文件调用顺序为：/etc/bashrc -&amp;gt; ~/.bashrc&lt;/li&gt;
-&lt;li&gt;NoLogin 方式，目标主机 root 用户 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，文件调用顺序为：&lt;code&gt;/etc/bashrc -&amp;gt; ~/.bashrc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;NoLogin 方式，目标主机 root 用户 PATH 为：&lt;code&gt;/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;ssh root@remote_server_ip command
 [root@node1 ~]# hostname -i
@@ -434,7 +694,7 @@ invoke ~/.bashrc
 &lt;p&gt;结论：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，/etc/profile 文件才会被调用。&lt;/li&gt;
+&lt;li&gt;无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，&lt;code&gt;/etc/profile&lt;/code&gt; 文件才会被调用。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;pathmunge () {
     case &amp;quot;:${PATH}:&amp;quot; in
@@ -473,10 +733,12 @@ else
 
 fi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;3. 总结&lt;/h1&gt;
+
 &lt;p&gt;综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access</link>
-			<guid>http://blog.javachen.com/post/2014/01/18/bash-problem-when-ssh-access</guid>
+			<link>http://blog.javachen.com/linux/2014/01/18/bash-problem-when-ssh-access</link>
+			<guid>http://blog.javachen.com/linux/2014/01/18/bash-problem-when-ssh-access</guid>
 			<pubDate>Sat, 18 Jan 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -679,8 +941,8 @@ map &amp;lt;leader&amp;gt;n &amp;lt;plug&amp;gt;NERDTreeTabsToggle &amp;lt;CR&am
 &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html&quot;&gt;http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins</link>
-			<guid>http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins</guid>
+			<link>http://blog.javachen.com/linux/2014/01/14/vim-config-and-plugins</link>
+			<guid>http://blog.javachen.com/linux/2014/01/14/vim-config-and-plugins</guid>
 			<pubDate>Tue, 14 Jan 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -931,8 +1193,8 @@ ln -s /chan/projects  ~/projects
 ln -s /chan/workspace  ~/workspace
 ln -s /chan/download    ~/download
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system</link>
-			<guid>http://blog.javachen.com/post/2014/01/09/after-reinstall-the-system</guid>
+			<link>http://blog.javachen.com/linux/2014/01/09/after-reinstall-the-system</link>
+			<guid>http://blog.javachen.com/linux/2014/01/09/after-reinstall-the-system</guid>
 			<pubDate>Thu, 09 Jan 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1204,883 +1466,9 @@ git status
 git diff --cached &amp;gt;XXX.patch
 git ci -m &amp;#39;add patch&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands</link>
-			<guid>http://blog.javachen.com/git/2013/12/27/some-git-configs-and-cammands</guid>
+			<link>http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands</link>
+			<guid>http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands</guid>
 			<pubDate>Fri, 27 Dec 2013 00:00:00 +0800</pubDate>
-		</item>
-
-		<item>
-			<title><![CDATA[SaltStack学习笔记[未完成]]]></title>
-			<description>&lt;h1&gt;1. 关于本文档&lt;/h1&gt;
-
-&lt;p&gt;这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。&lt;/p&gt;
-
-&lt;p&gt;希望这篇文章能够让你快速了解并使用saltstack。文章还在编写中。&lt;/p&gt;
-
-&lt;h1&gt;2. 关于SaltStack&lt;/h1&gt;
-
-&lt;h2&gt;2.1. 什么是SaltStack&lt;/h2&gt;
-
-&lt;p&gt;SaltStack是开源的管理基础设置的轻量级工具，容易搭建，为远程管理服务器提供一种更好、更快速、更有扩展性的解决方案。通过简单、可管理的接口，Salt实现了可以管理成千上百的服务器和处理大数据的能力。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;轻量级配置管理系统，能够维持远端节点运行在预定状态（例如，确保指定的软件包已经安装和特定的系统服务正在运行）&lt;/li&gt;
-&lt;li&gt;分布式远程执行系统，用于在远端节点执行命令和查询数据，可以是单独，也可以是选定的条件&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2&gt;2.2. SaltStack特点&lt;/h2&gt;
-
-&lt;h3&gt;简单&lt;/h3&gt;
-
-&lt;p&gt;兼顾大规模部署与更小的系统的同时提供多功能性是很困难的，Salt是非常简单配置和维护，不管项目的大小。Salt可以胜任管理任意的数量的服务器，不管是本地网络，还是跨数据中心。架构采用C/S模式，在一个后台程序中集成必要功能。默认不需要复杂的配置就可以工作，同时可以定制用于特殊的需求。&lt;/p&gt;
-
-&lt;h3&gt;并行执行&lt;/h3&gt;
-
-&lt;p&gt;Salt的核心功能：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;通过并行方式让远端节点执行命令&lt;/li&gt;
-&lt;li&gt;采用安全的加密/解析协议&lt;/li&gt;
-&lt;li&gt;最小化使用网络和负载&lt;/li&gt;
-&lt;li&gt;提供简单的程序接口&lt;/li&gt;
-&lt;li&gt;Salt引入了更细粒度的控制，允许不通过目标名字，二是通过系统属性分类&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt;构建在成熟技术之上&lt;/h3&gt;
-
-&lt;p&gt;Salt采用了很多技术和技巧。网络层采用优秀的ZeroMQ库，所以守护进程里面包含AMQ代理。Salt采用公钥和主控通讯，同时使用更快的AES加密通信，验证和加密都已经集成在Salt里面。Salt使用msgpack通讯，所以更快速和更轻量网络交换。&lt;/p&gt;
-
-&lt;h3&gt;Python 客户端接口&lt;/h3&gt;
-
-&lt;p&gt;为了实现简单的扩展，Salt执行例程可以写成简单的Python模块。客户端程序收集的数据可以发送回主控端，可以是其他任意程序。可以通过Python API调用Salt程序，或者命令行，因此，Salt可以用来执行一次性命令，或者大型应用程序中的一部分模块。&lt;/p&gt;
-
-&lt;h3&gt;快速，灵活，可扩展&lt;/h3&gt;
-
-&lt;p&gt;结果是一个系统可以高速在一台或者一组服务器执行命令。Salt速度很快，配置简单，扩展性好，提供了一个远程执行架构，可以管理多样化需求的任何数量的服务器。整合了世界上最好的远程执行方法，增强处理能力，扩展使用范围，使得可以适用任何多样化复杂的网络。&lt;/p&gt;
-
-&lt;h3&gt;开源&lt;/h3&gt;
-
-&lt;p&gt;Salt基于Apache 2.0 licence开发，可以用于开源或者自有项目。请反馈你的扩展给项目组，以便更多人受益，共同促进Salt发展。请在你的系统部署 系统，让运维更便捷。&lt;/p&gt;
-
-&lt;p&gt;开发语言：Python&lt;/p&gt;
-
-&lt;h2&gt;2.3. 支持的系统&lt;/h2&gt;
-
-&lt;p&gt;常见的系统包可以直接下载安装使用：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://admin.fedoraproject.org/pkgdb/acls/name/salt&quot;&gt;Fedora&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;RedHat Enterprise Linux / Centos (&lt;a href=&quot;http://dl.fedoraproject.org/pub/epel/5/x86_64/repoview/salt.html&quot;&gt;EPEL 5&lt;/a&gt;, &lt;a href=&quot;http://dl.fedoraproject.org/pub/epel/6/x86_64/repoview/salt.html&quot;&gt;EPEL 6&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://launchpad.net/%7Esaltstack&quot;&gt;Ubuntu (PPA)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://aur.archlinux.org/packages.php?ID=47512&quot;&gt;Arch (AUR)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.freebsd.org/cgi/cvsweb.cgi/ports/sysutils/salt/&quot;&gt;FreeBSD&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://packages.gentoo.org/package/app-admin/salt&quot;&gt;Gentoo&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://packages.debian.org/sid/salt-master&quot;&gt;Debian (sid)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://packages.debian.org/experimental/salt-master&quot;&gt;Debian (experimental)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;3. 安装SaltStack&lt;/h1&gt;
-
-&lt;h2&gt;3.1. 依赖&lt;/h2&gt;
-
-&lt;p&gt;SaltStack只能安装在类unix的操作系统上并依赖以下组件：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://python.org/download/&quot;&gt;Python 2.6&lt;/a&gt; &amp;gt;= 2.6 &amp;lt;3.0&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.zeromq.org/&quot;&gt;ZeroMQ&lt;/a&gt; &amp;gt;= 2.1.9&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/zeromq/pyzmq&quot;&gt;pyzmq&lt;/a&gt; &amp;gt;= 2.1.9 - ZeroMQ Python bindings&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.dlitz.net/software/pycrypto/&quot;&gt;PyCrypto&lt;/a&gt; - The Python cryptography toolkit&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://pypi.python.org/pypi/msgpack-python/0.1.12&quot;&gt;msgpack-python&lt;/a&gt; - High-performance message interchange format&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://pyyaml.org/&quot;&gt;YAML&lt;/a&gt; - Python YAML bindings&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://jinja.pocoo.org/&quot;&gt;Jinja2&lt;/a&gt; - parsing Salt States (configurable in the master settings)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;可选的依赖：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.makotemplates.org/&quot;&gt;mako&lt;/a&gt; - an optional parser for Salt States (configurable in the master settings)&lt;/li&gt;
-&lt;li&gt;gcc - dynamic &lt;a href=&quot;http://cython.org/&quot;&gt;Cython&lt;/a&gt; module compiling&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;3.2. 快速安装&lt;/h2&gt;
-
-&lt;p&gt;可以使用官方提供的&lt;a href=&quot;https://github.com/saltstack/salt-bootstrap&quot;&gt;Salt Bootstrap&lt;/a&gt;来快速安装SaltStack。&lt;/p&gt;
-
-&lt;p&gt;安装master：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl -L http://bootstrap.saltstack.org | sudo sh -s -- -M -N
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;安装minion：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget -O - http://bootstrap.saltstack.org | sudo sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;当前&lt;a href=&quot;https://github.com/saltstack/salt-bootstrap&quot;&gt;Salt Bootstrap&lt;/a&gt;已经在以下操作系统测试通过：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Ubuntu 10.x/11.x/12.x&lt;/li&gt;
-&lt;li&gt;Debian 6.x&lt;/li&gt;
-&lt;li&gt;CentOS 6.3&lt;/li&gt;
-&lt;li&gt;Fedora&lt;/li&gt;
-&lt;li&gt;Arch&lt;/li&gt;
-&lt;li&gt;FreeBSD 9.0&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;3.3. 通过rpm安装&lt;/h2&gt;
-
-&lt;h3&gt;3.3.1. 下载EPEL yum源：&lt;/h3&gt;
-
-&lt;p&gt;RHEL 5系统: &lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://mirror.pnl.gov/epel/5/i386/epel-release-5-4.noarch.rpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;RHEL 6系统:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://ftp.linux.ncsu.edu/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;3.3.2. 安装包&lt;/h3&gt;
-
-&lt;p&gt;在master上运行：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在minion上运行：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install salt-minion
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;3.3.3. 安装后&lt;/h3&gt;
-
-&lt;p&gt;master上设置开启启动并启动服务：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chkconfig salt-master on
-service salt-master start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;minion上设置开启启动并启动服务：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chkconfig salt-minion on
-service salt-minion start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;3.4. 排错&lt;/h3&gt;
-
-&lt;p&gt;当前最新版为0.17.1，如果你也是使用的这个版本并且启动提示如下错误：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 vagrant]# /etc/init.d/salt-master start
-Starting salt-master daemon: Traceback (most recent call last):
- File &amp;quot;/usr/bin/salt-master&amp;quot;, line 10, in &amp;lt;module&amp;gt;
-   salt_master()
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/scripts.py&amp;quot;, line 20, in salt_master
-   master.start()
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/__init__.py&amp;quot;, line 114, in start
-   if check_user(self.config[&amp;#39;user&amp;#39;]):
- File &amp;quot;/usr/lib/python2.6/site-packages/salt/utils/verify.py&amp;quot;, line 296, in check_user
-   if user in e.gr_mem] + [pwuser.gid])
-AttributeError: &amp;#39;pwd.struct_passwd&amp;#39; object has no attribute &amp;#39;gid&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;通过google搜索关键字&lt;code&gt;saltstack &amp;#39;pwd.struct_passwd&amp;#39; object has no attribute &amp;#39;gid&amp;#39;&lt;/code&gt;，可以找到这个&lt;a href=&quot;https://github.com/saltstack/salt/issues/8176&quot;&gt;issues&lt;/a&gt;，查看评论可以发现这是一个bug，将会在0.17.2中被修复。&lt;/p&gt;
-
-&lt;p&gt;我的解决方法是：下载saltstack源码重新编译&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://github.com/saltstack/salt/archive/develop.zip
-unzip develop
-cd salt-develop/
-python2.6 setup.py install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;4. 配置SaltStack&lt;/h1&gt;
-
-&lt;h2&gt;4.1. master配置&lt;/h2&gt;
-
-&lt;p&gt;master不修改配置文件就可以运行，而minion必须修改配置文件中的master id才能和master通讯，配置文件分别在&lt;code&gt;/etc/salt/master&lt;/code&gt; 和 &lt;code&gt;/etc/salt/minion&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;master默认监控0.0.0.0上4505和4506端口，你可以在&lt;code&gt;/etc/salt/master&lt;/code&gt;中修改为指定ip。&lt;/p&gt;
-
-&lt;p&gt;master关键配置：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;interface&lt;/li&gt;
-&lt;li&gt;publish_port&lt;/li&gt;
-&lt;li&gt;user&lt;/li&gt;
-&lt;li&gt;max&lt;u&gt;open&lt;/u&gt;files&lt;/li&gt;
-&lt;li&gt;worker_threads&lt;/li&gt;
-&lt;li&gt;ret_port&lt;/li&gt;
-&lt;li&gt;pidfile&lt;/li&gt;
-&lt;li&gt;root_dir&lt;/li&gt;
-&lt;li&gt;pki_dir&lt;/li&gt;
-&lt;li&gt;cachedir&lt;/li&gt;
-&lt;li&gt;keep_jobs&lt;/li&gt;
-&lt;li&gt;job_cache&lt;/li&gt;
-&lt;li&gt;ext&lt;u&gt;job&lt;/u&gt;cache&lt;/li&gt;
-&lt;li&gt;minion&lt;u&gt;data&lt;/u&gt;cache&lt;/li&gt;
-&lt;li&gt;enforce&lt;u&gt;mine&lt;/u&gt;cache&lt;/li&gt;
-&lt;li&gt;sock_dir&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Master Security配置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;open_mode&lt;/li&gt;
-&lt;li&gt;auto_accept&lt;/li&gt;
-&lt;li&gt;autosign_file&lt;/li&gt;
-&lt;li&gt;client_acl&lt;/li&gt;
-&lt;li&gt;client&lt;u&gt;acl&lt;/u&gt;blacklist&lt;/li&gt;
-&lt;li&gt;external_auth&lt;/li&gt;
-&lt;li&gt;token_expire&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Master Module管理&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;runner_dirs&lt;/li&gt;
-&lt;li&gt;cython_enable&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Master State设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;state_verbose&lt;/li&gt;
-&lt;li&gt;state_output&lt;/li&gt;
-&lt;li&gt;state_top&lt;/li&gt;
-&lt;li&gt;external_nodes&lt;/li&gt;
-&lt;li&gt;renderer&lt;/li&gt;
-&lt;li&gt;failhard&lt;/li&gt;
-&lt;li&gt;test&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Master File Server设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;fileserver_backend&lt;/li&gt;
-&lt;li&gt;file_roots&lt;/li&gt;
-&lt;li&gt;hash_type&lt;/li&gt;
-&lt;li&gt;file&lt;u&gt;buffer&lt;/u&gt;size&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Pillar配置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;pillar_roots&lt;/li&gt;
-&lt;li&gt;ext_pillar&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Syndic Server设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;order_masters&lt;/li&gt;
-&lt;li&gt;syndic_master&lt;/li&gt;
-&lt;li&gt;syndic&lt;u&gt;master&lt;/u&gt;port&lt;/li&gt;
-&lt;li&gt;syndic&lt;u&gt;log&lt;/u&gt;file&lt;/li&gt;
-&lt;li&gt;syndic_pidfile&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Peer发布设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;peer&lt;/li&gt;
-&lt;li&gt;peer_run&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Node Groups设置&lt;/p&gt;
-
-&lt;p&gt;Master Logging设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;log_file&lt;/li&gt;
-&lt;li&gt;log_level&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;level&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log_datefmt&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;datefmt&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;console&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;granular&lt;/u&gt;levels&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Include配置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;default_include&lt;/li&gt;
-&lt;li&gt;include&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;4.4. minion配置&lt;/h2&gt;
-
-&lt;p&gt;Minion主要配置：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;master&lt;/li&gt;
-&lt;li&gt;master_port&lt;/li&gt;
-&lt;li&gt;user&lt;/li&gt;
-&lt;li&gt;pidfile&lt;/li&gt;
-&lt;li&gt;root_dir&lt;/li&gt;
-&lt;li&gt;pki_dir&lt;/li&gt;
-&lt;li&gt;id&lt;/li&gt;
-&lt;li&gt;append_domain&lt;/li&gt;
-&lt;li&gt;cachedir&lt;/li&gt;
-&lt;li&gt;verify_env&lt;/li&gt;
-&lt;li&gt;cache_jobs&lt;/li&gt;
-&lt;li&gt;sock_dir&lt;/li&gt;
-&lt;li&gt;backup_mode&lt;/li&gt;
-&lt;li&gt;acceptance&lt;u&gt;wait&lt;/u&gt;time&lt;/li&gt;
-&lt;li&gt;random&lt;u&gt;reauth&lt;/u&gt;delay&lt;/li&gt;
-&lt;li&gt;cceptance&lt;u&gt;wait&lt;/u&gt;time_max&lt;/li&gt;
-&lt;li&gt;dns_check&lt;/li&gt;
-&lt;li&gt;ipc_mode&lt;/li&gt;
-&lt;li&gt;tcp&lt;u&gt;pub&lt;/u&gt;port&lt;/li&gt;
-&lt;li&gt;tcp&lt;u&gt;pull&lt;/u&gt;port&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Minion Module管理&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;disable_modules&lt;/li&gt;
-&lt;li&gt;disable_returners&lt;/li&gt;
-&lt;li&gt;module_dirs&lt;/li&gt;
-&lt;li&gt;returner_dirs&lt;/li&gt;
-&lt;li&gt;states_dirs&lt;/li&gt;
-&lt;li&gt;render_dirs&lt;/li&gt;
-&lt;li&gt;cython_enable&lt;/li&gt;
-&lt;li&gt;providers&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;State Management 设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;renderer&lt;/li&gt;
-&lt;li&gt;state_verbose&lt;/li&gt;
-&lt;li&gt;state_output&lt;/li&gt;
-&lt;li&gt;autoload&lt;u&gt;dynamic&lt;/u&gt;modules&lt;/li&gt;
-&lt;li&gt;environment&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;File目录设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;file_client&lt;/li&gt;
-&lt;li&gt;file_roots&lt;/li&gt;
-&lt;li&gt;hash_type&lt;/li&gt;
-&lt;li&gt;pillar_roots&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Security设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;open_mode&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;线程设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;multiprocessing&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Minion日志设置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;log_file&lt;/li&gt;
-&lt;li&gt;log_level&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;level&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log_datefmt&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;datefmt&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;console&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;fmt&lt;/u&gt;logfile&lt;/li&gt;
-&lt;li&gt;log&lt;u&gt;granular&lt;/u&gt;levels&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Include配置&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;default_include&lt;/li&gt;
-&lt;li&gt;include&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Frozen Build Update Settings&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;update_url&lt;/li&gt;
-&lt;li&gt;update&lt;u&gt;restart&lt;/u&gt;services&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;5. 初识SaltStack&lt;/h1&gt;
-
-&lt;h2&gt;5.1. 配置&lt;/h2&gt;
-
-&lt;p&gt;参考上面的配置文件说明修改master和minion配置。这里我的master主机名为sk1，minion主机名为sk2。&lt;/p&gt;
-
-&lt;p&gt;修改master配置文件/etc/salt/master&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;interface: 0.0.0.0
-auto_accept: True
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;修改minion配置文件/etc/salt/minion&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;master: sk1
-id: sk2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;5.2. 运行salt&lt;/h2&gt;
-
-&lt;p&gt;然后运行salt，启动master（添加&lt;code&gt;-d&lt;/code&gt;参数可以让其后台运行）：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;启动minion（添加-d参数可以让其后台运行）：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-minion
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果需要排错，可以添加设置日志级别：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt-master --log-level=debug
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果想以非用户运行，可以添加&lt;code&gt;--user&lt;/code&gt;参数&lt;/p&gt;
-
-&lt;h2&gt;5.3. 管理Key&lt;/h2&gt;
-
-&lt;p&gt;Salt在master和minion通信之间使用AES加密。在master和minion通信之前，minion上的key需要发送到master并被master接受。可以在master上查看已经接受的key：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -L
-Accepted Keys:
-Unaccepted Keys:
-sk2
-Rejected Keys:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后运行下面命令可以接受所有未被接受的key：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt-key -A
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;5.4. 发送命令&lt;/h2&gt;
-
-&lt;p&gt;在master上发送ping命令检测minon是否被认证成功：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 pillar]# salt &amp;#39;*&amp;#39; test.ping
-sk2:salt &amp;#39;*&amp;#39; test.ping
-    True
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;True表明测试成功。&lt;/p&gt;
-
-&lt;h1&gt;6. 配置管理&lt;/h1&gt;
-
-&lt;h2&gt;6.1 states&lt;/h2&gt;
-
-&lt;h2&gt;6.1.1 states文件&lt;/h2&gt;
-
-&lt;p&gt;salt states的核心是sls文件，该文件使用YAML语法定义了一些k/v的数据。&lt;/p&gt;
-
-&lt;p&gt;sls文件存放根路径在master配置文件中定义，默认为&lt;code&gt;/srv/salt&lt;/code&gt;,该目录在操作系统上不存在，需要手动创建。&lt;/p&gt;
-
-&lt;p&gt;在salt中可以通过&lt;code&gt;salt://&lt;/code&gt;代替根路径，例如你可以通过&lt;code&gt;salt://top.sls&lt;/code&gt;访问&lt;code&gt;/srv/salt/top.sls&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;在states中top文件也由master配置文件定义，默认为top.sls，该文件为states的入口文件。&lt;/p&gt;
-
-&lt;p&gt;一个简单的sls文件如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; apache:
-  pkg:
-    - installed
-  service:
-    - running
-    - require:
-      - pkg: apache
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;说明：此SLS数据确保叫做&amp;quot;apache&amp;quot;的软件包(package)已经安装,并且&amp;quot;apache&amp;quot;服务(service)正在运行中。&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;第一行，被称为ID说明(ID Declaration)。ID说明表明可以操控的名字。&lt;/li&gt;
-&lt;li&gt;第二行和第四行是State说明(State Declaration)，它们分别使用了pkg和service states。pkg state通过系统的包管理其管理关键包，service state管理系统服务(daemon)。 在pkg及service列下边是运行的方法。方法定义包和服务应该怎么做。此处是软件包应该被安装，服务应该处于运行中。&lt;/li&gt;
-&lt;li&gt;第六行使用require。本方法称为&amp;quot;必须指令&amp;quot;(Requisite Statement)，表明只有当apache软件包安装成功时，apache服务才启动起来。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;state和方法可以通过点连起来，上面sls文件和下面文件意思相同。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; apache:
-  pkg.installed
-  service.running
-    - require:
-      - pkg: apache
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;将上面sls保存为init.sls并放置&lt;code&gt;在sal://apache&lt;/code&gt;目录下，结果如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/srv/salt
-├── apache
-│   └── init.sls
-└── top.sls
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;top.sls如何定义呢？&lt;/p&gt;
-
-&lt;p&gt;master配置文件中定义了三种环境，每种环境都可以定义多个目录，但是要避免冲突，分别如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;# file_roots:
-#   base:
-#     - /srv/salt/
-#   dev:
-#     - /srv/salt/dev/services
-#     - /srv/salt/dev/states
-#   prod:
-#     - /srv/salt/prod/services
-#     - /srv/salt/prod/states
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;top.sls可以这样定义：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; base:
-   &amp;#39;*&amp;#39;:
-    - apache
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;说明：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;第一行，声明使用base环境&lt;/li&gt;
-&lt;li&gt;第二行，定义target，这里是匹配所有&lt;/li&gt;
-&lt;li&gt;第三行，声明使用哪些states目录，salt会寻找每个目录下的init.sls文件。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;6.1.2 运行states&lt;/h2&gt;
-
-&lt;p&gt;一旦创建完states并修改完top.sls之后，你可以在master上执行下面命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 salt]# salt &amp;#39;*&amp;#39; state.highstate 
-sk2:
-----------
-    State: - pkg
-    Name:      httpd
-    Function:  installed
-        Result:    True
-        Comment:   The following packages were installed/updated: httpd.
-        Changes:   
-                   ----------
-                   httpd:
-                       ----------
-                       new:
-                           2.2.15-29.el6.centos
-                       old:
-
-----------
-    State: - service
-    Name:      httpd
-    Function:  running
-        Result:    True
-        Comment:   Service httpd has been enabled, and is running
-        Changes:   
-                   ----------
-                   httpd:
-                       True
-
-Summary
-------------
-Succeeded: 2
-Failed:    0
-------------
-Total:     2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面命令会触发所有minion从master下载top.sls文件以及其中定一个的states，然后编译、执行。执行完之后，minion会将执行结果的摘要信息汇报给master。&lt;/p&gt;
-
-&lt;h2&gt;6.2. Grains&lt;/h2&gt;
-
-&lt;h2&gt;Pillar&lt;/h2&gt;
-
-&lt;h2&gt;Renderers&lt;/h2&gt;
-
-&lt;h1&gt;远程执行命令&lt;/h1&gt;
-
-&lt;p&gt;在上面的例子中，test.ping是最简单的一个远程执行的命令，你还可以执行一些更加复杂的命令。&lt;/p&gt;
-
-&lt;p&gt;salt执行命令的格式如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;&amp;lt;target&amp;gt;&amp;#39; &amp;lt;function&amp;gt; [arguments]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ul&gt;
-&lt;li&gt;target: 执行salt命令的目标，可以使用正则表达式&lt;/li&gt;
-&lt;li&gt;function： 方法，由module提供&lt;/li&gt;
-&lt;li&gt;arguments：function的参数 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;target可以使用正则表达式匹配：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; test.ping
-salt &amp;#39;sk2&amp;#39; test.ping
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;function是module提供的方法。通过下面命令可以查看所有的function：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; sys.doc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;function可以接受参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; cmd.run &amp;#39;uname -a&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;并且支持关键字参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; cmd.run &amp;#39;uname -a&amp;#39; cwd=/ user=salt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面例子意思是：在所有minion上切换到/目录以salt用户运行&lt;code&gt;uname -a&lt;/code&gt;命令。&lt;/p&gt;
-
-&lt;p&gt;关键字参数可以参考module的&lt;a href=&quot;http://docs.saltstack.com/py-modindex.html&quot;&gt;api&lt;/a&gt;,通过api你可以查看&lt;a href=&quot;http://docs.saltstack.com/ref/states/all/salt.states.cmd.html#salt.states.cmd.run&quot;&gt;cmd.run&lt;/a&gt;的定义：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt.states.cmd.mod_watch(name, **kwargs)
-Execute a cmd function based on a watch call
-
-salt.states.cmd.run(name, onlyif=None, unless=None, cwd=None, user=None, group=None, shell=None, env=(), stateful=False, umask=None, quiet=False, timeout=None, **kwargs)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;所有module中的方法定义都与上面类似，说明：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;name： 第一个参数，为执行的命令&lt;/li&gt;
-&lt;li&gt;中间的key=alue为keyword参数，都有默认值&lt;/li&gt;
-&lt;li&gt;最后一个参数为name中命令的输入参数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;TARGETING&lt;/h2&gt;
-
-&lt;h2&gt;Returners&lt;/h2&gt;
-
-&lt;h2&gt;Mine&lt;/h2&gt;
-
-&lt;h1&gt;权限管理&lt;/h1&gt;
-
-&lt;h1&gt;作业管理&lt;/h1&gt;
-
-&lt;h1&gt;Logging&lt;/h1&gt;
-
-&lt;h1&gt;参考文章&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;[1]&lt;a href=&quot;http://zhoulg.blog.51cto.com/48455/1140178&quot;&gt;Saltstack服务器集中管理和并行下发命令工具&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-			<link>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</link>
-			<guid>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</guid>
-			<pubDate>Mon, 18 Nov 2013 00:00:00 +0800</pubDate>
-		</item>
-
-		<item>
-			<title><![CDATA[使用saltstack安装jboss]]></title>
-			<description>&lt;p&gt;Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。&lt;/p&gt;
-
-&lt;p&gt;在开始使用saltstack之前，首先要对Salt的基础进行一系列的学习，这里，我强烈推荐官网的&lt;a href=&quot;http://docs.saltstack.com/topics/tutorials/walkthrough.html&quot;&gt;Tutorial&lt;/a&gt;,在完成了整个Tutorial之后，通过Module Index页面，我们能够快速查阅Salt所有模块的功能与用法:&lt;a href=&quot;http://docs.saltstack.com/py-modindex.html&quot;&gt;http://docs.saltstack.com/py-modindex.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1&gt;安装saltstack&lt;/h1&gt;
-
-&lt;p&gt;安装过程请参考：&lt;a href=&quot;/saltstack/2013/11/11/install-saltstack-and-halite/&quot;&gt;安装saltstack和halite&lt;/a&gt;&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h1&gt;添加pillar&lt;/h1&gt;
-
-&lt;p&gt;你可以执行下面命令查看minion拥有哪些Pillar数据：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; pillar.data
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;saltstack的默认states目录为&lt;code&gt;/srv/salt&lt;/code&gt;，默认为&lt;code&gt;/srv/pillar&lt;/code&gt;，如果不存在请先创建。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 /]# tree /srv/ -L 3
-/srv/
-├── pillar
-│   ├── jboss
-│       ├── params.sls
-│   └── top.sls
-├── salt
-│   ├── jboss
-│   ├── _modules
-│   └── top.sls
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在&lt;code&gt;/srv/pillar/&lt;/code&gt;下创建top.sls，该文件引入jboss下的params.sls：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt; &lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建jboss目录并添加params.sls如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt; &lt;span class=&quot;n&quot;&gt;jboss_home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;as&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;profile_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;default1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;http_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;jmx_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1099&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;default2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;http_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;jmx_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1199&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;default3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;http_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;02&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;jmx_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1299&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;default4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;http_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;03&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;jmx_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1399&lt;/span&gt;
-
- &lt;span class=&quot;n&quot;&gt;jmx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;admin&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;admin&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;该文件定义了如下变量，你可以按需要定义自己的变量：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;jboss_home：mimion机器上jboss的home目录&lt;/li&gt;
-&lt;li&gt;profile_port：定义有多少个profile以及每个profile下的http端口和jmx端口&lt;/li&gt;
-&lt;li&gt;jmx:定义jmx-console用户名和密码&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;定义变量之后，你可以在sates文件中这样引用：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;pillar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;default1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;下面是个复杂的例子，使用了python中的模板引擎语言：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pillar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endfor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;你还可以在python脚本中或者是saltstack自定义module中这样引用变量：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;__pillar__[&amp;#39;jboss_home&amp;#39;]
-__pillar__[&amp;#39;profile_port&amp;#39;][&amp;#39;default1&amp;#39;][&amp;#39;jmx_port&amp;#39;]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;在master上修改Pilla文件后，需要用以下命令刷新minion上的数据：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; saltutil.refresh_pillar
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果定义好的pillar不生效，建议刷新一下或者重启salt试试。&lt;/p&gt;
-
-&lt;h1&gt;编写states&lt;/h1&gt;
-
-&lt;p&gt;/srv/salt目录如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@sk1 salt]# tree -L 3
-.
-├── jboss
-│   ├── files
-│   │   └── jboss-eap-5.1.zip
-│   └── init.sls
-
-├── _modules
-│   └── jboss.py
-├── top.sls
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;top.sls为sates入口，定义如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; base:
-  *:
-    - jboss
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;创建jboss目录并编写init.sls文件：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt; &lt;span class=&quot;n&quot;&gt;unzip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;pkg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;installed&lt;/span&gt;
- &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;managed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;include_empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;655&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;unzip jboss-eap-5.1.zip&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cwd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unless&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;test -e jboss-eap-5.1&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;managed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pillar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;{{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}}:&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;\cp -r default {{profile}}&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cwd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;as&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unless&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;test -e {{profile}}&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;managed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endfor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;说明：&lt;/p&gt;
-
-&lt;p&gt;1.上面文件中创建了jboss ID，其包括两部分：拷贝文件和解压缩，分别对应file.managed和cmd.run。&lt;/p&gt;
-
-&lt;p&gt;2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile&lt;u&gt;port的值，然后创建多个profile。profile&lt;/u&gt;port变量在&lt;code&gt;/srv/pillar/jboss/params.sls&lt;/code&gt;中定义。&lt;/p&gt;
-
-&lt;p&gt;编写完sates文件之后，你可以通过执行以下命令让所有minion执行sates文件中定义的state：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; state.highstate
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;你也可以单独执行jboss这个states：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; state.sls jboss
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;自定义grains_module&lt;/h1&gt;
-
-&lt;p&gt;自定义的&lt;code&gt;grains_module&lt;/code&gt;存放在&lt;code&gt;/srv/salt/_grains&lt;/code&gt;目录，下面定义一个获取&lt;code&gt;max_open_file&lt;/code&gt;的grains：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;commands&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Grains&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;grains&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;max_open_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;65536&lt;/span&gt; 
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-        &lt;span class=&quot;n&quot;&gt;getulimit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;commands&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getstatusoutput&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;source /etc/profile;ulimit -n&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;  
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getulimit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-        &lt;span class=&quot;n&quot;&gt;max_open_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getulimit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;  
-    &lt;span class=&quot;n&quot;&gt;grains&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;max_open_file&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_open_file&lt;/span&gt; 
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;grains&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后，同步grains模块：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; saltutil.sync_all
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;刷新模块(让minion编译模块)：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; sys.reload_modules
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后，验证max open file的value：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; grains.item max_open_file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;自定义module&lt;/h1&gt;
-
-&lt;p&gt;你通过执行states可以完成bao的安装、配置和部署，如果你想对他们做管理，你可以自定义module来执行一些远程命令。&lt;/p&gt;
-
-&lt;p&gt;自定义的module需要存放在&lt;code&gt;/srv/salt/_module&lt;/code&gt;目录下，为了对jboss实例进行启动、停止、查看运行状态，编写jboss.py模块：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_simple_cmd_retcode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;home&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jboss_home&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/bin&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__salt__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;cmd.retcode&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;](&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cwd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Cmd&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Result&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_simple_cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;home&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jboss_home&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/bin&amp;#39;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__salt__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;cmd.run&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;](&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cwd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;splitlines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Cmd&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Result&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_simple_cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;ps -ef|grep -v grep|grep java|grep &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; |grep &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;http_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__grains__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;http_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;nohup ./run.sh -b &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; -c &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; -Djboss.service.binding.set=&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; &amp;amp;&amp;#39;&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Cmd&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; has started&amp;#39;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Result&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_simple_cmd_retcode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__grains__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;username&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;password&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;./twiddle.sh -s &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;:&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; -u &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; -p &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; get jboss.system:type=Server Started&amp;quot;&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_simple_cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;ERROR&amp;#39;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Result&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Msg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;stop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__grains__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;profile_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx_port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;username&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__pillar__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;jmx&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;password&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;./shutdown.sh -S -s &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;:&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; -u &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; -p &amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_simple_cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;以上python脚本定义了对单个profile的启动、停止和查看运行状态的方法，你可以修改或者扩增代码，添加更多的方法。&lt;/p&gt;
-
-&lt;p&gt;如果你想启动jboss的default1实例，只需要执行以下方法：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; jboss.start default1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;同样，查看状态：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;salt &amp;#39;*&amp;#39; jboss.status default1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;jboss为自定义模块的名称，也是jboss.py的名称，start或者status为jboss.py中定义的方法。&lt;/p&gt;
-
-&lt;h1&gt;同步配置文件&lt;/h1&gt;
-
-&lt;p&gt;现在需要修改jmx-console-users.properties文件中的用户名和密码并将其同步到所有jboss实例中。&lt;/p&gt;
-
-&lt;p&gt;将jmx-console-users.properties文件放置在&lt;code&gt;/srv/salt/jboss/files&lt;/code&gt;目录下，并修改该文件如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt; #A sample users.properties file for use with the UsersRolesLoginModule
- pillar[&amp;#39;jmx&amp;#39;][&amp;#39;username&amp;#39;]= pillar[&amp;#39;jmx&amp;#39;][&amp;#39;password&amp;#39;]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;上面文件中使用了pillar获取变量，你还可以使用模板语言如if、for语句来丰富你的文件内容，saltstack支持的模板引擎有jinja等。&lt;/p&gt;
-
-&lt;p&gt;然后在init.sls中添加：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt; &lt;span class=&quot;n&quot;&gt;jmx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-   &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;managed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;5.1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;as&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jmx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;properties&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jboss&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jmx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;properties&lt;/span&gt;
-     &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jinja&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack</link>
-			<guid>http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack</guid>
-			<pubDate>Sat, 16 Nov 2013 00:00:00 +0800</pubDate>
 		</item>
 
 	</channel>

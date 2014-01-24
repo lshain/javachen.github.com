@@ -3,7 +3,6 @@ layout: post
 title: 我的jekyll配置和修改
 category: post
 tags: [jekyll]
-description: 我的Jekyll配置
 ---
 
 

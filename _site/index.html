@@ -138,6 +138,8 @@
   
     
   
+    
+  
 
 
 
@@ -174,7 +176,279 @@
 
 
 <article>
-    <h1 class="entry-title"><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></h1>
+    </header>
+    
+      <h1>在管理机上安装rpm包</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
+chkconfig httpd on &amp;&amp; chkconfig nagios on
+service httpd start &amp;&amp; service nagios start
+</code></pre></div>
+<h1>设置管理界面密码</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">htpasswd -c /etc/nagios/passwd admin
+</code></pre></div>
+<p>密码和用户名保持一致（都设置为admin），否则你需要修改<code>/etc/nagios/cgi.cfg</code></p>
+
+<h1>访问Nagios</h1>
+
+<p>打开<code>http://ip/nagios</code>，输入用户名和密码即可访问</p>
+
+<h1>在客户端上安装NRPE</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nrpe
+chkconfig nrpe on
+</code></pre></div>
+<p>修改配置<code>/etc/nagios/nrpe.cfg</code>，例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">log_facility=daemon
+pid_file=/var/run/nrpe/nrpe.pid
+server_port=5666
+nrpe_user=nrpe
+nrpe_group=nrpe
+allowed_hosts=198.211.117.251
+dont_blame_nrpe=1
+debug=0
+command_timeout=60
+connection_timeout=300
+include_dir=/etc/nrpe.d/
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s $ARG3$
+</code></pre></div>
+<p>请注意修改<code>allowed_hosts</code>值为你的nagios监控机ip</p>
+
+<p>设置iptables：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -N NRPE
+iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+iptables -I NRPE -s 198.211.117.251 -j ACCEPT
+iptables -A NRPE -s 0/0 -j DROP
+/etc/init.d/iptables save
+</code></pre></div>
+<p>或者，关闭iptables：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/iptables stop
+</code></pre></div>
+<p>启动NRPE：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service nrpe start
+</code></pre></div>
+<h1>在管理机上添加配置文件</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;cfg_dir=/etc/nagios/servers&quot; &gt;&gt; /etc/nagios/nagios.cfg
+cd /etc/nagios/servers
+touch hadoop.tk.cfg
+touch hbase.tk.cfg
+</code></pre></div>
+<p>然后修改每一个配置文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/nagios/servers/hadoop.tk.cfg
+</code></pre></div>
+<p>添加内容如下，你也可以稍作修改：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">define host {
+        use                     linux-server
+        host_name               cloudmail.tk
+        alias                   cloudmail.tk
+        address                 192.168.56.122
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             PING
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             SSH
+        check_command                   check_ssh
+        notifications_enabled           0
+        }
+
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             Current Load
+        check_command                   check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+        }
+</code></pre></div>
+<p>重启nagios：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chown -R nagios. /etc/nagios
+service nagios restart
+</code></pre></div>
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></h1>
+    </header>
+    
+      <h1>OpenTSDB介绍</h1>
+
+<p><a href="http://opentsdb.net/index.html">OpenTSDB</a>用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。</p>
+
+<p>对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。</p>
+
+<p>OpenTSDB使用LGPLv2.1+开源协议。</p>
+
+<h1>安装OpenTSDB</h1>
+
+<h2>依赖</h2>
+
+<p>OpenTSDB依赖jdk和<a href="http://www.gnuplot.info/">Gnuplot</a>，Gnuplot需要提前安装，版本要求为最小4.2,最大4.4,执行以下命令安装即可：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install gnuplot autoconf
+apt-get install gnuplot
+</code></pre></div>
+<p>OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是使用的C、C++程序员构建项目的方式。运行时依赖：</p>
+
+<ul>
+<li>JDK 1.6</li>
+<li><a href="http://github.com/OpenTSDB/asynchbase">asynchbase</a> 1.3.0 (BSD)</li>
+<li><a href="http://code.google.com/p/guava-libraries/">Guava</a> 12.0 (ASLv2)</li>
+<li><a href="http://logback.qos.ch/">logback</a> 1.0 (LGPLv2.1 / EPL)</li>
+<li><a href="http://jboss.org/netty">Netty</a> 3.4 (ASLv2)</li>
+<li><a href="http://slf4j.org/">SLF4J</a> 1.6 (MIT) with Log4J and JCL adapters</li>
+<li><a href="http://github.com/OpenTSDB/async">suasync</a> 1.2 (BSD)</li>
+<li><a href="http://hadoop.apache.org/zookeeper/">ZooKeeper</a> 3.3 (ASLv2)</li>
+</ul>
+
+<p>可选的编译时依赖：</p>
+
+<ul>
+<li><a href="http://gwt.google.com/">GWT</a> 2.4 (ASLv2)</li>
+</ul>
+
+<p>可选的单元测试依赖：</p>
+
+<ul>
+<li><a href="http://www.javassist.org/">Javassist</a> 3.15 (MPL / LGPL)</li>
+<li><a href="http://www.junit.org/">JUnit</a> 4.10 (CPL)</li>
+<li><a href="http://mockito.org/">Mockito</a> 1.9 (MIT)</li>
+<li><a href="http://code.google.com/p/powermock/">PowerMock</a> 1.4 (ASLv2)</li>
+</ul>
+
+<h2>下载并编译源代码</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git://github.com/OpenTSDB/opentsdb.git
+cd opentsdb
+./build.sh
+</code></pre></div>
+<h2>安装</h2>
+
+<ol>
+<li>首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94</li>
+<li>设置环境变量并创建opentsdb使用的表，需要设置的环境变量为<code>COMPRESSION</code>和<code>HBASE_HOME</code>，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo</li>
+<li>执行建表语句<code>src/create_table.sh</code></li>
+<li>启动TSD</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tsdtmp=${TMPDIR-&#39;/tmp&#39;}/tsd    # For best performance, make sure
+mkdir -p &quot;$tsdtmp&quot;             # your temporary directory uses tmpfs
+./build/tsdb tsd --port=4242 --staticroot=build/staticroot --cachedir=&quot;$tsdtmp&quot; --auto-metric
+</code></pre></div>
+<p>如果你使用的是hbase集群，则你还需要设置<code>--zkquorum</code>，<code>--cachedir</code>对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加<code>--auto-metric</code>，则当新的数据被搜集时自动创建指标。
+5. 启动成功之后，你可以通过<a href="http://127.0.0.1:4242">127.0.0.1:4242</a>进行访问。</p>
+
+<p>从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：<a href="http://www.adintellig.com/blog/14">OpenTSDB &amp; tcollector 安装部署（Installation and Deployment）</a></p>
+
+<h1>使用OpenTSDB</h1>
+
+<h2>命令说明</h2>
+
+<p>tsdb支持以下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@cdh1 build]# ./tsdb 
+usage: tsdb &lt;command&gt; [args]
+Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
+</code></pre></div>
+<h2>创建指标</h2>
+
+<p>通过以下命令创建指标：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
+</code></pre></div>
+<p>执行上述命令的结果如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">metrics mysql.bytes_received: [0, 0, -93]
+metrics mysql.bytes_sent: [0, 0, -92]
+</code></pre></div>
+<p>OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。</p>
+
+<h2>Schema</h2>
+
+<p>OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">myservice.latency.avg 1292148123 42 reqtype=foo host=web42
+</code></pre></div>
+<p>对于指标myservice.latency.avg的ID为：[0, 0, -69],reqtype标签名称的ID为：[0, 0, 1], foo标签值的ID为：[0, 1, 11], 标签名称的ID为：[0, 0, 2] web42标签值的ID为：[0, -7, 42]，他们组成rowkey：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[0, 0, -69, 77, 4, -99, 32, 0, 0, 1, 0, 1, 11, 0, 0, 2, 0, -7, 42]
+ `-------&#39;  `------------&#39;  `-----&#39;  `------&#39;  `-----&#39;  `-------&#39;
+ metric ID  base timestamp  name ID  value ID  name ID  value ID
+                            `---------------&#39;  `---------------&#39;
+                                first tag         second tag
+</code></pre></div>
+<p>row表示格式为： 每个数字对应1 byte</p>
+
+<ul>
+<li>[0, 0, -69] metric ID</li>
+<li>[77, 4, -99, 32] base timestamp = 1292148000. timestamps in the row key are rounded down to a 60 minute boundary。也就是说对于同一个小时的metric + tags相同的数据都会存放在一个row下面</li>
+<li>[0, 0, 1] &quot;reqtype&quot; index</li>
+<li>[0, 1, 11] &quot;foo&quot; index</li>
+<li>[0, 0, 2] &quot;host&quot; index</li>
+<li>[0, -7, 42] &quot;web42&quot; index</li>
+</ul>
+
+<p>NOTE（dirlt）：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助</p>
+
+<p>column qualifier占用2 bytes，表示格式为：</p>
+
+<ul>
+<li>12 bits delta in seconds.(相对row表示的小时的delta, 最多2^ 12 = 4096 &gt; 3600因此没有问题）</li>
+<li>4 bits</li>
+<li>1 bit (long or double)</li>
+<li>3 bits (reserved)</li>
+</ul>
+
+<p>value使用8bytes存储，既可以存储long,也可以存储double。</p>
+
+<h2>查询</h2>
+
+<h2>HTTP API</h2>
+
+<h1>谁在用OpenTSDB</h1>
+
+<ul>
+<li><a href="http://www.stumbleupon.com/">StumbleUpon</a> StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web</li>
+<li><a href="https://www.box.com/">box</a> Box simplifies online file storage, replaces FTP and connects teams in online workspaces.</li>
+<li><a href="http://www.tumblr.com/">tumblr</a> 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章</li>
+</ul>
+
+<h1>参考资料</h1>
+
+<ul>
+<li>http://luoshi0801.iteye.com/blog/1938835</li>
+<li>http://blog.csdn.net/bingjie1217/article/category/1751285</li>
+<li><a href="http://www.binospace.com/index.php/opentsdb-design-road/">OpenTSDB的设计之道</a></li>
+<li><a href="http://dirlt.com/opentsdb.html">opentsdb</a></li>
+</ul>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/post/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></h1>
+    </header>
     
       <p>Jekyll是一个简洁的、特别针对博客平台的静态网站生成器。它使用一个模板目录作为网站布局的基础框架，并在其上运行Textile、Markdown或Liquid标记语言的转换器，最终生成一个完整的静态Web站点，可以被放置在Apache或者你喜欢的其他任何Web服务器上。它同时也是GitHub Pages、一个由GitHub提供的用于托管项目主页或博客的服务，在后台所运行的引擎。</p>
 
@@ -202,307 +476,27 @@
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></h1>
+    </header>
     
       <h1>1. 问题</h1>
 
 <p>RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">Localhost_ip=$(ifconfig |awk -F &#39;addr:|Bcast&#39; &#39;/Bcast/{print $2}&#39;)
 </code></pre></div>
-<p>由于普通用户jboss不能直接识别ifconfig命令，只能使用全路径<code>/sbin/ifconfig</code>，目前处理方式为修改<code>~/.bash_profile</code>文件添加环境变量如下：</p>
+<p>由于普通用户user01不能直接识别ifconfig命令，只能使用全路径<code>/sbin/ifconfig</code>，目前处理方式为修改<code>~/.bash_profile</code>文件添加环境变量如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin
 </code></pre></div>
 <p>改成如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin:/sbin
 </code></pre></div>
-<p>经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。</p>
-
-<p>出现如下问题：</p>
-
-<p>远程主机B通过ssh远程执行启动脚本XX.sh，报错如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">bash: ifconfg: command not found
-</code></pre></div>
-<h1>2. 问题分析</h1>
-
-<p>测试前准备，追加调用说明语句，如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/profile
-[root@node3 ~]# vim /etc/profile
-echo &quot;/etc/profile begin:&quot;
-echo &quot;$PATH&quot;
-...
-
-unset i
-unset pathmunge
-
-echo &quot;invoke /etc/profile&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /etc/bashrc
-...
-# vim:ts=4:sw=4
-
-echo &quot;invoke /etc/bashrc&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /root/.bash_profile
-# User specific environment and startup programs
-PATH=$PATH:$HOME/bin
-export PATH
-
-echo &quot;invoke ~/.bash_profile&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /root/.bashrc
-...
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-        . /etc/bashrc
-fi
-
-echo &quot;invoke ~/.bashrc&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /home/user01/.bash_profile
-...
-# User specific environment and startup programs
-PATH=$PATH:$HOME/bin
-export PATH
-
-echo &quot;invoke ~/.bashrc&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /home/user01/.bashrc
-...
-# User specific aliases and functions
-
-echo &quot;invoke ~/.bashrc&quot;
-echo &quot;$PATH&quot;
-echo &quot;&quot;
-</code></pre></div>
-<p>分 user 和 root 用户，3 种场景进行测试，如下：</p>
-
-<h2>普通用户 User</h2>
-
-<h3>场景1：</h3>
-
-<p>本机使用 su 命令切换到普通用户 （属于 Login 方式）</p>
-
-<p>结论：</p>
-
-<ul>
-<li>Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
-<li>Login 方式，文件调用顺序为： /etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</li>
-<li>Login 之后，系统 PATH 为：/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">su - user
-[root@node3 ~]# hostname -i
-192.168.122.33
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# su - user01
-/etc/profile begin:
-/usr/local/bin:/bin:/usr/bin
-invoke /etc/profile
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke /etc/bashrc
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke ~/.bashrc
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke ~/.bash_profile
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
-</code></pre></div>
-<h3>场景2：</h3>
-
-<p>远程机使用 ssh 命令以普通用户身份登陆到主机 （属于 Login 方式）</p>
-
-<h3>结论：</h3>
-
-<p>与在本机使用 su 命令切换到普通用户的效果完全一样！</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip
-[root@node1 ~]# hostname -i
-192.168.122.31
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# ssh user01@192.168.122.33
-user01@192.168.122.33&#39;s password: 
-Last login: Tue Jul  9 16:23:33 2013 from 192.168.122.31
-/etc/profile begin:
-/usr/local/bin:/bin:/usr/bin
-invoke /etc/profile
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke /etc/bashrc
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke ~/.bashrc
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
-
-invoke ~/.bash_profile
-/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
-</code></pre></div>
-<h2>场景3：</h2>
-
-<p>远程机使用 ssh 命令以普通用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）</p>
-
-<p>结论：</p>
-
-<ul>
-<li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
-<li>NoLogin 方式，文件调用顺序为：/etc/bashrc -&gt; ~/.bashrc</li>
-<li>NoLogin 方式，目标主机 User 用户 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip command
-[root@node1 ~]# hostname -i
-192.168.122.31
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# echo $PATH
-/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-
-[root@node1 ~]# ssh user01@192.168.122.33 &quot;echo $PATH&quot;
-user01@192.168.122.33&#39;s password: 
-
-invoke /etc/bashrc
-/usr/local/bin:/bin:/usr/bin
-
-invoke ~/.bashrc
-/usr/local/bin:/bin:/usr/bin
-
-/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-</code></pre></div>
-<h2>对比 root 用户</h2>
-
-<h3>场景1：</h3>
-
-<p>本机使用 su 命令切换到 root （属于 Login 方式）</p>
-
-<p>结论：</p>
-
-<ul>
-<li>Login 之前，系统 PATH 为：/usr/local/bin:/bin:/usr/bin</li>
-<li>Login 方式，root 用户，文件调用顺序为：/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</li>
-<li>Login 之后，系统 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">su - root
-[root@node3 ~]# hostname -i
-192.168.122.33
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# su - root
-/etc/profile begin:
-/usr/local/bin:/bin:/usr/bin
-invoke /etc/profile
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke /etc/bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke ~/.bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke ~/.bash_profile
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-</code></pre></div>
-<h3>场景2：</h3>
-
-<p>远程机使用 ssh 命令以 root 用户身份登陆到主机 （属于 Login 方式）</p>
-
-<p>结论：</p>
-
-<ul>
-<li>与在本机使用 su 命令切换到 root 用户的效果完全一样！</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh root@remote_server_ip
-[root@node1 ~]# hostname -i
-192.168.122.31
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# ssh root@192.168.122.33
-root@192.168.122.33&#39;s password: 
-Last login: Tue Jul  9 15:54:53 2013 from 192.168.122.1
-/etc/profile begin:
-/usr/local/bin:/bin:/usr/bin
-invoke /etc/profile
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke /etc/bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke ~/.bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke ~/.bash_profile
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-</code></pre></div>
-<h3>场景3</h3>
-
-<p>远程机使用 ssh 命令以 root 用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）</p>
-
-<p>结论：</p>
-
-<ul>
-<li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
-<li>NoLogin 方式，文件调用顺序为：/etc/bashrc -&gt; ~/.bashrc</li>
-<li>NoLogin 方式，目标主机 root 用户 PATH 为：/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh root@remote_server_ip command
-[root@node1 ~]# hostname -i
-192.168.122.31
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# echo $PATH
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-
-[root@node1 ~]# ssh root@192.168.122.33 &quot;echo $PATH&quot;
-root@192.168.122.33&#39;s password: 
-invoke /etc/bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-invoke ~/.bashrc
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
-</code></pre></div>
-<h3>关于/etc/profile 文件部分代码分析</h3>
-
-<p>结论：</p>
-
-<ul>
-<li>无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，/etc/profile 文件才会被调用。</li>
-</ul>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">pathmunge () {
-    case &quot;:${PATH}:&quot; in
-        *:&quot;$1&quot;:*)
-            ;;
-        *)
-            if [ &quot;$2&quot; = &quot;after&quot; ] ; then
-                PATH=$PATH:$1
-            else
-                PATH=$1:$PATH
-            fi
-    esac
-}
-
-if [ -x /usr/bin/id ]; then
-    if [ -z &quot;$EUID&quot; ]; then
-        # ksh workaround
-        EUID=`id -u`
-        UID=`id -ru`
-    fi
-    USER=&quot;`id -un`&quot;
-    LOGNAME=$USER
-    MAIL=&quot;/var/spool/mail/$USER&quot;
-fi
-
-
-# Path manipulation
-if [ &quot;$EUID&quot; = &quot;0&quot; ]; then
-    pathmunge /sbin
-    pathmunge /usr/sbin
-    pathmunge /usr/local/sbin
-else
-    pathmunge /usr/local/sbin after
-    pathmunge /usr/sbin after
-    pathmunge /sbin after
-
-fi
-</code></pre></div>
-<p>综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。</p>
 
      
 
       <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/18/bash-problem-when-ssh-access"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -510,7 +504,9 @@ fi
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h1>
+    </header>
     
       <h1>Region 概念</h1>
 
@@ -546,67 +542,6 @@ fi
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h1>
-    
-      <p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
-
-<h1>1. vim配置</h1>
-
-<p>目前我的vimrc配置放置在:<a href="https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc">https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc</a>，其中大多数用英文注释。</p>
-
-<h1>2. 插件管理</h1>
-
-<h2>pathogen</h2>
-
-<p>项目地址:   <a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a></p>
-
-<p>首选需要安装神器 pathogen 来管理所有的插件，具体安装可以看官网的介绍。</p>
-
-<p>要记得把以下内容加入到vimrc文件中:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">execute pathogen#infect()
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/java/2014/01/14/vim-config-and-plugins"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></h1>
-    
-      <h1>1. SiteMesh简介</h1>
-
-<p>SiteMesh是由一个基于Web页面布局、装饰以及与现存Web应用整合的框架。它能帮助我们在由大量页面构成的项目中创建一致的页面布局和外观，如一致的导航条，一致的banner，一致的版权等等。它不仅仅能处理动态的内容，如jsp，php，asp等产生的内容，它也能处理静态的内容，如htm的内容，使得它的内容也符合你的页面结构的要求。甚至于它能将HTML文件象include那样将该文件作为一个面板的形式嵌入到别的文件中去。所有的这些，都是GOF的Decorator模式的最生动的实现。尽管它是由java语言来实现的，但它能与其他Web应用很好地集成。</p>
-
-<h1>2. SiteMesh原理</h1>
-
-<p>SiteMesh框架是OpenSymphony团队开发的一个非常优秀的页面装饰器框架，它通过对用户请求进行过滤，并对服务器向客户端响应也进行过滤，然后给原始页面加入一定的装饰(header,footer等)，然后把结果返回给客户端。通过SiteMesh的页面装饰，可以提供更好的代码复用，所有的页面装饰效果耦合在目标页面中，无需再使用include指令来包含装饰效果，目标页与装饰页完全分离，如果所有页面使用相同的装饰器，可以是整个Web应用具有统一的风格。</p>
-
-<h1>3. SiteMesh3</h1>
-
-<p>SiteMesh3只有Alpha2版本而且很久没更新了，和SpringMVC配合，有些静态内容会出现NO Content的错误。 虽然它号称性能快3倍内存少1倍，但还是保险起见依然用SiteMesh2了。</p>
-
-<p>另外，Atlassian公司因为在自己的产品中使用了SiteMesh2，所以后来也一直有维护，出到了2.5-atlassian-9版，不过不在maven中央库中，可以在<a href="https://maven-us.nuxeo.org/nexus/content/groups/public/opensymphony/sitemesh/2.5-atlassian-9/">这里</a>下载。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/java/2014/01/13/about-sitemesh"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -614,10 +549,10 @@ fi
     <span><a class="btn btn-default btn-sm disabled" href="/">Home</a></span>
     <span><a class="btn btn-default btn-sm disabled">&laquo; Prev</a></span>
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 1 of 13</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 1 of 14</a></span>
   
     <a class="btn btn-default btn-sm" href="/page2/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
   
 </div>
 
@@ -638,21 +573,25 @@ fi
        <div class="category">
          <ul>
            
-           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
-           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
+           
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
+           
+           <li><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
            
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
-           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
+           <li><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
+           <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
-           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
+           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -665,10 +604,6 @@ fi
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
            <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
-           
-           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
-           
-           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
          </ul>
        </div>
@@ -697,9 +632,9 @@ fi
             
               <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
             
-              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
+              <li><a href="http://www.parallellabs.com/" target="_blank">并行实验室</a></li>
             
-              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
+              <li><a href="http://www.yanjiuyanjiu.com/" target="_blank">研究研究</a></li>
             
           </ul>
         </div>

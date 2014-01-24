@@ -1,9 +1,8 @@
 ---
 layout: post
 title: 重装linux-mint系统之后
-category: post
+category: linux
 tags: [gnome、 linux]
-description: 记录重装linux-mint系统之后的一些操作
 ---
 
 # 安装常用工具

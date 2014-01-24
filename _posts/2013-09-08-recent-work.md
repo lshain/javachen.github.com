@@ -3,7 +3,6 @@ layout: post
 title: 最近的工作
 category: work
 tags: [work]
-description: 
 ---
 
 最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。

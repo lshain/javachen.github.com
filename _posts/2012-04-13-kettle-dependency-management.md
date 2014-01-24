@@ -4,7 +4,6 @@ title: Kettle dependency management
 category: kettle
 tags: [kettle, ivy]
 keywords: kettle, ivy, pentaho
-description: Kettle dependency management
 ---
 
 <p>pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.<br />

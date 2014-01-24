@@ -138,6 +138,8 @@
   
     
   
+    
+  
 
 
 
@@ -174,7 +176,98 @@
 
 
 <article>
-    <h1 class="entry-title"><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h1>
+    </header>
+    
+      <p>最近做了个web系统访问hive数据库，类似于官方自带的hwi、安居客的<a href="https://github.com/anjuke/hwi">hwi改进版</a>和大众点评的<a href="http://blog.csdn.net/lalaguozhe/article/details/9614061">polestar</a>(<a href="https://github.com/dianping/polestar">github地址</a>)系统，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！</p>
+
+<h1>说明</h1>
+
+<p>集群环境使用的是cdh4.3，没有开启kerberos认证。</p>
+
+<blockquote>
+<p>写完这篇文章之后，在微博上收到<a href="http://weibo.com/shanchao1?from=profile&amp;wvr=5&amp;loc=infdomain">@单超eric</a>的<a href="http://weibo.com/1789178264/AeMItpBRk">评论</a>，发现cdh4.3中hive-server2已经实现<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Security-Guide/cdh4sg_topic_9_1.html#topic_9_1_unique_4">Impersonation</a>功能，再此对@单超eric的帮助表示感谢。</p>
+</blockquote>
+
+<p>so，你可以完全忽略本文后面的内容，直接看cloudera的HiveServer2 Impersonation是怎么做的。</p>
+
+<h1>hive-server2的启动</h1>
+
+<p>先从hive-server2服务的启动开始说起。</p>
+
+<p>如果你是以服务的方式启动hive-server2进程，则启动hive-server2的用户为hive,运行mapreduce的用户也为hive，启动脚本如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hive-server2 start
+</code></pre></div>
+<p>如果你以命令行方式启动hive-server2进程，则启动hive-server2的用户为root,运行mapreduce的用户也为root，启动脚本如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hive --service hiveserver2
+</code></pre></div>
+<p>为什么是上面的结论？这要从hive-server2的启动过程开始说明。</p>
+
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></h1>
+    </header>
+    
+      <p>在使用hive过程中遇到这样的一个异常：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">FAILED: ParseException line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
+</code></pre></div>
+<p>执行的hql语句如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@javachen.com ~]# hive -e &#39;select a.* from t a, t b where a.id=b.id&#39;
+</code></pre></div>
+<p>从异常信息中很难看出出错原因，hive.log中也没有打印出详细的异常对战信息。改用jdbc连接hive-server2，可以看到hive-server2中提示如下异常信息：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">13/10/17 09:57:48 ERROR ql.Driver: FAILED: ParseException line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
+
+org.apache.hadoop.hive.ql.parse.ParseException: line 1:18 Failed to recognize predicate &#39;a&#39;. Failed rule: &#39;kwInner&#39; in join type specifier
+
+    at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:446)
+    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:441)
+    at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:349)
+    at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:355)
+    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:95)
+    at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:76)
+    at org.apache.hive.service.cli.operation.SQLOperation.run(SQLOperation.java:114)
+    at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatement(HiveSessionImpl.java:194)
+    at org.apache.hive.service.cli.CLIService.executeStatement(CLIService.java:155)
+    at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:191)
+    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1193)
+    at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1)
+    at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+    at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+    at org.apache.hive.service.cli.thrift.TSetIpAddressProcessor.process(TSetIpAddressProcessor.java:38)
+    at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:206)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+    at java.lang.Thread.run(Thread.java:662)
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/cartesian-product-in-hive-inner-join"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
+    	<h1 class="entry-title headline"><a href="/work/2013/09/08/recent-work">最近的工作</a></h1>
+    </header>
     
       <p>最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。</p>
 
@@ -195,7 +288,9 @@
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h1>
+    </header>
     
       <p>hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？</p>
 
@@ -212,7 +307,9 @@
 <hr/>
 
 <article>
-    <h1 class="entry-title"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
+    <header>
+    	<h1 class="entry-title headline"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
+    </header>
     
       <p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
 
@@ -253,65 +350,6 @@ jekyll server
 </article>
 <hr/>
 
-<article>
-    <h1 class="entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
-    
-      <h1>前言</h1>
-
-<p>应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。</p>
-
-<h1>ZooKeeper</h1>
-
-<p>在《<a href="">hive Driver类运行过程</a>》一文中可以看到hive为了支持并发访问引入了ZooKeeper来实现分布式锁。参考《<a href="http://rdc.taobao.com/team/jm/archives/1232">ZooKeeper典型应用场景一览</a>》一文，ZooKeeper还可以用作其他用途，例如：</p>
-
-<ul>
-<li>数据发布与订阅（配置中心）</li>
-<li>负载均衡</li>
-<li>命名服务(Naming Service)</li>
-<li>分布式通知/协调</li>
-<li>集群管理与Master选举</li>
-<li>分布式锁</li>
-<li>分布式队列</li>
-</ul>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
-<article>
-    <h1 class="entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h1>
-    
-      <h1>概括</h1>
-
-<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
-（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
-（3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
-（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
-（5）其他       Driver 
-</code></pre></div>
-<p>Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -321,10 +359,10 @@ jekyll server
     <a class="btn btn-default btn-sm" href="/page3/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 13</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 14</a></span>
   
     <a class="btn btn-default btn-sm" href="/page5/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page13/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
   
 </div>
 
@@ -345,21 +383,25 @@ jekyll server
        <div class="category">
          <ul>
            
-           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things About Jekyll</a></li>
+           <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
-           <li><a href="/post/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
+           <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
+           
+           <li><a href="/post/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
+           
+           <li><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
            
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
-           <li><a href="/java/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
+           <li><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
-           <li><a href="/post/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
+           <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
            
-           <li><a href="/git/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
+           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
            
            <li><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
@@ -372,10 +414,6 @@ jekyll server
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
            <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
-           
-           <li><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></li>
-           
-           <li><a href="/work/2013/09/08/recent-work">最近的工作</a></li>
            
          </ul>
        </div>
@@ -404,9 +442,9 @@ jekyll server
             
               <li><a href="//kohsuke.org/" target="_blank">Kohsuke Kawaguchi</a></li>
             
-              <li><a href="//www.longtask.com/blog/" target="_blank">龙浩的blog</a></li>
+              <li><a href="http://www.parallellabs.com/" target="_blank">并行实验室</a></li>
             
-              <li><a href="//jdkcn.com/" target="_blank">莫多泡泡</a></li>
+              <li><a href="http://www.yanjiuyanjiu.com/" target="_blank">研究研究</a></li>
             
           </ul>
         </div>

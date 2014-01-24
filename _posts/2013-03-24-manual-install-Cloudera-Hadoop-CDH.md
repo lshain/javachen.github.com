@@ -4,7 +4,6 @@ title: 手动安装Cloudera Hadoop CDH
 category: hadoop
 tags: [hadoop, cdh]
 keywords: hadoop, cdh, cloudera manager
-description: 主要记录手动安装cloudera Hadoop cdh4.2.0集群过程，包括安装版本的说明、集群环境规划、安装过程等等。
 ---
 
 # 安装版本

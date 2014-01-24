@@ -4,7 +4,6 @@ title: 手动安装Cloudera HBase CDH
 category: Hadoop
 tags: [hbase, cdh]
 keywords: hbase, cdh, cloudera manager
-description: 主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
 ---
 
 本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。

@@ -3,8 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>vim配置和插件管理 - JavaChen Blog</title>
-    <meta name="description" content="这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。"/>
+    <title>在rhel系统上安装Nagios - JavaChen Blog</title>
+    
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/java/2014/01/14/vim-config-and-plugins" />
+    <link rel="canonical" href="http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -138,6 +138,8 @@
   
     
   
+    
+  
 
 
 
@@ -168,100 +170,108 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">vim配置和插件管理 </h1>
+        <h1 class="entry-title">在rhel系统上安装Nagios </h1>
       </header>
 	<div class="entry-content">
-	<p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
-
-<h1>1. vim配置</h1>
-
-<p>目前我的vimrc配置放置在:<a href="https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc">https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc</a>，其中大多数用英文注释。</p>
-
-<h1>2. 插件管理</h1>
-
-<h2>pathogen</h2>
-
-<p>项目地址:   <a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a></p>
-
-<p>首选需要安装神器 pathogen 来管理所有的插件，具体安装可以看官网的介绍。</p>
-
-<p>要记得把以下内容加入到vimrc文件中:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">execute pathogen#infect()
+	<h1>在管理机上安装rpm包</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
+chkconfig httpd on &amp;&amp; chkconfig nagios on
+service httpd start &amp;&amp; service nagios start
 </code></pre></div>
-<!-- more -->
-
-<h2>NERDTree</h2>
-
-<p>NERD tree允许你在Vim编辑器中以树状方式浏览系统中的文件和目录, 支持快捷键与鼠标操作, 使用起来十分方便. NERD tree能够以不同颜色高亮显示节点类型, 并包含书签, 过滤等实用功能. 配合taglist或txtviewer插件, 右边窗口显示本文件夹的文件, 左边窗口显示本文的文档结构, 将会使管理一个工程变得相当容易.</p>
-
-<p>项目地址:   <a href="https://github.com/scrooloose/nerdtree">https://github.com/scrooloose/nerdtree</a></p>
-
-<p>因为我是从Ulipad转到Vim的，刚开始的时候没了目录树。总感觉非常的不习惯，于是找到了这个目录树插件。</p>
-
-<p>安装方法很简单，只要把项目clone一份到bundle目录就可以了。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd ~/.vim/bundle
-git clone https://github.com/scrooloose/nerdtree.git
+<h1>设置管理界面密码</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">htpasswd -c /etc/nagios/passwd admin
 </code></pre></div>
-<p>之后的插件也都是这么安装。</p>
+<p>密码和用户名保持一致（都设置为admin），否则你需要修改<code>/etc/nagios/cgi.cfg</code></p>
 
-<h3>使用</h3>
+<h1>访问Nagios</h1>
 
-<ol>
-<li>在linux命令行界面，输入vim</li>
-<li>输入  :NERDTree ，回车</li>
-<li>入当前目录的树形界面，通过小键盘上下键，能移动选中的目录或文件</li>
-<li>目录前面有+号，摁Enter会展开目录，文件前面是-号，摁Enter会在右侧窗口展现该文件的内容，并光标的焦点focus右侧。</li>
-<li>ctr+w+h  光标focus左侧树形目录，ctrl+w+l 光标focus右侧文件显示窗口。多次摁 ctrl+w，光标自动在左右侧窗口切换</li>
-<li>光标focus左侧树形窗口，按 ? 弹出NERDTree的帮助，再次按？关闭帮助显示</li>
-<li>输入:q回车，关闭光标所在窗口</li>
-</ol>
+<p>打开<code>http://ip/nagios</code>，输入用户名和密码即可访问</p>
 
-<p>除了使用鼠标可以基本操作以外，还可以使用键盘。下面列出常用快捷键</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">o 打开关闭文件或者目录
-t 在标签页中打开
-T 在后台标签页中打开
-! 执行此文件
-p 到上层目录
-P 到根目录
-K 到第一个节点
-J 到最后一个节点
-u 打开上层目录
-m 显示文件系统菜单（添加、删除、移动操作）
-? 帮助
-q 关闭
+<h1>在客户端上安装NRPE</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum -y install nagios nagios-plugins-all nrpe
+chkconfig nrpe on
 </code></pre></div>
-<h2>NERDTree-Tabs</h2>
-
-<p>项目地址:<a href="https://github.com/jistr/vim-nerdtree-tabs">https://github.com/jistr/vim-nerdtree-tabs</a></p>
-
-<p>安装完NERDTree以后我觉得还需要安装一下NERDTree-Tabs这个插件，提供了很多NERDTree的加强功能，包括保持 目录树状态、优化tab标题等等。</p>
-
-<p>可以把一下内容添加到vimrc文件中</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">let g:nerdtree_tabs_open_on_console_startup=1       &quot;设置打开vim的时候默认打开目录树
-map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设置打开目录树的快捷键
+<p>修改配置<code>/etc/nagios/nrpe.cfg</code>，例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">log_facility=daemon
+pid_file=/var/run/nrpe/nrpe.pid
+server_port=5666
+nrpe_user=nrpe
+nrpe_group=nrpe
+allowed_hosts=198.211.117.251
+dont_blame_nrpe=1
+debug=0
+command_timeout=60
+connection_timeout=300
+include_dir=/etc/nrpe.d/
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s $ARG3$
 </code></pre></div>
-<h2>supertab</h2>
+<p>请注意修改<code>allowed_hosts</code>值为你的nagios监控机ip</p>
 
-<p>项目地址:   <a href="https://github.com/ervandew/supertab">https://github.com/ervandew/supertab</a></p>
+<p>设置iptables：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -N NRPE
+iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+iptables -I NRPE -s 198.211.117.251 -j ACCEPT
+iptables -A NRPE -s 0/0 -j DROP
+/etc/init.d/iptables save
+</code></pre></div>
+<p>或者，关闭iptables：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/iptables stop
+</code></pre></div>
+<p>启动NRPE：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service nrpe start
+</code></pre></div>
+<h1>在管理机上添加配置文件</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;cfg_dir=/etc/nagios/servers&quot; &gt;&gt; /etc/nagios/nagios.cfg
+cd /etc/nagios/servers
+touch hadoop.tk.cfg
+touch hbase.tk.cfg
+</code></pre></div>
+<p>然后修改每一个配置文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/nagios/servers/hadoop.tk.cfg
+</code></pre></div>
+<p>添加内容如下，你也可以稍作修改：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">define host {
+        use                     linux-server
+        host_name               cloudmail.tk
+        alias                   cloudmail.tk
+        address                 192.168.56.122
+        }
 
-<p>增强tab键的功能，建议安装。</p>
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             PING
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
 
-<h2>ctrlp</h2>
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             SSH
+        check_command                   check_ssh
+        notifications_enabled           0
+        }
 
-<p>项目地址:   <a href="https://github.com/kien/ctrlp.vim">https://github.com/kien/ctrlp.vim</a></p>
-
-<p>快捷键：<code>ctrl+p</code></p>
-
-<h1>3. 安装oh-my-zsh</h1>
-
-<h1>4. 参考</h1>
-
-<ul>
-<li><a href="https://github.com/wklken/k-vim">https://github.com/wklken/k-vim</a></li>
-<li><a href="http://www.zhihu.com/question/19989337">http://www.zhihu.com/question/19989337</a></li>
-<li><a href="http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html">http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html</a></li>
-</ul>
-
+define service {
+        use                             generic-service
+        host_name                       cloudmail.tk
+        service_description             Current Load
+        check_command                   check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+        }
+</code></pre></div>
+<p>重启nagios：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chown -R nagios. /etc/nagios
+service nagios restart
+</code></pre></div>
 
 	-EOF-
 	</div>
@@ -271,11 +281,11 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/java/2014/01/13/about-sitemesh" title="SiteMesh介绍">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm" href="/post/2014/01/22/all-things-opentsdb" title="All Things OpenTSDB">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/hbase/2014/01/16/hbase-region-split-policy" title="HBase Region Split策略">Next &raquo;</a>
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
           
         </div>
       </div>
@@ -293,7 +303,7 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="vim配置和插件管理 - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="在rhel系统上安装Nagios - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

@@ -4,7 +4,6 @@ title: 手动安装Cloudera Hive CDH
 category: hadoop
 tags: [hadoop, cdh, hive]
 keywords: hadoop, cdh, cloudera manager, hive
-description: 主要记录手动安装cloudera Hive cdh4.2.0集群过程，环境设置及Hadoop、HBase安装过程见上篇文章。
 ---
 
 本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。CDH版本cdh4.2.0，该篇文章也可以使用于其他版本的CDH。

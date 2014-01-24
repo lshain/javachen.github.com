@@ -3,7 +3,6 @@ layout: post
 title: SiteMesh介绍
 category: java
 tags: [SiteMesh]
-description: 记录重装系统之后的一些操作
 ---
 
 # 1. SiteMesh简介

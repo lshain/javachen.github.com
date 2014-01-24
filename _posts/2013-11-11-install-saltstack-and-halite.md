@@ -3,8 +3,6 @@ layout: post
 title: 安装saltstack和halite
 category: saltstack
 tags: [saltstack,halite]
-description: 安装saltstack和halite
-keywords: saltstack,halite
 ---
 {% include JB/setup %}
 

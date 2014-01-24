@@ -4,7 +4,6 @@ title: "【笔记】Hadoop安装部署"
 category: hadoop
 tags: [hadoop, cdh]
 keywords: hadoop, hdfs
-description: 主要记录安装hadoop集群过程。
 ---
 
 # 安装虚拟机

@@ -3,8 +3,6 @@ layout: post
 title: 使用saltstack安装jboss
 category: saltstack
 tags: [saltstack,jboss]
-description: Saltstack是一个具备puppet与func功能为一身的集中化管理平台，本文介绍如何使用saltstack安装jboss
-keywords: saltstack,jboss
 ---
 
 {% include JB/setup %}

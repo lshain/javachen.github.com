@@ -1,9 +1,8 @@
 ---
 layout: post
 title: ssh连接环境变量问题
-category: post
-tags: [ssh 、shell]
-description: ssh连接时，用户环境变量问题
+category: linux
+tags: [ssh 、shell 、linux]
 ---
 
 # 1. 问题

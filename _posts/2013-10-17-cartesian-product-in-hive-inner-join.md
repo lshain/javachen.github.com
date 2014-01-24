@@ -3,7 +3,6 @@ layout: post
 title: hive连接产生笛卡尔集
 category: hive
 tags: [hive]
-description: 
 ---
 
 在使用hive过程中遇到这样的一个异常：

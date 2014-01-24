@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>All Things OpenTSDB - JavaChen Blog</title>
+    
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="ECLZpXwkOR" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
+    <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/post/2014/01/22/all-things-opentsdb" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">All Things OpenTSDB </h1>
+      </header>
+	<div class="entry-content">
+	<h1>OpenTSDB介绍</h1>
+
+<p><a href="http://opentsdb.net/index.html">OpenTSDB</a>用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。</p>
+
+<p>对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。</p>
+
+<p>OpenTSDB使用LGPLv2.1+开源协议。</p>
+
+<h1>安装OpenTSDB</h1>
+
+<h2>依赖</h2>
+
+<p>OpenTSDB依赖jdk和<a href="http://www.gnuplot.info/">Gnuplot</a>，Gnuplot需要提前安装，版本要求为最小4.2,最大4.4,执行以下命令安装即可：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install gnuplot autoconf
+apt-get install gnuplot
+</code></pre></div>
+<p>OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是使用的C、C++程序员构建项目的方式。运行时依赖：</p>
+
+<ul>
+<li>JDK 1.6</li>
+<li><a href="http://github.com/OpenTSDB/asynchbase">asynchbase</a> 1.3.0 (BSD)</li>
+<li><a href="http://code.google.com/p/guava-libraries/">Guava</a> 12.0 (ASLv2)</li>
+<li><a href="http://logback.qos.ch/">logback</a> 1.0 (LGPLv2.1 / EPL)</li>
+<li><a href="http://jboss.org/netty">Netty</a> 3.4 (ASLv2)</li>
+<li><a href="http://slf4j.org/">SLF4J</a> 1.6 (MIT) with Log4J and JCL adapters</li>
+<li><a href="http://github.com/OpenTSDB/async">suasync</a> 1.2 (BSD)</li>
+<li><a href="http://hadoop.apache.org/zookeeper/">ZooKeeper</a> 3.3 (ASLv2)</li>
+</ul>
+
+<p>可选的编译时依赖：</p>
+
+<ul>
+<li><a href="http://gwt.google.com/">GWT</a> 2.4 (ASLv2)</li>
+</ul>
+
+<p>可选的单元测试依赖：</p>
+
+<ul>
+<li><a href="http://www.javassist.org/">Javassist</a> 3.15 (MPL / LGPL)</li>
+<li><a href="http://www.junit.org/">JUnit</a> 4.10 (CPL)</li>
+<li><a href="http://mockito.org/">Mockito</a> 1.9 (MIT)</li>
+<li><a href="http://code.google.com/p/powermock/">PowerMock</a> 1.4 (ASLv2)</li>
+</ul>
+
+<h2>下载并编译源代码</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git://github.com/OpenTSDB/opentsdb.git
+cd opentsdb
+./build.sh
+</code></pre></div>
+<h2>安装</h2>
+
+<ol>
+<li>首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94</li>
+<li>设置环境变量并创建opentsdb使用的表，需要设置的环境变量为<code>COMPRESSION</code>和<code>HBASE_HOME</code>，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo</li>
+<li>执行建表语句<code>src/create_table.sh</code></li>
+<li>启动TSD</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tsdtmp=${TMPDIR-&#39;/tmp&#39;}/tsd    # For best performance, make sure
+mkdir -p &quot;$tsdtmp&quot;             # your temporary directory uses tmpfs
+./build/tsdb tsd --port=4242 --staticroot=build/staticroot --cachedir=&quot;$tsdtmp&quot; --auto-metric
+</code></pre></div>
+<p>如果你使用的是hbase集群，则你还需要设置<code>--zkquorum</code>，<code>--cachedir</code>对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加<code>--auto-metric</code>，则当新的数据被搜集时自动创建指标。
+5. 启动成功之后，你可以通过<a href="http://127.0.0.1:4242">127.0.0.1:4242</a>进行访问。</p>
+
+<p>从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：<a href="http://www.adintellig.com/blog/14">OpenTSDB &amp; tcollector 安装部署（Installation and Deployment）</a></p>
+
+<h1>使用OpenTSDB</h1>
+
+<h2>命令说明</h2>
+
+<p>tsdb支持以下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@cdh1 build]# ./tsdb 
+usage: tsdb &lt;command&gt; [args]
+Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
+</code></pre></div>
+<h2>创建指标</h2>
+
+<p>通过以下命令创建指标：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
+</code></pre></div>
+<p>执行上述命令的结果如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">metrics mysql.bytes_received: [0, 0, -93]
+metrics mysql.bytes_sent: [0, 0, -92]
+</code></pre></div>
+<p>OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。</p>
+
+<h2>Schema</h2>
+
+<p>OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">myservice.latency.avg 1292148123 42 reqtype=foo host=web42
+</code></pre></div>
+<p>对于指标myservice.latency.avg的ID为：[0, 0, -69],reqtype标签名称的ID为：[0, 0, 1], foo标签值的ID为：[0, 1, 11], 标签名称的ID为：[0, 0, 2] web42标签值的ID为：[0, -7, 42]，他们组成rowkey：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[0, 0, -69, 77, 4, -99, 32, 0, 0, 1, 0, 1, 11, 0, 0, 2, 0, -7, 42]
+ `-------&#39;  `------------&#39;  `-----&#39;  `------&#39;  `-----&#39;  `-------&#39;
+ metric ID  base timestamp  name ID  value ID  name ID  value ID
+                            `---------------&#39;  `---------------&#39;
+                                first tag         second tag
+</code></pre></div>
+<p>row表示格式为： 每个数字对应1 byte</p>
+
+<ul>
+<li>[0, 0, -69] metric ID</li>
+<li>[77, 4, -99, 32] base timestamp = 1292148000. timestamps in the row key are rounded down to a 60 minute boundary。也就是说对于同一个小时的metric + tags相同的数据都会存放在一个row下面</li>
+<li>[0, 0, 1] &quot;reqtype&quot; index</li>
+<li>[0, 1, 11] &quot;foo&quot; index</li>
+<li>[0, 0, 2] &quot;host&quot; index</li>
+<li>[0, -7, 42] &quot;web42&quot; index</li>
+</ul>
+
+<p>NOTE（dirlt）：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助</p>
+
+<p>column qualifier占用2 bytes，表示格式为：</p>
+
+<ul>
+<li>12 bits delta in seconds.(相对row表示的小时的delta, 最多2^ 12 = 4096 &gt; 3600因此没有问题）</li>
+<li>4 bits</li>
+<li>1 bit (long or double)</li>
+<li>3 bits (reserved)</li>
+</ul>
+
+<p>value使用8bytes存储，既可以存储long,也可以存储double。</p>
+
+<h2>查询</h2>
+
+<h2>HTTP API</h2>
+
+<h1>谁在用OpenTSDB</h1>
+
+<ul>
+<li><a href="http://www.stumbleupon.com/">StumbleUpon</a> StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web</li>
+<li><a href="https://www.box.com/">box</a> Box simplifies online file storage, replaces FTP and connects teams in online workspaces.</li>
+<li><a href="http://www.tumblr.com/">tumblr</a> 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章</li>
+</ul>
+
+<h1>参考资料</h1>
+
+<ul>
+<li>http://luoshi0801.iteye.com/blog/1938835</li>
+<li>http://blog.csdn.net/bingjie1217/article/category/1751285</li>
+<li><a href="http://www.binospace.com/index.php/opentsdb-design-road/">OpenTSDB的设计之道</a></li>
+<li><a href="http://dirlt.com/opentsdb.html">opentsdb</a></li>
+</ul>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/post/2014/01/21/all-things-about-jekyll" title="All Things Jekyll">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/linux/2014/01/24/how-to-install-nagios-on-rhel6" title="在rhel系统上安装Nagios">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="All Things OpenTSDB - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/themes/javachen/js/jquery.min.js"><\/script>')</script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+

@@ -1,7 +1,7 @@
 html,body{padding-top:20px;padding-bottom:10px}
 body{font-size:15px}
-a{color:#333;text-decoration:none}
-a,a:hover{color:inherit}
+a{color:#d00;text-decoration:none}
+.headline a {text-decoration: none;color: #2f3840;}
 li{line-height:25px}
 ol,ul{list-style-position:inside}
 ol ul,ul ol,ul ul,ol ol{margin-left:5px}

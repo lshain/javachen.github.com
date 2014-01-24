@@ -3,8 +3,6 @@ layout: post
 title:  hive Driver类运行过程
 category: hive
 tags: [hadoop, hive]
-keywords: hadoop, hive
-description: 分析hive Driver类运行过程
 ---
 
 # 概括

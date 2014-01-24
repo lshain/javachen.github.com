@@ -3,8 +3,6 @@ layout: post
 title: SaltStack学习笔记[未完成]
 category: saltstack
 tags: saltstack
-description: Saltstack学习笔记
-keywords: saltstack
 ---
 
 {% include JB/setup %}

@@ -3,8 +3,6 @@ layout: post
 title:  安装RHadoop
 category: hadoop
 tags: [hadoop, R, rhadoop]
-keywords: hadoop, rhadoop
-description: 安装RHadoop,RHBase,RHive,RMR
 ---
 
 # 1. R Language Install

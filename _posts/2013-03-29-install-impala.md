@@ -4,7 +4,6 @@ title: 安装impala过程
 category: hadoop
 tags: [hadoop, impala, cloudera]
 keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera, impala
-description: 安装impala过程
 ---
 
 与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。

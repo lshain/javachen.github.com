@@ -4,7 +4,6 @@ title:  从yum安装Cloudera CDH集群
 category: hadoop
 tags: [hadoop, impala, cloudera]
 keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera
-description: 从yum安装Cloudera CDH集群，包括hadoop、yarn、HBase
 ---
 
 记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。

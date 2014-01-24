@@ -3,8 +3,6 @@ layout: post
 title: 编译hbase源代码并打补丁
 category: hbase
 tags: [hbase]
-description: 编译hbase源代码并打补丁
-keywords: hbase、github、patch、git
 ---
 
 写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
