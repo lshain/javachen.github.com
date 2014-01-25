@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-25T20:47:00+08:00</updated>
+ <updated>2014-01-25T20:48:11+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -12,7 +12,7 @@
 
  
  <entry>
-   <title><![CDATA[在centos6系统上安装Ganlia]]></title>
+   <title><![CDATA[在centos6系统上安装Ganglia]]></title>
    <link href="http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6"/>
    <updated>2014-01-25T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</id>

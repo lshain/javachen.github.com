@@ -4,13 +4,13 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Sat, 25 Jan 2014 20:47:00 +0800</lastBuildDate>
-		<pubDate>Sat, 25 Jan 2014 20:47:00 +0800</pubDate>
+		<lastBuildDate>Sat, 25 Jan 2014 20:48:11 +0800</lastBuildDate>
+		<pubDate>Sat, 25 Jan 2014 20:48:11 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
 		<item>
-			<title><![CDATA[在centos6系统上安装Ganlia]]></title>
+			<title><![CDATA[在centos6系统上安装Ganglia]]></title>
 			<description>&lt;h1&gt;配置yum源&lt;/h1&gt;
 
 &lt;p&gt;首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。&lt;/p&gt;

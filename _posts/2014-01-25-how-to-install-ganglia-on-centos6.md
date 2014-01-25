@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 在centos6系统上安装Ganlia
+title: 在centos6系统上安装Ganglia
 category: linux
 tags: [ganglia]
 ---
