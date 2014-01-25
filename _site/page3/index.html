@@ -177,6 +177,35 @@
 
 <article>
     <header>
+    	<h1 class="entry-title headline"><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
+    </header>
+    
+      <p>Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。</p>
+
+<h1>Git配置</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
+git config --global user.email &quot;june.chan@foxmail.com&quot;
+git config --global color.ui true
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.br branch
+git config -l  # 列举所有配置
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/linux/2013/12/27/some-git-configs-and-cammands"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
     	<h1 class="entry-title headline"><a href="/saltstack/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h1>
     </header>
     
@@ -311,56 +340,6 @@
 </article>
 <hr/>
 
-<article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h1>
-    </header>
-    
-      <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
-
-<h1>下载源代码</h1>
-
-<p>从<a href="https://github.com/cloudera/hbase">Cloudera github</a>上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
-</code></pre></div>
-<p>说明：</p>
-
-<ol>
-<li>-b 指定下载哪个分支</li>
-<li>最后一个参数指定下载下来的文件名称</li>
-</ol>
-
-<h1>添加snappy压缩支持</h1>
-
-<h2>编译snappy</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
-cd snappy
-sh autogen.sh
-./configure 
-sudo make install
-</code></pre></div>
-<h2>编译hadoop-snappy</h2>
-
-<p>降低gcc版本到4.4:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install gcc-4.4
-rm /usr/bin/gcc
-ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
-</code></pre></div>
-<p>建立libjvm软连接</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
-</code></pre></div>
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -394,6 +373,8 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
        <div class="category">
          <ul>
            
+           <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在centos6系统上安装Ganlia</a></li>
+           
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
            <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
@@ -423,8 +404,6 @@ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
            
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-           
-           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
            
          </ul>
        </div>

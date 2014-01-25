@@ -4,12 +4,100 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-24T15:36:51+08:00</updated>
+ <updated>2014-01-25T20:47:00+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
  </author>
 
+ 
+ <entry>
+   <title><![CDATA[在centos6系统上安装Ganlia]]></title>
+   <link href="http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6"/>
+   <updated>2014-01-25T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</id>
+   <content type="html">&lt;h1&gt;配置yum源&lt;/h1&gt;
+
+&lt;p&gt;首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。&lt;/p&gt;
+
+&lt;p&gt;在&lt;code&gt;/etc/yum.repos.d&lt;/code&gt;下创建&lt;code&gt;ganglia.repo&lt;/code&gt;，内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[ganglia]
+name= ganglia
+baseurl = http://vuksan.com/centos/RPMS/
+enabled = 1
+gpgcheck = 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;为了方便离线使用，你可以下载该yum源内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd /opt
+reposync -r ganglia
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+
+&lt;p&gt;然后在&lt;code&gt;/opt/ganglia&lt;/code&gt;下执行如下的命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;createrepo .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;这样你就可以将&lt;code&gt;ganglia.repo&lt;/code&gt;修改为本地yum的方式。&lt;/p&gt;
+
+&lt;h1&gt;管理机上安装gmetad&lt;/h1&gt;
+
+&lt;p&gt;执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum -y install ganglia-gmetad
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安装时遇到如下的错误：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;Error: Package: rrdtool-1.4.5-1.x86_64 (ganglia)
+          Requires: dejavu-lgc-fonts
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;rrdtool依赖&lt;code&gt;dejavu-lgc-fonts&lt;/code&gt;，但是系统源并不包含这个，你可以从网上下载，然后安装：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://mirror.steadfast.net/centos/5/os/x86_64//CentOS/dejavu-lgc-fonts-2.10-1.noarch.rpm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;管理机上安装ganglia-web&lt;/h1&gt;
+
+&lt;p&gt;先安装apache和php等依赖：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install php* httpd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后下载ganglia-web:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget http://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz/download
+
+tar zxvf ganglia-web-3.5.12.tar.gz
+cd ganglia-web-3.5.12
+make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;将ganglia-web拷贝或者添加软链接到apache的目录下去，以下是拷贝：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir /var/www/html/ganglia
+cp -a  /usr/share/ganglia/   /var/www/html/ganglia
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在httpd的conf.d目录下添加ganglia.conf，命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vi /etc/httpd/conf.d/ganglia.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Location /ganglia&amp;gt;
+    Order deny,allow
+    Deny from all
+    ALLOW from all
+#    Allow from 127.0.0.1
+#    Allow from ::1
+#    Allow from .example.com
+&amp;lt;/Location&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;客户端机器上安装gmond&lt;/h1&gt;
+
+&lt;p&gt;执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install gmond
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;启动服务&lt;/h1&gt;
+
+&lt;p&gt;在管理机上启动gmetad&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/gmetad start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在客户端机器上启动gmond&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/gmond start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在管理机上启动httpd&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/httpd start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后通过web界面（&lt;code&gt;http://manager-ip/ganglia&lt;/code&gt;）访问ganglia-web&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title><![CDATA[在rhel系统上安装Nagios]]></title>
@@ -24,9 +112,11 @@ chkconfig httpd on &amp;amp;&amp;amp; chkconfig nagios on
 service httpd start &amp;amp;&amp;amp; service nagios start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;设置管理界面密码&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;htpasswd -c /etc/nagios/passwd admin
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;htpasswd -c /etc/nagios/passwd nagiosadmin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;密码和用户名保持一致（都设置为admin），否则你需要修改&lt;code&gt;/etc/nagios/cgi.cfg&lt;/code&gt;&lt;/p&gt;
+&lt;!-- more --&gt;
+
+&lt;p&gt;密码和用户名保持一致（都设置为nagiosadmin），否则你需要修改&lt;code&gt;/etc/nagios/cgi.cfg&lt;/code&gt;&lt;/p&gt;
 
 &lt;h1&gt;访问Nagios&lt;/h1&gt;
 
@@ -1288,189 +1378,6 @@ listen hive             #hive后端定义
 &lt;li&gt;[2] &lt;a href=&quot;http://slaytanic.blog.51cto.com/2057708/803626&quot;&gt;HAProxy+Hive构建高可用数据挖掘集群&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
- </entry>
- 
- <entry>
-   <title><![CDATA[git配置和一些常用命令]]></title>
-   <link href="http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands"/>
-   <updated>2013-12-27T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands</id>
-   <content type="html">&lt;p&gt;Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。&lt;/p&gt;
-
-&lt;h1&gt;Git配置&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git config --global user.name &amp;quot;javachen&amp;quot;
-git config --global user.email &amp;quot;june.chan@foxmail.com&amp;quot;
-git config --global color.ui true
-git config --global alias.co checkout
-git config --global alias.ci commit
-git config --global alias.st status
-git config --global alias.br branch
-git config -l  # 列举所有配置
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;!-- more --&gt;
-
-&lt;p&gt;用户的git配置文件在&lt;code&gt;~/.gitconfig&lt;/code&gt;，我的配置：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;june@june-mint ~/workspace/snippets/dotfiles $ cat .gitconfig 
-[user]
-    email = june.chan@foxmail.com
-    name = javachen
-[color]
-    ui = auto
-[color &amp;quot;branch&amp;quot;]
-    current = yellow reverse
-    local = yellow
-    remote = green
-[color &amp;quot;diff&amp;quot;]
-    meta = yellow bold
-    frag = magenta bold
-    old = red bold
-    new = green bold
-[color &amp;quot;status&amp;quot;]
-    added = yellow
-    changed = green
-    untracked = cyan
-[alias]
-    st = &amp;quot;status&amp;quot;
-    co = checkout
-    ls = &amp;quot;ls-files&amp;quot;
-    ci = commit
-    br = branch
-    rt = reset --hard
-    unstage = reset HEAD
-    uncommit = reset --soft HEAD^
-    l = log --pretty=oneline --abbrev-commit --graph --decorate
-    amend = commit --amend 
-    who = shortlog -n -s --no-merges 
-    g = grep -n --color -E 
-    cp = cherry-pick -x 
-    cb = checkout -b 
-[core]
-    filemode = true
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;Git常用命令&lt;/h1&gt;
-
-&lt;h2&gt;查看、添加、提交、删除、找回，重置修改文件&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git help &amp;lt;command&amp;gt;  # 显示command的help
-git show            # 显示某次提交的内容
-git show $id
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git co  -- &amp;lt;file&amp;gt;   # 抛弃工作区修改
-git co  .           # 抛弃工作区修改
-git co HEAD &amp;lt;file&amp;gt;  # 抛弃工作目录区中文件的修改
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git add &amp;lt;file&amp;gt;      # 将工作文件修改提交到本地暂存区
-git add .           # 将所有修改过的工作文件提交暂存区
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git rm &amp;lt;file&amp;gt;       # 从版本库中删除文件
-git rm &amp;lt;file&amp;gt; --cached  # 从版本库中删除文件，但不删除文件
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git reset &amp;lt;file&amp;gt;    # 从暂存区恢复到工作文件
-git reset -- .      # 从暂存区恢复到工作文件
-git reset --hard    # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
-git reset HEAD &amp;lt;file&amp;gt; # 抛弃工作目录区中文件的修改
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git ci &amp;lt;file&amp;gt;
-git ci .
-git ci -a           # 将git add, git rm和git ci等操作都合并在一起做
-git ci -am &amp;quot;some comments&amp;quot;
-git ci --amend      # 修改最后一次提交记录
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git revert &amp;lt;$id&amp;gt;    # 恢复某次提交的状态，恢复动作本身也创建了一次提交对象
-git revert HEAD     # 恢复最后一次提交的状态
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;查看文件diff&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;lt;file&amp;gt;     # 比较当前文件和暂存区文件差异
-git diff
-git diff &amp;lt;$id1&amp;gt; &amp;lt;$id2&amp;gt;      # 比较两次提交之间的差异
-git diff &amp;lt;branch1&amp;gt;..&amp;lt;branch2&amp;gt;   # 在两个分支之间比较 
-git diff --staged   # 比较暂存区和版本库差异
-git diff --cached   # 比较暂存区和版本库差异
-git diff --stat     # 仅仅比较统计信息
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;查看提交记录&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git log
-git log &amp;lt;file&amp;gt;      # 查看该文件每次提交记录
-git log -p &amp;lt;file&amp;gt;   # 显示版本历史，以及版本间的内容差异
-git log -p -2       # 查看最近两次详细修改内容的diff
-git log --stat      # 查看提交统计信息
-git log --since=&amp;quot;6 hours&amp;quot;  # 显示最近6小时提交
-git log --before=&amp;quot;2 days&amp;quot;  # 显示2天前提交
-git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
-git log -1 HEAD^^^
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;Git 本地分支管理&lt;/h1&gt;
-
-&lt;h2&gt;查看、切换、创建和删除分支&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git br -r           # 查看远程分支
-git br -v           # 查看各个分支最后提交信息
-git br -a           # 列出所有分支
-git br --merged     # 查看已经被合并到当前分支的分支
-git br --no-merged  # 查看尚未被合并到当前分支的分支
-git br &amp;lt;new_branch&amp;gt; # 基于当前分支创建新的分支
-git br &amp;lt;new_branch&amp;gt;  &amp;lt;start_point&amp;gt;      # 基于另一个起点（分支名称，提交名称或则标签名称），创建新的分支
-git br -f &amp;lt;existing_branch&amp;gt;  &amp;lt;start_point&amp;gt;  # 创建同名新分支，覆盖已有分支
-git br -d &amp;lt;branch&amp;gt;  # 删除某个分支
-git br -D &amp;lt;branch&amp;gt;  # 强制删除某个分支 (未被合并的分支被删除的时候需要强制)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git co &amp;lt;branch&amp;gt;         # 切换到某个分支
-git co -b &amp;lt;new_branch&amp;gt;  # 创建新的分支，并且切换过去
-git co -b &amp;lt;new_branch&amp;gt; &amp;lt;branch&amp;gt;       # 基于branch创建新的new_branch
-git co -m &amp;lt;existing_branch&amp;gt; &amp;lt;new_branch&amp;gt;  # 移动或重命名分支，当新分支不存在时
-git co -M &amp;lt;existing_branch&amp;gt; &amp;lt;new_branch&amp;gt;  # 移动或重命名分支，当新分支存在时就覆盖
-
-git co $id               # 把某次历史提交记录checkout出来，但无分支信息，切换到其他分支会自动删除
-git co $id -b &amp;lt;new_branch&amp;gt;       # 把某次历史提交记录checkout出来，创建成一个分支
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;分支合并和rebase&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git merge &amp;lt;branch&amp;gt;                  # 将branch分支合并到当前分支
-git merge origin/master --no-ff     # 不要Fast-Foward合并，这样可以生成merge提交
-git merge --no-commit &amp;lt;branch&amp;gt;      # 合并但不提交
-git merge --squash &amp;lt;branch&amp;gt;         # 把一条分支上的内容合并到另一个分支上的一个提交
-
-git rebase master &amp;lt;branch&amp;gt;          # 将master rebase到branch，相当于：
-git co &amp;lt;branch&amp;gt; &amp;amp;&amp;amp; git rebase master &amp;amp;&amp;amp; git co master &amp;amp;&amp;amp; git merge &amp;lt;branch&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Git补丁管理&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git diff &amp;gt; ../sync.patch         # 生成补丁
-git apply ../sync.patch          # 打补丁
-git apply --check ../sync.patch  # 测试补丁能否成功
-git format-patch -X              # 根据提交的log生成patch，X为数字，表示最近的几个日志
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Git暂存管理&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git stash                        # 暂存
-git stash list                   # 列所有stash
-git stash apply                  # 恢复暂存的内容
-git stash drop                   # 删除暂存区
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Git远程分支管理&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git pull                         # 抓取远程仓库所有分支更新并合并到本地
-git pull --no-ff                 # 抓取远程仓库所有分支更新并合并到本地，不要快进合并
-git fetch origin                 # 抓取远程仓库所有更新
-git fetch origin remote-branch:local-branch #抓取remote-branch分支的更新
-git fetch origin --tags          # 抓取远程上的所有分支
-git checkout -b &amp;lt;new-branch&amp;gt; &amp;lt;remote_tag&amp;gt; # 抓取远程上的分支
-git merge origin/master          # 将远程主分支合并到本地当前分支
-git co --track origin/branch     # 跟踪某个远程分支创建相应的本地分支
-git co -b &amp;lt;local_branch&amp;gt; origin/&amp;lt;remote_branch&amp;gt;  # 基于远程分支创建本地分支，功能同上
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git push                         # push所有分支
-git push origin master           # 将本地主分支推到远程主分支
-git push -u origin master        # 将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)
-git push origin &amp;lt;local_branch&amp;gt;   # 创建远程分支， origin是远程仓库名
-git push origin &amp;lt;local_branch&amp;gt;:&amp;lt;remote_branch&amp;gt;  # 创建远程分支
-git push origin :&amp;lt;remote_branch&amp;gt;  #先删除本地分支(git br -d &amp;lt;branch&amp;gt;)，然后再push删除远程分支
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Git远程仓库管理&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git remote -v                    # 查看远程服务器地址和仓库名称
-git remote show origin           # 查看远程服务器仓库状态
-git remote add origin git@github:XXX/test.git         # 添加远程仓库地址
-git remote set-url origin git@github.com:XXX/test.git # 设置远程仓库地址(用于修改远程仓库地址)
-git remote rm &amp;lt;repository&amp;gt;       # 删除远程仓库
-git remote set-head origin master   # 设置远程仓库的HEAD指向master分支
-
-git branch --set-upstream master origin/master
-git branch --set-upstream develop origin/develop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;实例&lt;/h1&gt;
-
-&lt;h2&gt;打patch过程&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git add .
-git status
-git diff --cached &amp;gt;XXX.patch
-git ci -m &amp;#39;add patch&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
  

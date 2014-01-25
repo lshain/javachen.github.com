@@ -177,6 +177,181 @@
 
 <article>
     <header>
+    	<h1 class="entry-title headline"><a href="/javascript/2011/07/24/drag-an-item-to-dhtmlxgrid-and-add-a-column">Drag an item to dhtmlxGrid and add a column</a></h1>
+    </header>
+    
+      <p>dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？
+现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？
+如果你想快点看到最后的实现方法，你可以直接跳到本文的最后参看源码。
+首先看看dhtmlxTree 关于<a href="http://www.dhtmlx.com/docs/products/dhtmlxGrid/samples/05_drag_n_drop/">Drag-n-Drop</a>的例子，其中有这样一个例子<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html">Custom Drag Out</a>。
+上面的例子，右边定义了一个输入框，其id为“sInput”，代码如下：
+<pre escaped="true" lang="javascript" line="1">function maf() {
+    return false;
+}
+tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
+
+<p>tree.setSkin(&#39;dhx<u>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</u>yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../common/tree<u>05</u>drag<u>n</u>drop.xml&quot;);</p>
+
+<p>function s<u>control() {
+    this.</u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.<u>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this.</u>dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+}
+var sinput = document.getElementById(&#39;sInput&#39;);
+tree.dragger.addDragLanding(sinput, new s_control);
+</pre></p>
+
+<p>为了使tree支持拖拽功能，必须添加以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.enableDragAndDrop(true);</pre></p>
+
+<p>为了实现自定义拖拽的输出，添加了以下代码：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
+
+<p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
+<pre escaped="true" lang="javascript" line="1">    this.<u>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+        targetHtmlObject.style.backgroundColor = &quot;&quot;;
+        targetHtmlObject.value = sourceHtmlObject.parentObject.label;
+    }
+    this.</u>dragIn = function(htmlObject, shtmlObject) {
+        htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
+        return htmlObject;
+    }
+    this._dragOut = function(htmlObject) {
+        htmlObject.style.backgroundColor = &quot;&quot;;
+        return this;
+    }
+</pre></p>
+
+<p>参照上面的思路，我们可以在grid的表头上面定义一个id，然后通过该id获得表头的dom对象，更好的一个方法是通过mygrid.hdr（看看源码就知道列）能过获得grid的表头对象，然后调用下面的方法，定义tree拖拽到grid的表头：
+<pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(mygrid.hdr, new s_control);</pre></p>
+
+<p>但是这个时候，你将tree的一个节点拖到grid的表头，grid不会有任何反应，故需要改写s_control对象的方法，这里主要是改写一个方法：</p>
+
+<pre escaped="true" lang="javascript" line="1">
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+        targetHtmlObject, e) {
+    var zel = e;
+    while (zel.tagName != "TABLE")
+        zel = zel.parentNode;
+    var grid = zel.grid;
+    if (!grid)
+        return;
+    grid.setActive();
+    if (!grid._mCol || e.button == 2)
+        return;
+    e = grid.getFirstParentOfType(e, "TD")
+
+    if ((grid) &amp;&amp; (!grid._colInMove)) {
+        grid.resized = null;
+        if ((!grid._mCols) || (grid._mCols[e._cellIndex] == "true"))
+            insertId = e._cellIndex + 1;
+    }
+
+    mygrid.insertColumn(insertId, "12", "ed", 80);
+}
+</pre>
+
+<p>该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
+<div class="pic">
+<img class="aligncenter" title="QQ20110724211631" src="/assets/images/2011/07/QQ20110724211631.png" alt="" />
+</div></p>
+
+<p>本例最后的代码：
+<pre escaped="true" lang="javascript" line="1">
+    var mygrid;
+    function maf() {
+        return false;
+    }</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);
+tree.setSkin(&#39;dhx_skyblue&#39;);
+tree.setImagePath(&quot;../../dhtmlxTree/codebase/imgs/csh_yellowbooks/&quot;);
+tree.enableDragAndDrop(true);
+//tree.setDragHandler(maf);
+tree.enableSmartXMLParsing(true);
+tree.loadXML(&quot;../../dhtmlxTree/samples/common/tree_05_drag_n_drop.xml&quot;)
+tree.openAllItems(0);
+
+function s_control() {
+    var insertId;
+    this._drag = function(sourceHtmlObject, dhtmlObject,
+            targetHtmlObject, e) {
+        var zel = e;
+        while (zel.tagName != &quot;TABLE&quot;)
+            zel = zel.parentNode;
+        var grid = zel.grid;
+        if (!grid)
+            return;
+        grid.setActive();
+        if (!grid._mCol || e.button == 2)
+            return;
+        e = grid.getFirstParentOfType(e, &quot;TD&quot;)
+
+        if ((grid) &amp;&amp; (!grid._colInMove)) {
+            grid.resized = null;
+            if ((!grid._mCols) || (grid._mCols[e._cellIndex] == &quot;true&quot;))
+                insertId = e._cellIndex + 1;
+        }
+
+        mygrid.insertColumn(insertId, &quot;12&quot;, &quot;ed&quot;, 80);
+    }
+}
+mygrid = new dhtmlXGridObject(&#39;gridbox&#39;);
+mygrid.setImagePath(&quot;../codebase/imgs/&quot;);
+mygrid.setHeader(&quot;Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,
+          Date of Publication&quot;);
+mygrid.setInitWidths(&quot;50,150,100,80,80,80,80,200&quot;);
+mygrid.setColAlign(&quot;right,left,left,right,center,left,center,center&quot;);
+mygrid.setColTypes(&quot;dyn,edtxt,ed,price,ch,co,ra,ro&quot;);
+mygrid.enableDragAndDrop(&quot;temporary_disabled&quot;, true);
+mygrid.init();
+mygrid.setSkin(&quot;dhx_skyblue&quot;);
+mygrid.enableHeaderMenu();
+mygrid.enableColumnMove(true);
+mygrid.setColumnHidden(2, true);
+mygrid.attachEvent(&quot;onHeaderClick&quot;, function(ind, obj) {
+});
+mygrid.loadXML(&quot;../common/grid_ml_16_rows_columns_manipulations.xml&quot;);
+tree.dragger.addDragLanding(mygrid.hdr, new s_control);
+</code></pre></div>
+<p></pre>
+本文实现的是将tree拖拽到grid，其实其他的一些支持拖拽的组件也可以做，并不局限于tree组件，甚至还见过有人实现jquery的dtree拖拽到dhtmlxGrid增加一行记录。</p>
+
+<h2>参考文章</h2>
+
+<p><li>
+Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05_drag_n_drop/08_pro_drag_out.html" target="_blank">http://www.dhtmlx.com/docs/products/dhtmlxTree/samples/05<u>drag</u>n<u>drop/08</u>pro<u>drag</u>out.html</a>
+</li>
+<li>dhtmlxGrid doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:toc</a>
+</li>
+<li>dhtmlxTree doc：<a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc" target="_blank">http://docs.dhtmlx.com/doku.php?id=dhtmlxtree:toc</a>
+</li></p>
+
+     
+
+      <div class="status">
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
     	<h1 class="entry-title headline"><a href="/javascript/2011/07/19/dhtmlxgrid-quick-start-guide">DhtmlxGrid Quick Start Guide</a></h1>
     </header>
     
@@ -833,104 +1008,6 @@ $adodb_name = &quot;onemc&quot;;
 </article>
 <hr/>
 
-<article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/cloud/2011/06/22/the-technology-used-in-eucalyptus">Eucalyptus使用的技术</a></h1>
-    </header>
-    
-      <ul>
-<li><a href="http://libvirt.org/">libvirt</a></li>
-</ul>
-
-<p>Libvirt 库是一种实现 Linux 虚拟化功能的 Linux® API，它支持各种虚拟机监控程序，包括 Xen 和 KVM，以及 QEMU 和用于其他操作系统的一些虚拟产品。</p>
-
-<ul>
-<li><a href="http://www.jboss.org/netty/">Netty</a></li>
-</ul>
-
-<p>Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。</p>
-
-<ul>
-<li><a href="http://ws.apache.org/axis2/">Axis2</a></li>
-</ul>
-
-<p>Axis2是下一代 Apache Axis。Axis2 虽然由 Axis 1.x 处理程序模型提供支持，但它具有更强的灵活性并可扩展到新的体系结构。Axis2 基于新的体系结构进行了全新编写，而且没有采用 Axis 1.x 的常用代码。支持开发 Axis2 的动力是探寻模块化更强、灵活性更高和更有效的体系结构，这种体系结构可以很容易地插入到其他相关 Web 服务标准和协议（如 WS-Security、WS-ReliableMessaging 等）的实现中。</p>
-
-<ul>
-<li><a href="http://ws.apache.org/axis2/c/">Axis2c</a></li>
-</ul>
-
-<p>Apache Axis2/C is a Web services engine implemented in the C programming language. It is based on the extensible and flexible Axis2 architecture.</p>
-
-<ul>
-<li><a href="http://ws.apache.org/rampart/c/">Rampart/C</a></li>
-</ul>
-
-<p>Apache Axis2/C的安全模块</p>
-
-<ul>
-<li><a href="http://jibx.sourceforge.net/">JiBX</a></li>
-</ul>
-
-<p>JiBX是一款非常优秀的XML（Extensible Markup Language）数据绑定框架。它提供灵活的绑定映射文件实现数据对象与XML文件之间的转换；并不需要你修改既有的Java类。另外，另外，它的转换效率是目前很多开源项目都无法比拟的。</p>
-
-<ul>
-<li><a href="http://www.bouncycastle.org/java.html">Bouncy Castle</a></li>
-</ul>
-
-<p>Bouncy Castle 是一种用于 Java 平台的开放源码的轻量级密码术包。它支持大量的密码术算法，并提供 JCE 1.2.1 的实现。因为 Bouncy Castle 被设计成轻量级的，所以从 J2SE 1.4 到 J2ME（包括 MIDP）平台，它都可以运行。它是在 MIDP 上运行的唯一完整的密码术包。</p>
-
-<ul>
-<li><a href="http://mule.mulesource.org/display/MULE/Home">Mule</a></li>
-</ul>
-
-<p>它是一个轻量级的消息框架和整合平台，基于EIP（Enterprise Integeration Patterns,由Hohpe和Woolf编写的一本书）而实现的。Mule的核心组件是UMO(Universal Message Objects，从Mule2.0开始UMO这一概念已经被组件Componse所代替)，UMO实现整合逻辑。UMO可以是POJO,JavaBean等等。它支持20多种传输协议(file,FTP,UDP,SMTP,POP,HTTP,SOAP,JMS等)，并整合了许多流行的开源项目，比如Spring,ActiveMQ,CXF,Axis,Drools等。虽然Mule没有基于JBI来构建其架构，但是它为JBI容器提供了JBI适配器，应此可以很好地与JBI容器整合在一起。而 Mule更关注其灵活性，高效性以及易开发性。从2005年发表1.0版本以来，Mule吸引了越来越多的关注者，成为开源ESB中的一支独秀。目前许多公司都使用了Mule，比如Walmart,HP,Sony,Deutsche Bank 以及 CitiBank等公司。</p>
-
-<ul>
-<li><a href="http://www.hibernate.org/">Hibernate</a></li>
-</ul>
-
-<p>Hibernate是一个开放源代码的对象关系映射框架，它对JDBC进行了非常轻量级的对象封装，使得Java程序员可以随心所欲的使用对象编程思维来操纵数据库。 Hibernate可以应用在任何使用JDBC的场合，既可以在Java的客户端程序使用，也可以在Servlet/JSP的Web应用中使用，最具革命意义的是，Hibernate可以在应用EJB的J2EE架构中取代CMP，完成数据持久化的重任。</p>
-
-<ul>
-<li><a href="http://www.hsqldb.org/">HSQLDB</a></li>
-</ul>
-
-<p>Hsqldb是一个开放源代码的JAVA数据库，其具有标准的SQL语法和JAVA接口，它可以自由使用和分发，非常简洁和快速的。在其官网可以获得最新的程序源代码及jar包文件</p>
-
-<ul>
-<li><a href="http://xen.org/">Xen</a></li>
-</ul>
-
-<p>Xen 是一个开放源代码<a href="http://baike.baidu.com/view/1132.htm">虚拟机</a>监视器，由剑桥大学开发。它打算在单个计算机上运行多达100个满特征的操作系统。操作系统必须进行显式地修改（“移植”）以在Xen上运行（但是提供对用户应用的兼容性）。这使得Xen无需特殊硬件支持，就能达到高性能的虚拟化。</p>
-
-<ul>
-<li><p>[KVM}(http://www.linux-kvm.org/page/Main_Page)
-基于内核的虚拟机(或简称为KVM)是一个由Qumrannet开发和赞助的开源项目.</p></li>
-<li><p><a href="http://code.google.com/webtoolkit/">Google Web Toolkit</a></p></li>
-</ul>
-
-<p>Google Web Toolkit (GWT) 允许开发人员使用Java 编程语言快速构建和维护复杂而又高性能的JavaScript 前端应用程序，从而降低了开发难度</p>
-
-<ul>
-<li><a href="http://sourceware.org/lvm2/">LVM2</a></li>
-</ul>
-
-<p>LVM是 Logical Volume Manager(逻辑卷管理)的简写，它是Linux环境下对磁盘分区进行管理的一种机制，它由Heinz Mauelshagen在Linux 2.4内核上实现，目前最新版本为：稳定版1.0.5，开发版 1.1.0-rc2，以及LVM2开发版。</p>
-
-<p>-<a href="http://jetty.codehaus.org/jetty/">Jetty</a></p>
-
-<p>Jetty 是一个开源的servlet容器，它为基于Java的web内容，例如JSP和servlet提供运行环境。Jetty是使用Java语言编写的，它的API以一组JAR包的形式发布。开发人员可以将Jetty容器实例化成一个对象，可以迅速为一些独立运行（stand-alone）的Java应用提供网络和web连接。</p>
-
-     
-
-      <div class="status">
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -964,6 +1041,8 @@ $adodb_name = &quot;onemc&quot;;
        <div class="category">
          <ul>
            
+           <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在centos6系统上安装Ganlia</a></li>
+           
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
            <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
@@ -993,8 +1072,6 @@ $adodb_name = &quot;onemc&quot;;
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
            
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-           
-           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
            
          </ul>
        </div>

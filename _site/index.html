@@ -177,6 +177,38 @@
 
 <article>
     <header>
+    	<h1 class="entry-title headline"><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在centos6系统上安装Ganlia</a></h1>
+    </header>
+    
+      <h1>配置yum源</h1>
+
+<p>首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。</p>
+
+<p>在<code>/etc/yum.repos.d</code>下创建<code>ganglia.repo</code>，内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[ganglia]
+name= ganglia
+baseurl = http://vuksan.com/centos/RPMS/
+enabled = 1
+gpgcheck = 0
+</code></pre></div>
+<p>为了方便离线使用，你可以下载该yum源内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd /opt
+reposync -r ganglia
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/25/how-to-install-ganglia-on-centos6"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
     	<h1 class="entry-title headline"><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></h1>
     </header>
     
@@ -188,100 +220,14 @@ chkconfig httpd on &amp;&amp; chkconfig nagios on
 service httpd start &amp;&amp; service nagios start
 </code></pre></div>
 <h1>设置管理界面密码</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">htpasswd -c /etc/nagios/passwd admin
+<div class="highlight"><pre><code class="text language-text" data-lang="text">htpasswd -c /etc/nagios/passwd nagiosadmin
 </code></pre></div>
-<p>密码和用户名保持一致（都设置为admin），否则你需要修改<code>/etc/nagios/cgi.cfg</code></p>
 
-<h1>访问Nagios</h1>
-
-<p>打开<code>http://ip/nagios</code>，输入用户名和密码即可访问</p>
-
-<h1>在客户端上安装NRPE</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nrpe
-chkconfig nrpe on
-</code></pre></div>
-<p>修改配置<code>/etc/nagios/nrpe.cfg</code>，例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">log_facility=daemon
-pid_file=/var/run/nrpe/nrpe.pid
-server_port=5666
-nrpe_user=nrpe
-nrpe_group=nrpe
-allowed_hosts=198.211.117.251
-dont_blame_nrpe=1
-debug=0
-command_timeout=60
-connection_timeout=300
-include_dir=/etc/nrpe.d/
-command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
-command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
-command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
-command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
-command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
-command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s $ARG3$
-</code></pre></div>
-<p>请注意修改<code>allowed_hosts</code>值为你的nagios监控机ip</p>
-
-<p>设置iptables：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -N NRPE
-iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
-iptables -I NRPE -s 198.211.117.251 -j ACCEPT
-iptables -A NRPE -s 0/0 -j DROP
-/etc/init.d/iptables save
-</code></pre></div>
-<p>或者，关闭iptables：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/iptables stop
-</code></pre></div>
-<p>启动NRPE：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">service nrpe start
-</code></pre></div>
-<h1>在管理机上添加配置文件</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;cfg_dir=/etc/nagios/servers&quot; &gt;&gt; /etc/nagios/nagios.cfg
-cd /etc/nagios/servers
-touch hadoop.tk.cfg
-touch hbase.tk.cfg
-</code></pre></div>
-<p>然后修改每一个配置文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/nagios/servers/hadoop.tk.cfg
-</code></pre></div>
-<p>添加内容如下，你也可以稍作修改：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">define host {
-        use                     linux-server
-        host_name               cloudmail.tk
-        alias                   cloudmail.tk
-        address                 192.168.56.122
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             PING
-        check_command                   check_ping!100.0,20%!500.0,60%
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             SSH
-        check_command                   check_ssh
-        notifications_enabled           0
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             Current Load
-        check_command                   check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
-        }
-</code></pre></div>
-<p>重启nagios：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chown -R nagios. /etc/nagios
-service nagios restart
-</code></pre></div>
      
 
       <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/24/how-to-install-nagios-on-rhel6"><span class="readmore">more &raquo; </span></a>
         
         <div class="clearfix"></div>
       </div>
@@ -503,45 +449,6 @@ metrics mysql.bytes_sent: [0, 0, -92]
 </article>
 <hr/>
 
-<article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h1>
-    </header>
-    
-      <h1>Region 概念</h1>
-
-<p>Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Table       (HBase table)
-    Region       (Regions for the table)
-         Store          (Store per ColumnFamily for each Region for the table)
-              MemStore        (MemStore for each Store for each Region for the table)
-              StoreFile       (StoreFiles for each Store for each Region for the table)
-                    Block     (Blocks within a StoreFile within a Store for each Region for the table)
-</code></pre></div>
-<h1>Region 大小</h1>
-
-<p>Region的大小是一个棘手的问题，需要考量如下几个因素。</p>
-
-<ul>
-<li>Regions是可用性和分布式的最基本单位</li>
-<li>HBase通过将region切分在许多机器上实现分布式。也就是说，你如果有16GB的数据，只分了2个region， 你却有20台机器，有18台就浪费了。</li>
-<li>region数目太多就会造成性能下降，现在比以前好多了。但是对于同样大小的数据，700个region比3000个要好。</li>
-<li>region数目太少就会妨碍可扩展性，降低并行能力。有的时候导致压力不够分散。这就是为什么，你向一个10节点的HBase集群导入200MB的数据，大部分的节点是idle的。</li>
-<li>RegionServer中1个region和10个region索引需要的内存量没有太多的差别。</li>
-</ul>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hbase/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -573,6 +480,8 @@ metrics mysql.bytes_sent: [0, 0, -92]
        <div class="category">
          <ul>
            
+           <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在centos6系统上安装Ganlia</a></li>
+           
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
            <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
@@ -602,8 +511,6 @@ metrics mysql.bytes_sent: [0, 0, -92]
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
            
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-           
-           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
            
          </ul>
        </div>

@@ -18,10 +18,12 @@ service httpd start && service nagios start
 # 设置管理界面密码
 
 ```
-htpasswd -c /etc/nagios/passwd admin
+htpasswd -c /etc/nagios/passwd nagiosadmin
 ```
 
-密码和用户名保持一致（都设置为admin），否则你需要修改`/etc/nagios/cgi.cfg`
+<!-- more -->
+
+密码和用户名保持一致（都设置为nagiosadmin），否则你需要修改`/etc/nagios/cgi.cfg`
 
 # 访问Nagios
 

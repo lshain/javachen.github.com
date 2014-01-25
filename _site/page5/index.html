@@ -177,6 +177,50 @@
 
 <article>
     <header>
+    	<h1 class="entry-title headline"><a href="/post/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h1>
+    </header>
+    
+      <p>主要记录使用jekyll搭建博客时的一些配置和修改。</p>
+
+<p>注意：</p>
+
+<blockquote>
+<p>使用时请删除{和%以及{和{之间的空格。</p>
+</blockquote>
+
+<h1>预览文章</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">source ~/.bash_profile
+jekyll server
+</code></pre></div>
+<h1>添加about me 边栏</h1>
+
+<p>参考<a href="http://www.the5fire.com/">the5fire的技术博客</a>在index.html页面加入如下代码：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;section&gt;
+&lt;h4&gt;About me&lt;/h4&gt;
+&lt;div&gt;
+ 一个Java方案架构师，主要从事hadoop相关工作。&lt;a href=&quot;/about.html&quot;&gt;更多信息&lt;/a&gt; 
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;strong&gt;&lt;font color=&quot;red&quot;&gt;&lt;a href=&quot;/atom.xml&quot; target=&quot;_blank&quot;&gt;订阅本站&lt;/a&gt;&lt;/font&gt;&lt;/strong&gt;
+&lt;br/&gt;&lt;br/&gt;
+联系博主：javachen.june[a]gmail.com
+&lt;/div&gt;
+&lt;/section&gt;
+</code></pre></div>
+
+     
+
+      <div class="status">
+        
+        <a class="btn btn-default btn-sm pull-left" href="/post/2013/08/31/my-jekyll-config"><span class="readmore">more &raquo; </span></a>
+        
+        <div class="clearfix"></div>
+      </div>
+</article>
+<hr/>
+
+<article>
+    <header>
     	<h1 class="entry-title headline"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h1>
     </header>
     
@@ -297,27 +341,6 @@ cli_help () {
 </article>
 <hr/>
 
-<article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h1>
-    </header>
-    
-      <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
-
-<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
-
-
-     
-
-      <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>
-        
-        <div class="clearfix"></div>
-      </div>
-</article>
-<hr/>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -351,6 +374,8 @@ cli_help () {
        <div class="category">
          <ul>
            
+           <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在centos6系统上安装Ganlia</a></li>
+           
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在rhel系统上安装Nagios</a></li>
            
            <li><a href="/post/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
@@ -380,8 +405,6 @@ cli_help () {
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
            
            <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
-           
-           <li><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></li>
            
          </ul>
        </div>
