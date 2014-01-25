@@ -1,7 +1,7 @@
 ---
 layout: post
 title: SaltStack学习笔记[未完成]
-category: saltstack
+category: linux
 tags: saltstack
 ---
 

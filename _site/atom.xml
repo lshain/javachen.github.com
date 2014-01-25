@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-25T20:49:41+08:00</updated>
+ <updated>2014-01-25T22:29:37+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -12,13 +12,13 @@
 
  
  <entry>
-   <title><![CDATA[在Centos6系统上安装Ganglia]]></title>
+   <title><![CDATA[在CentOs6系统上安装Ganglia]]></title>
    <link href="http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6"/>
    <updated>2014-01-25T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</id>
    <content type="html">&lt;h1&gt;配置yum源&lt;/h1&gt;
 
-&lt;p&gt;首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。&lt;/p&gt;
+&lt;p&gt;首先配置好CentOs系统的yum源，然后需要包含有ganglia的yum源。&lt;/p&gt;
 
 &lt;p&gt;在&lt;code&gt;/etc/yum.repos.d&lt;/code&gt;下创建&lt;code&gt;ganglia.repo&lt;/code&gt;，内容如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[ganglia]
@@ -209,9 +209,9 @@ service nagios restart
  
  <entry>
    <title><![CDATA[All Things OpenTSDB]]></title>
-   <link href="http://blog.javachen.com/post/2014/01/22/all-things-opentsdb"/>
+   <link href="http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb"/>
    <updated>2014-01-22T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/post/2014/01/22/all-things-opentsdb</id>
+   <id>http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb</id>
    <content type="html">&lt;h1&gt;OpenTSDB介绍&lt;/h1&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://opentsdb.net/index.html&quot;&gt;OpenTSDB&lt;/a&gt;用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。&lt;/p&gt;
@@ -359,9 +359,9 @@ metrics mysql.bytes_sent: [0, 0, -92]
  
  <entry>
    <title><![CDATA[All Things Jekyll]]></title>
-   <link href="http://blog.javachen.com/post/2014/01/21/all-things-about-jekyll"/>
+   <link href="http://blog.javachen.com/linux/2014/01/21/all-things-about-jekyll"/>
    <updated>2014-01-21T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/post/2014/01/21/all-things-about-jekyll</id>
+   <id>http://blog.javachen.com/linux/2014/01/21/all-things-about-jekyll</id>
    <content type="html">&lt;p&gt;Jekyll是一个简洁的、特别针对博客平台的静态网站生成器。它使用一个模板目录作为网站布局的基础框架，并在其上运行Textile、Markdown或Liquid标记语言的转换器，最终生成一个完整的静态Web站点，可以被放置在Apache或者你喜欢的其他任何Web服务器上。它同时也是GitHub Pages、一个由GitHub提供的用于托管项目主页或博客的服务，在后台所运行的引擎。&lt;/p&gt;
 
 &lt;h1&gt;1. 安装&lt;/h1&gt;

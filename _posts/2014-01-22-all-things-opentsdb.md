@@ -1,7 +1,7 @@
 ---
 layout: post
 title: All Things OpenTSDB
-category: post
+category: linux
 tags: [OpenTSDB , hbase]
 ---
 

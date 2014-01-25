@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 使用saltstack安装jboss
-category: saltstack
+category: linux
 tags: [saltstack,jboss]
 ---
 

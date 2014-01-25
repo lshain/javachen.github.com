@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 安装saltstack和halite
-category: saltstack
+category: linux
 tags: [saltstack,halite]
 ---
 {% include JB/setup %}

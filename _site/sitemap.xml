@@ -19,14 +19,14 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/post/2014/01/22/all-things-opentsdb</loc>
+      <loc>http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-22T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/post/2014/01/21/all-things-about-jekyll</loc>
+      <loc>http://blog.javachen.com/linux/2014/01/21/all-things-about-jekyll</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-21T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -82,21 +82,21 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/saltstack/2013/11/18/study-note-of-saltstack</loc>
+      <loc>http://blog.javachen.com/linux/2013/11/18/study-note-of-saltstack</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-11-18T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/saltstack/2013/11/16/install-jboss-with-saltstack</loc>
+      <loc>http://blog.javachen.com/linux/2013/11/16/install-jboss-with-saltstack</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-11-16T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/saltstack/2013/11/11/install-saltstack-and-halite</loc>
+      <loc>http://blog.javachen.com/linux/2013/11/11/install-saltstack-and-halite</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-11-11T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
@@ -145,7 +145,7 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/post/2013/08/31/my-jekyll-config</loc>
+      <loc>http://blog.javachen.com/linux/2013/08/31/my-jekyll-config</loc>
       <changefreq>daily</changefreq>
       <lastmod>2013-08-31T00:00:00+08:00</lastmod>
       <priority>0.8</priority>

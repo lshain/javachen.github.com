@@ -1,7 +1,7 @@
 ---
 layout: post
 title: All Things Jekyll
-category: post
+category: linux
 tags: [jekyll、ruby]
 ---
 

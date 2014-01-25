@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 我的jekyll配置和修改
-category: post
+category: linux
 tags: [jekyll]
 ---
 
