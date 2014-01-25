@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 在centos6系统上安装Ganglia
+title: 在CentOs6系统上安装Ganglia
 category: linux
 tags: [ganglia]
 ---
 
 # 配置yum源
 
-首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。
+首先配置好CentOs系统的yum源，然后需要包含有ganglia的yum源。
 
 在`/etc/yum.repos.d`下创建`ganglia.repo`，内容如下：
 

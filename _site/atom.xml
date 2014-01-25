@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-25T20:48:11+08:00</updated>
+ <updated>2014-01-25T20:49:41+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -12,7 +12,7 @@
 
  
  <entry>
-   <title><![CDATA[在centos6系统上安装Ganglia]]></title>
+   <title><![CDATA[在Centos6系统上安装Ganglia]]></title>
    <link href="http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6"/>
    <updated>2014-01-25T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</id>
@@ -100,7 +100,7 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
  </entry>
  
  <entry>
-   <title><![CDATA[在rhel系统上安装Nagios]]></title>
+   <title><![CDATA[在RHEL系统上安装Nagios]]></title>
    <link href="http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6"/>
    <updated>2014-01-24T00:00:00+08:00</updated>
    <id>http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6</id>

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 在rhel系统上安装Nagios
+title: 在RHEL系统上安装Nagios
 category: linux
 tags: [nagios]
 ---

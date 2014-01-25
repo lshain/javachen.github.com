@@ -4,13 +4,13 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Sat, 25 Jan 2014 20:48:11 +0800</lastBuildDate>
-		<pubDate>Sat, 25 Jan 2014 20:48:11 +0800</pubDate>
+		<lastBuildDate>Sat, 25 Jan 2014 20:49:41 +0800</lastBuildDate>
+		<pubDate>Sat, 25 Jan 2014 20:49:41 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
 		<item>
-			<title><![CDATA[在centos6系统上安装Ganglia]]></title>
+			<title><![CDATA[在Centos6系统上安装Ganglia]]></title>
 			<description>&lt;h1&gt;配置yum源&lt;/h1&gt;
 
 &lt;p&gt;首先配置好centos系统的yum源，然后需要包含有ganglia的yum源。&lt;/p&gt;
@@ -98,7 +98,7 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 		</item>
 
 		<item>
-			<title><![CDATA[在rhel系统上安装Nagios]]></title>
+			<title><![CDATA[在RHEL系统上安装Nagios]]></title>
 			<description>&lt;h1&gt;在管理机上安装rpm包&lt;/h1&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
