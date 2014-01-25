@@ -2,7 +2,7 @@
 layout: post
 title: HBase Region Split策略
 category: hbase
-tags: [hbase、region、split]
+tags: [hbase , region , split]
 ---
 
 # Region 概念

@@ -2,7 +2,7 @@
 layout: post
 title: vim配置和插件管理
 category: linux
-tags: [vim、plguin]
+tags: [vim , plguin]
 ---
 
 这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。

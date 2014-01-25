@@ -2,7 +2,7 @@
 layout: post
 title: ssh连接环境变量问题
 category: linux
-tags: [ssh 、shell 、linux]
+tags: [ssh , shell , linux]
 ---
 
 # 1. 问题

@@ -2,7 +2,7 @@
 layout: post
 title: All Things Jekyll
 category: linux
-tags: [jekyll、ruby]
+tags: [jekyll, ruby]
 ---
 
 Jekyll是一个简洁的、特别针对博客平台的静态网站生成器。它使用一个模板目录作为网站布局的基础框架，并在其上运行Textile、Markdown或Liquid标记语言的转换器，最终生成一个完整的静态Web站点，可以被放置在Apache或者你喜欢的其他任何Web服务器上。它同时也是GitHub Pages、一个由GitHub提供的用于托管项目主页或博客的服务，在后台所运行的引擎。
