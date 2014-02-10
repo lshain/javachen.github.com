@@ -128,4 +128,8 @@ yum install gmond
 然后通过web界面（`http://manager-ip/ganglia`）访问ganglia-web
 
 
+# 修改配置文件
+
+# 监控hadoop
+
 

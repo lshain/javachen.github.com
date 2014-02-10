@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Sat, 25 Jan 2014 22:34:12 +0800</lastBuildDate>
-		<pubDate>Sat, 25 Jan 2014 22:34:12 +0800</pubDate>
+		<lastBuildDate>Mon, 10 Feb 2014 10:08:29 +0800</lastBuildDate>
+		<pubDate>Mon, 10 Feb 2014 10:08:29 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -91,6 +91,10 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/httpd start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;然后通过web界面（&lt;code&gt;http://manager-ip/ganglia&lt;/code&gt;）访问ganglia-web&lt;/p&gt;
+
+&lt;h1&gt;修改配置文件&lt;/h1&gt;
+
+&lt;h1&gt;监控hadoop&lt;/h1&gt;
 </description>
 			<link>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</link>
 			<guid>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</guid>

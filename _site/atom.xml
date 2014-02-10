@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-01-25T22:34:12+08:00</updated>
+ <updated>2014-02-10T10:08:29+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -96,6 +96,10 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/httpd start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;然后通过web界面（&lt;code&gt;http://manager-ip/ganglia&lt;/code&gt;）访问ganglia-web&lt;/p&gt;
+
+&lt;h1&gt;修改配置文件&lt;/h1&gt;
+
+&lt;h1&gt;监控hadoop&lt;/h1&gt;
 </content>
  </entry>
  
