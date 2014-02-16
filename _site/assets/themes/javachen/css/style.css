@@ -17,7 +17,7 @@ embed,object,iframe{display:block;margin:4px auto}
 .entry-content a{text-decoration:none;border-bottom:1px dotted}
 .entry-content a:hover{text-decoration:none;border-bottom:1px solid}
 .entry-content img{max-width:100%;height:auto}
-.entry-title {font-family: SecretTypewriterRegular,"Helvetica Neue",Helvetica,Arial,sans-serif;font-size: 32px;line-height: normal;text-shadow: 1px 1px 3px rgba(0,0,0,0.3);}
+.entry-title {line-height: normal;text-shadow: 1px 1px 3px rgba(0,0,0,0.3);}
 .entry-title h1{color:red}
 #sidebar{padding-top:0}
 #sidebar a{color:inherit}
@@ -27,3 +27,4 @@ i{margin-right:10px}
 #toTop a:hover{background:#3d5998}
 article p,section p{text-indent: 2em;}
 .page-header {padding-bottom: 0px;}
+.under_line {border-bottom: 1px solid #e8e8e8;padding-bottom: 5px;}
