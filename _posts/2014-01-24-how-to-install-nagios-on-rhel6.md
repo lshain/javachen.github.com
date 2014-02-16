@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在RHEL系统上安装Nagios
+description: Nagios全名为（Nagios Ain’t Goona Insist on Saintood），最初项目名字是 NetSaint。它是一款免费的开源IT 基础设施监控系统，其功能强大，灵活性强，能有效监控主机状态、交换机、路由器等网络设置等。一旦主机或服务状态出现异常时，会发出邮件或短信报警第一时间通知运营人员，在状态恢复后发出正常的邮件或短信通知。
 category: linux
 tags: [nagios]
 ---

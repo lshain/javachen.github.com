@@ -1,6 +1,7 @@
 ---
 layout: post
 title: hive连接产生笛卡尔集
+description: 工作中遇到一个一场，是关于hive连接产生笛卡尔集
 category: hive
 tags: [hive]
 ---

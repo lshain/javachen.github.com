@@ -1,6 +1,7 @@
 ---
 layout: post
 title: HBase Region Split策略
+description: 新生成hbase的一个表的时候，整个集群中就只有一个新表的region分区，随着存储的数据增多，一个region就会水平分割为大小相等的2个region，这一过程是由HRegion Server自动处理的，期间不需要HMaster Server的参与。
 category: hbase
 tags: [hbase , region , split]
 ---

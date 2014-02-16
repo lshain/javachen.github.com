@@ -1,9 +1,12 @@
 ---
 layout: post
 title: 重装linux-mint系统之后
+description: 重装linux-mint系统之后的一些软件安装和环境变量配置。
 category: linux
 tags: [gnome , linux]
 ---
+
+本文主要记录重装linux-mint系统之后的一些软件安装和环境变量配置。
 
 # 安装常用工具
 

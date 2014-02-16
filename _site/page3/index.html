@@ -126,20 +126,6 @@
   
     
   
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
 
 
 
@@ -170,175 +156,160 @@
   <div class="col-md-9">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h2>  <small>Life is short,we need passion.</small></h2>
+        <h1 class="entry-title">  <small>Life is short,we need strive.</small></h1>
       </header>
 	
 
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h3>
     </header>
     
-      <p>Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。</p>
-
-<h1>Git配置</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
-git config --global user.email &quot;june.chan@foxmail.com&quot;
-git config --global color.ui true
-git config --global alias.co checkout
-git config --global alias.ci commit
-git config --global alias.st status
-git config --global alias.br branch
-git config -l  # 列举所有配置
-</code></pre></div>
-
+      hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2013/12/27/some-git-configs-and-cammands"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/09/04/how-to-decide-map-number"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/linux/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h3>
     </header>
     
-      <h1>1. 关于本文档</h1>
-
-<p>这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。</p>
-
-<p>希望这篇文章能够让你快速了解并使用saltstack。文章还在编写中。</p>
-
-<h1>2. 关于SaltStack</h1>
-
-<h2>2.1. 什么是SaltStack</h2>
-
-<p>SaltStack是开源的管理基础设置的轻量级工具，容易搭建，为远程管理服务器提供一种更好、更快速、更有扩展性的解决方案。通过简单、可管理的接口，Salt实现了可以管理成千上百的服务器和处理大数据的能力。</p>
-
-<ul>
-<li>轻量级配置管理系统，能够维持远端节点运行在预定状态（例如，确保指定的软件包已经安装和特定的系统服务正在运行）</li>
-<li>分布式远程执行系统，用于在远端节点执行命令和查询数据，可以是单独，也可以是选定的条件</li>
-</ul>
-
-
+      主要记录使用jekyll搭建博客时的一些配置和修改。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/18/study-note-of-saltstack"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/08/31/my-jekyll-config"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h3>
     </header>
     
-      <p>Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。</p>
-
-<p>在开始使用saltstack之前，首先要对Salt的基础进行一系列的学习，这里，我强烈推荐官网的<a href="http://docs.saltstack.com/topics/tutorials/walkthrough.html">Tutorial</a>,在完成了整个Tutorial之后，通过Module Index页面，我们能够快速查阅Salt所有模块的功能与用法:<a href="http://docs.saltstack.com/py-modindex.html">http://docs.saltstack.com/py-modindex.html</a></p>
-
-<h1>安装saltstack</h1>
-
-<p>安装过程请参考：<a href="/saltstack/2013/11/11/install-saltstack-and-halite/">安装saltstack和halite</a></p>
-
-
+      应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/16/install-jboss-with-saltstack"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h3>
     </header>
     
-      <p>本文记录安装saltstack和halite过程。</p>
-
-<p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
-
-<h1>下载yum源</h1>
-<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
-</code></pre></div>
-<h1>安装依赖</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
-</code></pre></div>
-<h1>安装saltstack</h1>
-
-<p>在sk1上安装master：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
-</code></pre></div>
-<p>在sk1上安装minion：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
-</code></pre></div>
-
+      我的学习笔记，记录hive Driver类运行过程
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h3>
     </header>
     
-      <p>这篇文章记录一下如何在eclipse中调试运行hbase。</p>
-
-<h1>下载并编译源代码</h1>
-
-<p>请参考<a href="http://blog.javachen.com/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches/">编译hbase源代码并打补丁</a></p>
-
-<h1>修改配置文件</h1>
-
-<p>修改 <code>conf/hbase-site.xml</code>文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-&lt;name&gt;hbase.defaults.for.version&lt;/name&gt;
-&lt;value&gt;0.94.6-cdh4.4.0&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-&lt;name&gt;hbase.rootdir&lt;/name&gt;
-&lt;value&gt;file:///home/june/tmp/data&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<p>把conf文件夹加到Classpath中</p>
-
-<h1>运行HMaster</h1>
-
-<p>新建一个<code>Debug Configuration</code>,  main class 是<code>org.apache.hadoop.hbase.master.HMaster</code>,  参数填start</p>
-
-
+      我的学习笔记，理解hive cli的入口类
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hbase/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/21/hive-CliDriver"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h3>
+    </header>
+    
+      本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/17/some-problems-about-hadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h3>
+    </header>
+    
+      之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h3>
+    </header>
+    
+      远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h3>
+    </header>
+    
+		
+		  <h1>1. R Language Install</h1>
+
+<h2>安装相关依赖</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+</code></pre></div>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h3>
+    </header>
+    
+		
+		  <h1>1 方法一</h1>
+
+<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
+
+<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
+
+<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 
 <!-- Pagination links -->
@@ -349,10 +320,10 @@ git config -l  # 列举所有配置
     <a class="btn btn-default btn-sm" href="/page2/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 3 of 14</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 3 of 7</a></span>
   
     <a class="btn btn-default btn-sm" href="/page4/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page7/">Last</a>
   
 </div>
 
@@ -372,6 +343,8 @@ git config -l  # 列举所有配置
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/javascript/2014/02/16/backbone-model">Backbone中的模型</a></li>
            
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
            
@@ -402,8 +375,6 @@ git config -l  # 列举所有配置
            <li><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
            
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
-           
-           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
          </ul>
        </div>

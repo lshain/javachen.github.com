@@ -126,20 +126,6 @@
   
     
   
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
 
 
 
@@ -170,192 +156,140 @@
   <div class="col-md-9">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h2>  <small>Life is short,we need passion.</small></h2>
+        <h1 class="entry-title">  <small>Life is short,we need strive.</small></h1>
       </header>
 	
 
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h3>
     </header>
     
-      <p>之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。</p>
-
-<p>安装过程中参考了很多网上的文章，解压缩过cloudera的<code>cloudera-manager-installer.bin</code>，发现并修复了IDH shell脚本中关于puppt的自认为是bug的一个bug，最后整理出了一个自动安装hadoop的shell脚本，脚本托管在github上面: <a href="https://github.com/javachen/hadoop-install">hadoop-install</a>。</p>
-
-
+      Ext读取xml文件生成动态表格和表单
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h3>
     </header>
     
-      <p>远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。</p>
-
-<p>为了进行远程调试，必须使用 Java Virtual Machine (JVM) V5.0 或更新版本。</p>
-
-<h1>JPDA 简介</h1>
-
-<p>Sun Microsystem 的 Java Platform Debugger Architecture (JPDA) 技术是一个多层架构，使您能够在各种环境中轻松调试 Java 应用程序。JPDA 由两个接口（分别是 JVM Tool Interface 和 JDI）、一个协议（Java Debug Wire Protocol）和两个用于合并它们的软件组件（后端和前端）组成。它的设计目的是让调试人员在任何环境中都可以进行调试。</p>
-
-
+      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h3>
     </header>
     
-      <h1>1. R Language Install</h1>
-
-<h2>安装相关依赖</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
-yum install libRmath-*
-rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
-rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
-</code></pre></div>
-
+      使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/pentaho/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h3>
     </header>
     
-      <h1>1 方法一</h1>
-
-<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
-
-<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
-
-<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
-
-
+      Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/pentaho/2011/12/07/mondrian-and-olap"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/javascript/2011/11/25/xml-user-interface-language-introuction">XUL 用户界面语言介绍</a></h3>
     </header>
     
-      <h1>摘要</h1>
-
-<p>Kettle是一款国外开源的ETL工具，纯java编写，可以在Window、Linux、Unix上运行，绿色无需安装，数据抽取高效稳定。<a href="https://github.com/pentaho/big-data-plugin">big-data-plugin</a>是kettle中用于访问bigdata，包括hadoop、cassandra、mongodb等nosql数据库的一个插件。</p>
-
-<p>截至目前，kettle的版本为4.4.1，<code>big-data-plugin</code>插件支持<code>cloudera CDH3u4、CDH4.1</code>，暂不支持Intel的hadoop发行版本IDH。</p>
-
-<p>本文主要介绍如何让kettle支持IDH的hadoop版本。</p>
-
-<h1>方法</h1>
-
-<p>假设你已经安装好IDH-2.3的集群，并已经拷贝出<code>/usr/lib/</code>下的hadoop、hbase、zookeeper目录。</p>
-
-<p>首先，下载一个kettle版本，如社区版data-integration，然后进入<code>data-integration/plugins/pentaho-big-data-plugin</code>目录，修改plugin.properties文件中的<code>active.hadoop.configuration</code>属性，将其值改为cdh4</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">active.hadoop.configuration=cdh4
-</code></pre></div>
-<p>修改kettle的log4j日志等级，并启动kettle，检查启动过程中是否报错，如有错误，请修正错误。</p>
-
-<p>进入hadoop-configurations目录，copy and paste cdh3u4并命名为idh2.3。</p>
-
-<p>因为IDH和CDH的hadoop版本不一致，故需要替换hadoop和hbase、zookeeper为IDH的版本，涉及到需要替换、增加的jar有，这些jar文件从IDH安装后的目录中拷贝即可：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.94.1-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/protobuf-java-2.4.0a.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.4.5-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-ant-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-examples-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-test-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-tools-1.0.3-Intel.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.8.0.jar
-</code></pre></div>
-<p>其他依赖包可以尝试添加，并删除多版本的jar文件。</p>
-
-<p>需要删除CDH的jar有：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/hbase-0.90.6-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/pmr/zookeeper-3.3.5-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-client-0.20.2-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/client/hadoop-core-0.20.2-cdh3u4.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libfb303-0.5.0-cdh.jar
-data-integration/plugins/pentaho-big-data-plugin/hadoop-configurations/idh2.3/lib/libthrift-0.5.0-cdh.jar
-</code></pre></div>
-<p>修改plugin.properties文件中的active.hadoop.configuration属性，将其值改为idh2.3。重起kettle，观察启动过程中是否报错。</p>
-
-<h3>验证</h3>
-
-<ol>
-<li>打开hbase output组件，配置zookeeper的host和port</li>
-</ol>
-
-<p><img src="/assets/images/2013/hbase-output-setup-for-idh-2.3.png" alt="hbase-output-setup-for-idh-2.3"></p>
-
-<ol>
-<li>在<code>Create/Edit mappings</code> tab页点击<code>Get table names</code>，发现该组件卡住，kettle控制台提示异常则需要检查客户端jar版本和服务端是否一致：</li>
-</ol>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">INFO client.HConnectionManager$HConnectionImplementation: getMaster attempt 0 of 10 failed; 
-retrying after sleep of 1000
-java.io.IOException: Call to OS-GZP2308-04/192.168.40.84:60000 failed on local exception: java.io.EOFException
-at org.apache.hadoop.hbase.ipc.HBaseClient.wrapException(HBaseClient.java:1110)
-at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:1079)
-at org.apache.hadoop.hbase.ipc.WritableRpcEngine$Invoker.invoke(WritableRpcEngine.java:150)
-at $Proxy5.getProtocolVersion(Unknown Source)
-at org.apache.hadoop.hbase.ipc.WritableRpcEngine.getProxy(WritableRpcEngine.java:183)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:335)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:312)
-at org.apache.hadoop.hbase.ipc.HBaseRPC.getProxy(HBaseRPC.java:364)
-at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.getMaster(HConnectionManager.java:710)
-at org.apache.hadoop.hbase.client.HBaseAdmin.&lt; init&gt;(HBaseAdmin.java:141)
-at com.intel.hbase.test.createtable.TableBuilder.main(TableBuilder.java:48)
-Caused by: java.io.EOFException
-at java.io.DataInputStream.readInt(DataInputStream.java:375)
-at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.receiveResponse(HBaseClient.java:605)
-at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
-</code></pre></div>
+      XUL 用户界面语言介绍
      
-
       <div class="status">
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2011/11/25/xml-user-interface-language-introuction"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h3>
+    </header>
+    
+      Ext读取xml文件生成动态表格和表单
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h3>
+    </header>
+    
+      在eclipse中构建Pentaho BI Server工程
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h3>
+    </header>
+    
+      Pentaho现场支持遇到问题及解决办法
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15">在Fedora 15 上搭建Eucalyptus</a></h3>
+    </header>
+    
+      在Fedora 15 上搭建Eucalyptus
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/cloud/2011/08/20/install-eucalyptus-on-fedora-15"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java">Export DhtmlxGrid to PDF in Java</a></h3>
+    </header>
+    
+      Export DhtmlxGrid to PDF in Java
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2011/08/11/export-dhtmlxgrid-to-pdf-in-java"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 
 <!-- Pagination links -->
@@ -366,10 +300,10 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
     <a class="btn btn-default btn-sm" href="/page5/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 6 of 14</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 6 of 7</a></span>
   
     <a class="btn btn-default btn-sm" href="/page7/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page7/">Last</a>
   
 </div>
 
@@ -389,6 +323,8 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/javascript/2014/02/16/backbone-model">Backbone中的模型</a></li>
            
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
            
@@ -419,8 +355,6 @@ at org.apache.hadoop.hbase.ipc.HBaseClient$Connection.run(HBaseClient.java:538)
            <li><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
            
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
-           
-           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
          </ul>
        </div>

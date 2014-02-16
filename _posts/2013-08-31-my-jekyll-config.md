@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 我的jekyll配置和修改
+description: 主要记录使用jekyll搭建博客时的一些配置和修改。
 category: linux
 tags: [jekyll]
 ---

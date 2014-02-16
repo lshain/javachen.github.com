@@ -4,7 +4,6 @@ title: Getting Started Using the Cassandra CLI
 category: cassandra
 tags: [cassandra, cli]
 keywords: cassandra, cli
-description: 这仅仅是一个Cassandra CLI使用方法的清单
 ---
 
 这仅仅是一个Cassandra CLI使用方法的清单。

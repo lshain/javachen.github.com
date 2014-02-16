@@ -1,6 +1,7 @@
 ---
 layout: post
 title: All Things OpenTSDB
+description: OpenTSDB是一个架构在Hbase系统之上的实时监控信息收集和展示平台。
 category: linux
 tags: [OpenTSDB , hbase]
 ---

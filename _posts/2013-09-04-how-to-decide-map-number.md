@@ -1,6 +1,7 @@
 ---
 layout: post
 title: hive中如何确定map数
+description: hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？
 category: hive
 tags: [hive , mapreduce]
 ---

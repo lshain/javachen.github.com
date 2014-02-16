@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "【笔记】Hadoop安装部署"
+title: 【笔记】Hadoop安装部署
 category: hadoop
 tags: [hadoop, cdh]
 keywords: hadoop, hdfs

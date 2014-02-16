@@ -126,20 +126,6 @@
   
     
   
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
 
 
 
@@ -170,175 +156,140 @@
   <div class="col-md-9">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h2>  <small>Life is short,we need passion.</small></h2>
+        <h1 class="entry-title">  <small>Life is short,we need strive.</small></h1>
       </header>
 	
 
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></h3>
     </header>
     
-      <h1>Region 概念</h1>
-
-<p>Region是表获取和分布的基本元素，由每个列族的一个Store组成。对象层级图如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Table       (HBase table)
-    Region       (Regions for the table)
-         Store          (Store per ColumnFamily for each Region for the table)
-              MemStore        (MemStore for each Store for each Region for the table)
-              StoreFile       (StoreFiles for each Store for each Region for the table)
-                    Block     (Blocks within a StoreFile within a Store for each Region for the table)
-</code></pre></div>
-<h1>Region 大小</h1>
-
-<p>Region的大小是一个棘手的问题，需要考量如下几个因素。</p>
-
-<ul>
-<li>Regions是可用性和分布式的最基本单位</li>
-<li>HBase通过将region切分在许多机器上实现分布式。也就是说，你如果有16GB的数据，只分了2个region， 你却有20台机器，有18台就浪费了。</li>
-<li>region数目太多就会造成性能下降，现在比以前好多了。但是对于同样大小的数据，700个region比3000个要好。</li>
-<li>region数目太少就会妨碍可扩展性，降低并行能力。有的时候导致压力不够分散。这就是为什么，你向一个10节点的HBase集群导入200MB的数据，大部分的节点是idle的。</li>
-<li>RegionServer中1个region和10个region索引需要的内存量没有太多的差别。</li>
-</ul>
-
-
+      HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）和HTTP（第七层）应用的代理软件，HAProxy是完全免费的、借助HAProxy可以快速并且可靠的提供基于TCP和HTTP应用的代理解决方案。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hbase/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2014/01/08/hive-ha-by-haproxy"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></h3>
     </header>
     
-      <p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
-
-<h1>1. vim配置</h1>
-
-<p>目前我的vimrc配置放置在:<a href="https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc">https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc</a>，其中大多数用英文注释。</p>
-
-<h1>2. 插件管理</h1>
-
-<h2>pathogen</h2>
-
-<p>项目地址:   <a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a></p>
-
-<p>首选需要安装神器 pathogen 来管理所有的插件，具体安装可以看官网的介绍。</p>
-
-<p>要记得把以下内容加入到vimrc文件中:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">execute pathogen#infect()
-</code></pre></div>
-
+      Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。本文主要记录我的一些git配置和一些常用命令。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/14/vim-config-and-plugins"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/12/27/some-git-configs-and-cammands"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></h3>
     </header>
     
-      <h1>1. SiteMesh简介</h1>
-
-<p>SiteMesh是由一个基于Web页面布局、装饰以及与现存Web应用整合的框架。它能帮助我们在由大量页面构成的项目中创建一致的页面布局和外观，如一致的导航条，一致的banner，一致的版权等等。它不仅仅能处理动态的内容，如jsp，php，asp等产生的内容，它也能处理静态的内容，如htm的内容，使得它的内容也符合你的页面结构的要求。甚至于它能将HTML文件象include那样将该文件作为一个面板的形式嵌入到别的文件中去。所有的这些，都是GOF的Decorator模式的最生动的实现。尽管它是由java语言来实现的，但它能与其他Web应用很好地集成。</p>
-
-<h1>2. SiteMesh原理</h1>
-
-<p>SiteMesh框架是OpenSymphony团队开发的一个非常优秀的页面装饰器框架，它通过对用户请求进行过滤，并对服务器向客户端响应也进行过滤，然后给原始页面加入一定的装饰(header,footer等)，然后把结果返回给客户端。通过SiteMesh的页面装饰，可以提供更好的代码复用，所有的页面装饰效果耦合在目标页面中，无需再使用include指令来包含装饰效果，目标页与装饰页完全分离，如果所有页面使用相同的装饰器，可以是整个Web应用具有统一的风格。</p>
-
-<h1>3. SiteMesh3</h1>
-
-<p>SiteMesh3只有Alpha2版本而且很久没更新了，和SpringMVC配合，有些静态内容会出现NO Content的错误。 虽然它号称性能快3倍内存少1倍，但还是保险起见依然用SiteMesh2了。</p>
-
-<p>另外，Atlassian公司因为在自己的产品中使用了SiteMesh2，所以后来也一直有维护，出到了2.5-atlassian-9版，不过不在maven中央库中，可以在<a href="https://maven-us.nuxeo.org/nexus/content/groups/public/opensymphony/sitemesh/2.5-atlassian-9/">这里</a>下载。</p>
-
-
+      这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/java/2014/01/13/about-sitemesh"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/18/study-note-of-saltstack"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h3>
     </header>
     
-      <h1>安装常用工具</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install ctags curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
-</code></pre></div>
-<h1>安装ibus</h1>
-
-<p>只需要安装gnome-language-selector ，不用安装im-switch，然后再允许im-config，设置之后注销登陆即可。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo apt-get install gnome-language-selector 
-</code></pre></div>
-<h1>安装gedit-markdown</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://gitorious.org/projets-divers/gedit-markdown/archive/master.zip
-cd master
-./gedit-markdown.sh install
-</code></pre></div>
-
+      使用saltstack安装jboss,Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/09/after-reinstall-the-system"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/16/install-jboss-with-saltstack"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
 
 <article>
-    <header>
-    	<h1 class="entry-title headline"><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></h1>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></h3>
     </header>
     
-      <p>HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）和HTTP（第七层）应用的代理软件，HAProxy是完全免费的、借助HAProxy可以快速并且可靠的提供基于TCP和HTTP应用的代理解决方案。</p>
-
-<ul>
-<li>免费开源，稳定性也是非常好，这个可通过我做的一些小项目可以看出来，单Haproxy也跑得不错，稳定性可以与硬件级的F5相媲美。
-根据官方文档，HAProxy可以跑满10Gbps-New benchmark of HAProxy at 10 Gbps using Myricom&#39;s 10GbE NICs （Myri-10G PCI-Express），这个数值作为软件级负载均衡器是相当惊人的。</li>
-<li>HAProxy 支持连接拒绝 : 因为维护一个连接的打开的开销是很低的，有时我们很需要限制攻击蠕虫（attack bots），也就是说限制它们的连接打开从而限制它们的危害。 这个已经为一个陷于小型DDoS攻击的网站开发了而且已经拯救了很多站点，这个优点也是其它负载均衡器没有的。</li>
-<li>HAProxy 支持全透明代理（已具备硬件防火墙的典型特点）: 可以用客户端IP地址或者任何其他地址来连接后端服务器. 这个特性仅在Linux 2.4/2.6内核打了cttproxy补丁后才可以使用. 这个特性也使得为某特殊服务器处理部分流量同时又不修改服务器的地址成为可能。</li>
-<li>HAProxy现多于线上的Mysql集群环境，我们常用于它作为MySQL（读）负载均衡；</li>
-<li>自带强大的监控服务器状态的页面，实际环境中我们结合Nagios进行邮件或短信报警，这个也是我非常喜欢它的原因之一；</li>
-<li>HAProxy支持虚拟主机，许多朋友说它不支持虚拟主机是错误的，通过测试我们知道，HAProxy是支持虚拟主机的。</li>
-</ul>
-
-<p>HAProxy特别适用于那些负载特大的web站点， 这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。</p>
-
-
+      本文记录安装saltstack和halite过程。
      
-
       <div class="status">
-        
-        <a class="btn btn-default btn-sm pull-left" href="/hive/2014/01/08/hive-ha-by-haproxy"><span class="readmore">more &raquo; </span></a>
-        
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
-<hr/>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h3>
+    </header>
+    
+      这篇文章记录一下如何在eclipse中调试运行hbase。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hbase/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h3>
+    </header>
+    
+      写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h3>
+    </header>
+    
+      最近做了个web系统访问hive数据库，类似于官方自带的hwi，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/hive/2013/10/17/cartesian-product-in-hive-inner-join">hive连接产生笛卡尔集</a></h3>
+    </header>
+    
+      工作中遇到一个一场，是关于hive连接产生笛卡尔集
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/cartesian-product-in-hive-inner-join"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <header class="page-header">
+    	<h3 class="entry-title"><a href="/work/2013/09/08/recent-work">最近的工作</a></h3>
+    </header>
+    
+      最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 
 <!-- Pagination links -->
@@ -349,10 +300,10 @@ cd master
     <a class="btn btn-default btn-sm" href="/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 2 of 14</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 2 of 7</a></span>
   
     <a class="btn btn-default btn-sm" href="/page3/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page14/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page7/">Last</a>
   
 </div>
 
@@ -372,6 +323,8 @@ cd master
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/javascript/2014/02/16/backbone-model">Backbone中的模型</a></li>
            
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
            
@@ -402,8 +355,6 @@ cd master
            <li><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
            
            <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
-           
-           <li><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></li>
            
          </ul>
        </div>

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在CentOs6系统上安装Ganglia
+description: Ganglia是 UC Berkeley发起的一个开源监视项目，设计用于测量数以千计的节点。本文主要用于记录如何在CentOs6系统上通过yum源安装Ganglia。
 category: linux
 tags: [ganglia]
 ---

@@ -15,14 +15,8 @@ http://blog.javachen.com/page4/index.html
 http://blog.javachen.com/page5/index.html
 http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
-http://blog.javachen.com/page8/index.html
-http://blog.javachen.com/page9/index.html
-http://blog.javachen.com/page10/index.html
-http://blog.javachen.com/page11/index.html
-http://blog.javachen.com/page12/index.html
-http://blog.javachen.com/page13/index.html
-http://blog.javachen.com/page14/index.html
 
+http://blog.javachen.com/javascript/2014/02/16/backbone-model
 http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6
 http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6
 http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb

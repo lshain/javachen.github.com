@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/javascript/2014/02/16/backbone-model</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-16T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-25T00:00:00+08:00</lastmod>
@@ -554,48 +561,6 @@
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
     </url>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

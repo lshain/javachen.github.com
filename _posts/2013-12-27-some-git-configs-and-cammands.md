@@ -1,6 +1,7 @@
 ---
 layout: post
 title: git配置和一些常用命令
+description: Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。本文主要记录我的一些git配置和一些常用命令。
 category: linux
 tags: [git]
 ---

@@ -4,7 +4,7 @@ title: kettle进行数据迁移遇到的问题
 category: kettle
 tags: [kettle]
 keywords: kettle, oracle, db2, mysql
-description: kettle进行数据迁移遇到的问题
+description: 使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
 ---
 
 使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。

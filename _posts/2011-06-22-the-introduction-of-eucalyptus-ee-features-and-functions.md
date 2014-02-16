@@ -4,7 +4,7 @@ title: Eucalyptus EE的介绍及功能说明
 category: cloud
 tags: [eucalyptus]
 keywords: eucalyptus
-description: Eucalyptus EE的介绍及功能说明
+description: Eucalyptus企业版是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。
 ---
 <p>Eucalyptus企业版2.0是一个基于Linux的软件架构，在企业现有的IT架构上实现一个可扩展的、提高效率的私有和混合云。Eucalyptus作为基础设施提供IaaS服务。这意味着用户可以通过Eucalyptus自助服务界面提供自己的资源（硬件、存储和网络）。一个Eucalyptus云是部署在企业的内部数据中心，由企业内部用户访问。因此，敏感数据可以在防火墙的保护下防止外部入侵。</p>
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 安装saltstack和halite
+description: 本文记录安装saltstack和halite过程。
 category: linux
 tags: [saltstack,halite]
 ---
