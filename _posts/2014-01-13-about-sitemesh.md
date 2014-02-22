@@ -16,7 +16,7 @@ SiteMesh框架是OpenSymphony团队开发的一个非常优秀的页面装饰器
 
 # 3. SiteMesh3
 
-SiteMesh3只有Alpha2版本而且很久没更新了，和SpringMVC配合，有些静态内容会出现NO Content的错误。 虽然它号称性能快3倍内存少1倍，但还是保险起见依然用SiteMesh2了。
+[SiteMesh3](https://github.com/sitemesh/sitemesh3)只有Alpha2版本而且很久没更新了,它号称性能快3倍内存少1倍。
 
 另外，Atlassian公司因为在自己的产品中使用了SiteMesh2，所以后来也一直有维护，出到了2.5-atlassian-9版，不过不在maven中央库中，可以在[这里](https://maven-us.nuxeo.org/nexus/content/groups/public/opensymphony/sitemesh/2.5-atlassian-9/)下载。
 

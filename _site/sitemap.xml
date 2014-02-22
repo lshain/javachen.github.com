@@ -5,6 +5,20 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-21T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/hadoop/2014/02/21/cdh5rn_whats_new_in_b2</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-21T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/javascript/2014/02/16/backbone-model</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-02-16T00:00:00+08:00</lastmod>
@@ -561,6 +575,12 @@
       <changefreq>monthly</changefreq>
       <priority>0.6</priority>
     </url>
+    
+    
+    
+    
+    
+    
     
     
     

@@ -126,6 +126,8 @@
   
     
   
+    
+  
 
 
 
@@ -156,10 +158,52 @@
   <div class="col-md-9">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">  <small>Life is long,we need java.</small></h1>
+        <h1 class="entry-title">  <small>Life is long, we need java.</small></h1>
       </header>
 	
 
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h2>
+    
+		
+		  <h1>1. R Language Install</h1>
+
+<h2>安装相关依赖</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+</code></pre></div>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h2>
+    
+		
+		  <h1>1 方法一</h1>
+
+<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
+
+<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
+
+<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
+
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 <article>
     <h2 class="entry-title under_line"><a href="/hbase/2013/04/17/access-idh-2.3-hbase-in-kettle">kettle访问IDH2.3中的HBase</a></h2>
@@ -467,177 +511,6 @@ http://rhel-june:50070/
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h2>
-    
-      2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。以下是2012年相对于2011年的一些变化。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/work/2013/02/20/summary-of-the-work-in-2012"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub上</a></h2>
-    
-		
-		  <h1>Step1 - 在本机安装Octopress</h1>
-
-<p>首先，必须先在本机安装配置<a href="http://git-scm.com/">Git</a>和<a href="https://rvm.beginrescueend.com/rvm/install/">Ruby</a>,Octopress需要Ruby版本至少为1.9.2。你可以使用<a href="http://rvm.beginrescueend.com/">RVM</a>或<a href="https://github.com/sstephenson/rbenv">rbenv</a>安装ruby，安装方法见Octopress官方文档：<a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></p>
-
-<p>我使用rvm安装：
-    rvm install 1.9.2 &amp;&amp; rvm use 1.9.2
-安装完之后可以查看ruby版本：
-    ruby --version
-结果为：
-    ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]</p>
-
-<p>然后需要从github下载Octopress：
-    git clone git://github.com/imathis/octopress.git octopress</p>
-
-<p>因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：
-    git clone git@github.com:javachen/octopress.git
-运行上面的代码后，你会看到：
-    Cloning into &#39;octopress&#39;...
-    remote: Counting objects: 6579, done.
-    remote: Compressing objects: 100% (2361/2361), done.
-    remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
-    Receiving objects: 100% (6579/6579), 1.34 MiB | 35 KiB/s, done.
-    Resolving deltas: 100% (3773/3773), done.</p>
-
-<p>接下来进入octopress：
-    cd octopress</p>
-
-<p>接下来安装依赖：
-    gem install bundler
-    rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-    bundle install</p>
-
-<p>安装Octopress默认的主题：
-    rake install</p>
-
-<p>你也可以安装自定义的主题，blog为主题名称：
-    rake install[&#39;blog&#39;]</p>
-
-<p>至此，Octopress所需的环境已经搭建成功。</p>
-
-<h1>Step2 - 连接GitHub Pages</h1>
-
-<p>首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为<code>你的帐号.github.com</code>，并且，部署的时候会占用你的master分支。</p>
-
-<p><em>Tips：</em>
-如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
-如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；
-    echo &#39;your-domain.com&#39; &gt;&gt; source/CNAME
-如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
-
-<p>完成上述准备工作后，运行：
-    rake setup<u>github</u>pages
-它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</p>
-
-<h1>Step3 - 配置你的博客</h1>
-
-<p>需要配置博客url、名称、作者、rss等信息。
-    url: http://javachen.github.com
-    title: JavaChen on Java
-    subtitle: Just some random thoughts about technology,Java and life.
-    author: javachen
-    simple_search: http://google.com/search
-    description:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">date_format: &quot;%Y年%m月%d日&quot;
-
-subscribe_rss: /atom.xml
-subscribe_email:
-email:
-
-# 如果你使用的是一个子目录，如http://site.com/project，则设置为&#39;root: /project&#39;
-root: /
-# 文章标题格式
-permalink: /:year/:month/:day/:title/
-source: source
-destination: public
-plugins: plugins
-code_dir: downloads/code
-# 分类存放路径
-category_dir: categories
-markdown: rdiscount
-pygments: false # default python pygments have been replaced by pygments.rb
-</code></pre></div>
-<h1>Step4 - 部署</h1>
-
-<p>先把整个项目静态化，然后再部署到GitHub：
-    rake generate
-    rake deploy
-当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!</p>
-
-<p><em>Tips：</em>
-Octopress提供的所有rake方法，可以运行<code>rake -T</code>查看。
-如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。</p>
-
-<h1>Step5 - 从Wordpress迁移到Octopress</h1>
-
-<h2>备份</h2>
-
-<h3>备份评论内容</h3>
-
-<p>Octopress由于是纯静态，所以没有办法存储用户评论了，我们可以使用DISQUS提供的“云评论”服务。首先安装DISQUS的WordPress插件，在插件设置中我们可以将现有的评论内容导入到DISQUS中。DISQUS处理导入数据的时间比较长，往往需要24小时甚至以上的时间。</p>
-
-<h3>备份文章内容</h3>
-
-<p>在WordPress后台我们可以将整站数据备份成一个.xml文件下载下来。同时，我原先文章中的图片都是直接在Wordpress后台上传的，所以要把服务器上<code>wp-content/uploads</code>下的所有文件备份下来。</p>
-
-<h2>迁移</h2>
-
-<h3>迁移文章</h3>
-
-<p>jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：
-    ruby -r &quot;./utils/wordpressdotcom.rb&quot; -e &quot;Jekyll::WordpressDotCom.process&quot;
-于是转换好的文章都放进source目录了。</p>
-
-<h3>迁移URL</h3>
-
-<p>迁移URL，便是要保证以前的文章链接能够自动重定向到新的链接上。这样既能保证搜索引擎的索引不受影响，也是一项对读者负责任的行为是吧。不过这是一项挺麻烦的事情。</p>
-
-<p>幸好我当初建立WordPress的时候就留下了后路。原先网站的链接是这样的：
-    http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html
-    http://XXXXXXXXX.com/page/xx/
-    http://XXXXXXXXX.com/category/[category-name]/
-这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到<u>config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
-    permalink: /:year/:month/:title/
-    category</u>dir: category
-    pagination_dir:  # 留空</p>
-
-<h3>迁移评论</h3>
-
-<p>既然做好了301，那么迁移评论就显得非常简单了。登录DISQUS后台，进入站点管理后台的“Migrate Threads”栏目，那里有一个“Redirect Crawler”的功能，便是自动跟随301重定向，将评论指向新的网址。点一下那个按钮就大功告成。</p>
-
-<h3>迁移图片</h3>
-
-<p>可以参考<a href="http://log4d.com/2012/05/image-host/">使用独立图床子域名</a></p>
-
-<h1>Step6 - 再次部署</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rake generate
-rake deploy
-</code></pre></div>
-<h1>参考文章</h1>
-
-<ul>
-<li>Octopress Setup： http://octopress.org/docs/setup/</li>
-<li>Octopress Deploying：http://octopress.org/docs/deploying/</li>
-<li>Blog = GitHub + Octopress：http://mrzhang.me/blog/blog-equals-github-plus-octopress.html</li>
-<li>从Wordpress迁移到Octopress：http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/</li>
-<li>使用独立图床子域名：http://log4d.com/2012/05/image-host/ http://log4d.com/2012/05/image-host/</li>
-</ul>
-
-		 
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/work/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -647,10 +520,10 @@ rake deploy
     <a class="btn btn-default btn-sm" href="/page3/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 7</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 8</a></span>
   
     <a class="btn btn-default btn-sm" href="/page5/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page7/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page8/">Last</a>
   
 </div>
 
@@ -670,6 +543,10 @@ rake deploy
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/linux/2014/02/21/install-confluence5.4.2">Confluence 5.4.2安装</a></li>
+           
+           <li><a href="/hadoop/2014/02/21/cdh5rn_whats_new_in_b2">CDH 5 Beta 2 的新变化</a></li>
            
            <li><a href="/javascript/2014/02/16/backbone-model">Backbone中的模型</a></li>
            
@@ -698,10 +575,6 @@ rake deploy
            <li><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
            
            <li><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
-           
-           <li><a href="/linux/2013/11/11/install-saltstack-and-halite">安装saltstack和halite</a></li>
-           
-           <li><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></li>
            
          </ul>
        </div>

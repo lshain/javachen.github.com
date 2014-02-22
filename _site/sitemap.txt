@@ -15,7 +15,10 @@ http://blog.javachen.com/page4/index.html
 http://blog.javachen.com/page5/index.html
 http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
+http://blog.javachen.com/page8/index.html
 
+http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2
+http://blog.javachen.com/hadoop/2014/02/21/cdh5rn_whats_new_in_b2
 http://blog.javachen.com/javascript/2014/02/16/backbone-model
 http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6
 http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6
