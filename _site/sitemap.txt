@@ -17,6 +17,8 @@ http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 
+http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant
+http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics
 http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2
 http://blog.javachen.com/hadoop/2014/02/21/cdh5rn_whats_new_in_b2
 http://blog.javachen.com/javascript/2014/02/16/backbone-model
@@ -28,6 +30,7 @@ http://blog.javachen.com/linux/2014/01/18/bash-problem-when-ssh-access
 http://blog.javachen.com/hbase/2014/01/16/hbase-region-split-policy
 http://blog.javachen.com/linux/2014/01/14/vim-config-and-plugins
 http://blog.javachen.com/java/2014/01/13/about-sitemesh
+http://blog.javachen.com/python/2014/01/11/how-to-create-a-django-site
 http://blog.javachen.com/linux/2014/01/09/after-reinstall-the-system
 http://blog.javachen.com/hive/2014/01/08/hive-ha-by-haproxy
 http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands

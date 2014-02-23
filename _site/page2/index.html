@@ -164,12 +164,45 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h2>
+    
+      新生成hbase的一个表的时候，整个集群中就只有一个新表的region分区，随着存储的数据增多，一个region就会水平分割为大小相等的2个region，这一过程是由HRegion Server自动处理的，期间不需要HMaster Server的参与。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hbase/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h2>
+    
+      这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2014/01/14/vim-config-and-plugins"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></h2>
     
       SiteMesh是由一个基于Web页面布局、装饰以及与现存Web应用整合的框架。它能帮助我们在由大量页面构成的项目中创建一致的页面布局和外观，如一致的导航条，一致的banner，一致的版权等等。它不仅仅能处理动态的内容，如jsp，php，asp等产生的内容，它也能处理静态的内容，如htm的内容，使得它的内容也符合你的页面结构的要求。甚至于它能将HTML文件象include那样将该文件作为一个面板的形式嵌入到别的文件中去。所有的这些，都是GOF的Decorator模式的最生动的实现。尽管它是由java语言来实现的，但它能与其他Web应用很好地集成
      
       <div class="status">
         <!--<a class="btn btn-default btn-sm pull-left" href="/java/2014/01/13/about-sitemesh"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></h2>
+    
+      使用django创建一个简单的网站
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/python/2014/01/11/how-to-create-a-django-site"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
@@ -240,39 +273,6 @@
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/hbase/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h2>
-    
-      这篇文章记录一下如何在eclipse中调试运行hbase。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hbase/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h2>
-    
-      写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hbase/2013/10/28/compile-hbase-source-code-and-apply-patches"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h2>
-    
-      最近做了个web系统访问hive数据库，类似于官方自带的hwi，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/10/17/run-mapreduce-with-client-user-in-hive-server2"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -306,6 +306,10 @@
        <div class="category">
          <ul>
            
+           <li><a href="/hadoop/2014/02/23/create-virtualbox-by-vagrant">使用Vagrant创建虚拟机安装Hadoop</a></li>
+           
+           <li><a href="/python/2014/02/22/python-introduction-of-basics">Python基础入门</a></li>
+           
            <li><a href="/linux/2014/02/21/install-confluence5.4.2">Confluence 5.4.2安装</a></li>
            
            <li><a href="/hadoop/2014/02/21/cdh5rn_whats_new_in_b2">CDH 5 Beta 2 的新变化</a></li>
@@ -328,15 +332,11 @@
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
+           <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
+           
            <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
-           
-           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
-           
-           <li><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
-           
-           <li><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
          </ul>
        </div>

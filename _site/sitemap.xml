@@ -5,6 +5,20 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-23T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-22T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-02-21T00:00:00+08:00</lastmod>
@@ -78,6 +92,13 @@
       <loc>http://blog.javachen.com/java/2014/01/13/about-sitemesh</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-01-13T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/python/2014/01/11/how-to-create-a-django-site</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-01-11T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     

@@ -1,20 +1,21 @@
 ---
 layout: post
 title: All Things OpenTSDB
-description: OpenTSDB用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
+description: OpenTSDB用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
 category: linux
 tags: [OpenTSDB , hbase]
 ---
 
-# OpenTSDB介绍
-[OpenTSDB](http://opentsdb.net/index.html)用hbase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
+# 1. OpenTSDB介绍
+
+[OpenTSDB](http://opentsdb.net/index.html)用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
 
 对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。
 
 OpenTSDB使用LGPLv2.1+开源协议。
 
-# 安装OpenTSDB
-## 依赖
+# 2. 安装OpenTSDB
+## 2.1 依赖
 OpenTSDB依赖jdk和[Gnuplot](http://www.gnuplot.info/)，Gnuplot需要提前安装，版本要求为最小4.2,最大4.4,执行以下命令安装即可：
 
 ```
@@ -44,7 +45,7 @@ OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是�
 - [Mockito](http://mockito.org/) 1.9 (MIT)
 - [PowerMock](http://code.google.com/p/powermock/) 1.4 (ASLv2)
 
-## 下载并编译源代码
+## 2.2 下载并编译源代码
 
 ```
 git clone git://github.com/OpenTSDB/opentsdb.git
@@ -52,7 +53,7 @@ cd opentsdb
 ./build.sh
 ```
 
-## 安装
+## 2.3 安装
 
 1. 首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94
 2. 设置环境变量并创建opentsdb使用的表，需要设置的环境变量为`COMPRESSION`和`HBASE_HOME`，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo
@@ -70,8 +71,8 @@ mkdir -p "$tsdtmp"             # your temporary directory uses tmpfs
 
 从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：[OpenTSDB & tcollector 安装部署（Installation and Deployment）](http://www.adintellig.com/blog/14)
 
-# 使用OpenTSDB
-## 命令说明
+# 3. 使用OpenTSDB
+## 3.1 命令说明
 
 tsdb支持以下参数：
 
@@ -81,8 +82,7 @@ usage: tsdb <command> [args]
 Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
 ```
 
-
-## 创建指标
+## 3.2 创建指标
 
 通过以下命令创建指标：
 
@@ -99,7 +99,7 @@ metrics mysql.bytes_sent: [0, 0, -92]
 
 OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。
 
-## Schema
+## 3.3 Schema
 
 OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：
 
@@ -137,19 +137,25 @@ column qualifier占用2 bytes，表示格式为：
 
 value使用8bytes存储，既可以存储long,也可以存储double。
 
-## 查询
+## 3.4 查询
 
-## HTTP API
+## 3.5 HTTP API
 
-# 谁在用OpenTSDB
+# 4. 谁在用OpenTSDB
 
 - [StumbleUpon](http://www.stumbleupon.com/) StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web
 - [box](https://www.box.com/) Box simplifies online file storage, replaces FTP and connects teams in online workspaces.
 - [tumblr](http://www.tumblr.com/) 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章
 
-# 参考资料
+# 5. KairosDB
 
-- http://luoshi0801.iteye.com/blog/1938835
-- http://blog.csdn.net/bingjie1217/article/category/1751285
+KairosDB是一个快速可靠的分布式时间序列数据库，主要用于Cassandra当然也可以适用与HBase。KairosDB是在OpenTSDB基础上重写的，他不仅可以在HBase上存储数据还支持Cassandra。
+
+KairosDB主页：[https://code.google.com/p/kairosdb/](https://code.google.com/p/kairosdb/)
+
+# 6. 参考资料
+
+- [tlog数据存储](http://luoshi0801.iteye.com/blog/1938835)
+- [OpenTSDB源码分析系列文章](http://blog.csdn.net/bingjie1217/article/category/1751285)
 - [OpenTSDB的设计之道](http://www.binospace.com/index.php/opentsdb-design-road/)
 - [opentsdb](http://dirlt.com/opentsdb.html)

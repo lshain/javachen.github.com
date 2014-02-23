@@ -164,6 +164,89 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h2>
+    
+		
+		  <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
+    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
+&lt;/listener&gt;
+</code></pre></div>
+<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+
+<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
+
+<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+
+<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
+
+<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
+
+<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+
+<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
+其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+
+<ol>
+<li>添加命名空间</li>
+<li>从/WEBINF/components. xml加载组件</li>
+<li>从/WEBINF/events. xml加载组件</li>
+<li>从METAINF/components. xml加载组件</li>
+<li>从ServletContext初始化Properties</li>
+<li>从/seam. properties初始化Properties</li>
+<li>初始化jndi Properties</li>
+<li>从system加载Properties</li>
+</ol>
+
+<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
+
+<ol>
+<li>ServletLifecycle开始初始化</li>
+<li>设置Application上下文</li>
+<li>添加Init组件</li>
+<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
+<li>判断jbpm是否安装</li>
+<li>检查默认拦截器</li>
+<li>添加特别组件</li>
+<li>添加war root部署、热部署</li>
+<li>安装组件</li>
+<li>导入命名空间</li>
+<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
+</ol>
+
+<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/java/2012/02/23/the-process-of-seam-initiation"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h2>
+    
+      本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/02/22/the-init-process-before-job-execution"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/kettle/2012/02/21/the-execution-process-of-kettles-job">The execution process of kettle’s job</a></h2>
+    
+      kettle执行过程
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/02/21/the-execution-process-of-kettles-job"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/kettle/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h2>
     
       在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。
@@ -240,39 +323,6 @@
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi">Ext读取xml文件生成动态表格和表单</a></h2>
-    
-      Ext读取xml文件生成动态表格和表单
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse">在eclipse中构建Pentaho BI Server工程</a></h2>
-    
-      在eclipse中构建Pentaho BI Server工程
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16">Pentaho现场支持遇到问题及解决办法</a></h2>
-    
-      Pentaho现场支持遇到问题及解决办法
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/pentaho/2011/09/26/resolved-pentaho-problems-9-16"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -306,6 +356,10 @@
        <div class="category">
          <ul>
            
+           <li><a href="/hadoop/2014/02/23/create-virtualbox-by-vagrant">使用Vagrant创建虚拟机安装Hadoop</a></li>
+           
+           <li><a href="/python/2014/02/22/python-introduction-of-basics">Python基础入门</a></li>
+           
            <li><a href="/linux/2014/02/21/install-confluence5.4.2">Confluence 5.4.2安装</a></li>
            
            <li><a href="/hadoop/2014/02/21/cdh5rn_whats_new_in_b2">CDH 5 Beta 2 的新变化</a></li>
@@ -328,15 +382,11 @@
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
+           <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
+           
            <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
-           
-           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
-           
-           <li><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
-           
-           <li><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
          </ul>
        </div>

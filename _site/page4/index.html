@@ -164,6 +164,39 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/08/17/some-problems-about-hadoop">使用hadoop中遇到的一些问题</a></h2>
+    
+      本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/17/some-problems-about-hadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h2>
+    
+      之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/08/01/remote-debug-hadoop">远程调试hadoop各组件</a></h2>
+    
+      远程调试对应用程序开发十分有用。例如，为不能托管开发平台的低端机器开发程序，或在专用的机器上（比如服务不能中断的 Web 服务器）调试程序。其他情况包括：运行在内存小或 CUP 性能低的设备上的 Java 应用程序（比如移动设备），或者开发人员想要将应用程序和开发环境分开，等等。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/01/remote-debug-hadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h2>
     
 		
@@ -398,119 +431,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a></h2>
-    
-      本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h2>
-    
-      手动安装Cloudera Hadoop CDH
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
-    
-		
-		  <h1>安装虚拟机</h1>
-
-<p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
-
-<h1>配置网络</h1>
-
-<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0</p>
-
-<p>b. 设置每一个虚拟机的网络为Host-Only</p>
-
-<p>c.分别修改每个虚拟机的ip，DHCP或手动设置</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network-scripts/ifcfg-eth0
-vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
-start_udev
-</code></pre></div>
-<p>d.修改主机名</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network
-</code></pre></div>
-<p>e.每个虚拟机中修改hosts：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">192.168.56.100 rhel-june
-192.168.56.101 rhel-june-1
-192.168.56.102 rhel-june-2
-</code></pre></div>
-<p>最后机器列表为：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rhel-june:   192.168.56.100
-rhel-june-1: 192.168.56.101
-rhel-june-2: 192.168.56.102
-</code></pre></div>
-<h1>机群规划</h1>
-
-<p>版本：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop:1.1.1
-JDK:1.6.0_38
-</code></pre></div>
-<p>集群各节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">NameNode:192.168.56.100
-NameSecondary:192.168.56.100
-DataNode:192.168.56.101
-DataNode:192.168.56.102
-</code></pre></div>
-<h1>安装过程</h1>
-
-<p>a.解压缩到/opt</p>
-
-<p>b.设置配置文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml
-hdfs-site.sml
-mapred-site.xml
-</code></pre></div>
-<p>c.设置master、slaves</p>
-
-<p>d.设置环境变量</p>
-
-<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_HOME=/opt/jdk1.6.0_38
-export HADOOP_INSTALL=/opt/hadoop-1.1.1
-export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
-</code></pre></div>
-<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
-
-<p>f.格式化namenode</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop namenode -format
-</code></pre></div>
-<p>g.启动hdfs集群</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh /opt/hadoop-1.1.1/bin/start-all.sh
-</code></pre></div>
-<p>h.查看节点进程</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">jps
-</code></pre></div>
-<h1>查看状态</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">http://rhel-june:50030/
-http://rhel-june:50070/
-</code></pre></div>
-<h1>推荐</h1>
-
-<ul>
-<li>[]</li>
-</ul>
-
-		 
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -544,6 +464,10 @@ http://rhel-june:50070/
        <div class="category">
          <ul>
            
+           <li><a href="/hadoop/2014/02/23/create-virtualbox-by-vagrant">使用Vagrant创建虚拟机安装Hadoop</a></li>
+           
+           <li><a href="/python/2014/02/22/python-introduction-of-basics">Python基础入门</a></li>
+           
            <li><a href="/linux/2014/02/21/install-confluence5.4.2">Confluence 5.4.2安装</a></li>
            
            <li><a href="/hadoop/2014/02/21/cdh5rn_whats_new_in_b2">CDH 5 Beta 2 的新变化</a></li>
@@ -566,15 +490,11 @@ http://rhel-june:50070/
            
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
+           <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
+           
            <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
            <li><a href="/hive/2014/01/08/hive-ha-by-haproxy">Hive使用HAProxy配置HA</a></li>
-           
-           <li><a href="/linux/2013/12/27/some-git-configs-and-cammands">git配置和一些常用命令</a></li>
-           
-           <li><a href="/linux/2013/11/18/study-note-of-saltstack">SaltStack学习笔记[未完成]</a></li>
-           
-           <li><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></li>
            
          </ul>
        </div>

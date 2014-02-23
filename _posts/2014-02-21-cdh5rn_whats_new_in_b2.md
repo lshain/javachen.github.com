@@ -6,7 +6,9 @@ category: hadoop
 tags: [hadoop, cdh5]
 ---
 
-这是 CDH 5.0.0 Beta 2 (原文[地址](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Release-Notes/cdh5rn_whats_new_in_b2.html))的初稿。鉴于 CDH 5 目前的发布版本是测试版，它不应用于生产环境中；它只是用来评估、测试的。对于生产环境，请使用 CDH 4,最近的文档在 [CDH Documentation](http://www.cloudera.com/content/support/en/documentation/cdh4-documentation/cdh4-documentation-v4-latest.html)
+本文是同事对[CDH 5.0.0 Beta 2](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Release-Notes/cdh5rn_whats_new_in_b2.html)的翻译，仅供大家参考。
+
+这是 CDH 5.0.0 Beta 2的初稿。鉴于 CDH 5 目前的发布版本是测试版，它不应用于生产环境中；它只是用来评估、测试的。对于生产环境，请使用 CDH 4,最近的文档在 [CDH Documentation](http://www.cloudera.com/content/support/en/documentation/cdh4-documentation/cdh4-documentation-v4-latest.html)
 
 # Apache Crunch
 
