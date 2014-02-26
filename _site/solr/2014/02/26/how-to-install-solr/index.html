@@ -3,8 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Confluence 5.4.2安装 - JavaChen Blog</title>
-    <meta name="description" content="本文记录Confluence 5.4.2安装过程。Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。"/>
+    <title>Apache Solr介绍及安装 - JavaChen Blog</title>
+    <meta name="description" content="本文记录如何安装solr。Solr是一个基于Lucene的Java搜索引擎服务器。Solr提供了层面搜索、命中醒目显示并且支持多种输出格式。"/>
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2" />
+    <link rel="canonical" href="http://blog.javachen.com/solr/2014/02/26/how-to-install-solr" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -158,77 +158,103 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">Confluence 5.4.2安装 </h1>
+        <h1 class="entry-title">Apache Solr介绍及安装 </h1>
       </header>
 	<div class="entry-content">
-	<p>Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。</p>
+	<p>Solr是一个基于Apache Lucene的开源企业级搜索平台，主要功能包括全文检索，高亮命中(hit highlighting)，分面搜索(faceted search)，近实时索引，动态集群，数据库集成，富文本(e.g. Word,PDF)索引，空间搜索；通过提供分布式索引，复制，负载均衡查询，自动故障转移和恢复，集中配置等功能实现高可用，可伸缩和可容错；已被广泛应用于很多大型互联网站点；
+Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet容器之中如Tomcat,Jetty,Resin等，其核心是Apache Lucene(Java开源全文检索索引，搜索包)，REST风格(HTTP/XML,JSON)的 APIs使其能方便地应用于多种语；强大的外部配置使其能应用于各种类型应用而无需编码，而且支持定制插件；</p>
 
-<h1>1、下载</h1>
+<h1>1. 下载</h1>
 
-<p>下载指定版本Confluence</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /data/confluence
-cd /data/confluence
-wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
+<p>官方网址：<a href="http://lucene.apache.org/solr/">http://lucene.apache.org/solr/</a> </p>
+
+<p>下载地址：<a href="http://archive.apache.org/dist/lucene/solr/">http://archive.apache.org/dist/lucene/solr/</a></p>
+
+<h1>2. 安装与配置</h1>
+
+<p>以solr-4.4.0为例，解压之后的目录如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">➜  solr-4.4.0  tree -L 1
+.
+├── CHANGES.txt
+├── contrib
+├── dist
+├── docs
+├── example
+├── licenses
+├── LICENSE.txt
+├── NOTICE.txt
+├── README.txt
+└── SYSTEM_REQUIREMENTS.txt
+
+5 directories, 5 files
 </code></pre></div>
-<h1>2、安装</h1>
+<p>solr提供一个war包可以运行web界面，该文件位于<code>exmaple/webapps</code>目录下，发布该war包之前需要配置solr<u>home，solr</u>home是索引和配置文件所在的目录。</p>
 
-<p>解压</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf atlassian-confluence-5.4.2.tar.gz
+<p>solr_home的设置有好几种方式：</p>
+
+<p>1、 基于环境变量solr.solr.home </p>
+
+<p>直接修改JAVA全局环境变量</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_OPTS=&quot;$JAVA_OPTS -Dsolr.solr.home=/tmp/solrhome&quot;
 </code></pre></div>
-<p>进入目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd atlassian-confluence-5.4.2
+<p>你也可以修改<code>TOMCAT_HOME/bin/catalina.sh</code>，在文件开头添加：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Dsolr.solr.home=/tmp/solrhome&#39;
 </code></pre></div>
-<p>配置confluence安装目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim confluence/WEB-INF/classes/confluence-init.properties
+<p>或者，在启动时进行设置。start.jar在源码包中可以找到，内部包含jetty容器。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 </code></pre></div>
-<p>在属性文件中添加安装目录路径：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">###########################
-# Note for Unix Users     #
-###########################
-# - For example:
-confluence.home=/data/confluence/confluence-data
+<p>2、 基于JNDI配置 </p>
+
+<p>修改war中的web.xml文件，取消下面对下面的注视，并修改<code>env-entry-value</code>的值。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;env-entry&gt;
+       &lt;env-entry-name&gt;solr/home&lt;/env-entry-name&gt;
+       &lt;env-entry-value&gt;/tmp/solrhome&lt;/env-entry-value&gt;
+       &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+    &lt;/env-entry&gt;
 </code></pre></div>
-<p>创建目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir confluence-data
+<p>或者，创建solr.xml文件放于<code>TOMCAT_HOME/conf/Catalina/localhost</code>，内容如下： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;Context docBase=&quot;TOMCAT_HOME/webapps/solr.war&quot; debug=&quot;0&quot; crossContext=&quot;true&quot;&gt;
+   &lt;Environment name=&quot;solr/home&quot; type=&quot;java.lang.String&quot; value=&quot;/tmp/solrhomehome&quot; override=&quot;true&quot;/&gt;
+&lt;/Context&gt;
 </code></pre></div>
-<p>创建完成后，运行启动：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/start-confluence.sh
+<p>3、 基于当前路径的方式</p>
+
+<p>这种情况需要在example目录下去启动tomcat，Solr查找./solr，因此在启动时候需要切换到example\ </p>
+
+<h1>3. 在Jetty上运行Solr</h1>
+
+<p>在example目录下，运行下面命令即可启动一个内置的jetty容器：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 </code></pre></div>
-<p>访问ip+portnum，默认端口为8090，如果出现破解界面，以上步骤即为成功</p>
+<p>通过<code>http://localhost:8983/solr</code>即可访问。</p>
 
-<h1>3、启停服务</h1>
+<h1>4. 在tomcat中运行Solr</h1>
 
-<p>使用压缩包形式的Confluence无法直接使用服务启停，需要配合目录的sh文件</p>
+<p>将<code>example/webapps/solr.war</code>拷贝到tomcat的webapps目录下，然后参照上面的说明设置solr_home值。tomcat版本可以使用tomcat-6.0.36。</p>
 
-<p>启动服务：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/start-confluence.sh
+<p>其次，将<code>example/lib/ext</code>目录中的jar包拷贝到<code>tomcat-6.0.36/webapps/solr/WEB-INF/lib</code>目录下。</p>
+
+<p>然后，将<code>example/resources/log4j.properties</code>也拷到classpath，或者在tomcat-6.0.36/webapps/solr/目录下新建了一个classes目录，将log4j.properties放进去。</p>
+
+<p>这时候启动tomcat后访问<code>http://localhost:8080/solr</code>会提示错误，这是因为solr<u>home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr</u>home目录下，例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 </code></pre></div>
-<p>停止服务：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/stop-confluence.sh
+<p>最后，启动tomcat，然后通过浏览器访问。</p>
+
+<h1>5. 其他</h1>
+
+<h2>关于中文支持</h2>
+
+<p>关于中文，solr内核支持UTF-8编码，所以在tomcat里的server.xml需要进行配置</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;Connector port=&quot;8080&quot; maxHttpHeaderSize=&quot;8192&quot; URIEncoding=&quot;UTF-8&quot; /&gt;
 </code></pre></div>
-<h1>4、修改默认端口</h1>
-
-<p>配置文件位置：<code>atlassian-confluence-5.4.2/conf/server.xml</code></p>
-
-<p>打开文件，</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;Connector className=&quot;org.apache.coyote.tomcat4.CoyoteConnector&quot; port=&quot;8090&quot; minProcessors=&quot;5&quot;
+<p>另外，向solr Post请求的时候需要转为utf-8编码。对solr 返回的查询结果也需要进行一次utf-8的转码。检索数据时对查询的关键字也需要转码，然后用“+”连接。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">String[] array = StringUtils.split(query, null, 0);
+for (String str : array) {
+    result = result + URLEncoder.encode(str, &quot;UTF-8&quot;) + &quot;+&quot;;
+}
 </code></pre></div>
-<p>修改port 为需要</p>
-
-<h1>5、更换默认的数据库</h1>
-
-<p>在完成之前的步骤后，数据库使用的是一个confluence默认的hsql数据库，此数据库缺陷较多，例如：不支持事务管理。因此需要将数据库迁移为指定的数据库类型。进入confluence-data目录，修改<code>confluence-cfg.xml</code>文件中数据库相关的连接信息。</p>
-
-<h1>6、安装中文字体：</h1>
-
-<p>默认情况下Confluence导出PDF不支持中文，需要修改如下：</p>
-
-<p>管理员登录&quot;Confluence Admin&quot;，选择左边菜单&quot;CONFIGURATION&quot;-&quot;PDF Export Language Support&quot;，选择安装中文字体，例如：simsun.ttc</p>
-
-<h1>7、破解</h1>
-
-<p>请参考：<a href="http://582033.vicp.net/?p=1085">http://582033.vicp.net/?p=1085</a></p>
-
 
 	-EOF-
 	</div>
@@ -238,11 +264,11 @@ confluence.home=/data/confluence/confluence-data
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/hadoop/2014/02/21/cdh5rn_whats_new_in_b2" title="CDH 5 Beta 2 的新变化">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm" href="/hadoop/2014/02/23/create-virtualbox-by-vagrant" title="使用Vagrant创建虚拟机安装Hadoop">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/python/2014/02/22/python-introduction-of-basics" title="Python基础入门">Next &raquo;</a>
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
           
         </div>
       </div>
@@ -260,7 +286,7 @@ confluence.home=/data/confluence/confluence-data
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="Confluence 5.4.2安装 - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="Apache Solr介绍及安装 - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

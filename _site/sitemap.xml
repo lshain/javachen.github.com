@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/solr/2014/02/26/how-to-install-solr</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-02-26T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-02-23T00:00:00+08:00</lastmod>
