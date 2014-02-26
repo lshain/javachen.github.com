@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Wed, 26 Feb 2014 14:50:04 +0800</lastBuildDate>
-		<pubDate>Wed, 26 Feb 2014 14:50:04 +0800</pubDate>
+		<lastBuildDate>Wed, 26 Feb 2014 14:52:13 +0800</lastBuildDate>
+		<pubDate>Wed, 26 Feb 2014 14:52:13 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -38,9 +38,9 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 
 5 directories, 5 files
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;solr提供一个war包可以运行web界面，该文件位于&lt;code&gt;exmaple/webapps&lt;/code&gt;目录下，发布该war包之前需要配置solr&lt;u&gt;home，solr&lt;/u&gt;home是索引和配置文件所在的目录。&lt;/p&gt;
+&lt;p&gt;solr提供一个war包可以运行web界面，该文件位于&lt;code&gt;exmaple/webapps&lt;/code&gt;目录下，发布该war包之前需要配置solr home，solr home是索引和配置文件所在的目录。&lt;/p&gt;
 
-&lt;p&gt;solr_home的设置有好几种方式：&lt;/p&gt;
+&lt;p&gt;solr home的设置有好几种方式：&lt;/p&gt;
 
 &lt;p&gt;1、 基于环境变量solr.solr.home &lt;/p&gt;
 
@@ -81,13 +81,13 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 
 &lt;h1&gt;4. 在tomcat中运行Solr&lt;/h1&gt;
 
-&lt;p&gt;将&lt;code&gt;example/webapps/solr.war&lt;/code&gt;拷贝到tomcat的webapps目录下，然后参照上面的说明设置solr_home值。tomcat版本可以使用tomcat-6.0.36。&lt;/p&gt;
+&lt;p&gt;将&lt;code&gt;example/webapps/solr.war&lt;/code&gt;拷贝到tomcat的webapps目录下，然后参照上面的说明设置solr home值。tomcat版本可以使用tomcat-6.0.36。&lt;/p&gt;
 
 &lt;p&gt;其次，将&lt;code&gt;example/lib/ext&lt;/code&gt;目录中的jar包拷贝到&lt;code&gt;tomcat-6.0.36/webapps/solr/WEB-INF/lib&lt;/code&gt;目录下。&lt;/p&gt;
 
 &lt;p&gt;然后，将&lt;code&gt;example/resources/log4j.properties&lt;/code&gt;也拷到classpath，或者在tomcat-6.0.36/webapps/solr/目录下新建了一个classes目录，将log4j.properties放进去。&lt;/p&gt;
 
-&lt;p&gt;这时候启动tomcat后访问&lt;code&gt;http://localhost:8080/solr&lt;/code&gt;会提示错误，这是因为solr&lt;u&gt;home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr&lt;/u&gt;home目录下，例如：&lt;/p&gt;
+&lt;p&gt;这时候启动tomcat后访问&lt;code&gt;http://localhost:8080/solr&lt;/code&gt;会提示错误，这是因为solr home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr home目录下，例如：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;最后，启动tomcat，然后通过浏览器访问。&lt;/p&gt;

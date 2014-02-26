@@ -36,9 +36,9 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 5 directories, 5 files
 ```
 
-solr提供一个war包可以运行web界面，该文件位于`exmaple/webapps`目录下，发布该war包之前需要配置solr_home，solr_home是索引和配置文件所在的目录。
+solr提供一个war包可以运行web界面，该文件位于`exmaple/webapps`目录下，发布该war包之前需要配置solr home，solr home是索引和配置文件所在的目录。
 
-solr_home的设置有好几种方式：
+solr home的设置有好几种方式：
 
 1、 基于环境变量solr.solr.home 
 
@@ -97,13 +97,13 @@ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 
 # 4. 在tomcat中运行Solr
 
-将`example/webapps/solr.war`拷贝到tomcat的webapps目录下，然后参照上面的说明设置solr_home值。tomcat版本可以使用tomcat-6.0.36。
+将`example/webapps/solr.war`拷贝到tomcat的webapps目录下，然后参照上面的说明设置solr home值。tomcat版本可以使用tomcat-6.0.36。
 
 其次，将`example/lib/ext`目录中的jar包拷贝到`tomcat-6.0.36/webapps/solr/WEB-INF/lib`目录下。
 
 然后，将`example/resources/log4j.properties`也拷到classpath，或者在tomcat-6.0.36/webapps/solr/目录下新建了一个classes目录，将log4j.properties放进去。
 
-这时候启动tomcat后访问`http://localhost:8080/solr`会提示错误，这是因为solr_home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr_home目录下，例如：
+这时候启动tomcat后访问`http://localhost:8080/solr`会提示错误，这是因为solr home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr home目录下，例如：
 
 ```
 cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
