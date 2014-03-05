@@ -67,13 +67,31 @@ june@june-mint ~/workspace/snippets/dotfiles $ cat .gitconfig
 
 # Git常用命令
 
-## 查看、添加、提交、删除、找回，重置修改文件
+
+## 查看、帮助命令
 
 ```
 git help <command>  # 显示command的help
 git show            # 显示某次提交的内容
 git show $id
 ```
+
+## 查看提交记录
+
+```
+git log
+git log <file>      # 查看该文件每次提交记录
+git log -p <file>   # 显示版本历史，以及版本间的内容差异
+git log -p -2       # 查看最近两次详细修改内容的diff
+git log --stat      # 查看提交统计信息
+git log --since="6 hours"  # 显示最近6小时提交
+git log --before="2 days"  # 显示2天前提交
+git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
+git log -1 HEAD^^^
+git reflog				   # 查看操作记录
+```
+
+# 添加、提交、删除、找回，重置修改文件
 
 ```
 git co  -- <file>   # 抛弃工作区修改
@@ -94,8 +112,9 @@ git rm <file> --cached  # 从版本库中删除文件，但不删除文件
 ```
 git reset <file>    # 从暂存区恢复到工作文件
 git reset -- .      # 从暂存区恢复到工作文件
-git reset --hard    # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
-git reset HEAD <file> # 抛弃工作目录区中文件的修改
+git reset --hard  HEAD^ # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
+git reset --hard <commit id>  # 恢复到某一次提交的状态
+git reset HEAD <file> # 抛弃暂存区中文件的修改
 ```
 
 ```
@@ -121,20 +140,6 @@ git diff <branch1>..<branch2>   # 在两个分支之间比较
 git diff --staged   # 比较暂存区和版本库差异
 git diff --cached   # 比较暂存区和版本库差异
 git diff --stat     # 仅仅比较统计信息
-```
-
-## 查看提交记录
-
-```
-git log
-git log <file>      # 查看该文件每次提交记录
-git log -p <file>   # 显示版本历史，以及版本间的内容差异
-git log -p -2       # 查看最近两次详细修改内容的diff
-git log --stat      # 查看提交统计信息
-git log --since="6 hours"  # 显示最近6小时提交
-git log --before="2 days"  # 显示2天前提交
-git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
-git log -1 HEAD^^^
 ```
 
 # Git 本地分支管理
@@ -243,5 +248,14 @@ git diff --cached >XXX.patch
 git ci -m 'add patch'
 ```
 
+# 分支策略
+
+在实际开发中，我们应该按照几个基本原则进行分支管理：
+
+首先，master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；
+
+那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本发布时，再把dev分支合并到master上，在master分支发布1.0版本；
+
+你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
 
 
