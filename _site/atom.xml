@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-05T17:01:01+08:00</updated>
+ <updated>2014-03-05T17:53:21+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -624,9 +624,9 @@ Python 2.7.4
  
  <entry>
    <title><![CDATA[Confluence 5.4.2安装]]></title>
-   <link href="http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2"/>
+   <link href="http://blog.javachen.com/linux/2014/02/21/install-confluence5-4-2"/>
    <updated>2014-02-21T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2</id>
+   <id>http://blog.javachen.com/linux/2014/02/21/install-confluence5-4-2</id>
    <content type="html">&lt;p&gt;Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。&lt;/p&gt;
 
 &lt;h1&gt;1、下载&lt;/h1&gt;

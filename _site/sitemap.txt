@@ -22,7 +22,7 @@ http://blog.javachen.com/solr/2014/03/03/solr-query-syntax
 http://blog.javachen.com/solr/2014/02/26/how-to-install-solr
 http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant
 http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics
-http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2
+http://blog.javachen.com/linux/2014/02/21/install-confluence5-4-2
 http://blog.javachen.com/hadoop/2014/02/21/cdh5rn_whats_new_in_b2
 http://blog.javachen.com/javascript/2014/02/16/backbone-model
 http://blog.javachen.com/linux/2014/01/25/how-to-install-ganglia-on-centos6

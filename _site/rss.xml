@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Wed, 05 Mar 2014 17:01:01 +0800</lastBuildDate>
-		<pubDate>Wed, 05 Mar 2014 17:01:01 +0800</pubDate>
+		<lastBuildDate>Wed, 05 Mar 2014 17:53:21 +0800</lastBuildDate>
+		<pubDate>Wed, 05 Mar 2014 17:53:21 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -690,8 +690,8 @@ confluence.home=/data/confluence/confluence-data
 
 &lt;p&gt;请参考：&lt;a href=&quot;http://582033.vicp.net/?p=1085&quot;&gt;http://582033.vicp.net/?p=1085&lt;/a&gt;&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2</link>
-			<guid>http://blog.javachen.com/linux/2014/02/21/install-confluence5.4.2</guid>
+			<link>http://blog.javachen.com/linux/2014/02/21/install-confluence5-4-2</link>
+			<guid>http://blog.javachen.com/linux/2014/02/21/install-confluence5-4-2</guid>
 			<pubDate>Fri, 21 Feb 2014 00:00:00 +0800</pubDate>
 		</item>
 
