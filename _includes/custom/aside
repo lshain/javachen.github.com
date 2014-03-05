@@ -6,4 +6,3 @@
 
       {% include custom/asides/blogroll %}
 
-      {% include custom/asides/license %}
