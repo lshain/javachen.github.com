@@ -16,7 +16,9 @@ http://blog.javachen.com/page5/index.html
 http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
+http://blog.javachen.com/page9/index.html
 
+http://blog.javachen.com/solr/2014/03/03/solr-query-syntax
 http://blog.javachen.com/solr/2014/02/26/how-to-install-solr
 http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant
 http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics

@@ -3,8 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>如何创建一个Django网站 - JavaChen Blog</title>
-    <meta name="description" content="使用django创建一个简单的网站"/>
+    <title>Apache Solr查询语法 - JavaChen Blog</title>
+    <meta name="description" content="Apache Solr查询语法"/>
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/python/2014/01/11/how-to-create-a-django-site" />
+    <link rel="canonical" href="http://blog.javachen.com/solr/2014/03/03/solr-query-syntax" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -160,142 +160,102 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">如何创建一个Django网站 </h1>
+        <h1 class="entry-title">Apache Solr查询语法 </h1>
       </header>
 	<div class="entry-content">
-	<h1>1. 创建工程</h1>
+	<h1>查询参数</h1>
 
-<p>运行下面命令就可以创建一个django工程，工程名字叫todo：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    django-admin.py startproject todo
-</code></pre></div>
-<p>创建后的工程目录如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    todo
-    ├── manage.py
-    └── todo
-        ├── __init__.py
-        ├── settings.py
-        ├── templates
-        ├── urls.py
-        └── wsgi.py
-</code></pre></div>
-<p>说明：</p>
+<p>常用：</p>
 
 <ul>
-<li><code>__init__.py</code> ：让 Python 把该目录当成一个开发包 (即一组模块)所需的文件。 这是一个空文件，一般你不需要修改它。</li>
-<li>manage.py ：一种命令行工具，允许你以多种方式与该 Django 项目进行交互。 键入<code>python manage.py help</code>，看一下它能做什么。 你应当不需要编辑这个文件；在这个目录下生成它纯是为了方便。</li>
-<li>settings.py ：该 Django 项目的设置或配置。</li>
-<li>urls.py：Django项目的URL路由设置。目前，它是空的。</li>
+<li>q - 查询字符串，必须的。</li>
+<li>fl - 指定返回那些字段内容，用逗号或空格分隔多个。</li>
+<li>start - 返回第一条记录在完整找到结果中的偏移位置，0开始，一般分页用。</li>
+<li>rows - 指定返回结果最多有多少条记录，配合start来实现分页。</li>
+<li>sort - 排序，格式：<code>sort=&lt;field name&gt;+&lt;desc|asc&gt;[,&lt;field name&gt;+&lt;desc|asc&gt;]</code>。示例：（inStock desc, price asc）表示先 &quot;inStock&quot; 降序, 再 &quot;price&quot; 升序，默认是相关性降序。</li>
+<li>wt - (writer type)指定输出格式，可以有 xml, json, php, phps。</li>
+<li>fq - （filter query）过虑查询，作用：在q查询符合结果中同时是fq查询符合的，例如：<code>q=mm&amp;fq=date_time:[20081001 TO 20091031]</code>，找关键字mm，并且date_time是20081001到20091031之间的</li>
 </ul>
 
-<h1>2. 运行项目</h1>
+<p>不常用：</p>
 
-<p>在todo工程下运行下面命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    python manage.py runserver
+<ul>
+<li>defType：</li>
+<li>q.op - 覆盖schema.xml的defaultOperator（有空格时用&quot;AND&quot;还是用&quot;OR&quot;操作逻辑），一般默认指定</li>
+<li>df - 默认的查询字段，一般默认指定</li>
+<li>qt - （query type）指定那个类型来处理查询请求，一般不用指定，默认是standard。</li>
+</ul>
+
+<p>其它：</p>
+
+<ul>
+<li>indent - 返回的结果是否缩进，默认关闭，用 indent=true|on 开启，一般调试json,php,phps,ruby输出才有必要用这个参数。</li>
+<li>version - 查询语法的版本，建议不使用它，由服务器指定默认值。</li>
+</ul>
+
+<h1>检索运算符</h1>
+
+<ul>
+<li>&quot;:&quot; 指定字段查指定值，如返回所有值<em>:</em></li>
+<li>&quot;?&quot; 表示单个任意字符的通配</li>
+<li>&quot;<em>&quot; 表示多个任意字符的通配（不能在检索的项开始使用</em>或者?符号）</li>
+<li>&quot;~&quot; 表示模糊检索，如检索拼写类似于&quot;roam&quot;的项这样写：roam~将找到形如foam和roams的单词；roam~0.8，检索返回相似度在0.8以上的记录。
+邻近检索，如检索相隔10个单词的&quot;apache&quot;和&quot;jakarta&quot;，&quot;jakarta apache&quot;~10</li>
+<li>&quot;^&quot; 控制相关度检索，如检索jakarta apache，同时希望去让&quot;jakarta&quot;的相关度更加好，那么在其后加上&quot;^&quot;符号和增量值，即jakarta^4 apache</li>
+<li>布尔操作符AND、||</li>
+<li>布尔操作符OR、&amp;&amp;</li>
+<li>布尔操作符NOT、!、-（排除操作符不能单独与项使用构成查询）</li>
+<li>&quot;+&quot; 存在操作符，要求符号&quot;+&quot;后的项必须在文档相应的域中存在</li>
+<li>() 用于构成子查询</li>
+<li>[] 包含范围检索，如检索某时间段记录，包含头尾，date:[200707 TO 200710]</li>
+<li>{}不包含范围检索，如检索某时间段记录，不包含头尾，date:{200707 TO 200710}</li>
+<li>&quot; 转义操作符，特殊字符包括+ - &amp;&amp; || ! ( ) { } [ ] ^ &quot; ~ * ? : &quot;</li>
+</ul>
+
+<h1>示例</h1>
+
+<ul>
+<li>1. 查询所有</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*
 </code></pre></div>
-<p>你会看到些像这样的</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    Validating models...
-    0 errors found.
-
-    Django version 1.0, using settings &#39;mysite.settings&#39;
-    Development server is running at http://127.0.0.1:8000/
-    Quit the server with CONTROL-C.
+<ul>
+<li>2. 限定返回字段</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId
 </code></pre></div>
-<p>这将会在端口8000启动一个本地服务器, 并且只能从你的这台电脑连接和访问。 既然服务器已经运行起来了，现在用网页浏览器访问 <code>http://127.0.0.1:8000/</code>。你应该可以看到一个令人赏心悦目的淡蓝色Django欢迎页面它开始工作了。</p>
+<p>表示：查询所有记录，只返回productId字段</p>
 
-<p>你也可以指定启动端口:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    python manage.py runserver 8080
+<ul>
+<li>3. 分页</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0
 </code></pre></div>
-<p>以及指定ip：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    python manage.py runserver 0.0.0.0:8000
+<p>表示：查询前六条记录，只返回productId字段</p>
+
+<ul>
+<li>4. 增加限定条件</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0&amp;fq=category:2002&amp;fq=namespace:d&amp;fl=productId+category&amp;fq=en_US_city_i:1101
 </code></pre></div>
-<h1>3. 视图和URL配置</h1>
+<p>表示：查询category=2002、<code>en_US_city_i=110</code>以及namespace=d的前六条记录，只返回productId和category字段</p>
 
-<p>创建view.py文件并添加如下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    from django.http import HttpResponse
-    def index1(request):
-        return HttpResponse(&#39;hello, world!&#39;)
+<ul>
+<li>5. 添加排序</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0&amp;fq=category:2002&amp;fq=namespace:d&amp;sort=category_2002_sort_i+asc
 </code></pre></div>
-<p>在urls.py中添加一个url映射：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    from django.conf.urls import patterns, include, url
-    from view import index1
+<p>表示：查询category=2002以及namespace=d并按<code>category_2002_sort_i</code>升序排序的前六条记录，只返回productId字段</p>
 
-    urlpatterns = patterns(&#39;&#39;,
-        url(r&#39;^index1/$&#39;, index1),
-    )
+<ul>
+<li>6. facet查询</li>
+</ul>
+
+<p>现实分组统计结果</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;fq=category:2002&amp;facet=true&amp;facet.field=en_US_county_i&amp;facet.field=en_US_hotelType_s&amp;facet.field=price_p&amp;facet.field=heatRange_i
+
+http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;fq=category:2002&amp;facet=true&amp;facet.field=en_US_county_i&amp;facet.field=en_US_hotelType_s&amp;facet.field=price_p&amp;facet.field=heatRange_i&amp;facet.query=price_p:[300.00000+TO+*]
 </code></pre></div>
-<p>在上面视图文件中，三我们只是告诉 Django，所有指向 URL <code>/index1/</code> 的请求都应由 index1 这个视图函数来处理。</p>
-
-<p>Django在检查URL模式前，移除每一个申请的URL开头的斜杠(/)。 这意味着我们为/index1/写URL模式不用包含斜杠(/)。</p>
-
-<p>模式包含了一个尖号(^)和一个美元符号($)。这些都是正则表达式符号，并且有特定的含义： ^要求表达式对字符串的头部进行匹配，$符号则要求表达式对字符串的尾部进行匹配。</p>
-
-<p>如果你访问<code>/index1</code>，默认会重定向到末尾带有反斜杠的请求上去，这是受配置文件setting中<code>APPEND_SLASH</code>项控制的。</p>
-
-<p>如果你是喜欢所有URL都以&#39;/&#39;结尾的人（Django开发者的偏爱），那么你只需要在每个URL后添加斜杠，并且设置<code>APPEND_SLASH</code>为&quot;True&quot;. 如果不喜欢URL以斜杠结尾或者根据每个URL来决定，那么需要设置<code>APPEND_SLASH</code>为&quot;False&quot;,并且根据你自己的意愿来添加结尾斜杠/在URL模式后.</p>
-
-<h2>3.1 正则表达式</h2>
-
-<p>正则表达式是通用的文本模式匹配的方法。 Django URLconfs 允许你使用任意的正则表达式来做强有力的URL映射，不过通常你实际上可能只需要使用很少的一部分功能。这里是一些基本的语法。</p>
-
-<table><thead>
-<tr>
-<th align="left">符号</th>
-<th align="left">匹配</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">.</td>
-<td align="left">任意单一字符</td>
-</tr>
-<tr>
-<td align="left">\d</td>
-<td align="left">任意一位数字</td>
-</tr>
-<tr>
-<td align="left">[A-Z]</td>
-<td align="left">A 到 Z中任意一个字符（大写）</td>
-</tr>
-<tr>
-<td align="left">[a-z]</td>
-<td align="left">a 到 z中任意一个字符（小写）</td>
-</tr>
-<tr>
-<td align="left">[A-Za-z]</td>
-<td align="left">a 到 z中任意一个字符（不区分大小写）</td>
-</tr>
-<tr>
-<td align="left">+</td>
-<td align="left">匹配一个或更多 (例如, \d+ 匹配一个或 多个数字字符)</td>
-</tr>
-<tr>
-<td align="left">[^/]+</td>
-<td align="left">一个或多个不为‘/’的字符</td>
-</tr>
-<tr>
-<td align="left">*</td>
-<td align="left">零个或一个之前的表达式（例如：\d? 匹配零个或一个数字）</td>
-</tr>
-<tr>
-<td align="left">*</td>
-<td align="left">匹配0个或更多 (例如, \d* 匹配0个 或更多数字字符)</td>
-</tr>
-<tr>
-<td align="left">{1,3}</td>
-<td align="left">介于一个和三个（包含）之前的表达式（例如，\d{1,3}匹配一个或两个或三个数字）</td>
-</tr>
-</tbody></table>
-
-<p>有关正则表达式的更多内容，请访问<a href="http://www.djangoproject.com/r/python/re-module/">http://www.djangoproject.com/r/python/re-module/</a></p>
-
-<h1>4. Django是怎么处理请求的</h1>
-
-<p>当你运行<code>python manage.py runserver</code>，脚本将在于manage.py同一个目录下查找名为setting.py的文件。这个文件包含了所有有关这个Django项目的配置信息，均大写： <code>TEMPLATE_DIRS</code> , <code>DATABASE_NAME</code>等. 最重要的设置时<code>ROOT_URLCONF</code>，它将作为URLconf告诉Django在这个站点中那些Python的模块将被用到。</p>
-
-<p>打开文件<code>settings.py</code>你将看到如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    ROOT_URLCONF = &#39;todo.urls&#39;
-</code></pre></div>
-<p>当访问 /index1/ 时，Django 根据<code>ROOT_URLCONF</code>的设置装载URLconf 。然后按顺序逐个匹配URLconf里的URLpatterns，直到找到一个匹配的。 当找到这个匹配的URLpatterns就调用相关联的view函数，并把 HttpRequest对象作为第一个参数。一个视图功能必须返回一个HttpResponse，Django将转换Python的对象到一个合适的带有HTTP头和body的Web Response。</p>
-
 
 	-EOF-
 	</div>
@@ -305,11 +265,11 @@
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/linux/2014/01/09/after-reinstall-the-system" title="重装linux-mint系统之后">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm" href="/solr/2014/02/26/how-to-install-solr" title="Apache Solr介绍及安装">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/java/2014/01/13/about-sitemesh" title="SiteMesh介绍">Next &raquo;</a>
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
           
         </div>
       </div>
@@ -327,7 +287,7 @@
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="如何创建一个Django网站 - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="Apache Solr查询语法 - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

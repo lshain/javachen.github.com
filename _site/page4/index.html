@@ -128,6 +128,8 @@
   
     
   
+    
+  
 
 
 
@@ -162,6 +164,17 @@
       </header>
 	
 
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
+    
+      我的学习笔记，记录hive Driver类运行过程
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hive/2013/08/22/hive-Driver"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 <article>
     <h2 class="entry-title under_line"><a href="/hive/2013/08/21/hive-CliDriver">hive cli的入口类</a></h2>
@@ -282,155 +295,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/29/install-impala">安装impala过程</a></h2>
-    
-		
-		  <p>与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如那些批量提取，转化，加载（ETL）类型的Job。而Impala主要用于实时查询。</p>
-
-<h1>install</h1>
-
-<p>下载 impala，目前最新版本为0.6-1，<a href="http://beta.cloudera.com/impala/redhat/6/x86_64/impala/0/RPMS/x86_64/">下载地址</a>。</p>
-
-<h1>安装过程</h1>
-
-<p>安装前提：先安装好hadoop集群以及hive，可以参考我的文章：</p>
-
-<ul>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html">手动安装Cloudera Hadoop CDH4.2</a></li>
-<li><a href="http://blog.javachen.com/Hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html">手动安装Cloudera Hive CDH4.2</a></li>
-</ul>
-
-<ol>
-<li><p>DataNode节点</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
-<li><p>在hive节点上</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm \
-impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm \
-libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
-</ol>
-
-<h1>配置Impala</h1>
-
-<h2>查看安装路径</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# find / -name impala
-/var/run/impala
-/var/lib/alternatives/impala
-/var/log/impala
-/usr/lib/impala
-/etc/alternatives/impala
-/etc/default/impala
-/etc/impala
-</code></pre></div>
-<h2>添加配置文件</h2>
-
-<p>impalad的配置文件路径由环境变量<code>IMPALA_CONF_DIR</code>指定，默认为<code>/usr/lib/impala/conf</code></p>
-
-<p>在节点desktop1上 拷贝<code>hive-site.xml</code>、<code>core-site.xml</code>、<code>hdfs-site.xml</code>至<code>/usr/lib/impala/conf</code>目录下:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
-[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
-</code></pre></div>
-<p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
-    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
-&lt;/property&gt;
-
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-</code></pre></div>
-<p>同步以上文件到其他节点</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
-[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
-</code></pre></div>
-<h2>hadoop中添加native包</h2>
-
-<p>拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
-</code></pre></div>
-<h2>创建socket path</h2>
-
-<p>在每个节点上创建/var/run/hadoop-hdfs:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
-[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
-</code></pre></div>
-<p>拷贝postgres jdbc jar：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
-</code></pre></div>
-<h1>启动服务</h1>
-
-<ol>
-<li><p>在hive所在节点启动statestored（默认端口为24000）:</p>
-
-<p>GLOG<u>v=1 nohup statestored -state</u>store_port=24000 &amp;</p></li>
-</ol>
-
-<p>如果statestore正常启动，可以在/tmp/statestored.INFO查看。如果出现异常，可以查看/tmp/statestored.ERROR定位错误信息。</p>
-
-<ol>
-<li><p>在所有impalad节点上：</p>
-
-<p>HADOOP<u>CONF</u>DIR=&quot;/usr/lib/impala/conf&quot; nohup impalad -state<u>store</u>host=desktop1 -nn=desktop1 \
-    -nn_port=8020 -hostname=desktop3 -ipaddress=192.168.0.3 &amp;</p></li>
-</ol>
-
-<p>注意： 其中的<code>-hostname</code>和<code>-ipaddress</code>表示当前启动impalad实例所在机器的主机名和ip地址。</p>
-
-<p>如果impalad正常启动，可以在<code>/tmp/ impalad.INFO</code>查看。如果出现异常，可以查看<code>/tmp/impalad.ERROR</code>定位错误信息。</p>
-
-<h1>使用shell</h1>
-
-<p>使用<code>impala-shell</code>启动Impala Shell，分别连接各Impalad主机(desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&gt;impala-shell
-[Not connected] &gt;connect desktop3:21000
-[desktop3:21000] &gt;refresh
-[desktop3:21000] &gt;connect desktop4:21000
-[desktop4:21000] &gt;refresh
-</code></pre></div>
-<h1>注意：</h1>
-
-<ol>
-<li>如果hive使用mysql或postgres数据库作为metastore的存储，则需要拷贝相应的jdbc jar到<code>/usr/lib/impala/lib</code>目录下</li>
-<li>E0325 11:04:19.937718  7239 statestored-main.cc:52] Could not start webserver on port: 25010</li>
-</ol>
-
-<p>可能是已经启动了statestored进程</p>
-
-<h1>参考文章</h1>
-
-<ul>
-<li><a href="http://yuntai.1kapp.com/?p=904">Impala安装文档完整版</a></li>
-<li><a href="http://tech.uc.cn/?p=817">Impala入门笔记</a></li>
-<li><a href="https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala">Installing and Using Cloudera Impala</a></li>
-</ul>
-
-		 
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/29/install-impala"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -440,10 +304,10 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
     <a class="btn btn-default btn-sm" href="/page3/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 8</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 4 of 9</a></span>
   
     <a class="btn btn-default btn-sm" href="/page5/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page8/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page9/">Last</a>
   
 </div>
 
@@ -463,6 +327,8 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
        <h2><i class="icon-home icon-large"></i>Posts</h2>
        <div class="category">
          <ul>
+           
+           <li><a href="/solr/2014/03/03/solr-query-syntax">Apache Solr查询语法</a></li>
            
            <li><a href="/solr/2014/02/26/how-to-install-solr">Apache Solr介绍及安装</a></li>
            
@@ -493,8 +359,6 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
            <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
            
            <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
-           
-           <li><a href="/linux/2014/01/09/after-reinstall-the-system">重装linux-mint系统之后</a></li>
            
          </ul>
        </div>

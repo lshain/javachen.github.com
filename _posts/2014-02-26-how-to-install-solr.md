@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Apache Solr介绍及安装
-description: 本文记录如何安装solr。Solr是一个基于Lucene的Java搜索引擎服务器。Solr提供了层面搜索、命中醒目显示并且支持多种输出格式。
+description: 本文记录如何安装Solr。Solr是一个基于Lucene的Java搜索引擎服务器。Solr提供了层面搜索、命中醒目显示并且支持多种输出格式。
 category: solr
 tags: [solr, lucene]
 ---
