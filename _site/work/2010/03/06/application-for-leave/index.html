@@ -3,9 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Seam的启动过程 - JavaChen Blog</title>
-    
-    <meta name="keywords" content="seam, jboss"/>
+    <title>还未发表的离职申请书 - JavaChen Blog</title>
+    <meta name="description" content="还未发表的离职申请书"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation" />
+    <link rel="canonical" href="http://blog.javachen.com/work/2010/03/06/application-for-leave" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -158,58 +158,24 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">Seam的启动过程 </h1>
+        <h1 class="entry-title">还未发表的离职申请书 </h1>
       </header>
 	<div class="entry-content">
-	<p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
+	<p>敬爱的各位领导：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">我很遗憾自己在这个时候向公司正式提出辞职。
+
+自2009年9月16日入职以来，我一直都很珍视这个难得的工作机会，感谢部门各位领导对我的信任、栽培及包容，也感谢各位同事予的帮助和关心。
+
+在过去的近4个月的时间里，利用公司给予的良好锻炼机会，在开发工作和社会交际等方面收获颇大，同时也丰富了阅览，锻炼了能力。工作上，技术上得到了提高。生活上，得到同事们的关照与帮助；思想上，得到领导与同事们的指导与帮助，有了更成熟与深刻的人生观。我对于公司提供的各方面关照表示真心的感谢！当然，我也自认为在工作当中已尽到自己的较大努力。
+
+因为本人的离职而给公司造成的不便，本人深表歉意和遗憾,同时感谢贵公司和项目经理给予我的宝贵学习机会，我会好好铭记！
+
+离开这个公司，我满含着愧疚、遗憾。我愧对公司上下对我的期望，愧对各位对我的关心和爱护。遗憾我不能经历公司的发展与以后的辉煌，不能分享你们的甘苦，不能聆听各位的教诲，也遗憾我什么都没能留下来，结束我大学毕业后的第一份工作。
+
+如果可以，本人申请最后工作至2010年2月7日，并希望能在离职时领取到本人应得的工资。望领导批准我的申请，并请协助办理相关离职手续，在正式离开之前，我会尽力配合做好交接工作，保证业务的正常运作, 对公司,对客户尽好最后的责任。
+
+最后，衷心祝愿公司健康成长，事业蒸蒸日上！祝愿各位领导与同事：健康快乐，平安幸福！
 </code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
-
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
-
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
-
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
-
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
-
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
-
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
-
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
-
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
-
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
-
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
-
 
 	-EOF-
 	</div>
@@ -219,11 +185,11 @@
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm" href="/work/2010/01/06/the-plan-of-2010" title="2010年工作计划">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/work/2012/02/26/summary-of-the-work-in-2011" title="2011年度年终总结">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/work/2010/08/06/a-letter-to-boss" title="写给领导的一封信">Next &raquo;</a>
           
         </div>
       </div>
@@ -241,7 +207,7 @@
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="Seam的启动过程 - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="还未发表的离职申请书 - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

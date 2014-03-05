@@ -3,9 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Seam的启动过程 - JavaChen Blog</title>
-    
-    <meta name="keywords" content="seam, jboss"/>
+    <title>做最好的自己 - JavaChen Blog</title>
+    <meta name="description" content="做最好的自己"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,7 +24,7 @@
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="canonical" href="http://blog.javachen.com/java/2012/02/23/the-process-of-seam-initiation" />
+    <link rel="canonical" href="http://blog.javachen.com/work/2009/09/26/be-best-of-myself" />
     <!-- Update these with your own images
     <link rel="shortcut icon" href="images/favicon.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -158,57 +158,26 @@
   <div class="col-md-12">
     <article class="page-header-wrapper">
       <header class="page-header">
-        <h1 class="entry-title">Seam的启动过程 </h1>
+        <h1 class="entry-title">做最好的自己 </h1>
       </header>
 	<div class="entry-content">
-	<p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
-</code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
+	<p>今天是传说中的万圣节？跟我有啥关系？没有关系，继续过自己的生活，follow my heart！</p>
 
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
+<p>今天又看了看去年8月份写的个人简历记事本版，觉得胜似感慨！这份简历简单粗糙，真的没有脸面拿去应聘，也不那好意思贴出来。也许去年找工作，就受了简历的影响，而没有去跑过什么招聘会。按照当时的状态也实在是难以写出什么样的简历来，一没有炫耀的学历，二没有什么工作经验，学习一般，没参加什么社团活动，想参加国家电子设计大赛，来错了时间进错了班;想从事软件开发，起步晚不知从哪里入门！后来选择了培训，Java如了门，却发现自己学的都很肤浅。开发的项目是个很小的项目，在四个人的共同努力，还没有完成50%，老师要求的功能根本就没有想过该怎样实现，在急着找工作的心态下，慢慢的放弃了项目，转而网上投简历。参加6个月培训，到头来发现简历里也还是写不出什么有意义的内容来！做过的购物车项目，过于普通，网上到处有这样的项目实例，连达内里的学员做的都是这个项目！把这个项目写在简历上，别人一看就知道是参加培训的！为了让人事经理（也只能是人事经理了）看不出是参见过培训的，只好选择另外的项目-----在网上找了个进销存储的一个项目；为了让技术经理看出我是有工作经验的，只好找两个公司，说我的项目是在他们公司实习时候完成的;为了让别人看不出来我是应届生，只好多写工作经验实习经历少写校园学习社团生活。 努力的包装，适当的虚构，才有了那份JAVA软件开发工程师求职简历！找到工作后，见识了公司的系统，才发现当时做过的系统都是一些小小的功能，根本算不上是一个项目！这个简历也根本没有什么含量！接触了公司的系统，又发现自己所做的工作又是一些比较简单的工作，没有太多技术含量！公司招人，招的是来了就能干事的人，为什么要那样的看重项目经验，刚走出大学的毕业生，有什么项目经验？参加过培训的学生，已经具备一年的工作经验，只是没有参加过什么实在的大项目！</p>
 
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
+<p>谈到在公司的工作，现在主要是接触JavaScript和Ext，用Ext读取XML开发组件，替换公司系统中原有的一些功能。花了一些时间，作出了个可以通用的组件，实现一些功能，只是有时候和原有系统一起使用，总会出现一些问题。公司的所有html，JavaScript文件都是用的gbk编码，系统在IE下面可以使用，在FF下面就会出现编码乱码，搞不懂为什么做个只兼容IE的系统！每次调试系统，都只能不停的alert，总是不耐烦的等着系统的网页缓慢的加载刷新（系统采用的ajax异步传输效率真是低的不行！）。</p>
 
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
+<p>刚开始和我一起来的兄弟，负责的是为公司做个打印的组件，他一心的实现打印的功能，很少接触公司的基于工作流的平台，也发现在这样的系统上开发比较无聊，所以工作一个月后就离开了！</p>
 
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
+<p>他离开的时候，我也想离开了，我也想像李开复那样跟随我心，follow my heart！在公司工作了一个月（相对于当时），合同都没有签！工资都没有发！找人事经理，她说她出差下周谈！下周去和她谈，她又说和其他一些人一起签！存心的在托时间，存心的是不想签试用合同，有这样想法，就直接说撒,就知道托时间！找部门的人事负责人，问她工资什么时候能发，她说等到招行银行卡办了在打到卡里，那时候发！我说我没钱用了，她还算是比较好心的说先从我这里借给你1000，下周一写个欠条我！我晕，我一个月工资2000，只发给我1000，还欠我1000，还要我打个欠条她?我没有打欠条，她也没有找我！还只是工作一个月，就开始了拖欠工资；生平的第一份工资的第一个月，就只拿到了半份工资！汗颜！</p>
 
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
+<p>刚才那个兄弟说他走的时候，原本充满信心工作的我也想起了离开的想法，但是我现在没有时间去找工作，而他已经有了去向，已经有个公司要他！我现在去找工作，没有时间，也不划算！技术经理找我谈话安抚我，希望我不要也离开了！说实话当时就想离开，就想跟随我心，follow my heart！但是，想想我又不是李开复，又没有像他那样取得过什么成功，有什么资格follow my heart？我工作的第一个公司，自己在里面还没有做到最好，就离开，这太不符合我的风格了！要走，也要抬着头高昂的走出公司的大门！又没有受什么苦，没有必要对于公司现在存在的不足怀恨在心，该怎样就怎样，在自己的岗位上做好自己的事情，做最好的自己！</p>
 
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
+<p>我决定follow my heart，跟随我心，先在这个公司工作一段时间，积累经验，充实自己。先学习Ext、Jquery、JavaScript、html、css，先在自己感兴趣的前端开发方面学习学习,先在这里熟悉一个公司的运行机制，当然也可以在这里发现公司现在存在的问题，看看公司是怎样解决的，思考如果是自己该怎样解决。一个程序员，不能永远的关注于技术，而忽视其他方面的修养！除了技术，还有管理，营销方面的知识都可以学习！李开复离开微软，他在语音方面的技术是很强，但更强的是他在人力资源方面、管理方面的丰富经验更有价值，离开了微软，离开了谷歌，他照样可以成功，因为他有比技术更为宝贵的财富！</p>
 
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
+<p>follow my heart，lead my life！先在一个行业，一个技术上，一个领域有所成就，跟随我心，再在另一个空间引领我的人生，直到follow my heart，lead your life！</p>
 
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
-
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
-
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
+<p>做最好的自己！</p>
 
 
 	-EOF-
@@ -219,11 +188,11 @@
       <div class="col-md-6">
         <div class="btn-group">
           
-            <a class="btn btn-default btn-sm" href="/kettle/2012/02/22/the-init-process-before-job-execution" title="Kettle运行作业之前的初始化过程">&laquo; Prev</a>
+            <a class="btn btn-default btn-sm disabled">&laquo; Prev</a>
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/work/2012/02/26/summary-of-the-work-in-2011" title="2011年度年终总结">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/work/2010/01/06/the-plan-of-2010" title="2010年工作计划">Next &raquo;</a>
           
         </div>
       </div>
@@ -241,7 +210,7 @@
 
 
      <div id="comments">
-  	<div class="ds-thread" data-title="Seam的启动过程 - JavaChen Blog"></div>
+  	<div class="ds-thread" data-title="做最好的自己 - JavaChen Blog"></div>
    </div> 
      <script type="text/javascript">
       var duoshuoQuery = {short_name:"javachen"};

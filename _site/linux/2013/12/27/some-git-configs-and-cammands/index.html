@@ -215,11 +215,25 @@ git config -l  # 列举所有配置
 </code></pre></div>
 <h1>Git常用命令</h1>
 
-<h2>查看、添加、提交、删除、找回，重置修改文件</h2>
+<h2>查看、帮助命令</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git help &lt;command&gt;  # 显示command的help
 git show            # 显示某次提交的内容
 git show $id
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git co  -- &lt;file&gt;   # 抛弃工作区修改
+</code></pre></div>
+<h2>查看提交记录</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git log
+git log &lt;file&gt;      # 查看该文件每次提交记录
+git log -p &lt;file&gt;   # 显示版本历史，以及版本间的内容差异
+git log -p -2       # 查看最近两次详细修改内容的diff
+git log --stat      # 查看提交统计信息
+git log --since=&quot;6 hours&quot;  # 显示最近6小时提交
+git log --before=&quot;2 days&quot;  # 显示2天前提交
+git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
+git log -1 HEAD^^^
+git reflog                 # 查看操作记录
+</code></pre></div>
+<h1>添加、提交、删除、找回，重置修改文件</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git co  -- &lt;file&gt;   # 抛弃工作区修改
 git co  .           # 抛弃工作区修改
 git co HEAD &lt;file&gt;  # 抛弃工作目录区中文件的修改
 </code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git add &lt;file&gt;      # 将工作文件修改提交到本地暂存区
@@ -228,8 +242,9 @@ git add .           # 将所有修改过的工作文件提交暂存区
 git rm &lt;file&gt; --cached  # 从版本库中删除文件，但不删除文件
 </code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git reset &lt;file&gt;    # 从暂存区恢复到工作文件
 git reset -- .      # 从暂存区恢复到工作文件
-git reset --hard    # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
-git reset HEAD &lt;file&gt; # 抛弃工作目录区中文件的修改
+git reset --hard  HEAD^ # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
+git reset --hard &lt;commit id&gt;  # 恢复到某一次提交的状态
+git reset HEAD &lt;file&gt; # 抛弃暂存区中文件的修改
 </code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git ci &lt;file&gt;
 git ci .
 git ci -a           # 将git add, git rm和git ci等操作都合并在一起做
@@ -246,17 +261,6 @@ git diff &lt;branch1&gt;..&lt;branch2&gt;   # 在两个分支之间比较
 git diff --staged   # 比较暂存区和版本库差异
 git diff --cached   # 比较暂存区和版本库差异
 git diff --stat     # 仅仅比较统计信息
-</code></pre></div>
-<h2>查看提交记录</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git log
-git log &lt;file&gt;      # 查看该文件每次提交记录
-git log -p &lt;file&gt;   # 显示版本历史，以及版本间的内容差异
-git log -p -2       # 查看最近两次详细修改内容的diff
-git log --stat      # 查看提交统计信息
-git log --since=&quot;6 hours&quot;  # 显示最近6小时提交
-git log --before=&quot;2 days&quot;  # 显示2天前提交
-git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
-git log -1 HEAD^^^
 </code></pre></div>
 <h1>Git 本地分支管理</h1>
 
@@ -337,6 +341,16 @@ git status
 git diff --cached &gt;XXX.patch
 git ci -m &#39;add patch&#39;
 </code></pre></div>
+<h1>分支策略</h1>
+
+<p>在实际开发中，我们应该按照几个基本原则进行分支管理：</p>
+
+<p>首先，master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；</p>
+
+<p>那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本发布时，再把dev分支合并到master上，在master分支发布1.0版本；</p>
+
+<p>你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。</p>
+
 
 	-EOF-
 	</div>
