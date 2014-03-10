@@ -166,6 +166,28 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/linux/2013/08/31/my-jekyll-config">我的jekyll配置和修改</a></h2>
+    
+      主要记录使用jekyll搭建博客时的一些配置和修改。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/08/31/my-jekyll-config"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/08/23/publish-proerties-using-zookeeper">使用ZooKeeper实现配置同步</a></h2>
+    
+      应用项目中都会有一些配置信息，这些配置信息数据量少，一般会保存到内存、文件或者数据库，有时候需要动态更新。当需要在多个应用服务器中修改这些配置文件时，需要做到快速、简单、不停止应用服务器的方式修改并同步配置信息到所有应用中去。本篇文章就是介绍如何使用ZooKeeper来实现配置的动态同步。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/23/publish-proerties-using-zookeeper"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hive/2013/08/22/hive-Driver">hive Driver类运行过程</a></h2>
     
       我的学习笔记，记录hive Driver类运行过程
@@ -273,28 +295,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/kettle/2013/04/07/add-a-field-from-paramter-to-output">kettle中添加一个参数字段到输出</a></h2>
-    
-      kettle可以将输入流中的字段输出到输出流中，输入输出流可以为数据库、文件或其他，通常情况下输入流中字段为已知确定的，如果我想在输出流中添加一个来自转换的命令行参数的一个字段，该如何操作？
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2013/04/07/add-a-field-from-paramter-to-output"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum">从yum安装Cloudera CDH集群</a></h2>
-    
-      记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/04/06/install-cloudera-cdh-by-yum"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -328,6 +328,10 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
        <div class="category">
          <ul>
            
+           <li><a href="/solr/2014/03/10/how-to-install-solrcloud">Apache SolrCloud安装</a></li>
+           
+           <li><a href="/work/2014/03/06/summary-of-the-work-in-2013">2013年度年终总结</a></li>
+           
            <li><a href="/solr/2014/03/03/solr-query-syntax">Apache Solr查询语法</a></li>
            
            <li><a href="/solr/2014/02/26/how-to-install-solr">Apache Solr介绍及安装</a></li>
@@ -355,10 +359,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
            <li><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
-           
-           <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
-           
-           <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
            
          </ul>
        </div>

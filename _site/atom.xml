@@ -4,12 +4,325 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-05T18:29:21+08:00</updated>
+ <updated>2014-03-10T17:44:59+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
  </author>
 
+ 
+ <entry>
+   <title><![CDATA[Apache SolrCloud安装]]></title>
+   <link href="http://blog.javachen.com/solr/2014/03/10/how-to-install-solrcloud"/>
+   <updated>2014-03-10T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/solr/2014/03/10/how-to-install-solrcloud</id>
+   <content type="html">&lt;p&gt;SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。下面，我们基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。&lt;/p&gt;
+
+&lt;h1&gt;1. 安装环境&lt;/h1&gt;
+
+&lt;p&gt;我使用的安装程序各版本如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Solr: &lt;a href=&quot;http://archive.apache.org/dist/lucene/solr/4.4.0/&quot;&gt;Apache Solr-4.4.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tomcat: &lt;a href=&quot;http://archive.apache.org/dist/tomcat/tomcat-6/v6.0.36/&quot;&gt;Apache Tomcat 6.0.36&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;ZooKeeper: &lt;a href=&quot;http://www.apache.org/dyn/closer.cgi/zookeeper/&quot;&gt;Apache ZooKeeper 3.4.5&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;说明：&lt;/p&gt;
+
+&lt;p&gt;所有的程序安装在/opt目录下，你可以依照你的实际情况下修改安装目录。&lt;/p&gt;
+
+&lt;h1&gt;2. 规划SolrCloud&lt;/h1&gt;
+
+&lt;p&gt;单一SolrCloud数据集合:product
+ZooKeeper集群:3台
+SolrCloud实例:3节点
+复制因子：3
+索引分片：2&lt;/p&gt;
+
+&lt;p&gt;手动将3个索引分片(Shard)的复本(Replica)分布在3个SolrCloud节点上&lt;/p&gt;
+
+&lt;p&gt;三个节点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;192.168.56.121&lt;/li&gt;
+&lt;li&gt;192.168.56.122&lt;/li&gt;
+&lt;li&gt;192.168.56.123&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;3. 安装ZooKeeper集群&lt;/h1&gt;
+
+&lt;p&gt;由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群&lt;/p&gt;
+
+&lt;p&gt;首先，再第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar zxvf zookeeper-3.4.5.tar.gz
+mv zookeeper-3.4.5 /opt/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/data/zookeeper/data
+clientPort=2181
+server.1=192.168.56.121:2888:3888
+server.2=192.168.56.122:2888:3888
+server.3=172.168.56.123:2888:3888
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;zookeeper的数据目录指定在&lt;code&gt;/data/zookeeper/data&lt;/code&gt;，你也可以使用其他目录，通过下面命令进行创建该目录：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir /data/zookeeper/data -p
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，初始化myid，三个节点编号依次为&lt;code&gt;1,2,3&lt;/code&gt;，在其余节点上分别执行命令（注意修改编号）。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;echo &amp;quot;1&amp;quot; &amp;gt;/data/zookeeper/data/myid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后，在第二个和第三个节点上依次重复上面的操作。&lt;/p&gt;
+
+&lt;p&gt;最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd /opt
+sh zookeeper-3.4.5/bin/zkServer.sh start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;可以查看ZooKeeper集群的状态，保证集群启动没有问题：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@cdh1 opt]# sh zookeeper-3.4.5/bin/zkServer.sh status
+JMX enabled by default
+Using config: /opt/zookeeper-3.4.5/bin/../conf/zoo.cfg
+Mode: follower
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;4. 安装Solr&lt;/h1&gt;
+
+&lt;p&gt;你可以参考&lt;a href=&quot;http://blog.javachen.com/solr/2014/02/26/how-to-install-solr/index.html&quot;&gt;《Apache Solr介绍及安装》&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;简单来说，执行以下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;unzip apache-tomcat-6.0.36.zip  -d /opt
+unzip solr-4.4.0.zip  -d /opt
+
+cd /opt
+chmod +x apache-tomcat-6.0.36/bin/*.sh
+
+cp solr-4.4.0/example/webapps/solr.war apache-tomcat-6.0.36/webapps/
+cp solr-4.4.0/example/lib/ext/* apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
+cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在其他节点上重复以上操作完成所有节点的solr的安装。&lt;/p&gt;
+
+&lt;h1&gt;5. ZooKeeper管理配置文件&lt;/h1&gt;
+
+&lt;p&gt;1、 创建一个solrcloud目录，并将solr的lib文件拷贝到这个目录：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /usr/local/solrcloud/solr-lib/
+cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2、 通过bootstrap设置solrhome：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;zkhost指定ZooKeeper地址，逗号分割&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/usr/local/solrhome/core0/conf&lt;/code&gt;目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。&lt;/li&gt;
+&lt;li&gt;productconf为在ZooKeeper上的配置文件名称。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;4、把配置文件和目标collection联系起来：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;创建的collection叫做product，并指定和productconf连接&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;5、查看ZooKeeper上状态&lt;/p&gt;
+
+&lt;p&gt;在任意一个节点的/opt目录下执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@192.168.56.121 opt]# zookeeper-3.4.5/bin/zkCli.sh 
+
+[zk: localhost:2181(CONNECTED) 0] ls /
+[configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
+
+[zk: localhost:2181(CONNECTED) 1] ls /configs
+[productconf]
+
+[zk: localhost:2181(CONNECTED) 1] ls /collections
+[product]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;6. Tomcat配置与启动&lt;/h1&gt;
+
+&lt;p&gt;1、修改每个节点上的tomcat配置文件，在环境变量中添加zkHost变量&lt;/p&gt;
+
+&lt;p&gt;编辑&lt;code&gt;apache-tomcat-6.0.36/bin/catalina.sh&lt;/code&gt;,添加如下代码：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;注意：你也可以在这里指定&lt;code&gt;solr.home&lt;/code&gt;，例如：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;或者，通过如下方式配置solr/home:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir  /opt/apache-tomcat-6.0.36/conf/Catalina/localhost -p
+vi /opt/apache-tomcat-6.0.36/conf/Catalina/localhost/solr.xml
+
+&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;
+&amp;lt;Context docBase=&amp;quot;TOMCAT_HOME/webapps/solr.war&amp;quot; debug=&amp;quot;0&amp;quot; crossContext=&amp;quot;true&amp;quot;&amp;gt;
+   &amp;lt;Environment name=&amp;quot;solr/home&amp;quot; type=&amp;quot;java.lang.String&amp;quot; value=&amp;quot;/usr/local/solrhome&amp;quot; override=&amp;quot;true&amp;quot;/&amp;gt;
+&amp;lt;/Context&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在&lt;code&gt;/usr/local/solrhome/&lt;/code&gt;目录创建solr.xml：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;hostPort值应该和tomcat的端口保持一致&lt;/li&gt;
+&lt;li&gt;solr默认使用jetty服务器，端口默认为8983&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最后，在/opt目录下启动tomcat：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh apache-tomcat-6.0.36/bin/startup.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;通过http://192.168.56.121:8080/solr/进行访问，界面如图提示&lt;code&gt;There are no SolrCores running.&lt;/code&gt;，这是因为配置文件尚未配置solrcore。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solr-no-solrcores.png&quot; alt=&quot;There are no SolrCores running&quot;&gt;&lt;/p&gt;
+
+&lt;h1&gt;7. 创建Collection、Shard和Replication&lt;/h1&gt;
+
+&lt;h2&gt;创建Collection及初始Shard&lt;/h2&gt;
+
+&lt;p&gt;直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;amp;name=product&amp;amp;numShards=3&amp;amp;replicationFactor=1&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如果成功，会输出如下响应内容：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;response&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;responseHeader&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2649&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;success&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;responseHeader&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2521&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard2_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;responseHeader&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2561&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard3_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;responseHeader&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2607&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard1_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/response&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面链接中的几个参数的含义，说明如下：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;name                待创建Collection的名称&lt;/li&gt;
+&lt;li&gt;numShards           分片的数量&lt;/li&gt;
+&lt;li&gt;replicationFactor   复制副本的数量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以通过Web管理页面，访问&lt;code&gt;http://192.168.56.121:8888/solr/#/~cloud&lt;/code&gt;，查看SolrCloud集群的分片信息，如图所示:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solrcloud-collection-shard.png&quot; alt=&quot;solrcloud-collection-shard&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;实际上，我们从192.168.56.121节点可以看到，SOLR的配置文件内容，已经发生了变化，如下所示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;同时，你还可以看另外两个节点上的solr.xml文件的变化。&lt;/p&gt;
+
+&lt;h2&gt;手动创建Replication&lt;/h2&gt;
+
+&lt;p&gt;下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;amp;collection=product&amp;amp;name=product_shard1_replica_2&amp;amp;shard=shard1&amp;#39;
+
+curl &amp;#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;amp;collection=product&amp;amp;name=product_shard1_replica_3&amp;amp;shard=shard1&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为&lt;code&gt;product_shard1_replica_2&lt;/code&gt;，在192.168.56.122节点上有一个副本，名称为&lt;code&gt;product_shard1_replica_3&lt;/code&gt;。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@cdh1 opt]# ll /usr/local/solrhome/
+total 16
+drwxr-xr-x 3 root root 4096 Mar 10 17:11 product_shard1_replica2
+drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
+-rw-r--r-- 1 root root  444 Mar 10 17:16 solr.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你还可以对shard2和shard3添加副本。&lt;/p&gt;
+
+&lt;p&gt;我们再次从192.168.56.121节点可以看到，SOLR的配置文件内容，又发生了变化，如下所示：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard1_replica2/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard1_replica_2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。&lt;/p&gt;
+
+&lt;h1&gt;8. 总结&lt;/h1&gt;
+
+&lt;p&gt;本文记录了如何zookeeper、SolrCloud的安装和配置过程，关于SolrCloud的配置，需要注意的是：solrcore需要通过restapi进行创建。&lt;/p&gt;
+
+&lt;h1&gt;9. 参考文章&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://shiyanjun.cn/archives/100.html&quot;&gt;SolrCloud 4.3.1+Tomcat 7安装配置实践&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title><![CDATA[2013年度年终总结]]></title>
+   <link href="http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013"/>
+   <updated>2014-03-06T00:00:00+08:00</updated>
+   <id>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</id>
+   <content type="html">&lt;p&gt;回首2011年和2012年的年终总结，发现公司在2012年提到的一些不足仍然出现在2013年，不知道每年的总结是否有被认真阅读过、重视过。故虽谏且议，使人不得而知焉。&lt;/p&gt;
+
+&lt;p&gt;2013年，通过了RHCE考试，掌握了shell编程，初识Python；&lt;/p&gt;
+
+&lt;p&gt;2013年，不再负责、管理具体的项目，可还不是逃不过事后填坑的无奈；&lt;/p&gt;
+
+&lt;p&gt;2013年，Cassandra不再，迎来Hadoop，满腔热血的学习Hadoop的安装、部署、原理、开发甚至还做了一些入门普及培训，但真的只是一个人在战斗；&lt;/p&gt;
+
+&lt;p&gt;2013年，开始是一个人带着几个同事在探索和研究hadoop，慢慢地失去了自己的自主权，更多的时间是被花在了具体的项目上，自己的工作全是被计划安排着；&lt;/p&gt;
+
+&lt;p&gt;2013年，开始做EAC，界面原型、客户需求、技术选型，花费了大量的时间去讨论、修改、论证，却错过了快速迭代出一个产品的最佳时机；有时候不是我们脚步太慢，而是我们想的太复杂；&lt;/p&gt;
+
+&lt;p&gt;2013年，开发BMP，架构文档不断地被否定，被几个人反复修改，最后也还是没有捣鼓出一个无懈可击的文档出来；项目经理职责不明确，没有发挥应有的协调作用；&lt;/p&gt;
+
+&lt;p&gt;2013年，做了一些测试的工作，从测试方法、过程和结果上来看，在测试方面还是不够专业。&lt;/p&gt;
+
+&lt;p&gt;关于招聘。来来往往，来了不少人，也走了不少人，基本上没有来了后花些时间就能自己独立干活的。招三个人干四个人的事情发五个人的工资，想做到这个，不做一些改变，那只能是一厢情愿的事情了。&lt;/p&gt;
+
+&lt;p&gt;关于团队建设。新人入职，无人指导，想仅靠wiki上的文章就能无师自通，这可是没那么容易的吧？跟优秀的人一起工作，才能变得更优秀。员工内部的分享与交流，至今都未形成；员工的归属感和存在感，不知道又遗失了多少。公司不可能只靠几个人单打独斗，而需要大家一起齐心协力同奋进。&lt;/p&gt;
+
+&lt;p&gt;关于管理。项目的进度和质量管控不严，表现在任务的时间分配不合理，任务完成进度没跟踪和把控，代码质量和应用健壮性没审查和测试，代码开发不规范等等。另外，管理者的角色不明确以及执行力不够。&lt;/p&gt;
+
+&lt;p&gt;还有其他的一些问题，所有这些问题主要都是不够【职业化】的问题。公司未来，应该朝职业化发展。&lt;/p&gt;
+
+&lt;p&gt;博学而笃志，切问而近思，仁在其中矣。吾尝终日不食，终夜不寝，以思，无益，不如学也。每次都是年终的时候才总结一年的得失成败，费尽脑汁挤出的几条总结，能有多大的时效性、客观性和借鉴性呢？&lt;/p&gt;
+
+&lt;p&gt;一样的月光，一样的照着新店溪；一样的冬天，一样的下着冰冷的雨；一样的尘埃，一样的在风中堆积，一样的笑容，一样的泪水，一样的日子，一样的我和你，什么时候蓝天白云都成了记忆，什么时候梦想变得如此的拥挤。谁能告诉我，是我们改变了公司，还是公司改变了我和你。&lt;/p&gt;
+
+&lt;p&gt;2014年，等风来。&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title><![CDATA[Apache Solr查询语法]]></title>
@@ -1149,270 +1462,6 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 &lt;h1&gt;修改配置文件&lt;/h1&gt;
 
 &lt;h1&gt;监控hadoop&lt;/h1&gt;
-</content>
- </entry>
- 
- <entry>
-   <title><![CDATA[在RHEL系统上安装Nagios]]></title>
-   <link href="http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6"/>
-   <updated>2014-01-24T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/linux/2014/01/24/how-to-install-nagios-on-rhel6</id>
-   <content type="html">&lt;h1&gt;在管理机上安装rpm包&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
-chkconfig httpd on &amp;amp;&amp;amp; chkconfig nagios on
-service httpd start &amp;amp;&amp;amp; service nagios start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;设置管理界面密码&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;htpasswd -c /etc/nagios/passwd nagiosadmin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;!-- more --&gt;
-
-&lt;p&gt;密码和用户名保持一致（都设置为nagiosadmin），否则你需要修改&lt;code&gt;/etc/nagios/cgi.cfg&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1&gt;访问Nagios&lt;/h1&gt;
-
-&lt;p&gt;打开&lt;code&gt;http://ip/nagios&lt;/code&gt;，输入用户名和密码即可访问&lt;/p&gt;
-
-&lt;h1&gt;在客户端上安装NRPE&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nrpe
-chkconfig nrpe on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;修改配置&lt;code&gt;/etc/nagios/nrpe.cfg&lt;/code&gt;，例如：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;log_facility=daemon
-pid_file=/var/run/nrpe/nrpe.pid
-server_port=5666
-nrpe_user=nrpe
-nrpe_group=nrpe
-allowed_hosts=198.211.117.251
-dont_blame_nrpe=1
-debug=0
-command_timeout=60
-connection_timeout=300
-include_dir=/etc/nrpe.d/
-command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
-command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
-command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/vda
-command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
-command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
-command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s $ARG3$
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;请注意修改&lt;code&gt;allowed_hosts&lt;/code&gt;值为你的nagios监控机ip&lt;/p&gt;
-
-&lt;p&gt;设置iptables：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;iptables -N NRPE
-iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
-iptables -I NRPE -s 198.211.117.251 -j ACCEPT
-iptables -A NRPE -s 0/0 -j DROP
-/etc/init.d/iptables save
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;或者，关闭iptables：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;/etc/init.d/iptables stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;启动NRPE：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;service nrpe start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h1&gt;在管理机上添加配置文件&lt;/h1&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;echo &amp;quot;cfg_dir=/etc/nagios/servers&amp;quot; &amp;gt;&amp;gt; /etc/nagios/nagios.cfg
-cd /etc/nagios/servers
-touch hadoop.tk.cfg
-touch hbase.tk.cfg
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;然后修改每一个配置文件：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vim /etc/nagios/servers/hadoop.tk.cfg
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;添加内容如下，你也可以稍作修改：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;define host {
-        use                     linux-server
-        host_name               cloudmail.tk
-        alias                   cloudmail.tk
-        address                 192.168.56.122
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             PING
-        check_command                   check_ping!100.0,20%!500.0,60%
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             SSH
-        check_command                   check_ssh
-        notifications_enabled           0
-        }
-
-define service {
-        use                             generic-service
-        host_name                       cloudmail.tk
-        service_description             Current Load
-        check_command                   check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
-        }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;重启nagios：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;chown -R nagios. /etc/nagios
-service nagios restart
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
- </entry>
- 
- <entry>
-   <title><![CDATA[All Things OpenTSDB]]></title>
-   <link href="http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb"/>
-   <updated>2014-01-22T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/linux/2014/01/22/all-things-opentsdb</id>
-   <content type="html">&lt;h1&gt;1. OpenTSDB介绍&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://opentsdb.net/index.html&quot;&gt;OpenTSDB&lt;/a&gt;用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。&lt;/p&gt;
-
-&lt;p&gt;对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。&lt;/p&gt;
-
-&lt;p&gt;OpenTSDB使用LGPLv2.1+开源协议。&lt;/p&gt;
-
-&lt;h1&gt;2. 安装OpenTSDB&lt;/h1&gt;
-
-&lt;h2&gt;2.1 依赖&lt;/h2&gt;
-
-&lt;p&gt;OpenTSDB依赖jdk和&lt;a href=&quot;http://www.gnuplot.info/&quot;&gt;Gnuplot&lt;/a&gt;，Gnuplot需要提前安装，版本要求为最小4.2,最大4.4,执行以下命令安装即可：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;yum install gnuplot autoconf
-apt-get install gnuplot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是使用的C、C++程序员构建项目的方式。运行时依赖：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;JDK 1.6&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://github.com/OpenTSDB/asynchbase&quot;&gt;asynchbase&lt;/a&gt; 1.3.0 (BSD)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://code.google.com/p/guava-libraries/&quot;&gt;Guava&lt;/a&gt; 12.0 (ASLv2)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://logback.qos.ch/&quot;&gt;logback&lt;/a&gt; 1.0 (LGPLv2.1 / EPL)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://jboss.org/netty&quot;&gt;Netty&lt;/a&gt; 3.4 (ASLv2)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://slf4j.org/&quot;&gt;SLF4J&lt;/a&gt; 1.6 (MIT) with Log4J and JCL adapters&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://github.com/OpenTSDB/async&quot;&gt;suasync&lt;/a&gt; 1.2 (BSD)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://hadoop.apache.org/zookeeper/&quot;&gt;ZooKeeper&lt;/a&gt; 3.3 (ASLv2)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;可选的编译时依赖：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://gwt.google.com/&quot;&gt;GWT&lt;/a&gt; 2.4 (ASLv2)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;可选的单元测试依赖：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.javassist.org/&quot;&gt;Javassist&lt;/a&gt; 3.15 (MPL / LGPL)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.junit.org/&quot;&gt;JUnit&lt;/a&gt; 4.10 (CPL)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://mockito.org/&quot;&gt;Mockito&lt;/a&gt; 1.9 (MIT)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://code.google.com/p/powermock/&quot;&gt;PowerMock&lt;/a&gt; 1.4 (ASLv2)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;2.2 下载并编译源代码&lt;/h2&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git://github.com/OpenTSDB/opentsdb.git
-cd opentsdb
-./build.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;2.3 安装&lt;/h2&gt;
-
-&lt;ol&gt;
-&lt;li&gt;首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94&lt;/li&gt;
-&lt;li&gt;设置环境变量并创建opentsdb使用的表，需要设置的环境变量为&lt;code&gt;COMPRESSION&lt;/code&gt;和&lt;code&gt;HBASE_HOME&lt;/code&gt;，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo&lt;/li&gt;
-&lt;li&gt;执行建表语句&lt;code&gt;src/create_table.sh&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;启动TSD&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tsdtmp=${TMPDIR-&amp;#39;/tmp&amp;#39;}/tsd    # For best performance, make sure
-mkdir -p &amp;quot;$tsdtmp&amp;quot;             # your temporary directory uses tmpfs
-./build/tsdb tsd --port=4242 --staticroot=build/staticroot --cachedir=&amp;quot;$tsdtmp&amp;quot; --auto-metric
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果你使用的是hbase集群，则你还需要设置&lt;code&gt;--zkquorum&lt;/code&gt;，&lt;code&gt;--cachedir&lt;/code&gt;对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加&lt;code&gt;--auto-metric&lt;/code&gt;，则当新的数据被搜集时自动创建指标。
-5. 启动成功之后，你可以通过&lt;a href=&quot;http://127.0.0.1:4242&quot;&gt;127.0.0.1:4242&lt;/a&gt;进行访问。&lt;/p&gt;
-
-&lt;p&gt;从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：&lt;a href=&quot;http://www.adintellig.com/blog/14&quot;&gt;OpenTSDB &amp;amp; tcollector 安装部署（Installation and Deployment）&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1&gt;3. 使用OpenTSDB&lt;/h1&gt;
-
-&lt;h2&gt;3.1 命令说明&lt;/h2&gt;
-
-&lt;p&gt;tsdb支持以下参数：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@cdh1 build]# ./tsdb 
-usage: tsdb &amp;lt;command&amp;gt; [args]
-Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;3.2 创建指标&lt;/h2&gt;
-
-&lt;p&gt;通过以下命令创建指标：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;执行上述命令的结果如下：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;metrics mysql.bytes_received: [0, 0, -93]
-metrics mysql.bytes_sent: [0, 0, -92]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。&lt;/p&gt;
-
-&lt;h2&gt;3.3 Schema&lt;/h2&gt;
-
-&lt;p&gt;OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;myservice.latency.avg 1292148123 42 reqtype=foo host=web42
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;对于指标myservice.latency.avg的ID为：[0, 0, -69],reqtype标签名称的ID为：[0, 0, 1], foo标签值的ID为：[0, 1, 11], 标签名称的ID为：[0, 0, 2] web42标签值的ID为：[0, -7, 42]，他们组成rowkey：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[0, 0, -69, 77, 4, -99, 32, 0, 0, 1, 0, 1, 11, 0, 0, 2, 0, -7, 42]
- `-------&amp;#39;  `------------&amp;#39;  `-----&amp;#39;  `------&amp;#39;  `-----&amp;#39;  `-------&amp;#39;
- metric ID  base timestamp  name ID  value ID  name ID  value ID
-                            `---------------&amp;#39;  `---------------&amp;#39;
-                                first tag         second tag
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;row表示格式为： 每个数字对应1 byte&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;[0, 0, -69] metric ID&lt;/li&gt;
-&lt;li&gt;[77, 4, -99, 32] base timestamp = 1292148000. timestamps in the row key are rounded down to a 60 minute boundary。也就是说对于同一个小时的metric + tags相同的数据都会存放在一个row下面&lt;/li&gt;
-&lt;li&gt;[0, 0, 1] &amp;quot;reqtype&amp;quot; index&lt;/li&gt;
-&lt;li&gt;[0, 1, 11] &amp;quot;foo&amp;quot; index&lt;/li&gt;
-&lt;li&gt;[0, 0, 2] &amp;quot;host&amp;quot; index&lt;/li&gt;
-&lt;li&gt;[0, -7, 42] &amp;quot;web42&amp;quot; index&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;NOTE（dirlt）：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助&lt;/p&gt;
-
-&lt;p&gt;column qualifier占用2 bytes，表示格式为：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;12 bits delta in seconds.(相对row表示的小时的delta, 最多2^ 12 = 4096 &amp;gt; 3600因此没有问题）&lt;/li&gt;
-&lt;li&gt;4 bits&lt;/li&gt;
-&lt;li&gt;1 bit (long or double)&lt;/li&gt;
-&lt;li&gt;3 bits (reserved)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;value使用8bytes存储，既可以存储long,也可以存储double。&lt;/p&gt;
-
-&lt;h2&gt;3.4 查询&lt;/h2&gt;
-
-&lt;h2&gt;3.5 HTTP API&lt;/h2&gt;
-
-&lt;h1&gt;4. 谁在用OpenTSDB&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.stumbleupon.com/&quot;&gt;StumbleUpon&lt;/a&gt; StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.box.com/&quot;&gt;box&lt;/a&gt; Box simplifies online file storage, replaces FTP and connects teams in online workspaces.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.tumblr.com/&quot;&gt;tumblr&lt;/a&gt; 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;5. KairosDB&lt;/h1&gt;
-
-&lt;p&gt;KairosDB是一个快速可靠的分布式时间序列数据库，主要用于Cassandra当然也可以适用与HBase。KairosDB是在OpenTSDB基础上重写的，他不仅可以在HBase上存储数据还支持Cassandra。&lt;/p&gt;
-
-&lt;p&gt;KairosDB主页：&lt;a href=&quot;https://code.google.com/p/kairosdb/&quot;&gt;https://code.google.com/p/kairosdb/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1&gt;6. 参考资料&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://luoshi0801.iteye.com/blog/1938835&quot;&gt;tlog数据存储&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/bingjie1217/article/category/1751285&quot;&gt;OpenTSDB源码分析系列文章&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.binospace.com/index.php/opentsdb-design-road/&quot;&gt;OpenTSDB的设计之道&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://dirlt.com/opentsdb.html&quot;&gt;opentsdb&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
 </content>
  </entry>
  

@@ -166,6 +166,184 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h2>
+    
+		
+		  <p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
+
+<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<h1>Starting the CLI</h1>
+
+<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
+如果你有一个但节点的集群，则使用以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
+</code></pre></div>
+<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
+</code></pre></div>
+<p>或者，可以直接执行以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
+</code></pre></div>
+<p>登录成功之后，可以看到：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
+Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
+</code></pre></div>
+<p>你必须指定连接一个节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
+</code></pre></div>
+<h1>Creating a Keyspace</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
+</code></pre></div>
+<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
+    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
+    and strategy_options = [{replication_factor:1}];
+</code></pre></div>
+<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<h1>Use a keyspace</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
+</code></pre></div>
+<h1>Creating a Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</code></pre></div>
+<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<u>name，email,state,gender,birth</u>year.comparator, key<u>validation</u>class和validation<u>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog</u>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</code></pre></div>
+<h1>Creating a Counter Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+      default_validation_class=CounterColumnType 
+      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</code></pre></div>
+<p>插入一行和计数列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
+</code></pre></div>
+<p>增加计数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
+</code></pre></div>
+<h1>Inserting Rows and Columns</h1>
+
+<p>以下命令以一个特点的行key值插入列到users中</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
+</code></pre></div>
+<p>更新数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
+</code></pre></div>
+<p>获取数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
+</code></pre></div>
+<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
+
+<p>查询数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
+</code></pre></div>
+<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
+</code></pre></div>
+<h1>Reading Rows and Columns</h1>
+
+<p>使用List命令查询记录，默认查询100条记录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
+</code></pre></div>
+<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
+</code></pre></div>
+<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</code></pre></div>
+<h1>Setting an Expiring Column</h1>
+
+<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
+</code></pre></div>
+<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<h1>Indexing a Column</h1>
+
+<p>给birth_year添加一个二级索引：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
+        WITH comparator = UTF8Type AND column_metadata = 
+        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</code></pre></div>
+<p>由于该列被索引了，所以可以直接通过该列查询：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
+</code></pre></div>
+<h1>Deleting Rows and Columns</h1>
+
+<p>删除yomama索引的coupon_code列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
+[default@demo] GET users [&#39;yomama&#39;];
+</code></pre></div>
+<p>或者删除整行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
+</code></pre></div>
+<h1>Dropping Column Families and Keyspaces</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</code></pre></div>
+<h1>For help</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
+</code></pre></div>
+<p>查看某一个命令的详细说明：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
+</code></pre></div>
+<h1>To Quit</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
+</code></pre></div>
+<h1>To Execute Script</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</code></pre></div>
+<h1>参考文章</h1>
+
+<ul>
+<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
+<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
+</ul>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/cassandra/2012/04/09/getting-started-using-the-cassandra-cli"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
+    
+      本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/cassandra/2012/04/06/install_singlenode-with-datastax-community-editio"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/java/2012/03/26/hash-and-hash-functions">哈希表</a></h2>
     
       一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。
@@ -303,28 +481,6 @@
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue">Ext读取xml文件生成动态表格和表单(续)</a></h2>
-    
-      Ext读取xml文件生成动态表格和表单
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
-    
-      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -358,6 +514,10 @@
        <div class="category">
          <ul>
            
+           <li><a href="/solr/2014/03/10/how-to-install-solrcloud">Apache SolrCloud安装</a></li>
+           
+           <li><a href="/work/2014/03/06/summary-of-the-work-in-2013">2013年度年终总结</a></li>
+           
            <li><a href="/solr/2014/03/03/solr-query-syntax">Apache Solr查询语法</a></li>
            
            <li><a href="/solr/2014/02/26/how-to-install-solr">Apache Solr介绍及安装</a></li>
@@ -385,10 +545,6 @@
            <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
            <li><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></li>
-           
-           <li><a href="/java/2014/01/13/about-sitemesh">SiteMesh介绍</a></li>
-           
-           <li><a href="/python/2014/01/11/how-to-create-a-django-site">如何创建一个Django网站</a></li>
            
          </ul>
        </div>
