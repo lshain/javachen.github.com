@@ -16,18 +16,19 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 - Tomcat: [Apache Tomcat 6.0.36](http://archive.apache.org/dist/tomcat/tomcat-6/v6.0.36/)
 - ZooKeeper: [Apache ZooKeeper 3.4.5](http://www.apache.org/dyn/closer.cgi/zookeeper/)
 
+各个目录说明：
 
-说明：
-
-所有的程序安装在/opt目录下，你可以依照你的实际情况下修改安装目录。
+- 所有的程序安装在/opt目录下，你可以依照你的实际情况下修改安装目录。
+- ZooKeeper的数据目录在/data/zookeeper/data
+- solr/home设置在/usr/local/solrhome
 
 # 2. 规划SolrCloud
 
-单一SolrCloud数据集合:product
-ZooKeeper集群:3台
-SolrCloud实例:3节点
-复制因子：3
-索引分片：2
+- 单一SolrCloud数据集合:product
+- ZooKeeper集群:3台
+- SolrCloud实例:3节点
+- 索引分片：3
+- 复制因子：2
 
 手动将3个索引分片(Shard)的复本(Replica)分布在3个SolrCloud节点上
 
@@ -44,8 +45,7 @@ SolrCloud实例:3节点
 首先，再第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：
 
 ```
-tar zxvf zookeeper-3.4.5.tar.gz
-mv zookeeper-3.4.5 /opt/
+tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 ```
 
 创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：
@@ -73,7 +73,7 @@ mkdir /data/zookeeper/data -p
 echo "1" >/data/zookeeper/data/myid
 ```
 
-然后，在第二个和第三个节点上依次重复上面的操作。
+然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1,第二个节点为2,第三个节点为3。
 
 最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：
 
@@ -85,7 +85,7 @@ sh zookeeper-3.4.5/bin/zkServer.sh start
 可以查看ZooKeeper集群的状态，保证集群启动没有问题：
 
 ```
-[root@cdh1 opt]# sh zookeeper-3.4.5/bin/zkServer.sh status
+[root@192.168.56.121 opt]# sh zookeeper-3.4.5/bin/zkServer.sh status
 JMX enabled by default
 Using config: /opt/zookeeper-3.4.5/bin/../conf/zoo.cfg
 Mode: follower
@@ -114,23 +114,23 @@ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 
 # 5. ZooKeeper管理配置文件
 
-1、 创建一个solrcloud目录，并将solr的lib文件拷贝到这个目录：
+1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：
 
 ```
-mkdir -p /usr/local/solrcloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
+mkdir -p /usr/local/SolrCloud/solr-lib/
+cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib/
 ```
 
 2、 通过bootstrap设置solrhome：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 ```
 
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
+java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
 ```
 
 说明：
@@ -142,7 +142,7 @@ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 4、把配置文件和目标collection联系起来：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
+java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
 ```
 
 说明：
@@ -167,6 +167,8 @@ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 
 ```
 
+查看`/configs`和`/collections`目录均有值，说明配置文件已经上传到ZooKeeper上了，接下来启动solr。
+
 
 # 6. Tomcat配置与启动
 
@@ -175,25 +177,7 @@ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 编辑`apache-tomcat-6.0.36/bin/catalina.sh`,添加如下代码：
 
 ```
-JAVA_OPTS='-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
-```
-
-注意：你也可以在这里指定`solr.home`，例如：
-
-```
-JAVA_OPTS='-Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
-```
-
-或者，通过如下方式配置solr/home:
-
-```
-mkdir  /opt/apache-tomcat-6.0.36/conf/Catalina/localhost -p
-vi /opt/apache-tomcat-6.0.36/conf/Catalina/localhost/solr.xml
-
-<?xml version="1.0" encoding="utf-8"?>
-<Context docBase="TOMCAT_HOME/webapps/solr.war" debug="0" crossContext="true">
-   <Environment name="solr/home" type="java.lang.String" value="/usr/local/solrhome" override="true"/>
-</Context>
+JAVA_OPTS='-Dsolr.solr.home=/usr/local/solrhome-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
 ```
 
 在`/usr/local/solrhome/`目录创建solr.xml：
@@ -275,7 +259,7 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 
 可以通过Web管理页面，访问`http://192.168.56.121:8888/solr/#/~cloud`，查看SolrCloud集群的分片信息，如图所示:
 
-![solrcloud-collection-shard](/assets/images/2014/solrcloud-collection-shard.png)
+![SolrCloud-collection-shard](/assets/images/2014/solrcloud-collection-shard.png)
 
 实际上，我们从192.168.56.121节点可以看到，SOLR的配置文件内容，已经发生了变化，如下所示：
 
@@ -303,7 +287,7 @@ curl 'http://192.168.56.122:8080/solr/admin/cores?action=CREATE&collection=produ
 最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为`product_shard1_replica_2`，在192.168.56.122节点上有一个副本，名称为`product_shard1_replica_3`。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：
 
 ```
-[root@cdh1 opt]# ll /usr/local/solrhome/
+[root@192.168.56.121 opt]# ll /usr/local/solrhome/
 total 16
 drwxr-xr-x 3 root root 4096 Mar 10 17:11 product_shard1_replica2
 drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
@@ -326,12 +310,106 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 
 到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。
 
-# 8. 总结
+
+# 8. 其他说明
+
+## 8.1 SolrCloud的一些必要配置
+
+### schema.xml
+
+必须定义`_version_`字段：
+
+```xml
+<field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+```
+
+### solrconfig.xml
+
+updateHandler节点下需要定义updateLog：
+
+```xml
+    <!-- Enables a transaction log, currently used for real-time get.
+         "dir" - the target directory for transaction logs, defaults to the
+         solr data directory.  -->
+    <updateLog>
+      <str name="dir">${solr.data.dir:}</str>
+      <!-- if you want to take control of the synchronization you may specify the syncLevel as one of the
+           following where ''flush'' is the default. fsync will reduce throughput.
+      <str name="syncLevel">flush|fsync|none</str>
+      -->
+    </updateLog>
+```
+
+需要定义一个replication handler，名称为`/replication`:
+
+```xml
+<requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy" />
+```
+
+需要定义一个realtime get handler，名称为`/get`:
+
+```xml
+	<requestHandler name="/get" class="solr.RealTimeGetHandler">
+      <lst name="defaults">
+        <str name="omitHeader">true</str>
+     </lst>
+    </requestHandler>
+```
+
+需要定义admin handlers：
+
+```
+<requestHandler name="/admin/" class="solr.admin.AdminHandlers" />
+```
+
+需要定义updateRequestProcessorChain：
+
+```xml
+ <updateRequestProcessorChain name="sample">
+     <processor class="solr.LogUpdateProcessorFactory" />
+     <processor class="solr.DistributedUpdateProcessorFactory"/>
+     <processor class="solr.RunUpdateProcessorFactory" />
+   </updateRequestProcessorChain>
+```
+
+### solr.xml
+
+cores节点需要定义adminPath属性：
+
+```xml
+<cores adminPath="/admin/cores"
+```
+
+## 8.2 SolrCloud分布式检索时忽略宕机的Shard
+
+```xml
+<lst name=”error”>
+	<str name=”msg”>no servers hosting shard:</str>
+	<int name=”code”>503</int>
+</lst>
+```
+
+加入下面参数，只从存活的shards获取数据：
+
+```
+shards.tolerant=true 
+```
+
+如：`http://192.168.56.121:8080/solr/product_shard2_replica1/select?q=*%3A*&wt=xml&indent=true&shards.tolerant=true`
+ 
+没有打此参数，如果集群内有挂掉的shard，将显示：
+
+```
+no servers hosting shard
+```
+
+# 9. 总结
 
 本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行创建，是否可以直接在配置文件中设置尚未做验证。
 
-# 9. 参考文章
+# 10. 参考文章
 
 - [1] [SolrCloud 4.3.1+Tomcat 7安装配置实践](http://shiyanjun.cn/archives/100.html)
+- [2] [SolrCloud Wiki](http://wiki.apache.org/solr/SolrCloud)
 
 
