@@ -42,7 +42,7 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 
 由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群
 
-首先，再第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：
+首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：
 
 ```
 tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
@@ -58,7 +58,7 @@ dataDir=/data/zookeeper/data
 clientPort=2181
 server.1=192.168.56.121:2888:3888
 server.2=192.168.56.122:2888:3888
-server.3=172.168.56.123:2888:3888
+server.3=192.168.56.123:2888:3888
 ```
 
 zookeeper的数据目录指定在`/data/zookeeper/data`，你也可以使用其他目录，通过下面命令进行创建该目录：
@@ -126,6 +126,8 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 ```
 java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 ```
+
+SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了`-Dbootstrap_confdir`参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。
 
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
