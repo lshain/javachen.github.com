@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-11T10:17:28+08:00</updated>
+ <updated>2014-03-12T11:52:25+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -60,7 +60,7 @@
 
 &lt;p&gt;由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群&lt;/p&gt;
 
-&lt;p&gt;首先，再第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：&lt;/p&gt;
+&lt;p&gt;首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：&lt;/p&gt;
@@ -71,7 +71,7 @@ dataDir=/data/zookeeper/data
 clientPort=2181
 server.1=192.168.56.121:2888:3888
 server.2=192.168.56.122:2888:3888
-server.3=172.168.56.123:2888:3888
+server.3=192.168.56.123:2888:3888
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;zookeeper的数据目录指定在&lt;code&gt;/data/zookeeper/data&lt;/code&gt;，你也可以使用其他目录，通过下面命令进行创建该目录：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir /data/zookeeper/data -p
@@ -117,6 +117,8 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 &lt;p&gt;2、 通过bootstrap设置solrhome：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了&lt;code&gt;-Dbootstrap_confdir&lt;/code&gt;参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。&lt;/p&gt;
+
 &lt;p&gt;3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -268,7 +270,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
   &lt;span class=&quot;nt&quot;&gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。&lt;/p&gt;
+&lt;p&gt;到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。最后效果如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solrcloud-collection-shard-replica.png&quot; alt=&quot;solrcloud-collection-shard-replica&quot;&gt;&lt;/p&gt;
 
 &lt;h1&gt;8. 其他说明&lt;/h1&gt;
 

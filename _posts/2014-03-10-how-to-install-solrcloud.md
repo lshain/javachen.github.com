@@ -310,7 +310,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 </solr>
 ```
 
-到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。
+到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。最后效果如下：
+
+![solrcloud-collection-shard-replica](/assets/images/2014/solrcloud-collection-shard-replica.png)
 
 
 # 8. 其他说明
