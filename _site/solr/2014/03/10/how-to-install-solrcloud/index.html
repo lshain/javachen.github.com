@@ -186,7 +186,7 @@
 <h1>2. 规划SolrCloud</h1>
 
 <ul>
-<li>单一SolrCloud数据集合:product</li>
+<li>单一SolrCloud数据集合:primary</li>
 <li>ZooKeeper集群:3台</li>
 <li>SolrCloud实例:3节点</li>
 <li>索引分片：3</li>
@@ -258,32 +258,32 @@ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 <h1>5. ZooKeeper管理配置文件</h1>
 
 <p>1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /usr/local/SolrCloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib/
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /usr/local/solrcloud/solr-lib/
+cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
 </code></pre></div>
 <p>2、 通过bootstrap设置solrhome：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 </code></pre></div>
 <p>SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了<code>-Dbootstrap_confdir</code>参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。</p>
 
 <p>3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
 </code></pre></div>
 <p>说明：</p>
 
 <ul>
 <li>zkhost指定ZooKeeper地址，逗号分割</li>
-<li><code>/usr/local/solrhome/core0/conf</code>目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。</li>
-<li>productconf为在ZooKeeper上的配置文件名称。</li>
+<li><code>/usr/local/solrhome/primary/conf</code>目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。</li>
+<li>primaryconf为在ZooKeeper上的配置文件名称。</li>
 </ul>
 
 <p>4、把配置文件和目标collection联系起来：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
 </code></pre></div>
 <p>说明：</p>
 
 <ul>
-<li>创建的collection叫做product，并指定和productconf连接</li>
+<li>创建的collection叫做primary，并指定和primaryconf连接</li>
 </ul>
 
 <p>5、查看ZooKeeper上状态</p>
@@ -295,10 +295,10 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 [configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
 
 [zk: localhost:2181(CONNECTED) 1] ls /configs
-[productconf]
+[primaryconf]
 
 [zk: localhost:2181(CONNECTED) 1] ls /collections
-[product]
+[primary]
 </code></pre></div>
 <p>查看<code>/configs</code>和<code>/collections</code>目录均有值，说明配置文件已经上传到ZooKeeper上了，接下来启动solr。</p>
 
@@ -307,19 +307,20 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 <p>1、修改每个节点上的tomcat配置文件，在环境变量中添加zkHost变量</p>
 
 <p>编辑<code>apache-tomcat-6.0.36/bin/catalina.sh</code>,添加如下代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Dsolr.solr.home=/usr/local/solrhome-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&#39;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&#39;
 </code></pre></div>
 <p>在<code>/usr/local/solrhome/</code>目录创建solr.xml：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;solr</span> <span class="na">persistent=</span><span class="s">&quot;true&quot;</span> <span class="na">sharedLib=</span><span class="s">&quot;lib&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;cores</span> <span class="na">adminPath=</span><span class="s">&quot;/admin/cores&quot;</span> <span class="na">zkClientTimeout=</span><span class="s">&quot;20000&quot;</span> <span class="na">hostPort=</span><span class="s">&quot;${jetty.port:8080}&quot;</span> <span class="na">hostContext=</span><span class="s">&quot;${hostContext:solr}&quot;</span><span class="nt">&gt;&lt;/cores&gt;</span>
+    <span class="nt">&lt;cores</span> <span class="na">adminPath=</span><span class="s">&quot;/admin/cores&quot;</span> <span class="na">zkClientTimeout=</span><span class="s">&quot;${zkClientTimeout:15000}&quot;</span> <span class="na">hostPort=</span><span class="s">&quot;${jetty.port:8080}&quot;</span> <span class="na">hostContext=</span><span class="s">&quot;${hostContext:solr}&quot;</span><span class="nt">&gt;&lt;/cores&gt;</span>
 <span class="nt">&lt;/solr&gt;</span>
 </code></pre></div>
 <p>说明：</p>
 
 <ul>
-<li>hostPort值应该和tomcat的端口保持一致</li>
-<li>solr默认使用jetty服务器，端口默认为8983</li>
+<li>-Djetty.port：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080</li>
+<li>-Dsolr.solr.home：配置solr/home</li>
+<li>-zkHost配置zookeeper集群地址，多个地址逗号分隔</li>
 </ul>
 
 <p>最后，在/opt目录下启动tomcat：</p>
@@ -331,10 +332,10 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 
 <h1>7. 创建Collection、Shard和Replication</h1>
 
-<h2>创建Collection及初始Shard</h2>
+<h2>手动创建Collection及初始Shard</h2>
 
 <p>直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">curl &#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;name=product&amp;numShards=3&amp;replicationFactor=1&#39;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">curl &#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;name=primary&amp;numShards=3&amp;replicationFactor=1&#39;
 </code></pre></div>
 <p>如果成功，会输出如下响应内容：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;response&gt;</span>
@@ -348,7 +349,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
             <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;status&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/int&gt;</span>
             <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;QTime&quot;</span><span class="nt">&gt;</span>2521<span class="nt">&lt;/int&gt;</span>
         <span class="nt">&lt;/lst&gt;</span>
-        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>product_shard2_replica1<span class="nt">&lt;/str&gt;</span>
+        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>primary_shard2_replica1<span class="nt">&lt;/str&gt;</span>
         <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;saved&quot;</span><span class="nt">&gt;</span>/usr/local/solrhome/solr.xml<span class="nt">&lt;/str&gt;</span>
     <span class="nt">&lt;/lst&gt;</span>
     <span class="nt">&lt;lst&gt;</span>
@@ -356,7 +357,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
             <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;status&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/int&gt;</span>
             <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;QTime&quot;</span><span class="nt">&gt;</span>2561<span class="nt">&lt;/int&gt;</span>
         <span class="nt">&lt;/lst&gt;</span>
-        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>product_shard3_replica1<span class="nt">&lt;/str&gt;</span>
+        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>primary_shard3_replica1<span class="nt">&lt;/str&gt;</span>
         <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;saved&quot;</span><span class="nt">&gt;</span>/usr/local/solrhome/solr.xml<span class="nt">&lt;/str&gt;</span>
     <span class="nt">&lt;/lst&gt;</span>
     <span class="nt">&lt;lst&gt;</span>
@@ -364,7 +365,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
         <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;status&quot;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/int&gt;</span>
         <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">&quot;QTime&quot;</span><span class="nt">&gt;</span>2607<span class="nt">&lt;/int&gt;</span>
         <span class="nt">&lt;/lst&gt;</span>
-        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>product_shard1_replica1<span class="nt">&lt;/str&gt;</span>
+        <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;core&quot;</span><span class="nt">&gt;</span>primary_shard1_replica1<span class="nt">&lt;/str&gt;</span>
         <span class="nt">&lt;str</span> <span class="na">name=</span><span class="s">&quot;saved&quot;</span><span class="nt">&gt;</span>/usr/local/solrhome/solr.xml<span class="nt">&lt;/str&gt;</span>
     <span class="nt">&lt;/lst&gt;</span>
 <span class="nt">&lt;/lst&gt;</span>
@@ -386,7 +387,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;solr</span> <span class="na">persistent=</span><span class="s">&quot;true&quot;</span> <span class="na">sharedLib=</span><span class="s">&quot;lib&quot;</span><span class="nt">&gt;</span>
   <span class="nt">&lt;cores</span> <span class="na">adminPath=</span><span class="s">&quot;/admin/cores&quot;</span> <span class="na">zkClientTimeout=</span><span class="s">&quot;20000&quot;</span> <span class="na">hostPort=</span><span class="s">&quot;${jetty.port:8080}&quot;</span> <span class="na">hostContext=</span><span class="s">&quot;${hostContext:solr}&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard2&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;product_shard2_replica1/&quot;</span> <span class="na">name=</span><span class="s">&quot;product_shard2_replica1&quot;</span> <span class="na">collection=</span><span class="s">&quot;product&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard2&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;primary_shard2_replica1/&quot;</span> <span class="na">name=</span><span class="s">&quot;primary_shard2_replica1&quot;</span> <span class="na">collection=</span><span class="s">&quot;primary&quot;</span><span class="nt">/&gt;</span>
   <span class="nt">&lt;/cores&gt;</span>
 <span class="nt">&lt;/solr&gt;</span>
 </code></pre></div>
@@ -395,15 +396,15 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 <h2>手动创建Replication</h2>
 
 <p>下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">curl &#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;collection=product&amp;name=product_shard1_replica_2&amp;shard=shard1&#39;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">curl &#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;collection=primary&amp;name=primary_shard1_replica_2&amp;shard=shard1&#39;
 
-curl &#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;collection=product&amp;name=product_shard1_replica_3&amp;shard=shard1&#39;
+curl &#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;collection=primary&amp;name=primary_shard1_replica_3&amp;shard=shard1&#39;
 </code></pre></div>
-<p>最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为<code>product_shard1_replica_2</code>，在192.168.56.122节点上有一个副本，名称为<code>product_shard1_replica_3</code>。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：</p>
+<p>最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为<code>primary_shard1_replica_2</code>，在192.168.56.122节点上有一个副本，名称为<code>primary_shard1_replica_3</code>。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@192.168.56.121 opt]# ll /usr/local/solrhome/
 total 16
-drwxr-xr-x 3 root root 4096 Mar 10 17:11 product_shard1_replica2
-drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
+drwxr-xr-x 3 root root 4096 Mar 10 17:11 primary_shard1_replica2
+drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 -rw-r--r-- 1 root root  444 Mar 10 17:16 solr.xml
 </code></pre></div>
 <p>你还可以对shard2和shard3添加副本。</p>
@@ -412,8 +413,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;solr</span> <span class="na">persistent=</span><span class="s">&quot;true&quot;</span> <span class="na">sharedLib=</span><span class="s">&quot;lib&quot;</span><span class="nt">&gt;</span>
   <span class="nt">&lt;cores</span> <span class="na">adminPath=</span><span class="s">&quot;/admin/cores&quot;</span> <span class="na">zkClientTimeout=</span><span class="s">&quot;20000&quot;</span> <span class="na">hostPort=</span><span class="s">&quot;${jetty.port:8080}&quot;</span> <span class="na">hostContext=</span><span class="s">&quot;${hostContext:solr}&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard2&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;product_shard2_replica1/&quot;</span> <span class="na">name=</span><span class="s">&quot;product_shard2_replica1&quot;</span> <span class="na">collection=</span><span class="s">&quot;product&quot;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard1&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;product_shard1_replica2/&quot;</span> <span class="na">name=</span><span class="s">&quot;product_shard1_replica_2&quot;</span> <span class="na">collection=</span><span class="s">&quot;product&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard2&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;primary_shard2_replica1/&quot;</span> <span class="na">name=</span><span class="s">&quot;primary_shard2_replica1&quot;</span> <span class="na">collection=</span><span class="s">&quot;primary&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;core</span> <span class="na">shard=</span><span class="s">&quot;shard1&quot;</span> <span class="na">instanceDir=</span><span class="s">&quot;primary_shard1_replica2/&quot;</span> <span class="na">name=</span><span class="s">&quot;primary_shard1_replica_2&quot;</span> <span class="na">collection=</span><span class="s">&quot;primary&quot;</span><span class="nt">/&gt;</span>
   <span class="nt">&lt;/cores&gt;</span>
 <span class="nt">&lt;/solr&gt;</span>
 </code></pre></div>
@@ -478,20 +479,37 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 <p>加入下面参数，只从存活的shards获取数据：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">shards.tolerant=true 
 </code></pre></div>
-<p>如：<code>http://192.168.56.121:8080/solr/product_shard2_replica1/select?q=*%3A*&amp;wt=xml&amp;indent=true&amp;shards.tolerant=true</code></p>
+<p>如：<code>http://192.168.56.121:8080/solr/primary_shard2_replica1/select?q=*%3A*&amp;wt=xml&amp;indent=true&amp;shards.tolerant=true</code></p>
 
 <p>没有打此参数，如果集群内有挂掉的shard，将显示：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">no servers hosting shard
 </code></pre></div>
+<h3>8.3 自动创建Collection及初始Shard</h3>
+
+<p>自动创建Collection及初始Shard，不需要通过zookeeper手动上传配置文件并关联collection。</p>
+
+<p>1、在第一个节点修改tomcat启动参数</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3 -Dbootstrap_confdir=/usr/local/solrhome/primary/conf -Dcollection.configName=primaryconf &#39;
+</code></pre></div>
+<p>然后启动tomcat。这个步骤上传了集群的相关配置信息(<code>/usr/local/solrhome/primary/conf</code>)到ZooKeeper中去，所以启动下一个节点时不用再指定配置文件了。</p>
+
+<p>2、在第二个和第三个节点修改tomcat启动参数</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3&#39;
+</code></pre></div>
+<p>然后启动tomcat。</p>
+
+<p>这样就会创建3个shard分别分布在三个节点上，如果你在增加一个节点，这节点会附加到一个shard上成为一个replica，而不会创建新的shard。</p>
+
 <h1>9. 总结</h1>
 
-<p>本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行创建，是否可以直接在配置文件中设置尚未做验证。</p>
+<p>本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行手动创建，然后又对自动创建Collection及初始Shard进行了说明。</p>
 
 <h1>10. 参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://shiyanjun.cn/archives/100.html">SolrCloud 4.3.1+Tomcat 7安装配置实践</a></li>
 <li>[2] <a href="http://wiki.apache.org/solr/SolrCloud">SolrCloud Wiki</a></li>
+<li>[3] <a href="http://www.wxdl.cn/index/solrcloud.html">SolrCloud使用教程、原理介绍</a></li>
 </ul>
 
 

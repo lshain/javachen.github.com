@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-12T11:52:25+08:00</updated>
+ <updated>2014-03-12T18:18:55+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -39,7 +39,7 @@
 &lt;h1&gt;2. 规划SolrCloud&lt;/h1&gt;
 
 &lt;ul&gt;
-&lt;li&gt;单一SolrCloud数据集合:product&lt;/li&gt;
+&lt;li&gt;单一SolrCloud数据集合:primary&lt;/li&gt;
 &lt;li&gt;ZooKeeper集群:3台&lt;/li&gt;
 &lt;li&gt;SolrCloud实例:3节点&lt;/li&gt;
 &lt;li&gt;索引分片：3&lt;/li&gt;
@@ -111,32 +111,32 @@ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 &lt;h1&gt;5. ZooKeeper管理配置文件&lt;/h1&gt;
 
 &lt;p&gt;1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /usr/local/SolrCloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /usr/local/solrcloud/solr-lib/
+cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;2、 通过bootstrap设置solrhome：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了&lt;code&gt;-Dbootstrap_confdir&lt;/code&gt;参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。&lt;/p&gt;
 
 &lt;p&gt;3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;说明：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;zkhost指定ZooKeeper地址，逗号分割&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;/usr/local/solrhome/core0/conf&lt;/code&gt;目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。&lt;/li&gt;
-&lt;li&gt;productconf为在ZooKeeper上的配置文件名称。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/usr/local/solrhome/primary/conf&lt;/code&gt;目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。&lt;/li&gt;
+&lt;li&gt;primaryconf为在ZooKeeper上的配置文件名称。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;4、把配置文件和目标collection联系起来：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;说明：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;创建的collection叫做product，并指定和productconf连接&lt;/li&gt;
+&lt;li&gt;创建的collection叫做primary，并指定和primaryconf连接&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;5、查看ZooKeeper上状态&lt;/p&gt;
@@ -148,10 +148,10 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 [configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
 
 [zk: localhost:2181(CONNECTED) 1] ls /configs
-[productconf]
+[primaryconf]
 
 [zk: localhost:2181(CONNECTED) 1] ls /collections
-[product]
+[primary]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;查看&lt;code&gt;/configs&lt;/code&gt;和&lt;code&gt;/collections&lt;/code&gt;目录均有值，说明配置文件已经上传到ZooKeeper上了，接下来启动solr。&lt;/p&gt;
 
@@ -160,19 +160,20 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 &lt;p&gt;1、修改每个节点上的tomcat配置文件，在环境变量中添加zkHost变量&lt;/p&gt;
 
 &lt;p&gt;编辑&lt;code&gt;apache-tomcat-6.0.36/bin/catalina.sh&lt;/code&gt;,添加如下代码：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Dsolr.solr.home=/usr/local/solrhome-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&amp;#39;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在&lt;code&gt;/usr/local/solrhome/&lt;/code&gt;目录创建solr.xml：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${zkClientTimeout:15000}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;说明：&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;hostPort值应该和tomcat的端口保持一致&lt;/li&gt;
-&lt;li&gt;solr默认使用jetty服务器，端口默认为8983&lt;/li&gt;
+&lt;li&gt;-Djetty.port：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080&lt;/li&gt;
+&lt;li&gt;-Dsolr.solr.home：配置solr/home&lt;/li&gt;
+&lt;li&gt;-zkHost配置zookeeper集群地址，多个地址逗号分隔&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;最后，在/opt目录下启动tomcat：&lt;/p&gt;
@@ -184,10 +185,10 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 
 &lt;h1&gt;7. 创建Collection、Shard和Replication&lt;/h1&gt;
 
-&lt;h2&gt;创建Collection及初始Shard&lt;/h2&gt;
+&lt;h2&gt;手动创建Collection及初始Shard&lt;/h2&gt;
 
 &lt;p&gt;直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;amp;name=product&amp;amp;numShards=3&amp;amp;replicationFactor=1&amp;#39;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;amp;name=primary&amp;amp;numShards=3&amp;amp;replicationFactor=1&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;如果成功，会输出如下响应内容：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;response&amp;gt;&lt;/span&gt;
@@ -201,7 +202,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
             &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
             &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2521&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard2_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;primary_shard2_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&amp;gt;&lt;/span&gt;
@@ -209,7 +210,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
             &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
             &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2561&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard3_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;primary_shard3_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;lst&amp;gt;&lt;/span&gt;
@@ -217,7 +218,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;int&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;QTime&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;2607&lt;span class=&quot;nt&quot;&gt;&amp;lt;/int&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;product_shard1_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;core&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;primary_shard1_replica1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;str&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;saved&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;/usr/local/solrhome/solr.xml&lt;span class=&quot;nt&quot;&gt;&amp;lt;/str&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/lst&amp;gt;&lt;/span&gt;
@@ -239,7 +240,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -248,15 +249,15 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib
 &lt;h2&gt;手动创建Replication&lt;/h2&gt;
 
 &lt;p&gt;下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;amp;collection=product&amp;amp;name=product_shard1_replica_2&amp;amp;shard=shard1&amp;#39;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_2&amp;amp;shard=shard1&amp;#39;
 
-curl &amp;#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;amp;collection=product&amp;amp;name=product_shard1_replica_3&amp;amp;shard=shard1&amp;#39;
+curl &amp;#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_3&amp;amp;shard=shard1&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为&lt;code&gt;product_shard1_replica_2&lt;/code&gt;，在192.168.56.122节点上有一个副本，名称为&lt;code&gt;product_shard1_replica_3&lt;/code&gt;。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：&lt;/p&gt;
+&lt;p&gt;最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为&lt;code&gt;primary_shard1_replica_2&lt;/code&gt;，在192.168.56.122节点上有一个副本，名称为&lt;code&gt;primary_shard1_replica_3&lt;/code&gt;。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@192.168.56.121 opt]# ll /usr/local/solrhome/
 total 16
-drwxr-xr-x 3 root root 4096 Mar 10 17:11 product_shard1_replica2
-drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
+drwxr-xr-x 3 root root 4096 Mar 10 17:11 primary_shard1_replica2
+drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 -rw-r--r-- 1 root root  444 Mar 10 17:16 solr.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;你还可以对shard2和shard3添加副本。&lt;/p&gt;
@@ -265,8 +266,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;solr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;persistent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;sharedLib=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;lib&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;&amp;lt;cores&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;adminPath=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;/admin/cores&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;zkClientTimeout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;20000&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostPort=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${jetty.port:8080}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;hostContext=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;${hostContext:solr}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard1_replica2/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product_shard1_replica_2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;product&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard2_replica1/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard2_replica1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;core&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;shard=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;shard1&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;instanceDir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard1_replica2/&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary_shard1_replica_2&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;primary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;&amp;lt;/cores&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/solr&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -331,20 +332,37 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 &lt;p&gt;加入下面参数，只从存活的shards获取数据：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;shards.tolerant=true 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如：&lt;code&gt;http://192.168.56.121:8080/solr/product_shard2_replica1/select?q=*%3A*&amp;amp;wt=xml&amp;amp;indent=true&amp;amp;shards.tolerant=true&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如：&lt;code&gt;http://192.168.56.121:8080/solr/primary_shard2_replica1/select?q=*%3A*&amp;amp;wt=xml&amp;amp;indent=true&amp;amp;shards.tolerant=true&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;没有打此参数，如果集群内有挂掉的shard，将显示：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;no servers hosting shard
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;8.3 自动创建Collection及初始Shard&lt;/h3&gt;
+
+&lt;p&gt;自动创建Collection及初始Shard，不需要通过zookeeper手动上传配置文件并关联collection。&lt;/p&gt;
+
+&lt;p&gt;1、在第一个节点修改tomcat启动参数&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3 -Dbootstrap_confdir=/usr/local/solrhome/primary/conf -Dcollection.configName=primaryconf &amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后启动tomcat。这个步骤上传了集群的相关配置信息(&lt;code&gt;/usr/local/solrhome/primary/conf&lt;/code&gt;)到ZooKeeper中去，所以启动下一个节点时不用再指定配置文件了。&lt;/p&gt;
+
+&lt;p&gt;2、在第二个和第三个节点修改tomcat启动参数&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然后启动tomcat。&lt;/p&gt;
+
+&lt;p&gt;这样就会创建3个shard分别分布在三个节点上，如果你在增加一个节点，这节点会附加到一个shard上成为一个replica，而不会创建新的shard。&lt;/p&gt;
+
 &lt;h1&gt;9. 总结&lt;/h1&gt;
 
-&lt;p&gt;本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行创建，是否可以直接在配置文件中设置尚未做验证。&lt;/p&gt;
+&lt;p&gt;本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行手动创建，然后又对自动创建Collection及初始Shard进行了说明。&lt;/p&gt;
 
 &lt;h1&gt;10. 参考文章&lt;/h1&gt;
 
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href=&quot;http://shiyanjun.cn/archives/100.html&quot;&gt;SolrCloud 4.3.1+Tomcat 7安装配置实践&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] &lt;a href=&quot;http://wiki.apache.org/solr/SolrCloud&quot;&gt;SolrCloud Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://www.wxdl.cn/index/solrcloud.html&quot;&gt;SolrCloud使用教程、原理介绍&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>

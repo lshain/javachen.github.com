@@ -24,7 +24,7 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 
 # 2. 规划SolrCloud
 
-- 单一SolrCloud数据集合:product
+- 单一SolrCloud数据集合:primary
 - ZooKeeper集群:3台
 - SolrCloud实例:3节点
 - 索引分片：3
@@ -117,14 +117,14 @@ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：
 
 ```
-mkdir -p /usr/local/SolrCloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/SolrCloud/solr-lib/
+mkdir -p /usr/local/solrcloud/solr-lib/
+cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
 ```
 
 2、 通过bootstrap设置solrhome：
 
 ```
-java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 ```
 
 SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了`-Dbootstrap_confdir`参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。
@@ -132,24 +132,24 @@ SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启�
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
 ```
-java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/core0/conf -confname productconf
+java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
 ```
 
 说明：
 
 - zkhost指定ZooKeeper地址，逗号分割
-- `/usr/local/solrhome/core0/conf`目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。
-- productconf为在ZooKeeper上的配置文件名称。
+- `/usr/local/solrhome/primary/conf`目录下存在schema.xml和solrconfig.xml两个配置文件，你可以修改为你自己的目录。
+- primaryconf为在ZooKeeper上的配置文件名称。
 
 4、把配置文件和目标collection联系起来：
 
 ```
-java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection product -confname productconf
+java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
 ```
 
 说明：
 
-- 创建的collection叫做product，并指定和productconf连接
+- 创建的collection叫做primary，并指定和primaryconf连接
 
 5、查看ZooKeeper上状态
 
@@ -162,10 +162,10 @@ java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 [configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
 
 [zk: localhost:2181(CONNECTED) 1] ls /configs
-[productconf]
+[primaryconf]
 
 [zk: localhost:2181(CONNECTED) 1] ls /collections
-[product]
+[primary]
 
 ```
 
@@ -179,7 +179,7 @@ java -classpath .:/usr/local/SolrCloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 编辑`apache-tomcat-6.0.36/bin/catalina.sh`,添加如下代码：
 
 ```
-JAVA_OPTS='-Dsolr.solr.home=/usr/local/solrhome-DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
+JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
 ```
 
 在`/usr/local/solrhome/`目录创建solr.xml：
@@ -187,14 +187,15 @@ JAVA_OPTS='-Dsolr.solr.home=/usr/local/solrhome-DzkHost=192.168.56.122:2181,192.
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr persistent="true" sharedLib="lib">
-    <cores adminPath="/admin/cores" zkClientTimeout="20000" hostPort="${jetty.port:8080}" hostContext="${hostContext:solr}"></cores>
+    <cores adminPath="/admin/cores" zkClientTimeout="${zkClientTimeout:15000}" hostPort="${jetty.port:8080}" hostContext="${hostContext:solr}"></cores>
 </solr>
 ```
 
 说明：
 
-- hostPort值应该和tomcat的端口保持一致
-- solr默认使用jetty服务器，端口默认为8983
+- -Djetty.port：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080
+- -Dsolr.solr.home：配置solr/home
+- -zkHost配置zookeeper集群地址，多个地址逗号分隔
 
 最后，在/opt目录下启动tomcat：
 
@@ -208,12 +209,12 @@ sh apache-tomcat-6.0.36/bin/startup.sh
 
 # 7. 创建Collection、Shard和Replication
 
-## 创建Collection及初始Shard
+## 手动创建Collection及初始Shard
 
 直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：
 
 ```
-curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=product&numShards=3&replicationFactor=1'
+curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=primary&numShards=3&replicationFactor=1'
 ```
 
 如果成功，会输出如下响应内容：
@@ -230,7 +231,7 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 			<int name="status">0</int>
 			<int name="QTime">2521</int>
 		</lst>
-		<str name="core">product_shard2_replica1</str>
+		<str name="core">primary_shard2_replica1</str>
 		<str name="saved">/usr/local/solrhome/solr.xml</str>
 	</lst>
 	<lst>
@@ -238,7 +239,7 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 			<int name="status">0</int>
 			<int name="QTime">2561</int>
 		</lst>
-		<str name="core">product_shard3_replica1</str>
+		<str name="core">primary_shard3_replica1</str>
 		<str name="saved">/usr/local/solrhome/solr.xml</str>
 	</lst>
 	<lst>
@@ -246,7 +247,7 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 		<int name="status">0</int>
 		<int name="QTime">2607</int>
 		</lst>
-		<str name="core">product_shard1_replica1</str>
+		<str name="core">primary_shard1_replica1</str>
 		<str name="saved">/usr/local/solrhome/solr.xml</str>
 	</lst>
 </lst>
@@ -269,7 +270,7 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr persistent="true" sharedLib="lib">
   <cores adminPath="/admin/cores" zkClientTimeout="20000" hostPort="${jetty.port:8080}" hostContext="${hostContext:solr}">
-    <core shard="shard2" instanceDir="product_shard2_replica1/" name="product_shard2_replica1" collection="product"/>
+    <core shard="shard2" instanceDir="primary_shard2_replica1/" name="primary_shard2_replica1" collection="primary"/>
   </cores>
 </solr>
 ```
@@ -281,18 +282,18 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=produ
 下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：
 
 ```
-curl 'http://192.168.56.121:8080/solr/admin/cores?action=CREATE&collection=product&name=product_shard1_replica_2&shard=shard1'
+curl 'http://192.168.56.121:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_2&shard=shard1'
 
-curl 'http://192.168.56.122:8080/solr/admin/cores?action=CREATE&collection=product&name=product_shard1_replica_3&shard=shard1'
+curl 'http://192.168.56.122:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_3&shard=shard1'
 ```
 
-最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为`product_shard1_replica_2`，在192.168.56.122节点上有一个副本，名称为`product_shard1_replica_3`。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：
+最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为`primary_shard1_replica_2`，在192.168.56.122节点上有一个副本，名称为`primary_shard1_replica_3`。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：
 
 ```
 [root@192.168.56.121 opt]# ll /usr/local/solrhome/
 total 16
-drwxr-xr-x 3 root root 4096 Mar 10 17:11 product_shard1_replica2
-drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
+drwxr-xr-x 3 root root 4096 Mar 10 17:11 primary_shard1_replica2
+drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 -rw-r--r-- 1 root root  444 Mar 10 17:16 solr.xml
 ```
 
@@ -304,8 +305,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 product_shard2_replica1
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr persistent="true" sharedLib="lib">
   <cores adminPath="/admin/cores" zkClientTimeout="20000" hostPort="${jetty.port:8080}" hostContext="${hostContext:solr}">
-    <core shard="shard2" instanceDir="product_shard2_replica1/" name="product_shard2_replica1" collection="product"/>
-    <core shard="shard1" instanceDir="product_shard1_replica2/" name="product_shard1_replica_2" collection="product"/>
+    <core shard="shard2" instanceDir="primary_shard2_replica1/" name="primary_shard2_replica1" collection="primary"/>
+    <core shard="shard1" instanceDir="primary_shard1_replica2/" name="primary_shard1_replica_2" collection="primary"/>
   </cores>
 </solr>
 ```
@@ -399,7 +400,7 @@ cores节点需要定义adminPath属性：
 shards.tolerant=true 
 ```
 
-如：`http://192.168.56.121:8080/solr/product_shard2_replica1/select?q=*%3A*&wt=xml&indent=true&shards.tolerant=true`
+如：`http://192.168.56.121:8080/solr/primary_shard2_replica1/select?q=*%3A*&wt=xml&indent=true&shards.tolerant=true`
  
 没有打此参数，如果集群内有挂掉的shard，将显示：
 
@@ -407,13 +408,37 @@ shards.tolerant=true
 no servers hosting shard
 ```
 
+### 8.3 自动创建Collection及初始Shard
+
+自动创建Collection及初始Shard，不需要通过zookeeper手动上传配置文件并关联collection。
+
+1、在第一个节点修改tomcat启动参数
+
+```
+JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3 -Dbootstrap_confdir=/usr/local/solrhome/primary/conf -Dcollection.configName=primaryconf '
+```
+
+然后启动tomcat。这个步骤上传了集群的相关配置信息(`/usr/local/solrhome/primary/conf`)到ZooKeeper中去，所以启动下一个节点时不用再指定配置文件了。
+
+
+2、在第二个和第三个节点修改tomcat启动参数
+
+```
+JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181 -DnumShards=3'
+```
+
+然后启动tomcat。
+
+
+这样就会创建3个shard分别分布在三个节点上，如果你在增加一个节点，这节点会附加到一个shard上成为一个replica，而不会创建新的shard。
+
 # 9. 总结
 
-本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行创建，是否可以直接在配置文件中设置尚未做验证。
+本文记录了如何zookeeper、SolrCloud的安装和配置过程，solrcore是通过restapi进行手动创建，然后又对自动创建Collection及初始Shard进行了说明。
 
 # 10. 参考文章
 
 - [1] [SolrCloud 4.3.1+Tomcat 7安装配置实践](http://shiyanjun.cn/archives/100.html)
 - [2] [SolrCloud Wiki](http://wiki.apache.org/solr/SolrCloud)
-
+- [3] [SolrCloud使用教程、原理介绍](http://www.wxdl.cn/index/solrcloud.html)
 
