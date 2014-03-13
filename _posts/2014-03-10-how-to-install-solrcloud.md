@@ -408,7 +408,7 @@ shards.tolerant=true
 no servers hosting shard
 ```
 
-### 8.3 自动创建Collection及初始Shard
+## 8.3 自动创建Collection及初始Shard
 
 自动创建Collection及初始Shard，不需要通过zookeeper手动上传配置文件并关联collection。
 
