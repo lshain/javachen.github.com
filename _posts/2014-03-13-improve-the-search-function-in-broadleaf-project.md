@@ -62,7 +62,7 @@ solr.index.repeat.interval=3600000
 
 从上可以看出使用的Solr是嵌入式服务，Solr配置文件（schema.xml和solrconfig.xml）在https://github.com/BroadleafCommerce/DemoSite/tree/master/site/src/main/resources目录下。
 
-从源代码SolrSearchServiceImpl.java中可以看出,一共启动了两个Solr服务，分别对应primary和reindex狼哥solrcore，primary用于查询，reindex用于重建索引。
+从源代码SolrSearchServiceImpl.java中可以看出,一共启动了两个Solr服务，分别对应primary和reindex两个solrcore，primary用于查询，reindex用于重建索引。
 
 # 改进搜索引擎
 
@@ -383,7 +383,7 @@ public Product saveProduct(Product product) {
 
 a. web系统启动时候，会查询数据库中商品，然后重建索引。该功能在applicationContext.xml中已经定义了定时任务，建议取消该定时任务。去掉以下代码：
 
-```
+```xml
 <bean id="rebuildIndexJobDetail"
     class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
     <property name="targetObject" ref="blSearchService" />
