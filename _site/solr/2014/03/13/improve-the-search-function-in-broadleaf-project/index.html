@@ -214,11 +214,13 @@ solr.index.repeat.interval=3600000
 </code></pre></div>
 <p>从上可以看出使用的Solr是嵌入式服务，Solr配置文件（schema.xml和solrconfig.xml）在https://github.com/BroadleafCommerce/DemoSite/tree/master/site/src/main/resources目录下。</p>
 
-<p>从源代码SolrSearchServiceImpl.java中可以看出,一共启动了两个Solr服务，分别对应primary和reindex狼哥solrcore，primary用于查询，reindex用于重建索引。</p>
+<p>从源代码SolrSearchServiceImpl.java中可以看出,一共启动了两个Solr服务，分别对应primary和reindex两个solrcore，primary用于查询，reindex用于重建索引。</p>
 
 <h1>改进搜索引擎</h1>
 
 <h2>改进目标</h2>
+
+<p>本篇文章只是将嵌入式Solr服务换成独立运行的Solr服务，你还可以更进一步换成SolrCloud集群。</p>
 
 <ul>
 <li>单独搭建搜素引擎服务器</li>
@@ -500,23 +502,23 @@ solr.source.reindex=solrReindexServer
 <p>5、 修改定时任务</p>
 
 <p>a. web系统启动时候，会查询数据库中商品，然后重建索引。该功能在applicationContext.xml中已经定义了定时任务，建议取消该定时任务。去掉以下代码：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;bean id=&quot;rebuildIndexJobDetail&quot;
-    class=&quot;org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean&quot;&gt;
-    &lt;property name=&quot;targetObject&quot; ref=&quot;blSearchService&quot; /&gt;
-    &lt;property name=&quot;targetMethod&quot; value=&quot;rebuildIndex&quot; /&gt;
-&lt;/bean&gt;
-&lt;bean id=&quot;rebuildIndexTrigger&quot; class=&quot;org.springframework.scheduling.quartz.SimpleTriggerBean&quot;&gt;
-    &lt;property name=&quot;jobDetail&quot; ref=&quot;rebuildIndexJobDetail&quot; /&gt;
-    &lt;property name=&quot;startDelay&quot; value=&quot;${solr.index.start.delay}&quot; /&gt;
-    &lt;property name=&quot;repeatInterval&quot; value=&quot;${solr.index.repeat.interval}&quot; /&gt;
-&lt;/bean&gt;
-&lt;bean class=&quot;org.springframework.scheduling.quartz.SchedulerFactoryBean&quot;&gt;
-    &lt;property name=&quot;triggers&quot;&gt;
-        &lt;list&gt;
-            &lt;ref bean=&quot;rebuildIndexTrigger&quot; /&gt;
-        &lt;/list&gt;
-    &lt;/property&gt;
-&lt;/bean&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;rebuildIndexJobDetail&quot;</span>
+    <span class="na">class=</span><span class="s">&quot;org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;targetObject&quot;</span> <span class="na">ref=</span><span class="s">&quot;blSearchService&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;targetMethod&quot;</span> <span class="na">value=</span><span class="s">&quot;rebuildIndex&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;rebuildIndexTrigger&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.scheduling.quartz.SimpleTriggerBean&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;jobDetail&quot;</span> <span class="na">ref=</span><span class="s">&quot;rebuildIndexJobDetail&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;startDelay&quot;</span> <span class="na">value=</span><span class="s">&quot;${solr.index.start.delay}&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;repeatInterval&quot;</span> <span class="na">value=</span><span class="s">&quot;${solr.index.repeat.interval}&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;org.springframework.scheduling.quartz.SchedulerFactoryBean&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;triggers&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;list&gt;</span>
+            <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">&quot;rebuildIndexTrigger&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/list&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 </code></pre></div>
 <p>b. 编写main方法，打成jar包，然后编写shell脚本，用于手动重建索引或者设置定时任务。该类需要获取一个名称为blSearchService的bean，然后调用该bean的rebuildIndex方法,主要代码如下。</p>
 <div class="highlight"><pre><code class="java language-java" data-lang="java"><span class="nd">@Resource</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;blSearchService&quot;</span><span class="o">)</span>
@@ -539,7 +541,7 @@ solr.source.reindex=solrReindexServer
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/solr/2014/03/14/split-chinese-in-solr" title="在Solr中使用中文分词">Next &raquo;</a>
           
         </div>
       </div>

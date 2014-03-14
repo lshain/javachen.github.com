@@ -5,6 +5,13 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/solr/2014/03/14/split-chinese-in-solr</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-03-14T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/solr/2014/03/13/improve-the-search-function-in-broadleaf-project</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-03-13T00:00:00+08:00</lastmod>

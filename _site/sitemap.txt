@@ -18,6 +18,7 @@ http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
 
+http://blog.javachen.com/solr/2014/03/14/split-chinese-in-solr
 http://blog.javachen.com/solr/2014/03/13/improve-the-search-function-in-broadleaf-project
 http://blog.javachen.com/solr/2014/03/10/how-to-install-solrcloud
 http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013

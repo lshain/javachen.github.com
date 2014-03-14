@@ -166,6 +166,17 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/work/2013/09/08/recent-work">最近的工作</a></h2>
+    
+      最近一直在构思这篇博客的内容，到现在还是不知道从何下手。自从将博客从wordpress迁移到github上之后，就很少在博客写一些关于工作和生活的文章，所以想写一篇关于工作的博客，记录最近做过的事情以及一些当时的所思所想。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/work/2013/09/08/recent-work"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hive/2013/09/04/how-to-decide-map-number">hive中如何确定map数</a></h2>
     
       hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供完整的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。当运行一个hql语句的时候，map数是如何计算出来的呢？有哪些方法可以调整map数呢？
@@ -274,27 +285,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h2>
-    
-		
-		  <h1>1 方法一</h1>
-
-<p>你可以从<a href="https://ccp.cloudera.com/display/SUPPORT/Downloads">https://ccp.cloudera.com/display/SUPPORT/Downloads</a>下载<code>cloudera-manager-installer.bin</code>，然后修改执行权限并执行该脚本。</p>
-
-<p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
-
-<p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
-
-
-		 
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -328,6 +318,8 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
        <div class="category">
          <ul>
            
+           <li><a href="/solr/2014/03/14/split-chinese-in-solr">在Solr中使用中文分词</a></li>
+           
            <li><a href="/solr/2014/03/13/improve-the-search-function-in-broadleaf-project">BroadLeaf项目搜索功能改进</a></li>
            
            <li><a href="/solr/2014/03/10/how-to-install-solrcloud">Apache SolrCloud安装</a></li>
@@ -357,8 +349,6 @@ rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
            <li><a href="/linux/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
            
            <li><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
-           
-           <li><a href="/hbase/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></li>
            
          </ul>
        </div>
