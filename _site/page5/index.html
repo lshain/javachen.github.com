@@ -166,6 +166,27 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/07/20/install-rhadoop">安装RHadoop</a></h2>
+    
+		
+		  <h1>1. R Language Install</h1>
+
+<h2>安装相关依赖</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install -y perl* pcre-devel tcl-devel zlib-devel bzip2-devel libX11-devel tk-devel tetex-latex *gfortran*  compat-readline5
+yum install libRmath-*
+rpm -Uvh --force --nodeps  R-core-2.10.0-2.el5.x86_64.rpm
+rpm -Uvh R-2.10.0-2.el5.x86_64.rpm R-devel-2.10.0-2.el5.x86_64.rpm
+</code></pre></div>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/07/20/install-rhadoop"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hadoop/2013/06/24/install-cdh-by-cloudera-manager">通过Cloudera Manager安装CDH</a></h2>
     
 		
@@ -492,17 +513,6 @@ http://rhel-june:50070/
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h2>
-    
-      2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。以下是2012年相对于2011年的一些变化。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/work/2013/02/20/summary-of-the-work-in-2012"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <!-- Pagination links -->
 <div class="pull-right">
@@ -536,6 +546,8 @@ http://rhel-june:50070/
        <div class="category">
          <ul>
            
+           <li><a href="/solr/2014/03/15/schema-in-solr">Solr的schema.xml</a></li>
+           
            <li><a href="/solr/2014/03/14/split-chinese-in-solr">在Solr中使用中文分词</a></li>
            
            <li><a href="/solr/2014/03/13/improve-the-search-function-in-broadleaf-project">BroadLeaf项目搜索功能改进</a></li>
@@ -565,8 +577,6 @@ http://rhel-june:50070/
            <li><a href="/linux/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
            
            <li><a href="/linux/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
-           
-           <li><a href="/linux/2014/01/18/bash-problem-when-ssh-access">ssh连接环境变量问题</a></li>
            
          </ul>
        </div>

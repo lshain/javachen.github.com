@@ -6,13 +6,13 @@ category: solr
 tags: [solr, solrcloud]
 ---
 
-使用全文检索，中文分词是离不开的，这里我采用的是mmseg4j分词器。mmseg4j分词器内置了对solr的支持，最新版本可支持4.X版本的sorl，使用起来很是方便。
+使用全文检索，中文分词是离不开的，这里我采用的是 **mmseg4j** 分词器。mmseg4j分词器内置了对solr的支持，最新版本可支持4.X版本的sorl，使用起来很是方便。
 
 # 下载mmseg4j
 
 GoogleCode地址：[http://code.google.com/p/mmseg4j/](http://code.google.com/p/mmseg4j/)
 
-请下载最新版本：mmseg4j-1.9.1，然后将mmseg4j-1.9.1/dist下的jar包拷贝至solr.war的lib目录，例如：apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
+请下载最新版本：mmseg4j-1.9.1，然后将mmseg4j-1.9.1/dist下的jar包拷贝至solr.war的lib目录，例如：*apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/*
 
 
 # 配置schema.xml
