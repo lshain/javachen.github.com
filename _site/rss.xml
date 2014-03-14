@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Fri, 14 Mar 2014 15:18:28 +0800</lastBuildDate>
-		<pubDate>Fri, 14 Mar 2014 15:18:28 +0800</pubDate>
+		<lastBuildDate>Fri, 14 Mar 2014 15:27:27 +0800</lastBuildDate>
+		<pubDate>Fri, 14 Mar 2014 15:27:27 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -120,7 +120,13 @@
 
 &lt;p&gt;默认搜索操作符参数，及搜索短语间的逻辑，用AND增加准确率，用OR增加覆盖面，建议用AND，也可在搜索语句中定义。例如搜索“手机 苹果”，使用AND默认搜索为“手机AND苹果“。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;solrQueryParser&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;defaultOperator=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;OR&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;参考文章&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html&quot;&gt;Solr配置，schema.xml的配置，以及中文分词&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
 			<link>http://blog.javachen.com/solr/2014/03/15/schema-in-solr</link>
 			<guid>http://blog.javachen.com/solr/2014/03/15/schema-in-solr</guid>
 			<pubDate>Sat, 15 Mar 2014 00:00:00 +0800</pubDate>

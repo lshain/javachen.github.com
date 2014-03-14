@@ -128,3 +128,7 @@ solr必须设置一个唯一字段，常设置为id，此唯一一段有uniqueKe
 ```xml
 <solrQueryParser defaultOperator="OR"/> 
 ```
+
+# 参考文章
+
+- [1] [Solr配置，schema.xml的配置，以及中文分词](http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html)
