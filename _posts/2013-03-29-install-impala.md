@@ -20,13 +20,17 @@ keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera, impala
 
 1. DataNode节点
 
+```
 	yum install -y impala-0.6-1.p0.548.el6.x86_64.rpm	impala-server-0.6-1.p0.548.el6.x86_64.rpm impala-state-store-0.6-1.p0.548.el6.x86_64.rpm 	impala-shell-0.6-1.p0.548.el6.x86_64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken
+```
 
 2. 在hive节点上
 
+```
 	yum install -y impala-0.6-1.p0.548.el6.x86_64.rpm	impala-server-0.6-1.p0.548.el6.x86_64.rpm \
 	impala-state-store-0.6-1.p0.548.el6.x86_64.rpm 	impala-shell-0.6-1.p0.548.el6.x86_64.rpm \
 	libevent-1.4.13-4.el6.x86_64.rpm 	bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm
+```
 
 # 配置Impala
 ## 查看安装路径
@@ -53,6 +57,7 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 
 并作下面修改在`hdfs-site.xml`文件中添加如下内容：
 
+```xml
 	<property>
 	    <name>dfs.client.read.shortcircuit</name>
 	    <value>true</value>
@@ -67,6 +72,7 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 	  <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
 	  <value>true</value>
 	</property>
+```
 
 同步以上文件到其他节点
 

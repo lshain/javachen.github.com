@@ -168,18 +168,18 @@
 <p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
 
 <h1>下载yum源</h1>
-<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">sohu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fedora</span><span class="o">-</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">epel</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mi">8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
 </code></pre></div>
 <h1>安装依赖</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install python-jinja2 -y
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install python-jinja2 -y
 </code></pre></div>
 <h1>安装saltstack</h1>
 
 <p>在sk1上安装master：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-master
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install salt-master
 </code></pre></div>
 <p>在sk1上安装minion：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-minion
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install salt-minion
 </code></pre></div>
 <!-- more -->
 
@@ -198,23 +198,23 @@ id: sk2
 <h1>启动</h1>
 
 <p>分别在sk1和sk2上配置开机启动：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig salt-master on
-chkconfig salt-minion on
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ chkconfig salt-master on
+$ chkconfig salt-minion on
 </code></pre></div>
 <p>分别在sk1和sk2上以service方式启动：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master start
-/etc/init.d/salt-minion start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/salt-master start
+$ /etc/init.d/salt-minion start
 </code></pre></div>
 <p>你可以在sk2上以后台运行salt-minion</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -d
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt-minion -d
 </code></pre></div>
 <p>或者在sk2上debug方式运行：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt-minion -l debug
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt-minion -l debug
 </code></pre></div>
 <h1>排错</h1>
 
 <p>如果启动提示如下错误：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 vagrant]# /etc/init.d/salt-master start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$  /etc/init.d/salt-master start
 Starting salt-master daemon: Traceback (most recent call last):
  File &quot;/usr/bin/salt-master&quot;, line 10, in &lt;module&gt;
    salt_master()
@@ -227,10 +227,10 @@ Starting salt-master daemon: Traceback (most recent call last):
 AttributeError: &#39;pwd.struct_passwd&#39; object has no attribute &#39;gid&#39;
 </code></pre></div>
 <p>请下载saltstack源码重新编译：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://github.com/saltstack/salt/archive/develop.zip
-unzip develop
-cd salt-develop/
-python2.6 setup.py install
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget https://github.com/saltstack/salt/archive/develop.zip
+$ unzip develop
+$ cd salt-develop/
+$ python2.6 setup.py install
 </code></pre></div>
 <h1>salt minion和master的认证过程</h1>
 
@@ -269,14 +269,14 @@ sk2:salt &#39;*&#39; test.ping
 <h1>安装halite</h1>
 
 <h2>下载代码</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone https://github.com/saltstack/halite
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ git clone https://github.com/saltstack/halite
 </code></pre></div>
 <h2>生成index.html</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd halite/halite
-./genindex.py -C
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd halite/halite
+$ ./genindex.py -C
 </code></pre></div>
 <h2>安装salt-api</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install salt-api
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install salt-api
 </code></pre></div>
 <h2>配置salt master文件</h2>
 
@@ -295,15 +295,15 @@ sk2:salt &#39;*&#39; test.ping
      <span class="o">-</span> <span class="s">&#39;@wheel&#39;</span>
 </code></pre></div>
 <p>重启master;</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/salt-master restart
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/salt-master restart
 </code></pre></div>
 <h2>添加登陆用户</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">useradd admin
-echo admin|passwd –stdin admin
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ useradd admin
+$ echo admin|passwd –stdin admin
 </code></pre></div>
 <h2>启动 salt-api</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd halite/halite
-python2.6 server_bottle.py -d -C -l debug -s cherrypy
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd halite/halite
+$ python2.6 server_bottle.py -d -C -l debug -s cherrypy
 </code></pre></div>
 <p>然后打开<code>http://ip:8080/app</code>，通过admin/admin登陆即可。</p>
 

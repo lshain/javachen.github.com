@@ -16,6 +16,7 @@ HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。
 
 hbase-site.xml内容如下：
 
+```xml
 	<configuration>
 	<property>
 		<name>hbase.rootdir</name>
@@ -34,14 +35,17 @@ hbase-site.xml内容如下：
 		<value>desktop3,desktop4,desktop6,desktop7,desktop8</value>
 	</property>
 	</configuration>
+```
 
 regionservers内容如下：
 
+```
 	desktop3
 	desktop4
 	desktop6
 	desktop7
 	desktop8
+```
 
 # 环境变量
 

@@ -179,16 +179,17 @@
 </ul>
 
 <ol>
-<li><p>DataNode节点</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm    impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken</p></li>
-<li><p>在hive节点上</p>
-
-<p>yum install -y impala-0.6-1.p0.548.el6.x86<u>64.rpm   impala-server-0.6-1.p0.548.el6.x86</u>64.rpm \
-impala-state-store-0.6-1.p0.548.el6.x86<u>64.rpm  impala-shell-0.6-1.p0.548.el6.x86</u>64.rpm \
-libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm</p></li>
+<li>DataNode节点</li>
 </ol>
-
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum install -y impala-0.6-1.p0.548.el6.x86_64.rpm   impala-server-0.6-1.p0.548.el6.x86_64.rpm impala-state-store-0.6-1.p0.548.el6.x86_64.rpm    impala-shell-0.6-1.p0.548.el6.x86_64.rpm libevent-1.4.13-4.el6.x86_64.rpm bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm --skip-broken
+</code></pre></div>
+<ol>
+<li>在hive节点上</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum install -y impala-0.6-1.p0.548.el6.x86_64.rpm   impala-server-0.6-1.p0.548.el6.x86_64.rpm \
+    impala-state-store-0.6-1.p0.548.el6.x86_64.rpm  impala-shell-0.6-1.p0.548.el6.x86_64.rpm \
+    libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noarch.rpm
+</code></pre></div>
 <h1>配置Impala</h1>
 
 <h2>查看安装路径</h2>
@@ -213,20 +214,20 @@ libevent-1.4.13-4.el6.x86_64.rpm    bigtop-utils-0.4+300-1.cdh4.0.1.p0.1.el6.noa
 [root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
 </code></pre></div>
 <p>并作下面修改在<code>hdfs-site.xml</code>文件中添加如下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;property&gt;
-    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>dfs.client.read.shortcircuit<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
 
-&lt;property&gt;
-    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
-    &lt;value&gt;/var/run/hadoop-hdfs/dn._PORT&lt;/value&gt;
-&lt;/property&gt;
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>dfs.domain.socket.path<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/var/run/hadoop-hdfs/dn._PORT<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
 
-&lt;property&gt;
-  &lt;name&gt;dfs.datanode.hdfs-blocks-metadata.enabled&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>dfs.datanode.hdfs-blocks-metadata.enabled<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
 </code></pre></div>
 <p>同步以上文件到其他节点</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/

@@ -167,38 +167,42 @@
 
 <h1>0.环境准备</h1>
 
-<p>1.设置hosts
-临时设置hostname，以node1为例</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text"> sudo hostname node1
+<p>1.设置hosts</p>
+
+<p>临时设置hostname，以node1为例</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo hostname node1
 </code></pre></div>
-<p>确保<code>/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code>/etc/hosts</code>不是必要的，却是最佳实践。
-确保<code>/etc/sysconfig/network</code>中包含hostname=node1
-检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">host -v -t A `hostname` 
+<p>确保<code>/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code>/etc/hosts</code>不是必要的，却是最佳实践。</p>
+
+<p>确保<code>/etc/sysconfig/network</code>中包含hostname=node1</p>
+
+<p>检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$  host -v -t A `hostname` 
 </code></pre></div>
 <p>hadoop的配置文件<code>core-site.xml</code>、<code>mapred-site.xml</code>和<code>yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
 
 <p>2.关闭防火墙</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">setenforce 0
-vim /etc/sysconfig/selinux #修改SELINUX=disabled
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ setenforce 0
+$ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 </code></pre></div>
-<p>3.清空iptables <code>iptables -F</code></p>
-
+<p>3.清空iptables </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ iptables -F
+</code></pre></div>
 <p>4.检查每个节点上的<code>/tmp</code>目录权限是否为<code>1777</code>，如果不是请修改。</p>
 
 <p>5.设置时钟同步服务</p>
 
-<p>在所有节点安装ntp</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install ntp
+<p>在所有节点安装ntp:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install ntp
 </code></pre></div>
-<p>设置开机启动</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig ntpd on
+<p>设置开机启动:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ chkconfig ntpd on
 </code></pre></div>
-<p>在所有节点启动ntp</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/ntpd start
+<p>在所有节点启动ntp:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/ntpd start
 </code></pre></div>
 <p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">server $LOCAL_SERVER_IP OR HOSTNAME
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    server $LOCAL_SERVER_IP OR HOSTNAME
 </code></pre></div>
 <h1>1. 安装jdk</h1>
 
@@ -246,27 +250,27 @@ Defaults env_keep+=JAVA_HOME
 <h1>3. 安装HDFS</h1>
 
 <h2>在NameNode节点yum安装</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
-yum install hadoop-hdfs-namenode
-yum install hadoop-hdfs-secondarynamenode
-yum install hadoop-yarn-resourcemanager
-yum install hadoop-mapreduce-historyserver
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
+    yum install hadoop-hdfs-namenode
+    yum install hadoop-hdfs-secondarynamenode
+    yum install hadoop-yarn-resourcemanager
+    yum install hadoop-mapreduce-historyserver
 </code></pre></div>
 <h2>在DataNode节点yum安装</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum list hadoop
-yum install hadoop-hdfs-datanode
-yum install hadoop-yarn-nodemanager
-yum install hadoop-mapreduce
-yum install zookeeper-server
-yum install hadoop-httpfs
-yum install hadoop-debuginfo
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
+    yum install hadoop-hdfs-datanode
+    yum install hadoop-yarn-nodemanager
+    yum install hadoop-mapreduce
+    yum install zookeeper-server
+    yum install hadoop-httpfs
+    yum install hadoop-debuginfo
 </code></pre></div>
 <h1>4. 配置hadoop</h1>
 
 <h2>自定义hadoop配置文件</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
-sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
+    sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
+    sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 </code></pre></div>
 <p>hadoop默认使用<code>/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code>/etc/hadoop/conf</code>会软连接到<code>/etc/hadoop/conf.my_cluster</code>目录</p>
 
@@ -275,24 +279,24 @@ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 <p>进入/etc/hadoop/conf编辑配置文件。</p>
 
 <p>修改core-site.xml配置:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.defaultFS&lt;/name&gt;
-      &lt;value&gt;hdfs://node1&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.trash.interval&lt;/name&gt;
-      &lt;value&gt;10080&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;fs.trash.checkpoint.interval&lt;/name&gt;
-      &lt;value&gt;10080&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;io.bytes.per.checksum&lt;/name&gt;
-      &lt;value&gt;4096&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.defaultFS<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>hdfs://node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.trash.interval<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>10080<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.trash.checkpoint.interval<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>10080<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>io.bytes.per.checksum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>4096<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
 <p>修改hdfs-site.xml:</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
@@ -367,23 +371,23 @@ dfs.namenode.num.checkpoints.retained
 <h2>文件路径配置清单</h2>
 
 <p>在hadoop中默认的文件路径以及权限要求如下：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">目录                          所有者       权限      默认路径
-hadoop.tmp.dir                  hdfs:hdfs   drwx------  /var/hadoop
-dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
-dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
-dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
-yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
-yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
-yarn.nodemanager.remote-app-log-dir                     /tmp/logs
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    目录                          所有者       权限      默认路径
+    hadoop.tmp.dir                  hdfs:hdfs   drwx------  /var/hadoop
+    dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
+    dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
+    dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
+    yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
+    yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
+    yarn.nodemanager.remote-app-log-dir                     /tmp/logs
 </code></pre></div>
 <p>我的配置如下:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop.tmp.dir                  /opt/data/hadoop
-dfs.namenode.name.dir               ${hadoop.tmp.dir}/dfs/name
-dfs.datanode.data.dir               ${hadoop.tmp.dir}/dfs/data
-dfs.namenode.checkpoint.dir         ${hadoop.tmp.dir}/dfs/namesecondary
-yarn.nodemanager.local-dirs         /opt/data/yarn/local
-yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
-yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    hadoop.tmp.dir                  /opt/data/hadoop
+    dfs.namenode.name.dir               ${hadoop.tmp.dir}/dfs/name
+    dfs.datanode.data.dir               ${hadoop.tmp.dir}/dfs/data
+    dfs.namenode.checkpoint.dir         ${hadoop.tmp.dir}/dfs/namesecondary
+    yarn.nodemanager.local-dirs         /opt/data/yarn/local
+    yarn.nodemanager.log-dirs           /var/log/hadoop-yarn/logs
+    yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
 </code></pre></div>
 <p>在hadoop中<code>dfs.permissions.superusergroup</code>默认为hdfs，我的<code>hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
 
@@ -439,111 +443,111 @@ fi
 <p>先在一台机器上配置好，然后在做同步。</p>
 
 <p>修改mapred-site.xml文件:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-            &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
-            &lt;value&gt;yarn&lt;/value&gt;
-    &lt;/property&gt;
-      &lt;property&gt;
-            &lt;name&gt;mapreduce.jobtracker.staging.root.dir&lt;/name&gt;
-            &lt;value&gt;/user&lt;/value&gt;
-      &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
-        &lt;value&gt;node1:10020&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
-        &lt;value&gt;node1:19888&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-            &lt;name&gt;mapred.child.java.opts&lt;/name&gt;
-            &lt;value&gt;-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.io.sort.factor&lt;/name&gt;
-      &lt;value&gt;100&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.io.sort.mb&lt;/name&gt;
-      &lt;value&gt;200&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.reduce.shuffle.parallelcopies&lt;/name&gt;
-      &lt;value&gt;16&lt;/value&gt;
-       &lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.task.timeout&lt;/name&gt;
-      &lt;value&gt;1800000&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.tasktracker.map.tasks.maximum&lt;/name&gt;
-      &lt;value&gt;4&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-      &lt;name&gt;mapreduce.tasktracker.reduce.tasks.maximum&lt;/name&gt;
-      &lt;value&gt;2&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapreduce.framework.name<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>yarn<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapreduce.jobtracker.staging.root.dir<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>/user<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapreduce.jobhistory.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:10020<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapreduce.jobhistory.webapp.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:19888<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapred.child.java.opts<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.io.sort.factor<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.io.sort.mb<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>200<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.reduce.shuffle.parallelcopies<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>16<span class="nt">&lt;/value&gt;</span>
+       <span class="c">&lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.timeout<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>1800000<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.tasktracker.map.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>4<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.tasktracker.reduce.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
 <p>修改yarn-site.xml文件:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
-        &lt;value&gt;node1:8031&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
-        &lt;value&gt;node1:8032&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
-        &lt;value&gt;node1:8030&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
-        &lt;value&gt;node1:8033&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
-        &lt;value&gt;node1:8088&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
-        &lt;value&gt;mapreduce.shuffle&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
-        &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.log-aggregation-enable&lt;/name&gt;
-        &lt;value&gt;true&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.application.classpath&lt;/name&gt;
-        &lt;value&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.resource-tracker.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8031<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8032<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.scheduler.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8030<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.admin.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8033<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.webapp.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8088<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.aux-services<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>mapreduce.shuffle<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.aux-services.mapreduce.shuffle.class<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>org.apache.hadoop.mapred.ShuffleHandler<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.log-aggregation-enable<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.application.classpath<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>
         $HADOOP_CONF_DIR,
         $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
         $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
         $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
         $YARN_HOME/*,$YARN_HOME/lib/*
-        &lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.local-dirs&lt;/name&gt;
-        &lt;value&gt;/opt/hadoop/yarn/local&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.log-dirs&lt;/name&gt;
-        &lt;value&gt;/var/log/hadoop-yarn/logs&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;property&gt;
-        &lt;name&gt;yarn.nodemanager.remote-app-log-dir&lt;/name&gt;
-        &lt;value&gt;/var/log/hadoop-yarn/apps&lt;/value&gt;
-    &lt;/property&gt;
-    &lt;/configuration&gt;
+        <span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.local-dirs<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/opt/hadoop/yarn/local<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.log-dirs<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/var/log/hadoop-yarn/logs<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.remote-app-log-dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/var/log/hadoop-yarn/apps<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
 <h2>HDFS创建临时目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /tmp
@@ -560,14 +564,14 @@ sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 </code></pre></div>
 <h2>验证hdfs结构是否正确</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
-drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
-drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
-drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
-drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
+    drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
+    drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
+    drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
+    drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 </code></pre></div>
 <h2>启动mapred-historyserver</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
@@ -608,12 +612,12 @@ sudo chkconfig hadoop-httpfs on
 <p>安装zookeeper</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install zookeeper*
 </code></pre></div>
-<p>设置crontab</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
-15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
-/usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
-/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
-org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
+<p>设置crontab:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    crontab -e
+    15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
+    /usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
+    /usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
+    org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 </code></pre></div>
 <p>在每个需要安装zookeeper的节点上创建zookeeper的目录</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/zookeeper
@@ -648,64 +652,64 @@ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 <h2>修改配置文件并同步到其他机器：</h2>
 
 <p>修改hbase-site.xml文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.distributed&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.rootdir&lt;/name&gt;
-    &lt;value&gt;hdfs://node1:8020/hbase&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.tmp.dir&lt;/name&gt;
-    &lt;value&gt;/opt/data/hbase&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;
-    &lt;value&gt;node1,node2,node3&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hbase.hregion.max.filesize&lt;/name&gt;
-    &lt;value&gt;536870912&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hregion.memstore.flush.size&lt;/name&gt;
-    &lt;value&gt;67108864&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.regionserver.lease.period&lt;/name&gt;
-    &lt;value&gt;600000&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.client.retries.number&lt;/name&gt;
-    &lt;value&gt;3&lt;/value&gt;
-  &lt;/property&gt; 
-  &lt;property&gt;
-    &lt;name&gt;hbase.regionserver.handler.count&lt;/name&gt;
-    &lt;value&gt;100&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.zookeeper.property.maxClientCnxns&lt;/name&gt;
-    &lt;value&gt;2000&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hfile.block.cache.size&lt;/name&gt;
-    &lt;value&gt;0.1&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.regions.slop&lt;/name&gt;
-    &lt;value&gt;0&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hstore.compactionThreshold&lt;/name&gt;
-    &lt;value&gt;10&lt;/value&gt;
-  &lt;/property&gt;
-  &lt;property&gt;
-    &lt;name&gt;hbase.hstore.blockingStoreFiles&lt;/name&gt;
-    &lt;value&gt;30&lt;/value&gt;
-  &lt;/property&gt;
-&lt;/configuration&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.distributed<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>hdfs://node1:8020/hbase<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.tmp.dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/opt/data/hbase<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.zookeeper.quorum<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1,node2,node3<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hregion.max.filesize<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>536870912<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hregion.memstore.flush.size<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>67108864<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regionserver.lease.period<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>600000<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.client.retries.number<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>3<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span> 
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regionserver.handler.count<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.zookeeper.property.maxClientCnxns<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2000<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hfile.block.cache.size<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>0.1<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regions.slop<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>0<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hstore.compactionThreshold<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>10<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hstore.blockingStoreFiles<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>30<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
 <h2>修改regionserver文件</h2>
 
@@ -762,80 +766,80 @@ SET
 <h2>修改配置文件</h2>
 
 <p>修改hive-site.xml文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;configuration&gt;
-&lt;property&gt;
-    &lt;name&gt;fs.defaultFS&lt;/name&gt;
-    &lt;value&gt;hdfs://node1:8020&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
-  &lt;value&gt;jdbc:postgresql://node1/metastore&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
-  &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
-  &lt;value&gt;hiveuser&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
-  &lt;value&gt;redhat&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapred.job.tracker&lt;/name&gt;
- &lt;value&gt;node1:8031&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
- &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
- &lt;value&gt;yarn&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;datanucleus.autoCreateSchema&lt;/name&gt;
-    &lt;value&gt;false&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;datanucleus.fixedDatastore&lt;/name&gt;
-    &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
-    &lt;value&gt;/user/hive/warehouse&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.uris&lt;/name&gt;
-    &lt;value&gt;thrift://node1:9083&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-    &lt;name&gt;hive.metastore.local&lt;/name&gt;
-    &lt;value&gt;false&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.support.concurrency&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.zookeeper.quorum&lt;/name&gt;
-  &lt;value&gt;node2,node3,node1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.host&lt;/name&gt;
-  &lt;value&gt;node1&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.listen.port&lt;/name&gt;
-  &lt;value&gt;9999&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.hwi.war.file&lt;/name&gt;
-  &lt;value&gt;lib/hive-hwi-0.10.0-cdh4.2.0.war&lt;/value&gt;
-&lt;/property&gt;
-&lt;property&gt;
-  &lt;name&gt;hive.merge.mapredfiles&lt;/name&gt;
-  &lt;value&gt;true&lt;/value&gt;
-&lt;/property&gt;
-&lt;/configuration&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>fs.defaultFS<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>hdfs://node1:8020<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionURL<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>jdbc:postgresql://node1/metastore<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionDriverName<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>org.postgresql.Driver<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionUserName<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>hiveuser<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionPassword<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>redhat<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+     <span class="nt">&lt;name&gt;</span>mapred.job.tracker<span class="nt">&lt;/name&gt;</span>
+     <span class="nt">&lt;value&gt;</span>node1:8031<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+     <span class="nt">&lt;name&gt;</span>mapreduce.framework.name<span class="nt">&lt;/name&gt;</span>
+     <span class="nt">&lt;value&gt;</span>yarn<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>datanucleus.autoCreateSchema<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>false<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>datanucleus.fixedDatastore<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.warehouse.dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/user/hive/warehouse<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.uris<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>thrift://node1:9083<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.local<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>false<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.support.concurrency<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.zookeeper.quorum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>node2,node3,node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.listen.host<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.listen.port<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>9999<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.war.file<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>lib/hive-hwi-0.10.0-cdh4.2.0.war<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.merge.mapredfiles<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
 <h2>修改<code>/etc/hadoop/conf/hadoop-env.sh</code></h2>
 
@@ -877,10 +881,10 @@ No rows selected (0.238 seconds)
 <h2>与hbase集成</h2>
 
 <p>需要在hive里添加以下jar包：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">ADD JAR /usr/lib/hive/lib/zookeeper.jar;
-ADD JAR /usr/lib/hive/lib/hbase.jar;
-ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
-ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    ADD JAR /usr/lib/hive/lib/zookeeper.jar;
+    ADD JAR /usr/lib/hive/lib/hbase.jar;
+    ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
+    ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 </code></pre></div>
 <h1>9. 其他</h1>
 

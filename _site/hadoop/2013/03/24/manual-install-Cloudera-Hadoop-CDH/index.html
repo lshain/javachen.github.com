@@ -164,10 +164,10 @@
       </header>
 	<div class="entry-content">
 	<h1>安装版本</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop-2.0.0-cdh4.2.0
-hbase-0.94.2-cdh4.2.0
-hive-0.10.0-cdh4.2.0
-jdk1.6.0_38
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    hadoop-2.0.0-cdh4.2.0
+    hbase-0.94.2-cdh4.2.0
+    hive-0.10.0-cdh4.2.0
+    jdk1.6.0_38
 </code></pre></div>
 <h1>安装前说明</h1>
 
@@ -245,13 +245,13 @@ HOSTNAME=desktop1</p></li>
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。</p>
 
 <p>在NameNode上配置以下文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
-hdfs-site.xml 
-    dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
-    dfs.datanode.data.dir指定DataNode存储blocks的目录，
-    dfs.namenode.secondary.http-address指定Secondary NameNode地址。
-    开启WebHDFS。
-slaves 添加DataNode节点主机
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
+    hdfs-site.xml 
+        dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
+        dfs.datanode.data.dir指定DataNode存储blocks的目录，
+        dfs.namenode.secondary.http-address指定Secondary NameNode地址。
+        开启WebHDFS。
+    slaves 添加DataNode节点主机
 </code></pre></div>
 <ol>
 <li>core-site.xml

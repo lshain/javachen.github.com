@@ -22,15 +22,15 @@ gpgcheck = 0
 为了方便离线使用，你可以下载该yum源内容：
 
 ```
-cd /opt
-reposync -r ganglia
+$ cd /opt
+$ reposync -r ganglia
 ```
 <!-- more -->
 
 然后在`/opt/ganglia`下执行如下的命令：
 
 ```
-createrepo .
+$ createrepo .
 ```
 
 这样你就可以将`ganglia.repo`修改为本地yum的方式。
@@ -40,7 +40,7 @@ createrepo .
 执行如下命令：
 
 ```
-yum -y install ganglia-gmetad
+$ yum -y install ganglia-gmetad
 ```
 
 安装时遇到如下的错误：
@@ -53,36 +53,36 @@ Error: Package: rrdtool-1.4.5-1.x86_64 (ganglia)
 rrdtool依赖`dejavu-lgc-fonts`，但是系统源并不包含这个，你可以从网上下载，然后安装：
 
 ```
-rpm -Uvh http://mirror.steadfast.net/centos/5/os/x86_64//CentOS/dejavu-lgc-fonts-2.10-1.noarch.rpm
+$ rpm -Uvh http://mirror.steadfast.net/centos/5/os/x86_64//CentOS/dejavu-lgc-fonts-2.10-1.noarch.rpm
 ```
 # 管理机上安装ganglia-web
 
 先安装apache和php等依赖：
 
 ```
-yum install php* httpd
+$ yum install php* httpd
 ```
 
 然后下载ganglia-web:
 
 ```
-wget http://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz/download
+$ wget http://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz/download
 
-tar zxvf ganglia-web-3.5.12.tar.gz
-cd ganglia-web-3.5.12
-make install
+$ tar zxvf ganglia-web-3.5.12.tar.gz
+$ cd ganglia-web-3.5.12
+$ make install
 ```
 将ganglia-web拷贝或者添加软链接到apache的目录下去，以下是拷贝：
 
 ```
-mkdir /var/www/html/ganglia
-cp -a  /usr/share/ganglia/   /var/www/html/ganglia
+$ mkdir /var/www/html/ganglia
+$ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 ```
 
 在httpd的conf.d目录下添加ganglia.conf，命令：
 
 ```
-vi /etc/httpd/conf.d/ganglia.conf
+$ vim /etc/httpd/conf.d/ganglia.conf
 ```
 
 内容如下：
@@ -103,7 +103,7 @@ vi /etc/httpd/conf.d/ganglia.conf
 执行如下命令：
 
 ```
-yum install gmond
+$ yum install gmond
 ```
 
 # 启动服务
@@ -111,19 +111,19 @@ yum install gmond
 在管理机上启动gmetad
 
 ```
-/etc/init.d/gmetad start
+$ /etc/init.d/gmetad start
 ```
 
 在客户端机器上启动gmond
 
 ```
-/etc/init.d/gmond start
+$ /etc/init.d/gmond start
 ```
 
 在管理机上启动httpd
 
 ```
-/etc/init.d/httpd start
+$ /etc/init.d/httpd start
 ```
 
 然后通过web界面（`http://manager-ip/ganglia`）访问ganglia-web

@@ -10,48 +10,67 @@ keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera
 记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 
 # 0.环境准备
+
  1.设置hosts
+
 临时设置hostname，以node1为例
-	
-	 sudo hostname node1
+
+```	
+$ sudo hostname node1
+```
 
 确保`/etc/hosts`中包含ip和FQDN，如果你在使用DNS，保存这些信息到`/etc/hosts`不是必要的，却是最佳实践。
+
 确保`/etc/sysconfig/network`中包含hostname=node1
+
 检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。
 
-	host -v -t A `hostname` 
+```
+$  host -v -t A `hostname` 
+```
 
 hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置节点时，请使用hostname和不是ip
 
 2.关闭防火墙
 
-	setenforce 0
-	vim /etc/sysconfig/selinux #修改SELINUX=disabled
-	
+```
+$ setenforce 0
+$ vim /etc/sysconfig/selinux #修改SELINUX=disabled
+```
 
 
-3.清空iptables `iptables -F`
+3.清空iptables 
+
+```
+$ iptables -F
+```
 
 4.检查每个节点上的`/tmp`目录权限是否为`1777`，如果不是请修改。
 
 5.设置时钟同步服务
 
-在所有节点安装ntp
+在所有节点安装ntp:
 	
-	yum install ntp
+```
+$ yum install ntp
+```
 
-设置开机启动
+设置开机启动:
 
-	chkconfig ntpd on
+```
+$ chkconfig ntpd on
+```
+在所有节点启动ntp:
 
-在所有节点启动ntp
-
-	/etc/init.d/ntpd start
+```
+$ /etc/init.d/ntpd start
+```
 
 是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：
 
+```
 	server $LOCAL_SERVER_IP OR HOSTNAME
-
+```
 
 
 # 1. 安装jdk
@@ -108,14 +127,17 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 # 3. 安装HDFS
 ## 在NameNode节点yum安装
 
+```
 	yum list hadoop
 	yum install hadoop-hdfs-namenode
 	yum install hadoop-hdfs-secondarynamenode
 	yum install hadoop-yarn-resourcemanager
 	yum install hadoop-mapreduce-historyserver
+```
 
 ## 在DataNode节点yum安装 
 
+```
 	yum list hadoop
 	yum install hadoop-hdfs-datanode
 	yum install hadoop-yarn-nodemanager
@@ -123,23 +145,26 @@ hadoop的配置文件`core-site.xml`、`mapred-site.xml`和`yarn-site.xml`配置
 	yum install zookeeper-server
 	yum install hadoop-httpfs
 	yum install hadoop-debuginfo
-
+```
 
 # 4. 配置hadoop
 ## 自定义hadoop配置文件
 
+```
 	sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
 	sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 	sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+```
 
 hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配置之后，`/etc/hadoop/conf`会软连接到`/etc/hadoop/conf.my_cluster`目录
 
 ## 修改配置文件
+
 进入/etc/hadoop/conf编辑配置文件。
 
 修改core-site.xml配置:
 
-```
+```xml
 	<configuration>
 	<property>
 	  <name>fs.defaultFS</name>
@@ -232,6 +257,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 ## 文件路径配置清单
 在hadoop中默认的文件路径以及权限要求如下：
 
+```
 	目录							所有者		权限		默认路径
 	hadoop.tmp.dir					hdfs:hdfs	drwx------	/var/hadoop
 	dfs.namenode.name.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/name
@@ -240,9 +266,11 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	yarn.nodemanager.local-dirs			yarn:yarn	drwxr-xr-x	${hadoop.tmp.dir}/nm-local-dir
 	yarn.nodemanager.log-dirs			yarn:yarn	drwxr-xr-x	${yarn.log.dir}/userlogs
 	yarn.nodemanager.remote-app-log-dir						/tmp/logs
+```
 
 我的配置如下:
 
+```
 	hadoop.tmp.dir					/opt/data/hadoop
 	dfs.namenode.name.dir				${hadoop.tmp.dir}/dfs/name
 	dfs.datanode.data.dir				${hadoop.tmp.dir}/dfs/data
@@ -250,6 +278,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	yarn.nodemanager.local-dirs			/opt/data/yarn/local
 	yarn.nodemanager.log-dirs			/var/log/hadoop-yarn/logs
 	yarn.nodemanager.remote-app-log-dir 		/var/log/hadoop-yarn/app
+```
 
 在hadoop中`dfs.permissions.superusergroup`默认为hdfs，我的`hdfs-site.xml`配置文件将其修改为了hadoop。
 
@@ -309,7 +338,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 修改mapred-site.xml文件:
 
-```
+```xml
 	<configuration>
 	<property>
 	    	<name>mapreduce.framework.name</name>
@@ -361,7 +390,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 修改yarn-site.xml文件:
 
-```
+```xml
 	<configuration>
 	<property>
 	    <name>yarn.resourcemanager.resource-tracker.address</name>
@@ -438,6 +467,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 ## 验证hdfs结构是否正确
 
+```
 	[root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
 	drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
 	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
@@ -446,7 +476,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
 	drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
 	drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
-
+```
 
 ## 启动mapred-historyserver 
 
@@ -489,13 +519,15 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 	yum install zookeeper*
 
-设置crontab
-	
+设置crontab:
+
+```	
 	crontab -e
 	15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
 	/usr/lib/zookeeper/lib/jline-0.9.94.jar:\	
 	/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
 	org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
+```
 
 在每个需要安装zookeeper的节点上创建zookeeper的目录
 
@@ -537,6 +569,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 ## 修改配置文件并同步到其他机器：
 修改hbase-site.xml文件：
 
+```xml
 	<configuration>
 	<property>
 	    <name>hbase.distributed</name>
@@ -595,7 +628,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	    <value>30</value>
 	  </property>
 	</configuration>
-
+```
 
 ## 修改regionserver文件
 
@@ -663,6 +696,7 @@ yum方式安装：
 ## 修改配置文件
 修改hive-site.xml文件：
 
+```xml
 	<configuration>
 	<property>
 	    <name>fs.defaultFS</name>
@@ -737,6 +771,7 @@ yum方式安装：
 	  <value>true</value>
 	</property>
 	</configuration>
+```
 
 ## 修改`/etc/hadoop/conf/hadoop-env.sh`
 
@@ -784,11 +819,12 @@ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ## 与hbase集成
 需要在hive里添加以下jar包：
 
+```
 	ADD JAR /usr/lib/hive/lib/zookeeper.jar;
 	ADD JAR /usr/lib/hive/lib/hbase.jar;
 	ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
 	ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
-
+```
 
 # 9. 其他
 ## 安装Snappy

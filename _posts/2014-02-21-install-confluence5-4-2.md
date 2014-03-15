@@ -13,9 +13,9 @@ Confluence是Atlassian公司出品的团队协同与知识管理工具。 Conflu
 下载指定版本Confluence
 
 ```
-mkdir -p /data/confluence
-cd /data/confluence
-wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
+$ mkdir -p /data/confluence
+$ cd /data/confluence
+$ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
 ```
 
 # 2、安装
@@ -23,18 +23,18 @@ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence
 解压
 
 ```
-tar -zxvf atlassian-confluence-5.4.2.tar.gz
+$ tar -zxvf atlassian-confluence-5.4.2.tar.gz
 ```
 
 进入目录
 
 ```
-cd atlassian-confluence-5.4.2
+$ cd atlassian-confluence-5.4.2
 ```
 配置confluence安装目录：
 
 ```
-vim confluence/WEB-INF/classes/confluence-init.properties
+$ vim confluence/WEB-INF/classes/confluence-init.properties
 ```
 
 在属性文件中添加安装目录路径：
@@ -50,13 +50,13 @@ confluence.home=/data/confluence/confluence-data
 创建目录：
 
 ```
-mkdir confluence-data
+$ mkdir confluence-data
 ```
 
 创建完成后，运行启动：
 
 ```
-sh bin/start-confluence.sh
+$ sh bin/start-confluence.sh
 ```
 
 访问ip+portnum，默认端口为8090，如果出现破解界面，以上步骤即为成功
@@ -68,13 +68,13 @@ sh bin/start-confluence.sh
 启动服务：
 
 ```
-sh bin/start-confluence.sh
+$ sh bin/start-confluence.sh
 ```
 
 停止服务：
 
 ```
-sh bin/stop-confluence.sh
+$ sh bin/stop-confluence.sh
 ```
 
 # 4、修改默认端口
@@ -83,7 +83,7 @@ sh bin/stop-confluence.sh
 
 打开文件，
 
-```
+```xml
 <Connector className="org.apache.coyote.tomcat4.CoyoteConnector" port="8090" minProcessors="5"
 ```
 

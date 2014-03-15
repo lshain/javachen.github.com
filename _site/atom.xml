@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-14T15:30:48+08:00</updated>
+ <updated>2014-03-15T19:56:38+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -232,7 +232,7 @@
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/types&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/schema&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;接下来，在浏览器中进行测试：&lt;/p&gt;
+&lt;p&gt;接下来，在浏览器中进行测试,输入下面url：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;http://192.168.56.123:8080/solr/primary_shard2_replica1/select?q=*%3A*&amp;amp;wt=json&amp;amp;indent=true&amp;amp;rows=6&amp;amp;start=0&amp;amp;fq=category%3A2002&amp;amp;fq=namespace%3Ad&amp;amp;fq=%7B%21tag%3Da%7D%28en_US_name_s%3A大理%29
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;以上搜索的是category=2002,namespace=d，&lt;code&gt;en_US_name_s&lt;/code&gt;=大理的记录，查询结果为：&lt;/p&gt;
@@ -743,31 +743,31 @@ Mode: follower
 &lt;p&gt;你可以参考&lt;a href=&quot;http://blog.javachen.com/solr/2014/02/26/how-to-install-solr/index.html&quot;&gt;《Apache Solr介绍及安装》&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;简单来说，执行以下命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;unzip apache-tomcat-6.0.36.zip  -d /opt
-unzip solr-4.4.0.zip  -d /opt
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ unzip apache-tomcat-6.0.36.zip  -d /opt
+$ unzip solr-4.4.0.zip  -d /opt
 
-cd /opt
-chmod +x apache-tomcat-6.0.36/bin/*.sh
+$ cd /opt
+$ chmod +x apache-tomcat-6.0.36/bin/*.sh
 
-cp solr-4.4.0/example/webapps/solr.war apache-tomcat-6.0.36/webapps/
-cp solr-4.4.0/example/lib/ext/* apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
-cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
+$ cp solr-4.4.0/example/webapps/solr.war apache-tomcat-6.0.36/webapps/
+$ cp solr-4.4.0/example/lib/ext/* apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
+$ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在其他节点上重复以上操作完成所有节点的solr的安装。&lt;/p&gt;
 
 &lt;h1&gt;5. ZooKeeper管理配置文件&lt;/h1&gt;
 
 &lt;p&gt;1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /usr/local/solrcloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir -p /usr/local/solrcloud/solr-lib/
+$ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;2、 通过bootstrap设置solrhome：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了&lt;code&gt;-Dbootstrap_confdir&lt;/code&gt;参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。&lt;/p&gt;
 
 &lt;p&gt;3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;说明：&lt;/p&gt;
 
@@ -778,7 +778,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib
 &lt;/ul&gt;
 
 &lt;p&gt;4、把配置文件和目标collection联系起来：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;说明：&lt;/p&gt;
 
@@ -789,7 +789,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib
 &lt;p&gt;5、查看ZooKeeper上状态&lt;/p&gt;
 
 &lt;p&gt;在任意一个节点的/opt目录下执行如下命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@192.168.56.121 opt]# zookeeper-3.4.5/bin/zkCli.sh 
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$  zookeeper-3.4.5/bin/zkCli.sh 
 
 [zk: localhost:2181(CONNECTED) 0] ls /
 [configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
@@ -824,7 +824,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib
 &lt;/ul&gt;
 
 &lt;p&gt;最后，在/opt目录下启动tomcat：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh apache-tomcat-6.0.36/bin/startup.sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sh apache-tomcat-6.0.36/bin/startup.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;通过http://192.168.56.121:8080/solr/进行访问，界面如图提示&lt;code&gt;There are no SolrCores running.&lt;/code&gt;，这是因为配置文件尚未配置solrcore。&lt;/p&gt;
 
@@ -835,7 +835,7 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib
 &lt;h2&gt;手动创建Collection及初始Shard&lt;/h2&gt;
 
 &lt;p&gt;直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;amp;name=primary&amp;amp;numShards=3&amp;amp;replicationFactor=1&amp;#39;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ curl &amp;#39;http://192.168.56.121:8080/solr/admin/collections?action=CREATE&amp;amp;name=primary&amp;amp;numShards=3&amp;amp;replicationFactor=1&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;如果成功，会输出如下响应内容：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;response&amp;gt;&lt;/span&gt;
@@ -896,12 +896,12 @@ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib
 &lt;h2&gt;手动创建Replication&lt;/h2&gt;
 
 &lt;p&gt;下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;curl &amp;#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_2&amp;amp;shard=shard1&amp;#39;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ curl &amp;#39;http://192.168.56.121:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_2&amp;amp;shard=shard1&amp;#39;
 
-curl &amp;#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_3&amp;amp;shard=shard1&amp;#39;
+$ curl &amp;#39;http://192.168.56.122:8080/solr/admin/cores?action=CREATE&amp;amp;collection=primary&amp;amp;name=primary_shard1_replica_3&amp;amp;shard=shard1&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为&lt;code&gt;primary_shard1_replica_2&lt;/code&gt;，在192.168.56.122节点上有一个副本，名称为&lt;code&gt;primary_shard1_replica_3&lt;/code&gt;。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@192.168.56.121 opt]# ll /usr/local/solrhome/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$  ll /usr/local/solrhome/
 total 16
 drwxr-xr-x 3 root root 4096 Mar 10 17:11 primary_shard1_replica2
 drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
@@ -1196,7 +1196,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;JAVA_OPTS=&amp;#39;-Dsolr.solr.home=/tmp/solrhome&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;或者，在启动时进行设置。start.jar在源码包中可以找到，内部包含jetty容器。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;2、 基于JNDI配置 &lt;/p&gt;
 
@@ -1220,7 +1220,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 &lt;h1&gt;3. 在Jetty上运行Solr&lt;/h1&gt;
 
 &lt;p&gt;在example目录下，运行下面命令即可启动一个内置的jetty容器：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;通过&lt;code&gt;http://localhost:8983/solr&lt;/code&gt;即可访问。&lt;/p&gt;
 
@@ -1233,7 +1233,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 &lt;p&gt;然后，将&lt;code&gt;example/resources/log4j.properties&lt;/code&gt;也拷到classpath，或者在tomcat-6.0.36/webapps/solr/目录下新建了一个classes目录，将log4j.properties放进去。&lt;/p&gt;
 
 &lt;p&gt;这时候启动tomcat后访问&lt;code&gt;http://localhost:8080/solr&lt;/code&gt;会提示错误，这是因为solr home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr home目录下，例如：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;最后，启动tomcat，然后通过浏览器访问。&lt;/p&gt;
 
@@ -1242,13 +1242,13 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 &lt;h2&gt;关于中文支持&lt;/h2&gt;
 
 &lt;p&gt;关于中文，solr内核支持UTF-8编码，所以在tomcat里的server.xml需要进行配置&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Connector port=&amp;quot;8080&amp;quot; maxHttpHeaderSize=&amp;quot;8192&amp;quot; URIEncoding=&amp;quot;UTF-8&amp;quot; /&amp;gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;Connector&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;port=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;8080&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;maxHttpHeaderSize=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;8192&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;URIEncoding=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;另外，向solr Post请求的时候需要转为utf-8编码。对solr 返回的查询结果也需要进行一次utf-8的转码。检索数据时对查询的关键字也需要转码，然后用“+”连接。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;String[] array = StringUtils.split(query, null, 0);
-for (String str : array) {
-    result = result + URLEncoder.encode(str, &amp;quot;UTF-8&amp;quot;) + &amp;quot;+&amp;quot;;
-}
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;java language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringUtils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;URLEncoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
  </entry>
  
@@ -1270,16 +1270,16 @@ for (String str : array) {
 &lt;p&gt;下载适合你的box，地址：&lt;a href=&quot;http://www.vagrantbox.es/&quot;&gt;http://www.vagrantbox.es/&lt;/a&gt;。&lt;/p&gt;
 
 &lt;p&gt;例如下载CentOS：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
-wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
+$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;添加box&lt;/h1&gt;
 
 &lt;p&gt;首先查看已经添加的box：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vagrant box list
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant box list
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;添加新的box，可以是远程地址也可以是本地文件，建议先下载到本地再进行添加：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vagrant box add centos6.5 ./centos65-x86_64-20131205.box
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vagrant box add centos6.5 ./centos65-x86_64-20131205.box
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;其语法如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vagrant box add {title} {url}
@@ -1289,11 +1289,11 @@ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/cento
 &lt;h1&gt;创建虚拟机&lt;/h1&gt;
 
 &lt;p&gt;先创建一个目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /home/june/workspace/vagramt/cdh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir -p /home/june/workspace/vagramt/cdh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;初始化，使用centos6.5 box：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd /home/june/workspace/vagramt/cdh
-vagrant init centos6.5
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd /home/june/workspace/vagramt/cdh
+$ vagrant init centos6.5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;输出如下日志：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;A `Vagrantfile` has been placed in this directory. You are now
@@ -1321,13 +1321,16 @@ the comments in the Vagrantfile as well as documentation on
         &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;centos6.5&amp;quot;&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm_name&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ssh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;vagrant&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ssh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;vagrant&amp;quot;&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:private_network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;192.168.56.12&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;boot.sh&amp;quot;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;上面的文件中定义了三个虚拟机，三个虚拟机的名字和hostname分别为cdh1、cdh2、cdh3，网络使用的是host-only网络。&lt;/p&gt;
+
+&lt;p&gt;在启动成功之后，会运行boot.sh脚本，你可以编写你自己的脚本。&lt;/p&gt;
 
 &lt;h1&gt;启动虚拟机&lt;/h1&gt;
 
@@ -1339,7 +1342,7 @@ the comments in the Vagrantfile as well as documentation on
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;虚拟机的初始化设置&lt;/h1&gt;
 
-&lt;p&gt;创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本进行手动执行。该脚本内容如下：&lt;/p&gt;
+&lt;p&gt;创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为boot.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;### Set default permissions. ###&lt;/span&gt;
@@ -1672,20 +1675,20 @@ Python 2.7.4
 &lt;h1&gt;1、下载&lt;/h1&gt;
 
 &lt;p&gt;下载指定版本Confluence&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir -p /data/confluence
-cd /data/confluence
-wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir -p /data/confluence
+$ cd /data/confluence
+$ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;2、安装&lt;/h1&gt;
 
 &lt;p&gt;解压&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar -zxvf atlassian-confluence-5.4.2.tar.gz
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ tar -zxvf atlassian-confluence-5.4.2.tar.gz
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;进入目录&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd atlassian-confluence-5.4.2
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd atlassian-confluence-5.4.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;配置confluence安装目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;vim confluence/WEB-INF/classes/confluence-init.properties
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ vim confluence/WEB-INF/classes/confluence-init.properties
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;在属性文件中添加安装目录路径：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;###########################
@@ -1695,10 +1698,10 @@ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence
 confluence.home=/data/confluence/confluence-data
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;创建目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir confluence-data
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir confluence-data
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;创建完成后，运行启动：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh bin/start-confluence.sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sh bin/start-confluence.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;访问ip+portnum，默认端口为8090，如果出现破解界面，以上步骤即为成功&lt;/p&gt;
 
@@ -1707,17 +1710,17 @@ confluence.home=/data/confluence/confluence-data
 &lt;p&gt;使用压缩包形式的Confluence无法直接使用服务启停，需要配合目录的sh文件&lt;/p&gt;
 
 &lt;p&gt;启动服务：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh bin/start-confluence.sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sh bin/start-confluence.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;停止服务：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;sh bin/stop-confluence.sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ sh bin/stop-confluence.sh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1&gt;4、修改默认端口&lt;/h1&gt;
 
 &lt;p&gt;配置文件位置：&lt;code&gt;atlassian-confluence-5.4.2/conf/server.xml&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;打开文件，&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Connector className=&amp;quot;org.apache.coyote.tomcat4.CoyoteConnector&amp;quot; port=&amp;quot;8090&amp;quot; minProcessors=&amp;quot;5&amp;quot;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;Connector&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;className=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;org.apache.coyote.tomcat4.CoyoteConnector&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;port=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;8090&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;minProcessors=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;修改port 为需要&lt;/p&gt;
 

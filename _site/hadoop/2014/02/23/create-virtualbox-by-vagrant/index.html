@@ -176,16 +176,16 @@
 <p>下载适合你的box，地址：<a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a>。</p>
 
 <p>例如下载CentOS：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
-wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
+$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
 </code></pre></div>
 <h1>添加box</h1>
 
 <p>首先查看已经添加的box：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant box list
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vagrant box list
 </code></pre></div>
 <p>添加新的box，可以是远程地址也可以是本地文件，建议先下载到本地再进行添加：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant box add centos6.5 ./centos65-x86_64-20131205.box
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vagrant box add centos6.5 ./centos65-x86_64-20131205.box
 </code></pre></div>
 <p>其语法如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant box add {title} {url}
@@ -195,11 +195,11 @@ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/cento
 <h1>创建虚拟机</h1>
 
 <p>先创建一个目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /home/june/workspace/vagramt/cdh
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir -p /home/june/workspace/vagramt/cdh
 </code></pre></div>
 <p>初始化，使用centos6.5 box：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd /home/june/workspace/vagramt/cdh
-vagrant init centos6.5
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd /home/june/workspace/vagramt/cdh
+$ vagrant init centos6.5
 </code></pre></div>
 <p>输出如下日志：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">A `Vagrantfile` has been placed in this directory. You are now
@@ -227,13 +227,16 @@ the comments in the Vagrantfile as well as documentation on
         <span class="k">end</span>
         <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos6.5&quot;</span>
         <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span><span class="n">vm_name</span>
-        <span class="n">config</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;vagrant&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;vagrant&quot;</span>
         <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.56.12</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:shell</span><span class="p">,</span> <span class="ss">:path</span> <span class="o">=&gt;</span> <span class="s2">&quot;boot.sh&quot;</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
 <p>上面的文件中定义了三个虚拟机，三个虚拟机的名字和hostname分别为cdh1、cdh2、cdh3，网络使用的是host-only网络。</p>
+
+<p>在启动成功之后，会运行boot.sh脚本，你可以编写你自己的脚本。</p>
 
 <h1>启动虚拟机</h1>
 
@@ -245,7 +248,7 @@ the comments in the Vagrantfile as well as documentation on
 </code></pre></div>
 <h1>虚拟机的初始化设置</h1>
 
-<p>创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本进行手动执行。该脚本内容如下：</p>
+<p>创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为boot.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：</p>
 <div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="c">#!/usr/bin/env bash</span>
 
 <span class="c">### Set default permissions. ###</span>

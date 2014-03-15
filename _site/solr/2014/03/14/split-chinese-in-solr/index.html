@@ -256,7 +256,7 @@
     <span class="nt">&lt;/types&gt;</span>
 <span class="nt">&lt;/schema&gt;</span>
 </code></pre></div>
-<p>接下来，在浏览器中进行测试：</p>
+<p>接下来，在浏览器中进行测试,输入下面url：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">http://192.168.56.123:8080/solr/primary_shard2_replica1/select?q=*%3A*&amp;wt=json&amp;indent=true&amp;rows=6&amp;start=0&amp;fq=category%3A2002&amp;fq=namespace%3Ad&amp;fq=%7B%21tag%3Da%7D%28en_US_name_s%3A大理%29
 </code></pre></div>
 <p>以上搜索的是category=2002,namespace=d，<code>en_US_name_s</code>=大理的记录，查询结果为：</p>

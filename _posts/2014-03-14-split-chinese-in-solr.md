@@ -109,7 +109,7 @@ GoogleCode地址：[http://code.google.com/p/mmseg4j/](http://code.google.com/p/
 </schema>
 ```
 
-接下来，在浏览器中进行测试：
+接下来，在浏览器中进行测试,输入下面url：
 
 ```
 http://192.168.56.123:8080/solr/primary_shard2_replica1/select?q=*%3A*&wt=json&indent=true&rows=6&start=0&fq=category%3A2002&fq=namespace%3Ad&fq=%7B%21tag%3Da%7D%28en_US_name_s%3A大理%29

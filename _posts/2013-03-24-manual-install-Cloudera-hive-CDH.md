@@ -60,7 +60,7 @@ su -c '/opt/PostgreSQL/9.1/bin/pg_ctl -D /opt/PostgreSQL/9.1/data restart' postg
 
 hive-site.xml文件内容如下：
 
-```
+```xml
 <configuration>
 <property>
   <name>javax.jdo.option.ConnectionURL</name>

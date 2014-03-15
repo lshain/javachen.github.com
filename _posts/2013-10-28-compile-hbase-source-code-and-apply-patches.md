@@ -12,7 +12,7 @@ tags: [hbase]
 
 从[Cloudera github](https://github.com/cloudera/hbase)上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0
 
-```
+$ ```
 git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
 ```
 
@@ -26,11 +26,11 @@ git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4
 ## 编译snappy
 
 ```
-svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
-cd snappy
-sh autogen.sh
-./configure 
-sudo make install
+$ svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
+$ cd snappy
+$ sh autogen.sh
+$ ./configure 
+$ sudo make install
 ```
 
 ## 编译hadoop-snappy
@@ -38,15 +38,15 @@ sudo make install
 降低gcc版本到4.4:
 
 ```
-sudo yum install gcc-4.4
-rm /usr/bin/gcc
-ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
+$ sudo yum install gcc-4.4
+$ rm /usr/bin/gcc
+$ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 ```
 
 建立libjvm软连接
 
 ```
-sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
+$ sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 ```
  
 <!-- more -->
@@ -54,16 +54,16 @@ sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 下载并编译hadoop-snappy
 
 ```
-svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
-cd hadoop-snappy
-make package -Dsnappy.prefix=/usr/local/
+$ svn checkout http://hadoop-snappy.googlecode.com/svn/trunk/ hadoop-snappy
+$ cd hadoop-snappy
+$ make package -Dsnappy.prefix=/usr/local/
 ```
 
 安装jar包到本地仓库
 
 ```
-mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
-mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
+$ mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
+$ mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
 ```
 
 # 添加lzo压缩支持
@@ -76,12 +76,12 @@ mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy 
 注意：目前只能装2.4.1版本的，装最新版本的可能会缺少文件。
 
 ```
-wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
-unzip protobuf-2.4.1.zip
-cd protobuf-2.4.1
-./configure
-make
-sudo make install
+$ wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
+$ unzip protobuf-2.4.1.zip
+$ cd protobuf-2.4.1
+$ ./configure
+$ make
+$ sudo make install
 ```
 
 测试是否安装成功，如果成功你会看到：
@@ -103,8 +103,8 @@ protoc: error while loading shared libraries: libprotobuf.so.7: cannot open shar
 进入到cdh4-0.94.6_4.4.0 目录，然后运行mvn基本命令。
 
 ```
-cd cdh4-0.94.6_4.4.0
-mvn clean install
+$ cd cdh4-0.94.6_4.4.0
+$ mvn clean install
 ```
 
 忽略测试，请添加如下参数：
@@ -152,7 +152,7 @@ javadoc:aggregate site assembly:single
 综上，完整命令如下：
 
 ```
-MAVEN_OPTS="-Xmx2g" mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
+$ MAVEN_OPTS="-Xmx2g" mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
 ```
 
 # 生成patch
@@ -160,25 +160,25 @@ MAVEN_OPTS="-Xmx2g" mvn clean install javadoc:aggregate site assembly:single -Ds
 修改代码之后，在提交代码之前，运行如下命令生成patch：
 
 ```
-git diff >../XXXXX.patch
+$ git diff >../XXXXX.patch
 ```
 
 如果你已经将该动文件加入到提交缓存区，即执行了如下代码：
 
 ```
-git add .
+$ git add .
 ```
 
 你可以使用如下代码打补丁：
 
 ```
-git diff --staged >../XXXXX.patch
+$ git diff --staged >../XXXXX.patch
 ```
 
 如果在提交之后，想生成patch，执行如下命令：
 
 ```
-git format-patch -1
+$ git format-patch -1
 ```
 
 `git format-patch`的详细说明请参考：[git patch操作](http://devillived.net/forum/home.php?mod=space&uid=2&do=blog&id=211)
@@ -200,7 +200,7 @@ git diff --stat     # 仅仅比较统计信息
 打patch：
 
 ```
-git apply ../XXXXX.patch
+$ git apply ../XXXXX.patch
 ```
 
 测试patch是否打成功：
@@ -212,20 +212,20 @@ git apply --check  ../add-aggregate-in-hbase-shell.patch
 如果出现以下错误：
 
 ```
-june@javachen.com /chan/workspace/hadoop/hbase $ git apply ../XXXXX.patch
+$ git apply ../XXXXX.patch
 fatal: git apply: bad git-diff - expected /dev/null on line 4
 ```
 
 请安装dos2unix：
 
 ```
-yum install dos2unix -y
+$ yum install dos2unix -y
 ```
 
 然后，执行如下代码：
 
 ```
-dos2unix ../add-aggregate-in-hbase-shell.patch
+$ dos2unix ../add-aggregate-in-hbase-shell.patch
 ```
 
 最后再尝试打补丁。
@@ -242,7 +242,7 @@ dos2unix ../add-aggregate-in-hbase-shell.patch
 查看远程服务器地址和仓库名称：
 
 ```
-june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+$ git remote -v
 origin	git@github.com:javachen/hbase.git (fetch)
 origin	git@github.com:javachen/hbase.git (push)
 ```
@@ -250,13 +250,13 @@ origin	git@github.com:javachen/hbase.git (push)
 添加远程仓库地址：
 
 ```
-git remote add cdh git@github.com:cloudera/hbase.git
+$ git remote add cdh git@github.com:cloudera/hbase.git
 ```
 
 再一次查看远程服务器地址和仓库名称：
 
 ```
-june@javachen.com /chan/workspace/hadoop/hbase $ git remote -v
+$ git remote -v
 cdh	https://github.com/cloudera/hbase (fetch)
 cdh	https://github.com/cloudera/hbase (push)
 origin	git@github.com:javachen/hbase.git (fetch)
@@ -266,25 +266,25 @@ origin	git@github.com:javachen/hbase.git (push)
 抓取远程仓库更新：
 
 ```
-git fetch cdh
+$ git fetch cdh
 ```
 
 然后，再执行下面命令查看远程分支：
 
 ```
-git branch -r
+$ git branch -r
 ```
 
 下载cdh上的分支：
 
 ```
-git checkout cdh/cdh4-0.94.6_4.4.0
+$ git checkout cdh/cdh4-0.94.6_4.4.0
 ```
 
 将其提交到自己的远程仓库：
 
 ```
-git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+$ git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
 ```
 
 # 排错

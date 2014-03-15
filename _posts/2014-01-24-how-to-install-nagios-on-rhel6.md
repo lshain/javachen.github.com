@@ -9,17 +9,17 @@ tags: [nagios]
 # 在管理机上安装rpm包
 
 ```
-rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
-chkconfig httpd on && chkconfig nagios on
-service httpd start && service nagios start
+$ rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+$ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+$ yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
+$ chkconfig httpd on && chkconfig nagios on
+$ service httpd start && service nagios start
 ```
 
 # 设置管理界面密码
 
 ```
-htpasswd -c /etc/nagios/passwd nagiosadmin
+$ htpasswd -c /etc/nagios/passwd nagiosadmin
 ```
 
 <!-- more -->
@@ -33,10 +33,10 @@ htpasswd -c /etc/nagios/passwd nagiosadmin
 # 在客户端上安装NRPE
 
 ```
-rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nrpe
-chkconfig nrpe on
+$ rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+$ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+$ yum -y install nagios nagios-plugins-all nrpe
+$ chkconfig nrpe on
 ```
 
 修改配置`/etc/nagios/nrpe.cfg`，例如：
@@ -66,38 +66,38 @@ command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -
 设置iptables：
 
 ```
-iptables -N NRPE
-iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
-iptables -I NRPE -s 198.211.117.251 -j ACCEPT
-iptables -A NRPE -s 0/0 -j DROP
-/etc/init.d/iptables save
+$ iptables -N NRPE
+$ iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+$ iptables -I NRPE -s 198.211.117.251 -j ACCEPT
+$ iptables -A NRPE -s 0/0 -j DROP
+$ /etc/init.d/iptables save
 ```
 
 或者，关闭iptables：
 
 ```
-/etc/init.d/iptables stop
+$ /etc/init.d/iptables stop
 ```
 
 启动NRPE：
 
 ```
-service nrpe start
+$ service nrpe start
 ```
 
 # 在管理机上添加配置文件
 
 ```
-echo "cfg_dir=/etc/nagios/servers" >> /etc/nagios/nagios.cfg
-cd /etc/nagios/servers
-touch hadoop.tk.cfg
-touch hbase.tk.cfg
+$ echo "cfg_dir=/etc/nagios/servers" >> /etc/nagios/nagios.cfg
+$ cd /etc/nagios/servers
+$ touch hadoop.tk.cfg
+$ touch hbase.tk.cfg
 ```
 
 然后修改每一个配置文件：
 
 ```
-vim /etc/nagios/servers/hadoop.tk.cfg
+$ vim /etc/nagios/servers/hadoop.tk.cfg
 ```
 
 添加内容如下，你也可以稍作修改：
@@ -136,8 +136,8 @@ define service {
 重启nagios：
 
 ```
-chown -R nagios. /etc/nagios
-service nagios restart
+$ chown -R nagios. /etc/nagios
+$ service nagios restart
 ```
 
 

@@ -176,7 +176,7 @@
 <h1>添加pillar</h1>
 
 <p>你可以执行下面命令查看minion拥有哪些Pillar数据：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; pillar.data
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; pillar.data
 </code></pre></div>
 <p>saltstack的默认states目录为<code>/srv/salt</code>，默认为<code>/srv/pillar</code>，如果不存在请先创建。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 /]# tree /srv/ -L 3
@@ -236,7 +236,7 @@
 __pillar__[&#39;profile_port&#39;][&#39;default1&#39;][&#39;jmx_port&#39;]
 </code></pre></div>
 <p>在master上修改Pilla文件后，需要用以下命令刷新minion上的数据：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; saltutil.refresh_pillar
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; saltutil.refresh_pillar
 </code></pre></div>
 <p>如果定义好的pillar不生效，建议刷新一下或者重启salt试试。</p>
 
@@ -296,10 +296,10 @@ __pillar__[&#39;profile_port&#39;][&#39;default1&#39;][&#39;jmx_port&#39;]
 <p>2.然后通过脚本语言读取pillar中定义的变量并以依次遍历生成多个ID，ID名称由变量中值定义。本例中，是读取profile<u>port的值，然后创建多个profile。profile</u>port变量在<code>/srv/pillar/jboss/params.sls</code>中定义。</p>
 
 <p>编写完sates文件之后，你可以通过执行以下命令让所有minion执行sates文件中定义的state：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; state.highstate
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; state.highstate
 </code></pre></div>
 <p>你也可以单独执行jboss这个states：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; state.sls jboss
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; state.sls jboss
 </code></pre></div>
 <h1>自定义grains_module</h1>
 
@@ -319,13 +319,13 @@ __pillar__[&#39;profile_port&#39;][&#39;default1&#39;][&#39;jmx_port&#39;]
     <span class="k">return</span> <span class="n">grains</span>
 </code></pre></div>
 <p>然后，同步grains模块：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; saltutil.sync_all
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; saltutil.sync_all
 </code></pre></div>
 <p>刷新模块(让minion编译模块)：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; sys.reload_modules
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; sys.reload_modules
 </code></pre></div>
 <p>然后，验证max open file的value：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; grains.item max_open_file
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; grains.item max_open_file
 </code></pre></div>
 <h1>自定义module</h1>
 
@@ -398,10 +398,10 @@ __pillar__[&#39;profile_port&#39;][&#39;default1&#39;][&#39;jmx_port&#39;]
 <p>以上python脚本定义了对单个profile的启动、停止和查看运行状态的方法，你可以修改或者扩增代码，添加更多的方法。</p>
 
 <p>如果你想启动jboss的default1实例，只需要执行以下方法：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; jboss.start default1
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; jboss.start default1
 </code></pre></div>
 <p>同样，查看状态：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">salt &#39;*&#39; jboss.status default1
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ salt &#39;*&#39; jboss.status default1
 </code></pre></div>
 <p>jboss为自定义模块的名称，也是jboss.py的名称，start或者status为jboss.py中定义的方法。</p>
 

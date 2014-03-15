@@ -175,46 +175,46 @@ enabled = 1
 gpgcheck = 0
 </code></pre></div>
 <p>为了方便离线使用，你可以下载该yum源内容：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd /opt
-reposync -r ganglia
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd /opt
+$ reposync -r ganglia
 </code></pre></div>
 <!-- more -->
 
 <p>然后在<code>/opt/ganglia</code>下执行如下的命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">createrepo .
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ createrepo .
 </code></pre></div>
 <p>这样你就可以将<code>ganglia.repo</code>修改为本地yum的方式。</p>
 
 <h1>管理机上安装gmetad</h1>
 
 <p>执行如下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum -y install ganglia-gmetad
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum -y install ganglia-gmetad
 </code></pre></div>
 <p>安装时遇到如下的错误：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">Error: Package: rrdtool-1.4.5-1.x86_64 (ganglia)
           Requires: dejavu-lgc-fonts
 </code></pre></div>
 <p>rrdtool依赖<code>dejavu-lgc-fonts</code>，但是系统源并不包含这个，你可以从网上下载，然后安装：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://mirror.steadfast.net/centos/5/os/x86_64//CentOS/dejavu-lgc-fonts-2.10-1.noarch.rpm
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ rpm -Uvh http://mirror.steadfast.net/centos/5/os/x86_64//CentOS/dejavu-lgc-fonts-2.10-1.noarch.rpm
 </code></pre></div>
 <h1>管理机上安装ganglia-web</h1>
 
 <p>先安装apache和php等依赖：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install php* httpd
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install php* httpd
 </code></pre></div>
 <p>然后下载ganglia-web:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">wget http://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz/download
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget http://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz/download
 
-tar zxvf ganglia-web-3.5.12.tar.gz
-cd ganglia-web-3.5.12
-make install
+$ tar zxvf ganglia-web-3.5.12.tar.gz
+$ cd ganglia-web-3.5.12
+$ make install
 </code></pre></div>
 <p>将ganglia-web拷贝或者添加软链接到apache的目录下去，以下是拷贝：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir /var/www/html/ganglia
-cp -a  /usr/share/ganglia/   /var/www/html/ganglia
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir /var/www/html/ganglia
+$ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 </code></pre></div>
 <p>在httpd的conf.d目录下添加ganglia.conf，命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vi /etc/httpd/conf.d/ganglia.conf
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vim /etc/httpd/conf.d/ganglia.conf
 </code></pre></div>
 <p>内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;Location /ganglia&gt;
@@ -229,18 +229,18 @@ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 <h1>客户端机器上安装gmond</h1>
 
 <p>执行如下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install gmond
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install gmond
 </code></pre></div>
 <h1>启动服务</h1>
 
 <p>在管理机上启动gmetad</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/gmetad start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/gmetad start
 </code></pre></div>
 <p>在客户端机器上启动gmond</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/gmond start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/gmond start
 </code></pre></div>
 <p>在管理机上启动httpd</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/httpd start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/httpd start
 </code></pre></div>
 <p>然后通过web界面（<code>http://manager-ip/ganglia</code>）访问ganglia-web</p>
 

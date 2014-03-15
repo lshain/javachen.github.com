@@ -9,10 +9,12 @@ keywords: hadoop, cdh, cloudera manager
 
 # 安装版本
 
+```
 	hadoop-2.0.0-cdh4.2.0
 	hbase-0.94.2-cdh4.2.0
 	hive-0.10.0-cdh4.2.0
 	jdk1.6.0_38
+```
 
 # 安装前说明
 
@@ -29,6 +31,7 @@ keywords: hadoop, cdh, cloudera manager
 * 启动hive: desktop1上执行hive
 
 # 规划
+
 ```
 	192.168.0.1             NameNode、Hive、ResourceManager
 	192.168.0.2             SSNameNode
@@ -88,6 +91,7 @@ keywords: hadoop, cdh, cloudera manager
 
 在NameNode上配置以下文件：
 
+```
 	core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
 	hdfs-site.xml 
 		dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
@@ -95,6 +99,7 @@ keywords: hadoop, cdh, cloudera manager
 		dfs.namenode.secondary.http-address指定Secondary NameNode地址。
 		开启WebHDFS。
 	slaves 添加DataNode节点主机
+```
 
 1. core-site.xml
 该文件指定fs.defaultFS连接desktop1，即NameNode节点。

@@ -45,7 +45,7 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：
 
 ```
-tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
+$ tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 ```
 
 创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：
@@ -64,13 +64,13 @@ server.3=192.168.56.123:2888:3888
 zookeeper的数据目录指定在`/data/zookeeper/data`，你也可以使用其他目录，通过下面命令进行创建该目录：
 
 ```
-mkdir /data/zookeeper/data -p
+$ mkdir /data/zookeeper/data -p
 ```
 
 然后，初始化myid，三个节点编号依次为`1,2,3`，在其余节点上分别执行命令（注意修改编号）。
 
 ```
-echo "1" >/data/zookeeper/data/myid
+$ echo "1" >/data/zookeeper/data/myid
 ```
 
 然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1,第二个节点为2,第三个节点为3。
@@ -78,8 +78,8 @@ echo "1" >/data/zookeeper/data/myid
 最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：
 
 ```
-cd /opt
-sh zookeeper-3.4.5/bin/zkServer.sh start
+$ cd /opt
+$ sh zookeeper-3.4.5/bin/zkServer.sh start
 ```
 
 可以查看ZooKeeper集群的状态，保证集群启动没有问题：
@@ -98,15 +98,15 @@ Mode: follower
 简单来说，执行以下命令：
 
 ```
-unzip apache-tomcat-6.0.36.zip  -d /opt
-unzip solr-4.4.0.zip  -d /opt
+$ unzip apache-tomcat-6.0.36.zip  -d /opt
+$ unzip solr-4.4.0.zip  -d /opt
 
-cd /opt
-chmod +x apache-tomcat-6.0.36/bin/*.sh
+$ cd /opt
+$ chmod +x apache-tomcat-6.0.36/bin/*.sh
 
-cp solr-4.4.0/example/webapps/solr.war apache-tomcat-6.0.36/webapps/
-cp solr-4.4.0/example/lib/ext/* apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
-cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
+$ cp solr-4.4.0/example/webapps/solr.war apache-tomcat-6.0.36/webapps/
+$ cp solr-4.4.0/example/lib/ext/* apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/
+$ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 ```
 
 在其他节点上重复以上操作完成所有节点的solr的安装。
@@ -117,14 +117,14 @@ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：
 
 ```
-mkdir -p /usr/local/solrcloud/solr-lib/
-cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
+$ mkdir -p /usr/local/solrcloud/solr-lib/
+$ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
 ```
 
 2、 通过bootstrap设置solrhome：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
+$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 ```
 
 SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了`-Dbootstrap_confdir`参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。
@@ -132,7 +132,7 @@ SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启�
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
+$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
 ```
 
 说明：
@@ -144,7 +144,7 @@ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 4、把配置文件和目标collection联系起来：
 
 ```
-java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
+$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd linkconfig -collection primary -confname primaryconf
 ```
 
 说明：
@@ -156,7 +156,7 @@ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -z
 在任意一个节点的/opt目录下执行如下命令：
 
 ```
-[root@192.168.56.121 opt]# zookeeper-3.4.5/bin/zkCli.sh 
+$  zookeeper-3.4.5/bin/zkCli.sh 
 
 [zk: localhost:2181(CONNECTED) 0] ls /
 [configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
@@ -200,7 +200,7 @@ JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.1
 最后，在/opt目录下启动tomcat：
 
 ```
-sh apache-tomcat-6.0.36/bin/startup.sh
+$ sh apache-tomcat-6.0.36/bin/startup.sh
 ```
 
 通过http://192.168.56.121:8080/solr/进行访问，界面如图提示`There are no SolrCores running. `，这是因为配置文件尚未配置solrcore。
@@ -214,7 +214,7 @@ sh apache-tomcat-6.0.36/bin/startup.sh
 直接通过REST接口来创建Collection，你也可以通过浏览器访问下面地址，如下所示：
 
 ```
-curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=primary&numShards=3&replicationFactor=1'
+$ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=primary&numShards=3&replicationFactor=1'
 ```
 
 如果成功，会输出如下响应内容：
@@ -282,15 +282,15 @@ curl 'http://192.168.56.121:8080/solr/admin/collections?action=CREATE&name=prima
 下面对已经创建的初始分片进行复制。 shard1已经在192.168.56.123上，我们复制分片到192.168.56.121和192.168.56.122上，执行如下命令：
 
 ```
-curl 'http://192.168.56.121:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_2&shard=shard1'
+$ curl 'http://192.168.56.121:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_2&shard=shard1'
 
-curl 'http://192.168.56.122:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_3&shard=shard1'
+$ curl 'http://192.168.56.122:8080/solr/admin/cores?action=CREATE&collection=primary&name=primary_shard1_replica_3&shard=shard1'
 ```
 
 最后的结果是，192.168.56.123上的shard1，在192.168.56.121节点上有1个副本，名称为`primary_shard1_replica_2`，在192.168.56.122节点上有一个副本，名称为`primary_shard1_replica_3`。也可以通过查看192.168.56.121和192.168.56.122上的目录变化，如下所示：
 
 ```
-[root@192.168.56.121 opt]# ll /usr/local/solrhome/
+$  ll /usr/local/solrhome/
 total 16
 drwxr-xr-x 3 root root 4096 Mar 10 17:11 primary_shard1_replica2
 drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1

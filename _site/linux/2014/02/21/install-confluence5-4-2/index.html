@@ -168,20 +168,20 @@
 <h1>1、下载</h1>
 
 <p>下载指定版本Confluence</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /data/confluence
-cd /data/confluence
-wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir -p /data/confluence
+$ cd /data/confluence
+$ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
 </code></pre></div>
 <h1>2、安装</h1>
 
 <p>解压</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tar -zxvf atlassian-confluence-5.4.2.tar.gz
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ tar -zxvf atlassian-confluence-5.4.2.tar.gz
 </code></pre></div>
 <p>进入目录</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd atlassian-confluence-5.4.2
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd atlassian-confluence-5.4.2
 </code></pre></div>
 <p>配置confluence安装目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim confluence/WEB-INF/classes/confluence-init.properties
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vim confluence/WEB-INF/classes/confluence-init.properties
 </code></pre></div>
 <p>在属性文件中添加安装目录路径：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">###########################
@@ -191,10 +191,10 @@ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence
 confluence.home=/data/confluence/confluence-data
 </code></pre></div>
 <p>创建目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir confluence-data
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir confluence-data
 </code></pre></div>
 <p>创建完成后，运行启动：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/start-confluence.sh
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/start-confluence.sh
 </code></pre></div>
 <p>访问ip+portnum，默认端口为8090，如果出现破解界面，以上步骤即为成功</p>
 
@@ -203,17 +203,17 @@ confluence.home=/data/confluence/confluence-data
 <p>使用压缩包形式的Confluence无法直接使用服务启停，需要配合目录的sh文件</p>
 
 <p>启动服务：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/start-confluence.sh
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/start-confluence.sh
 </code></pre></div>
 <p>停止服务：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">sh bin/stop-confluence.sh
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/stop-confluence.sh
 </code></pre></div>
 <h1>4、修改默认端口</h1>
 
 <p>配置文件位置：<code>atlassian-confluence-5.4.2/conf/server.xml</code></p>
 
 <p>打开文件，</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;Connector className=&quot;org.apache.coyote.tomcat4.CoyoteConnector&quot; port=&quot;8090&quot; minProcessors=&quot;5&quot;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;Connector</span> <span class="na">className=</span><span class="s">&quot;org.apache.coyote.tomcat4.CoyoteConnector&quot;</span> <span class="na">port=</span><span class="s">&quot;8090&quot;</span> <span class="na">minProcessors=</span><span class="s">&quot;5&quot;</span>
 </code></pre></div>
 <p>修改port 为需要</p>
 

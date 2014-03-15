@@ -23,7 +23,7 @@ Saltstack是一个具备puppet与func功能为一身的集中化管理平台，s
 你可以执行下面命令查看minion拥有哪些Pillar数据：
 
 ```
-salt '*' pillar.data
+$ salt '*' pillar.data
 ```
 
 saltstack的默认states目录为`/srv/salt`，默认为`/srv/pillar`，如果不存在请先创建。
@@ -104,7 +104,7 @@ __pillar__['profile_port']['default1']['jmx_port']
 在master上修改Pilla文件后，需要用以下命令刷新minion上的数据：
 
 ```
-salt '*' saltutil.refresh_pillar
+$ salt '*' saltutil.refresh_pillar
 ```
 
 如果定义好的pillar不生效，建议刷新一下或者重启salt试试。
@@ -178,13 +178,13 @@ top.sls为sates入口，定义如下：
 编写完sates文件之后，你可以通过执行以下命令让所有minion执行sates文件中定义的state：
 
 ```
-salt '*' state.highstate
+$ salt '*' state.highstate
 ```
 
 你也可以单独执行jboss这个states：
 
 ```
-salt '*' state.sls jboss
+$ salt '*' state.sls jboss
 ```
 
 # 自定义grains_module
@@ -210,19 +210,19 @@ def Grains():
 然后，同步grains模块：
 
 ```
-salt '*' saltutil.sync_all
+$ salt '*' saltutil.sync_all
 ```
 
 刷新模块(让minion编译模块)：
 
 ```
-salt '*' sys.reload_modules
+$ salt '*' sys.reload_modules
 ```
 
 然后，验证max open file的value：
 
 ```
-salt '*' grains.item max_open_file
+$ salt '*' grains.item max_open_file
 ```
 
 # 自定义module
@@ -301,13 +301,13 @@ def stop(profile):
 如果你想启动jboss的default1实例，只需要执行以下方法：
 
 ```
-salt '*' jboss.start default1
+$ salt '*' jboss.start default1
 ```
 
 同样，查看状态：
 
 ```
-salt '*' jboss.status default1
+$ salt '*' jboss.status default1
 ```
 
 jboss为自定义模块的名称，也是jboss.py的名称，start或者status为jboss.py中定义的方法。

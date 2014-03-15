@@ -90,7 +90,3 @@ e.每个虚拟机中修改hosts：
 	http://rhel-june:50030/
 	http://rhel-june:50070/
 
-# 推荐
-
-- []
-

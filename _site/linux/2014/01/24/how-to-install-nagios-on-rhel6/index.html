@@ -164,14 +164,14 @@
       </header>
 	<div class="entry-content">
 	<h1>在管理机上安装rpm包</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
-chkconfig httpd on &amp;&amp; chkconfig nagios on
-service httpd start &amp;&amp; service nagios start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+$ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+$ yum -y install nagios nagios-plugins-all nagios-plugins-nrpe nrpe php httpd
+$ chkconfig httpd on &amp;&amp; chkconfig nagios on
+$ service httpd start &amp;&amp; service nagios start
 </code></pre></div>
 <h1>设置管理界面密码</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">htpasswd -c /etc/nagios/passwd nagiosadmin
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ htpasswd -c /etc/nagios/passwd nagiosadmin
 </code></pre></div>
 <!-- more -->
 
@@ -182,10 +182,10 @@ service httpd start &amp;&amp; service nagios start
 <p>打开<code>http://ip/nagios</code>，输入用户名和密码即可访问</p>
 
 <h1>在客户端上安装NRPE</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-yum -y install nagios nagios-plugins-all nrpe
-chkconfig nrpe on
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+$ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+$ yum -y install nagios nagios-plugins-all nrpe
+$ chkconfig nrpe on
 </code></pre></div>
 <p>修改配置<code>/etc/nagios/nrpe.cfg</code>，例如：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">log_facility=daemon
@@ -209,26 +209,26 @@ command[check_procs]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -
 <p>请注意修改<code>allowed_hosts</code>值为你的nagios监控机ip</p>
 
 <p>设置iptables：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -N NRPE
-iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
-iptables -I NRPE -s 198.211.117.251 -j ACCEPT
-iptables -A NRPE -s 0/0 -j DROP
-/etc/init.d/iptables save
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ iptables -N NRPE
+$ iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+$ iptables -I NRPE -s 198.211.117.251 -j ACCEPT
+$ iptables -A NRPE -s 0/0 -j DROP
+$ /etc/init.d/iptables save
 </code></pre></div>
 <p>或者，关闭iptables：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/iptables stop
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/iptables stop
 </code></pre></div>
 <p>启动NRPE：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">service nrpe start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ service nrpe start
 </code></pre></div>
 <h1>在管理机上添加配置文件</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;cfg_dir=/etc/nagios/servers&quot; &gt;&gt; /etc/nagios/nagios.cfg
-cd /etc/nagios/servers
-touch hadoop.tk.cfg
-touch hbase.tk.cfg
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ echo &quot;cfg_dir=/etc/nagios/servers&quot; &gt;&gt; /etc/nagios/nagios.cfg
+$ cd /etc/nagios/servers
+$ touch hadoop.tk.cfg
+$ touch hbase.tk.cfg
 </code></pre></div>
 <p>然后修改每一个配置文件：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/nagios/servers/hadoop.tk.cfg
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vim /etc/nagios/servers/hadoop.tk.cfg
 </code></pre></div>
 <p>添加内容如下，你也可以稍作修改：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">define host {
@@ -261,8 +261,8 @@ define service {
         }
 </code></pre></div>
 <p>重启nagios：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">chown -R nagios. /etc/nagios
-service nagios restart
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ chown -R nagios. /etc/nagios
+$ service nagios restart
 </code></pre></div>
 
 	-EOF-

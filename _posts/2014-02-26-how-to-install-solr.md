@@ -57,7 +57,7 @@ JAVA_OPTS='-Dsolr.solr.home=/tmp/solrhome'
 或者，在启动时进行设置。start.jar在源码包中可以找到，内部包含jetty容器。
 
 ```
-java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 ```
 
 2、 基于JNDI配置 
@@ -90,7 +90,7 @@ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 在example目录下，运行下面命令即可启动一个内置的jetty容器：
 
 ```
-java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 ```
 
 通过`http://localhost:8983/solr`即可访问。
@@ -106,7 +106,7 @@ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 这时候启动tomcat后访问`http://localhost:8080/solr`会提示错误，这是因为solr home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr home目录下，例如：
 
 ```
-cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
+$ cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 ```
 
 最后，启动tomcat，然后通过浏览器访问。
@@ -117,13 +117,13 @@ cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 
 关于中文，solr内核支持UTF-8编码，所以在tomcat里的server.xml需要进行配置
 
-```
+```xml
 <Connector port="8080" maxHttpHeaderSize="8192" URIEncoding="UTF-8" />
 ```
 
 另外，向solr Post请求的时候需要转为utf-8编码。对solr 返回的查询结果也需要进行一次utf-8的转码。检索数据时对查询的关键字也需要转码，然后用“+”连接。
 
-```
+```java
 String[] array = StringUtils.split(query, null, 0);
 for (String str : array) {
     result = result + URLEncoder.encode(str, "UTF-8") + "+";

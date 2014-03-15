@@ -203,7 +203,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 <div class="highlight"><pre><code class="text language-text" data-lang="text">JAVA_OPTS=&#39;-Dsolr.solr.home=/tmp/solrhome&#39;
 </code></pre></div>
 <p>或者，在启动时进行设置。start.jar在源码包中可以找到，内部包含jetty容器。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 </code></pre></div>
 <p>2、 基于JNDI配置 </p>
 
@@ -227,7 +227,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 <h1>3. 在Jetty上运行Solr</h1>
 
 <p>在example目录下，运行下面命令即可启动一个内置的jetty容器：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -Dsolr.solr.home=/tmp/solrhome -jar start.jar
 </code></pre></div>
 <p>通过<code>http://localhost:8983/solr</code>即可访问。</p>
 
@@ -240,7 +240,7 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 <p>然后，将<code>example/resources/log4j.properties</code>也拷到classpath，或者在tomcat-6.0.36/webapps/solr/目录下新建了一个classes目录，将log4j.properties放进去。</p>
 
 <p>这时候启动tomcat后访问<code>http://localhost:8080/solr</code>会提示错误，这是因为solr home目录下没有solr的配置文件和一些目录。请将solr-4.4.0/example/solr/目录下的文件拷贝到solr home目录下，例如：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cp -r solr-4.4.0/example/solr/ /tmp/solrhome/
 </code></pre></div>
 <p>最后，启动tomcat，然后通过浏览器访问。</p>
 
@@ -249,13 +249,13 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
 <h2>关于中文支持</h2>
 
 <p>关于中文，solr内核支持UTF-8编码，所以在tomcat里的server.xml需要进行配置</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;Connector port=&quot;8080&quot; maxHttpHeaderSize=&quot;8192&quot; URIEncoding=&quot;UTF-8&quot; /&gt;
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;Connector</span> <span class="na">port=</span><span class="s">&quot;8080&quot;</span> <span class="na">maxHttpHeaderSize=</span><span class="s">&quot;8192&quot;</span> <span class="na">URIEncoding=</span><span class="s">&quot;UTF-8&quot;</span> <span class="nt">/&gt;</span>
 </code></pre></div>
 <p>另外，向solr Post请求的时候需要转为utf-8编码。对solr 返回的查询结果也需要进行一次utf-8的转码。检索数据时对查询的关键字也需要转码，然后用“+”连接。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">String[] array = StringUtils.split(query, null, 0);
-for (String str : array) {
-    result = result + URLEncoder.encode(str, &quot;UTF-8&quot;) + &quot;+&quot;;
-}
+<div class="highlight"><pre><code class="java language-java" data-lang="java"><span class="n">String</span><span class="o">[]</span> <span class="n">array</span> <span class="o">=</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="n">query</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">array</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="n">URLEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">str</span><span class="o">,</span> <span class="s">&quot;UTF-8&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;+&quot;</span><span class="o">;</span>
+<span class="o">}</span>
 </code></pre></div>
 
 	-EOF-

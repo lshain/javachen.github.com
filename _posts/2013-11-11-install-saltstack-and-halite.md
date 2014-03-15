@@ -13,14 +13,14 @@ tags: [saltstack,halite]
 
 # 下载yum源
 
-```ruby
-rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
+```
+$ rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
 ```
 
 # 安装依赖
 
 ```
-yum install python-jinja2 -y
+$ yum install python-jinja2 -y
 ```
 
 # 安装saltstack
@@ -28,13 +28,13 @@ yum install python-jinja2 -y
 在sk1上安装master：
 
 ```
-yum install salt-master
+$ yum install salt-master
 ```
 
 在sk1上安装minion：
 
 ```
-yum install salt-minion
+$ yum install salt-minion
 ```
 <!-- more -->
 
@@ -64,27 +64,27 @@ id: sk2
 分别在sk1和sk2上配置开机启动：
 
 ```
-chkconfig salt-master on
-chkconfig salt-minion on
+$ chkconfig salt-master on
+$ chkconfig salt-minion on
 ```
 
 分别在sk1和sk2上以service方式启动：
 
 ```
-/etc/init.d/salt-master start
-/etc/init.d/salt-minion start
+$ /etc/init.d/salt-master start
+$ /etc/init.d/salt-minion start
 ```
 
 你可以在sk2上以后台运行salt-minion
 
 ```
-salt-minion -d
+$ salt-minion -d
 ```
 
 或者在sk2上debug方式运行：
 
 ```
-salt-minion -l debug
+$ salt-minion -l debug
 ```
 
 # 排错
@@ -92,7 +92,7 @@ salt-minion -l debug
 如果启动提示如下错误：
 
 ```
-[root@sk1 vagrant]# /etc/init.d/salt-master start
+$  /etc/init.d/salt-master start
 Starting salt-master daemon: Traceback (most recent call last):
  File "/usr/bin/salt-master", line 10, in <module>
    salt_master()
@@ -108,10 +108,10 @@ AttributeError: 'pwd.struct_passwd' object has no attribute 'gid'
 请下载saltstack源码重新编译：
 
 ```
-wget https://github.com/saltstack/salt/archive/develop.zip
-unzip develop
-cd salt-develop/
-python2.6 setup.py install
+$ wget https://github.com/saltstack/salt/archive/develop.zip
+$ unzip develop
+$ cd salt-develop/
+$ python2.6 setup.py install
 ```
 
 # salt minion和master的认证过程
@@ -166,20 +166,20 @@ True表明测试成功。
 ## 下载代码
 
 ```
-git clone https://github.com/saltstack/halite
+$ git clone https://github.com/saltstack/halite
 ```
 
 ## 生成index.html
 
 ```
-cd halite/halite
-./genindex.py -C
+$ cd halite/halite
+$ ./genindex.py -C
 ```
 
 ## 安装salt-api
 
 ```
-yum install salt-api
+$ yum install salt-api
 ```
 
 ## 配置salt master文件
@@ -204,21 +204,21 @@ external_auth:
 重启master;
 
 ```
-/etc/init.d/salt-master restart
+$ /etc/init.d/salt-master restart
 ```
 
 ## 添加登陆用户
 
 ```
-useradd admin
-echo admin|passwd –stdin admin
+$ useradd admin
+$ echo admin|passwd –stdin admin
 ```
 
 ## 启动 salt-api
 
 ```
-cd halite/halite
-python2.6 server_bottle.py -d -C -l debug -s cherrypy
+$ cd halite/halite
+$ python2.6 server_bottle.py -d -C -l debug -s cherrypy
 ```
 
 然后打开`http://ip:8080/app`，通过admin/admin登陆即可。

@@ -21,8 +21,8 @@ tags: [hadoop, vagrant]
 例如下载CentOS：
 
 ```
-wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
-wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
+$ wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
+$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
 ```
 
 # 添加box
@@ -30,13 +30,13 @@ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/cento
 首先查看已经添加的box：
 
 ```
-vagrant box list
+$ vagrant box list
 ```
 
 添加新的box，可以是远程地址也可以是本地文件，建议先下载到本地再进行添加：
 
 ```
-vagrant box add centos6.5 ./centos65-x86_64-20131205.box
+$ vagrant box add centos6.5 ./centos65-x86_64-20131205.box
 ```
 
 其语法如下：
@@ -52,14 +52,14 @@ box被安装在`~/.vagrant.d/boxes`目录下面。
 先创建一个目录：
 
 ```
-mkdir -p /home/june/workspace/vagramt/cdh
+$ mkdir -p /home/june/workspace/vagramt/cdh
 ```
 
 初始化，使用centos6.5 box：
 
 ```
-cd /home/june/workspace/vagramt/cdh
-vagrant init centos6.5
+$ cd /home/june/workspace/vagramt/cdh
+$ vagrant init centos6.5
 ```
 
 输出如下日志：
@@ -93,14 +93,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         config.vm.box = "centos6.5"
         config.vm.hostname =vm_name
-        config.ssh.default.username = "vagrant"
+        config.ssh.username = "vagrant"
         config.vm.network :private_network, ip: "192.168.56.12#{i}"
+	  	config.vm.provision :shell, :path => "boot.sh"
     end
   end
 end
 ```
 
 上面的文件中定义了三个虚拟机，三个虚拟机的名字和hostname分别为cdh1、cdh2、cdh3，网络使用的是host-only网络。
+
+在启动成功之后，会运行boot.sh脚本，你可以编写你自己的脚本。
 
 # 启动虚拟机
 
@@ -118,7 +121,7 @@ vagrant ssh cdh1
 
 # 虚拟机的初始化设置
 
-创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本进行手动执行。该脚本内容如下：
+创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为boot.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：
 
 ```bash
 #!/usr/bin/env bash
