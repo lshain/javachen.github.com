@@ -2,13 +2,14 @@
 layout: post
 title: Ext读取xml文件生成动态表格和表单
 category: javascript
-tags: [extjs]
+tags: [extjs, xml]
 keywords: extjs, xml
 description: Ext读取xml文件生成动态表格和表单
 ---
 最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
 获取弹出窗口url后的参数方法：
 
+```javascript
 	// 获取url后的参数值
 	function getQueryStringValue(name) {
 		var url = window.location.search;
@@ -32,9 +33,11 @@ description: Ext读取xml文件生成动态表格和表单
 	function getXmlUrl(xmlFile) {
 		return '../bjsasc_dictionary/' + getQueryStringValue('xmlFile');
 	}
+```
 
 用到的一些辅助方法：
 
+```javascript
 	// 去掉Dom节点中的空白字符
 	function cleanWhitespaces(elem) {
 		var elem = elem || document;
@@ -99,11 +102,13 @@ description: Ext读取xml文件生成动态表格和表单
 		var Dight = Math.round(Dight * Math.pow(10, How)) / Math.pow(10, How);
 		return Dight;
 	}
+```
 
 xml文件格式：
 
-	< ?xml version="1.0" encoding="gb2312"?>
-	< dictionary>
+```xml
+	<?xml version="1.0" encoding="gb2312"?>
+	<dictionary>
 		<title>领用出库-物资选择</title>
 		<sql>
 		select V_stores_list.* 
@@ -118,16 +123,18 @@ xml文件格式：
 			<fieldname>MTRNAME</fieldname>
 			<fieldtitle>物资名称</fieldtitle>
 			<fieldtype>文本</fieldtype>
-			<comparetype>< ![CDATA[like
+			<comparetype><![CDATA[like
 			MTRNAME
 			单行
-			< ![CDATA[]]>		
+			<![CDATA[]]>		
 			</comparetype>
 		</ condition>
 	</ dictionary>
-
+```
 
 然后，弹出窗口页面Ext入口代码：
+
+```javascript
 	// 全局变量
 	var result = {};
 	var grid;
@@ -313,9 +320,11 @@ xml文件格式：
 		}
 		return result;
 	};
+```
 
 渲染Ext界面代码：
 
+```javascript
 	function initViewport() {
 		if (!form) {
 			form = getInsertForm();
@@ -562,3 +571,4 @@ xml文件格式：
 		});
 		return form;
 	}
+```

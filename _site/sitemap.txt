@@ -81,12 +81,10 @@ http://blog.javachen.com/kettle/2012/02/22/the-init-process-before-job-execution
 http://blog.javachen.com/kettle/2012/02/21/the-execution-process-of-kettles-job
 http://blog.javachen.com/kettle/2012/02/17/step-error-handling-in-kettle
 http://blog.javachen.com/java/2012/02/14/this-expression-of-jsf-el
-http://blog.javachen.com/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue
 http://blog.javachen.com/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle
 http://blog.javachen.com/kettle/2012/01/04/some-problems-about-migrating-database-datas-with-kettle
 http://blog.javachen.com/pentaho/2011/12/07/mondrian-and-olap
 http://blog.javachen.com/javascript/2011/11/25/xml-user-interface-language-introuction
-http://blog.javachen.com/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi
 http://blog.javachen.com/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse
 http://blog.javachen.com/pentaho/2011/09/26/resolved-pentaho-problems-9-16
 http://blog.javachen.com/cloud/2011/08/20/install-eucalyptus-on-fedora-15
@@ -103,4 +101,6 @@ http://blog.javachen.com/cloud/2011/06/16/touch-cloud-environment-which-it-is-eu
 http://blog.javachen.com/work/2010/08/06/a-letter-to-boss
 http://blog.javachen.com/work/2010/03/06/application-for-leave
 http://blog.javachen.com/work/2010/01/06/the-plan-of-2010
+http://blog.javachen.com/javascript/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue
+http://blog.javachen.com/javascript/2009/10/22/ext_readxml_in_bjsasc_wuzi
 http://blog.javachen.com/work/2009/09/26/be-best-of-myself

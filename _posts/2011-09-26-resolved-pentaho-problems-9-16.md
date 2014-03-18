@@ -2,8 +2,7 @@
 layout: post
 title: Pentaho现场支持遇到问题及解决办法
 category: pentaho
-tags: [pentaho, bi]
-keywords: pentaho, bi
+tags: [pentaho]
 description: Pentaho现场支持遇到问题及解决办法
 ---
 <p>很久没写文章了，最近在关注Pentaho。<br />

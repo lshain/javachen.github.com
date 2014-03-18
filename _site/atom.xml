@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-15T19:56:38+08:00</updated>
+ <updated>2014-03-18T13:48:51+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -708,7 +708,7 @@ solr.source.reindex=solrReindexServer
 &lt;p&gt;由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群&lt;/p&gt;
 
 &lt;p&gt;首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;tickTime=2000
@@ -721,16 +721,16 @@ server.2=192.168.56.122:2888:3888
 server.3=192.168.56.123:2888:3888
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;zookeeper的数据目录指定在&lt;code&gt;/data/zookeeper/data&lt;/code&gt;，你也可以使用其他目录，通过下面命令进行创建该目录：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;mkdir /data/zookeeper/data -p
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ mkdir /data/zookeeper/data -p
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;然后，初始化myid，三个节点编号依次为&lt;code&gt;1,2,3&lt;/code&gt;，在其余节点上分别执行命令（注意修改编号）。&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;echo &amp;quot;1&amp;quot; &amp;gt;/data/zookeeper/data/myid
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ echo &amp;quot;1&amp;quot; &amp;gt;/data/zookeeper/data/myid
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1,第二个节点为2,第三个节点为3。&lt;/p&gt;
 
 &lt;p&gt;最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;cd /opt
-sh zookeeper-3.4.5/bin/zkServer.sh start
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;$ cd /opt
+$ sh zookeeper-3.4.5/bin/zkServer.sh start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;可以查看ZooKeeper集群的状态，保证集群启动没有问题：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;[root@192.168.56.121 opt]# sh zookeeper-3.4.5/bin/zkServer.sh status

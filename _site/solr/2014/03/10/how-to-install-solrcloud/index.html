@@ -208,7 +208,7 @@
 <p>由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群</p>
 
 <p>首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 </code></pre></div>
 <p>创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">tickTime=2000
@@ -221,16 +221,16 @@ server.2=192.168.56.122:2888:3888
 server.3=192.168.56.123:2888:3888
 </code></pre></div>
 <p>zookeeper的数据目录指定在<code>/data/zookeeper/data</code>，你也可以使用其他目录，通过下面命令进行创建该目录：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir /data/zookeeper/data -p
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir /data/zookeeper/data -p
 </code></pre></div>
 <p>然后，初始化myid，三个节点编号依次为<code>1,2,3</code>，在其余节点上分别执行命令（注意修改编号）。</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;1&quot; &gt;/data/zookeeper/data/myid
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ echo &quot;1&quot; &gt;/data/zookeeper/data/myid
 </code></pre></div>
 <p>然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1,第二个节点为2,第三个节点为3。</p>
 
 <p>最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">cd /opt
-sh zookeeper-3.4.5/bin/zkServer.sh start
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd /opt
+$ sh zookeeper-3.4.5/bin/zkServer.sh start
 </code></pre></div>
 <p>可以查看ZooKeeper集群的状态，保证集群启动没有问题：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@192.168.56.121 opt]# sh zookeeper-3.4.5/bin/zkServer.sh status

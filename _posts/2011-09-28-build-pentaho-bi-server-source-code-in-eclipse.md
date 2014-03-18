@@ -2,8 +2,7 @@
 layout: post
 title: 在eclipse中构建Pentaho BI Server工程
 category: pentaho
-tags: [pentaho, bi]
-keywords: pentaho, bi
+tags: [pentaho]
 description:  在eclipse中构建Pentaho BI Server工程
 ---
 首先需要说明的是，Pentaho BI Server源代码在<em>svn://source.pentaho.org/svnroot/bi-platform-v2/trunk/</em>，并且用ivy构建。ivy没有用过也不熟悉，故不打算从这里使用ivy构建源码。

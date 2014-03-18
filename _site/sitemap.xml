@@ -446,13 +446,6 @@
     </url>
     
     <url>
-      <loc>http://blog.javachen.com/javascript/2012/01/31/ext_readxml_in_bjsasc_wuzi_continue</loc>
-      <changefreq>daily</changefreq>
-      <lastmod>2012-01-31T00:00:00+08:00</lastmod>
-      <priority>0.8</priority>
-    </url>
-    
-    <url>
       <loc>http://blog.javachen.com/kettle/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle</loc>
       <changefreq>daily</changefreq>
       <lastmod>2012-01-05T00:00:00+08:00</lastmod>
@@ -477,13 +470,6 @@
       <loc>http://blog.javachen.com/javascript/2011/11/25/xml-user-interface-language-introuction</loc>
       <changefreq>daily</changefreq>
       <lastmod>2011-11-25T00:00:00+08:00</lastmod>
-      <priority>0.8</priority>
-    </url>
-    
-    <url>
-      <loc>http://blog.javachen.com/javascript/2011/10/22/ext_readxml_in_bjsasc_wuzi</loc>
-      <changefreq>daily</changefreq>
-      <lastmod>2011-10-22T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     
@@ -596,6 +582,20 @@
       <loc>http://blog.javachen.com/work/2010/01/06/the-plan-of-2010</loc>
       <changefreq>daily</changefreq>
       <lastmod>2010-01-06T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/javascript/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2009-10-31T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/javascript/2009/10/22/ext_readxml_in_bjsasc_wuzi</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2009-10-22T00:00:00+08:00</lastmod>
       <priority>0.8</priority>
     </url>
     
