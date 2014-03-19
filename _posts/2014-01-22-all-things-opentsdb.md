@@ -8,11 +8,15 @@ tags: [OpenTSDB , hbase]
 
 # 1. OpenTSDB介绍
 
-[OpenTSDB](http://opentsdb.net/index.html)用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
+[OpenTSDB](http://opentsdb.net/index.html)用HBase存储所有的时序（无须采样）来构建一个**分布式、可伸缩的时间序列数据库**。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
 
 对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。
 
-OpenTSDB使用LGPLv2.1+开源协议。
+OpenTSDB使用LGPLv2.1+开源协议,目前版本为2.X。
+
+- 官网地址：[http://opentsdb.net/](http://opentsdb.net/)
+- 源代码：[https://github.com/OpenTSDB/opentsdb/](https://github.com/OpenTSDB/opentsdb/)
+
 
 # 2. 安装OpenTSDB
 ## 2.1 依赖
@@ -47,6 +51,12 @@ OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是�
 
 ## 2.2 下载并编译源代码
 
+首先安装必要依赖：
+
+```
+yum install gnuplot automake autoconf git -y
+```
+
 ```
 git clone git://github.com/OpenTSDB/opentsdb.git
 cd opentsdb
@@ -55,10 +65,10 @@ cd opentsdb
 
 ## 2.3 安装
 
-1. 首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94
-2. 设置环境变量并创建opentsdb使用的表，需要设置的环境变量为`COMPRESSION`和`HBASE_HOME`，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo
-3. 执行建表语句`src/create_table.sh`
-4. 启动TSD
+- 1. 首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94
+- 2. 设置环境变量并创建opentsdb使用的表，需要设置的环境变量为`COMPRESSION`和`HBASE_HOME`，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo
+- 3. 执行建表语句`src/create_table.sh`
+- 4. 启动TSD
 
 ```
 tsdtmp=${TMPDIR-'/tmp'}/tsd    # For best performance, make sure
@@ -67,7 +77,10 @@ mkdir -p "$tsdtmp"             # your temporary directory uses tmpfs
 ```
 
 如果你使用的是hbase集群，则你还需要设置`--zkquorum`，`--cachedir`对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加`--auto-metric`，则当新的数据被搜集时自动创建指标。
-5. 启动成功之后，你可以通过[127.0.0.1:4242](http://127.0.0.1:4242)进行访问。
+
+你可以将这些参数编写到配置文件中，然后通过`--config`指定该文件所在路径。该配置文件内容可配置的属性请参考：[Properties](http://opentsdb.net/docs/build/html/user_guide/configuration.html#properties)
+
+- 5. 启动成功之后，你可以通过[127.0.0.1:4242](http://127.0.0.1:4242)进行访问。
 
 从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：[OpenTSDB & tcollector 安装部署（Installation and Deployment）](http://www.adintellig.com/blog/14)
 

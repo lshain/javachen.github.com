@@ -166,6 +166,91 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
+    
+		
+		  <h1>安装虚拟机</h1>
+
+<p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
+
+<h1>配置网络</h1>
+
+<p>a. VirtualBox全局设定-网络中添加一个新的连接：vboxnet0</p>
+
+<p>b. 设置每一个虚拟机的网络为Host-Only</p>
+
+<p>c.分别修改每个虚拟机的ip，DHCP或手动设置</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network-scripts/ifcfg-eth0
+vim /etc/udev/rules.d/70-persistent-net.rules  #删掉第一个，修改第二个名字为eth0
+start_udev
+</code></pre></div>
+<p>d.修改主机名</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vim /etc/sysconfig/network
+</code></pre></div>
+<p>e.每个虚拟机中修改hosts：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">192.168.56.100 rhel-june
+192.168.56.101 rhel-june-1
+192.168.56.102 rhel-june-2
+</code></pre></div>
+<p>最后机器列表为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rhel-june:   192.168.56.100
+rhel-june-1: 192.168.56.101
+rhel-june-2: 192.168.56.102
+</code></pre></div>
+<h1>机群规划</h1>
+
+<p>版本：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop:1.1.1
+JDK:1.6.0_38
+</code></pre></div>
+<p>集群各节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">NameNode:192.168.56.100
+NameSecondary:192.168.56.100
+DataNode:192.168.56.101
+DataNode:192.168.56.102
+</code></pre></div>
+<h1>安装过程</h1>
+
+<p>a.解压缩到/opt</p>
+
+<p>b.设置配置文件：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml
+hdfs-site.sml
+mapred-site.xml
+</code></pre></div>
+<p>c.设置master、slaves</p>
+
+<p>d.设置环境变量</p>
+
+<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_HOME=/opt/jdk1.6.0_38
+export HADOOP_INSTALL=/opt/hadoop-1.1.1
+export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
+</code></pre></div>
+<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
+
+<p>f.格式化namenode</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop namenode -format
+</code></pre></div>
+<p>g.启动hdfs集群</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sh /opt/hadoop-1.1.1/bin/start-all.sh
+</code></pre></div>
+<p>h.查看节点进程</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">jps
+</code></pre></div>
+<h1>查看状态</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://rhel-june:50030/
+http://rhel-june:50070/
+</code></pre></div>
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/work/2013/02/20/summary-of-the-work-in-2012">2012年度总结</a></h2>
     
       2012年是在公司工作的第二年，在总结2012年的得与失的时候，有必要和《2011的度年终总结》相比较，在比较中审视自己在2012年是否有改进2011年存在的不足、是否有实现2011年定下的2012年工作计划。以下是2012年相对于2011年的一些变化。
@@ -663,17 +748,6 @@ AND column_metadata = [
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/kettle/2012/02/22/the-init-process-before-job-execution">Kettle运行作业之前的初始化过程</a></h2>
-    
-      本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/kettle/2012/02/22/the-init-process-before-job-execution"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <hr/>
 
@@ -709,6 +783,8 @@ AND column_metadata = [
        <div class="category">
          <ul>
            
+           <li><a href="/python/2014/03/18/simulate-weibo-login-in-python">Python模拟新浪微博登录</a></li>
+           
            <li><a href="/solr/2014/03/15/schema-in-solr">Solr的schema.xml</a></li>
            
            <li><a href="/solr/2014/03/14/split-chinese-in-solr">在Solr中使用中文分词</a></li>
@@ -738,8 +814,6 @@ AND column_metadata = [
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在RHEL系统上安装Nagios</a></li>
            
            <li><a href="/linux/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
-           
-           <li><a href="/linux/2014/01/21/all-things-about-jekyll">All Things Jekyll</a></li>
            
          </ul>
        </div>

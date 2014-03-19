@@ -165,11 +165,16 @@
 	<div class="entry-content">
 	<h1>1. OpenTSDB介绍</h1>
 
-<p><a href="http://opentsdb.net/index.html">OpenTSDB</a>用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。</p>
+<p><a href="http://opentsdb.net/index.html">OpenTSDB</a>用HBase存储所有的时序（无须采样）来构建一个<strong>分布式、可伸缩的时间序列数据库</strong>。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。</p>
 
 <p>对于运维工程师而言，OpenTSDB可以获取基础设施和服务的实时状态信息，展示集群的各种软硬件错误，性能变化以及性能瓶颈。对于管理者而言，OpenTSDB可以衡量系统的SLA，理解复杂系统间的相互作用，展示资源消耗情况。集群的整体作业情况，可以用以辅助预算和集群资源协调。对于开发者而言，OpenTSDB可以展示集群的主要性能瓶颈，经常出现的错误，从而可以着力重点解决重要问题。</p>
 
-<p>OpenTSDB使用LGPLv2.1+开源协议。</p>
+<p>OpenTSDB使用LGPLv2.1+开源协议,目前版本为2.X。</p>
+
+<ul>
+<li>官网地址：<a href="http://opentsdb.net/">http://opentsdb.net/</a></li>
+<li>源代码：<a href="https://github.com/OpenTSDB/opentsdb/">https://github.com/OpenTSDB/opentsdb/</a></li>
+</ul>
 
 <h1>2. 安装OpenTSDB</h1>
 
@@ -208,24 +213,32 @@ apt-get install gnuplot
 </ul>
 
 <h2>2.2 下载并编译源代码</h2>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git://github.com/OpenTSDB/opentsdb.git
+
+<p>首先安装必要依赖：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install gnuplot automake autoconf git -y
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git://github.com/OpenTSDB/opentsdb.git
 cd opentsdb
 ./build.sh
 </code></pre></div>
 <h2>2.3 安装</h2>
 
-<ol>
-<li>首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94</li>
-<li>设置环境变量并创建opentsdb使用的表，需要设置的环境变量为<code>COMPRESSION</code>和<code>HBASE_HOME</code>，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo</li>
-<li>执行建表语句<code>src/create_table.sh</code></li>
-<li>启动TSD</li>
-</ol>
+<ul>
+<li>1. 首先安装一个单节点或者多节点集群的hbase环境，hbase版本要求为0.94</li>
+<li>2. 设置环境变量并创建opentsdb使用的表，需要设置的环境变量为<code>COMPRESSION</code>和<code>HBASE_HOME</code>，前者设置是否启用压缩，或者设置hbase home目录。如果使用压缩，则还需要安装lzo</li>
+<li>3. 执行建表语句<code>src/create_table.sh</code></li>
+<li>4. 启动TSD</li>
+</ul>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">tsdtmp=${TMPDIR-&#39;/tmp&#39;}/tsd    # For best performance, make sure
 mkdir -p &quot;$tsdtmp&quot;             # your temporary directory uses tmpfs
 ./build/tsdb tsd --port=4242 --staticroot=build/staticroot --cachedir=&quot;$tsdtmp&quot; --auto-metric
 </code></pre></div>
-<p>如果你使用的是hbase集群，则你还需要设置<code>--zkquorum</code>，<code>--cachedir</code>对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加<code>--auto-metric</code>，则当新的数据被搜集时自动创建指标。
-5. 启动成功之后，你可以通过<a href="http://127.0.0.1:4242">127.0.0.1:4242</a>进行访问。</p>
+<p>如果你使用的是hbase集群，则你还需要设置<code>--zkquorum</code>，<code>--cachedir</code>对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加<code>--auto-metric</code>，则当新的数据被搜集时自动创建指标。</p>
+
+<p>你可以将这些参数编写到配置文件中，然后通过<code>--config</code>指定该文件所在路径。该配置文件内容可配置的属性请参考：<a href="http://opentsdb.net/docs/build/html/user_guide/configuration.html#properties">Properties</a></p>
+
+<ul>
+<li>5. 启动成功之后，你可以通过<a href="http://127.0.0.1:4242">127.0.0.1:4242</a>进行访问。</li>
+</ul>
 
 <p>从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：<a href="http://www.adintellig.com/blog/14">OpenTSDB &amp; tcollector 安装部署（Installation and Deployment）</a></p>
 
