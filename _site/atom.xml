@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-21T11:47:05+08:00</updated>
+ <updated>2014-03-21T18:35:49+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -1068,7 +1068,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;通过http://192.168.56.121:8080/solr/进行访问，界面如图提示&lt;code&gt;There are no SolrCores running.&lt;/code&gt;，这是因为配置文件尚未配置solrcore。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solr-no-solrcores.png&quot; alt=&quot;There are no SolrCores running&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jc-resource.qiniudn.com/images/2014/solr-no-solrcores.png&quot; alt=&quot;There are no SolrCores running&quot;&gt;&lt;/p&gt;
 
 &lt;h1&gt;7. 创建Collection、Shard和Replication&lt;/h1&gt;
 
@@ -1121,7 +1121,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 
 &lt;p&gt;可以通过Web管理页面，访问&lt;code&gt;http://192.168.56.121:8888/solr/#/~cloud&lt;/code&gt;，查看SolrCloud集群的分片信息，如图所示:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solrcloud-collection-shard.png&quot; alt=&quot;SolrCloud-collection-shard&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jc-resource.qiniudn.com/images/2014/solrcloud-collection-shard.png&quot; alt=&quot;SolrCloud-collection-shard&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;实际上，我们从192.168.56.121节点可以看到，SOLR的配置文件内容，已经发生了变化，如下所示：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;xml language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&lt;/span&gt;
@@ -1160,7 +1160,7 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。最后效果如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014/solrcloud-collection-shard-replica.png&quot; alt=&quot;solrcloud-collection-shard-replica&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jc-resource.qiniudn.com/images/2014/solrcloud-collection-shard-replica.png&quot; alt=&quot;solrcloud-collection-shard-replica&quot;&gt;&lt;/p&gt;
 
 &lt;h1&gt;8. 其他说明&lt;/h1&gt;
 

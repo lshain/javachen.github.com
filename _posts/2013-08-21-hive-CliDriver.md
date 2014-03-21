@@ -99,7 +99,7 @@ shell_cmd的内容大概如下：
 
 作为尝试，第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑，如下图。以后还需要加强画图和表达能力。
 
-![hive-cli-clidriver](/assets/images/2013/hive-cli-clidriver.jpg)
+![hive-cli-clidriver](http://jc-resource.qiniudn.com/images/2013/hive-cli-clidriver.jpg)
 
 # 参考文章
 

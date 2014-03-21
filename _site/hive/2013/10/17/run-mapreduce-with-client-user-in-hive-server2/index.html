@@ -274,7 +274,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 
 <p>下图是从hive-server2启动到执行HadoopLoginModule的commit()方法的调用图：</p>
 
-<p><img src="/assets/images/2013/hive-server2-invoke.png" alt="hive-server2启动过程"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2013/hive-server2-invoke.png" alt="hive-server2启动过程"></p>
 
 <p>获取登陆用户的关键代码就在commit()，逻辑如下：</p>
 
@@ -321,7 +321,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 </code></pre></div>
 <p>查看yarn监控地址<code>http://192.168.56.101:8088/cluster</code>，可以看到提交的mapreduce任务由june用户来运行。</p>
 
-<p><img src="/assets/images/2013/20131017-01.png" alt="yarn cluster monitor page"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2013/20131017-01.png" alt="yarn cluster monitor page"></p>
 
 <p>如何修改mapreduce任务的运行用户呢？如果了解hive提交mapreduce任务的过程的话，就应该知道hive任务会通过<code>org.apache.hadoop.mapred.JobClient</code>来提交。在JobClient的init方法中有如下代码：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">  public void init(JobConf conf) throws IOException {
@@ -380,7 +380,7 @@ public UserGroupInformation getUGIForConf(Configuration conf) throws IOException
 
 <p>编译代码、替换class文件，然后重新运行HiveServer2以及jdbc测试类，查看yarn监控地址<code>http://192.168.56.101:8088/cluster</code>，截图如下：</p>
 
-<p><img src="/assets/images/2013/20131017-02.png" alt="yarn cluster monitor page"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2013/20131017-02.png" alt="yarn cluster monitor page"></p>
 
 <p>这时候mapreduce的运行用户变为NoName，这是因为从JobConf环境变量中找不到myExecuteName变量而使用默认值NoName的原因。</p>
 
@@ -481,7 +481,7 @@ drwxrwxrwt   - yarn         mapred          0 2013-10-16 07:30 /tmp/logs
 </code></pre></div>
 <p>监控页面截图：</p>
 
-<p><img src="/assets/images/2013/20131017-03.png" alt="yarn cluster monitor page"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2013/20131017-03.png" alt="yarn cluster monitor page"></p>
 
 <p>除了简单测试之外，还需要测试修改后的代码是否影响源代码的运行以及hive cli的运行。</p>
 

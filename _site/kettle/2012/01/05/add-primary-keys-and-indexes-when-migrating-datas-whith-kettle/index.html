@@ -172,14 +172,14 @@
 
 <p>下图是kettle中的一个表输出组件。
 <div class="pic">
-<a href="/assets/images/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="/assets/images/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
+<a href="http://jc-resource.qiniudn.com/images/2012/01/kettle-table-out.png"><img class="size-medium wp-image-2480 aligncenter" title="kettle-table-out" src="http://jc-resource.qiniudn.com/images/2012/01/kettle-table-out-269x300.png" alt="kettle中的表输出组件" width="269" height="300" /></a>
 </div></p>
 
 <p>在该组件里可以指定表名、字段等信息，并且还可以建表的sql语句。打开建表的sql语句，你可以看到该语句里只指定了字段名称和类型，没有指定主外键、约束、和索引。显然，该组件只是完成了数据的输出并没有将表的主键迁移过去。
 &lt;!--more--&gt;
 下图是kettle中纬度更新/查询的组件。
 <div class="pic">
-<a href="/assets/images/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="/assets/images/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
+<a href="http://jc-resource.qiniudn.com/images/2012/01/kettle-look-up.png"><img class="size-medium wp-image-2481 aligncenter" title="kettle-look-up" src="http://jc-resource.qiniudn.com/images/2012/01/kettle-look-up-292x300.png" alt="kettle中纬度更新/查询的组件" width="292" height="300" /></a>
 </div>
 该组件可以指定输出表名、映射字段、纬度字段、并且指定主键（图中翻译为关键字段），该组件比表输出组件多了一个功能，即指定主键。
 从上面两个组件中可以看出，kettle实际上预留了设置主键的接口，具体的接口说明需要查看api或者源代码，只是kettle没有智能的查处输入表的主键字段，而是需要用户在kettle ui界面指定一个主键名称。</p>
@@ -300,7 +300,7 @@ if (!Const.isEmpty(pksql)) {
 
 <p>最后的效果图如下：
 <div class="pic">
-<a href="/assets/images/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="/assets/images/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
+<a href="http://jc-resource.qiniudn.com/images/2012/01/kettle-add-primary-key-and-indexes.png"><img class="aligncenter size-medium wp-image-2483" title="kettle-add-primary-key-and-indexes" src="http://jc-resource.qiniudn.com/images/2012/01/kettle-add-primary-key-and-indexes-300x79.png" alt="" width="300" height="79" /></a>
 </div></p>
 
 <div class="infor">说明：

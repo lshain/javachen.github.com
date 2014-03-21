@@ -38,7 +38,7 @@ OpenNebula 2.2提供的文档相对较少并且零散，在网上可以找到一
 
 ## 安装php-adodb
 
-从http://sourceforge.net/projects/adodb/assets/images/adodb-php5-only下载 
+从http://sourceforge.net/projects/adodbhttp://jc-resource.qiniudn.com/images/adodb-php5-only下载 
 
 注意：将adobd包解压拷贝到/var/www/html/onemc/include/，将文件名改为adobd
 

@@ -16,7 +16,7 @@ XML2PDF和XML2Excel工程内代码很相似，XML2PDF内部使用了PDFjet.jar�
 
 将上面三个工程导入到一个工程然后打开sample.html页面，效果如下：
 <div class="pic">
-<img src="/assets/images/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
+<img src="http://jc-resource.qiniudn.com/images/2011/08/export-dhtmlxgrid-to-pdf.png" alt="" title="export dhtmlxgrid to pdf" width="300" height="166" class="aligncenter size-medium wp-image-2385" />
 </div>
 点击Get as PDF按钮，你会发现会打开一个新的窗口，然后页面什么都没有，而eclipse控制台报空指针异常。异常的主要原因在于下段代码：。
 <pre lang="java">
@@ -169,7 +169,7 @@ public class PDFColumn {
 
 这样xml字符串就能正常解析了，然后使用pdfjet.jar包就可以导出pdf了，最后的效果如下：
 <div class="pic">
-<img src="/assets/images/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
+<img src="http://jc-resource.qiniudn.com/images/2011/08/export-dhtmlx-to-pdf-pdf.png" alt="" title="export dhtmlx to pdf -pdf" width="300" height="134" class="aligncenter size-medium wp-image-2386" />
 </div>
 
 <h2>结论：</h2>

@@ -136,7 +136,7 @@ twitter的mapreduce可视化项目监控项目[ambrose](https://github.com/twitt
 
 hive Driver类的执行过程如下：
 
-![hive-driver](/assets/images/2013/hive-driver.jpg)
+![hive-driver](http://jc-resource.qiniudn.com/images/2013/hive-driver.jpg)
 
 
 # 参考文章

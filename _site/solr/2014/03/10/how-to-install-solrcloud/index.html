@@ -328,7 +328,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 </code></pre></div>
 <p>通过http://192.168.56.121:8080/solr/进行访问，界面如图提示<code>There are no SolrCores running.</code>，这是因为配置文件尚未配置solrcore。</p>
 
-<p><img src="/assets/images/2014/solr-no-solrcores.png" alt="There are no SolrCores running"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2014/solr-no-solrcores.png" alt="There are no SolrCores running"></p>
 
 <h1>7. 创建Collection、Shard和Replication</h1>
 
@@ -381,7 +381,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 
 <p>可以通过Web管理页面，访问<code>http://192.168.56.121:8888/solr/#/~cloud</code>，查看SolrCloud集群的分片信息，如图所示:</p>
 
-<p><img src="/assets/images/2014/solrcloud-collection-shard.png" alt="SolrCloud-collection-shard"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2014/solrcloud-collection-shard.png" alt="SolrCloud-collection-shard"></p>
 
 <p>实际上，我们从192.168.56.121节点可以看到，SOLR的配置文件内容，已经发生了变化，如下所示：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
@@ -420,7 +420,7 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 </code></pre></div>
 <p>到此为止，我们已经基于3个节点，配置完成了SolrCloud集群。最后效果如下：</p>
 
-<p><img src="/assets/images/2014/solrcloud-collection-shard-replica.png" alt="solrcloud-collection-shard-replica"></p>
+<p><img src="http://jc-resource.qiniudn.com/images/2014/solrcloud-collection-shard-replica.png" alt="solrcloud-collection-shard-replica"></p>
 
 <h1>8. 其他说明</h1>
 
