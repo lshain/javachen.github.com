@@ -190,63 +190,11 @@ create '$META_TABLE',
 
 从上面可以看出一共创建了4张表，并且可以设置是否压缩、是否启用布隆过滤、保存版本号等等，如果追求hbase读写性能，还可以预建分区。
 
-### Data Table Schema
+### 3.3.1 Data Table Schema
 
 在OpenTSDB中，所有数据存储在一张叫做`tsdb`的表中，这是为了充分利用hbase有序和region分布式的特点。所有的值都保存在列族`t`中。
 
 rowkey为`<metric_uid><timestamp><tagk1><tagv1>[...<tagkN><tagvN>]`，UID默认编码为3 Bytes，而时间戳会编码为4 Bytes
-
-### UID Table Schema
-
-一个单独的较小的表叫做`tsdb-uid`用来存储UID映射，包括正向的和反向的。存在两列族，一列族叫做`name`用来将一个UID映射到一个字符串，另一个列族叫做`id`，用来将字符串映射到UID。列族的每一行都至少有以下三列中的一个：
-
-- `metrics` 将metric的名称映射到UID 
-- `tagk` 将tag名称映射到UID 
-- `tagv` 将tag的值映射到UID 
-
-如果配置了metadata，则`name`列族还可以包括额外的metatata列。
-
-#### id 列族
-
-**Row Key** - 将会是一个分配到UID的字符串，例如，对于一个指标可能有一个值为`sys.cpu.user`或者对于一个标签其值可能为`42`
-
-**Column Qualifiers** - 上面三种列类型中一种。
-
-**Column Value** - 一个无符号的整数，默认被编码为3个byte，其值为UID。
-
-例如以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
-
-```
-proc.stat.cpu id:metrics \x00\x00\x01
-host id:tagk \x00\x00\x01
-cdh1 id:tagv \x00\x00\x01
-```
-
-#### name 列族
-
-**Row Key** - 为UID
-
-**Column Qualifiers** - 上面三种列类型中一种或者为`metrics_meta`、`tagk_meta`、`tagv_meta`
-
-**Column Value** - 与UID对应的字符串，对于一个`*_meta`列，其值将会是一个UTF-8编码的JSON格式字符串。不要在OpenTSDB外部去修改该值，其中的字段顺序会影响`CAS`调用。
-
-例如,以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
-```
-\x00\x00\x01 name:metrics proc.stat.cpu
-\x00\x00\x01 name:tagk host
-\x00\x00\x01 name:tagv cdh1
-\x00\x00\x01 name:tagk_meta {"uid":"000001","type":"TAGK","name":"host","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
-\x00\x00\x01 name:tagv_meta {"uid":"000001","type":"TAGV","name":"cdh1","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
-\x00\x00\x01 name:metric_meta {"uid":"000001","type":"METRIC","name":"metrics proc.stat.cpu","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
-
-```
-
-总结一下，`tsdb-uid`表结构如下：
-
-
-### Meta Table Schema
-
-### Tree Table Schema
 
 OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：
 
@@ -273,16 +221,112 @@ row表示格式为： 每个数字对应1 byte
 - [0, 0, 2] "host" index
 - [0, -7, 42] "web42" index
 
-NOTE（dirlt）：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助
+**NOTE**：可以看到，对于metric + tags相同的数据都会连续存放，且metic相同的数据也会连续存放，这样对于scan以及做aggregation都非常有帮助
 
-column qualifier占用2 bytes，表示格式为：
+**column qualifier** 占用2 bytes或者4 bytes，占用2 bytes时表示以秒为单位的偏移，格式为：
 
-- 12 bits delta in seconds.(相对row表示的小时的delta, 最多2^ 12 = 4096 > 3600因此没有问题）
-- 4 bits
-- 1 bit (long or double)
-- 3 bits (reserved)
+- 12 bits:相对row表示的小时的delta, 最多2^ 12 = 4096 > 3600因此没有问题
+- 4 bits:format flags
+ - 1 bit: an integer or floating point
+ - 3 bits: 标明数据的长度，其长度必须是1、2、4、8。`000`表示1个byte,`010`表示2byte，`011`表示4byte，`100`表示8byte
 
-value使用8bytes存储，既可以存储long,也可以存储double。
+占用4 bytes时表示以毫秒为单位的偏移，格式为：
+
+- 4 bits：十六进制的`1`或者`F`
+- 22 bits:毫秒偏移
+- 2 bit:保留
+- 4 bits: format flags
+ - 1 bit: an integer or floating point，0表示整数,1表示浮点数
+ - 3 bits: 标明数据的长度，其长度必须是1、2、4、8。`000`表示1个byte,`010`表示2byte，`011`表示4byte，`100`表示8byte
+
+**举例：**
+
+对于时间戳为1292148123的数据点来说，其转换为以小时为单位的基准时间(去掉小时后的秒）为129214800,偏移为123,转换为二进制为`1111011`，因为该值为整数且长度为8位（对应为2byte，故最后3bit为`100`）,故其对应的列族名为：`0000011110110100`，将其转换为十六进制为`07B4`
+
+**value** 使用8bytes存储，既可以存储long,也可以存储double。
+
+总结一下，`tsdb`表结构如下：
+
+![opentsdb-tsdb-schema](/assets/images/2014/opentsdb-tsdb-schema.png)
+
+### 3.3.2 UID Table Schema
+
+一个单独的较小的表叫做`tsdb-uid`用来存储UID映射，包括正向的和反向的。存在两列族，一列族叫做`name`用来将一个UID映射到一个字符串，另一个列族叫做`id`，用来将字符串映射到UID。列族的每一行都至少有以下三列中的一个：
+
+- `metrics` 将metric的名称映射到UID 
+- `tagk` 将tag名称映射到UID 
+- `tagv` 将tag的值映射到UID 
+
+如果配置了metadata，则`name`列族还可以包括额外的metatata列。
+
+- **id 列族**
+
+**Row Key** - 将会是一个分配到UID的字符串，例如，对于一个指标可能有一个值为`sys.cpu.user`或者对于一个标签其值可能为`42`
+
+**Column Qualifiers** - 上面三种列类型中一种。
+
+**Column Value** - 一个无符号的整数，默认被编码为3个byte，其值为UID。
+
+例如以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
+
+```
+proc.stat.cpu id:metrics \x00\x00\x01
+host id:tagk \x00\x00\x01
+cdh1 id:tagv \x00\x00\x01
+```
+
+- **name 列族**
+
+**Row Key** - 为UID
+
+**Column Qualifiers** - 上面三种列类型中一种或者为`metrics_meta`、`tagk_meta`、`tagv_meta`
+
+**Column Value** - 与UID对应的字符串，对于一个`*_meta`列，其值将会是一个UTF-8编码的JSON格式字符串。不要在OpenTSDB外部去修改该值，其中的字段顺序会影响`CAS`调用。
+
+例如,以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
+
+```
+\x00\x00\x01 name:metrics proc.stat.cpu
+\x00\x00\x01 name:tagk host
+\x00\x00\x01 name:tagv cdh1
+\x00\x00\x01 name:tagk_meta {"uid":"000001","type":"TAGK","name":"host","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+\x00\x00\x01 name:tagv_meta {"uid":"000001","type":"TAGV","name":"cdh1","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+\x00\x00\x01 name:metric_meta {"uid":"000001","type":"METRIC","name":"metrics proc.stat.cpu","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+```
+
+总结一下，`tsdb-uid`表结构如下：
+
+![opentsdb-tsdb-uid-schema](/assets/images/2014/opentsdb-tsdb-uid-schema.png)
+
+上图对应的一个datapoint如下：
+
+```
+proc.stat.cpu 1292148123 80 host=cdh1
+```
+
+从上图可以看出`tsdb-uid`的表结构以及数据存储方式，对于一个data point来说，其被保存到opentsdb之前，会对`metrics`、`tagk`、`tagv`、`metric_meta`、`tagk_meta`、`tagv_meta`生成一个UID（如上图中的`000001`）,然后将其插入hbase表中，rowkey为UID，同时会存储多行记录，分别保存`metrics`、`tagk`、`tagv`、`metric_meta`、`tagk_meta`、`tagv_meta`到UID的映射。
+
+### 3.3.3 Meta Table Schema
+
+这个表是OpenTSDB中不同时间序列的一个索引，可以用来存储一些额外的信息。这个表名称叫做`tsdb-meta`，该表只有一个列族`name`，两个列，分别为`ts_meta`、`ts_ctr`，该表中数据如下：
+
+```
+\x00\x00\x01\x00\x00\x01\x00\x00\x01 name:ts_ctr \x00\x00\x00\x00\x00\x00\x00p
+\x00\x00\x01\x00\x00\x01\x00\x00\x01 name:ts_meta {"tsuid":"000001000001000001","displayName":"","description":"","notes":"","created":1395213196,"custom":null,"units":"","dataType":"","retention":0,"max":"NaN","min":"NaN"}
+
+\x00\x00\x02\x00\x00\x01\x00\x00\x01 name:ts_ctr \x00\x00\x00\x00\x00\x00\x00p
+\x00\x00\x02\x00\x00\x01\x00\x00\x01 name:ts_meta {"tsuid":"000002000001000001","displayName":"","description":"","notes":"","created":1395213196,"custom":null,"units":"","dataType":"","retention":0,"max":"NaN","min":"NaN"}
+```
+
+**Row Key** 和`tsdb`表一样，其中不包含时间戳，`<metric_uid><tagk1><tagv1>[...<tagkN><tagvN>]`
+
+**TSMeta Column** 和UIDMeta相似，其为UTF-8编码的JSON格式字符串
+
+**ts_ctr Column** 计数器，用来记录一个时间序列中存储的数据个数，其列名为`ts_ctr`，为8位有符号的整数。
+
+### 3.3.4 Tree Table Schema
+
+索引表，用于展示树状结构的，类似于文件系统，以方便其他系统使用，例如：`Graphite`
 
 ## 3.4 如何写数据
 ## 3.5 如何查询数据
