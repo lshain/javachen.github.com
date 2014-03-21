@@ -1,15 +1,15 @@
 ---
 layout: post
-title: Ext读取xml文件生成动态表格和表单(续)
+title: Extjs读取xml文件生成动态表格和表单(续)
 category: javascript
 tags: [extjs, xml]
 keywords: extjs, xml
-description: Ext读取xml文件生成动态表格和表单
+description: Extjs读取xml文件生成动态表格和表单
 ---
 
-很多人向我要《<a href="http://blog.javachen.com/2009/10/ext_readxml_in_bjsasc_wuzi" target="_blank">Ext读取xml文件生成动态表格和表单</a>》一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。
+很多人向我要【[Extjs读取xml文件生成动态表格和表单](/javascript/2009/10/22/ext_readxml_in_bjsasc_wuzi/)】一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。
 
-《Ext读取xml文件生成动态表格和表单》一文需要的文件有：
+需要的文件有：
 
 - 1.html文件，此处以SASC.search.MtrUse.html为例
 - 2.Extjs相关文件,见SASC.search.MtrUse.html文件中的引用
@@ -35,4 +35,4 @@ description: Ext读取xml文件生成动态表格和表单
 
 <strong>说明</strong>
 
-如果还有什么不懂，欢迎email：javachen.june#gmail.com
+如果还有什么不懂或者想要源代码，欢迎email我：javachen.june#gmail.com

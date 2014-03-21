@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Ext读取xml文件生成动态表格和表单
+title: Extjs读取xml文件生成动态表格和表单
 category: javascript
 tags: [extjs, xml]
 keywords: extjs, xml
-description: Ext读取xml文件生成动态表格和表单
+description: Extjs读取xml文件生成动态表格和表单
 ---
-最近开发项目，需要动态读取xml文件，生成Ext界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
+最近开发项目，需要动态读取xml文件，生成Extjs界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
 获取弹出窗口url后的参数方法：
 
 ```javascript
@@ -572,3 +572,9 @@ xml文件格式：
 		return form;
 	}
 ```
+
+最后做成的效果图，如下：
+
+![bjsasc](/assets/images/2014/bjsasc.bmp)
+
+如果你想要获取更详细说明，请移步：[Extjs读取xml文件生成动态表格和表单(续)](/javascript/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue/)

@@ -57,6 +57,8 @@ OpenTSDB是用java编写的，但是项目构建不是用的java的方式而是�
 yum install gnuplot automake autoconf git -y
 ```
 
+下载源代码，可以指定最新版本或者手动checkout
+
 ```
 git clone git://github.com/OpenTSDB/opentsdb.git
 cd opentsdb
@@ -78,41 +80,173 @@ mkdir -p "$tsdtmp"             # your temporary directory uses tmpfs
 
 如果你使用的是hbase集群，则你还需要设置`--zkquorum`，`--cachedir`对应的目录会产生一些临时文件，你可以设置cron定时任务进行删除。添加`--auto-metric`，则当新的数据被搜集时自动创建指标。
 
-你可以将这些参数编写到配置文件中，然后通过`--config`指定该文件所在路径。该配置文件内容可配置的属性请参考：[Properties](http://opentsdb.net/docs/build/html/user_guide/configuration.html#properties)
+你可以将这些参数编写到配置文件中，然后通过`--config`指定该文件所在路径。
 
 - 5. 启动成功之后，你可以通过[127.0.0.1:4242](http://127.0.0.1:4242)进行访问。
 
 从源代码安装gnuplot、autoconf、opentsdb以及tcollector，可以参考：[OpenTSDB & tcollector 安装部署（Installation and Deployment）](http://www.adintellig.com/blog/14)
 
-# 3. 使用OpenTSDB
-## 3.1 命令说明
+# 3. 使用向导
 
-tsdb支持以下参数：
+## 3.1 配置
 
-```
-[root@cdh1 build]# ./tsdb 
-usage: tsdb <command> [args]
-Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
-```
-
-## 3.2 创建指标
-
-通过以下命令创建指标：
+OpenTSDB的配置参数可以在命令行指定，也可以在配置文件中指定。配置文件使用的是java的properties文件，文件中key为小写，支持逗号连接字符串但是不能有空格。所有的OpenTSDB属性都以tsdb开头，例如：
 
 ```
-./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
+# List of Zookeeper hosts that manage the HBase cluster
+tsd.storage.hbase.zk_quorum = 192.168.1.100
 ```
 
-执行上述命令的结果如下：
+配置参数优先级：
+
+命令行参数 > 配置文件 > 默认值
+
+你可以在命令行中通过`--config`指定配置文件所在路径，如果没有指定，OpenTSDB会从以下路径寻找配置文件：
+
+- ./opentsdb.conf
+- /etc/opentsdb.conf
+- /etc/opentsdb/opentsdb.conf
+- /opt/opentsdb/opentsdb.conf
+
+如果一个合法的配置文件没有找到并且一些必须参数没有设置，TSD进程将不会启动。
+
+配置文件中可配置的属性请参考：[Properties](http://opentsdb.net/docs/build/html/user_guide/configuration.html#properties)
+
+## 3.2 基本概念
+
+在深入理解OpenTSDB之前，需要了解一些基本概念。
+
+- **Cardinality**。基数，在数学中定义为一个集合中的一些元素，在数据库中定义为一个索引的一些唯一元素，在OpenTSDB定义为：
+
+- 一个给定指标的一些唯一时间序列
+- 和一个标签名称相关联的一些唯一标签值
+
+在OpenTSDB中拥有高基数的指标在查询过程中返回的值要多于低基数的指标，这样花费的时间也就越多。
+
+**Compaction**。在OpenTSDB中，会将多列合并到一列之中以减少磁盘占用空间，这和hbase中的Compaction不一样。这个过程会在TSD写数据或者查询过程中不定期的发生。
+
+**Data Point**。每一个指标可以被记录为某一个时间点的一个数值。Data Point包括以下部分：
+
+- 一个指标：metric
+- 一个数值
+- 这个数值被记录的时间戳
+- 多个标签
+
+**Metric**。一个可测量的单位的标称。`metric`不包括一个数值或一个时间，其仅仅是一个标签，包含数值和时间的叫`datapoints`，metric是用逗号连接的不允许有空格，例如：
+
+- hours.worked
+- webserver.downloads
+- accumulation.snow
+
+**Tags**。一个metric应该描述什么东西被测量，在OpenTSDB中，其不应该定义的太简单。通常，更好的做法是用Tags来描述具有相同维度的metric。Tags由tagk和tagv组成，前者表示一个分组，后者表示一个特定的项。
+
+**Time Series**。一个metric的带有多个tag的data point集合。
+
+**Timestamp**。一个绝对时间，用来描述一个数值或者一个给定的metric是在什么时候定义的。
+
+**Value**。一个Value表示一个metric的实际数值。
+
+**UID**。在OpenTSDB中，每一个metric、tagk或者tagv在创建的时候被分配一个唯一标识叫做UID，他们组合在一起可以创建一个序列的UID或者`TSUID`。在OpenTSDB的存储中，对于每一个metric、tagk或者tagv都存在从0开始的计数器，每来一个新的metric、tagk或者tagv，对应的计数器就会加1。当data point写到TSD时，UID是自动分配的。你也可以手动分配UID，前提是`auto metric`被设置为true。默认地，UID被编码为3Bytes，每一种UID类型最多可以有16,777,215个UID。你也可以修改源代码改为4Bytes。UID的展示有几种方式，最常见的方式是通过http api访问时，3 bytes的UID被编码为16进制的字符串。例如，UID为1的写为二进制的形式为`000000000000000000000001`，最为一个无符号的byte数组，其可以表示为`[0,0,1]`，编码为16进制字符串为`000001`,其中每一位左边都被补上0,如果其不足两位。故，UID为255的会显示为`[0,0,255]`和`0000FF`。
+
+> 关于为什么使用UID而不使用hashes，可以参考：[why-uids](http://opentsdb.net/docs/build/html/user_guide/uids.html#why-uids)
+
+**TSUID**。当一个data point被写到OpenTSDB时，其row key格式为：`<metric_UID><timestamp><tagk1_UID><tagv1_UID>[...<tagkN_UID><tagvN_UID>]`，不考虑时间戳的话，将其余部分都转换为UID，然后拼在一起，就可以组成为TSUID。
+
+**Metadata**。主要用于记录data point的一些附加的信息，方便搜索和跟踪，分为UIDMeta和TSMeta。
+
+每一个UID都有一个metadata记录保存在`tsdb-uid`表中，每一个UID包括一些不可变的字段，如`uid`、`type`、`name`和`created`字段表示什么时候被创建，还可以有一些额外字段，如`description`、`notes`、`displayName`和一些`custom` key/value对，详细信息，可以查看[ /api/uid/uidmeta](http://opentsdb.net/docs/build/html/api_http/uid/uidmeta.html)
+
+同样，每一个TSUID可以对应一个TSMeta，记录在`tsdb-uid`中，其包括的字段有`tsuid`、`metric`、`tags`、`lastReceived`和`created`，可选的字段有`description`, `notes`，详细信息，可以查看[/api/uid/tsmeta](http://opentsdb.net/docs/build/html/api_http/uid/tsmeta.html)
+
+开启Metadata有以下几个参数：
+
+- `tsd.core.meta.enable_realtime_uid`
+- `tsd.core.meta.enable_tsuid_tracking`
+- `tsd.core.meta.enable_tsuid_incrementing`
+- `tsd.core.meta.enable_realtime_ts`
+
+metadata的另外一个形式是`Annotations`，详细说明，请参考[annotations](http://opentsdb.net/docs/build/html/user_guide/metadata.html#annotations)
+
+**Tree**
+
+## 3.3 数据存储方式
+
+OpenTSDB使用HBase作为后端存储，在安装OpenTSDB之前，需要先启动一个hbase节点或者集群，然后再执行建表语句`src/create_table.sh`创建hbase表。建表语句如下：
 
 ```
-metrics mysql.bytes_received: [0, 0, -93]
-metrics mysql.bytes_sent: [0, 0, -92]
+create '$UID_TABLE',
+  {NAME => 'id', COMPRESSION => '$COMPRESSION', BLOOMFILTER => '$BLOOMFILTER'},
+  {NAME => 'name', COMPRESSION => '$COMPRESSION', BLOOMFILTER => '$BLOOMFILTER'}
+
+create '$TSDB_TABLE',
+  {NAME => 't', VERSIONS => 1, COMPRESSION => '$COMPRESSION', BLOOMFILTER => '$BLOOMFILTER'}
+  
+create '$TREE_TABLE',
+  {NAME => 't', VERSIONS => 1, COMPRESSION => '$COMPRESSION', BLOOMFILTER => '$BLOOMFILTER'}
+  
+create '$META_TABLE',
+  {NAME => 'name', COMPRESSION => '$COMPRESSION', BLOOMFILTER => '$BLOOMFILTER'}
 ```
 
-OpenTSDB目前支持的最大指标数为：2的24次方 = 16777216，每个指标都会对应一个3 bytes的 UID。
+从上面可以看出一共创建了4张表，并且可以设置是否压缩、是否启用布隆过滤、保存版本号等等，如果追求hbase读写性能，还可以预建分区。
 
-## 3.3 Schema
+### Data Table Schema
+
+在OpenTSDB中，所有数据存储在一张叫做`tsdb`的表中，这是为了充分利用hbase有序和region分布式的特点。所有的值都保存在列族`t`中。
+
+rowkey为`<metric_uid><timestamp><tagk1><tagv1>[...<tagkN><tagvN>]`，UID默认编码为3 Bytes，而时间戳会编码为4 Bytes
+
+### UID Table Schema
+
+一个单独的较小的表叫做`tsdb-uid`用来存储UID映射，包括正向的和反向的。存在两列族，一列族叫做`name`用来将一个UID映射到一个字符串，另一个列族叫做`id`，用来将字符串映射到UID。列族的每一行都至少有以下三列中的一个：
+
+- `metrics` 将metric的名称映射到UID 
+- `tagk` 将tag名称映射到UID 
+- `tagv` 将tag的值映射到UID 
+
+如果配置了metadata，则`name`列族还可以包括额外的metatata列。
+
+#### id 列族
+
+**Row Key** - 将会是一个分配到UID的字符串，例如，对于一个指标可能有一个值为`sys.cpu.user`或者对于一个标签其值可能为`42`
+
+**Column Qualifiers** - 上面三种列类型中一种。
+
+**Column Value** - 一个无符号的整数，默认被编码为3个byte，其值为UID。
+
+例如以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
+
+```
+proc.stat.cpu id:metrics \x00\x00\x01
+host id:tagk \x00\x00\x01
+cdh1 id:tagv \x00\x00\x01
+```
+
+#### name 列族
+
+**Row Key** - 为UID
+
+**Column Qualifiers** - 上面三种列类型中一种或者为`metrics_meta`、`tagk_meta`、`tagv_meta`
+
+**Column Value** - 与UID对应的字符串，对于一个`*_meta`列，其值将会是一个UTF-8编码的JSON格式字符串。不要在OpenTSDB外部去修改该值，其中的字段顺序会影响`CAS`调用。
+
+例如,以下几行数据是从`tsdb-uid`表中查询出来的数据，第一个列为row key，第二列为"列族:列名"，第三列为值，对应为UID
+```
+\x00\x00\x01 name:metrics proc.stat.cpu
+\x00\x00\x01 name:tagk host
+\x00\x00\x01 name:tagv cdh1
+\x00\x00\x01 name:tagk_meta {"uid":"000001","type":"TAGK","name":"host","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+\x00\x00\x01 name:tagv_meta {"uid":"000001","type":"TAGV","name":"cdh1","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+\x00\x00\x01 name:metric_meta {"uid":"000001","type":"METRIC","name":"metrics proc.stat.cpu","description":"","notes":"","created":1395213193,"custom":null,"displayName":""}
+
+```
+
+总结一下，`tsdb-uid`表结构如下：
+
+
+### Meta Table Schema
+
+### Tree Table Schema
 
 OpenTSDB的tsdb启动之后，会监控指定的socket端口（默认为4242），接收到监控数据，包括指标、时间戳、数据、tag标签，tag标签包括tag名称ID和tag值ID。例如：
 
@@ -150,23 +284,48 @@ column qualifier占用2 bytes，表示格式为：
 
 value使用8bytes存储，既可以存储long,也可以存储double。
 
-## 3.4 查询
+## 3.4 如何写数据
+## 3.5 如何查询数据
+## 3.6 CLI Tools
 
-## 3.5 HTTP API
+tsdb支持以下参数：
 
-# 4. 谁在用OpenTSDB
+```
+[root@cdh1 build]# ./tsdb 
+usage: tsdb <command> [args]
+Valid commands: fsck, import, mkmetric, query, tsd, scan, uid
+```
+
+通过以下命令创建指标：
+
+```
+./tsdb mkmetric mysql.bytes_received mysql.bytes_sent
+```
+
+执行上述命令的结果如下：
+
+```
+metrics mysql.bytes_received: [0, 0, -93]
+metrics mysql.bytes_sent: [0, 0, -92]
+```
+
+## 3.11 Utilities
+## 3.12 Logging
+
+# 4. HTTP API
+# 5. 谁在用OpenTSDB
 
 - [StumbleUpon](http://www.stumbleupon.com/) StumbleUpon is the easiest way to find cool new websites, videos, photos and images from across the Web
 - [box](https://www.box.com/) Box simplifies online file storage, replaces FTP and connects teams in online workspaces.
 - [tumblr](http://www.tumblr.com/) 一个轻量级博客，用户可以跟进其他的会员并在自己的页面上看到跟进会员发表的文章，还可以转发他人在Tumblr上的文章
 
-# 5. KairosDB
+# 6. KairosDB
 
-KairosDB是一个快速可靠的分布式时间序列数据库，主要用于Cassandra当然也可以适用与HBase。KairosDB是在OpenTSDB基础上重写的，他不仅可以在HBase上存储数据还支持Cassandra。
+> KairosDB是一个快速可靠的分布式时间序列数据库，主要用于Cassandra当然也可以适用与HBase。KairosDB是在OpenTSDB基础上重写的，他不仅可以在HBase上存储数据还支持Cassandra。
 
 KairosDB主页：[https://code.google.com/p/kairosdb/](https://code.google.com/p/kairosdb/)
 
-# 6. 参考资料
+# 7. 参考资料
 
 - [tlog数据存储](http://luoshi0801.iteye.com/blog/1938835)
 - [OpenTSDB源码分析系列文章](http://blog.csdn.net/bingjie1217/article/category/1751285)
