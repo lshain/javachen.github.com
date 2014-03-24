@@ -114,6 +114,8 @@ $ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 
 # 5. ZooKeeper管理配置文件
 
+安装ZooKeeper集群之前，请确保每台机器上配置hosts文件，使没给节点都能通过机器名访问。
+
 1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：
 
 ```
@@ -132,7 +134,7 @@ SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启�
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
 ```
-$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
+$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrcloud/conf/primary/conf -confname primaryconf
 ```
 
 说明：

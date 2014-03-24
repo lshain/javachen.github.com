@@ -1,5 +1,5 @@
 # This is the default format. 
-# For more see: http://jekyllrb.com/docs/permalinks
+# For more see: //jekyllrb.com/docs/permalinks
 permalink: /:categories/:year/:month/:day/:title
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
@@ -23,7 +23,7 @@ author :
   feedburner : 
   weibo : chenzhijun
 
-production_url : http://blog.javachen.com
+production_url : //blog.javachen.com
 
 # All Jekyll-Bootstrap specific configurations are namespaced into this hash
 #
@@ -99,6 +99,8 @@ JB :
 
   blogroll : true
   brlist :
+ 	- text : JavaChen Blog
+      url : //blog.javachen.com/
     - text : 圆木菠萝罐
       url : //blog.boluotou.com/
     - text : Log4D
@@ -108,12 +110,14 @@ JB :
     - text : Kohsuke Kawaguchi
       url : //kohsuke.org/
     - text : 并行实验室
-      url : http://www.parallellabs.com/
+      url : //www.parallellabs.com/
     - text : 研究研究
-      url : http://www.yanjiuyanjiu.com/
+      url : //www.yanjiuyanjiu.com/
     - text : 灵魂机器
-      url : http://cn.soulmachine.me/
+      url : //cn.soulmachine.me/
     - text : MayCoder
-      url : http://code6.github.io/
+      url : //code6.github.io/
     - text : 刘兰涛的Blog
-      url : http://blog.liulantao.com/
+      url : //blog.liulantao.com/
+    - text : zJun Blog
+      url : //zjun.github.io/
