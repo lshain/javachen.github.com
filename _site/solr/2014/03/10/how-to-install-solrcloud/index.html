@@ -17,7 +17,7 @@
     <![endif]-->
 
     <link href="//libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css " rel="stylesheet" />
+    <link href="//libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="/assets/themes/javachen/css/style.css?body=1" rel="stylesheet" type="text/css" media="all" />
     <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
     <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
@@ -257,6 +257,8 @@ $ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 
 <h1>5. ZooKeeper管理配置文件</h1>
 
+<p>安装ZooKeeper集群之前，请确保每台机器上配置hosts文件，使没给节点都能通过机器名访问。</p>
+
 <p>1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir -p /usr/local/solrcloud/solr-lib/
 $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-lib/
@@ -267,7 +269,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 <p>SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了<code>-Dbootstrap_confdir</code>参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。</p>
 
 <p>3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrhome/primary/conf -confname primaryconf
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd upconfig -confdir /usr/local/solrcloud/conf/primary/conf -confname primaryconf
 </code></pre></div>
 <p>说明：</p>
 

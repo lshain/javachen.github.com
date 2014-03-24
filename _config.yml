@@ -1,5 +1,5 @@
 # This is the default format. 
-# For more see: //jekyllrb.com/docs/permalinks
+# For more see: http://jekyllrb.com/docs/permalinks
 permalink: /:categories/:year/:month/:day/:title
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
@@ -23,7 +23,7 @@ author :
   feedburner : 
   weibo : chenzhijun
 
-production_url : //blog.javachen.com
+production_url : http://blog.javachen.com
 
 # All Jekyll-Bootstrap specific configurations are namespaced into this hash
 #
@@ -99,7 +99,7 @@ JB :
 
   blogroll : true
   brlist :
- 	- text : JavaChen Blog
+    - text : JavaChen Blog
       url : //blog.javachen.com/
     - text : 圆木菠萝罐
       url : //blog.boluotou.com/
