@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-03-25T13:14:40+08:00</updated>
+ <updated>2014-03-25T13:47:23+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -13,9 +13,9 @@
  
  <entry>
    <title><![CDATA[Python模拟新浪微博登录]]></title>
-   <link href="http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python"/>
+   <link href="http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python"/>
    <updated>2014-03-18T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</id>
+   <id>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</id>
    <content type="html">&lt;p&gt;看到一篇&lt;a href=&quot;http://qinxuye.me/article/simulate-weibo-login-in-python/&quot;&gt;Python模拟新浪微博登录&lt;/a&gt;的文章，想熟悉一下其中实现方式，并且顺便掌握python相关知识点。&lt;/p&gt;
 
 &lt;h1&gt;代码&lt;/h1&gt;
@@ -253,9 +253,9 @@
  
  <entry>
    <title><![CDATA[Solr的schema.xml]]></title>
-   <link href="http://blog.javachen.com/2014/03/15/schema-in-solr"/>
+   <link href="http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr"/>
    <updated>2014-03-15T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/15/schema-in-solr</id>
+   <id>http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr</id>
    <content type="html">&lt;p&gt;schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。这个文件被存储在Solr主文件夹下的conf目录下，默认的路径&lt;code&gt;./solr/conf/schema.xml&lt;/code&gt;，也可以是Solr webapp的类加载器所能确定的路径。在下载的Solr包里，有一个schema的样例文件，用户可以从那个文件出发，来观察如何编写自己的Schema.xml。&lt;/p&gt;
 
 &lt;h1&gt;type节点&lt;/h1&gt;
@@ -376,9 +376,9 @@
  
  <entry>
    <title><![CDATA[在Solr中使用中文分词]]></title>
-   <link href="http://blog.javachen.com/2014/03/14/split-chinese-in-solr"/>
+   <link href="http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr"/>
    <updated>2014-03-14T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</id>
+   <id>http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr</id>
    <content type="html">&lt;p&gt;使用全文检索，中文分词是离不开的，这里我采用的是 &lt;strong&gt;mmseg4j&lt;/strong&gt; 分词器。mmseg4j分词器内置了对solr的支持，最新版本可支持4.X版本的sorl，使用起来很是方便。&lt;/p&gt;
 
 &lt;h1&gt;下载mmseg4j&lt;/h1&gt;
@@ -528,9 +528,9 @@
  
  <entry>
    <title><![CDATA[BroadLeaf项目搜索功能改进]]></title>
-   <link href="http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project"/>
+   <link href="http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project"/>
    <updated>2014-03-13T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</id>
+   <id>http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project</id>
    <content type="html">&lt;p&gt;Broadleaf Commerce 是一个开源的Java电子商务平台，基于Spring框架开发，提供一个可靠、可扩展的架构，可进行深度的定制和快速开发。&lt;/p&gt;
 
 &lt;h1&gt;关于Solr&lt;/h1&gt;
@@ -900,9 +900,9 @@ solr.source.reindex=solrReindexServer
  
  <entry>
    <title><![CDATA[Apache SolrCloud安装]]></title>
-   <link href="http://blog.javachen.com/2014/03/10/how-to-install-solrcloud"/>
+   <link href="http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud"/>
    <updated>2014-03-10T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</id>
+   <id>http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud</id>
    <content type="html">&lt;p&gt;SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。下面，我们基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。&lt;/p&gt;
 
 &lt;h1&gt;1. 安装环境&lt;/h1&gt;
@@ -1258,9 +1258,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
  
  <entry>
    <title><![CDATA[2013年度年终总结]]></title>
-   <link href="http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013"/>
+   <link href="http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013"/>
    <updated>2014-03-06T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</id>
+   <id>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</id>
    <content type="html">&lt;p&gt;回首2011年和2012年的年终总结，发现公司在2012年提到的一些不足仍然出现在2013年，不知道每年的总结是否有被认真阅读过、重视过。故虽谏且议，使人不得而知焉。&lt;/p&gt;
 
 &lt;p&gt;2013年，通过了RHCE考试，掌握了shell编程，初识Python；&lt;/p&gt;
@@ -1295,9 +1295,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
  
  <entry>
    <title><![CDATA[Apache Solr查询语法]]></title>
-   <link href="http://blog.javachen.com/2014/03/03/solr-query-syntax"/>
+   <link href="http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax"/>
    <updated>2014-03-03T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/03/03/solr-query-syntax</id>
+   <id>http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax</id>
    <content type="html">&lt;h1&gt;查询参数&lt;/h1&gt;
 
 &lt;p&gt;常用：&lt;/p&gt;
@@ -1395,9 +1395,9 @@ http://localhost:8080/solr/primary/select?q=*:*&amp;amp;fl=productId&amp;amp;fq=
  
  <entry>
    <title><![CDATA[Apache Solr介绍及安装]]></title>
-   <link href="http://blog.javachen.com/2014/02/26/how-to-install-solr"/>
+   <link href="http://blog.javachen.com/search-engine/2014/02/26/how-to-install-solr"/>
    <updated>2014-02-26T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/02/26/how-to-install-solr</id>
+   <id>http://blog.javachen.com/search-engine/2014/02/26/how-to-install-solr</id>
    <content type="html">&lt;p&gt;Solr是一个基于Apache Lucene的开源企业级搜索平台，主要功能包括全文检索，高亮命中(hit highlighting)，分面搜索(faceted search)，近实时索引，动态集群，数据库集成，富文本(e.g. Word,PDF)索引，空间搜索；通过提供分布式索引，复制，负载均衡查询，自动故障转移和恢复，集中配置等功能实现高可用，可伸缩和可容错；已被广泛应用于很多大型互联网站点；
 Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet容器之中如Tomcat,Jetty,Resin等，其核心是Apache Lucene(Java开源全文检索索引，搜索包)，REST风格(HTTP/XML,JSON)的 APIs使其能方便地应用于多种语；强大的外部配置使其能应用于各种类型应用而无需编码，而且支持定制插件；&lt;/p&gt;
 
@@ -1496,9 +1496,9 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
  
  <entry>
    <title><![CDATA[使用Vagrant创建虚拟机安装Hadoop]]></title>
-   <link href="http://blog.javachen.com/2014/02/23/create-virtualbox-by-vagrant"/>
+   <link href="http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant"/>
    <updated>2014-02-23T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/02/23/create-virtualbox-by-vagrant</id>
+   <id>http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant</id>
    <content type="html">&lt;h1&gt;安装VirtualBox&lt;/h1&gt;
 
 &lt;p&gt;下载地址：&lt;a href=&quot;https://www.virtualbox.org/wiki/Downloads/&quot;&gt;https://www.virtualbox.org/wiki/Downloads/&lt;/a&gt;&lt;/p&gt;
@@ -1651,9 +1651,9 @@ yum install vim -y
  
  <entry>
    <title><![CDATA[Python基础入门]]></title>
-   <link href="http://blog.javachen.com/2014/02/22/python-introduction-of-basics"/>
+   <link href="http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics"/>
    <updated>2014-02-22T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/2014/02/22/python-introduction-of-basics</id>
+   <id>http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics</id>
    <content type="html">&lt;h1&gt;1. Python特点&lt;/h1&gt;
 
 &lt;p&gt;Python是一种解释性的面向对象的语言。Python使用C语言编写，不需要事先声明变量的类型（动态类型），但是一旦变量有了值，那么这个变脸是有一个类型的，不同类型的变量之间赋值需要类型转换（强类型）。&lt;/p&gt;
