@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Drag an item to dhtmlxGrid and add a column
-category: javascript
+category: java
 tags: [javascript, dhtmlxGrid, xml]
 keywords: dhtmlxGrid, javascript, dhtmlxTree
 description: dhtmlxGrid支持tree和grid、grid之间、grid内部进行拖拽，如在grid内部进行拖拽，可以增加一行；在grid之间拖拽，第一个grid的记录删除，第二个grid增加一行记录。如果我想在拖拽之后不是添加一行而是一列，该怎么做呢？现在有个需求，就是左边有个tree，右边有个grid，将左边tree的一个节点拖到右边grid的表头并动态增加一列。这个怎么做呢？

@@ -1,8 +1,8 @@
 ---
 layout: post
 title: XUL 用户界面语言介绍
-category: javascript
-tags: [xml, xul]
+category: java
+tags: [xml]
 keywords: xml, xul
 description: XUL 用户界面语言介绍
 ---

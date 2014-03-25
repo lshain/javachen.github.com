@@ -2,7 +2,7 @@
 layout: post
 title: Apache Solr查询语法
 description: Apache Solr查询语法
-category: solr
+category: search-engine
 tags: [solr, lucene]
 ---
 

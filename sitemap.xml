@@ -23,7 +23,7 @@ title : Sitemap
     {% if page.group == 'navigation' %}
     <url>
       <loc>{{ site.production_url }}{{ page.url | remove: 'index.html' }}</loc>
-      <changefreq>monthly</changefreq>
+      <changefreq>daily</changefreq>
       <priority>0.6</priority>
     </url>
     {% endif %}

@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Mon, 24 Mar 2014 16:00:14 +0800</lastBuildDate>
-		<pubDate>Mon, 24 Mar 2014 16:00:14 +0800</pubDate>
+		<lastBuildDate>Tue, 25 Mar 2014 11:01:25 +0800</lastBuildDate>
+		<pubDate>Tue, 25 Mar 2014 11:01:25 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -244,8 +244,8 @@
 
 &lt;p&gt;上面python脚本主要是使用了lxml的xpath语法进行快速查找。&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</link>
-			<guid>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</guid>
+			<link>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</link>
+			<guid>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</guid>
 			<pubDate>Tue, 18 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -367,8 +367,8 @@
 &lt;li&gt;[1] &lt;a href=&quot;http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html&quot;&gt;Solr配置，schema.xml的配置，以及中文分词&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/solr/2014/03/15/schema-in-solr</link>
-			<guid>http://blog.javachen.com/solr/2014/03/15/schema-in-solr</guid>
+			<link>http://blog.javachen.com/2014/03/15/schema-in-solr</link>
+			<guid>http://blog.javachen.com/2014/03/15/schema-in-solr</guid>
 			<pubDate>Sat, 15 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -519,8 +519,8 @@
 &lt;li&gt;[1] &lt;a href=&quot;http://blog.csdn.net/zhyh1986/article/details/9856115&quot;&gt;Solr4.4的安装与配置&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/solr/2014/03/14/split-chinese-in-solr</link>
-			<guid>http://blog.javachen.com/solr/2014/03/14/split-chinese-in-solr</guid>
+			<link>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</link>
+			<guid>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</guid>
 			<pubDate>Fri, 14 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -891,8 +891,8 @@ solr.source.reindex=solrReindexServer
     &lt;span class=&quot;n&quot;&gt;extSolrSearchService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;rebuildIndex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/solr/2014/03/13/improve-the-search-function-in-broadleaf-project</link>
-			<guid>http://blog.javachen.com/solr/2014/03/13/improve-the-search-function-in-broadleaf-project</guid>
+			<link>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</link>
+			<guid>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</guid>
 			<pubDate>Thu, 13 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1249,8 +1249,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 &lt;li&gt;[3] &lt;a href=&quot;http://www.wxdl.cn/index/solrcloud.html&quot;&gt;SolrCloud使用教程、原理介绍&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/solr/2014/03/10/how-to-install-solrcloud</link>
-			<guid>http://blog.javachen.com/solr/2014/03/10/how-to-install-solrcloud</guid>
+			<link>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</link>
+			<guid>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</guid>
 			<pubDate>Mon, 10 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1286,8 +1286,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 
 &lt;p&gt;2014年，等风来。&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</link>
-			<guid>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</guid>
+			<link>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</link>
+			<guid>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</guid>
 			<pubDate>Thu, 06 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1386,8 +1386,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 
 http://localhost:8080/solr/primary/select?q=*:*&amp;amp;fl=productId&amp;amp;fq=category:2002&amp;amp;facet=true&amp;amp;facet.field=en_US_county_i&amp;amp;facet.field=en_US_hotelType_s&amp;amp;facet.field=price_p&amp;amp;facet.field=heatRange_i&amp;amp;facet.query=price_p:[300.00000+TO+*]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/solr/2014/03/03/solr-query-syntax</link>
-			<guid>http://blog.javachen.com/solr/2014/03/03/solr-query-syntax</guid>
+			<link>http://blog.javachen.com/2014/03/03/solr-query-syntax</link>
+			<guid>http://blog.javachen.com/2014/03/03/solr-query-syntax</guid>
 			<pubDate>Mon, 03 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1487,8 +1487,8 @@ Solr是Java开发的作为一个独立的全文检索服务器运行于Servlet�
     &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;URLEncoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/solr/2014/02/26/how-to-install-solr</link>
-			<guid>http://blog.javachen.com/solr/2014/02/26/how-to-install-solr</guid>
+			<link>http://blog.javachen.com/2014/02/26/how-to-install-solr</link>
+			<guid>http://blog.javachen.com/2014/02/26/how-to-install-solr</guid>
 			<pubDate>Wed, 26 Feb 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1642,8 +1642,8 @@ yum install vim -y
 
 &lt;p&gt;可以参考&lt;a href=&quot;http://blog.javachen.com/categories.html#hadoop-ref&quot;&gt;这些文章&lt;/a&gt;&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant</link>
-			<guid>http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant</guid>
+			<link>http://blog.javachen.com/2014/02/23/create-virtualbox-by-vagrant</link>
+			<guid>http://blog.javachen.com/2014/02/23/create-virtualbox-by-vagrant</guid>
 			<pubDate>Sun, 23 Feb 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1900,8 +1900,8 @@ Python 2.7.4
 
 &lt;h1&gt;15. 异常处理&lt;/h1&gt;
 </description>
-			<link>http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics</link>
-			<guid>http://blog.javachen.com/python/2014/02/22/python-introduction-of-basics</guid>
+			<link>http://blog.javachen.com/2014/02/22/python-introduction-of-basics</link>
+			<guid>http://blog.javachen.com/2014/02/22/python-introduction-of-basics</guid>
 			<pubDate>Sat, 22 Feb 2014 00:00:00 +0800</pubDate>
 		</item>
 

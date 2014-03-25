@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Extjs读取xml文件生成动态表格和表单 - JavaChen Blog</title>
+    <meta name="description" content="Extjs读取xml文件生成动态表格和表单"/>
+    <meta name="keywords" content="extjs, xml"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="09445188c7dad13b0d02f9fc8ed8acb4" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2009/10/22/ext_readxml_in_bjsasc_wuzi" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+			
+				<li><a href="/tags.html">Tags</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+			
+				<li><a href="/categories.html">Categories</a></li>
+			
+      	
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/archive.html">Archive</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/about.html">About</a></li>
+			
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">Extjs读取xml文件生成动态表格和表单 </h1>
+      </header>
+	<div class="entry-content">
+	<p>最近开发项目，需要动态读取xml文件，生成Extjs界面，xml文件通过前台页面的按钮事件传进来，可以在网上查找【javascript 弹出子窗口】的相关文章</a>
+获取弹出窗口url后的参数方法：</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">    <span class="c1">// 获取url后的参数值</span>
+    <span class="kd">function</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">null</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">null</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="nx">index</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">value</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">args</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">value</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">index</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">value</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">index</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">url</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 获取xml的服务器路径</span>
+    <span class="kd">function</span> <span class="nx">getXmlUrl</span><span class="p">(</span><span class="nx">xmlFile</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;../bjsasc_dictionary/&#39;</span> <span class="o">+</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>用到的一些辅助方法：</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">    <span class="c1">// 去掉Dom节点中的空白字符</span>
+    <span class="kd">function</span> <span class="nx">cleanWhitespaces</span><span class="p">(</span><span class="nx">elem</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">elem</span> <span class="o">=</span> <span class="nx">elem</span> <span class="o">||</span> <span class="nb">document</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">childElem</span> <span class="o">=</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">childElemArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">childElem</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">childElem</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">nodeType</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">childElemArray</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">childElem</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">childElemArray</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 取得父窗口表单中键值对</span>
+    <span class="kd">function</span> <span class="nx">getParentFormValues</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">formObj</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">opener</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">forms</span><span class="p">[</span><span class="s2">&quot;frmMain&quot;</span><span class="p">].</span><span class="nx">elements</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">formValues</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="kc">null</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">formValues</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;{&#39;</span>
+                        <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+                        <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;_ &#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">formValues</span> <span class="o">+=</span> <span class="nx">opener</span><span class="p">.</span><span class="nx">getBindValue</span><span class="p">(</span><span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">formValues</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 取得过滤条件表单的键值对</span>
+    <span class="kd">function</span> <span class="nx">getCondictionValues</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">condictionString</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">formObj</span> <span class="o">=</span> <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">getEl</span><span class="p">().</span><span class="nx">dom</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="kc">null</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">condictionString</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;{&#39;</span>
+                        <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+                        <span class="o">+</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39;_ &#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1">// alert(&quot;condictionString&quot;+condictionString);</span>
+        <span class="k">return</span> <span class="nx">condictionString</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 判读Ext表单是否有输入</span>
+    <span class="kd">function</span> <span class="nx">isFormInputed</span><span class="p">(</span><span class="nx">ExtForm</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">flag</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">formObj</span> <span class="o">=</span> <span class="nx">ExtForm</span><span class="p">.</span><span class="nx">getEl</span><span class="p">().</span><span class="nx">dom</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="kc">null</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">formObj</span><span class="p">.</span><span class="nx">elements</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">flag</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">flag</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// 将计算得到的结果四舍五入</span>
+    <span class="cm">/* * ForDight(Dight,How):数值格式化函数，Dight要 * 格式化的 数字，How要保留的小数位数。 */</span>
+    <span class="kd">function</span> <span class="nx">ForDight</span><span class="p">(</span><span class="nx">Dight</span><span class="p">,</span> <span class="nx">How</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">Dight</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">Dight</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nx">How</span><span class="p">))</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nx">How</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">Dight</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>xml文件格式：</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot;?&gt;</span>
+    <span class="nt">&lt;dictionary&gt;</span>
+        <span class="nt">&lt;title&gt;</span>领用出库-物资选择<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;sql&gt;</span>
+        select V_stores_list.* 
+        from V_stores_list where WHID=&#39;+$getform(WHID)+&#39; AND PROJECTNO=&#39;+$getform(PROJECTNO)+&#39;
+            AND CANUSEQTY&gt;0 AND ??? and isblock=0
+        <span class="nt">&lt;/sql&gt;</span>
+        <span class="nt">&lt;fromtable&gt;</span>V_stores_list<span class="nt">&lt;/fromtable&gt;</span>
+        <span class="nt">&lt;targettable&gt;</span>BO_IC_EXPORT_S<span class="nt">&lt;/targettable&gt;</span>
+        <span class="nt">&lt;line&gt;</span>20<span class="nt">&lt;/line&gt;</span>
+        <span class="c">&lt;!-- 条件区开始--&gt;</span>
+        <span class="nt">&lt;condition&gt;</span>
+            <span class="nt">&lt;fieldname&gt;</span>MTRNAME<span class="nt">&lt;/fieldname&gt;</span>
+            <span class="nt">&lt;fieldtitle&gt;</span>物资名称<span class="nt">&lt;/fieldtitle&gt;</span>
+            <span class="nt">&lt;fieldtype&gt;</span>文本<span class="nt">&lt;/fieldtype&gt;</span>
+            <span class="nt">&lt;comparetype&gt;</span><span class="cp">&lt;![CDATA[like</span>
+<span class="cp">            MTRNAME</span>
+<span class="cp">            单行</span>
+<span class="cp">            &lt;![CDATA[]]&gt;</span>        
+            <span class="nt">&lt;/comparetype&gt;</span>
+        <span class="nt">&lt;/ condition&gt;</span>
+    <span class="nt">&lt;/ dictionary&gt;</span>
+</code></pre></div>
+<p>然后，弹出窗口页面Ext入口代码：</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">    <span class="c1">// 全局变量</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">grid</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">form</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">viewport</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">store</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">sm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">CheckboxSelectionModel</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">autoStore</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">tempItems1</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">tempItems2</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">tempItems3</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="c1">// 程序入口</span>
+    <span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">QuickTips</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span><span class="c1">// 初始化</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">Field</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">msgTarget</span> <span class="o">=</span> <span class="s1">&#39;qtip&#39;</span><span class="p">;</span><span class="c1">// 统一指定错误信息提示方式</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">CSS</span>    <span class="p">.</span><span class="nx">swapStyleSheet</span><span class="p">(</span><span class="s1">&#39;theme&#39;</span><span class="p">,</span> <span class="s1">&#39;../aws_js/extjs2/css/xtheme-gray.css&#39;</span><span class="p">);</span><span class="c1">// 更换皮肤</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">BLANK_IMAGE_URL</span> <span class="o">=</span> <span class="s1">&#39;../aws_js/extjs2/images/default/s.gif&#39;</span><span class="p">;</span>
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">Ajax</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+            <span class="nx">url</span> <span class="o">:</span> <span class="nx">getXmlUrl</span><span class="p">(</span><span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">)),</span> <span class="c1">// 访问数据字典</span>
+            <span class="nx">method</span> <span class="o">:</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span>
+            <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">opt</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">xmlObj</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">responseXML</span><span class="p">;</span>
+                <span class="nx">initStoreData</span><span class="p">(</span><span class="nx">xmlObj</span><span class="p">);</span> <span class="c1">// 访问成功后执行后续工作</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+    <span class="p">});</span>
+    <span class="kd">function</span> <span class="nx">initStoreData</span><span class="p">(</span><span class="nx">xmlObj</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">getInitData</span><span class="p">(</span><span class="nx">xmlObj</span><span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">winTitle</span><span class="p">;</span>
+
+        <span class="kd">var</span> <span class="nx">dataRecorder</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">gridRecords</span><span class="p">);</span><span class="c1">// 指定记录集格式</span>
+        <span class="c1">// 获取表格数据部分</span>
+        <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>
+            <span class="nx">idProperty</span> <span class="o">:</span> <span class="s1">&#39;ID&#39;</span><span class="p">,</span>
+            <span class="nx">proxy</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">HttpProxy</span><span class="p">({</span>
+                <span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;../search.do?method=findAll&#39;</span><span class="p">,</span>
+                <span class="nx">failure</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="c1">// Ext.Msg.alert(&quot;Notice&quot;, &quot;网路问题&quot;);</span>
+                <span class="p">},</span>
+                <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// Ext.Msg.alert(&quot;Notice&quot;, response.responseText);</span>
+                <span class="p">}</span>
+            <span class="p">}),</span>
+
+            <span class="c1">// baseParams : {</span>
+            <span class="c1">// parentFormValues : getParentFormValues(),// 请求发送的参数：父表单值和xml文件名</span>
+            <span class="c1">// xmlFile : getQueryStringValue(&#39;xmlFile&#39;)</span>
+            <span class="c1">// // cmd:&#39;search&#39;</span>
+            <span class="c1">// },</span>
+            <span class="nx">reader</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">JsonReader</span><span class="p">({</span>
+                <span class="nx">totalProperty</span> <span class="o">:</span> <span class="s1">&#39;totalCount&#39;</span><span class="p">,</span>
+                <span class="nx">root</span> <span class="o">:</span> <span class="s1">&#39;data&#39;</span>
+            <span class="p">},</span> <span class="nx">dataRecorder</span><span class="p">)</span>
+        <span class="p">});</span>
+        <span class="c1">// 要分页，第一次加载数据必须传start和limit两参数</span>
+        <span class="c1">// store.load({</span>
+        <span class="c1">// params : {</span>
+        <span class="c1">// start : 0,</span>
+        <span class="c1">// limit : result.limit</span>
+        <span class="c1">// }</span>
+        <span class="c1">// });</span>
+        <span class="nx">initViewport</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="c1">// 获得界面初始化的一些数据</span>
+    <span class="kd">function</span> <span class="nx">getInitData</span><span class="p">(</span><span class="nx">xmlObj</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// result.formItems = {};</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">columnHeaders</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">gridRecords</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">dbFilterRecords</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">winTitle</span> <span class="o">=</span> <span class="nx">xmlObj</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span> <span class="c1">// 窗口title名称</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">limit</span> <span class="o">=</span> <span class="nx">xmlObj</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span><span class="c1">// 分页数据</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">fromTable</span> <span class="o">=</span> <span class="nx">xmlObj</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;fromTable&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span><span class="c1">// 来自哪个表</span>
+        <span class="c1">// 获取过滤条件表单的界面数据</span>
+        <span class="kd">var</span> <span class="nx">conections</span> <span class="o">=</span> <span class="nx">xmlObj</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;condition&quot;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="nx">ForDight</span><span class="p">(</span><span class="nx">conections</span><span class="p">.</span><span class="nx">length</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">conections</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="kd">var</span> <span class="nx">condition</span> <span class="o">=</span> <span class="nx">cleanWhitespaces</span><span class="p">(</span><span class="nx">conections</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">condition</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">fieldLabel</span> <span class="o">=</span> <span class="nx">condition</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">condition</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">anchor</span> <span class="o">=</span> <span class="s1">&#39;95%&#39;</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">condition</span><span class="p">[</span><span class="mi">6</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;单行&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">=</span> <span class="s1">&#39;textfield&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">condition</span><span class="p">[</span><span class="mi">6</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;日期&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">=</span> <span class="s1">&#39;datefield&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">format</span> <span class="o">=</span> <span class="s1">&#39;Y-m-d&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">condition</span><span class="p">[</span><span class="mi">6</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;数值&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">=</span> <span class="s1">&#39;numberfield&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">minValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">minText</span> <span class="o">=</span> <span class="s1">&#39;请输入有效的数字&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">decimalPrecision</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">condition</span><span class="p">[</span><span class="mi">6</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;自动填充&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">autoStore</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">SimpleStore</span><span class="p">({</span>
+                    <span class="nx">proxy</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">HttpProxy</span><span class="p">({</span><span class="c1">// 读取远程数据的代理</span>
+                        <span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;../ajax/autoComplete.do?method=autoComplete&#39;</span><span class="p">,</span>
+                        <span class="nx">failure</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Notice&quot;</span><span class="p">,</span> <span class="s2">&quot;no records&quot;</span><span class="p">);</span>
+                        <span class="p">}</span>
+                    <span class="p">}),</span>
+                    <span class="nx">fields</span> <span class="o">:</span> <span class="p">[</span><span class="s1">&#39;property&#39;</span><span class="p">],</span>
+                    <span class="nx">baseParams</span> <span class="o">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;sqlString&#39;</span> <span class="o">:</span> <span class="nx">condition</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">+</span> <span class="s1">&#39; | &#39;</span>
+                                <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">fromTable</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">=</span> <span class="s1">&#39;combo&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">store</span> <span class="o">=</span> <span class="nx">autoStore</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">displayField</span> <span class="o">=</span> <span class="s1">&#39;property&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">typeAhead</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">allQuery</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">;</span><span class="c1">// 查询信息的查询字符串</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">queryParam</span> <span class="o">=</span> <span class="s1">&#39;keyword&#39;</span><span class="p">;</span><span class="c1">// 查询的名字</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">mode</span> <span class="o">=</span> <span class="s1">&#39;remote&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">minChars</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span><span class="c1">// 默认最少输入4</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">forceSelection</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">queryDelay</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="c1">// 查询延迟时间</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">triggerAction</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">emptyText</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">resizable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">selectOnFocus</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="nx">row</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">tempItems1</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="nx">row</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">i</span> <span class="o">/</span> <span class="nx">row</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">tempItems2</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="nx">row</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">tempItems3</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1">// alert(Ext.util.JSON.encode(result));</span>
+
+        <span class="c1">// 获取表格表头的界面数据和rcord记录的数据格式</span>
+        <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="nx">xmlObj</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">);</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">columnHeaders</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">sm</span><span class="p">);</span><span class="c1">// 插入多选框</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">columnHeaders</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">RowNumberer</span><span class="p">({</span>
+            <span class="nx">width</span> <span class="o">:</span> <span class="mi">20</span>
+        <span class="p">}));</span><span class="c1">// 插入行号</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">fields</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="kd">var</span> <span class="nx">record</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="kd">var</span> <span class="nx">field</span> <span class="o">=</span> <span class="nx">cleanWhitespaces</span><span class="p">(</span><span class="nx">fields</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+            <span class="kd">var</span> <span class="nx">renderDate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">value</span> <span class="o">?</span> <span class="nx">value</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s1">&#39;Y-m-d&#39;</span><span class="p">)</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="c1">// 生成grid表格中store数据记录</span>
+            <span class="nx">record</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">field</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="nx">record</span><span class="p">.</span><span class="nx">mapping</span> <span class="o">=</span> <span class="nx">field</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;日期&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">record</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;date&#39;</span><span class="p">;</span>
+                <span class="nx">record</span><span class="p">.</span><span class="nx">dateFormat</span> <span class="o">=</span> <span class="s1">&#39;Y-m-d&#39;</span><span class="p">;</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">renderer</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">dateRenderer</span><span class="p">(</span><span class="s1">&#39;Y-m-d&#39;</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span> <span class="o">==</span> <span class="s1">&#39;数值&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">record</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">record</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">result</span><span class="p">.</span><span class="nx">gridRecords</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">record</span><span class="p">);</span>
+
+            <span class="c1">// 生成grid表格表头数据记录</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">dataIndex</span> <span class="o">=</span> <span class="nx">field</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">header</span> <span class="o">=</span> <span class="nx">field</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+            <span class="c1">// item.width=field[3].firstChild.nodeValue;</span>
+            <span class="nx">item</span><span class="p">.</span><span class="nx">sortable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">7</span>
+                    <span class="o">&amp;&amp;</span> <span class="nx">field</span><span class="p">[</span><span class="mi">5</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TRUE&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="c1">// item.hideable=false;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">item</span><span class="p">.</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">result</span><span class="p">.</span><span class="nx">columnHeaders</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+
+            <span class="c1">// 生成模糊过滤store的记录</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;TRUE&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">array</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">field</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">);</span><span class="c1">// fieldName</span>
+                <span class="nx">array</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">field</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">firstChild</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">);</span><span class="c1">// fieldValue</span>
+            <span class="p">}</span>
+            <span class="nx">result</span><span class="p">.</span><span class="nx">dbFilterRecords</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+    <span class="p">};</span>
+</code></pre></div>
+<p>渲染Ext界面代码：</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">    <span class="kd">function</span> <span class="nx">initViewport</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">form</span> <span class="o">=</span> <span class="nx">getInsertForm</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">grid</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">grid</span> <span class="o">=</span> <span class="nx">getInsertGrid</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">viewport</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">formPanel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">Panel</span><span class="p">({</span>
+                <span class="nx">title</span> <span class="o">:</span> <span class="s1">&#39;查询条件&#39;</span><span class="p">,</span>
+                <span class="nx">region</span> <span class="o">:</span> <span class="s1">&#39;north&#39;</span><span class="p">,</span>
+                <span class="nx">split</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">frame</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">border</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span>
+                <span class="nx">height</span> <span class="o">:</span> <span class="mi">280</span><span class="p">,</span>
+                <span class="nx">collapsible</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">items</span> <span class="o">:</span> <span class="p">[</span><span class="nx">form</span><span class="p">]</span>
+
+            <span class="p">});</span>
+            <span class="nx">viewport</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">Viewport</span><span class="p">({</span>
+                <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;border&#39;</span><span class="p">,</span>
+                <span class="nx">modal</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="c1">// 是否为模式窗口</span>
+                <span class="nx">border</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                <span class="nx">items</span> <span class="o">:</span> <span class="p">[</span><span class="nx">formPanel</span><span class="p">,</span> <span class="nx">grid</span><span class="p">]</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">searchByFilter</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">dbfilter</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;dbFilter&quot;</span><span class="p">).</span><span class="nx">getValue</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">fieldMame</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;search-type&quot;</span><span class="p">).</span><span class="nx">getValue</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">dbfilter</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">dbfilter</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;请输入一个关键字&quot;</span><span class="p">);</span>
+            <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;dbFilter&quot;</span><span class="p">).</span><span class="nx">focus</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">fieldMame</span> <span class="o">==</span> <span class="s2">&quot;==选择过滤字段==&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;请选择一个过滤字段&quot;</span><span class="p">);</span>
+            <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;search-type&quot;</span><span class="p">).</span><span class="nx">focus</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">reset</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">store</span><span class="p">.</span><span class="nx">baseParams</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nx">dbfilter</span> <span class="o">:</span> <span class="nx">dbfilter</span><span class="p">,</span>
+                    <span class="nx">parentFormValues</span> <span class="o">:</span> <span class="nx">getParentFormValues</span><span class="p">(),</span>
+                    <span class="nx">fieldMame</span> <span class="o">:</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;hiddenValue&quot;</span><span class="p">).</span><span class="nx">dom</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+                    <span class="nx">xmlFile</span> <span class="o">:</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">),</span>
+                    <span class="nx">cmd</span> <span class="o">:</span> <span class="s1">&#39;filter&#39;</span>
+                <span class="p">};</span>
+                <span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">({</span>
+                    <span class="nx">params</span> <span class="o">:</span> <span class="p">{</span>
+                        <span class="nx">start</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+                        <span class="nx">limit</span> <span class="o">:</span> <span class="nx">result</span><span class="p">.</span><span class="nx">limit</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+                <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">reset</span><span class="p">();</span>
+                <span class="nx">flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">store</span><span class="p">.</span><span class="nx">baseParams</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nx">dbfilter</span> <span class="o">:</span> <span class="nx">dbfilter</span><span class="p">,</span>
+                    <span class="nx">parentFormValues</span> <span class="o">:</span> <span class="nx">getParentFormValues</span><span class="p">(),</span>
+                    <span class="nx">fieldMame</span> <span class="o">:</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;hiddenValue&quot;</span><span class="p">).</span><span class="nx">dom</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+                    <span class="nx">xmlFile</span> <span class="o">:</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">),</span>
+                    <span class="nx">cmd</span> <span class="o">:</span> <span class="s1">&#39;filter&#39;</span>
+                <span class="p">};</span>
+                <span class="nx">store</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+
+            <span class="p">}</span>
+            <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;dbFilter&quot;</span><span class="p">).</span><span class="nx">dom</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// 获取过滤条件部分的表单控件</span>
+    <span class="kd">function</span> <span class="nx">getInsertForm</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">form</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">FormPanel</span><span class="p">({</span>
+            <span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;frmMain&#39;</span><span class="p">,</span>
+            <span class="nx">height</span> <span class="o">:</span> <span class="mi">260</span><span class="p">,</span>
+            <span class="nx">labelAlign</span> <span class="o">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="nx">labelWidth</span> <span class="o">:</span> <span class="mi">110</span><span class="p">,</span>
+            <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span>
+            <span class="nx">waitMsgTarget</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nx">items</span> <span class="o">:</span> <span class="p">[{</span>
+                <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;fieldset&#39;</span><span class="p">,</span>
+                <span class="nx">frame</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">title</span> <span class="o">:</span> <span class="s1">&#39;高级查询&#39;</span><span class="p">,</span>
+                <span class="nx">autoHeight</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;column&#39;</span><span class="p">,</span>
+                <span class="nx">items</span> <span class="o">:</span> <span class="p">[{</span>
+                    <span class="nx">columnWidth</span> <span class="o">:</span> <span class="p">.</span><span class="mi">333</span><span class="p">,</span>
+                    <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+                    <span class="nx">items</span> <span class="o">:</span> <span class="nx">tempItems1</span>
+                <span class="p">},</span> <span class="p">{</span>
+                    <span class="nx">columnWidth</span> <span class="o">:</span> <span class="p">.</span><span class="mi">333</span><span class="p">,</span>
+                    <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+                    <span class="nx">items</span> <span class="o">:</span> <span class="nx">tempItems2</span>
+                <span class="p">},</span> <span class="p">{</span>
+                    <span class="nx">columnWidth</span> <span class="o">:</span> <span class="p">.</span><span class="mi">333</span><span class="p">,</span>
+                    <span class="nx">layout</span> <span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+                    <span class="nx">items</span> <span class="o">:</span> <span class="nx">tempItems3</span>
+                <span class="p">}]</span>
+            <span class="p">}],</span>
+            <span class="nx">tbar</span> <span class="o">:</span> <span class="p">[</span><span class="s1">&#39;请输入模糊值: &#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;textfield&#39;</span><span class="p">,</span>
+                <span class="nx">width</span> <span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+                <span class="nx">id</span> <span class="o">:</span> <span class="s1">&#39;dbFilter&#39;</span><span class="p">,</span>
+                <span class="nx">listeners</span> <span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">specialkey</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">getKey</span><span class="p">()</span> <span class="o">==</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">EventObject</span><span class="p">.</span><span class="nx">ENTER</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">searchByFilter</span><span class="p">();</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span>
+                <span class="nx">id</span> <span class="o">:</span> <span class="s1">&#39;search-type&#39;</span><span class="p">,</span>
+                <span class="nx">anchor</span> <span class="o">:</span> <span class="s1">&#39;60%&#39;</span><span class="p">,</span>
+                <span class="nx">hiddenName</span> <span class="o">:</span> <span class="s1">&#39;hiddenValue&#39;</span><span class="p">,</span>
+                <span class="nx">width</span> <span class="o">:</span> <span class="mi">120</span><span class="p">,</span>
+                <span class="nx">triggerAction</span> <span class="o">:</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="c1">// 单击触发按钮显示全部数据</span>
+                <span class="nx">store</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">SimpleStore</span><span class="p">({</span><span class="c1">// 定义组合框中显示的数据源</span>
+                    <span class="nx">fields</span> <span class="o">:</span> <span class="p">[</span><span class="s1">&#39;fieldName&#39;</span><span class="p">,</span> <span class="s1">&#39;fieldValue&#39;</span><span class="p">],</span>
+                    <span class="nx">data</span> <span class="o">:</span> <span class="nx">result</span><span class="p">.</span><span class="nx">dbFilterRecords</span>
+                <span class="p">}),</span><span class="c1">// 设置数据源</span>
+                <span class="nx">displayField</span> <span class="o">:</span> <span class="s1">&#39;fieldName&#39;</span><span class="p">,</span><span class="c1">// 定义要显示的字段</span>
+                <span class="nx">valueField</span> <span class="o">:</span> <span class="s1">&#39;fieldValue&#39;</span><span class="p">,</span><span class="c1">// 定义值字段</span>
+                <span class="nx">mode</span> <span class="o">:</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span><span class="c1">// 本地模式</span>
+                <span class="nx">forceSelection</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="c1">// 要求输入值必须在列表中存在</span>
+                <span class="nx">typeAhead</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span><span class="c1">// 允许自动选择匹配的剩余部分文本</span>
+                <span class="c1">// value : &#39;==选择过滤字段==&#39;,</span>
+                <span class="nx">value</span> <span class="o">:</span> <span class="s1">&#39;==选择过滤字段==&#39;</span><span class="p">,</span>
+                <span class="nx">handleHeight</span> <span class="o">:</span> <span class="mi">10</span>
+                    <span class="c1">// 下拉列表中拖动手柄的高度</span>
+                    <span class="p">},</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+                        <span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;筛选&#39;</span><span class="p">,</span>
+                        <span class="nx">tooltip</span> <span class="o">:</span> <span class="s1">&#39;先选择查询条件，再输入模糊值&#39;</span><span class="p">,</span>
+                        <span class="nx">iconCls</span> <span class="o">:</span> <span class="s1">&#39;find&#39;</span><span class="p">,</span>
+                        <span class="nx">handler</span> <span class="o">:</span> <span class="nx">searchByFilter</span>
+                    <span class="p">},</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="nx">pressed</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                        <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+                        <span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;确认插入&#39;</span><span class="p">,</span>
+                        <span class="nx">enableToggle</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                        <span class="nx">tooltip</span> <span class="o">:</span> <span class="s1">&#39;请选中一行或多行记录，再选择确认插入&#39;</span><span class="p">,</span>
+                        <span class="nx">handler</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="nx">sm</span><span class="p">.</span><span class="nx">hasSelection</span><span class="p">())</span> <span class="p">{</span>
+                                <span class="kd">var</span> <span class="nx">records</span> <span class="o">=</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">getSelections</span><span class="p">();</span>
+                                <span class="kd">var</span> <span class="nx">jsonObj</span> <span class="o">=</span> <span class="s2">&quot;{data:[&quot;</span><span class="p">;</span>
+                                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                                    <span class="nx">jsonObj</span> <span class="o">+=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">records</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">);</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">!=</span> <span class="nx">records</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                                        <span class="nx">jsonObj</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span><span class="p">;</span>
+                                    <span class="p">}</span>
+                                <span class="p">}</span>
+                                <span class="nx">jsonObj</span> <span class="o">+=</span> <span class="s2">&quot;]}&quot;</span>
+                                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Ajax</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                                    <span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;../search.do?method=insertChoices&#39;</span><span class="p">,</span>
+                                    <span class="nx">method</span> <span class="o">:</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span>
+                                    <span class="nx">params</span> <span class="o">:</span> <span class="p">{</span>
+                                        <span class="nx">xmlFile</span> <span class="o">:</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">)</span>
+                                                <span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                        <span class="nx">jsonObj</span> <span class="o">:</span> <span class="nx">jsonObj</span><span class="p">,</span>
+                                        <span class="nx">parentFormValues</span> <span class="o">:</span> <span class="nx">getParentFormValues</span><span class="p">()</span>
+                                    <span class="p">},</span>
+                                    <span class="nx">callback</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+                                        <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span><span class="p">)</span> <span class="p">{</span>
+
+                                            <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;提示&quot;</span><span class="p">,</span> <span class="s2">&quot;插入成功&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                                                <span class="nb">window</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                                                <span class="c1">// opener.location.reload();</span>
+                                            <span class="nx">opener</span><span class="p">.</span><span class="nx">saveForm</span><span class="p">();</span>
+                                            <span class="p">});</span>
+                                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                                            <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;提示&quot;</span><span class="p">,</span> <span class="s2">&quot;插入失败&quot;</span><span class="p">);</span>
+                                        <span class="p">}</span>
+                                    <span class="p">}</span>
+                                <span class="p">})</span>
+
+                            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                                <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;请选择一行或多行数据&quot;</span><span class="p">);</span>
+                            <span class="p">}</span>
+                        <span class="p">},</span>
+                        <span class="nx">scope</span> <span class="o">:</span> <span class="k">this</span>
+                    <span class="p">},</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="nx">pressed</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                        <span class="nx">xtype</span> <span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+                        <span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;取消&#39;</span><span class="p">,</span>
+                        <span class="nx">tooltip</span> <span class="o">:</span> <span class="s1">&#39;取消选择，直接退出&#39;</span><span class="p">,</span>
+                        <span class="nx">handler</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Notice&#39;</span><span class="p">,</span> <span class="s1">&#39;确认退出？&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+                                <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">)</span>
+                                    <span class="nb">window</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                            <span class="p">});</span>
+                        <span class="p">},</span>
+                        <span class="nx">scope</span> <span class="o">:</span> <span class="k">this</span>
+                    <span class="p">}],</span>
+            <span class="nx">buttons</span> <span class="o">:</span> <span class="p">[{</span>
+                <span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;执行查询条件&#39;</span><span class="p">,</span>
+                <span class="nx">handler</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">connections</span> <span class="o">=</span> <span class="nx">getCondictionValues</span><span class="p">();</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">isValid</span><span class="p">())</span> <span class="p">{</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">};</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">isFormInputed</span><span class="p">(</span><span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">())</span> <span class="o">==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;请输入查询条件&quot;</span><span class="p">);</span>
+                        <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">focus</span><span class="p">();</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;dbFilter&quot;</span><span class="p">).</span><span class="nx">dom</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">store</span><span class="p">.</span><span class="nx">baseParams</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="nx">xmlFile</span> <span class="o">:</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">),</span>
+                                <span class="nx">condictions</span> <span class="o">:</span> <span class="nx">connections</span><span class="p">,</span>
+                                <span class="nx">parentFormValues</span> <span class="o">:</span> <span class="nx">getParentFormValues</span><span class="p">(),</span>
+                                <span class="nx">cmd</span> <span class="o">:</span> <span class="s1">&#39;search&#39;</span>
+                            <span class="p">};</span>
+                            <span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">({</span>
+                                <span class="nx">params</span> <span class="o">:</span> <span class="p">{</span>
+                                    <span class="nx">start</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+                                    <span class="nx">limit</span> <span class="o">:</span> <span class="nx">result</span><span class="p">.</span><span class="nx">limit</span>
+                                <span class="p">}</span>
+                            <span class="p">});</span>
+                            <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">reset</span><span class="p">();</span>
+                            <span class="nx">flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                            <span class="nx">store</span><span class="p">.</span><span class="nx">baseParams</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="nx">xmlFile</span> <span class="o">:</span> <span class="nx">getQueryStringValue</span><span class="p">(</span><span class="s1">&#39;xmlFile&#39;</span><span class="p">),</span>
+                                <span class="nx">condictions</span> <span class="o">:</span> <span class="nx">connections</span><span class="p">,</span>
+                                <span class="nx">parentFormValues</span> <span class="o">:</span> <span class="nx">getParentFormValues</span><span class="p">(),</span>
+                                <span class="nx">cmd</span> <span class="o">:</span> <span class="s1">&#39;search&#39;</span>
+                            <span class="p">};</span>
+                            <span class="nx">store</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+                        <span class="p">}</span>
+
+                        <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">reset</span><span class="p">();</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="p">{</span>
+                <span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;重置&#39;</span><span class="p">,</span>
+                <span class="nx">handler</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">form</span><span class="p">.</span><span class="nx">getForm</span><span class="p">().</span><span class="nx">reset</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}]</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">form</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>最后做成的效果图，如下：</p>
+
+<p><img src="http://jc-resource.qiniudn.com/images/2014/bjsasc.bmp" alt="bjsasc"></p>
+
+<p>如果你想要获取更详细说明，请移步：<a href="/javascript/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue/">Extjs读取xml文件生成动态表格和表单(续)</a></p>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2009/09/26/be-best-of-myself" title="做最好的自己">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue" title="Extjs读取xml文件生成动态表格和表单(续)">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="Extjs读取xml文件生成动态表格和表单 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+

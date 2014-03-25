@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>ssh连接环境变量问题 - JavaChen Blog</title>
+    <meta name="description" content="SSH (Secure SHell) 是一个加密的终端程序，用于替代类Unix操作系统上传统的 telnet 工具。SSH已经发展成为一组软件系列，除了提供用于远程终端访问的ssh这个主要的程序，还包括其他的工具如 scp (secure copy) 和 sftp (secure file transfer protocol)。最初，SSH并不是免费的。然而，当今最流行并成为实际标准的SSH实现是 OpenBSD 的OpenSSH，它在Gentoo中已预安装。"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="09445188c7dad13b0d02f9fc8ed8acb4" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2014/01/18/bash-problem-when-ssh-access" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+			
+				<li><a href="/tags.html">Tags</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+			
+				<li><a href="/categories.html">Categories</a></li>
+			
+      	
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/archive.html">Archive</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/about.html">About</a></li>
+			
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">ssh连接环境变量问题 </h1>
+      </header>
+	<div class="entry-content">
+	<h1>1. 问题</h1>
+
+<p>RHEL服务器A有个启动脚本（普通用户user01运行），里面使用ifconfig获取ip地址如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Localhost_ip=$(ifconfig |awk -F &#39;addr:|Bcast&#39; &#39;/Bcast/{print $2}&#39;)
+</code></pre></div>
+<p>由于普通用户user01不能直接识别ifconfig命令，只能使用全路径<code>/sbin/ifconfig</code>，目前处理方式为修改<code>~/.bash_profile</code>文件添加环境变量如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin
+</code></pre></div>
+<p>改成如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">PATH=$PATH:$HOME/bin:/sbin
+</code></pre></div>
+<!-- more -->
+
+<p>经过如上配置后服务器本机user01用户登录执行XX.sh脚本可以识别ifconfig命令。</p>
+
+<p>出现如下问题：</p>
+
+<p>远程主机B通过ssh远程执行启动脚本XX.sh，报错如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">bash: ifconfg: command not found
+</code></pre></div>
+<h1>2. 问题分析</h1>
+
+<p>测试前准备，追加调用说明语句，如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/profile
+[root@node3 ~]# vim /etc/profile
+echo &quot;/etc/profile begin:&quot;
+echo &quot;$PATH&quot;
+...
+
+unset i
+unset pathmunge
+
+echo &quot;invoke /etc/profile&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /etc/bashrc
+...
+# vim:ts=4:sw=4
+
+echo &quot;invoke /etc/bashrc&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /root/.bash_profile
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+export PATH
+
+echo &quot;invoke ~/.bash_profile&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /root/.bashrc
+...
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+echo &quot;invoke ~/.bashrc&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /home/user01/.bash_profile
+...
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+export PATH
+
+echo &quot;invoke ~/.bashrc&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# vim /home/user01/.bashrc
+...
+# User specific aliases and functions
+
+echo &quot;invoke ~/.bashrc&quot;
+echo &quot;$PATH&quot;
+echo &quot;&quot;
+</code></pre></div>
+<p>分 user 和 root 用户，3 种场景进行测试，如下：</p>
+
+<h2>普通用户 User</h2>
+
+<h3>场景1：</h3>
+
+<p>本机使用 su 命令切换到普通用户 （属于 Login 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>Login 之前，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
+<li>Login 方式，文件调用顺序为： <code>/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</code></li>
+<li>Login 之后，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin</code></li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">su - user
+[root@node3 ~]# hostname -i
+192.168.122.33
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# su - user01
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bash_profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
+</code></pre></div>
+<h3>场景2：</h3>
+
+<p>远程机使用 ssh 命令以普通用户身份登陆到主机 （属于 Login 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>与在本机使用 su 命令切换到普通用户的效果完全一样！</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip
+[root@node1 ~]# hostname -i
+192.168.122.31
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# ssh user01@192.168.122.33
+user01@192.168.122.33&#39;s password: 
+Last login: Tue Jul  9 16:23:33 2013 from 192.168.122.31
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+invoke ~/.bash_profile
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/user01/bin
+</code></pre></div>
+<h2>场景3：</h2>
+
+<p>远程机使用 ssh 命令以普通用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
+<li>NoLogin 方式，文件调用顺序为：<code>/etc/bashrc -&gt; ~/.bashrc</code></li>
+<li>NoLogin 方式，目标主机 User 用户 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh user@remote_server_ip command
+[root@node1 ~]# hostname -i
+192.168.122.31
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# echo $PATH
+/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+
+[root@node1 ~]# ssh user01@192.168.122.33 &quot;echo $PATH&quot;
+user01@192.168.122.33&#39;s password: 
+
+invoke /etc/bashrc
+/usr/local/bin:/bin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/bin:/bin:/usr/bin
+
+/usr/local/rabbitmq/sbin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+</code></pre></div>
+<h2>对比 root 用户</h2>
+
+<h3>场景1：</h3>
+
+<p>本机使用 su 命令切换到 root （属于 Login 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>Login 之前，系统 PATH 为：<code>/usr/local/bin:/bin:/usr/bin</code></li>
+<li>Login 方式，root 用户，文件调用顺序为：<code>/etc/profile -&gt; /etc/bashrc -&gt; ~/.bashrc -&gt; ~/.bash_profile</code></li>
+<li>Login 之后，系统 PATH 为：<code>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin</code></li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">su - root
+[root@node3 ~]# hostname -i
+192.168.122.33
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node3 ~]# su - root
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bash_profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+</code></pre></div>
+<h3>场景2：</h3>
+
+<p>远程机使用 ssh 命令以 root 用户身份登陆到主机 （属于 Login 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>与在本机使用 su 命令切换到 root 用户的效果完全一样！</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh root@remote_server_ip
+[root@node1 ~]# hostname -i
+192.168.122.31
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# ssh root@192.168.122.33
+root@192.168.122.33&#39;s password: 
+Last login: Tue Jul  9 15:54:53 2013 from 192.168.122.1
+/etc/profile begin:
+/usr/local/bin:/bin:/usr/bin
+invoke /etc/profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bash_profile
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+</code></pre></div>
+<h3>场景3</h3>
+
+<p>远程机使用 ssh 命令以 root 用户身份连接到主机执行获取 PATH 的命令 （属于 NoLogin 方式）</p>
+
+<p>结论：</p>
+
+<ul>
+<li>NoLogin 方式，命令获取的 PATH 为该远程机的，并未拿到目标主机的 PATH</li>
+<li>NoLogin 方式，文件调用顺序为：<code>/etc/bashrc -&gt; ~/.bashrc</code></li>
+<li>NoLogin 方式，目标主机 root 用户 PATH 为：<code>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin</code></li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ssh root@remote_server_ip command
+[root@node1 ~]# hostname -i
+192.168.122.31
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">[root@node1 ~]# echo $PATH
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+
+[root@node1 ~]# ssh root@192.168.122.33 &quot;echo $PATH&quot;
+root@192.168.122.33&#39;s password: 
+invoke /etc/bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+invoke ~/.bashrc
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+</code></pre></div>
+<h3>关于/etc/profile 文件部分代码分析</h3>
+
+<p>结论：</p>
+
+<ul>
+<li>无论 root 还是 user ，只有调用此文件，其 PATH 中才会被追加 sbin 相关路径。而由以上测试场景可知，只有 Login 时，<code>/etc/profile</code> 文件才会被调用。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">pathmunge () {
+    case &quot;:${PATH}:&quot; in
+        *:&quot;$1&quot;:*)
+            ;;
+        *)
+            if [ &quot;$2&quot; = &quot;after&quot; ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+
+if [ -x /usr/bin/id ]; then
+    if [ -z &quot;$EUID&quot; ]; then
+        # ksh workaround
+        EUID=`id -u`
+        UID=`id -ru`
+    fi
+    USER=&quot;`id -un`&quot;
+    LOGNAME=$USER
+    MAIL=&quot;/var/spool/mail/$USER&quot;
+fi
+
+
+# Path manipulation
+if [ &quot;$EUID&quot; = &quot;0&quot; ]; then
+    pathmunge /sbin
+    pathmunge /usr/sbin
+    pathmunge /usr/local/sbin
+else
+    pathmunge /usr/local/sbin after
+    pathmunge /usr/sbin after
+    pathmunge /sbin after
+
+fi
+</code></pre></div>
+<h1>3. 总结</h1>
+
+<p>综上，如需修改 PATH，建议修改 bashrc 文件，从而保证任何方式访问时 PATH 的正确性。</p>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2014/01/16/hbase-region-split-policy" title="HBase Region Split策略">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2014/01/21/all-things-about-jekyll" title="All Things Jekyll">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="ssh连接环境变量问题 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+

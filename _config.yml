@@ -1,6 +1,7 @@
 # This is the default format. 
 # For more see: http://jekyllrb.com/docs/permalinks
-permalink: /:categories/:year/:month/:day/:title
+# permalink: /:categories/:year/:month/:day/:title
+permalink: /:year/:month/:day/:title
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 auto: true
@@ -101,6 +102,8 @@ JB :
   brlist :
     - text : JavaChen Blog
       url : //blog.javachen.com/
+    - text : JavaChen Sitemap
+      url : /sitemap.xml
     - text : 圆木菠萝罐
       url : //blog.boluotou.com/
     - text : Log4D

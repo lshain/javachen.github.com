@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "使用Octopress将博客从wordpress迁移到GitHub上"
-category: work
+title: 使用Octopress将博客从wordpress迁移到GitHub
+category: linux
 tags: [wordpress, github, octopress]
 
 ---

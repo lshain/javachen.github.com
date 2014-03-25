@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 使用DataStax Community Edition安装Cassandra单节点
-category: cassandra
-tags: [cassandra, dataStax]
+category: nosql
+tags: [cassandra, dataStax, nosql]
 keywords: dataStax, cassandra
 description: 本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.
 ---

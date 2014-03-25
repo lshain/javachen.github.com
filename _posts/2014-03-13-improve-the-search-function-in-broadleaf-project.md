@@ -2,7 +2,7 @@
 layout: post
 title: BroadLeaf项目搜索功能改进
 description: 如果你在用BroadLeaf开源项目定制开发自己的电子商务网站并使用了其自带的Solr搜索引起功能，那么这篇文章会对你有所帮助。
-category: solr
+category: search-engine
 tags: [solr, solrcloud]
 ---
 

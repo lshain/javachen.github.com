@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Getting Started Using the Cassandra CLI
-category: cassandra
+category: nosql
 tags: [cassandra, cli]
 keywords: cassandra, cli
 ---

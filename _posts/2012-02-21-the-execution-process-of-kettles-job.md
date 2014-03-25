@@ -1,9 +1,9 @@
 ---
 layout: post
 title: The execution process of kettle’s job
-category: kettle
-tags: [kettle]
-keywords: kettle
+category: pentaho
+tags: [kettle,pentaho]
+keywords: kettle,pentaho
 description: kettle执行过程
 ---
 

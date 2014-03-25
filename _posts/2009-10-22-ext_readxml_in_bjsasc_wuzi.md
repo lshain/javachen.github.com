@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Extjs读取xml文件生成动态表格和表单
-category: javascript
+category: java
 tags: [extjs, xml]
 keywords: extjs, xml
 description: Extjs读取xml文件生成动态表格和表单

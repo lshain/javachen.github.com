@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Kettle dependency management
-category: kettle
-tags: [kettle, ivy]
+category: pentaho
+tags: [kettle, pentaho]
 keywords: kettle, ivy, pentaho
 ---
 

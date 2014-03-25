@@ -2,7 +2,7 @@
 layout: post
 title: 在Solr中使用中文分词
 description: 使用全文检索，中文分词是离不开的，这里我采用的是mmseg4j分词器。mmseg4j分词器内置了对solr的支持，最新版本可支持4.X版本的sorl，使用起来很是方便。
-category: solr
+category: search-engine
 tags: [solr, solrcloud]
 ---
 

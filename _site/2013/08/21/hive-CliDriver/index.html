@@ -1,0 +1,373 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>hive cli的入口类 - JavaChen Blog</title>
+    <meta name="description" content="我的学习笔记，理解hive cli的入口类"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="09445188c7dad13b0d02f9fc8ed8acb4" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2013/08/21/hive-CliDriver" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+			
+				<li><a href="/tags.html">Tags</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+			
+				<li><a href="/categories.html">Categories</a></li>
+			
+      	
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/archive.html">Archive</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/about.html">About</a></li>
+			
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">hive cli的入口类 </h1>
+      </header>
+	<div class="entry-content">
+	<h1>启动脚本</h1>
+
+<p>从shell脚本<code>/usr/lib/hive/bin/ext/cli.sh</code>可以看到hive cli的入口类为<code>org.apache.hadoop.hive.cli.CliDriver</code></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cli () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &quot;$@&quot;
+}
+cli_help () {
+  CLASS=org.apache.hadoop.hive.cli.CliDriver
+  execHiveCmd $CLASS &quot;--help&quot;
+}
+</code></pre></div>
+<!-- more -->
+
+<h1>入口类</h1>
+
+<p>java中的类如果有main方法就能运行，故直接查找<code>org.apache.hadoop.hive.cli.CliDriver</code>中的main方法即可。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">public static void main(String[] args) throws Exception {
+    int ret = run(args);
+    System.exit(ret);
+}
+</code></pre></div>
+<p>阅读run函数可以看到，主要做了以下几件事情：</p>
+
+<ul>
+<li>读取main方法的参数</li>
+<li>重置默认的log4j配置并为hive重新初始化log4j，注意，在这里是读取hive-log4j.properties来初始化log4j。</li>
+<li>创建CliSessionState，并初始化in、out、info、error等stream流。CliSessionState是一次命令行操作的session会话，其继承了SessionState。</li>
+<li>重命令行参数中读取参数并设置到CliSessionState中。</li>
+<li>启动SessionState并连接到hive server</li>
+<li>如果cli是本地模式运行，则加载<code>hive.aux.jars.path</code>参数配置的jar包到classpath</li>
+<li>创建一个CliDriver对象，并设置当前选择的数据库。可以在命令行参数添加<code>-database database</code>来选择连接那个数据库，默认为default数据库。</li>
+<li>加载初始化文件<code>.hiverc</code>，该文件位于当前用户主目录下，读取该文件内容后，然后调用processFile方法处理文件内容。</li>
+<li>如果命令行中有-e参数，则运行指定的sql语句；如果有-f参数，则读取该文件内容并运行。注意：不能同时指定这两个参数。</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    hive -e &#39;show tables&#39;
+    hive -f /root/hive.sql
+</code></pre></div>
+<ul>
+<li>如果没有指定上面两个参数，则从当前用户主目录读取<code>.hivehistory</code>文件，如果不存在则创建。该文件保存了当前用户所有运行的hive命令。</li>
+<li>在while循环里不断读取控制台的输入内容，每次读取一行，如果行末有分号，则调用CliDriver的processLine方法运行读取到的内容。</li>
+<li>每次调用processLine方法时，都会创建SignalHandler用于捕捉用户的输入，当用户输入Ctrl+C时，会kill当前正在运行的任务以及kill掉当前进程。kill当前正在运行的job的代码如下.</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    HadoopJobExecHelper.killRunningJobs();
+</code></pre></div>
+<ul>
+<li>处理hive命令。</li>
+</ul>
+
+<h2>处理hive命令过程</h2>
+
+<p>如果输入的是quit或者exit,则程序退出。</p>
+
+<p>如果命令开头是source，则会读取source 后面文件内容，然后执行该文件内容。通过这种方式，你可以在hive命令行模式运行一个文件中的hive命令。</p>
+
+<p>如果命令开头是感叹号，执行操作系统命令（如<code>!ls</code>，列出当前目录的文件信息）。通过以下代码来运行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Process executor = Runtime.getRuntime().exec(shell_cmd);
+StreamPrinter outPrinter = new StreamPrinter(executor.getInputStream(), null, ss.out);
+StreamPrinter errPrinter = new StreamPrinter(executor.getErrorStream(), null, ss.err);
+
+outPrinter.start();
+errPrinter.start();
+
+ret = executor.waitFor();
+if (ret != 0) {
+  console.printError(&quot;Command failed with exit code = &quot; + ret);
+}
+</code></pre></div>
+<p>shell_cmd的内容大概如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">shell_cmd = &quot;/bin/bash -c \&#39;&quot; + shell_cmd + &quot;\&#39;&quot;
+</code></pre></div>
+<p>如果命令开头是list，列出jar/file/archive</p>
+
+<p>如果是远程模式运行命令行，则通过HiveClient来运行命令；否则，调用processLocalCmd方法运行本地命令。</p>
+
+<p>以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor。<code>set/dfs/add/delete</code>指令交给指定的CommandProcessor处理，其余的交给<code>org.apache.hadoop.hive.ql.Driver.run()</code>处理。
+故，CommandProcessor接口的实现类有：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">AddResourceProcessor
+DeleteResourceProcessor
+DfsProcessor
+Driver
+ResetProcessor
+SetProcessor
+</code></pre></div>
+<p><code>org.apache.hadoop.hive.ql.Driver</code>类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。</p>
+
+<h1>总结</h1>
+
+<p>作为尝试，第一次使用思维导图分析代码逻辑，简单整理了一下CliDriver类的运行逻辑，如下图。以后还需要加强画图和表达能力。</p>
+
+<p><img src="http://jc-resource.qiniudn.com/images/2013/hive-cli-clidriver.jpg" alt="hive-cli-clidriver"></p>
+
+<h1>参考文章</h1>
+
+<ul>
+<li><a href="http://www.cnblogs.com/end/archive/2012/12/19/2825320.html">hive 初始化运行流程</a></li>
+</ul>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2013/08/17/some-problems-about-hadoop" title="使用hadoop中遇到的一些问题">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2013/08/22/hive-Driver" title="hive Driver类运行过程">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="hive cli的入口类 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+

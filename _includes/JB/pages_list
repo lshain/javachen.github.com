@@ -27,9 +27,17 @@ Usage:
     {% if node.title != null %}
       {% if group == null or group == node.group %}
       	{% if page.url == node.url %}
-<li class="active"><a href="{{ BASE_PATH }}{{node.url}}" class="active">{{node.title}}</a></li>
+			{% if node.date == null %}
+				<li class="active"><a href="{{ BASE_PATH }}{{node.url}}" class="active">{{node.title}}</a></li>
+			{% else %}
+				<li class="active"><span>{{ node.date | date: "%Y/%m/%d" }}</span> &raquo; <a href="{{ BASE_PATH }}{{node.url}}" class="active">{{node.title}}</a></li>
+			{% endif %}
       	{% else %}
-<li><a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></li>
+			{% if node.date == null %}
+				<li><a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></li>
+			{% else %}
+				<li><span>{{ node.date | date: "%Y/%m/%d" }}</span> &raquo; <a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></li>
+			{% endif %}
       	{% endif %}
       {% endif %}
     {% endif %}

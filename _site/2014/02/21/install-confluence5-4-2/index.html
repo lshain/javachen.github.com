@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Confluence 5.4.2安装 - JavaChen Blog</title>
+    <meta name="description" content="本文记录Confluence 5.4.2安装过程。Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="09445188c7dad13b0d02f9fc8ed8acb4" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2014/02/21/install-confluence5-4-2" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+			
+				<li><a href="/tags.html">Tags</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+			
+				<li><a href="/categories.html">Categories</a></li>
+			
+      	
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/archive.html">Archive</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/about.html">About</a></li>
+			
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">Confluence 5.4.2安装 </h1>
+      </header>
+	<div class="entry-content">
+	<p>Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。</p>
+
+<h1>1、下载</h1>
+
+<p>下载指定版本Confluence</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir -p /data/confluence
+$ cd /data/confluence
+$ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.4.2.tar.gz
+</code></pre></div>
+<h1>2、安装</h1>
+
+<p>解压</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ tar -zxvf atlassian-confluence-5.4.2.tar.gz
+</code></pre></div>
+<p>进入目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd atlassian-confluence-5.4.2
+</code></pre></div>
+<p>配置confluence安装目录：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vim confluence/WEB-INF/classes/confluence-init.properties
+</code></pre></div>
+<p>在属性文件中添加安装目录路径：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">###########################
+# Note for Unix Users     #
+###########################
+# - For example:
+confluence.home=/data/confluence/confluence-data
+</code></pre></div>
+<p>创建目录：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir confluence-data
+</code></pre></div>
+<p>创建完成后，运行启动：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/start-confluence.sh
+</code></pre></div>
+<p>访问ip+portnum，默认端口为8090，如果出现破解界面，以上步骤即为成功</p>
+
+<h1>3、启停服务</h1>
+
+<p>使用压缩包形式的Confluence无法直接使用服务启停，需要配合目录的sh文件</p>
+
+<p>启动服务：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/start-confluence.sh
+</code></pre></div>
+<p>停止服务：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sh bin/stop-confluence.sh
+</code></pre></div>
+<h1>4、修改默认端口</h1>
+
+<p>配置文件位置：<code>atlassian-confluence-5.4.2/conf/server.xml</code></p>
+
+<p>打开文件，</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;Connector</span> <span class="na">className=</span><span class="s">&quot;org.apache.coyote.tomcat4.CoyoteConnector&quot;</span> <span class="na">port=</span><span class="s">&quot;8090&quot;</span> <span class="na">minProcessors=</span><span class="s">&quot;5&quot;</span>
+</code></pre></div>
+<p>修改port 为需要</p>
+
+<h1>5、更换默认的数据库</h1>
+
+<p>在完成之前的步骤后，数据库使用的是一个confluence默认的hsql数据库，此数据库缺陷较多，例如：不支持事务管理。因此需要将数据库迁移为指定的数据库类型。进入confluence-data目录，修改<code>confluence-cfg.xml</code>文件中数据库相关的连接信息。</p>
+
+<h1>6、安装中文字体：</h1>
+
+<p>默认情况下Confluence导出PDF不支持中文，需要修改如下：</p>
+
+<p>管理员登录&quot;Confluence Admin&quot;，选择左边菜单&quot;CONFIGURATION&quot;-&quot;PDF Export Language Support&quot;，选择安装中文字体，例如：simsun.ttc</p>
+
+<h1>7、破解</h1>
+
+<p>请参考：<a href="http://582033.vicp.net/?p=1085">http://582033.vicp.net/?p=1085</a></p>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2014/02/21/cdh5rn_whats_new_in_b2" title="CDH 5 Beta 2 的新变化">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2014/02/22/python-introduction-of-basics" title="Python基础入门">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="Confluence 5.4.2安装 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+
