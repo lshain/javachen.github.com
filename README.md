@@ -9,6 +9,6 @@ JavaChen Blog
 
 # Tanks TO
 
-- [http://havee.me/]{http://havee.me/}
+- [http://havee.me/](http://havee.me/)
 
 

@@ -45,8 +45,7 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
 </li>
 <li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home_Page</a>
 </li>
-<li>4.XUL结构: <a href="https://developer.mozilla.org/cn/XUL_%E6%95%99%E7%A8%8B/1-2_XUL%E7%9A%84%E7%BB%93%E6%9E%84" target="_blank">https://developer.mozilla.org/cn/</a>
-</li>
+<li>4.[XUL结构](https://developer.mozilla.org/cn/XUL_%E6%95%99%E7%A8%8B/1-2_XUL%E7%9A%84%E7%BB%93%E6%9E%84)</li>
 <li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide</a>
 </li>
 <li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>

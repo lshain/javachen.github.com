@@ -27,7 +27,7 @@ Usage:
     {% capture next_month %}{{ post.previous.date | date: "%m" }}{% endcapture %}
   
     {% if forloop.first %}
-      <h2>{{this_year}} 年</h2>
+      <h2>{{this_year}} 年 </h2>
       <ul>
     {% endif %}
   

@@ -7,8 +7,8 @@ comment: true
 
 # 关于我
 
-- 方案架构师，就职于北京一家做开源解决方案的公司
-- 关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化
+- 系统架构师，就职于北京一家做开源解决方案的公司，主要从事Java和Hadoop相关工作
+- 关注开源、Java、Hadoop、Pentaho、Cassandra以及数据可视化
 
 # 联系我
 
