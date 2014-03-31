@@ -188,8 +188,6 @@
 <li>分布式远程执行系统，用于在远端节点执行命令和查询数据，可以是单独，也可以是选定的条件</li>
 </ul>
 
-<!-- more -->
-
 <h2>2.2. SaltStack特点</h2>
 
 <h3>简单</h3>
@@ -347,86 +345,86 @@ python2.6 setup.py install
 <p>master关键配置：</p>
 
 <ul>
-<li>interface</li>
-<li>publish_port</li>
-<li>user</li>
-<li>max<u>open</u>files</li>
-<li>worker_threads</li>
-<li>ret_port</li>
-<li>pidfile</li>
-<li>root_dir</li>
-<li>pki_dir</li>
-<li>cachedir</li>
-<li>keep_jobs</li>
-<li>job_cache</li>
-<li>ext<u>job</u>cache</li>
-<li>minion<u>data</u>cache</li>
-<li>enforce<u>mine</u>cache</li>
-<li>sock_dir</li>
+<li><code>interface</code></li>
+<li><code>publish_port</code></li>
+<li><code>user</code></li>
+<li><code>max_open_files</code></li>
+<li><code>worker_threads</code></li>
+<li><code>ret_port</code></li>
+<li><code>pidfile</code></li>
+<li><code>root_dir</code></li>
+<li><code>pki_dir</code></li>
+<li><code>cachedir</code></li>
+<li><code>keep_jobs</code></li>
+<li><code>job_cache</code></li>
+<li><code>ext_job_cache</code></li>
+<li><code>minion_data_cache</code></li>
+<li><code>enforce_mine_cache</code></li>
+<li><code>sock_dir</code></li>
 </ul>
 
 <p>Master Security配置</p>
 
 <ul>
-<li>open_mode</li>
-<li>auto_accept</li>
-<li>autosign_file</li>
-<li>client_acl</li>
-<li>client<u>acl</u>blacklist</li>
-<li>external_auth</li>
-<li>token_expire</li>
+<li><code>open_mode</code></li>
+<li><code>auto_accept</code></li>
+<li><code>autosign_file</code></li>
+<li><code>client_acl</code></li>
+<li><code>client_acl_blacklist</code></li>
+<li><code>external_auth</code></li>
+<li><code>token_expire</code></li>
 </ul>
 
 <p>Master Module管理</p>
 
 <ul>
-<li>runner_dirs</li>
-<li>cython_enable</li>
+<li><code>runner_dirs</code></li>
+<li><code>cython_enable</code></li>
 </ul>
 
 <p>Master State设置</p>
 
 <ul>
-<li>state_verbose</li>
-<li>state_output</li>
-<li>state_top</li>
-<li>external_nodes</li>
-<li>renderer</li>
-<li>failhard</li>
-<li>test</li>
+<li><code>state_verbose</code></li>
+<li><code>state_output</code></li>
+<li><code>state_top</code></li>
+<li><code>external_nodes</code></li>
+<li><code>renderer</code></li>
+<li><code>failhard</code></li>
+<li><code>test</code></li>
 </ul>
 
 <p>Master File Server设置</p>
 
 <ul>
-<li>fileserver_backend</li>
-<li>file_roots</li>
-<li>hash_type</li>
-<li>file<u>buffer</u>size</li>
+<li><code>fileserver_backend</code></li>
+<li><code>file_roots</code></li>
+<li><code>hash_type</code></li>
+<li><code>file_buffer_size</code></li>
 </ul>
 
 <p>Pillar配置</p>
 
 <ul>
-<li>pillar_roots</li>
-<li>ext_pillar</li>
+<li><code>pillar_roots</code></li>
+<li><code>ext_pillar</code></li>
 </ul>
 
 <p>Syndic Server设置</p>
 
 <ul>
-<li>order_masters</li>
-<li>syndic_master</li>
-<li>syndic<u>master</u>port</li>
-<li>syndic<u>log</u>file</li>
-<li>syndic_pidfile</li>
+<li><code>order_masters</code></li>
+<li><code>syndic_master</code></li>
+<li><code>syndic_master_port</code></li>
+<li><code>syndic_log_file</code></li>
+<li><code>syndic_pidfile</code></li>
 </ul>
 
 <p>Peer发布设置</p>
 
 <ul>
-<li>peer</li>
-<li>peer_run</li>
+<li><code>peer</code></li>
+<li><code>peer_run</code></li>
 </ul>
 
 <p>Node Groups设置</p>
@@ -434,21 +432,21 @@ python2.6 setup.py install
 <p>Master Logging设置</p>
 
 <ul>
-<li>log_file</li>
-<li>log_level</li>
-<li>log<u>level</u>logfile</li>
-<li>log_datefmt</li>
-<li>log<u>datefmt</u>logfile</li>
-<li>log<u>fmt</u>console</li>
-<li>log<u>fmt</u>logfile</li>
-<li>log<u>granular</u>levels</li>
+<li><code>log_file</code></li>
+<li><code>log_level</code></li>
+<li><code>log_level_logfile</code></li>
+<li><code>log_datefmt</code></li>
+<li><code>log_datefmt_logfile</code></li>
+<li><code>log_fmt_console</code></li>
+<li><code>log_fmt_logfile</code></li>
+<li><code>log_granular_levels</code></li>
 </ul>
 
 <p>Include配置</p>
 
 <ul>
-<li>default_include</li>
-<li>include</li>
+<li><code>default_include</code></li>
+<li><code>include</code></li>
 </ul>
 
 <h2>4.4. minion配置</h2>
@@ -456,97 +454,97 @@ python2.6 setup.py install
 <p>Minion主要配置：</p>
 
 <ul>
-<li>master</li>
-<li>master_port</li>
-<li>user</li>
-<li>pidfile</li>
-<li>root_dir</li>
-<li>pki_dir</li>
-<li>id</li>
-<li>append_domain</li>
-<li>cachedir</li>
-<li>verify_env</li>
-<li>cache_jobs</li>
-<li>sock_dir</li>
-<li>backup_mode</li>
-<li>acceptance<u>wait</u>time</li>
-<li>random<u>reauth</u>delay</li>
-<li>cceptance<u>wait</u>time_max</li>
-<li>dns_check</li>
-<li>ipc_mode</li>
-<li>tcp<u>pub</u>port</li>
-<li>tcp<u>pull</u>port</li>
+<li><code>master</code></li>
+<li><code>master_port</code></li>
+<li><code>user</code></li>
+<li><code>pidfile</code></li>
+<li><code>root_dir</code></li>
+<li><code>pki_dir</code></li>
+<li><code>id</code></li>
+<li><code>append_domain</code></li>
+<li><code>cachedir</code></li>
+<li><code>verify_env</code></li>
+<li><code>cache_jobs</code></li>
+<li><code>sock_dir</code></li>
+<li><code>backup_mode</code></li>
+<li><code>acceptance_wait_time</code></li>
+<li><code>random_reauth_delay</code></li>
+<li><code>cceptance_wait_time_max</code></li>
+<li><code>dns_check</code></li>
+<li><code>ipc_mode</code></li>
+<li><code>tcp_pub_port</code></li>
+<li><code>tcp_pull_port</code></li>
 </ul>
 
 <p>Minion Module管理</p>
 
 <ul>
-<li>disable_modules</li>
-<li>disable_returners</li>
-<li>module_dirs</li>
-<li>returner_dirs</li>
-<li>states_dirs</li>
-<li>render_dirs</li>
-<li>cython_enable</li>
-<li>providers</li>
+<li><code>disable_modules</code></li>
+<li><code>disable_returners</code></li>
+<li><code>module_dirs</code></li>
+<li><code>returner_dirs</code></li>
+<li><code>states_dirs</code></li>
+<li><code>render_dirs</code></li>
+<li><code>cython_enable</code></li>
+<li><code>providers</code></li>
 </ul>
 
 <p>State Management 设置</p>
 
 <ul>
-<li>renderer</li>
-<li>state_verbose</li>
-<li>state_output</li>
-<li>autoload<u>dynamic</u>modules</li>
-<li>environment</li>
+<li><code>renderer</code></li>
+<li><code>state_verbose</code></li>
+<li><code>state_output</code></li>
+<li><code>autoload_dynamic_modules</code></li>
+<li><code>environment</code></li>
 </ul>
 
 <p>File目录设置</p>
 
 <ul>
-<li>file_client</li>
-<li>file_roots</li>
-<li>hash_type</li>
-<li>pillar_roots</li>
+<li><code>file_client</code></li>
+<li><code>file_roots</code></li>
+<li><code>hash_type</code></li>
+<li><code>pillar_roots</code></li>
 </ul>
 
 <p>Security设置</p>
 
 <ul>
-<li>open_mode</li>
+<li><code>open_mode</code></li>
 </ul>
 
 <p>线程设置</p>
 
 <ul>
-<li>multiprocessing</li>
+<li><code>multiprocessing</code></li>
 </ul>
 
 <p>Minion日志设置</p>
 
 <ul>
-<li>log_file</li>
-<li>log_level</li>
-<li>log<u>level</u>logfile</li>
-<li>log_datefmt</li>
-<li>log<u>datefmt</u>logfile</li>
-<li>log<u>fmt</u>console</li>
-<li>log<u>fmt</u>logfile</li>
-<li>log<u>granular</u>levels</li>
+<li><code>log_file</code></li>
+<li><code>log_level</code></li>
+<li><code>log_level_logfile</code></li>
+<li><code>log_datefmt</code></li>
+<li><code>log_datefmt_logfile</code></li>
+<li><code>log_fmt_console</code></li>
+<li><code>log_fmt_logfile</code></li>
+<li><code>log_granular_levels</code></li>
 </ul>
 
 <p>Include配置</p>
 
 <ul>
-<li>default_include</li>
-<li>include</li>
+<li><code>default_include</code></li>
+<li><code>include</code></li>
 </ul>
 
 <p>Frozen Build Update Settings</p>
 
 <ul>
-<li>update_url</li>
-<li>update<u>restart</u>services</li>
+<li><code>update_url</code></li>
+<li><code>update_restart_services</code></li>
 </ul>
 
 <h1>5. 初识SaltStack</h1>

@@ -3,7 +3,7 @@ layout: post
 title: CDH 5 Beta 2 的新变化 
 description: 这是 CDH 5.0.0 Beta 2的初稿。鉴于 CDH5 目前的发布版本是测试版，它不应用于生产环境中；它只是用来评估、测试的。对于生产环境，请使用 CDH 4。
 category: hadoop
-tags: [hadoop, cdh5]
+tags: [hadoop, cdh]
 ---
 
 本文是同事对[CDH 5.0.0 Beta 2](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Release-Notes/cdh5rn_whats_new_in_b2.html)的翻译，仅供大家参考。

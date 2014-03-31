@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>在CentOs6系统上安装Ganglia - JavaChen Blog</title>
-    <meta name="description" content="Ganglia是 UC Berkeley发起的一个开源监视项目，设计用于测量数以千计的节点。本文主要用于记录如何在CentOs6系统上通过yum源安装Ganglia。"/>
+    <meta name="description" content="Ganglia是UC Berkeley发起的一个开源集群监视项目，设计用于测量数以千计的节点。Ganglia的核心包含gmond、gmetad以及一个Web前端。主要是用来监控系统性能，由RRDTool工具处理数据，并生成相应的的图形显示，以Web方式直观的提供给客户端。如：cpu 、mem、硬盘利用率， I/O负载、网络流量情况等，通过曲线很容易见到每个节点的工作状态，对合理调整、分配系统资源，提高系统整体性能起到重要作用。"/>
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
     <meta name="author" content="JavaChen"/>
     <meta name="copyright" content="© http://blog.javachen.com" />
@@ -171,7 +171,9 @@
         <h1 class="entry-title">在CentOs6系统上安装Ganglia </h1>
       </header>
 	<div class="entry-content">
-	<h1>配置yum源</h1>
+	<p>Ganglia是UC Berkeley发起的一个开源集群监视项目，设计用于测量数以千计的节点。Ganglia的核心包含gmond、gmetad以及一个Web前端。主要是用来监控系统性能，由RRDTool工具处理数据，并生成相应的的图形显示，以Web方式直观的提供给客户端。如：cpu 、mem、硬盘利用率， I/O负载、网络流量情况等，通过曲线很容易见到每个节点的工作状态，对合理调整、分配系统资源，提高系统整体性能起到重要作用。</p>
+
+<h1>配置yum源</h1>
 
 <p>首先配置好CentOs系统的yum源，然后需要包含有ganglia的yum源。</p>
 
@@ -252,9 +254,11 @@ $ cp -a  /usr/share/ganglia/   /var/www/html/ganglia
 </code></pre></div>
 <p>然后通过web界面（<code>http://manager-ip/ganglia</code>）访问ganglia-web</p>
 
-<h1>修改配置文件</h1>
+<h1>参考文章</h1>
 
-<h1>监控hadoop</h1>
+<ul>
+<li>[1] <a href="http://www.elain.org/?p=359">ganglia监控的搭建部署(从源码安装)</a></li>
+</ul>
 
 
 	-EOF-

@@ -174,6 +174,17 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/10/28/compile-hbase-source-code-and-apply-patches">编译hbase源代码并打补丁</a></h2>
+    
+      写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/10/28/compile-hbase-source-code-and-apply-patches"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hadoop/2013/10/17/run-mapreduce-with-client-user-in-hive-server2">hive-server2中使用jdbc客户端用户运行mapreduce</a></h2>
     
       最近做了个web系统访问hive数据库，类似于官方自带的hwi，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
@@ -272,17 +283,6 @@
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/08/02/hadoop-install-script">hadoop自动化安装shell脚本</a></h2>
-    
-      之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/08/02/hadoop-install-script"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <hr/>
 
@@ -318,6 +318,8 @@
        <div class="category">
          <ul>
            
+           <li><a href="/hadoop/2014/03/31/what-is-new-in-CDH4.5.0">CDH4.5.0 新特性</a></li>
+           
            <li><a href="/python/2014/03/18/simulate-weibo-login-in-python">Python模拟新浪微博登录</a></li>
            
            <li><a href="/search-engine/2014/03/15/schema-in-solr">Solr的schema.xml</a></li>
@@ -347,8 +349,6 @@
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
            
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在RHEL系统上安装Nagios</a></li>
-           
-           <li><a href="/linux/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
            
          </ul>
        </div>

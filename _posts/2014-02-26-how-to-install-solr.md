@@ -3,7 +3,7 @@ layout: post
 title: Apache Solr介绍及安装
 description: 本文记录如何安装Solr。Solr是一个基于Lucene的Java搜索引擎服务器。Solr提供了层面搜索、命中醒目显示并且支持多种输出格式。
 category: search-engine
-tags: [solr, lucene]
+tags: [solr]
 ---
 
 Solr是一个基于Apache Lucene的开源企业级搜索平台，主要功能包括全文检索，高亮命中(hit highlighting)，分面搜索(faceted search)，近实时索引，动态集群，数据库集成，富文本(e.g. Word,PDF)索引，空间搜索；通过提供分布式索引，复制，负载均衡查询，自动故障转移和恢复，集中配置等功能实现高可用，可伸缩和可容错；已被广泛应用于很多大型互联网站点；

@@ -224,12 +224,12 @@ mapred-site.xml
 
 <p>d.设置环境变量</p>
 
-<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
+<p>方便执行java命令及hadoop命令. 使用root登录，<code>vi ~/.bash_profile</code>追加下列信息</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_HOME=/opt/jdk1.6.0_38
 export HADOOP_INSTALL=/opt/hadoop-1.1.1
 export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
 </code></pre></div>
-<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
+<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：<code>/opt/hadoop-1.1.1/conf/hadoop-env.sh</code></p>
 
 <p>f.格式化namenode</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop namenode -format

@@ -22,8 +22,6 @@ SaltStack是开源的管理基础设置的轻量级工具，容易搭建，为�
 - 轻量级配置管理系统，能够维持远端节点运行在预定状态（例如，确保指定的软件包已经安装和特定的系统服务正在运行）
 - 分布式远程执行系统，用于在远端节点执行命令和查询数据，可以是单独，也可以是选定的条件
 
-<!-- more -->
-
 ## 2.2. SaltStack特点
 
 ###  简单
@@ -195,170 +193,170 @@ master默认监控0.0.0.0上4505和4506端口，你可以在`/etc/salt/master`�
 
 master关键配置：
 
-- interface
-- publish_port
-- user
-- max_open_files
-- worker_threads
-- ret_port
-- pidfile
-- root_dir
-- pki_dir
-- cachedir
-- keep_jobs
-- job_cache
-- ext_job_cache
-- minion_data_cache
-- enforce_mine_cache
-- sock_dir
+- `interface`
+- `publish_port`
+- `user`
+- `max_open_files`
+- `worker_threads`
+- `ret_port`
+- `pidfile`
+- `root_dir`
+- `pki_dir`
+- `cachedir`
+- `keep_jobs`
+- `job_cache`
+- `ext_job_cache`
+- `minion_data_cache`
+- `enforce_mine_cache`
+- `sock_dir`
 
 Master Security配置
 
-- open_mode
-- auto_accept
-- autosign_file
-- client_acl
-- client_acl_blacklist
-- external_auth
-- token_expire
+- `open_mode`
+- `auto_accept`
+- `autosign_file`
+- `client_acl`
+- `client_acl_blacklist`
+- `external_auth`
+- `token_expire`
 
 Master Module管理
 
-- runner_dirs
-- cython_enable
+- `runner_dirs`
+- `cython_enable`
 
 Master State设置
 
-- state_verbose
-- state_output
-- state_top
-- external_nodes
-- renderer
-- failhard
-- test
+- `state_verbose`
+- `state_output`
+- `state_top`
+- `external_nodes`
+- `renderer`
+- `failhard`
+- `test`
 
 Master File Server设置
 
-- fileserver_backend
-- file_roots
-- hash_type
-- file_buffer_size
+- `fileserver_backend`
+- `file_roots`
+- `hash_type`
+- `file_buffer_size`
 
 Pillar配置
 
-- pillar_roots
-- ext_pillar
+- `pillar_roots`
+- `ext_pillar`
 
 Syndic Server设置
 
-- order_masters
-- syndic_master
-- syndic_master_port
-- syndic_log_file
-- syndic_pidfile
+- `order_masters`
+- `syndic_master`
+- `syndic_master_port`
+- `syndic_log_file`
+- `syndic_pidfile`
 
 Peer发布设置
 
-- peer
-- peer_run
+- `peer`
+- `peer_run`
 
 Node Groups设置
 
 Master Logging设置
 
-- log_file
-- log_level
-- log_level_logfile
-- log_datefmt
-- log_datefmt_logfile
-- log_fmt_console
-- log_fmt_logfile
-- log_granular_levels
+- `log_file`
+- `log_level`
+- `log_level_logfile`
+- `log_datefmt`
+- `log_datefmt_logfile`
+- `log_fmt_console`
+- `log_fmt_logfile`
+- `log_granular_levels`
 
 Include配置
 
-- default_include
-- include
+- `default_include`
+- `include`
 
 ## 4.4. minion配置
 
 Minion主要配置：
 
-- master
-- master_port
-- user
-- pidfile
-- root_dir
-- pki_dir
-- id
-- append_domain
-- cachedir
-- verify_env
-- cache_jobs
-- sock_dir
-- backup_mode
-- acceptance_wait_time
-- random_reauth_delay
-- cceptance_wait_time_max
-- dns_check
-- ipc_mode
-- tcp_pub_port
-- tcp_pull_port
+- `master`
+- `master_port`
+- `user`
+- `pidfile`
+- `root_dir`
+- `pki_dir`
+- `id`
+- `append_domain`
+- `cachedir`
+- `verify_env`
+- `cache_jobs`
+- `sock_dir`
+- `backup_mode`
+- `acceptance_wait_time`
+- `random_reauth_delay`
+- `cceptance_wait_time_max`
+- `dns_check`
+- `ipc_mode`
+- `tcp_pub_port`
+- `tcp_pull_port`
 
 Minion Module管理
 
-- disable_modules
-- disable_returners
-- module_dirs
-- returner_dirs
-- states_dirs
-- render_dirs
-- cython_enable
-- providers
+- `disable_modules`
+- `disable_returners`
+- `module_dirs`
+- `returner_dirs`
+- `states_dirs`
+- `render_dirs`
+- `cython_enable`
+- `providers`
 
 State Management 设置
 
-- renderer
-- state_verbose
-- state_output
-- autoload_dynamic_modules
-- environment
+- `renderer`
+- `state_verbose`
+- `state_output`
+- `autoload_dynamic_modules`
+- `environment`
 
 File目录设置
 
-- file_client
-- file_roots
-- hash_type
-- pillar_roots
+- `file_client`
+- `file_roots`
+- `hash_type`
+- `pillar_roots`
 
 Security设置
 
-- open_mode
+- `open_mode`
 
 线程设置
 
-- multiprocessing
+- `multiprocessing`
 
 Minion日志设置
 
-- log_file
-- log_level
-- log_level_logfile
-- log_datefmt
-- log_datefmt_logfile
-- log_fmt_console
-- log_fmt_logfile
-- log_granular_levels
+- `log_file`
+- `log_level`
+- `log_level_logfile`
+- `log_datefmt`
+- `log_datefmt_logfile`
+- `log_fmt_console`
+- `log_fmt_logfile`
+- `log_granular_levels`
 
 Include配置
 
-- default_include
-- include
+- `default_include`
+- `include`
 
 Frozen Build Update Settings
 
-- update_url
-- update_restart_services
+- `update_url`
+- `update_restart_services`
 
 # 5. 初识SaltStack
 

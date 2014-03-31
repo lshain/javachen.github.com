@@ -13,7 +13,6 @@ description: 本篇文章来自以前公司的一套jsf+seam+Hibernate的一套�
 1.Java语言作为一种典型的OO语言，通过抽象、继承等功能，可以大量重用已经实现或者在父类中已经存在的属性和方法等。模板技术作为一种静态加载和内容替换，无法充分利用面向对象的继承功能
 2.由于Jsf/jsp框架采用视图和动作分离的模型，多个相似功能在不同的页面实现中由于页面对应点动作类不同因而必须使用复制的方法；
 3.模板中使用EL表达式与后台动作类交互，这种交互是基于绝对名称的，不同的网页对应的动作类是完全不同的，因此很难重用和利用面向对象的特征。
-<!--more-->
 
 我们需要一种新的功能，实现：
 1.模板的应用特种可以参照OO的继承特种，即模板的对模板的引用可以看成一种继承，这种继承可以和java的OO是一致的
@@ -23,7 +22,7 @@ description: 本篇文章来自以前公司的一套jsf+seam+Hibernate的一套�
 
 我们将上述功能处理为“this”表达式。其功能模型为：
 <div class="pic">
-<a href="http://jc-resource.qiniudn.com/images/2012/02/this-expression-of-el.jpg"><img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-of-el-300x168.jpg" alt="" title="this expression of el" width="300" height="168" class="aligncenter size-medium wp-image-2496" /></a>
+<img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-of-el.jpg" alt="" title="this expression of el"/>
 </div>
 页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
 
@@ -36,5 +35,5 @@ description: 本篇文章来自以前公司的一套jsf+seam+Hibernate的一套�
 <strong>“this”EL表达式算法</strong>
 算法流程如下图：
 <div class="pic">
-<a href="http://jc-resource.qiniudn.com/images/2012/02/this-expression-flow-of-el.jpg"><img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-flow-of-el-300x226.jpg" alt="" title="this expression flow of el" width="300" height="226" class="aligncenter size-medium wp-image-2497" /></a>
+<img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-flow-of-el.jpg" alt="" title="this expression flow of el"/>
 </div>

@@ -24,10 +24,11 @@ keywords: hadoop, cdh, cloudera manager
 * 设置时钟同步
 
 # 使用说明
+
 安装hadoop、hbase、hive成功之后启动方式为：
 
-* 启动dfs和mapreduce: desktop1上执行start-dfs.sh和start-yarn.sh
-* 启动hbase: desktop3上执行start-hbase.xml
+* 启动dfs和mapreduce: desktop1上执行`start-dfs.sh`和`start-yarn.sh`
+* 启动hbase: desktop3上执行`start-hbase.xml`
 * 启动hive: desktop1上执行hive
 
 # 规划
@@ -66,6 +67,7 @@ keywords: hadoop, cdh, cloudera manager
 ```
 
 3. 配置ssh无密码登陆
+
 以下是设置desktop1上可以无密码登陆到其他机器上。
 
 ```
@@ -86,7 +88,9 @@ keywords: hadoop, cdh, cloudera manager
 
 # 安装Hadoop
 ## 配置Hadoop
+
 将jdk1.6.0_38.zip上传到/opt，并解压缩。
+
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。
 
 在NameNode上配置以下文件：
@@ -102,6 +106,7 @@ keywords: hadoop, cdh, cloudera manager
 ```
 
 1. core-site.xml
+
 该文件指定fs.defaultFS连接desktop1，即NameNode节点。
 
 ```
@@ -182,6 +187,7 @@ desktop8
 
 ## 配置MapReduce
 1. mapred-site.xml
+
 配置使用yarn计算框架，以及jobhistory的地址。
 
 ```
@@ -205,6 +211,7 @@ desktop8
 ```
 
 2. yarn-site.xml
+
 主要配置resourcemanager地址以及`yarn.application.classpath`（这个路径很重要，要不然集成hive时候会提示找不到class）
 
 ```
@@ -309,6 +316,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上
 
 ## 启动脚本
+
 第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化
 
 ```

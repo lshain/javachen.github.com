@@ -3,7 +3,7 @@ layout: post
 title: Apache Solr查询语法
 description: Apache Solr查询语法
 category: search-engine
-tags: [solr, lucene]
+tags: [solr]
 ---
 
 # 查询参数

@@ -174,6 +174,17 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH">手动安装Cloudera Hadoop CDH</a></h2>
+    
+      手动安装Cloudera Hadoop CDH
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster">【笔记】Hadoop安装部署</a></h2>
     
 		
@@ -230,12 +241,12 @@ mapred-site.xml
 
 <p>d.设置环境变量</p>
 
-<p>方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息</p>
+<p>方便执行java命令及hadoop命令. 使用root登录，<code>vi ~/.bash_profile</code>追加下列信息</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export JAVA_HOME=/opt/jdk1.6.0_38
 export HADOOP_INSTALL=/opt/hadoop-1.1.1
 export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
 </code></pre></div>
-<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：/opt/hadoop-1.1.1/conf/hadoop-env.sh</p>
+<p>e.修改hadoop脚本中<code>JAVA_HOME</code>：<code>/opt/hadoop-1.1.1/conf/hadoop-env.sh</code></p>
 
 <p>f.格式化namenode</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">hadoop namenode -format
@@ -695,67 +706,6 @@ AND column_metadata = [
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/java/2012/02/23/the-process-of-seam-initiation">Seam的启动过程</a></h2>
-    
-		
-		  <p>了解seam2的人知道，seam是通过在web. xml中配置监听器启动的。注意，本文中的seam是指的seam2，不是seam3. </p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;listener&gt;
-    &lt;listenerclass&gt;org. jboss. seam. servlet. SeamListener&lt;/listenerclass&gt;
-&lt;/listener&gt;
-</code></pre></div>
-<p>该监听器会做哪些事情呢？看看Gavin King对SeamListener类的描述。</p>
-
-<blockquote>Drives certain Seam functionality such as initialization and cleanup of application and session contexts from the web application lifecycle. </blockquote>
-
-<p>从描述中可以知道SeamListener主要完成应用以及web应用生命周期中的session上下文的初始化和清理工作。</p>
-
-<p>该类实现了ServletContextListener接口，在contextInitialized(ServletContextEvent event)方法内主要初始化生命周期并完成应用的初始化，在contextDestroyed(ServletContextEvent event)方法内结束应用的生命周期。</p>
-
-<p>该类实现了HttpSessionListener接口，主要是用于在生命周期中开始和结束session。</p>
-
-<p><strong>第一步</strong>，构造方法里从ServletContext获取一些路径信息：warRoot、warClassesDirectory、warLibDirectory、hotDeployDirectory。</p>
-
-<p><strong>第二步</strong>，扫描配置文件完成seam组件的初始化（Initialization的create方法）。
-其中包括：添加命名空间、初始化组件、初始化Properties、初始化jndi信息。这一步，其实主要是读取一些配置文件,加载seam组件。</p>
-
-<ol>
-<li>添加命名空间</li>
-<li>从/WEBINF/components. xml加载组件</li>
-<li>从/WEBINF/events. xml加载组件</li>
-<li>从METAINF/components. xml加载组件</li>
-<li>从ServletContext初始化Properties</li>
-<li>从/seam. properties初始化Properties</li>
-<li>初始化jndi Properties</li>
-<li>从system加载Properties</li>
-</ol>
-
-<p><strong>第三步</strong>，seam初始化过程（Initialization的init方法）。</p>
-
-<ol>
-<li>ServletLifecycle开始初始化</li>
-<li>设置Application上下文</li>
-<li>添加Init组件</li>
-<li>通过standardDeploymentStrategy的注解和xml组件扫描组件</li>
-<li>判断jbpm是否安装</li>
-<li>检查默认拦截器</li>
-<li>添加特别组件</li>
-<li>添加war root部署、热部署</li>
-<li>安装组件</li>
-<li>导入命名空间</li>
-<li>ServletLifecycle结束初始化。启动生命周期为APPLICATION的组件。</li>
-</ol>
-
-<p>如果组件标注为startup，则会构造其实例进行初始化。例如seam于Hibernate的集成，就可以通过此方法初始化Hibernate，对应的组件类为org. jboss. seam. persistence. HibernateSessionFactory。</p>
-
-		 
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/java/2012/02/23/the-process-of-seam-initiation"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <hr/>
 
@@ -791,6 +741,8 @@ AND column_metadata = [
        <div class="category">
          <ul>
            
+           <li><a href="/hadoop/2014/03/31/what-is-new-in-CDH4.5.0">CDH4.5.0 新特性</a></li>
+           
            <li><a href="/python/2014/03/18/simulate-weibo-login-in-python">Python模拟新浪微博登录</a></li>
            
            <li><a href="/search-engine/2014/03/15/schema-in-solr">Solr的schema.xml</a></li>
@@ -820,8 +772,6 @@ AND column_metadata = [
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
            
            <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在RHEL系统上安装Nagios</a></li>
-           
-           <li><a href="/linux/2014/01/22/all-things-opentsdb">All Things OpenTSDB</a></li>
            
          </ul>
        </div>

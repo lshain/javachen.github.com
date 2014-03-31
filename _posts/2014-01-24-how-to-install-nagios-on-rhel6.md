@@ -140,4 +140,15 @@ $ chown -R nagios. /etc/nagios
 $ service nagios restart
 ```
 
+# 其他资源
+
+nagios客户端：
+
+- [nagioschecker](https://code.google.com/p/nagioschecker/) Firefox extension made as the statusbar indicator of the events from the network monitoring system Nagios.
+- [nagstamon Nagios status monitor](http://sourceforge.net/projects/nagstamon/files/latest/download) Nagstamon is a Nagios status monitor which resides in systray or desktop (GNOME, KDE, Windows) as floating statusbar to inform you in realtime about the status of your hosts and services.
+- [Nagios Monitor for Android](https://code.google.com/p/nagmondroid/) NagMonDroid retrieves the current problems from your Nagios install and displays them. It has a variable update frequency and can be set to vibrate on new update.
+
+资料：
+
+- [CentOS下nagios报警飞信部署四步走](http://www.elain.org/?p=467)
 

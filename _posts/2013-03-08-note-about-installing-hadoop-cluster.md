@@ -7,6 +7,7 @@ keywords: hadoop, hdfs
 ---
 
 # 安装虚拟机
+
    VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份
 
 # 配置网络
@@ -65,13 +66,13 @@ e.每个虚拟机中修改hosts：
 
    d.设置环境变量
 
-   方便执行java命令及hadoop命令. 使用root登录，vi ~/.bash_profile 追加下列信息
+   方便执行java命令及hadoop命令. 使用root登录，`vi ~/.bash_profile`追加下列信息
 
 	export JAVA_HOME=/opt/jdk1.6.0_38
 	export HADOOP_INSTALL=/opt/hadoop-1.1.1
 	export PATH=$PATH:$HADOOP_INSTALL/bin:$JAVA_HOME/bin
 
-   e.修改hadoop脚本中`JAVA_HOME`：/opt/hadoop-1.1.1/conf/hadoop-env.sh
+   e.修改hadoop脚本中`JAVA_HOME`：`/opt/hadoop-1.1.1/conf/hadoop-env.sh`
 
    f.格式化namenode
 
