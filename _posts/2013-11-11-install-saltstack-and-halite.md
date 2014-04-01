@@ -11,13 +11,27 @@ tags: [saltstack,halite]
 
 首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。
 
-# 下载yum源
+
+# 配置yum源
+
+在每个节点上配置yum源：
 
 ```
 $ rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
 ```
 
+然后通过下面命令查看epel参考是否安装成功：
+
+```
+$ yum list #或者查看/etc/yum.repos.d目录下是否有epel.repo
+```
+
+如果没有安装成功，则可以手动下载`epel-release-6-8.noarch.rpm`，然后打开该rpm找到`./etc/yum.repos.d/epel.repo`，将其拷贝到`/etc/yum.repos.d`目录
+
+
 # 安装依赖
+
+因为我用jinja2作为saltstack的渲染引擎，故需要在每个节点上安装`python-jinja2`：
 
 ```
 $ yum install python-jinja2 -y
@@ -36,27 +50,29 @@ $ yum install salt-master
 ```
 $ yum install salt-minion
 ```
-<!-- more -->
 
 # 关闭防火墙
 
 ```
-iptables -F
-setenforce 0
+$ iptables -F
+$ setenforce 0
 ```
 
 # 修改配置文件
 
+修改master配置文件，使其监听`0.0.0.0`地址，并设置自动接受minion的请求。
 ```
-/etc/salt/master
-interface: 0.0.0.0
-auto_accept: True
+$ vim /etc/salt/master
+ interface: 0.0.0.0 #去掉对该行的注释
+ auto_accept: True #去掉对该行的注释,并修改False为True
 ```
 
+在所有的minion节点配置master的id和自己的id：
+
 ```
-/etc/salt/minion
-master: sk1
-id: sk2
+$ vim /etc/salt/minion
+ master: sk1
+ id: sk2
 ```
 
 # 启动
@@ -113,6 +129,33 @@ $ unzip develop
 $ cd salt-develop/
 $ python2.6 setup.py install
 ```
+
+如果你通过'cmd.run'命令去运行java命令，你会得到这样的结果：
+
+```
+[root@sk1 salt]# salt '*' cmd.run 'java' 
+sk2:
+    /bin/bash: java: command not found
+```
+
+这是因为minion在启动过程中并没有加载系统的环境变量，解决这个问题有两种方式：
+
+- 运行java命令前先`source`环境变量
+- 修改minion启动脚本，添加source命令：
+
+```
+# Source function library.
+if [ -f $DEBIAN_VERSION ]; then
+   break
+elif [ -f $SUSE_RELEASE -a -r /etc/rc.status ]; then
+    . /etc/rc.status
+else
+    . /etc/rc.d/init.d/functions
+    . ~/.bashrc
+    . /etc/profile
+fi
+```
+
 
 # salt minion和master的认证过程
 
