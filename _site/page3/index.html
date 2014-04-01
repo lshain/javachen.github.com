@@ -174,6 +174,17 @@
 
 
 <article>
+    <h2 class="entry-title under_line"><a href="/hadoop/2014/01/16/hbase-region-split-policy">HBase Region Split策略</a></h2>
+    
+      新生成hbase的一个表的时候，整个集群中就只有一个新表的region分区，随着存储的数据增多，一个region就会水平分割为大小相等的2个region，这一过程是由HRegion Server自动处理的，期间不需要HMaster Server的参与。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2014/01/16/hbase-region-split-policy"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
     <h2 class="entry-title under_line"><a href="/linux/2014/01/14/vim-config-and-plugins">vim配置和插件管理</a></h2>
     
       这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。
@@ -251,9 +262,9 @@
 </article>
 
 <article>
-    <h2 class="entry-title under_line"><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用saltstack安装jboss</a></h2>
+    <h2 class="entry-title under_line"><a href="/linux/2013/11/16/install-jboss-with-saltstack">使用SaltStack安装JBoss</a></h2>
     
-      使用saltstack安装jboss,Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
+      使用SaltStack安装jboss。SaltStack是一个具备puppet与func功能为一身的集中化管理平台，其基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
      
       <div class="status">
         <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/16/install-jboss-with-saltstack"><span class="readmore">more &raquo; </span></a>-->
@@ -268,17 +279,6 @@
      
       <div class="status">
         <!--<a class="btn btn-default btn-sm pull-left" href="/linux/2013/11/11/install-saltstack-and-halite"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/hadoop/2013/11/01/debug-hbase-in-eclipse">在eclipse中调试运行hbase</a></h2>
-    
-      这篇文章记录一下如何在eclipse中调试运行hbase。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/11/01/debug-hbase-in-eclipse"><span class="readmore">more &raquo; </span></a>-->
         <div class="clearfix"></div>
       </div>
 </article>
@@ -318,6 +318,8 @@
        <div class="category">
          <ul>
            
+           <li><a href="/linux/2014/04/01/install-jdk-with-saltstack">使用SaltStack安装JDK1.6</a></li>
+           
            <li><a href="/hadoop/2014/03/31/what-is-new-in-CDH4.5.0">CDH4.5.0 新特性</a></li>
            
            <li><a href="/python/2014/03/18/simulate-weibo-login-in-python">Python模拟新浪微博登录</a></li>
@@ -347,8 +349,6 @@
            <li><a href="/java/2014/02/16/backbone-model">Backbone中的模型</a></li>
            
            <li><a href="/linux/2014/01/25/how-to-install-ganglia-on-centos6">在CentOs6系统上安装Ganglia</a></li>
-           
-           <li><a href="/linux/2014/01/24/how-to-install-nagios-on-rhel6">在RHEL系统上安装Nagios</a></li>
            
          </ul>
        </div>

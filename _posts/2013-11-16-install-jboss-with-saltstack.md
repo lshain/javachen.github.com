@@ -1,16 +1,16 @@
 ---
 layout: post
-title: 使用saltstack安装jboss
-description: 使用saltstack安装jboss,Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
+title: 使用SaltStack安装JBoss
+description: 使用SaltStack安装jboss。SaltStack是一个具备puppet与func功能为一身的集中化管理平台，其基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
 category: linux
 tags: [saltstack,jboss]
 ---
 
 {% include JB/setup %}
 
-Saltstack是一个具备puppet与func功能为一身的集中化管理平台，saltstack基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
+SaltStack是一个具备puppet与func功能为一身的集中化管理平台，其基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
 
-在开始使用saltstack之前，首先要对Salt的基础进行一系列的学习，这里，我强烈推荐官网的[Tutorial](http://docs.saltstack.com/topics/tutorials/walkthrough.html),在完成了整个Tutorial之后，通过Module Index页面，我们能够快速查阅Salt所有模块的功能与用法:[http://docs.saltstack.com/py-modindex.html](http://docs.saltstack.com/py-modindex.html)
+在开始使用SaltStack之前，首先要对SaltStack的基础进行一系列的学习，这里，强烈推荐官网的[Tutorial](http://docs.saltstack.com/topics/tutorials/walkthrough.html),在完成了整个Tutorial之后，通过Module Index页面，我们能够快速查阅Salt所有模块的功能与用法:[http://docs.saltstack.com/py-modindex.html](http://docs.saltstack.com/py-modindex.html)
 
 # 安装saltstack
 
@@ -207,7 +207,7 @@ def Grains():
 
 然后，同步grains模块：
 
-```shell
+```bash
 $ salt '*' saltutil.sync_all
 sk2:
     ----------

@@ -18,6 +18,7 @@ http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
 
+http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack
 http://blog.javachen.com/hadoop/2014/03/31/what-is-new-in-CDH4.5.0
 http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python
 http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr

@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>使用SaltStack安装JDK1.6 - JavaChen Blog</title>
+    <meta name="description" content="使用SaltStack安装JDK1.6"/>
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen"/>
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack" />
+    <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+          
+          
+
+
+  
+    
+      
+      	
+			
+				<li><a href="/tags.html">Tags</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+			
+				<li><a href="/categories.html">Categories</a></li>
+			
+      	
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/archive.html">Archive</a></li>
+			
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+			
+				<li><a href="/about.html">About</a></li>
+			
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+      </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="content">
+        
+<div class="row">
+
+  <div class="col-md-12">
+    <article class="page-header-wrapper">
+      <header class="page-header">
+        <h1 class="entry-title">使用SaltStack安装JDK1.6 </h1>
+      </header>
+	<div class="entry-content">
+	<h1>创建states文件</h1>
+
+<p>在<code>/srv/salt</code>目录下创建jdk目录，并在jdk目录创建init.sls文件，init.sls文件内容如下：</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">jdk</span><span class="o">-</span><span class="nb">file</span><span class="p">:</span>
+ <span class="nb">file</span><span class="o">.</span><span class="n">managed</span><span class="p">:</span>
+   <span class="o">-</span> <span class="n">source</span><span class="p">:</span> <span class="n">salt</span><span class="p">:</span><span class="o">//</span><span class="n">jdk</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">jdk1</span><span class="o">.</span><span class="mf">6.0</span><span class="n">_39</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">jdk1</span><span class="o">.</span><span class="mf">6.0</span><span class="n">_39</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+   <span class="o">-</span> <span class="n">include_empty</span><span class="p">:</span> <span class="bp">True</span>
+
+<span class="n">jdk</span><span class="o">-</span><span class="n">install</span><span class="p">:</span>
+ <span class="n">cmd</span><span class="o">.</span><span class="n">run</span><span class="p">:</span>
+   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s">&#39;/bin/tar -zxf jdk1.6.0_39.tar.gz &amp;&amp; /bin/ln -s jdk1.6.0_39  latest &#39;</span>
+   <span class="o">-</span> <span class="n">cwd</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span>
+   <span class="o">-</span> <span class="n">unless</span><span class="p">:</span> <span class="s">&#39;test -e jdk1.6.0_39&#39;</span>
+   <span class="o">-</span> <span class="n">require</span><span class="p">:</span>
+     <span class="o">-</span> <span class="nb">file</span><span class="p">:</span> <span class="n">jdk</span><span class="o">-</span><span class="nb">file</span>
+
+<span class="n">jdk</span><span class="o">-</span><span class="n">rmzip</span><span class="p">:</span>
+  <span class="nb">file</span><span class="o">.</span><span class="n">absent</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">jdk1</span><span class="o">.</span><span class="mf">6.0</span><span class="n">_39</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+
+<span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">bashrc</span><span class="p">:</span>
+  <span class="nb">file</span><span class="o">.</span><span class="n">append</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">text</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">export</span> <span class="n">JAVA_HOME</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">latest</span>
+      <span class="o">-</span> <span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="err">$</span><span class="n">JAVA_HOME</span><span class="o">/</span><span class="nb">bin</span><span class="p">:</span><span class="err">$</span><span class="n">PATH</span>
+</code></pre></div>
+<p>上面sls文件需要引用<code>jdk1.6.0_39.tar.gz</code>文件，故需要下载jdk1.6.0_39.bin安装之后将其打包成<code>jdk1.6.0_39.tar.gz</code>拷贝到<code>/srv/salt/jdk/files</code>目录。</p>
+
+<p>init.sls文件执行过程包括以下几个步骤：</p>
+
+<ul>
+<li>jdk-file，将<code>salt://jdk/files/jdk1.6.0_39.tar.gz</code>文件拷贝到<code>/usr/java</code></li>
+<li>jdk-install，解压文件</li>
+<li>jdk-rmzip，删除压缩包</li>
+<li>/root/.bashrc，设置JAVA_HOME</li>
+</ul>
+
+<p>修改top.sls文件（该步骤为可选），添加jdk.init:</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">base</span><span class="p">:</span>
+  <span class="s">&#39;*&#39;</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">jdk</span><span class="o">.</span><span class="n">init</span>
+</code></pre></div>
+<h1>测试运行</h1>
+
+<p>在master上运行下面命令，并观察运行结果：</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="o">[</span>root@sk1 vagrant<span class="o">]</span><span class="c"># salt &#39;*&#39; state.sls jdk</span>
+sk2:
+----------
+          ID: jdk-file
+    Function: file.managed
+        Name: /usr/java/jdk1.6.0_39.tar.gz
+      Result: True
+     Comment: File /usr/java/jdk1.6.0_39.tar.gz updated
+     Changes:  
+              ----------
+              diff:
+                  New file
+              mode:
+                  0644
+----------
+          ID: jdk-install
+    Function: cmd.run
+        Name: /bin/tar -zxf jdk1.6.0_39.tar.gz <span class="o">&amp;&amp;</span> /bin/ln -s jdk1.6.0_39  latest
+      Result: True
+     Comment: unless execution succeeded
+     Changes:  
+----------
+          ID: jdk-rmzip
+    Function: file.absent
+        Name: /usr/java/jdk1.6.0_39.tar.gz
+      Result: True
+     Comment: Removed file /usr/java/jdk1.6.0_39.tar.gz
+     Changes:  
+              ----------
+              removed:
+                  /usr/java/jdk1.6.0_39.tar.gz
+----------
+          ID: /root/.bashrc
+    Function: file.append
+      Result: True
+     Comment: Appended 0 lines
+     Changes:  
+Summary
+------------
+Succeeded: 4
+Failed:    0
+------------
+Total:     4
+</code></pre></div>
+<p>从上可以看出成功了4个，失败为0。</p>
+
+<p>安装了jdk之后，需要重启minion(还需要修改minion启动脚本，让minion加载上系统环境变量)才能通过下面脚本运行java相关的命令，如java、jps等等：</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">salt</span> <span class="s">&#39;*&#39;</span> <span class="n">cmd</span><span class="o">.</span><span class="n">run</span> <span class="s">&#39;jps&#39;</span>
+</code></pre></div>
+<p>否则，你需要通过下面脚本来执行：</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">salt</span> <span class="s">&#39;*&#39;</span> <span class="n">cmd</span><span class="o">.</span><span class="n">run</span> <span class="s">&#39;source /root/.bashrc ;jps&#39;</span>
+</code></pre></div>
+<h1>设置pillar</h1>
+
+<p>将上面的<code>jdk/init.sls</code>文件修改为通过pillar引用变量</p>
+
+<p>a.首先在<code>/srv/pillar</code>目录创建jdk目录，并在jdk目录下创建init.sls文件，内容如下：</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">jdk</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">jdk1</span><span class="o">.</span><span class="mf">6.0</span><span class="n">_39</span>
+  <span class="n">srvpath</span><span class="p">:</span> <span class="n">salt</span><span class="p">:</span><span class="o">//</span><span class="n">jdk</span><span class="o">/</span><span class="n">files</span> 
+  <span class="n">homepath</span><span class="p">:</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span>
+</code></pre></div>
+<p>b.在<code>/srv/pillar/top.sls</code>中添加jdk.init</p>
+<div class="highlight"><pre><code class="python language-python" data-lang="python"><span class="n">base</span><span class="p">:</span>
+  <span class="s">&#39;*&#39;</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">jdk</span><span class="o">.</span><span class="n">init</span>
+</code></pre></div>
+<p>c.修改<code>/srv/salt/jdk/init.sls</code>文件为从pillar引入变量，内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">jdk-file:
+  file.managed:
+    - source: {{pillar[&#39;jdk&#39;][&#39;srvpath&#39;]}}/{{pillar[&#39;jdk&#39;][&#39;name&#39;]}}.tar.gz
+    - name: {{pillar[&#39;jdk&#39;][&#39;homepath&#39;]}}/{{pillar[&#39;jdk&#39;][&#39;name&#39;]}}.tar.gz
+    - makedirs: True
+
+jdk-install:
+  cmd.run:
+    - name: &#39;unzip -q {{pillar[&#39;jdk&#39;][&#39;name&#39;]}}.tar.gz&#39;
+    - cwd: {{pillar[&#39;jdk&#39;][&#39;homepath&#39;]}}
+    - unless: &#39;test -e {{pillar[&#39;jdk&#39;][&#39;name&#39;]}}&#39;
+    - require:
+      - file: jdk-file
+jdk-rmzip:
+  file.absent:
+    - name: {{pillar[&#39;jdk&#39;][&#39;homepath&#39;]}}/{{pillar[&#39;jdk&#39;][&#39;name&#39;]}}.tar.gz
+{{pillar[&#39;userhome&#39;]}}/.bashrc:
+  file.append:
+    - text:
+      - export JAVA_HOME={{pillar[&#39;jdk&#39;][&#39;homepath&#39;]}}/{{pillar[&#39;jdk&#39;][&#39;name&#39;]}}
+      - export PATH=$JAVA_HOME/bin:$PATH
+</code></pre></div>
+<p>d.参考上面，再次测试一遍</p>
+
+
+	-EOF-
+	</div>
+    </article>
+    <hr>
+    <div class="row status">
+      <div class="col-md-6">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/hadoop/2014/03/31/what-is-new-in-CDH4.5.0" title="CDH4.5.0 新特性">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-6 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="使用SaltStack安装JDK1.6 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+
+</div>
+
+
+      </div>
+
+      <footer class="text-left">
+        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+</p>
+      </footer>
+            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    
+
+
+  <script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+
+
+  </body>
+</html>
+

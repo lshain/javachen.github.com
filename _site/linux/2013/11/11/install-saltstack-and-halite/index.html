@@ -175,10 +175,19 @@
 
 <p>首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。</p>
 
-<h1>下载yum源</h1>
+<h1>配置yum源</h1>
+
+<p>在每个节点上配置yum源：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ rpm -ivh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
 </code></pre></div>
+<p>然后通过下面命令查看epel参考是否安装成功：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum list #或者查看/etc/yum.repos.d目录下是否有epel.repo
+</code></pre></div>
+<p>如果没有安装成功，则可以手动下载<code>epel-release-6-8.noarch.rpm</code>，然后打开该rpm找到<code>./etc/yum.repos.d/epel.repo</code>，将其拷贝到<code>/etc/yum.repos.d</code>目录</p>
+
 <h1>安装依赖</h1>
+
+<p>因为我用jinja2作为saltstack的渲染引擎，故需要在每个节点上安装<code>python-jinja2</code>：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install python-jinja2 -y
 </code></pre></div>
 <h1>安装saltstack</h1>
@@ -189,19 +198,23 @@
 <p>在sk1上安装minion：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install salt-minion
 </code></pre></div>
-<!-- more -->
-
 <h1>关闭防火墙</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -F
-setenforce 0
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ iptables -F
+$ setenforce 0
 </code></pre></div>
 <h1>修改配置文件</h1>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/salt/master
-interface: 0.0.0.0
-auto_accept: True
-</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/salt/minion
-master: sk1
-id: sk2
+
+<p>修改master配置文件，使其监听<code>0.0.0.0</code>地址，并设置自动接受minion的请求。
+<code>
+$ vim /etc/salt/master
+ interface: 0.0.0.0 #去掉对该行的注释
+ auto_accept: True #去掉对该行的注释,并修改False为True
+</code></p>
+
+<p>在所有的minion节点配置master的id和自己的id：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ vim /etc/salt/minion
+ master: sk1
+ id: sk2
 </code></pre></div>
 <h1>启动</h1>
 
@@ -239,6 +252,28 @@ AttributeError: &#39;pwd.struct_passwd&#39; object has no attribute &#39;gid&#39
 $ unzip develop
 $ cd salt-develop/
 $ python2.6 setup.py install
+</code></pre></div>
+<p>如果你通过&#39;cmd.run&#39;命令去运行java命令，你会得到这样的结果：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[root@sk1 salt]# salt &#39;*&#39; cmd.run &#39;java&#39; 
+sk2:
+    /bin/bash: java: command not found
+</code></pre></div>
+<p>这是因为minion在启动过程中并没有加载系统的环境变量，解决这个问题有两种方式：</p>
+
+<ul>
+<li>运行java命令前先<code>source</code>环境变量</li>
+<li>修改minion启动脚本，添加source命令：</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Source function library.
+if [ -f $DEBIAN_VERSION ]; then
+   break
+elif [ -f $SUSE_RELEASE -a -r /etc/rc.status ]; then
+    . /etc/rc.status
+else
+    . /etc/rc.d/init.d/functions
+    . ~/.bashrc
+    . /etc/profile
+fi
 </code></pre></div>
 <h1>salt minion和master的认证过程</h1>
 
@@ -328,7 +363,7 @@ $ python2.6 server_bottle.py -d -C -l debug -s cherrypy
           
             <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
           
-            <a class="btn btn-default btn-sm" href="/linux/2013/11/16/install-jboss-with-saltstack" title="使用saltstack安装jboss">Next &raquo;</a>
+            <a class="btn btn-default btn-sm" href="/linux/2013/11/16/install-jboss-with-saltstack" title="使用SaltStack安装JBoss">Next &raquo;</a>
           
         </div>
       </div>
