@@ -3,55 +3,55 @@ layout: post
 title: 手动安装Cloudera Hadoop CDH
 description: 手动安装Cloudera Hadoop CDH
 category: hadoop
-tags: [hadoop, cdh]
-keywords: hadoop, cdh, cloudera manager
+tags: [hadoop,cdh, yarn,mapreduce]
 ---
 
 # 安装版本
 
+hadoop各个组件和jdk版本如下：
+
 ```
-	hadoop-2.0.0-cdh4.2.0
-	hbase-0.94.2-cdh4.2.0
-	hive-0.10.0-cdh4.2.0
+	hadoop-2.0.0-cdh4.6.0
+	hbase-0.94.15-cdh4.6.0
+	hive-0.10.0-cdh4.6.0
 	jdk1.6.0_38
 ```
 
+hadoop各组件可以在[这里](http://archive.cloudera.com/cdh4/cdh/4/)下载。
+
 # 安装前说明
 
-* 安装目录为/opt
-* 检查hosts文件
-* 关闭防火墙
-* 设置时钟同步
-
-# 使用说明
-
-安装hadoop、hbase、hive成功之后启动方式为：
-
-* 启动dfs和mapreduce: desktop1上执行`start-dfs.sh`和`start-yarn.sh`
-* 启动hbase: desktop3上执行`start-hbase.xml`
-* 启动hive: desktop1上执行hive
+* 确定安装目录为/opt
+* 检查hosts文件是否设置集群各节点的hostname和ip映射
+* 关闭每个节点的防火墙
+* 设置每个节点时钟同步
 
 # 规划
 
+集群规划为7个节点，每个节点的ip、主机名和部署的组件分配如下：
+
 ```
-	192.168.0.1             NameNode、Hive、ResourceManager
-	192.168.0.2             SSNameNode
-	192.168.0.3             DataNode、HBase、NodeManager
-	192.168.0.4             DataNode、HBase、NodeManager
-	192.168.0.6             DataNode、HBase、NodeManager
-	192.168.0.7             DataNode、HBase、NodeManager
-	192.168.0.8             DataNode、HBase、NodeManager
+	192.168.0.1        desktop1     NameNode、Hive、ResourceManager、impala
+	192.168.0.2        desktop2     SSNameNode
+	192.168.0.3        desktop3     DataNode、HBase、NodeManager、impala
+	192.168.0.4        desktop4     DataNode、HBase、NodeManager、impala
+	192.168.0.5        desktop5     DataNode、HBase、NodeManager、impala
+	192.168.0.6        desktop6     DataNode、HBase、NodeManager、impala
+	192.168.0.7        desktop7     DataNode、HBase、NodeManager、impala
 ```
 
 # 部署过程
 ## 系统和网络配置
-1. 修改每台机器的名称
+
+1. 修改每个节点的主机名称
+
+	例如在desktop1节点上做如下修改：
 
 	[root@desktop1 ~]# cat /etc/sysconfig/network
 	NETWORKING=yes
 	HOSTNAME=desktop1
 
-2. 在各个节点上修改/etc/hosts增加以下内容:
+2. 在每个节点上修改`/etc/hosts`增加以下内容:
 
 ```
 	[root@desktop1 ~]# cat /etc/hosts
@@ -61,10 +61,12 @@ keywords: hadoop, cdh, cloudera manager
 	192.168.0.2		desktop2
 	192.168.0.3		desktop3
 	192.168.0.4		desktop4
+	192.168.0.5		desktop5
 	192.168.0.6		desktop6
 	192.168.0.7		desktop7
-	192.168.0.8		desktop8
 ```
+
+修改一台机器之后，可以使用scp同步到其他机器。
 
 3. 配置ssh无密码登陆
 
@@ -75,15 +77,21 @@ keywords: hadoop, cdh, cloudera manager
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop2
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop3
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop4
+	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop5
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop6
 	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop7
-	[root@desktop1 ~]# ssh-copy-id -i .ssh/id_rsa.pub desktop8
 ```
 
 4. 每台机器上关闭防火墙：
 
 ```
 	[root@desktop1 ~]# service iptables stop
+	[root@desktop1 ~]# ssh desktop2 'service iptables stop'
+	[root@desktop1 ~]# ssh desktop3 'service iptables stop'
+	[root@desktop1 ~]# ssh desktop4 'service iptables stop'
+	[root@desktop1 ~]# ssh desktop5 'service iptables stop'
+	[root@desktop1 ~]# ssh desktop6 'service iptables stop'
+	[root@desktop1 ~]# ssh desktop7 'service iptables stop'
 ```
 
 # 安装Hadoop
@@ -93,26 +101,25 @@ keywords: hadoop, cdh, cloudera manager
 
 将hadoop-2.0.0-cdh4.2.0.zip上传到/opt，并解压缩。
 
-在NameNode上配置以下文件：
+**在NameNode上需要修改以下文件**：
 
-```
-	core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
-	hdfs-site.xml 
-		dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
-		dfs.datanode.data.dir指定DataNode存储blocks的目录，
-		dfs.namenode.secondary.http-address指定Secondary NameNode地址。
-		开启WebHDFS。
-	slaves 添加DataNode节点主机
-```
+-	core-site.xml fs.defaultFS指定NameNode文件系统，开启回收站功能。
+-	hdfs-site.xml 
+ - 		dfs.namenode.name.dir指定NameNode存储meta和editlog的目录，
+ -		dfs.datanode.data.dir指定DataNode存储blocks的目录，
+ -	 	dfs.namenode.secondary.http-address指定Secondary NameNode地址。
+ -		开启WebHDFS。
+-	slaves 添加DataNode节点主机
+
+**注意**：在desktop1节点上修改如下几个文件的内容：
 
 1. core-site.xml
 
-该文件指定fs.defaultFS连接desktop1，即NameNode节点。
+在该文件中修改fs.defaultFS指向desktop1节点，即配置desktop1为NameNode节点。
 
-```
-[root@desktop1 hadoop]# pwd
-/opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop
-[root@desktop1 hadoop]# cat core-site.xml 
+修改后的core-site.xml(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/core-site.xml`)目录如下：
+
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -134,10 +141,12 @@ keywords: hadoop, cdh, cloudera manager
 ```
 
 2. hdfs-site.xml
-该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径以及http-address。
+
+该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径(`/opt/data/hadoop-${user.name}`)以及http-address。
+
+修改后的hdfs-site.xml(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/hdfs-site.xml`)文件内容如下：
 
 ```
-[root@desktop1 hadoop]# cat hdfs-site.xml 
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -165,33 +174,53 @@ keywords: hadoop, cdh, cloudera manager
 ```
 
 3. masters
+
 设置namenode和secondary namenode节点。
 
+修改后的masters(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/masters`)文件内容如下：
+
 ```
-[root@desktop1 hadoop]# cat masters 
 desktop1
 desktop2
 ```
 
+第一行为namenode，第二行为secondary namenode。
+
 4. slaves
+
 设置哪些机器上安装datanode节点。
+修改后的slaves(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/slaves`)文件内容如下：
 
 ```
-[root@desktop1 hadoop]# cat slaves 
 desktop3
 desktop4
+desktop5
 desktop6
 desktop7
-desktop8
+```
+
+接下来将上面几个文件同步到其他各个节点：
+
+```
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop2:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop3:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop4:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop5:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop6:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop7:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
 ```
 
 ## 配置MapReduce
+
+接下来还是在desktop1节点上修改以下几个文件：
+
 1. mapred-site.xml
 
 配置使用yarn计算框架，以及jobhistory的地址。
 
+修改后的mapred-site.xml(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/mapred-site.xml`)文件内容如下：
+
 ```
-[root@desktop1 hadoop]# cat mapred-site.xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -214,8 +243,9 @@ desktop8
 
 主要配置resourcemanager地址以及`yarn.application.classpath`（这个路径很重要，要不然集成hive时候会提示找不到class）
 
+修改后的yarn-site.xml(`/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/yarn-site.xml`)文件内容如下：
+
 ```
-[root@desktop1 hadoop]# cat yarn-site.xml 
 <?xml version="1.0"?>
 <configuration>
 <property>
@@ -275,8 +305,20 @@ desktop8
 </configuration>
 ```
 
-## 同步配置文件
-修改.bashrc环境变量，并将其同步到其他几台机器，并且source .bashrc
+同样地，将上面2个文件同步到其他各个节点：
+
+```
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop2:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop3:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop4:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop5:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop6:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+	[root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop7:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
+```
+
+## 修改环境变量
+
+修改`/root/.bashrc`环境变量，并将其同步到其他几台机器
 
 ```
 [root@desktop1 ~] # cat .bashrc 
@@ -313,11 +355,34 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 [root@desktop1 ~]# source .bashrc 
 ```
 
-将desktop1上的/opt/hadoop-2.0.0-cdh4.2.0拷贝到其他机器上
+将该文件同步到其他各个节点：
+
+```
+	[root@desktop1 ~]# scp /root/.bashrc desktop2:/root
+	[root@desktop1 ~]# scp /root/.bashrc desktop3:/root
+	[root@desktop1 ~]# scp /root/.bashrc desktop4:/root
+	[root@desktop1 ~]# scp /root/.bashrc desktop5:/root
+	[root@desktop1 ~]# scp /root/.bashrc desktop6:/root
+	[root@desktop1 ~]# scp /root/.bashrc desktop7:/root
+```
+
+并且使各个节点的环境变量生效：
+
+```
+	[root@desktop1 ~]# ssh desktop2 'source .bashrc'
+	[root@desktop1 ~]# ssh desktop3 'source .bashrc'
+	[root@desktop1 ~]# ssh desktop4 'source .bashrc'
+	[root@desktop1 ~]# ssh desktop5 'source .bashrc'
+	[root@desktop1 ~]# ssh desktop6 'source .bashrc'
+	[root@desktop1 ~]# ssh desktop7 'source .bashrc'
+```
+
 
 ## 启动脚本
 
 第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化
+
+在desktop1上格式化：
 
 ```
 [root@desktop1 hadoop]hadoop namenode -format

@@ -176,7 +176,7 @@
 <article>
     <h2 class="entry-title under_line"><a href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH">手动安装Cloudera HBase CDH</a></h2>
     
-      本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
+      本文主要记录手动安装Cloudera HBase集群过程，环境设置及Hadoop安装过程见上篇文章。
      
       <div class="status">
         <!--<a class="btn btn-default btn-sm pull-left" href="/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH"><span class="readmore">more &raquo; </span></a>-->
@@ -201,7 +201,7 @@
 		
 		  <h1>安装虚拟机</h1>
 
-<p>VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份</p>
+<p>使用VirtualBox安装rhel6.3，存储为30G，内存为1G，并使用复制克隆出两个新的虚拟机，这样就存在3台虚拟机，设置三台虚拟机的主机名称，如：rhel-june、rhel-june-1、rhel-june-2</p>
 
 <h1>配置网络</h1>
 
@@ -241,15 +241,22 @@ DataNode:192.168.56.102
 </code></pre></div>
 <h1>安装过程</h1>
 
-<p>a.解压缩到/opt</p>
+<p>a.将hadoop压缩包解压缩到/opt目录</p>
 
-<p>b.设置配置文件：</p>
+<p>b.修改以下配置文件：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">core-site.xml
 hdfs-site.sml
 mapred-site.xml
 </code></pre></div>
-<p>c.设置master、slaves</p>
+<p>c.设置master、slaves文件</p>
 
+<p>master中内容为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.56.100
+</code></pre></div>
+<p>slaves中内容为：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.56.101
+    192.168.56.102
+</code></pre></div>
 <p>d.设置环境变量</p>
 
 <p>方便执行java命令及hadoop命令. 使用root登录，<code>vi ~/.bash_profile</code>追加下列信息</p>

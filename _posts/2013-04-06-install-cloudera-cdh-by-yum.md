@@ -3,11 +3,18 @@ layout: post
 title:  从yum安装Cloudera CDH集群
 description: 记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
 category: hadoop
-tags: [hadoop, impala, cloudera]
-keywords: yum, cdh, hadoop, hbase, hive, zookeeper, cloudera
+tags: [hadoop, impala]
 ---
 
 记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。
+
+集群规划为3个节点，每个节点的ip、主机名和部署的组件分配如下：
+
+```
+	192.168.0.1        node1     NameNode、Hive、ResourceManager
+	192.168.0.2        node2     SSNameNode
+	192.168.0.3        node3     DataNode、HBase、NodeManager
+```
 
 # 0.环境准备
 
@@ -74,6 +81,7 @@ $ /etc/init.d/ntpd start
 
 
 # 1. 安装jdk
+
 检查jdk版本
 	
 	java -version
@@ -122,9 +130,13 @@ $ /etc/init.d/ntpd start
 	Defaults env_keep+=JAVA_HOME
 
 # 2. 设置yum源
-从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/4.2.0/cdh4.2.0-centos6.tar.gz) 下载压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
+
+从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/) 下载一个CDH版本的压缩包解压并设置本地或ftp yum源，可以参考[Creating a Local Yum Repository](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html)
+
+**注意**：本文中使用的是CDH4.6的yum源。
 
 # 3. 安装HDFS
+
 ## 在NameNode节点yum安装
 
 ```
@@ -148,6 +160,7 @@ $ /etc/init.d/ntpd start
 ```
 
 # 4. 配置hadoop
+
 ## 自定义hadoop配置文件
 
 ```
@@ -240,9 +253,11 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 >To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.
 
 ## 配置NameNode HA
+
 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
 
 ## 配置Secondary NameNode
+
 在hdfs-site.xml中可以配置以下参数：
 
 	dfs.namenode.checkpoint.check.period
@@ -252,40 +267,44 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	dfs.namenode.num.checkpoints.retained
 
 ## 多个secondarynamenode的配置
+
 设置多个secondarynamenode，请参考[multi-host-secondarynamenode-configuration](http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/).
 
 ## 文件路径配置清单
+
 在hadoop中默认的文件路径以及权限要求如下：
 
 ```
-	目录							所有者		权限		默认路径
-	hadoop.tmp.dir					hdfs:hdfs	drwx------	/var/hadoop
+	目录									所有者		权限		默认路径
+	hadoop.tmp.dir						hdfs:hdfs	drwx------	/var/hadoop
 	dfs.namenode.name.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/name
 	dfs.datanode.data.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/data
 	dfs.namenode.checkpoint.dir			hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/namesecondary
 	yarn.nodemanager.local-dirs			yarn:yarn	drwxr-xr-x	${hadoop.tmp.dir}/nm-local-dir
 	yarn.nodemanager.log-dirs			yarn:yarn	drwxr-xr-x	${yarn.log.dir}/userlogs
-	yarn.nodemanager.remote-app-log-dir						/tmp/logs
+	yarn.nodemanager.remote-app-log-dir							/tmp/logs
 ```
 
 我的配置如下:
 
 ```
-	hadoop.tmp.dir					/opt/data/hadoop
-	dfs.namenode.name.dir				${hadoop.tmp.dir}/dfs/name
-	dfs.datanode.data.dir				${hadoop.tmp.dir}/dfs/data
-	dfs.namenode.checkpoint.dir			${hadoop.tmp.dir}/dfs/namesecondary
-	yarn.nodemanager.local-dirs			/opt/data/yarn/local
-	yarn.nodemanager.log-dirs			/var/log/hadoop-yarn/logs
+	hadoop.tmp.dir								/opt/data/hadoop
+	dfs.namenode.name.dir						${hadoop.tmp.dir}/dfs/name
+	dfs.datanode.data.dir						${hadoop.tmp.dir}/dfs/data
+	dfs.namenode.checkpoint.dir					${hadoop.tmp.dir}/dfs/namesecondary
+	yarn.nodemanager.local-dirs					/opt/data/yarn/local
+	yarn.nodemanager.log-dirs					/var/log/hadoop-yarn/logs
 	yarn.nodemanager.remote-app-log-dir 		/var/log/hadoop-yarn/app
 ```
 
 在hadoop中`dfs.permissions.superusergroup`默认为hdfs，我的`hdfs-site.xml`配置文件将其修改为了hadoop。
 
 ## 配置CDH4组件端口
+
 请参考[Configuring Ports for CDH4](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html)
 
 ## 创建数据目录
+
 在namenode节点创建name目录
 
 	mkdir -p /opt/data/hadoop/dfs/name
@@ -312,7 +331,8 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 ## 同步配置文件到整个集群
 
-	sudo scp -r /etc/hadoop/conf root@nodeX:/etc/hadoop/conf
+	sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
+	sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
 
 ## 格式化NameNode
 
@@ -330,10 +350,12 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 
 ## 验证测试
+
 * 打开浏览器访问：http://node1:50070 
 
 
 # 5. 安装YARN
+
 先在一台机器上配置好，然后在做同步。
 
 修改mapred-site.xml文件:
@@ -448,6 +470,10 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	</property>
 	</configuration>
 ```
+## 同步配置文件到整个集群
+
+	sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
+	sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
 
 ## HDFS创建临时目录
 
@@ -487,6 +513,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 
 ## 验证
+
 * 打开浏览器：http://node1:8088/
 * 运行测试程序
 
@@ -515,6 +542,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	sudo chkconfig hadoop-httpfs on
 
 # 6. 安装Zookeeper
+
 安装zookeeper
 
 	yum install zookeeper*
@@ -567,6 +595,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 
 
 ## 修改配置文件并同步到其他机器：
+
 修改hbase-site.xml文件：
 
 ```xml
@@ -644,7 +673,8 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 	sudo yum install hive*
 
 ## 安装postgresql
-手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH4.2](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2/)
+
+手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/)
 
 yum方式安装：
 
@@ -822,14 +852,14 @@ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ```
 	ADD JAR /usr/lib/hive/lib/zookeeper.jar;
 	ADD JAR /usr/lib/hive/lib/hbase.jar;
-	ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.2.0.jar
+	ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.6.0.jar
 	ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
 # 9. 其他
 ## 安装Snappy
 
-cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。
+cdh的rpm中默认已经包含了snappy，可以再不用安装。
 
 在每个节点安装Snappy
 
@@ -841,7 +871,7 @@ cdh4.3 rpm中默认已经包含了snappy，可以再不用安装。
 
 ## 安装LZO
 
-cdh4.3 rpm中默认不包含了lzo，需要自己额外安装。
+cdh的rpm中默认不包含了lzo，需要自己额外安装。
 
 在每个节点安装：
 

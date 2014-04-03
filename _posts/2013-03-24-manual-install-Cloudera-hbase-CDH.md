@@ -1,20 +1,42 @@
 ---
 layout: post
 title: 手动安装Cloudera HBase CDH
-description: 本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
+description: 本文主要记录手动安装Cloudera HBase集群过程，环境设置及Hadoop安装过程见上篇文章。
 category: Hadoop
 tags: [hbase, cdh]
 keywords: hbase, cdh, cloudera manager
 ---
 
-本文主要记录手动安装cloudera HBase cdh4.2.0集群过程，环境设置及Hadoop安装过程见上篇文章。
+本文主要记录手动安装Cloudera HBase集群过程，环境设置及Hadoop安装过程见[手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
+
+```
+	hadoop-2.0.0-cdh4.6.0
+	hbase-0.94.15-cdh4.6.0
+	hive-0.10.0-cdh4.6.0
+	jdk1.6.0_38
+```
+
+hadoop各组件可以在[这里](http://archive.cloudera.com/cdh4/cdh/4/)下载。
+
+集群规划为7个节点，每个节点的ip、主机名和部署的组件分配如下：
+
+```
+	192.168.0.1        desktop1     NameNode、Hive、ResourceManager、impala
+	192.168.0.2        desktop2     SSNameNode
+	192.168.0.3        desktop3     DataNode、HBase、NodeManager、impala
+	192.168.0.4        desktop4     DataNode、HBase、NodeManager、impala
+	192.168.0.5        desktop5     DataNode、HBase、NodeManager、impala
+	192.168.0.6        desktop6     DataNode、HBase、NodeManager、impala
+	192.168.0.7        desktop7     DataNode、HBase、NodeManager、impala
+```
 
 # 安装HBase
-HBase安装在desktop3、desktop4、desktop6、desktop7、desktop8机器上。
 
-上传hbase-0.94.2-cdh4.2.0.zip到desktop3上的/opt目录，先在desktop3上修改好配置文件，在同步到其他机器上。
+HBase安装在desktop3、desktop4、desktop5、desktop6、desktop7节点上。
 
-hbase-site.xml内容如下：
+上传hbase压缩包(hbase-0.94.15-cdh4.6.0.tar.gz)到desktop3上的/opt目录，先在desktop3上修改好配置文件，在同步到其他机器上。
+
+`hbase-site.xml`内容修改如下：
 
 ```xml
 	<configuration>
@@ -37,23 +59,33 @@ hbase-site.xml内容如下：
 	</configuration>
 ```
 
-regionservers内容如下：
+regionservers内容修改如下：
 
 ```
 	desktop3
 	desktop4
+	desktop5
 	desktop6
 	desktop7
-	desktop8
+```
+
+接下来将上面几个文件同步到其他各个节点（desktop4、desktop5、desktop6、desktop7）：
+
+```
+	[root@desktop3 ~]# scp /opt/hbase-0.94.15-cdh4.6.0/conf/ desktop4:/opt/hbase-0.94.15-cdh4.6.0/conf/
+	[root@desktop3 ~]# scp /opt/hbase-0.94.15-cdh4.6.0/conf/ desktop5:/opt/hbase-0.94.15-cdh4.6.0/conf/
+	[root@desktop3 ~]# scp /opt/hbase-0.94.15-cdh4.6.0/conf/ desktop6:/opt/hbase-0.94.15-cdh4.6.0/conf/
+	[root@desktop3 ~]# scp /opt/hbase-0.94.15-cdh4.6.0/conf/ desktop7:/opt/hbase-0.94.15-cdh4.6.0/conf/
 ```
 
 # 环境变量
 
-参考hadoop中环境变量的设置
-
-然后，同步文件到其他4台机器上，可以在desktop3上配置无密码登陆到其他机器，然后在desktop3上启动hbase，这样其他节点上hbase都可以启动，否则，需要每台机器上单独启动hbase
+参考[手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH)中环境变量的设置。
 
 # 启动脚本
 
-	#start-hbase.sh 
+在desktop3、desktop4、desktop5、desktop6、desktop7节点上分别启动hbase：
 
+```
+	start-hbase.sh 
+```

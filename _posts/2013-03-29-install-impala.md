@@ -8,6 +8,29 @@ keywords: impala
 
 与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如：那些批量提取，转化，加载（ETL）类型的Job，而Impala主要用于实时查询。
 
+Hadoop集群各节点的环境设置及安装过程见[手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
+
+```
+	hadoop-2.0.0-cdh4.6.0
+	hbase-0.94.15-cdh4.6.0
+	hive-0.10.0-cdh4.6.0
+	jdk1.6.0_38
+```
+
+hadoop各组件可以在[这里](http://archive.cloudera.com/cdh4/cdh/4/)下载。
+
+集群规划为7个节点，每个节点的ip、主机名和部署的组件分配如下：
+
+```
+	192.168.0.1        desktop1     NameNode、Hive、ResourceManager、impala
+	192.168.0.2        desktop2     SSNameNode
+	192.168.0.3        desktop3     DataNode、HBase、NodeManager、impala
+	192.168.0.4        desktop4     DataNode、HBase、NodeManager、impala
+	192.168.0.5        desktop5     DataNode、HBase、NodeManager、impala
+	192.168.0.6        desktop6     DataNode、HBase、NodeManager、impala
+	192.168.0.7        desktop7     DataNode、HBase、NodeManager、impala
+```
+
 # install
 
 下载 impala，目前最新版本为`1.2.4`，[下载地址](http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1.2.4/)。
@@ -20,8 +43,8 @@ keywords: impala
 
 2、先安装好java、hadoop集群以及hive，可以参考我的文章：
 
-* [手动安装Cloudera Hadoop CDH4.2](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
-* [手动安装Cloudera Hive CDH4.2](/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
+* [手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
+* [手动安装Cloudera Hive CDH](/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
 
 impala仓库列表如下：
 
@@ -66,10 +89,10 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 
 ```
 	[root@desktop1 conf]# mkdir /usr/lib/impala/conf/
-	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
-	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
-	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.2.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
-	[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.2.0/conf/hive-site.xml /usr/lib/impala/conf/
+	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/log4j.properties /usr/lib/impala/conf/
+	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/core-site.xml /usr/lib/impala/conf/
+	[root@desktop1 conf]# cp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/hdfs-site.xml /usr/lib/impala/conf/
+	[root@desktop1 conf]# cp /opt/hive-0.10.0-cdh4.6.0/conf/hive-site.xml /usr/lib/impala/conf/
 ```
 
 并作下面修改在`hdfs-site.xml`文件中添加如下内容：
@@ -96,9 +119,9 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 ```
 	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop3:/usr/lib/impala/
 	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop4:/usr/lib/impala/
+	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop5:/usr/lib/impala/
 	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop6:/usr/lib/impala/
 	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop7:/usr/lib/impala/
-	[root@desktop1 ~]# scp -r /usr/lib/impala/conf desktop8:/usr/lib/impala/
 ```
 
 ## hadoop中添加native包
@@ -106,7 +129,7 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 拷贝hadoop native包到hadoop安装路径下，并同步hadoop文件到其他节点：
 
 ```
-	[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.2.0/lib/native/
+	[root@desktop1 ~]# cp /usr/lib/impala/lib/*.so* /opt/hadoop-2.0.0-cdh4.6.0/lib/native/
 ```
 
 ## 创建socket path
@@ -117,15 +140,15 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 	[root@desktop1 ~]# mkdir -p /var/run/hadoop-hdfs
 	[root@desktop3 ~]# mkdir -p /var/run/hadoop-hdfs
 	[root@desktop4 ~]# mkdir -p /var/run/hadoop-hdfs
+	[root@desktop5 ~]# mkdir -p /var/run/hadoop-hdfs
 	[root@desktop6 ~]# mkdir -p /var/run/hadoop-hdfs
 	[root@desktop7 ~]# mkdir -p /var/run/hadoop-hdfs
-	[root@desktop8 ~]# mkdir -p /var/run/hadoop-hdfs
 ```
 
 拷贝postgres jdbc jar：
 
 ```
-	cp /opt/hive-0.10.0-cdh4.2.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
+	cp /opt/hive-0.10.0-cdh4.6.0/lib/postgresql-9.1-903.jdbc* /usr/lib/impala/lib/
 ```
 
 # 启动服务
@@ -151,7 +174,7 @@ impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/
 
 # 使用shell
 
-使用`impala-shell`启动Impala Shell，分别连接各Impalad主机(我这里是：desktop3、desktop4、desktop6、desktop7、desktop8)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：
+使用`impala-shell`启动Impala Shell，分别连接各Impalad主机(我这里是：desktop3、desktop4、desktop5、desktop6、desktop7)，刷新元数据，之后就可以执行shell命令。相关的命令如下(可以在任意节点执行)：
 
 ```
 	>impala-shell

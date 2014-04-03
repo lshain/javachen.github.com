@@ -8,7 +8,7 @@ keywords: hadoop, hdfs
 
 # 安装虚拟机
 
-   VirtualBox安装rhel6.3，存储为30G，内存为1G，并复制2份
+   使用VirtualBox安装rhel6.3，存储为30G，内存为1G，并使用复制克隆出两个新的虚拟机，这样就存在3台虚拟机，设置三台虚拟机的主机名称，如：rhel-june、rhel-june-1、rhel-june-2
 
 # 配置网络
 
@@ -54,15 +54,29 @@ e.每个虚拟机中修改hosts：
 
 # 安装过程
 
-   a.解压缩到/opt
+   a.将hadoop压缩包解压缩到/opt目录
 
-   b.设置配置文件：
+   b.修改以下配置文件：
 
 	core-site.xml
 	hdfs-site.sml
 	mapred-site.xml
 
-   c.设置master、slaves
+   c.设置master、slaves文件
+
+master中内容为：
+
+```
+	192.168.56.100
+```
+
+slaves中内容为：
+
+```
+	192.168.56.101
+	192.168.56.102
+```
+
 
    d.设置环境变量
 

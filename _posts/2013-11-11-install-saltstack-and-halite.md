@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 安装saltstack和halite
-description: 本文记录安装saltstack和halite过程。
+title: 安装SaltStack和halite
+description: 本文记录安装SaltStack和halite过程。
 category: linux
 tags: [saltstack,halite]
 ---
 {% include JB/setup %}
 
-本文记录安装saltstack和halite过程。
+本文记录安装SaltStack和halite过程。
 
 首先准备两台rhel或者centos虚拟机sk1和sk2，sk1用于安装master，sk2安装minion。
 
@@ -31,7 +31,7 @@ $ yum list #或者查看/etc/yum.repos.d目录下是否有epel.repo
 
 # 安装依赖
 
-因为我用jinja2作为saltstack的渲染引擎，故需要在每个节点上安装`python-jinja2`：
+因为我用jinja2作为SaltStack的渲染引擎，故需要在每个节点上安装`python-jinja2`：
 
 ```
 $ yum install python-jinja2 -y
