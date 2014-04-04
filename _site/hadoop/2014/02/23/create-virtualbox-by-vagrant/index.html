@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>使用Vagrant创建虚拟机安装Hadoop - JavaChen Blog</title>
-    <meta name="description" content="Vagrant是一款用来构建虚拟开发环境的工具，非常适合 php/python/ruby/java 这类语言开发 web 应用，使用Vagrant可以快速的搭建虚拟机并安装自己的一些应用。本文主要是使用Vagrant创建3个虚拟机并用来安装hadoop集群。"/>
+    <meta name="description" content="Vagrant是一款用来构建虚拟开发环境的工具，非常适合 php/python/ruby/java 这类语言开发 web 应用，使用Vagrant可以快速的搭建虚拟机并安装自己的一些应用。本文主要是使用Vagrant创建3个虚拟机并用来安装hadoop集群。">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/hadoop/2014/02/23/create-virtualbox-by-vagrant" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,30 +141,30 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>使用Vagrant创建虚拟机安装Hadoop </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">使用Vagrant创建虚拟机安装Hadoop </h1>
-      </header>
-	<div class="entry-content">
-	<h1>安装VirtualBox</h1>
+    <div class="date">
+      <span>2014/02/23</span>
+    </div>
+    <div class="content">
+      <h1 id="toc_0">安装VirtualBox</h1>
 
 <p>下载地址：<a href="https://www.virtualbox.org/wiki/Downloads/">https://www.virtualbox.org/wiki/Downloads/</a></p>
 
-<h1>安装Vagrant</h1>
+<h1 id="toc_1">安装Vagrant</h1>
 
 <p>下载安装包：<a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a>，然后安装。</p>
 
-<h1>下载box</h1>
+<h1 id="toc_2">下载box</h1>
 
 <p>下载适合你的box，地址：<a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a>。</p>
 
@@ -187,7 +172,7 @@
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
 $ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
 </code></pre></div>
-<h1>添加box</h1>
+<h1 id="toc_3">添加box</h1>
 
 <p>首先查看已经添加的box：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ vagrant box list
@@ -198,9 +183,9 @@ $ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/cen
 <p>其语法如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant box add {title} {url}
 </code></pre></div>
-<p>box被安装在<code>~/.vagrant.d/boxes</code>目录下面。</p>
+<p>box被安装在<code class="prettyprint">~/.vagrant.d/boxes</code>目录下面。</p>
 
-<h1>创建虚拟机</h1>
+<h1 id="toc_4">创建虚拟机</h1>
 
 <p>先创建一个目录：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ mkdir -p /home/june/workspace/vagramt/cdh
@@ -217,7 +202,7 @@ the comments in the Vagrantfile as well as documentation on
 </code></pre></div>
 <p>在当前目录生成了Vagrantfile文件。</p>
 
-<h1>修改Vagrantfile</h1>
+<h1 id="toc_5">修改Vagrantfile</h1>
 
 <p>修改文件如下：</p>
 <div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="c1"># -*- mode: ruby -*-</span>
@@ -246,7 +231,7 @@ the comments in the Vagrantfile as well as documentation on
 
 <p>在启动成功之后，会运行boot.sh脚本，你可以编写你自己的脚本。</p>
 
-<h1>启动虚拟机</h1>
+<h1 id="toc_6">启动虚拟机</h1>
 
 <p>执行以下命令会依次启动三个虚拟机：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant up
@@ -254,7 +239,7 @@ the comments in the Vagrantfile as well as documentation on
 <p>启动成功之后，就可以通过ssh命令登陆到虚拟机，例如：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vagrant ssh cdh1
 </code></pre></div>
-<h1>虚拟机的初始化设置</h1>
+<h1 id="toc_7">虚拟机的初始化设置</h1>
 
 <p>创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为boot.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：</p>
 <div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="c">#!/usr/bin/env bash</span>
@@ -315,17 +300,59 @@ yum install vim -y
 <li>配置yum源并安装一些常用软件</li>
 </ul>
 
-<h1>安装hadoop</h1>
+<h1 id="toc_8">安装hadoop</h1>
 
 <p>可以参考<a href="http://blog.javachen.com/categories.html#hadoop-ref">这些文章</a></p>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop</a></li>
+     
+    	<li><a href="/tags.html#vagrant-ref">vagrant</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/python/2014/02/22/python-introduction-of-basics" title="Python基础入门">&laquo; Prev</a>
@@ -336,7 +363,7 @@ yum install vim -y
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -346,6 +373,7 @@ yum install vim -y
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -369,25 +397,26 @@ yum install vim -y
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -401,23 +430,10 @@ yum install vim -y
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

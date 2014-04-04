@@ -35,8 +35,6 @@ tags: [jekyll]
 </section>
 ```
 
-<!-- more -->
-
 # 添加about页面
 
 在根目录创建about.md并修改，注意：文件开头几行内容如下
@@ -55,7 +53,10 @@ tags: [jekyll]
 
 首先通过gem安装redcarpet，然后修改_config.yml：
 
-	markdown: redcarpet
+```
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
+```
 
 # 首页添加最近文章
 

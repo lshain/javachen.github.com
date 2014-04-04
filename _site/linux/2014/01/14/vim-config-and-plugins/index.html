@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>vim配置和插件管理 - JavaChen Blog</title>
-    <meta name="description" content="这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。"/>
+    <meta name="description" content="这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/linux/2014/01/14/vim-config-and-plugins" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,30 +141,30 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>vim配置和插件管理 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">vim配置和插件管理 </h1>
-      </header>
-	<div class="entry-content">
-	<p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
+    <div class="date">
+      <span>2014/01/14</span>
+    </div>
+    <div class="content">
+      <p>这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。</p>
 
-<h1>1. vim配置</h1>
+<h1 id="toc_0">1. vim配置</h1>
 
 <p>目前我的vimrc配置放置在:<a href="https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc">https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc</a>，其中大多数用英文注释。</p>
 
-<h1>2. 插件管理</h1>
+<h1 id="toc_1">2. 插件管理</h1>
 
-<h2>pathogen</h2>
+<h2 id="toc_2">pathogen</h2>
 
 <p>项目地址:   <a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a></p>
 
@@ -190,7 +175,7 @@
 </code></pre></div>
 <!-- more -->
 
-<h2>NERDTree</h2>
+<h2 id="toc_3">NERDTree</h2>
 
 <p>NERD tree允许你在Vim编辑器中以树状方式浏览系统中的文件和目录, 支持快捷键与鼠标操作, 使用起来十分方便. NERD tree能够以不同颜色高亮显示节点类型, 并包含书签, 过滤等实用功能. 配合taglist或txtviewer插件, 右边窗口显示本文件夹的文件, 左边窗口显示本文的文档结构, 将会使管理一个工程变得相当容易.</p>
 
@@ -204,7 +189,7 @@ git clone https://github.com/scrooloose/nerdtree.git
 </code></pre></div>
 <p>之后的插件也都是这么安装。</p>
 
-<h3>使用</h3>
+<h3 id="toc_4">使用</h3>
 
 <ol>
 <li>在linux命令行界面，输入vim</li>
@@ -230,7 +215,7 @@ m 显示文件系统菜单（添加、删除、移动操作）
 ? 帮助
 q 关闭
 </code></pre></div>
-<h2>NERDTree-Tabs</h2>
+<h2 id="toc_5">NERDTree-Tabs</h2>
 
 <p>项目地址:<a href="https://github.com/jistr/vim-nerdtree-tabs">https://github.com/jistr/vim-nerdtree-tabs</a></p>
 
@@ -240,21 +225,21 @@ q 关闭
 <div class="highlight"><pre><code class="text language-text" data-lang="text">let g:nerdtree_tabs_open_on_console_startup=1       &quot;设置打开vim的时候默认打开目录树
 map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设置打开目录树的快捷键
 </code></pre></div>
-<h2>supertab</h2>
+<h2 id="toc_6">supertab</h2>
 
 <p>项目地址:   <a href="https://github.com/ervandew/supertab">https://github.com/ervandew/supertab</a></p>
 
 <p>增强tab键的功能，建议安装。</p>
 
-<h2>ctrlp</h2>
+<h2 id="toc_7">ctrlp</h2>
 
 <p>项目地址:   <a href="https://github.com/kien/ctrlp.vim">https://github.com/kien/ctrlp.vim</a></p>
 
-<p>快捷键：<code>ctrl+p</code></p>
+<p>快捷键：<code class="prettyprint">ctrl+p</code></p>
 
-<h1>3. 安装oh-my-zsh</h1>
+<h1 id="toc_8">3. 安装oh-my-zsh</h1>
 
-<h1>4. 参考</h1>
+<h1 id="toc_9">4. 参考</h1>
 
 <ul>
 <li><a href="https://github.com/wklken/k-vim">https://github.com/wklken/k-vim</a></li>
@@ -262,13 +247,55 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
 <li><a href="http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html">http://www.cnblogs.com/ma6174/archive/2011/12/10/2283393.html</a></li>
 </ul>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#linux-ref">
+    		linux
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#vim-ref">vim</a></li>
+     
+    	<li><a href="/tags.html#plguin-ref">plguin</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/java/2014/01/13/about-sitemesh" title="SiteMesh介绍">&laquo; Prev</a>
@@ -279,7 +306,7 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -289,6 +316,7 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -312,25 +340,26 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -344,23 +373,10 @@ map &lt;leader&gt;n &lt;plug&gt;NERDTreeTabsToggle &lt;CR&gt;         &quot;设�
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

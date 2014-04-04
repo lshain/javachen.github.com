@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>从yum安装Cloudera CDH集群 - JavaChen Blog</title>
-    <meta name="description" content="记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。"/>
+    <meta name="description" content="记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,43 +141,43 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>从yum安装Cloudera CDH集群 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">从yum安装Cloudera CDH集群 </h1>
-      </header>
-	<div class="entry-content">
-	<p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+    <div class="date">
+      <span>2013/04/06</span>
+    </div>
+    <div class="content">
+      <p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
 
 <p>集群规划为3个节点，每个节点的ip、主机名和部署的组件分配如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1        node1     NameNode、Hive、ResourceManager
     192.168.0.2        node2     SSNameNode
     192.168.0.3        node3     DataNode、HBase、NodeManager
 </code></pre></div>
-<h1>0.环境准备</h1>
+<h1 id="toc_0">0.环境准备</h1>
 
 <p>1.设置hosts</p>
 
 <p>临时设置hostname，以node1为例</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo hostname node1
 </code></pre></div>
-<p>确保<code>/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code>/etc/hosts</code>不是必要的，却是最佳实践。</p>
+<p>确保<code class="prettyprint">/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code class="prettyprint">/etc/hosts</code>不是必要的，却是最佳实践。</p>
 
-<p>确保<code>/etc/sysconfig/network</code>中包含hostname=node1</p>
+<p>确保<code class="prettyprint">/etc/sysconfig/network</code>中包含hostname=node1</p>
 
 <p>检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$  host -v -t A `hostname` 
 </code></pre></div>
-<p>hadoop的配置文件<code>core-site.xml</code>、<code>mapred-site.xml</code>和<code>yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
+<p>hadoop的配置文件<code class="prettyprint">core-site.xml</code>、<code class="prettyprint">mapred-site.xml</code>和<code class="prettyprint">yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
 
 <p>2.关闭防火墙</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ setenforce 0
@@ -201,7 +186,7 @@ $ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 <p>3.清空iptables </p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ iptables -F
 </code></pre></div>
-<p>4.检查每个节点上的<code>/tmp</code>目录权限是否为<code>1777</code>，如果不是请修改。</p>
+<p>4.检查每个节点上的<code class="prettyprint">/tmp</code>目录权限是否为<code class="prettyprint">1777</code>，如果不是请修改。</p>
 
 <p>5.设置时钟同步服务</p>
 
@@ -217,7 +202,7 @@ $ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 <p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    server $LOCAL_SERVER_IP OR HOSTNAME
 </code></pre></div>
-<h1>1. 安装jdk</h1>
+<h1 id="toc_1">1. 安装jdk</h1>
 
 <p>检查jdk版本</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
@@ -249,29 +234,29 @@ source /root/.bashrc
 Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
 Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 </code></pre></div>
-<p>检查环境变量中是否有设置<code>JAVA_HOME</code></p>
+<p>检查环境变量中是否有设置<code class="prettyprint">JAVA_HOME</code></p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo env | grep JAVA_HOME
 </code></pre></div>
-<p>如果env中没有<code>JAVA_HOM</code>E变量，则修改<code>/etc/sudoers</code>文件</p>
+<p>如果env中没有<code class="prettyprint">JAVA_HOM</code>E变量，则修改<code class="prettyprint">/etc/sudoers</code>文件</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">vi /etc/sudoers
 Defaults env_keep+=JAVA_HOME
 </code></pre></div>
-<h1>2. 设置yum源</h1>
+<h1 id="toc_2">2. 设置yum源</h1>
 
 <p>从<a href="http://archive.cloudera.com/cdh4/repo-as-tarball/">这里</a> 下载一个CDH版本的压缩包解压并设置本地或ftp yum源，可以参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></p>
 
 <p><strong>注意</strong>：本文中使用的是CDH4.6的yum源。</p>
 
-<h1>3. 安装HDFS</h1>
+<h1 id="toc_3">3. 安装HDFS</h1>
 
-<h2>在NameNode节点yum安装</h2>
+<h2 id="toc_4">在NameNode节点yum安装</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
     yum install hadoop-hdfs-namenode
     yum install hadoop-hdfs-secondarynamenode
     yum install hadoop-yarn-resourcemanager
     yum install hadoop-mapreduce-historyserver
 </code></pre></div>
-<h2>在DataNode节点yum安装</h2>
+<h2 id="toc_5">在DataNode节点yum安装</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
     yum install hadoop-hdfs-datanode
     yum install hadoop-yarn-nodemanager
@@ -280,16 +265,16 @@ Defaults env_keep+=JAVA_HOME
     yum install hadoop-httpfs
     yum install hadoop-debuginfo
 </code></pre></div>
-<h1>4. 配置hadoop</h1>
+<h1 id="toc_6">4. 配置hadoop</h1>
 
-<h2>自定义hadoop配置文件</h2>
+<h2 id="toc_7">自定义hadoop配置文件</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
     sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
     sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 </code></pre></div>
-<p>hadoop默认使用<code>/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code>/etc/hadoop/conf</code>会软连接到<code>/etc/hadoop/conf.my_cluster</code>目录</p>
+<p>hadoop默认使用<code class="prettyprint">/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code class="prettyprint">/etc/hadoop/conf</code>会软连接到<code class="prettyprint">/etc/hadoop/conf.my_cluster</code>目录</p>
 
-<h2>修改配置文件</h2>
+<h2 id="toc_8">修改配置文件</h2>
 
 <p>进入/etc/hadoop/conf编辑配置文件。</p>
 
@@ -366,11 +351,11 @@ Defaults env_keep+=JAVA_HOME
 To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
 </blockquote>
 
-<h2>配置NameNode HA</h2>
+<h2 id="toc_9">配置NameNode HA</h2>
 
 <p>请参考<a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">Introduction to HDFS High Availability</a></p>
 
-<h2>配置Secondary NameNode</h2>
+<h2 id="toc_10">配置Secondary NameNode</h2>
 
 <p>在hdfs-site.xml中可以配置以下参数：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">dfs.namenode.checkpoint.check.period
@@ -379,11 +364,11 @@ dfs.namenode.checkpoint.dir
 dfs.namenode.checkpoint.edits.dir
 dfs.namenode.num.checkpoints.retained
 </code></pre></div>
-<h2>多个secondarynamenode的配置</h2>
+<h2 id="toc_11">多个secondarynamenode的配置</h2>
 
 <p>设置多个secondarynamenode，请参考<a href="http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/">multi-host-secondarynamenode-configuration</a>.</p>
 
-<h2>文件路径配置清单</h2>
+<h2 id="toc_12">文件路径配置清单</h2>
 
 <p>在hadoop中默认的文件路径以及权限要求如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    目录                                  所有者       权限      默认路径
@@ -404,13 +389,13 @@ dfs.namenode.num.checkpoints.retained
     yarn.nodemanager.log-dirs                   /var/log/hadoop-yarn/logs
     yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
 </code></pre></div>
-<p>在hadoop中<code>dfs.permissions.superusergroup</code>默认为hdfs，我的<code>hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
+<p>在hadoop中<code class="prettyprint">dfs.permissions.superusergroup</code>默认为hdfs，我的<code class="prettyprint">hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
 
-<h2>配置CDH4组件端口</h2>
+<h2 id="toc_13">配置CDH4组件端口</h2>
 
 <p>请参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html">Configuring Ports for CDH4</a></p>
 
-<h2>创建数据目录</h2>
+<h2 id="toc_14">创建数据目录</h2>
 
 <p>在namenode节点创建name目录</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/name
@@ -432,29 +417,29 @@ chmod 700 /opt/data/hadoop/dfs/namesecondary
 chown -R yarn:yarn /opt/data/hadoop/yarn/local
 chmod 700 /opt/data/hadoop/yarn/local
 </code></pre></div>
-<h2>同步配置文件到整个集群</h2>
+<h2 id="toc_15">同步配置文件到整个集群</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
 sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
 </code></pre></div>
-<h2>格式化NameNode</h2>
+<h2 id="toc_16">格式化NameNode</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hdfs namenode -format
 </code></pre></div>
-<h2>定期检查datanode状态</h2>
+<h2 id="toc_17">定期检查datanode状态</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#!/bin/bash
 if ! jps | grep -q DataNode ; then
  echo ERROR: datanode not up
 fi
 </code></pre></div>
-<h2>在每个节点启动hdfs</h2>
+<h2 id="toc_18">在每个节点启动hdfs</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
 </code></pre></div>
-<h2>验证测试</h2>
+<h2 id="toc_19">验证测试</h2>
 
 <ul>
 <li>打开浏览器访问：http://node1:50070 </li>
 </ul>
 
-<h1>5. 安装YARN</h1>
+<h1 id="toc_20">5. 安装YARN</h1>
 
 <p>先在一台机器上配置好，然后在做同步。</p>
 
@@ -565,15 +550,15 @@ fi
     <span class="nt">&lt;/property&gt;</span>
     <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-<h2>同步配置文件到整个集群</h2>
+<h2 id="toc_21">同步配置文件到整个集群</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
 sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
 </code></pre></div>
-<h2>HDFS创建临时目录</h2>
+<h2 id="toc_22">HDFS创建临时目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /tmp
 sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 </code></pre></div>
-<h2>创建日志目录</h2>
+<h2 id="toc_23">创建日志目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/history
 sudo -u hdfs hadoop fs -chmod 1777 /user/history
 sudo -u hdfs hadoop fs -chown yarn /user/history
@@ -583,7 +568,7 @@ sudo -u hdfs hadoop fs -chown yarn /user/history/done
 sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
 sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 </code></pre></div>
-<h2>验证hdfs结构是否正确</h2>
+<h2 id="toc_24">验证hdfs结构是否正确</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
     drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
     drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
@@ -593,27 +578,27 @@ sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
     drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
     drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
 </code></pre></div>
-<h2>启动mapred-historyserver</h2>
+<h2 id="toc_25">启动mapred-historyserver</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
 </code></pre></div>
-<h2>在每个节点启动YARN</h2>
+<h2 id="toc_26">在每个节点启动YARN</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 </code></pre></div>
-<h2>验证</h2>
+<h2 id="toc_27">验证</h2>
 
 <ul>
 <li>打开浏览器：http://node1:8088/</li>
 <li>运行测试程序</li>
 </ul>
 
-<h2>为每个MapReduce用户创建主目录</h2>
+<h2 id="toc_28">为每个MapReduce用户创建主目录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
 sudo -u hdfs hadoop fs -chown $USER /user/$USER
 </code></pre></div>
-<h2>Set HADOOP<u>MAPRED</u>HOME</h2>
+<h2 id="toc_29">Set HADOOP_MAPRED_HOME</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 </code></pre></div>
-<h2>设置开机启动</h2>
+<h2 id="toc_30">设置开机启动</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo chkconfig hadoop-hdfs-namenode on
 sudo chkconfig hadoop-hdfs-datanode on
 sudo chkconfig hadoop-hdfs-secondarynamenode on
@@ -627,7 +612,7 @@ sudo chkconfig hive-server2 on
 sudo chkconfig zookeeper-server on
 sudo chkconfig hadoop-httpfs on
 </code></pre></div>
-<h1>6. 安装Zookeeper</h1>
+<h1 id="toc_31">6. 安装Zookeeper</h1>
 
 <p>安装zookeeper</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install zookeeper*
@@ -657,19 +642,19 @@ server.3=node3:2888:3888
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service zookeeper-server init --myid=n
 service zookeeper-server restart
 </code></pre></div>
-<h1>7. 安装HBase</h1>
+<h1 id="toc_32">7. 安装HBase</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install hbase*
 </code></pre></div>
-<h2>在hdfs中创建/hbase</h2>
+<h2 id="toc_33">在hdfs中创建/hbase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /hbase
 sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 </code></pre></div>
-<h2>设置crontab：</h2>
+<h2 id="toc_34">设置crontab：</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
 * 10 * * * cd /var/log/hbase/; rm -rf\
 `ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
 </code></pre></div>
-<h2>修改配置文件并同步到其他机器：</h2>
+<h2 id="toc_35">修改配置文件并同步到其他机器：</h2>
 
 <p>修改hbase-site.xml文件：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
@@ -731,18 +716,18 @@ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
       <span class="nt">&lt;/property&gt;</span>
     <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-<h2>修改regionserver文件</h2>
+<h2 id="toc_36">修改regionserver文件</h2>
 
-<h2>启动HBase</h2>
+<h2 id="toc_37">启动HBase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service hbase-master start
 service hbase-regionserver start
 </code></pre></div>
-<h1>8. 安装hive</h1>
+<h1 id="toc_38">8. 安装hive</h1>
 
-<h2>在一个节点上安装hive</h2>
+<h2 id="toc_39">在一个节点上安装hive</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install hive*
 </code></pre></div>
-<h2>安装postgresql</h2>
+<h2 id="toc_40">安装postgresql</h2>
 
 <p>手动安装、配置postgresql数据库，请参考<a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/">手动安装Cloudera Hive CDH</a></p>
 
@@ -783,7 +768,7 @@ SET
 SET
 ..
 </code></pre></div>
-<h2>修改配置文件</h2>
+<h2 id="toc_41">修改配置文件</h2>
 
 <p>修改hive-site.xml文件：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
@@ -861,17 +846,17 @@ SET
     <span class="nt">&lt;/property&gt;</span>
     <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div>
-<h2>修改<code>/etc/hadoop/conf/hadoop-env.sh</code></h2>
+<h2 id="toc_42">修改<code class="prettyprint">/etc/hadoop/conf/hadoop-env.sh</code></h2>
 
-<p>添加环境变量<code>HADOOP_MAPRED_HOME</code>，如果不添加，则当你使用yarn运行mapreduce时候会出现<code>UNKOWN RPC TYPE</code>的异常</p>
+<p>添加环境变量<code class="prettyprint">HADOOP_MAPRED_HOME</code>，如果不添加，则当你使用yarn运行mapreduce时候会出现<code class="prettyprint">UNKOWN RPC TYPE</code>的异常</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 </code></pre></div>
-<h2>在hdfs中创建hive数据仓库目录</h2>
+<h2 id="toc_43">在hdfs中创建hive数据仓库目录</h2>
 
 <ul>
-<li>hive的数据仓库在hdfs中默认为<code>/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
-<li>每一个查询hive的用户都必须有一个hdfs的home目录(<code>/user</code>目录下，如root用户的为<code>/user/root</code>)</li>
-<li>hive所在节点的 <code>/tmp</code>必须是world-writable权限的。</li>
+<li>hive的数据仓库在hdfs中默认为<code class="prettyprint">/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
+<li>每一个查询hive的用户都必须有一个hdfs的home目录(<code class="prettyprint">/user</code>目录下，如root用户的为<code class="prettyprint">/user/root</code>)</li>
+<li>hive所在节点的 <code class="prettyprint">/tmp</code>必须是world-writable权限的。</li>
 </ul>
 
 <p>创建目录并设置权限：</p>
@@ -879,12 +864,12 @@ SET
 sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
 sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 </code></pre></div>
-<h2>启动hive-server和metastore</h2>
+<h2 id="toc_44">启动hive-server和metastore</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">service hive-metastore start
 service hive-server start
 service hive-server2 start
 </code></pre></div>
-<h2>访问beeline</h2>
+<h2 id="toc_45">访问beeline</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ /usr/lib/hive/bin/beeline
 beeline&gt; !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
 0: jdbc:hive2://localhost:10000&gt; SHOW TABLES;
@@ -898,7 +883,7 @@ No rows selected (0.238 seconds)
 </code></pre></div>
 <p>其 sql语法参考<a href="http://sqlline.sourceforge.net/">SQLLine CLI</a>，在这里，你不能使用HiveServer的sql语句</p>
 
-<h2>与hbase集成</h2>
+<h2 id="toc_46">与hbase集成</h2>
 
 <p>需要在hive里添加以下jar包：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    ADD JAR /usr/lib/hive/lib/zookeeper.jar;
@@ -906,9 +891,9 @@ No rows selected (0.238 seconds)
     ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.6.0.jar
     ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 </code></pre></div>
-<h1>9. 其他</h1>
+<h1 id="toc_47">9. 其他</h1>
 
-<h2>安装Snappy</h2>
+<h2 id="toc_48">安装Snappy</h2>
 
 <p>cdh的rpm中默认已经包含了snappy，可以再不用安装。</p>
 
@@ -918,14 +903,14 @@ No rows selected (0.238 seconds)
 <p>使snappy对hadoop可用</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 </code></pre></div>
-<h2>安装LZO</h2>
+<h2 id="toc_49">安装LZO</h2>
 
 <p>cdh的rpm中默认不包含了lzo，需要自己额外安装。</p>
 
 <p>在每个节点安装：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
 </code></pre></div>
-<h1>10. 参考文章</h1>
+<h1 id="toc_50">10. 参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
@@ -936,13 +921,55 @@ No rows selected (0.238 seconds)
 <li>[6] <a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
 </ul>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop</a></li>
+     
+    	<li><a href="/tags.html#impala-ref">impala</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/hadoop/2013/03/29/install-impala" title="安装impala过程">&laquo; Prev</a>
@@ -953,7 +980,7 @@ No rows selected (0.238 seconds)
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -963,6 +990,7 @@ No rows selected (0.238 seconds)
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -986,25 +1014,26 @@ No rows selected (0.238 seconds)
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -1018,23 +1047,10 @@ No rows selected (0.238 seconds)
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

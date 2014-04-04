@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>git配置和一些常用命令 - JavaChen Blog</title>
-    <meta name="description" content="Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。本文主要记录我的一些git配置和一些常用命令。"/>
+    <meta name="description" content="Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。本文主要记录我的一些git配置和一些常用命令。">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/linux/2013/12/27/some-git-configs-and-cammands" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,24 +141,24 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>git配置和一些常用命令 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">git配置和一些常用命令 </h1>
-      </header>
-	<div class="entry-content">
-	<p>Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。</p>
+    <div class="date">
+      <span>2013/12/27</span>
+    </div>
+    <div class="content">
+      <p>Git是一个分布式版本控制／软件配置管理软件，原来是linux内核开发者林纳斯·托瓦兹（Linus Torvalds）为了更好地管理linux内核开发而创立的。</p>
 
-<h1>Git配置</h1>
+<h1 id="toc_0">Git配置</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git config --global user.name &quot;javachen&quot;
 git config --global user.email &quot;june.chan@foxmail.com&quot;
 git config --global color.ui true
@@ -185,7 +170,7 @@ git config -l  # 列举所有配置
 </code></pre></div>
 <!-- more -->
 
-<p>用户的git配置文件在<code>~/.gitconfig</code>，我的配置：</p>
+<p>用户的git配置文件在<code class="prettyprint">~/.gitconfig</code>，我的配置：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">june@june-mint ~/workspace/snippets/dotfiles $ cat .gitconfig 
 [user]
     email = june.chan@foxmail.com
@@ -223,14 +208,14 @@ git config -l  # 列举所有配置
 [core]
     filemode = true
 </code></pre></div>
-<h1>Git常用命令</h1>
+<h1 id="toc_1">Git常用命令</h1>
 
-<h2>查看、帮助命令</h2>
+<h2 id="toc_2">查看、帮助命令</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git help &lt;command&gt;  # 显示command的help
 git show            # 显示某次提交的内容
 git show $id
 </code></pre></div>
-<h2>查看提交记录</h2>
+<h2 id="toc_3">查看提交记录</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git log
 git log &lt;file&gt;      # 查看该文件每次提交记录
 git log -p &lt;file&gt;   # 显示版本历史，以及版本间的内容差异
@@ -242,7 +227,7 @@ git log -1 HEAD~3          # 显示比HEAD早3个提交的那个提交
 git log -1 HEAD^^^
 git reflog                 # 查看操作记录
 </code></pre></div>
-<h1>添加、提交、删除、找回，重置修改文件</h1>
+<h1 id="toc_4">添加、提交、删除、找回，重置修改文件</h1>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git co  -- &lt;file&gt;   # 抛弃工作区修改
 git co  .           # 抛弃工作区修改
 git co HEAD &lt;file&gt;  # 抛弃工作目录区中文件的修改
@@ -263,7 +248,7 @@ git ci --amend      # 修改最后一次提交记录
 </code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">git revert &lt;$id&gt;    # 恢复某次提交的状态，恢复动作本身也创建了一次提交对象
 git revert HEAD     # 恢复最后一次提交的状态
 </code></pre></div>
-<h2>查看文件diff</h2>
+<h2 id="toc_5">查看文件diff</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &lt;file&gt;     # 比较当前文件和暂存区文件差异
 git diff
 git diff &lt;$id1&gt; &lt;$id2&gt;      # 比较两次提交之间的差异
@@ -272,9 +257,9 @@ git diff --staged   # 比较暂存区和版本库差异
 git diff --cached   # 比较暂存区和版本库差异
 git diff --stat     # 仅仅比较统计信息
 </code></pre></div>
-<h1>Git 本地分支管理</h1>
+<h1 id="toc_6">Git 本地分支管理</h1>
 
-<h2>查看、切换、创建和删除分支</h2>
+<h2 id="toc_7">查看、切换、创建和删除分支</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git br -r           # 查看远程分支
 git br -v           # 查看各个分支最后提交信息
 git br -a           # 列出所有分支
@@ -294,7 +279,7 @@ git co -M &lt;existing_branch&gt; &lt;new_branch&gt;  # 移动或重命名分支
 git co $id               # 把某次历史提交记录checkout出来，但无分支信息，切换到其他分支会自动删除
 git co $id -b &lt;new_branch&gt;       # 把某次历史提交记录checkout出来，创建成一个分支
 </code></pre></div>
-<h2>分支合并和rebase</h2>
+<h2 id="toc_8">分支合并和rebase</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git merge &lt;branch&gt;                  # 将branch分支合并到当前分支
 git merge origin/master --no-ff     # 不要Fast-Foward合并，这样可以生成merge提交
 git merge --no-commit &lt;branch&gt;      # 合并但不提交
@@ -303,19 +288,19 @@ git merge --squash &lt;branch&gt;         # 把一条分支上的内容合并到
 git rebase master &lt;branch&gt;          # 将master rebase到branch，相当于：
 git co &lt;branch&gt; &amp;&amp; git rebase master &amp;&amp; git co master &amp;&amp; git merge &lt;branch&gt;
 </code></pre></div>
-<h2>Git补丁管理</h2>
+<h2 id="toc_9">Git补丁管理</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &gt; ../sync.patch         # 生成补丁
 git apply ../sync.patch          # 打补丁
 git apply --check ../sync.patch  # 测试补丁能否成功
 git format-patch -X              # 根据提交的log生成patch，X为数字，表示最近的几个日志
 </code></pre></div>
-<h2>Git暂存管理</h2>
+<h2 id="toc_10">Git暂存管理</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git stash                        # 暂存
 git stash list                   # 列所有stash
 git stash apply                  # 恢复暂存的内容
 git stash drop                   # 删除暂存区
 </code></pre></div>
-<h2>Git远程分支管理</h2>
+<h2 id="toc_11">Git远程分支管理</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git pull                         # 抓取远程仓库所有分支更新并合并到本地
 git pull --no-ff                 # 抓取远程仓库所有分支更新并合并到本地，不要快进合并
 git fetch origin                 # 抓取远程仓库所有更新
@@ -332,7 +317,7 @@ git push origin &lt;local_branch&gt;   # 创建远程分支， origin是远程�
 git push origin &lt;local_branch&gt;:&lt;remote_branch&gt;  # 创建远程分支
 git push origin :&lt;remote_branch&gt;  #先删除本地分支(git br -d &lt;branch&gt;)，然后再push删除远程分支
 </code></pre></div>
-<h2>Git远程仓库管理</h2>
+<h2 id="toc_12">Git远程仓库管理</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git remote -v                    # 查看远程服务器地址和仓库名称
 git remote show origin           # 查看远程服务器仓库状态
 git remote add origin git@github:XXX/test.git         # 添加远程仓库地址
@@ -343,15 +328,15 @@ git remote set-head origin master   # 设置远程仓库的HEAD指向master分�
 git branch --set-upstream master origin/master
 git branch --set-upstream develop origin/develop
 </code></pre></div>
-<h1>实例</h1>
+<h1 id="toc_13">实例</h1>
 
-<h2>打patch过程</h2>
+<h2 id="toc_14">打patch过程</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git add .
 git status
 git diff --cached &gt;XXX.patch
 git ci -m &#39;add patch&#39;
 </code></pre></div>
-<h1>分支策略</h1>
+<h1 id="toc_15">分支策略</h1>
 
 <p>在实际开发中，我们应该按照几个基本原则进行分支管理：</p>
 
@@ -361,13 +346,53 @@ git ci -m &#39;add patch&#39;
 
 <p>你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。</p>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#linux-ref">
+    		linux
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#git-ref">git</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/linux/2013/11/18/study-note-of-saltstack" title="SaltStack学习笔记[未完成]">&laquo; Prev</a>
@@ -378,7 +403,7 @@ git ci -m &#39;add patch&#39;
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -388,6 +413,7 @@ git ci -m &#39;add patch&#39;
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -411,25 +437,26 @@ git ci -m &#39;add patch&#39;
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -443,23 +470,10 @@ git ci -m &#39;add patch&#39;
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

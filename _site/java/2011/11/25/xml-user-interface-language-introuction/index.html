@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>XUL 用户界面语言介绍 - JavaChen Blog</title>
-    <meta name="description" content="XUL 用户界面语言介绍"/>
+    <meta name="description" content="XUL 用户界面语言介绍">
     <meta name="keywords" content="xml, xul"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/java/2011/11/25/xml-user-interface-language-introuction" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,22 +141,22 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>XUL 用户界面语言介绍 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">XUL 用户界面语言介绍 </h1>
-      </header>
-	<div class="entry-content">
-	<p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
+    <div class="date">
+      <span>2011/11/25</span>
+    </div>
+    <div class="content">
+      <p>XUL[1]是英文“<span style="color: #339966;">XML User Interface Language</span>”的首字母缩写。它是为了支持Mozilla系列的应用程序（如Mozilla Firefox和Mozilla Thunderbird）而开发的用户界面标示语言。顾名思义，它是一种应用XML来描述用户界面的标示语言。<br />
 XUL是开放标准，重用了许多现有的标准和技术[2]，包括CSS、JavaScript、DTD和RDF等。所以对于有网络编程和设计经验的人士来说，学习XUL比学习其他用户界面标示语言相对简单。<br />
 使用XUL的主要好处在于它提供了一套简易和跨平台的widget定义。这节省了编程人员在开发软件时所付出的努力。</p>
 
@@ -205,27 +190,67 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
 <p><span style="color: #339966;"><strong>参考资料</strong></span></p>
 
 <p><li>
-1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank">http://zh.wikipedia.org/wiki/XUL</a>
+1.XUL Wiki :<a href="http://zh.wikipedia.org/wiki/XUL" target="_blank"><a href="http://zh.wikipedia.org/wiki/XUL">http://zh.wikipedia.org/wiki/XUL</a></a>
 </li>
-<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a>
+<li>2.XML 用户界面语言（XUL）开发简介：<a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html" target="_blank"><a href="http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html">http://www.ibm.com/developerworks/cn/education/xml/x-xulintro/section2.html</a></a>
 </li>
-<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank">https://wiki.mozilla.org/XUL:Home<u>Page</a>
+<li>3.XUL 2.0: <a href="https://wiki.mozilla.org/XUL:Home_Page" target="_blank"><a href="https://wiki.mozilla.org/XUL:Home_Page">https://wiki.mozilla.org/XUL:Home_Page</a></a>
 </li>
 <li>4.<a href="https://developer.mozilla.org/cn/XUL_%E6%95%99%E7%A8%8B/1-2_XUL%E7%9A%84%E7%BB%93%E6%9E%84">XUL结构</a></li>
-<li>5.Pentaho XUL ramework: &lt;a href=&quot;http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide&quot; target=&quot;</u>blank&quot;&gt;http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a>
+<li>5.Pentaho XUL ramework: <a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer's+Guide" target="_blank"><a href="http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#x27;s+Guide">http://wiki.pentaho.com/display/ServerDoc2x/The+Pentaho+XUL+Framework+Developer&#39;s+Guide</a></a>
 </li>
-<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank">http://code.google.com/p/shandor-xul/</a>
+<li>6.shandor-xul:<a href="http://code.google.com/p/shandor-xul/" target="_blank"><a href="http://code.google.com/p/shandor-xul/">http://code.google.com/p/shandor-xul/</a></a>
 </li>
-<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank">https://developer.mozilla.org/index.php</a>
+<li>7.Mozilla XUL教程: <a href="https://developer.mozilla.org/index.php?title=cn/XUL_%E6%95%99%E7%A8%8B" target="_blank"><a href="https://developer.mozilla.org/index.php">https://developer.mozilla.org/index.php</a></a>
 </li></p>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#java-ref">
+    		java
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#xml-ref">xml</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/pentaho/2011/09/28/build-pentaho-bi-server-source-code-in-eclipse" title="在eclipse中构建Pentaho BI Server工程">&laquo; Prev</a>
@@ -236,7 +261,7 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -246,6 +271,7 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -269,25 +295,26 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -301,23 +328,10 @@ XUL用户界面语言是一种可用于开发Mozilla独立应用程序和浏览�
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

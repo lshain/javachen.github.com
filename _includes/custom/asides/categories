@@ -1,5 +1,5 @@
       <section>
-        <h2><i class="icon-home icon-large"></i>Categories</h2>
+        <h2>Categories</h2>
         <div class="tag_box">
           <ul class="list-group list-group-flush">
           {% assign categories_list = site.categories %}

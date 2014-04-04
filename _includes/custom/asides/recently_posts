@@ -1,8 +1,8 @@
       <section>
-       <h2><i class="icon-home icon-large"></i>Posts</h2>
+       <h2>Posts</h2>
        <div class="category">
          <ul>
-           {% for post in site.posts limit:16 %}
+           {% for post in site.posts limit:10 %}
            <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
            {% endfor %}
          </ul>

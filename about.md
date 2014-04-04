@@ -12,8 +12,8 @@ comment: true
 
 # 联系我
 
-- Email：javachen.june[@]gmail.com
-- Weibo: <a href='http://weibo.com/chenzhijun'>@JavaChen</a>
+- Email：{{ site.author.email }}
+- Weibo: <a href='http://weibo.com/{{ site.author.weibo }}'>@{{ site.author.name }}</a>
 
 # 关于版权
 

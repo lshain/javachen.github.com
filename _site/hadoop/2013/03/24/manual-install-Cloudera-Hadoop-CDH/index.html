@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>手动安装Cloudera Hadoop CDH - JavaChen Blog</title>
-    <meta name="description" content="手动安装Cloudera Hadoop CDH"/>
+    <meta name="description" content="手动安装Cloudera Hadoop CDH">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,22 +141,22 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>手动安装Cloudera Hadoop CDH </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">手动安装Cloudera Hadoop CDH </h1>
-      </header>
-	<div class="entry-content">
-	<h1>安装版本</h1>
+    <div class="date">
+      <span>2013/03/24</span>
+    </div>
+    <div class="content">
+      <h1 id="toc_0">安装版本</h1>
 
 <p>hadoop各个组件和jdk版本如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    hadoop-2.0.0-cdh4.6.0
@@ -181,7 +166,7 @@
 </code></pre></div>
 <p>hadoop各组件可以在<a href="http://archive.cloudera.com/cdh4/cdh/4/">这里</a>下载。</p>
 
-<h1>安装前说明</h1>
+<h1 id="toc_1">安装前说明</h1>
 
 <ul>
 <li>确定安装目录为/opt</li>
@@ -190,7 +175,7 @@
 <li>设置每个节点时钟同步</li>
 </ul>
 
-<h1>规划</h1>
+<h1 id="toc_2">规划</h1>
 
 <p>集群规划为7个节点，每个节点的ip、主机名和部署的组件分配如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1        desktop1     NameNode、Hive、ResourceManager、impala
@@ -201,9 +186,9 @@
     192.168.0.6        desktop6     DataNode、HBase、NodeManager、impala
     192.168.0.7        desktop7     DataNode、HBase、NodeManager、impala
 </code></pre></div>
-<h1>部署过程</h1>
+<h1 id="toc_3">部署过程</h1>
 
-<h2>系统和网络配置</h2>
+<h2 id="toc_4">系统和网络配置</h2>
 
 <ol>
 <li><p>修改每个节点的主机名称</p>
@@ -213,7 +198,7 @@
 <p>[root@desktop1 ~]# cat /etc/sysconfig/network
 NETWORKING=yes
 HOSTNAME=desktop1</p></li>
-<li><p>在每个节点上修改<code>/etc/hosts</code>增加以下内容:</p></li>
+<li><p>在每个节点上修改<code class="prettyprint">/etc/hosts</code>增加以下内容:</p></li>
 </ol>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# cat /etc/hosts
     127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -252,9 +237,9 @@ HOSTNAME=desktop1</p></li>
     [root@desktop1 ~]# ssh desktop6 &#39;service iptables stop&#39;
     [root@desktop1 ~]# ssh desktop7 &#39;service iptables stop&#39;
 </code></pre></div>
-<h1>安装Hadoop</h1>
+<h1 id="toc_5">安装Hadoop</h1>
 
-<h2>配置Hadoop</h2>
+<h2 id="toc_6">配置Hadoop</h2>
 
 <p>将jdk1.6.0_38.zip上传到/opt，并解压缩。</p>
 
@@ -283,7 +268,7 @@ HOSTNAME=desktop1</p></li>
 
 <p>在该文件中修改fs.defaultFS指向desktop1节点，即配置desktop1为NameNode节点。</p>
 
-<p>修改后的core-site.xml(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/core-site.xml</code>)目录如下：</p>
+<p>修改后的core-site.xml(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/core-site.xml</code>)目录如下：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</span>
 <span class="nt">&lt;configuration&gt;</span>
@@ -307,9 +292,9 @@ HOSTNAME=desktop1</p></li>
 <li>hdfs-site.xml</li>
 </ol>
 
-<p>该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径(<code>/opt/data/hadoop-${user.name}</code>)以及http-address。</p>
+<p>该文件主要设置数据副本保存份数，以及namenode、datanode数据保存路径(<code class="prettyprint">/opt/data/hadoop-${user.name}</code>)以及http-address。</p>
 
-<p>修改后的hdfs-site.xml(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/hdfs-site.xml</code>)文件内容如下：</p>
+<p>修改后的hdfs-site.xml(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/hdfs-site.xml</code>)文件内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
 &lt;configuration&gt;
@@ -341,7 +326,7 @@ HOSTNAME=desktop1</p></li>
 
 <p>设置namenode和secondary namenode节点。</p>
 
-<p>修改后的masters(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/masters</code>)文件内容如下：</p>
+<p>修改后的masters(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/masters</code>)文件内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">desktop1
 desktop2
 </code></pre></div>
@@ -352,7 +337,7 @@ desktop2
 </ol>
 
 <p>设置哪些机器上安装datanode节点。
-修改后的slaves(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/slaves</code>)文件内容如下：</p>
+修改后的slaves(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/slaves</code>)文件内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">desktop3
 desktop4
 desktop5
@@ -367,7 +352,7 @@ desktop7
     [root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop6:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
     [root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop7:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
 </code></pre></div>
-<h2>配置MapReduce</h2>
+<h2 id="toc_7">配置MapReduce</h2>
 
 <p>接下来还是在desktop1节点上修改以下几个文件：</p>
 
@@ -377,7 +362,7 @@ desktop7
 
 <p>配置使用yarn计算框架，以及jobhistory的地址。</p>
 
-<p>修改后的mapred-site.xml(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/mapred-site.xml</code>)文件内容如下：</p>
+<p>修改后的mapred-site.xml(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/mapred-site.xml</code>)文件内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
 &lt;configuration&gt;
@@ -399,9 +384,9 @@ desktop7
 <li>yarn-site.xml</li>
 </ol>
 
-<p>主要配置resourcemanager地址以及<code>yarn.application.classpath</code>（这个路径很重要，要不然集成hive时候会提示找不到class）</p>
+<p>主要配置resourcemanager地址以及<code class="prettyprint">yarn.application.classpath</code>（这个路径很重要，要不然集成hive时候会提示找不到class）</p>
 
-<p>修改后的yarn-site.xml(<code>/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/yarn-site.xml</code>)文件内容如下：</p>
+<p>修改后的yarn-site.xml(<code class="prettyprint">/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/yarn-site.xml</code>)文件内容如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;configuration&gt;
 &lt;property&gt;
@@ -468,9 +453,9 @@ desktop7
     [root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop6:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
     [root@desktop1 ~]# scp /opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/ desktop7:/opt/hadoop-2.0.0-cdh4.6.0/etc/hadoop/
 </code></pre></div>
-<h2>修改环境变量</h2>
+<h2 id="toc_8">修改环境变量</h2>
 
-<p>修改<code>/root/.bashrc</code>环境变量，并将其同步到其他几台机器</p>
+<p>修改<code class="prettyprint">/root/.bashrc</code>环境变量，并将其同步到其他几台机器</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~] # cat .bashrc 
 # .bashrc
 alias rm=&#39;rm -i&#39;
@@ -517,7 +502,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
     [root@desktop1 ~]# ssh desktop6 &#39;source .bashrc&#39;
     [root@desktop1 ~]# ssh desktop7 &#39;source .bashrc&#39;
 </code></pre></div>
-<h2>启动脚本</h2>
+<h2 id="toc_9">启动脚本</h2>
 
 <p>第一次启动hadoop需要先格式化NameNode，该操作只做一次。当修改了配置文件时，需要重新格式化</p>
 
@@ -540,7 +525,7 @@ export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$HI
 <div class="highlight"><pre><code class="text language-text" data-lang="text">http://desktop2:8042/
 http://desktop2:8042/node
 </code></pre></div>
-<h2>检查集群进程</h2>
+<h2 id="toc_10">检查集群进程</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[root@desktop1 ~]# jps
 5389 NameNode
 5980 Jps
@@ -554,13 +539,59 @@ http://desktop2:8042/node
 3124 DataNode
 5711 NodeManager
 </code></pre></div>
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop</a></li>
+     
+    	<li><a href="/tags.html#cdh-ref">cdh</a></li>
+     
+    	<li><a href="/tags.html#yarn-ref">yarn</a></li>
+     
+    	<li><a href="/tags.html#mapreduce-ref">mapreduce</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/hadoop/2013/03/08/note-about-installing-hadoop-cluster" title="【笔记】Hadoop安装部署">&laquo; Prev</a>
@@ -571,7 +602,7 @@ http://desktop2:8042/node
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -581,6 +612,7 @@ http://desktop2:8042/node
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -604,25 +636,26 @@ http://desktop2:8042/node
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -636,23 +669,10 @@ http://desktop2:8042/node
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

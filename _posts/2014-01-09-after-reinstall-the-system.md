@@ -11,15 +11,29 @@ tags: [gnome , linux]
 # 安装常用工具
 
 ```
-sudo apt-get install ctags curl git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
+sudo apt-get install ctags curl vsftpd git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
 ```
 
 # 安装ibus
 
-只需要安装gnome-language-selector ，不用安装im-switch，然后再允许im-config，设置之后注销登陆即可。
+在终端输入命令:
 
 ```
-sudo apt-get install gnome-language-selector 
+sudo add-apt-repository ppa:shawn-p-huang/ppa
+sudo apt-get update
+sudo apt-get install ibus-gtk ibus-pinyin ibus-pinyin-db-open-phrase
+```
+
+启用IBus框架:
+
+```
+im-switch -s ibus
+```
+
+启动ibus：
+
+```
+ibus-daemon
 ```
 
 # 安装gedit-markdown
@@ -29,8 +43,6 @@ wget https://gitorious.org/projets-divers/gedit-markdown/archive/master.zip
 cd master
 ./gedit-markdown.sh install
 ```
-
-<!-- more -->
 
 # 安装wiz
 
@@ -46,7 +58,7 @@ sudo apt-get install wiznote
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
 ```
 
-# 编辑 ~/.zshrc
+编辑`~/.zshrc`：
 
 ```
 PATH=$PATH:$HOME/.rvm/bin
@@ -100,6 +112,22 @@ gsettings set com.linuxmint.terminal show-fortunes true
 sudo chown -R june:june /chan
 ```
 
+# 重命名home下目录
+
+```
+mv ~/文档 ~/projects
+mv ~/音乐 ~/opt
+mv ~/图片 ~/tmp
+mv ~/视频 ~/workspace
+mv ~/下载 ~/download
+
+ln -s /chan/opt  ~/opt
+ln -s /chan/tmp   ~/tmp
+ln -s /chan/projects  ~/projects
+ln -s /chan/workspace  ~/workspace
+ln -s /chan/download    ~/download
+```
+
 # 配置ant、maven和ivy仓库
 
 ```
@@ -139,18 +167,3 @@ update-alternatives --set java /usr/java/latest
 source ~/.bashrc
 ```
 
-# 重命名home下目录
-
-```
-mv ~/文档 ~/projects
-mv ~/音乐 ~/opt
-mv ~/图片 ~/tmp
-mv ~/视频 ~/workspace
-mv ~/下载 ~/download
-
-ln -s /chan/opt  ~/opt
-ln -s /chan/tmp   ~/tmp
-ln -s /chan/projects  ~/projects
-ln -s /chan/workspace  ~/workspace
-ln -s /chan/download    ~/download
-```

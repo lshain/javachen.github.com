@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>DhtmlxGrid Quick Start Guide - JavaChen Blog</title>
-    <meta name="description" content="DhtmlxGrid Quick Start Guide"/>
+    <meta name="description" content="DhtmlxGrid Quick Start Guide">
     <meta name="keywords" content="dhtmlxGrid, javascript, dhtmlxTree"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/java/2011/07/19/dhtmlxgrid-quick-start-guide" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,24 +141,24 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>DhtmlxGrid Quick Start Guide </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">DhtmlxGrid Quick Start Guide </h1>
-      </header>
-	<div class="entry-content">
-	<p><span style="color: #ff0000;">说明:</span></p>
+    <div class="date">
+      <span>2011/07/19</span>
+    </div>
+    <div class="content">
+      <p><span style="color: #ff0000;">说明:</span></p>
 
-<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
+<p>本文来源于<a href="http://dhtmlx.com/docs/products/dhtmlxGrid/"><a href="http://dhtmlx.com/docs/products/dhtmlxGrid/">http://dhtmlx.com/docs/products/dhtmlxGrid/</a></a>，本人对其进行翻译整理成下文，贴出此文，紧供分享。</p>
 
 <p>dhtmlxGrid是一个拥有强大的数据绑定、优秀的大数据展示性能并支持ajax的JavaScript表格控件。该组件易于使用并通过富客户端的API提供了很大的扩展性。dhtmlxGrid支持不同的数据源（XML, JSON, CSV, JavaScript 数组和HTML表格），如果需要的话，还可以从自定义的xml中加载数据。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">跨浏览器
@@ -229,7 +214,7 @@ Cell支持数学方程式
 <li>使用dhtmlXGridObject构造方法创建一个基于我们之前创建的DIV的grid对象；</li>
 <li>设置grid图片路径。这个路径包括grid外观需要的所有图片。在大多数情况下该路径为“codebase/imgs/”. 该路径最后面的一个“/”很重要。 随便说一下，这个路径和你处理表格数据所使用的图片没有关系；</li>
 <li>使用setHeader 方法定义表头；</li>
-<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code>*</code>代表让列自动使用所有表格宽度；</li>
+<li>使用setInitWidths (单位为像素) 或setInitWidthsP (单位为百分比)定义列宽。 使用<code class="prettyprint">*</code>代表让列自动使用所有表格宽度；</li>
 <li>定义一个列的水平对其方式。 Numeric values is better to align right;</li>
 <li>使用setSkin方法设置皮肤；</li>
 <li>最好使用这些设置通过init方法初始化grid。更多的参数之后再讨论。</li>
@@ -360,8 +345,8 @@ sub_row：允许单元格作为一个可展开的子单元格，就想查看明�
 <p>两个扩展:</p>
 
 <ul>
-<li>sub<u>row</u>ajax – 单元格数据被认为是ajax请求的url</li>
-<li>sub<u>row</u>grid – 允许创建一个子表作为一个子行的内容</li>
+<li>sub_row_ajax – 单元格数据被认为是ajax请求的url</li>
+<li>sub_row_grid – 允许创建一个子表作为一个子行的内容</li>
 </ul>
 
 <p>现在你可以双击或是F2进入编辑模式，你可以用tab键在单元格之间导航。
@@ -435,13 +420,57 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
 &lt; div id=&quot;mygrid_container&quot; style=&quot;width:600px;height:150px;&quot;&gt;&lt; /div&gt;
 &lt; /body&gt;
 </code></pre></div>
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#java-ref">
+    		java
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#javascript-ref">javascript</a></li>
+     
+    	<li><a href="/tags.html#dhtmlxGrid-ref">dhtmlxGrid</a></li>
+     
+    	<li><a href="/tags.html#xml-ref">xml</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/cloud/2011/07/07/some-resources-about-openstack" title="网上收集的关于OpenStack的一些资源">&laquo; Prev</a>
@@ -452,7 +481,7 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -462,6 +491,7 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -485,25 +515,26 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -517,23 +548,10 @@ alert(&quot;Selected row ID is &quot;+rowID+&quot;\nUser clicked cell with index
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

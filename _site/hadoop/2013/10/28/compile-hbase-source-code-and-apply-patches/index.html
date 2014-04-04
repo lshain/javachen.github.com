@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>编译hbase源代码并打补丁 - JavaChen Blog</title>
-    <meta name="description" content="写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！"/>
+    <meta name="description" content="写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/hadoop/2013/10/28/compile-hbase-source-code-and-apply-patches" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,28 +141,28 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>编译hbase源代码并打补丁 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">编译hbase源代码并打补丁 </h1>
-      </header>
-	<div class="entry-content">
-	<p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
+    <div class="date">
+      <span>2013/10/28</span>
+    </div>
+    <div class="content">
+      <p>写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！</p>
 
-<h1>下载源代码</h1>
+<h1 id="toc_0">下载源代码</h1>
 
 <p>从<a href="https://github.com/cloudera/hbase">Cloudera github</a>上下载最新分支源代码，例如：当前最新分支为cdh4-0.94.6_4.4.0</p>
 
-<p>$ <code>
+<p>$ <code class="prettyprint">
 git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
 </code></p>
 
@@ -188,16 +173,16 @@ git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4
 <li>最后一个参数指定下载下来的文件名称</li>
 </ol>
 
-<h1>添加snappy压缩支持</h1>
+<h1 id="toc_1">添加snappy压缩支持</h1>
 
-<h2>编译snappy</h2>
+<h2 id="toc_2">编译snappy</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
 $ cd snappy
 $ sh autogen.sh
 $ ./configure 
 $ sudo make install
 </code></pre></div>
-<h2>编译hadoop-snappy</h2>
+<h2 id="toc_3">编译hadoop-snappy</h2>
 
 <p>降低gcc版本到4.4:</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo yum install gcc-4.4
@@ -218,11 +203,11 @@ $ make package -Dsnappy.prefix=/usr/local/
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT.jar
 $ mvn install:install-file -DgroupId=org.apache.hadoop -DartifactId=hadoop-snappy -Dversion=0.0.1-SNAPSHOT -Dclassifier=Linux-amd64-64 -Dpackaging=tar -Dfile=./target/hadoop-snappy-0.0.1-SNAPSHOT-Linux-amd64-64.tar
 </code></pre></div>
-<h1>添加lzo压缩支持</h1>
+<h1 id="toc_4">添加lzo压缩支持</h1>
 
 <p>暂不在此列出，请参考网上文章。</p>
 
-<h1>编译Protobuf</h1>
+<h1 id="toc_5">编译Protobuf</h1>
 
 <p>注意：目前只能装2.4.1版本的，装最新版本的可能会缺少文件。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ wget https://protobuf.googlecode.com/files/protobuf-2.4.1.zip
@@ -240,7 +225,7 @@ Missing input file.
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ protoc
 protoc: error while loading shared libraries: libprotobuf.so.7: cannot open shared object file: No such file or directory
 </code></pre></div>
-<h1>编译hbase</h1>
+<h1 id="toc_6">编译hbase</h1>
 
 <p>进入到cdh4-0.94.6_4.4.0 目录，然后运行mvn基本命令。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ cd cdh4-0.94.6_4.4.0
@@ -270,7 +255,7 @@ $ mvn clean install
 <p>综上，完整命令如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ MAVEN_OPTS=&quot;-Xmx2g&quot; mvn clean install javadoc:aggregate site assembly:single -DskipTests -Prelease,security,native,hadoop-snappy -Drat.numUnapprovedLicenses=200 -Dhadoop.profile=2.0 -Dhadoop-snappy.version=0.0.1-SNAPSHOT
 </code></pre></div>
-<h1>生成patch</h1>
+<h1 id="toc_7">生成patch</h1>
 
 <p>修改代码之后，在提交代码之前，运行如下命令生成patch：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ git diff &gt;../XXXXX.patch
@@ -284,7 +269,7 @@ $ mvn clean install
 <p>如果在提交之后，想生成patch，执行如下命令：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ git format-patch -1
 </code></pre></div>
-<p><code>git format-patch</code>的详细说明请参考：<a href="http://devillived.net/forum/home.php?mod=space&amp;uid=2&amp;do=blog&amp;id=211">git patch操作</a></p>
+<p><code class="prettyprint">git format-patch</code>的详细说明请参考：<a href="http://devillived.net/forum/home.php?mod=space&amp;uid=2&amp;do=blog&amp;id=211">git patch操作</a></p>
 
 <p>更多diff的命令如下：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">git diff &lt;file&gt;   # 比较当前文件和暂存区文件差异
@@ -295,7 +280,7 @@ git diff --staged   # 比较暂存区和版本库差异
 git diff --cached   # 比较暂存区和版本库差异
 git diff --stat     # 仅仅比较统计信息
 </code></pre></div>
-<h1>打patch</h1>
+<h1 id="toc_8">打patch</h1>
 
 <p>打patch：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ git apply ../XXXXX.patch
@@ -322,9 +307,9 @@ fatal: git apply: bad git-diff - expected /dev/null on line 4
 <li>对于传统的 diff 命令生成的补丁，则只能用 git apply 处理。对于 format-patch 制作的新式补丁，应当使用 git am 命令。</li>
 </ul>
 
-<h1>升级版本</h1>
+<h1 id="toc_9">升级版本</h1>
 
-<p>当你fork了<a href="https://github.com/cloudera/hbase">Cloudera github</a>代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为<code>cdh4-0.94.6_4.3.0</code>，而cdh最新分支为<code>cdh4-0.94.6_4.4.0</code>，现在如何将cdh上的分支下载到自己的参考呢？</p>
+<p>当你fork了<a href="https://github.com/cloudera/hbase">Cloudera github</a>代码之后，cloudera会继续更新代码、发布新的分支，如何将其最新的分支下载到自己的hbase仓库呢？例如，你的仓库中hbase最新分支为<code class="prettyprint">cdh4-0.94.6_4.3.0</code>，而cdh最新分支为<code class="prettyprint">cdh4-0.94.6_4.4.0</code>，现在如何将cdh上的分支下载到自己的参考呢？</p>
 
 <p>查看远程服务器地址和仓库名称：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ git remote -v
@@ -353,7 +338,7 @@ origin  git@github.com:javachen/hbase.git (push)
 <p>将其提交到自己的远程仓库：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">$ git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
 </code></pre></div>
-<h1>排错</h1>
+<h1 id="toc_10">排错</h1>
 
 <p>如果在启动hbase的服务过程中出现如下日志：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">2013-10-24 22:44:59,921 INFO org.apache.hadoop.hbase.util.VersionInfo: HBase Unknown
@@ -362,7 +347,7 @@ origin  git@github.com:javachen/hbase.git (push)
 </code></pre></div>
 <p>请查看src/saveVersion.sh文件的编码及换行符是否和你的操作系统一致。编码应该设置为UTF-8，如果你使用的是linux系统，则换行符应该为unix/linux换行符，不应该为window换行符。</p>
 
-<h1>参考文章</h1>
+<h1 id="toc_11">参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://robbinfan.com/blog/34/git-common-command">Git常用命令备忘</a></li>
@@ -371,13 +356,53 @@ origin  git@github.com:javachen/hbase.git (push)
 <li>[4] <a href="http://smilejay.com/2012/08/generate-a-patch-from-a-commit/">git根据commit生成patch</a></li>
 </ul>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#hbase-ref">hbase</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/hadoop/2013/10/17/run-mapreduce-with-client-user-in-hive-server2" title="hive-server2中使用jdbc客户端用户运行mapreduce">&laquo; Prev</a>
@@ -388,7 +413,7 @@ origin  git@github.com:javachen/hbase.git (push)
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -398,6 +423,7 @@ origin  git@github.com:javachen/hbase.git (push)
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -421,25 +447,26 @@ origin  git@github.com:javachen/hbase.git (push)
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -453,23 +480,10 @@ origin  git@github.com:javachen/hbase.git (push)
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

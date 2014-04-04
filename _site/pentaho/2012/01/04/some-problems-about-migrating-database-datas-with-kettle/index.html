@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>kettle进行数据迁移遇到的问题 - JavaChen Blog</title>
-    <meta name="description" content="使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。"/>
+    <meta name="description" content="使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。">
     <meta name="keywords" content="kettle, oracle, db2, mysql, pentaho"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/pentaho/2012/01/04/some-problems-about-migrating-database-datas-with-kettle" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,31 +141,31 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>kettle进行数据迁移遇到的问题 </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">kettle进行数据迁移遇到的问题 </h1>
-      </header>
-	<div class="entry-content">
-	<p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
+    <div class="date">
+      <span>2012/01/04</span>
+    </div>
+    <div class="content">
+      <p>使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。</p>
 
-<h4>同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
+<h4 id="toc_0">同时运行两个pdi程序，例如：一个为oracle到mysql，另一个为oracle到postgres，其中一个停止运行</h4>
 
 <ul>
 <li>原因：从oracle迁移到mysql创建的作业和转换文件和oracle到postgres的作业和转换保存到一个路径，导致同名称的转换相互之间被覆盖，故在运行时候会出现混乱。</li>
 <li>解决办法：将新建的作业和转换分别保存在两个不同的路径，最好是新建两个不同路径的仓库，关于如何新建仓库，请参考《kettle使用说明》文档。</li>
 </ul>
 
-<h4>关键字的问题。</h4>
+<h4 id="toc_1">关键字的问题。</h4>
 
 <p>Oracle初始化到mysql，关键字前面会加上前缀“MY_”。如果在建表的时候出现错误，则需要检查表的字段中是否有关键字。</p>
 
@@ -188,80 +173,122 @@
 <li>解决办法：出差的表单独进行处理，新建一个转换，实现关键字段该名称然后初始化出错的表。具体操作参见文档。</li>
 </ul>
 
-<h4>oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
+<h4 id="toc_2">oracle中的字段名从中可以有#号，但是到mysql会报错</h4>
 
 <ul>
 <li>解决办法：字段改名称，去掉#号</li>
 </ul>
 
-<h4>Db2初始化到mysql或是postgres出错</h4>
+<h4 id="toc_3">Db2初始化到mysql或是postgres出错</h4>
 
 <ul>
 <li>原因：1）db2数据库连接用户没有权限访问出错的表；2）出错的表名存在小写字母</li>
 <li>解决办法：使用更新后的pdi程序，更新后的程序会将db2的表名使用双引号括起来。</li>
 </ul>
 
-<h4>Oracle到mysql和pg时日期类型数据值有偏差</h4>
+<h4 id="toc_4">Oracle到mysql和pg时日期类型数据值有偏差</h4>
 
 <ul>
 <li>原因：从oracle中读取日期类型的数据时候，读取结果与oracle数据库中的数据已经存在偏差。少数记录使用oracle10g的驱动读取数据少一个小时，用oracle11g的驱动会多一个小时，该问题尚待oracle工程师给出解决方案。</li>
 </ul>
 
-<h4>主键从ORACLE导入不到MYSQL和POSTGRES</h4>
+<h4 id="toc_5">主键从ORACLE导入不到MYSQL和POSTGRES</h4>
 
 <ul>
 <li>原因：pdi程序中没有对主键进行处理</li>
 <li>解决办法：使用更新的pdi程序，执行Tools####Wizzard####Copy Tables Extension...功能添加主键；执行Tools####Wizzard####Copy Tables Data Only...功能可以只复制数据</li>
 </ul>
 
-<h4>Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
+<h4 id="toc_6">Oracle中存在ascii字符导入到postgres时候报错：ERROR: invalid byte sequence for encoding &quot;UTF8&quot;: 0x00</h4>
 
 <ul>
 <li>原因：PostgreSQL内部采用C语言风格的字符串（以0x00）表示结尾，因而不允许字符串中包括0x00，建议在转换时先对字符串类型的数据进行清洗，也就是增加一个节点用于删除字符串数据中的特殊字符0x00。</li>
 <li>解决办法:使用新的pdi程序。在kettle的DataBase类中修改PreparedStatement.setString(int index,String value)方法传入的参数，将value的值trim之后在setString</li>
 </ul>
 
-<h4>异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
+<h4 id="toc_7">异构数据库之间的类型兼容问题。日期类型和时间类型的数据初始化到mysql或postgres中都为时间类型的数据，导致数据对比时候数据不一致。</h4>
 
 <ul>
 <li>原因：Pdi程序中的类型转换采用的是向上兼容的方式，故日期和时间类型都转换为时间类型数据。</li>
 <li>解决办法：针对与db2数据初始化到mysql和postgres，该问题在最新的pdi程序中已经处理。因为oracle中的日期类型字段既可以存日期又可以存时间，故没针对oracle数据做出处理。</li>
 </ul>
 
-<h4>Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
+<h4 id="toc_8">Db2中没有主键的数据初始化到mysql和postgres需要添加索引</h4>
 
 <ul>
 <li>解决办法：使用最新的pdi程序，最新的pdi程序会添加主键和索引。</li>
 </ul>
 
-<h4>Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
+<h4 id="toc_9">Db2中decimal（n,m）类型的数据初始化到postgres数据库被四舍五入。</h4>
 
 <ul>
 <li>原因：Db2中decimal（n,m）类型的数据初始化到postgres中的类型不对。</li>
 <li>解决办法：使用最新的pdi程序。</li>
 </ul>
 
-<h4>导数据中途时没有报错，直接软件退出</h4>
+<h4 id="toc_10">导数据中途时没有报错，直接软件退出</h4>
 
 <ul>
 <li>原因：1）jvm内存溢出，需要修改jvm参数；2）pdi程序报swt错误</li>
 <li>解决办法：修改jvm参数</li>
 </ul>
 
-<h4>初次使用kettle做db2的初始化会报错</h4>
+<h4 id="toc_11">初次使用kettle做db2的初始化会报错</h4>
 
 <ul>
 <li>原因：kettle中的db2的jdbc驱动与使用的db2版本不对应。</li>
 <li>解决办法：从db2的安装目录下拷贝jdbc驱动到kettle目录（libext/JDBC）下</li>
 </ul>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#pentaho-ref">
+    		pentaho
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#pentaho-ref">pentaho</a></li>
+     
+    	<li><a href="/tags.html#kettle-ref">kettle</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/pentaho/2011/12/07/mondrian-and-olap" title="Mondrian and OLAP">&laquo; Prev</a>
@@ -272,7 +299,7 @@
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -282,6 +309,7 @@
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -305,25 +333,26 @@
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -337,23 +366,10 @@
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 

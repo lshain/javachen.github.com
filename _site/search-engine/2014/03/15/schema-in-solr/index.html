@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+
     <title>Solr的schema.xml - JavaChen Blog</title>
-    <meta name="description" content="schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。"/>
+    <meta name="description" content="schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。">
     <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
-    <meta name="author" content="JavaChen"/>
+    <meta name="author" content="JavaChen">
     <meta name="copyright" content="© http://blog.javachen.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="baidu-site-verification" content="3HAhaWRiyR" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
@@ -19,53 +19,45 @@
     <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
     <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
-    <link href="/assets/themes/javachen/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/assets/themes/javachen/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
 
-    <!-- fav and touch icons -->
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="canonical" href="http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr" />
-    <!-- Update these with your own images
-    <link rel="shortcut icon" href="images/favicon.png" />
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-    -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
 
-    <!-- atom & rss feed -->
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="JavaChen Blog ATOM Feed" />
-    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="JavaChen Blog RSS Feed" />
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
-      </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          
-          
-          
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
 
 
   
     
       
       	
-			
-				<li><a href="/tags.html">Tags</a></li>
-			
+      	<li><a href="/tags.html">Tags</a></li>
       	
       
     
@@ -83,9 +75,7 @@
     
       
       	
-			
-				<li><a href="/categories.html">Categories</a></li>
-			
+      	<li><a href="/categories.html">Categories</a></li>
       	
       
     
@@ -93,9 +83,7 @@
     
       
       	
-			
-				<li><a href="/archive.html">Archive</a></li>
-			
+      	<li><a href="/archive.html">Archive</a></li>
       	
       
     
@@ -115,9 +103,7 @@
     
       
       	
-			
-				<li><a href="/about.html">About</a></li>
-			
+      	<li><a href="/about.html">About</a></li>
       	
       
     
@@ -141,10 +127,9 @@
 
 
 
+          </ul>
 
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
+ 		 <ul class="nav navbar-nav navbar-right">
           <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
           
             <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
@@ -156,24 +141,24 @@
             <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
           
         </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container">
-      <div class="content">
-        
-<div class="row">
+      
+<div class="page-header">
+  <h1>Solr的schema.xml </h1>
+</div>
 
+<div class="row post-full">
   <div class="col-md-12">
-    <article class="page-header-wrapper">
-      <header class="page-header">
-        <h1 class="entry-title">Solr的schema.xml </h1>
-      </header>
-	<div class="entry-content">
-	<p>schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。这个文件被存储在Solr主文件夹下的conf目录下，默认的路径<code>./solr/conf/schema.xml</code>，也可以是Solr webapp的类加载器所能确定的路径。在下载的Solr包里，有一个schema的样例文件，用户可以从那个文件出发，来观察如何编写自己的Schema.xml。</p>
+    <div class="date">
+      <span>2014/03/15</span>
+    </div>
+    <div class="content">
+      <p>schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。这个文件被存储在Solr主文件夹下的conf目录下，默认的路径<code class="prettyprint">./solr/conf/schema.xml</code>，也可以是Solr webapp的类加载器所能确定的路径。在下载的Solr包里，有一个schema的样例文件，用户可以从那个文件出发，来观察如何编写自己的Schema.xml。</p>
 
-<h1>type节点</h1>
+<h1 id="toc_0">type节点</h1>
 
 <p>先来看下type节点，这里面定义FieldType子节点，包括name、class、positionIncrementGap等一些参数。必选参数：</p>
 
@@ -219,7 +204,7 @@
     <span class="nt">&lt;/analyzer&gt;</span>
 <span class="nt">&lt;/fieldType&gt;</span>
 </code></pre></div>
-<h1>filed节点</h1>
+<h1 id="toc_1">filed节点</h1>
 
 <p>filed节点用于定义数据源字段所使用的搜索类型与相关设置。含有以下属性</p>
 
@@ -236,7 +221,7 @@
 <li>default：如果没有属性需要修改，就可以用这个标识下。</li>
 </ul>
 
-<h1>copyField节点</h1>
+<h1 id="toc_2">copyField节点</h1>
 
 <p>如果我们的搜索需要搜索多个字段该怎么办呢？这时候，我们就可以使用copyField。代码如下：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;copyField</span> <span class="na">source=</span><span class="s">&quot;name&quot;</span> <span class="na">dest=</span><span class="s">&quot;all&quot;</span> <span class="nt">/&gt;</span>
@@ -255,45 +240,85 @@
 
 <p>copyField节点和field节点都在fields节点之内。</p>
 
-<h1>dynamicField节点</h1>
+<h1 id="toc_3">dynamicField节点</h1>
 
 <p>动态字段，没有具体名称的字段，用dynamicField字段</p>
 
-<p>如：name为<code>*_i</code>，定义它的type为int，那么在使用这个字段的时候，任务以<code>_i</code>结果的字段都被认为符合这个定义。如<code>name_i</code>、 <code>school_i</code></p>
+<p>如：name为<code class="prettyprint">*_i</code>，定义它的type为int，那么在使用这个字段的时候，任务以<code class="prettyprint">_i</code>结果的字段都被认为符合这个定义。如<code class="prettyprint">name_i</code>、 <code class="prettyprint">school_i</code></p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;dynamicField</span> <span class="na">name=</span><span class="s">&quot;*_i&quot;</span>  <span class="na">type=</span><span class="s">&quot;int&quot;</span>    <span class="na">indexed=</span><span class="s">&quot;true&quot;</span>  <span class="na">stored=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span> 
 <span class="nt">&lt;dynamicField</span> <span class="na">name=</span><span class="s">&quot;*_s&quot;</span>  <span class="na">type=</span><span class="s">&quot;string&quot;</span>  <span class="na">indexed=</span><span class="s">&quot;true&quot;</span>  <span class="na">stored=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;dynamicField</span> <span class="na">name=</span><span class="s">&quot;*_l&quot;</span>  <span class="na">type=</span><span class="s">&quot;long&quot;</span>   <span class="na">indexed=</span><span class="s">&quot;true&quot;</span>  <span class="na">stored=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
 </code></pre></div>
-<h1>uniqueKey节点</h1>
+<h1 id="toc_4">uniqueKey节点</h1>
 
 <p>solr必须设置一个唯一字段，常设置为id，此唯一一段有uniqueKey节点指定。</p>
 
 <p>例如：</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;uniqueKey&gt;</span>id<span class="nt">&lt;/uniqueKey&gt;</span>
 </code></pre></div>
-<h1>defaultSearchField节点</h1>
+<h1 id="toc_5">defaultSearchField节点</h1>
 
 <p>默认搜索的字段，我们已经将需要搜索的字段拷贝至all字段了，在这里设为all即可。</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;defaultSearchField&gt;</span>all<span class="nt">&lt;/defaultSearchField&gt;</span>
 </code></pre></div>
-<h1>solrQueryParser节点</h1>
+<h1 id="toc_6">solrQueryParser节点</h1>
 
 <p>默认搜索操作符参数，及搜索短语间的逻辑，用AND增加准确率，用OR增加覆盖面，建议用AND，也可在搜索语句中定义。例如搜索“手机 苹果”，使用AND默认搜索为“手机AND苹果“。</p>
 <div class="highlight"><pre><code class="xml language-xml" data-lang="xml"><span class="nt">&lt;solrQueryParser</span> <span class="na">defaultOperator=</span><span class="s">&quot;OR&quot;</span><span class="nt">/&gt;</span> 
 </code></pre></div>
-<h1>参考文章</h1>
+<h1 id="toc_7">参考文章</h1>
 
 <ul>
 <li>[1] <a href="http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html">Solr配置，schema.xml的配置，以及中文分词</a></li>
 </ul>
 
+    </div>
 
-	-EOF-
-	</div>
-    </article>
-    <hr>
-    <div class="row status">
-      <div class="col-md-6">
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#search-engine-ref">
+    		search-engine
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#solr-ref">solr</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
         <div class="btn-group">
           
             <a class="btn btn-default btn-sm" href="/search-engine/2014/03/14/split-chinese-in-solr" title="在Solr中使用中文分词">&laquo; Prev</a>
@@ -304,7 +329,7 @@
           
         </div>
       </div>
-      <div class="col-md-6 visible-lg visible-md">
+      <div class="col-md-3 visible-lg visible-md">
         <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
           <a class="bds_tsina"></a>
           <a class="bds_tqq"></a>
@@ -314,6 +339,7 @@
         </div>
       </div>
     </div>
+    <hr>
     
 
 
@@ -337,25 +363,26 @@
 
 
   </div>
-
 </div>
 
 
-      </div>
-
-      <footer class="text-left">
-        <p>&copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>. Help from <a href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll </a>| <script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
 <noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
-</p>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
       </footer>
-            <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+    </div>
 
-    </div> <!-- /container -->
-
-    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/assets/themes/javachen/js/main.js"></script>
         <!-- Baidu Button BEGIN -->
     <script type="text/javascript" id="bdshell_js"></script>
     <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
@@ -369,23 +396,10 @@
     </script>
     <!-- Baidu Button END -->
 
-    
-
-
-  <script type="text/javascript">
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?83708c1ec341327ce3307ac0dd35e4f0";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-
-
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
   </body>
 </html>
 
