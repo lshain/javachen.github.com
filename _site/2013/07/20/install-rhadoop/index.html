@@ -284,7 +284,7 @@ src/thrift/qt/moc_TQTcpServer.cpp:16:2: error: #error &quot;(The moc has changed
 <p>则运行下面命令：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">#mv thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp  thrift-0.9.0/lib/cpp/src/thrift/qt/moc_TQTcpServer.cpp.bak
 </code></pre></div>
-<h2 id="toc_11">配置PKG_CONFIG_PATH</h2>
+<h2 id="toc_11">配置PKG<em>CONFIG</em>PATH</h2>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
 pkg-config --cflags thrift    #返回：-I/usr/local/include/thrift为正确
 cp /usr/local/lib/libthrift-0.9.0.so /usr/lib/
@@ -449,7 +449,6 @@ rhive.env()
         </div>
       </div>
     </div>
-    <hr>
     
 
 

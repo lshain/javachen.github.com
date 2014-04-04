@@ -189,9 +189,9 @@
 <h1 id="toc_1">检索运算符</h1>
 
 <ul>
-<li>&quot;:&quot; 指定字段查指定值，如返回所有值*:*</li>
+<li>&quot;:&quot; 指定字段查指定值，如返回所有值<em>:</em></li>
 <li>&quot;?&quot; 表示单个任意字符的通配</li>
-<li>&quot;*&quot; 表示多个任意字符的通配（不能在检索的项开始使用*或者?符号）</li>
+<li>&quot;<em>&quot; 表示多个任意字符的通配（不能在检索的项开始使用</em>或者?符号）</li>
 <li>&quot;~&quot; 表示模糊检索，如检索拼写类似于&quot;roam&quot;的项这样写：roam~将找到形如foam和roams的单词；roam~0.8，检索返回相似度在0.8以上的记录。
 邻近检索，如检索相隔10个单词的&quot;apache&quot;和&quot;jakarta&quot;，&quot;jakarta apache&quot;~10</li>
 <li>&quot;<sup>&quot;</sup> 控制相关度检索，如检索jakarta apache，同时希望去让&quot;jakarta&quot;的相关度更加好，那么在其后加上&quot;<sup>&quot;符号和增量值，即jakarta<sup>4</sup></sup> apache</li>
@@ -316,7 +316,6 @@ http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;fq=category
         </div>
       </div>
     </div>
-    <hr>
     
 
 

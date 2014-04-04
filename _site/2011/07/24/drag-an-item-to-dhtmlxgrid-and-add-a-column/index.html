@@ -166,23 +166,23 @@
 }
 tree = new dhtmlXTreeObject(&quot;treeboxbox_tree&quot;, &quot;100%&quot;, &quot;100%&quot;, 0);</p>
 
-<p>tree.setSkin(&#39;dhx_skyblue&#39;);
-tree.setImagePath(&quot;../../codebase/imgs/csh_yellowbooks/&quot;);
+<p>tree.setSkin(&#39;dhx<em>skyblue&#39;);
+tree.setImagePath(&quot;../../codebase/imgs/csh</em>yellowbooks/&quot;);
 tree.enableDragAndDrop(true);
 tree.setDragHandler(maf);
 tree.enableSmartXMLParsing(true);
-tree.loadXML(&quot;../common/tree_05_drag_n_drop.xml&quot;);</p>
+tree.loadXML(&quot;../common/tree<em>05</em>drag<em>n</em>drop.xml&quot;);</p>
 
-<p>function s_control() {
-    this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+<p>function s<em>control() {
+    this.</em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
         targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this._dragIn = function(htmlObject, shtmlObject) {
+    this.<em>dragIn = function(htmlObject, shtmlObject) {
         htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
-    this._dragOut = function(htmlObject) {
+    this.</em>dragOut = function(htmlObject) {
         htmlObject.style.backgroundColor = &quot;&quot;;
         return this;
     }
@@ -198,11 +198,11 @@ tree.dragger.addDragLanding(sinput, new s_control);
 <pre escaped="true" lang="javascript" line="1">tree.dragger.addDragLanding(sinput, new s_control);</pre></p>
 
 <p>从上面的字母意思可以看出，是在tree的拖拽对象dragger对象上添加一个拖拽着地对象，第一个常数是指拖拽到哪一个区域，第二个常数定义拖拽的三个方法：
-<pre escaped="true" lang="javascript" line="1">    this._drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
+<pre escaped="true" lang="javascript" line="1">    this.<em>drag = function(sourceHtmlObject, dhtmlObject, targetHtmlObject) {
         targetHtmlObject.style.backgroundColor = &quot;&quot;;
         targetHtmlObject.value = sourceHtmlObject.parentObject.label;
     }
-    this._dragIn = function(htmlObject, shtmlObject) {
+    this.</em>dragIn = function(htmlObject, shtmlObject) {
         htmlObject.style.backgroundColor = &quot;#fffacd&quot;;
         return htmlObject;
     }
@@ -388,7 +388,6 @@ Custom Drag Out：<a href="http://www.dhtmlx.com/docs/products/dhtmlxTree/sample
         </div>
       </div>
     </div>
-    <hr>
     
 
 

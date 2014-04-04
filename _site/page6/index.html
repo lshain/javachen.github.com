@@ -346,7 +346,7 @@ http://rhel-june:50070/
 如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
 
 <p>完成上述准备工作后，运行：
-    rake setup_github_pages
+    rake setup<em>github</em>pages
 它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：<a href="https://github.com/javachen/javachen.github.com.git%EF%BC%8Cjavachen.github.com%E6%98%AF%E6%88%91%E7%9A%84Repository%E7%9A%84%E5%90%8D%E7%A7%B0%E3%80%82">https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</a></p>
 
 <h1 id="toc_2">Step3 - 配置你的博客</h1>
@@ -416,9 +416,9 @@ Octopress提供的所有rake方法，可以运行<code class="prettyprint">rake 
     <a href="http://XXXXXXXXX.com/%5Byear%5D/%5Bmonth%5D/%5Bthe-long-long-title%5D.html">http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html</a>
     <a href="http://XXXXXXXXX.com/page/xx/">http://XXXXXXXXX.com/page/xx/</a>
     <a href="http://XXXXXXXXX.com/category/%5Bcategory-name%5D/">http://XXXXXXXXX.com/category/[category-name]/</a>
-这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到_config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
+这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到<em>config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
     permalink: /:year/:month/:title/
-    category_dir: category
+    category</em>dir: category
     pagination_dir:  # 留空</p>
 
 <h3 id="toc_11">迁移评论</h3>
@@ -558,8 +558,8 @@ AND column_metadata = [
 {column_name: birth_year, validation_class: LongType}
 ];
 </code></pre></div>
-<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full_name，email,state,gender,birth_year.comparator, key_validation_class和validation_class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
-下面命令创建一个名称为 blog_entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
+<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
 </code></pre></div>
 <h1>Creating a Counter Column Family</h1>

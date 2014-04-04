@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Sat, 05 Apr 2014 01:11:08 +0800</lastBuildDate>
-		<pubDate>Sat, 05 Apr 2014 01:11:08 +0800</pubDate>
+		<lastBuildDate>Sat, 05 Apr 2014 01:26:16 +0800</lastBuildDate>
+		<pubDate>Sat, 05 Apr 2014 01:26:16 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -306,7 +306,7 @@ Total:     4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;从上可以看出成功了4个，失败为0。&lt;/p&gt;
 
-&lt;p&gt;安装了jdk之后，需要重启minion(还需要**修改minion启动脚本，让minion加载上系统环境变量**，详细说明，见&lt;a href=&quot;/linux/2013/11/11/install-saltstack-and-halite/&quot;&gt;安装SaltStack和halite&lt;/a&gt;)才能通过下面脚本运行java相关的命令，如java、jps等等：&lt;/p&gt;
+&lt;p&gt;安装了jdk之后，需要重启minion(还需要&lt;strong&gt;修改minion启动脚本，让minion加载上系统环境变量&lt;/strong&gt;，详细说明，见&lt;a href=&quot;/linux/2013/11/11/install-saltstack-and-halite/&quot;&gt;安装SaltStack和halite&lt;/a&gt;)才能通过下面脚本运行java相关的命令，如java、jps等等：&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;python language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;salt&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;jps&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;否则，你需要通过下面脚本来执行：&lt;/p&gt;
@@ -560,7 +560,7 @@ jdk-rmzip:
 
 &lt;p&gt;&lt;strong&gt;总结：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;以上代码是模拟手机版微博的登陆，如果你想**模拟登陆网页版的微博**，你可以参考下面两个项目中的代码：&lt;/p&gt;
+&lt;p&gt;以上代码是模拟手机版微博的登陆，如果你想&lt;strong&gt;模拟登陆网页版的微博&lt;/strong&gt;，你可以参考下面两个项目中的代码：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/chineking/cola/blob/master/contrib/weibo/login.py&quot;&gt;cola&lt;/a&gt;&lt;/li&gt;
@@ -833,7 +833,7 @@ jdk-rmzip:
 
 &lt;p&gt;GoogleCode地址：&lt;a href=&quot;http://code.google.com/p/mmseg4j/&quot;&gt;http://code.google.com/p/mmseg4j/&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;请下载最新版本：mmseg4j-1.9.1，然后将mmseg4j-1.9.1/dist下的jar包拷贝至solr.war的lib目录，例如：*apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/*&lt;/p&gt;
+&lt;p&gt;请下载最新版本：mmseg4j-1.9.1，然后将mmseg4j-1.9.1/dist下的jar包拷贝至solr.war的lib目录，例如：&lt;em&gt;apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/&lt;/em&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_1&quot;&gt;配置schema.xml&lt;/h1&gt;
 
@@ -1779,9 +1779,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 &lt;h1 id=&quot;toc_1&quot;&gt;检索运算符&lt;/h1&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&amp;quot;:&amp;quot; 指定字段查指定值，如返回所有值*:*&lt;/li&gt;
+&lt;li&gt;&amp;quot;:&amp;quot; 指定字段查指定值，如返回所有值&lt;em&gt;:&lt;/em&gt;&lt;/li&gt;
 &lt;li&gt;&amp;quot;?&amp;quot; 表示单个任意字符的通配&lt;/li&gt;
-&lt;li&gt;&amp;quot;*&amp;quot; 表示多个任意字符的通配（不能在检索的项开始使用*或者?符号）&lt;/li&gt;
+&lt;li&gt;&amp;quot;&lt;em&gt;&amp;quot; 表示多个任意字符的通配（不能在检索的项开始使用&lt;/em&gt;或者?符号）&lt;/li&gt;
 &lt;li&gt;&amp;quot;~&amp;quot; 表示模糊检索，如检索拼写类似于&amp;quot;roam&amp;quot;的项这样写：roam~将找到形如foam和roams的单词；roam~0.8，检索返回相似度在0.8以上的记录。
 邻近检索，如检索相隔10个单词的&amp;quot;apache&amp;quot;和&amp;quot;jakarta&amp;quot;，&amp;quot;jakarta apache&amp;quot;~10&lt;/li&gt;
 &lt;li&gt;&amp;quot;&lt;sup&gt;&amp;quot;&lt;/sup&gt; 控制相关度检索，如检索jakarta apache，同时希望去让&amp;quot;jakarta&amp;quot;的相关度更加好，那么在其后加上&amp;quot;&lt;sup&gt;&amp;quot;符号和增量值，即jakarta&lt;sup&gt;4&lt;/sup&gt;&lt;/sup&gt; apache&lt;/li&gt;

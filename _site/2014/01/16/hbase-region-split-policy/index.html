@@ -222,7 +222,7 @@ enable &#39;t&#39;
 
 <p><em>举个例子：</em></p>
 
-<p>假设使用hbase.hregion.memstore.flush.size 128M, hregion.max.filesize为10G， 那么每次region增长情况为：512M,1152M,2G,3,2G,4,6G,6,2G,etc。当region增长到9个时，9*9*128M/1024=10.125G &gt;10G,至此以后region split大小都固定为10G。</p>
+<p>假设使用hbase.hregion.memstore.flush.size 128M, hregion.max.filesize为10G， 那么每次region增长情况为：512M,1152M,2G,3,2G,4,6G,6,2G,etc。当region增长到9个时，9<em>9</em>128M/1024=10.125G &gt;10G,至此以后region split大小都固定为10G。</p>
 
 <h2 id="toc_4">配置拆分策略</h2>
 
@@ -324,7 +324,6 @@ admin.enableTable( &quot;test&quot;);
         </div>
       </div>
     </div>
-    <hr>
     
 
 
