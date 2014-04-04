@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Apache Solr查询语法 - JavaChen Blog</title>
+    <meta name="description" content="Apache Solr查询语法">
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2014/03/03/solr-query-syntax" />
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+
+ 		 <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      
+<div class="page-header">
+  <h1>Apache Solr查询语法 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-md-12">
+    <div class="date">
+      <span>2014/03/03</span>
+    </div>
+    <div class="content">
+      <h1 id="toc_0">查询参数</h1>
+
+<p>常用：</p>
+
+<ul>
+<li>q - 查询字符串，必须的。</li>
+<li>fl - 指定返回那些字段内容，用逗号或空格分隔多个。</li>
+<li>start - 返回第一条记录在完整找到结果中的偏移位置，0开始，一般分页用。</li>
+<li>rows - 指定返回结果最多有多少条记录，配合start来实现分页。</li>
+<li>sort - 排序，格式：<code class="prettyprint">sort=&lt;field name&gt;+&lt;desc|asc&gt;[,&lt;field name&gt;+&lt;desc|asc&gt;]</code>。示例：（inStock desc, price asc）表示先 &quot;inStock&quot; 降序, 再 &quot;price&quot; 升序，默认是相关性降序。</li>
+<li>wt - (writer type)指定输出格式，可以有 xml, json, php, phps。</li>
+<li>fq - （filter query）过虑查询，作用：在q查询符合结果中同时是fq查询符合的，例如：<code class="prettyprint">q=mm&amp;fq=date_time:[20081001 TO 20091031]</code>，找关键字mm，并且date_time是20081001到20091031之间的</li>
+</ul>
+
+<p>不常用：</p>
+
+<ul>
+<li>defType：</li>
+<li>q.op - 覆盖schema.xml的defaultOperator（有空格时用&quot;AND&quot;还是用&quot;OR&quot;操作逻辑），一般默认指定</li>
+<li>df - 默认的查询字段，一般默认指定</li>
+<li>qt - （query type）指定那个类型来处理查询请求，一般不用指定，默认是standard。</li>
+</ul>
+
+<p>其它：</p>
+
+<ul>
+<li>indent - 返回的结果是否缩进，默认关闭，用 indent=true|on 开启，一般调试json,php,phps,ruby输出才有必要用这个参数。</li>
+<li>version - 查询语法的版本，建议不使用它，由服务器指定默认值。</li>
+</ul>
+
+<h1 id="toc_1">检索运算符</h1>
+
+<ul>
+<li>&quot;:&quot; 指定字段查指定值，如返回所有值*:*</li>
+<li>&quot;?&quot; 表示单个任意字符的通配</li>
+<li>&quot;*&quot; 表示多个任意字符的通配（不能在检索的项开始使用*或者?符号）</li>
+<li>&quot;~&quot; 表示模糊检索，如检索拼写类似于&quot;roam&quot;的项这样写：roam~将找到形如foam和roams的单词；roam~0.8，检索返回相似度在0.8以上的记录。
+邻近检索，如检索相隔10个单词的&quot;apache&quot;和&quot;jakarta&quot;，&quot;jakarta apache&quot;~10</li>
+<li>&quot;<sup>&quot;</sup> 控制相关度检索，如检索jakarta apache，同时希望去让&quot;jakarta&quot;的相关度更加好，那么在其后加上&quot;<sup>&quot;符号和增量值，即jakarta<sup>4</sup></sup> apache</li>
+<li>布尔操作符AND、||</li>
+<li>布尔操作符OR、&amp;&amp;</li>
+<li>布尔操作符NOT、!、-（排除操作符不能单独与项使用构成查询）</li>
+<li>&quot;+&quot; 存在操作符，要求符号&quot;+&quot;后的项必须在文档相应的域中存在</li>
+<li>() 用于构成子查询</li>
+<li>[] 包含范围检索，如检索某时间段记录，包含头尾，date:[200707 TO 200710]</li>
+<li>{}不包含范围检索，如检索某时间段记录，不包含头尾，date:{200707 TO 200710}</li>
+<li>&quot; 转义操作符，特殊字符包括+ - &amp;&amp; || ! ( ) { } [ ] ^ &quot; ~ * ? : &quot;</li>
+</ul>
+
+<h1 id="toc_2">示例</h1>
+
+<ul>
+<li>1. 查询所有</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*
+</code></pre></div>
+<ul>
+<li>2. 限定返回字段</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId
+</code></pre></div>
+<p>表示：查询所有记录，只返回productId字段</p>
+
+<ul>
+<li>3. 分页</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0
+</code></pre></div>
+<p>表示：查询前六条记录，只返回productId字段</p>
+
+<ul>
+<li>4. 增加限定条件</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0&amp;fq=category:2002&amp;fq=namespace:d&amp;fl=productId+category&amp;fq=en_US_city_i:1101
+</code></pre></div>
+<p>表示：查询category=2002、<code class="prettyprint">en_US_city_i=110</code>以及namespace=d的前六条记录，只返回productId和category字段</p>
+
+<ul>
+<li>5. 添加排序</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;rows=6&amp;start=0&amp;fq=category:2002&amp;fq=namespace:d&amp;sort=category_2002_sort_i+asc
+</code></pre></div>
+<p>表示：查询category=2002以及namespace=d并按<code class="prettyprint">category_2002_sort_i</code>升序排序的前六条记录，只返回productId字段</p>
+
+<ul>
+<li>6. facet查询</li>
+</ul>
+
+<p>现实分组统计结果</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;fq=category:2002&amp;facet=true&amp;facet.field=en_US_county_i&amp;facet.field=en_US_hotelType_s&amp;facet.field=price_p&amp;facet.field=heatRange_i
+
+http://localhost:8080/solr/primary/select?q=*:*&amp;fl=productId&amp;fq=category:2002&amp;facet=true&amp;facet.field=en_US_county_i&amp;facet.field=en_US_hotelType_s&amp;facet.field=price_p&amp;facet.field=heatRange_i&amp;facet.query=price_p:[300.00000+TO+*]
+</code></pre></div>
+    </div>
+
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#search-engine-ref">
+    		search-engine
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#solr-ref">solr</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2014/02/26/how-to-install-solr" title="Apache Solr介绍及安装">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2014/03/06/summary-of-the-work-in-2013" title="2013年度年终总结">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-3 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="Apache Solr查询语法 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+</div>
+
+
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+      </footer>
+    </div>
+
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
+  </body>
+</html>
+

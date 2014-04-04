@@ -1,0 +1,1056 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>从yum安装Cloudera CDH集群 - JavaChen Blog</title>
+    <meta name="description" content="记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。">
+    <meta name="keywords" content="pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript"/>
+    <meta name="author" content="JavaChen">
+    <meta name="copyright" content="© http://blog.javachen.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="all"/>
+    <link href="//cdn.staticfile.org/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"media="all">
+    <link href="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" media="all" />
+    <link href="/assets/themes/bootstrap/css/style-min.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/assets/themes/bootstrap/css/pygments-min.css" rel="stylesheet" type="text/css" media="all" />
+  
+    <!--[if lt IE 9]>
+      <script src="/assets/themes/bootstrap/resources/respond/Respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="canonical" href="http://blog.javachen.com/2013/04/06/install-cloudera-cdh-by-yum" />
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="JavaChen Blog">JavaChen Blog</a>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about.html">About</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+
+ 		 <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://blog.javachen.com/rss.xml" target="_blank" title="RSS"><span class="icon-rss icon-large"></span></a></li>
+          
+            <li><a href="https://github.com/javachen" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>
+          
+          
+          
+          
+          
+            <li><a href="http://weibo.com/chenzhijun" target="_blank" title="Weibo"><span class="icon-weibo icon-large"></span></a></li>
+          
+        </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      
+<div class="page-header">
+  <h1>从yum安装Cloudera CDH集群 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-md-12">
+    <div class="date">
+      <span>2013/04/06</span>
+    </div>
+    <div class="content">
+      <p>记录使用yum通过rpm方式安装Cloudera CDH中的hadoop、yarn、HBase，需要注意初始化namenode之前需要手动创建一些目录并设置权限。</p>
+
+<p>集群规划为3个节点，每个节点的ip、主机名和部署的组件分配如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    192.168.0.1        node1     NameNode、Hive、ResourceManager
+    192.168.0.2        node2     SSNameNode
+    192.168.0.3        node3     DataNode、HBase、NodeManager
+</code></pre></div>
+<h1 id="toc_0">0.环境准备</h1>
+
+<p>1.设置hosts</p>
+
+<p>临时设置hostname，以node1为例</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ sudo hostname node1
+</code></pre></div>
+<p>确保<code class="prettyprint">/etc/hosts</code>中包含ip和FQDN，如果你在使用DNS，保存这些信息到<code class="prettyprint">/etc/hosts</code>不是必要的，却是最佳实践。</p>
+
+<p>确保<code class="prettyprint">/etc/sysconfig/network</code>中包含hostname=node1</p>
+
+<p>检查网络，运行下面命令检查是否配置了hostname以及其对应的ip是否正确。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$  host -v -t A `hostname` 
+</code></pre></div>
+<p>hadoop的配置文件<code class="prettyprint">core-site.xml</code>、<code class="prettyprint">mapred-site.xml</code>和<code class="prettyprint">yarn-site.xml</code>配置节点时，请使用hostname和不是ip</p>
+
+<p>2.关闭防火墙</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ setenforce 0
+$ vim /etc/sysconfig/selinux #修改SELINUX=disabled
+</code></pre></div>
+<p>3.清空iptables </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ iptables -F
+</code></pre></div>
+<p>4.检查每个节点上的<code class="prettyprint">/tmp</code>目录权限是否为<code class="prettyprint">1777</code>，如果不是请修改。</p>
+
+<p>5.设置时钟同步服务</p>
+
+<p>在所有节点安装ntp:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ yum install ntp
+</code></pre></div>
+<p>设置开机启动:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ chkconfig ntpd on
+</code></pre></div>
+<p>在所有节点启动ntp:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /etc/init.d/ntpd start
+</code></pre></div>
+<p>是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    server $LOCAL_SERVER_IP OR HOSTNAME
+</code></pre></div>
+<h1 id="toc_1">1. 安装jdk</h1>
+
+<p>检查jdk版本</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
+</code></pre></div>
+<p>如果其版本低于v1.6 update 31，则将其卸载</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rpm -qa | grep java
+yum remove {java-1.*}
+</code></pre></div>
+<p>验证默认的jdk是否被卸载</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">which java
+</code></pre></div>
+<p>安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：<a href="http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR">这里</a></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install jdk -y
+</code></pre></div>
+<p>创建符号连接</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -s XXXXX/jdk1.6.0_31 /usr/java/default
+ln -s /usr/java/default/bin/java /usr/bin/java
+</code></pre></div>
+<p>设置环境变量:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &quot;export JAVA_HOME=/usr/java/latest&quot; &gt;&gt;/root/.bashrc
+echo &quot;export PATH=\$JAVA_HOME/bin:\$PATH&quot; &gt;&gt; /root/.bashrc
+source /root/.bashrc
+</code></pre></div>
+<p>验证版本</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java -version
+</code></pre></div>
+<p>你将看到以下输出：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">java version &quot;1.6.0_31&quot;
+Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
+</code></pre></div>
+<p>检查环境变量中是否有设置<code class="prettyprint">JAVA_HOME</code></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo env | grep JAVA_HOME
+</code></pre></div>
+<p>如果env中没有<code class="prettyprint">JAVA_HOM</code>E变量，则修改<code class="prettyprint">/etc/sudoers</code>文件</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">vi /etc/sudoers
+Defaults env_keep+=JAVA_HOME
+</code></pre></div>
+<h1 id="toc_2">2. 设置yum源</h1>
+
+<p>从<a href="http://archive.cloudera.com/cdh4/repo-as-tarball/">这里</a> 下载一个CDH版本的压缩包解压并设置本地或ftp yum源，可以参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></p>
+
+<p><strong>注意</strong>：本文中使用的是CDH4.6的yum源。</p>
+
+<h1 id="toc_3">3. 安装HDFS</h1>
+
+<h2 id="toc_4">在NameNode节点yum安装</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
+    yum install hadoop-hdfs-namenode
+    yum install hadoop-hdfs-secondarynamenode
+    yum install hadoop-yarn-resourcemanager
+    yum install hadoop-mapreduce-historyserver
+</code></pre></div>
+<h2 id="toc_5">在DataNode节点yum安装</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    yum list hadoop
+    yum install hadoop-hdfs-datanode
+    yum install hadoop-yarn-nodemanager
+    yum install hadoop-mapreduce
+    yum install zookeeper-server
+    yum install hadoop-httpfs
+    yum install hadoop-debuginfo
+</code></pre></div>
+<h1 id="toc_6">4. 配置hadoop</h1>
+
+<h2 id="toc_7">自定义hadoop配置文件</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
+    sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
+    sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+</code></pre></div>
+<p>hadoop默认使用<code class="prettyprint">/etc/hadoop/conf</code>路径读取配置文件，经过上述配置之后，<code class="prettyprint">/etc/hadoop/conf</code>会软连接到<code class="prettyprint">/etc/hadoop/conf.my_cluster</code>目录</p>
+
+<h2 id="toc_8">修改配置文件</h2>
+
+<p>进入/etc/hadoop/conf编辑配置文件。</p>
+
+<p>修改core-site.xml配置:</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.defaultFS<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>hdfs://node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.trash.interval<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>10080<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>fs.trash.checkpoint.interval<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>10080<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>io.bytes.per.checksum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>4096<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+<p>修改hdfs-site.xml:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;configuration&gt;
+    &lt;property&gt;
+      &lt;name&gt;dfs.replication&lt;/name&gt;
+      &lt;value&gt;3&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+      &lt;value&gt;/opt/data/hadoop&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.block.size&lt;/name&gt;
+        &lt;value&gt;268435456&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;dfs.permissions.superusergroup&lt;/name&gt;
+      &lt;value&gt;hadoop&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;dfs.namenode.handler.count&lt;/name&gt;
+      &lt;value&gt;100&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;dfs.datanode.handler.count&lt;/name&gt;
+      &lt;value&gt;100&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;dfs.datanode.balance.bandwidthPerSec&lt;/name&gt;
+      &lt;value&gt;1048576&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.http-address&lt;/name&gt;
+        &lt;value&gt;node1:50070&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+        &lt;value&gt;node1:50090&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+        &lt;value&gt;true&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;/configuration&gt;
+</code></pre></div>
+<p>修改master和slaves文件</p>
+
+<p>注意：</p>
+
+<blockquote>
+<p>The value of NameNode new generation size should be 1/8 of maximum heap size (-Xmx). Please check, as the default setting may not be accurate.
+To change the default value, edit the /etc/hadoop/conf/hadoop-env.sh file and change the value of the -XX:MaxnewSize parameter to 1/8th the value of the maximum heap size (-Xmx) parameter.</p>
+</blockquote>
+
+<h2 id="toc_9">配置NameNode HA</h2>
+
+<p>请参考<a href="https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability">Introduction to HDFS High Availability</a></p>
+
+<h2 id="toc_10">配置Secondary NameNode</h2>
+
+<p>在hdfs-site.xml中可以配置以下参数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dfs.namenode.checkpoint.check.period
+dfs.namenode.checkpoint.txns
+dfs.namenode.checkpoint.dir
+dfs.namenode.checkpoint.edits.dir
+dfs.namenode.num.checkpoints.retained
+</code></pre></div>
+<h2 id="toc_11">多个secondarynamenode的配置</h2>
+
+<p>设置多个secondarynamenode，请参考<a href="http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/">multi-host-secondarynamenode-configuration</a>.</p>
+
+<h2 id="toc_12">文件路径配置清单</h2>
+
+<p>在hadoop中默认的文件路径以及权限要求如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    目录                                  所有者       权限      默认路径
+    hadoop.tmp.dir                      hdfs:hdfs   drwx------  /var/hadoop
+    dfs.namenode.name.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/name
+    dfs.datanode.data.dir               hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/data
+    dfs.namenode.checkpoint.dir         hdfs:hdfs   drwx------  file://${hadoop.tmp.dir}/dfs/namesecondary
+    yarn.nodemanager.local-dirs         yarn:yarn   drwxr-xr-x  ${hadoop.tmp.dir}/nm-local-dir
+    yarn.nodemanager.log-dirs           yarn:yarn   drwxr-xr-x  ${yarn.log.dir}/userlogs
+    yarn.nodemanager.remote-app-log-dir                         /tmp/logs
+</code></pre></div>
+<p>我的配置如下:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    hadoop.tmp.dir                              /opt/data/hadoop
+    dfs.namenode.name.dir                       ${hadoop.tmp.dir}/dfs/name
+    dfs.datanode.data.dir                       ${hadoop.tmp.dir}/dfs/data
+    dfs.namenode.checkpoint.dir                 ${hadoop.tmp.dir}/dfs/namesecondary
+    yarn.nodemanager.local-dirs                 /opt/data/yarn/local
+    yarn.nodemanager.log-dirs                   /var/log/hadoop-yarn/logs
+    yarn.nodemanager.remote-app-log-dir         /var/log/hadoop-yarn/app
+</code></pre></div>
+<p>在hadoop中<code class="prettyprint">dfs.permissions.superusergroup</code>默认为hdfs，我的<code class="prettyprint">hdfs-site.xml</code>配置文件将其修改为了hadoop。</p>
+
+<h2 id="toc_13">配置CDH4组件端口</h2>
+
+<p>请参考<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Installation-Guide/cdh4ig_topic_9.html">Configuring Ports for CDH4</a></p>
+
+<h2 id="toc_14">创建数据目录</h2>
+
+<p>在namenode节点创建name目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/name
+chown -R hdfs:hadoop /opt/data/hadoop/dfs/name
+chmod 700 /opt/data/hadoop/dfs/name
+</code></pre></div>
+<p>在所有datanode节点创建data目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/data
+chown -R hdfs:hadoop /opt/data/hadoop/dfs/data
+chmod 700 /opt/data/hadoop/dfs/data
+</code></pre></div>
+<p>在secondarynode节点创建namesecondary目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/dfs/namesecondary
+chown -R hdfs:hadoop /opt/data/hadoop/dfs/namesecondary
+chmod 700 /opt/data/hadoop/dfs/namesecondary
+</code></pre></div>
+<p>在所有datanode节点创建yarn的local目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/hadoop/yarn/local
+chown -R yarn:yarn /opt/data/hadoop/yarn/local
+chmod 700 /opt/data/hadoop/yarn/local
+</code></pre></div>
+<h2 id="toc_15">同步配置文件到整个集群</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
+sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
+</code></pre></div>
+<h2 id="toc_16">格式化NameNode</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hdfs namenode -format
+</code></pre></div>
+<h2 id="toc_17">定期检查datanode状态</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">#!/bin/bash
+if ! jps | grep -q DataNode ; then
+ echo ERROR: datanode not up
+fi
+</code></pre></div>
+<h2 id="toc_18">在每个节点启动hdfs</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x restart ; done
+</code></pre></div>
+<h2 id="toc_19">验证测试</h2>
+
+<ul>
+<li>打开浏览器访问：http://node1:50070 </li>
+</ul>
+
+<h1 id="toc_20">5. 安装YARN</h1>
+
+<p>先在一台机器上配置好，然后在做同步。</p>
+
+<p>修改mapred-site.xml文件:</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapreduce.framework.name<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>yarn<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapreduce.jobtracker.staging.root.dir<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>/user<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapreduce.jobhistory.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:10020<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapreduce.jobhistory.webapp.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:19888<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+            <span class="nt">&lt;name&gt;</span>mapred.child.java.opts<span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;value&gt;</span>-Xmx512m -XX:+UseConcMarkSweepGC -XX:ParallelCMSThreads=1 -XX:ParallelGCThreads=1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.io.sort.factor<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.io.sort.mb<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>200<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.reduce.shuffle.parallelcopies<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>16<span class="nt">&lt;/value&gt;</span>
+       <span class="c">&lt;!-- 一般介于节点数开方和节点数一半之间，小于20节点，则为节点数--&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.task.timeout<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>1800000<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.tasktracker.map.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>4<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapreduce.tasktracker.reduce.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+<p>修改yarn-site.xml文件:</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.resource-tracker.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8031<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8032<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.scheduler.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8030<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.admin.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8033<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.resourcemanager.webapp.address<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1:8088<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.aux-services<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>mapreduce.shuffle<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.aux-services.mapreduce.shuffle.class<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>org.apache.hadoop.mapred.ShuffleHandler<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.log-aggregation-enable<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.application.classpath<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>
+        $HADOOP_CONF_DIR,
+        $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
+        $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
+        $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
+        $YARN_HOME/*,$YARN_HOME/lib/*
+        <span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.local-dirs<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/opt/hadoop/yarn/local<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.log-dirs<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/var/log/hadoop-yarn/logs<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>yarn.nodemanager.remote-app-log-dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/var/log/hadoop-yarn/apps<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+<h2 id="toc_21">同步配置文件到整个集群</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo scp -r /etc/hadoop/conf root@node2:/etc/hadoop/conf
+sudo scp -r /etc/hadoop/conf root@node3:/etc/hadoop/conf
+</code></pre></div>
+<h2 id="toc_22">HDFS创建临时目录</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /tmp
+sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
+</code></pre></div>
+<h2 id="toc_23">创建日志目录</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/history
+sudo -u hdfs hadoop fs -chmod 1777 /user/history
+sudo -u hdfs hadoop fs -chown yarn /user/history
+sudo -u hdfs hadoop fs -mkdir /user/history/done
+sudo -u hdfs hadoop fs -chmod 777 /user/history/done
+sudo -u hdfs hadoop fs -chown yarn /user/history/done
+sudo -u hdfs hadoop fs -mkdir /var/log/hadoop-yarn
+sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
+</code></pre></div>
+<h2 id="toc_24">验证hdfs结构是否正确</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@node1 data]# sudo -u hdfs hadoop fs -ls -R /
+    drwxrwxrwt   - hdfs   hadoop          0 2012-04-19 14:31 /tmp
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 10:26 /user
+    drwxrwxrwt   - yarn   hadoop          0 2012-04-19 14:31 /user/history
+    drwxrwxrwx   - yarn   hadoop          0 2012-04-19 14:31 /user/history/done
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var
+    drwxr-xr-x   - hdfs   hadoop          0 2012-05-31 15:31 /var/log
+    drwxr-xr-x   - yarn   mapred          0 2012-05-31 15:31 /var/log/hadoop-yarn
+</code></pre></div>
+<h2 id="toc_25">启动mapred-historyserver</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/hadoop-mapreduce-historyserver start
+</code></pre></div>
+<h2 id="toc_26">在每个节点启动YARN</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
+</code></pre></div>
+<h2 id="toc_27">验证</h2>
+
+<ul>
+<li>打开浏览器：http://node1:8088/</li>
+<li>运行测试程序</li>
+</ul>
+
+<h2 id="toc_28">为每个MapReduce用户创建主目录</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/$USER
+sudo -u hdfs hadoop fs -chown $USER /user/$USER
+</code></pre></div>
+<h2 id="toc_29">Set HADOOP_MAPRED_HOME</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+</code></pre></div>
+<h2 id="toc_30">设置开机启动</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo chkconfig hadoop-hdfs-namenode on
+sudo chkconfig hadoop-hdfs-datanode on
+sudo chkconfig hadoop-hdfs-secondarynamenode on
+sudo chkconfig hadoop-yarn-resourcemanager on
+sudo chkconfig hadoop-yarn-nodemanager on
+sudo chkconfig hadoop-mapreduce-historyserver on
+sudo chkconfig hbase-master on
+sudo chkconfig hbase-regionserver on
+sudo chkconfig hive-metastore  on
+sudo chkconfig hive-server2 on
+sudo chkconfig zookeeper-server on
+sudo chkconfig hadoop-httpfs on
+</code></pre></div>
+<h1 id="toc_31">6. 安装Zookeeper</h1>
+
+<p>安装zookeeper</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install zookeeper*
+</code></pre></div>
+<p>设置crontab:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    crontab -e
+    15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
+    /usr/lib/zookeeper/lib/jline-0.9.94.jar:\   
+    /usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
+    org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
+</code></pre></div>
+<p>在每个需要安装zookeeper的节点上创建zookeeper的目录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mkdir -p /opt/data/zookeeper
+chown -R zookeeper:zookeeper /opt/data/zookeeper
+</code></pre></div>
+<p>设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/opt/data/zookeeper
+clientPort=2181
+server.1=node1:2888:3888
+server.2=node2:2888:3888
+server.3=node3:2888:3888
+</code></pre></div>
+<p>在每个节点上初始化并启动zookeeper，注意修改n值</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service zookeeper-server init --myid=n
+service zookeeper-server restart
+</code></pre></div>
+<h1 id="toc_32">7. 安装HBase</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install hbase*
+</code></pre></div>
+<h2 id="toc_33">在hdfs中创建/hbase</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /hbase
+sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
+</code></pre></div>
+<h2 id="toc_34">设置crontab：</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">crontab -e
+* 10 * * * cd /var/log/hbase/; rm -rf\
+`ls /var/log/hbase/|grep -P &#39;hbase\-hbase\-.+\.log\.[0-9]&#39;\`&gt;&gt; /dev/null &amp;
+</code></pre></div>
+<h2 id="toc_35">修改配置文件并同步到其他机器：</h2>
+
+<p>修改hbase-site.xml文件：</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.distributed<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>hdfs://node1:8020/hbase<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.tmp.dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/opt/data/hbase<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.zookeeper.quorum<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>node1,node2,node3<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hregion.max.filesize<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>536870912<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hregion.memstore.flush.size<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>67108864<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regionserver.lease.period<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>600000<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.client.retries.number<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>3<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span> 
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regionserver.handler.count<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.zookeeper.property.maxClientCnxns<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2000<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hfile.block.cache.size<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>0.1<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.regions.slop<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>0<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hstore.compactionThreshold<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>10<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hbase.hstore.blockingStoreFiles<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>30<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+<h2 id="toc_36">修改regionserver文件</h2>
+
+<h2 id="toc_37">启动HBase</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service hbase-master start
+service hbase-regionserver start
+</code></pre></div>
+<h1 id="toc_38">8. 安装hive</h1>
+
+<h2 id="toc_39">在一个节点上安装hive</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install hive*
+</code></pre></div>
+<h2 id="toc_40">安装postgresql</h2>
+
+<p>手动安装、配置postgresql数据库，请参考<a href="http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/">手动安装Cloudera Hive CDH</a></p>
+
+<p>yum方式安装：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install postgresql-server
+</code></pre></div>
+<p>初始化数据库：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> sudo service postgresql initdb
+</code></pre></div>
+<p>修改配置文件postgresql.conf，修改完后内容如下：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
+listen_addresses = &#39;*&#39;
+standard_conforming_strings = off
+</code></pre></div>
+<p>修改 pg_hba.conf，添加以下一行内容：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">host    all         all         0.0.0.0         0.0.0.0               md5
+</code></pre></div>
+<p>启动数据库</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo service postgresql start
+</code></pre></div>
+<p>配置开启启动</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">chkconfig postgresql on
+</code></pre></div>
+<p>安装jdbc驱动</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo yum install postgresql-jdbc
+ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
+</code></pre></div>
+<p>创建数据库和用户</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">bash# sudo –u postgres psql
+bash$ psql
+postgres=# CREATE USER hiveuser WITH PASSWORD &#39;redhat&#39;;
+postgres=# CREATE DATABASE metastore owner=hiveuser;
+postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
+postgres=# \q;
+bash$ psql  -U hiveuser -d metastore
+postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
+SET
+SET
+..
+</code></pre></div>
+<h2 id="toc_41">修改配置文件</h2>
+
+<p>修改hive-site.xml文件：</p>
+<div class="highlight"><pre><code class="xml language-xml" data-lang="xml">    <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>fs.defaultFS<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>hdfs://node1:8020<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionURL<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>jdbc:postgresql://node1/metastore<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionDriverName<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>org.postgresql.Driver<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionUserName<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>hiveuser<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>javax.jdo.option.ConnectionPassword<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>redhat<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+     <span class="nt">&lt;name&gt;</span>mapred.job.tracker<span class="nt">&lt;/name&gt;</span>
+     <span class="nt">&lt;value&gt;</span>node1:8031<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+     <span class="nt">&lt;name&gt;</span>mapreduce.framework.name<span class="nt">&lt;/name&gt;</span>
+     <span class="nt">&lt;value&gt;</span>yarn<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>datanucleus.autoCreateSchema<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>false<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>datanucleus.fixedDatastore<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.warehouse.dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/user/hive/warehouse<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.uris<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>thrift://node1:9083<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hive.metastore.local<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>false<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.support.concurrency<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.zookeeper.quorum<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>node2,node3,node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.listen.host<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>node1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.listen.port<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>9999<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.hwi.war.file<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>lib/hive-hwi-0.10.0-cdh4.2.0.war<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>hive.merge.mapredfiles<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>true<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+<h2 id="toc_42">修改<code class="prettyprint">/etc/hadoop/conf/hadoop-env.sh</code></h2>
+
+<p>添加环境变量<code class="prettyprint">HADOOP_MAPRED_HOME</code>，如果不添加，则当你使用yarn运行mapreduce时候会出现<code class="prettyprint">UNKOWN RPC TYPE</code>的异常</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+</code></pre></div>
+<h2 id="toc_43">在hdfs中创建hive数据仓库目录</h2>
+
+<ul>
+<li>hive的数据仓库在hdfs中默认为<code class="prettyprint">/user/hive/warehouse</code>,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。</li>
+<li>每一个查询hive的用户都必须有一个hdfs的home目录(<code class="prettyprint">/user</code>目录下，如root用户的为<code class="prettyprint">/user/root</code>)</li>
+<li>hive所在节点的 <code class="prettyprint">/tmp</code>必须是world-writable权限的。</li>
+</ul>
+
+<p>创建目录并设置权限：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
+sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
+sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
+</code></pre></div>
+<h2 id="toc_44">启动hive-server和metastore</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service hive-metastore start
+service hive-server start
+service hive-server2 start
+</code></pre></div>
+<h2 id="toc_45">访问beeline</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ /usr/lib/hive/bin/beeline
+beeline&gt; !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
+0: jdbc:hive2://localhost:10000&gt; SHOW TABLES;
+show tables;
++-----------+
+| tab_name  |
++-----------+
++-----------+
+No rows selected (0.238 seconds)
+0: jdbc:hive2://localhost:10000&gt; 
+</code></pre></div>
+<p>其 sql语法参考<a href="http://sqlline.sourceforge.net/">SQLLine CLI</a>，在这里，你不能使用HiveServer的sql语句</p>
+
+<h2 id="toc_46">与hbase集成</h2>
+
+<p>需要在hive里添加以下jar包：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    ADD JAR /usr/lib/hive/lib/zookeeper.jar;
+    ADD JAR /usr/lib/hive/lib/hbase.jar;
+    ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.6.0.jar
+    ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
+</code></pre></div>
+<h1 id="toc_47">9. 其他</h1>
+
+<h2 id="toc_48">安装Snappy</h2>
+
+<p>cdh的rpm中默认已经包含了snappy，可以再不用安装。</p>
+
+<p>在每个节点安装Snappy</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install snappy snappy-devel
+</code></pre></div>
+<p>使snappy对hadoop可用</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
+</code></pre></div>
+<h2 id="toc_49">安装LZO</h2>
+
+<p>cdh的rpm中默认不包含了lzo，需要自己额外安装。</p>
+
+<p>在每个节点安装：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yum install lzo lzo-devel hadoop-lzo hadoop-lzo-native
+</code></pre></div>
+<h1 id="toc_50">10. 参考文章</h1>
+
+<ul>
+<li>[1] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_30.html">Creating a Local Yum Repository</a></li>
+<li>[2] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html">Java Development Kit Installation</a></li>
+<li>[3] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_11_2.html">Deploying HDFS on a Cluster</a></li>
+<li>[4] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_20.html">HBase Installation</a></li>
+<li>[5] <a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_21.html">ZooKeeper Installation</a></li>
+<li>[6] <a href="http://roserouge.iteye.com/blog/1558498">hadoop cdh 安装笔记</a></li>
+</ul>
+
+    </div>
+
+    -EOF-
+   <hr>
+
+   <div class="row status">
+	  <div class="col-md-6">
+		<ul class="tag_box list-inline">
+		
+		    <li><i class="icon-folder-open"></i></li>
+		    
+		    
+
+
+  
+     
+    	<li><a href="/categories.html#hadoop-ref">
+    		hadoop
+    	</a></li>
+    
+  
+
+
+
+		
+
+		
+		    <li><i class="icon-tags"></i></li>
+		    
+		    
+
+
+    
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop</a></li>
+     
+    	<li><a href="/tags.html#impala-ref">impala</a></li>
+    
+  
+
+
+
+
+
+
+		
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <div class="btn-group">
+          
+            <a class="btn btn-default btn-sm" href="/2013/03/29/install-impala" title="安装impala过程">&laquo; Prev</a>
+          
+            <a class="btn btn-default btn-sm" href="/archive.html">Archive</a>
+          
+            <a class="btn btn-default btn-sm" href="/2013/04/07/add-a-field-from-paramter-to-output" title="kettle中添加一个参数字段到输出">Next &raquo;</a>
+          
+        </div>
+      </div>
+      <div class="col-md-3 visible-lg visible-md">
+        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
+          <a class="bds_tsina"></a>
+          <a class="bds_tqq"></a>
+          <a class="bds_t163"></a>
+          <a class="bds_renren"></a>
+          <span class="bds_more"></span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    
+
+
+     <div id="comments">
+  	<div class="ds-thread" data-title="从yum安装Cloudera CDH集群 - JavaChen Blog"></div>
+   </div> 
+     <script type="text/javascript">
+      var duoshuoQuery = {short_name:"javachen"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+    </script>
+
+
+
+
+
+
+  </div>
+</div>
+
+
+      <hr>
+      <footer>
+        <p>
+          &copy; 2009-2014 <a href="/" target="_blank">JavaChen</a>
+          <span class="pull-right text-muted">
+            Powered by
+            <a href="https://github.com/javachen/jekyll-bootstrap-3" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll-Bootstrap-3</a>
+            and <a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap 3.1.1</a> |<script language="javascript" type="text/javascript" src="http://js.users.51.la/12111481.js"></script>
+<noscript><a href="http://www.51.la/?12111481" target="_blank"><img alt="Statistic" src="http://img.users.51.la/12111481.asp" style="border:none" /></a></noscript>
+
+          </span>
+        </p>
+              <div id="toTop"><a href="#">▲</a><a href="#footer">▼</a></div>
+
+      </footer>
+    </div>
+
+        <!-- Baidu Button BEGIN -->
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script>document.write(unescape('%3Cscript%20type%3D%22text/javascript%22%20id%3D%22bdshare_js%22%20data%3D%22type%3Dtools%26amp%3Buid%3D1539895%22%3E%3C/script%3E'));</script>
+    <script type="text/javascript">
+      var bds_config = {
+        'review':'normal',
+        'snsKey':{
+        }
+      };
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+    </script>
+    <!-- Baidu Button END -->
+
+    <script type="text/javascript" src="//cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/assets/themes/bootstrap/js/main.js"></script>
+  </body>
+</html>
+

@@ -4,8 +4,8 @@
 		<title>JavaChen Blog</title>
 		<description>关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化</description>
 		<link>http://blog.javachen.com</link>
-		<lastBuildDate>Sat, 05 Apr 2014 01:04:28 +0800</lastBuildDate>
-		<pubDate>Sat, 05 Apr 2014 01:04:28 +0800</pubDate>
+		<lastBuildDate>Sat, 05 Apr 2014 01:11:08 +0800</lastBuildDate>
+		<pubDate>Sat, 05 Apr 2014 01:11:08 +0800</pubDate>
 		<ttl>1800</ttl>
 
 
@@ -207,8 +207,8 @@ Spring MVC控制器和 相关项目的 profile 模块&amp;gt; 依赖于on broadl
 &lt;li&gt;[3] &lt;a href=&quot;http://sisopipo.com/blog/archives/553&quot;&gt;认识Java电子商务开源框架BroadleafCommerce&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/java/2014/04/04/introduction-to-broadleaf-commerce</link>
-			<guid>http://blog.javachen.com/java/2014/04/04/introduction-to-broadleaf-commerce</guid>
+			<link>http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce</link>
+			<guid>http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce</guid>
 			<pubDate>Fri, 04 Apr 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -352,8 +352,8 @@ jdk-rmzip:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;d.参考上面，再次测试一遍&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack</link>
-			<guid>http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack</guid>
+			<link>http://blog.javachen.com/2014/04/01/install-jdk-with-saltstack</link>
+			<guid>http://blog.javachen.com/2014/04/01/install-jdk-with-saltstack</guid>
 			<pubDate>Tue, 01 Apr 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -457,8 +457,8 @@ jdk-rmzip:
 
 &lt;p&gt;原文地址：&lt;a href=&quot;http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/latest/CDH4-Release-Notes/Whats_New_in_4-5.html&quot;&gt;What&amp;#39;s New in CDH4.5.0&lt;/a&gt;&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/hadoop/2014/03/31/what-is-new-in-CDH4.5.0</link>
-			<guid>http://blog.javachen.com/hadoop/2014/03/31/what-is-new-in-CDH4.5.0</guid>
+			<link>http://blog.javachen.com/2014/03/31/what-is-new-in-CDH4.5.0</link>
+			<guid>http://blog.javachen.com/2014/03/31/what-is-new-in-CDH4.5.0</guid>
 			<pubDate>Mon, 31 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -697,8 +697,8 @@ jdk-rmzip:
 
 &lt;p&gt;上面python脚本主要是使用了lxml的xpath语法进行快速查找。&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</link>
-			<guid>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</guid>
+			<link>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</link>
+			<guid>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</guid>
 			<pubDate>Tue, 18 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -820,8 +820,8 @@ jdk-rmzip:
 &lt;li&gt;[1] &lt;a href=&quot;http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html&quot;&gt;Solr配置，schema.xml的配置，以及中文分词&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr</link>
-			<guid>http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr</guid>
+			<link>http://blog.javachen.com/2014/03/15/schema-in-solr</link>
+			<guid>http://blog.javachen.com/2014/03/15/schema-in-solr</guid>
 			<pubDate>Sat, 15 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -972,8 +972,8 @@ jdk-rmzip:
 &lt;li&gt;[1] &lt;a href=&quot;http://blog.csdn.net/zhyh1986/article/details/9856115&quot;&gt;Solr4.4的安装与配置&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr</link>
-			<guid>http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr</guid>
+			<link>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</link>
+			<guid>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</guid>
 			<pubDate>Fri, 14 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1344,8 +1344,8 @@ solr.source.reindex=solrReindexServer
     &lt;span class=&quot;n&quot;&gt;extSolrSearchService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;rebuildIndex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project</link>
-			<guid>http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project</guid>
+			<link>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</link>
+			<guid>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</guid>
 			<pubDate>Thu, 13 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1702,8 +1702,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 &lt;li&gt;[3] &lt;a href=&quot;http://www.wxdl.cn/index/solrcloud.html&quot;&gt;SolrCloud使用教程、原理介绍&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-			<link>http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud</link>
-			<guid>http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud</guid>
+			<link>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</link>
+			<guid>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</guid>
 			<pubDate>Mon, 10 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1739,8 +1739,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 
 &lt;p&gt;2014年，等风来。&lt;/p&gt;
 </description>
-			<link>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</link>
-			<guid>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</guid>
+			<link>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</link>
+			<guid>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</guid>
 			<pubDate>Thu, 06 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 
@@ -1839,8 +1839,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 
 http://localhost:8080/solr/primary/select?q=*:*&amp;amp;fl=productId&amp;amp;fq=category:2002&amp;amp;facet=true&amp;amp;facet.field=en_US_county_i&amp;amp;facet.field=en_US_hotelType_s&amp;amp;facet.field=price_p&amp;amp;facet.field=heatRange_i&amp;amp;facet.query=price_p:[300.00000+TO+*]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-			<link>http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax</link>
-			<guid>http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax</guid>
+			<link>http://blog.javachen.com/2014/03/03/solr-query-syntax</link>
+			<guid>http://blog.javachen.com/2014/03/03/solr-query-syntax</guid>
 			<pubDate>Mon, 03 Mar 2014 00:00:00 +0800</pubDate>
 		</item>
 

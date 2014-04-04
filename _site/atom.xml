@@ -4,7 +4,7 @@
  <title>JavaChen Blog</title>
  <link href="http://blog.javachen.com/" rel="self"/>
  <link href="http://blog.javachen.com"/>
- <updated>2014-04-05T01:04:28+08:00</updated>
+ <updated>2014-04-05T01:11:08+08:00</updated>
  <id>http://blog.javachen.com</id>
  <author>
    <name>JavaChen</name>
@@ -13,9 +13,9 @@
  
  <entry>
    <title><![CDATA[BroadleafCommerce介绍]]></title>
-   <link href="http://blog.javachen.com/java/2014/04/04/introduction-to-broadleaf-commerce"/>
+   <link href="http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce"/>
    <updated>2014-04-04T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/java/2014/04/04/introduction-to-broadleaf-commerce</id>
+   <id>http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce</id>
    <content type="html">&lt;h1 id=&quot;toc_0&quot;&gt;1. 介绍&lt;/h1&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://www.broadleafcommerce.org/&quot;&gt;BroadleafCommerce&lt;/a&gt;是一个Java开源电子商务网站框架。其目标是开发企业级商务网站，它提供健壮的数据和服务模型、富客户端管理平台、已经一些核心电子商务有关的工具。&lt;/p&gt;
@@ -216,9 +216,9 @@ Spring MVC控制器和 相关项目的 profile 模块&amp;gt; 依赖于on broadl
  
  <entry>
    <title><![CDATA[使用SaltStack安装JDK1.6]]></title>
-   <link href="http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack"/>
+   <link href="http://blog.javachen.com/2014/04/01/install-jdk-with-saltstack"/>
    <updated>2014-04-01T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/linux/2014/04/01/install-jdk-with-saltstack</id>
+   <id>http://blog.javachen.com/2014/04/01/install-jdk-with-saltstack</id>
    <content type="html">&lt;h1 id=&quot;toc_0&quot;&gt;创建states文件&lt;/h1&gt;
 
 &lt;p&gt;在&lt;code class=&quot;prettyprint&quot;&gt;/srv/salt&lt;/code&gt;目录下创建jdk目录，并在jdk目录创建init.sls文件，init.sls文件内容如下：&lt;/p&gt;
@@ -361,9 +361,9 @@ jdk-rmzip:
  
  <entry>
    <title><![CDATA[CDH4.5.0 新特性]]></title>
-   <link href="http://blog.javachen.com/hadoop/2014/03/31/what-is-new-in-CDH4.5.0"/>
+   <link href="http://blog.javachen.com/2014/03/31/what-is-new-in-CDH4.5.0"/>
    <updated>2014-03-31T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/hadoop/2014/03/31/what-is-new-in-CDH4.5.0</id>
+   <id>http://blog.javachen.com/2014/03/31/what-is-new-in-CDH4.5.0</id>
    <content type="html">&lt;h1 id=&quot;toc_0&quot;&gt;Apache Flume&lt;/h1&gt;
 
 &lt;h2 id=&quot;toc_1&quot;&gt;新特性：&lt;/h2&gt;
@@ -466,9 +466,9 @@ jdk-rmzip:
  
  <entry>
    <title><![CDATA[Python模拟新浪微博登录]]></title>
-   <link href="http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python"/>
+   <link href="http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python"/>
    <updated>2014-03-18T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/python/2014/03/18/simulate-weibo-login-in-python</id>
+   <id>http://blog.javachen.com/2014/03/18/simulate-weibo-login-in-python</id>
    <content type="html">&lt;p&gt;看到一篇&lt;a href=&quot;http://qinxuye.me/article/simulate-weibo-login-in-python/&quot;&gt;Python模拟新浪微博登录&lt;/a&gt;的文章，想熟悉一下其中实现方式，并且顺便掌握python相关知识点。&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_0&quot;&gt;代码&lt;/h1&gt;
@@ -706,9 +706,9 @@ jdk-rmzip:
  
  <entry>
    <title><![CDATA[Solr的schema.xml]]></title>
-   <link href="http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr"/>
+   <link href="http://blog.javachen.com/2014/03/15/schema-in-solr"/>
    <updated>2014-03-15T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/search-engine/2014/03/15/schema-in-solr</id>
+   <id>http://blog.javachen.com/2014/03/15/schema-in-solr</id>
    <content type="html">&lt;p&gt;schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。这个文件被存储在Solr主文件夹下的conf目录下，默认的路径&lt;code class=&quot;prettyprint&quot;&gt;./solr/conf/schema.xml&lt;/code&gt;，也可以是Solr webapp的类加载器所能确定的路径。在下载的Solr包里，有一个schema的样例文件，用户可以从那个文件出发，来观察如何编写自己的Schema.xml。&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_0&quot;&gt;type节点&lt;/h1&gt;
@@ -829,9 +829,9 @@ jdk-rmzip:
  
  <entry>
    <title><![CDATA[在Solr中使用中文分词]]></title>
-   <link href="http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr"/>
+   <link href="http://blog.javachen.com/2014/03/14/split-chinese-in-solr"/>
    <updated>2014-03-14T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/search-engine/2014/03/14/split-chinese-in-solr</id>
+   <id>http://blog.javachen.com/2014/03/14/split-chinese-in-solr</id>
    <content type="html">&lt;p&gt;使用全文检索，中文分词是离不开的，这里我采用的是 &lt;strong&gt;mmseg4j&lt;/strong&gt; 分词器。mmseg4j分词器内置了对solr的支持，最新版本可支持4.X版本的sorl，使用起来很是方便。&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_0&quot;&gt;下载mmseg4j&lt;/h1&gt;
@@ -981,9 +981,9 @@ jdk-rmzip:
  
  <entry>
    <title><![CDATA[BroadLeaf项目搜索功能改进]]></title>
-   <link href="http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project"/>
+   <link href="http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project"/>
    <updated>2014-03-13T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/search-engine/2014/03/13/improve-the-search-function-in-broadleaf-project</id>
+   <id>http://blog.javachen.com/2014/03/13/improve-the-search-function-in-broadleaf-project</id>
    <content type="html">&lt;p&gt;Broadleaf Commerce 是一个开源的Java电子商务平台，基于Spring框架开发，提供一个可靠、可扩展的架构，可进行深度的定制和快速开发。&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_0&quot;&gt;关于Solr&lt;/h1&gt;
@@ -1353,9 +1353,9 @@ solr.source.reindex=solrReindexServer
  
  <entry>
    <title><![CDATA[Apache SolrCloud安装]]></title>
-   <link href="http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud"/>
+   <link href="http://blog.javachen.com/2014/03/10/how-to-install-solrcloud"/>
    <updated>2014-03-10T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/search-engine/2014/03/10/how-to-install-solrcloud</id>
+   <id>http://blog.javachen.com/2014/03/10/how-to-install-solrcloud</id>
    <content type="html">&lt;p&gt;SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。下面，我们基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。&lt;/p&gt;
 
 &lt;h1 id=&quot;toc_0&quot;&gt;1. 安装环境&lt;/h1&gt;
@@ -1711,9 +1711,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
  
  <entry>
    <title><![CDATA[2013年度年终总结]]></title>
-   <link href="http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013"/>
+   <link href="http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013"/>
    <updated>2014-03-06T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/work/2014/03/06/summary-of-the-work-in-2013</id>
+   <id>http://blog.javachen.com/2014/03/06/summary-of-the-work-in-2013</id>
    <content type="html">&lt;p&gt;回首2011年和2012年的年终总结，发现公司在2012年提到的一些不足仍然出现在2013年，不知道每年的总结是否有被认真阅读过、重视过。故虽谏且议，使人不得而知焉。&lt;/p&gt;
 
 &lt;p&gt;2013年，通过了RHCE考试，掌握了shell编程，初识Python；&lt;/p&gt;
@@ -1748,9 +1748,9 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
  
  <entry>
    <title><![CDATA[Apache Solr查询语法]]></title>
-   <link href="http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax"/>
+   <link href="http://blog.javachen.com/2014/03/03/solr-query-syntax"/>
    <updated>2014-03-03T00:00:00+08:00</updated>
-   <id>http://blog.javachen.com/search-engine/2014/03/03/solr-query-syntax</id>
+   <id>http://blog.javachen.com/2014/03/03/solr-query-syntax</id>
    <content type="html">&lt;h1 id=&quot;toc_0&quot;&gt;查询参数&lt;/h1&gt;
 
 &lt;p&gt;常用：&lt;/p&gt;
