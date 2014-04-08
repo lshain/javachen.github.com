@@ -7,7 +7,7 @@ tags: [hbase, cdh]
 keywords: hbase, cdh, cloudera manager
 ---
 
-本文主要记录手动安装Cloudera HBase集群过程，环境设置及Hadoop安装过程见[手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
+本文主要记录手动安装Cloudera HBase集群过程，环境设置及Hadoop安装过程见[手动安装Cloudera Hadoop CDH](/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
 
 ```
 	hadoop-2.0.0-cdh4.6.0

@@ -37,7 +37,7 @@ GoogleCode地址：[http://code.google.com/p/mmseg4j/](http://code.google.com/p/
 
 # 测试
 
-我这里使用的是broadleaf项目(broadleaf是什么，请参考：[BroadLeaf项目搜索功能改进](/solr/2014/03/13/improve-the-search-function-in-broadleaf-project/))中的schema.xml，需要修改成如下：
+我这里使用的是broadleaf项目(broadleaf是什么，请参考：[BroadLeaf项目搜索功能改进](/2014/03/13/improve-the-search-function-in-broadleaf-project/))中的schema.xml，需要修改成如下：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>

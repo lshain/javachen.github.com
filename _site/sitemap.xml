@@ -5,6 +5,41 @@
 
     
     <url>
+      <loc>http://blog.javachen.com/2014/04/08/a-benchmark-tool-on-postgresql</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-04-08T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/2014/04/07/some-metrics-in-postgresql</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-04-07T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/2014/04/07/install-postgresql-on-rhel-system</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-04-07T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/2014/04/06/mysql-config-for-master-slave-replication</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-04-06T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
+      <loc>http://blog.javachen.com/2014/04/06/install-mysql-on-rhel-system</loc>
+      <changefreq>daily</changefreq>
+      <lastmod>2014-04-06T00:00:00+08:00</lastmod>
+      <priority>0.8</priority>
+    </url>
+    
+    <url>
       <loc>http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce</loc>
       <changefreq>daily</changefreq>
       <lastmod>2014-04-04T00:00:00+08:00</lastmod>
@@ -708,6 +743,12 @@
       <changefreq>daily</changefreq>
       <priority>0.6</priority>
     </url>
+    
+    
+    
+    
+    
+    
     
     
     

@@ -17,7 +17,13 @@ http://blog.javachen.com/page6/index.html
 http://blog.javachen.com/page7/index.html
 http://blog.javachen.com/page8/index.html
 http://blog.javachen.com/page9/index.html
+http://blog.javachen.com/page10/index.html
 
+http://blog.javachen.com/2014/04/08/a-benchmark-tool-on-postgresql
+http://blog.javachen.com/2014/04/07/some-metrics-in-postgresql
+http://blog.javachen.com/2014/04/07/install-postgresql-on-rhel-system
+http://blog.javachen.com/2014/04/06/mysql-config-for-master-slave-replication
+http://blog.javachen.com/2014/04/06/install-mysql-on-rhel-system
 http://blog.javachen.com/2014/04/04/introduction-to-broadleaf-commerce
 http://blog.javachen.com/2014/04/01/install-jdk-with-saltstack
 http://blog.javachen.com/2014/03/31/what-is-new-in-CDH4.5.0

@@ -182,7 +182,13 @@ BroadLeaf提供了 RegisterCustomerForm、CustomerAttributes两个类用户拓�
 - 2.修改properties文件里面的数据库连接信息（用户名、密码、URL、driverClassName、hibernate数据库方言）
 - 3.修改jndi连接信息 
 
-# 5. 参考文章
+# 5. 缺点
+
+目前已知的缺点或缺陷有：
+
+- 实体之间存在双向关联，导致无法直接使用json的工具类序列化和反序列化实体类。如果的确需要序列化实体类，比如说你需要提供api获取一些信息，你可以参考DemoSite中的api，对实体的封装类使用webservice进行序列化。
+
+# 6. 参考文章
 
 - [1] [BroadleafCommerce](http://www.broadleafcommerce.org/)
 - [2] [DemoSite](https://github.com/BroadleafCommerce/DemoSite)

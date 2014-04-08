@@ -8,7 +8,7 @@ tags: [hadoop, hive]
 
 # 概括
 
-从《[hive cli的入口类](hive/2013/08/21/hive-CliDriver/)》中可以知道hive中处理hive命令的处理器一共有以下几种：
+从《[hive cli的入口类](/2013/08/21/hive-CliDriver/)》中可以知道hive中处理hive命令的处理器一共有以下几种：
 
 	（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
 	（2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 

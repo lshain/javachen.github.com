@@ -124,6 +124,8 @@
   
     
   
+    
+  
 
 
 
@@ -158,7 +160,7 @@
     <div class="content">
       <h1 id="toc_0">概括</h1>
 
-<p>从《<a href="hive/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
+<p>从《<a href="/2013/08/21/hive-CliDriver/">hive cli的入口类</a>》中可以知道hive中处理hive命令的处理器一共有以下几种：</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">（1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
 （2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
 （3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 

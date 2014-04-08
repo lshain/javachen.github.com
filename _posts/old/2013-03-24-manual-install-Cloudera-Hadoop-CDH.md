@@ -47,9 +47,11 @@ hadoop各组件可以在[这里](http://archive.cloudera.com/cdh4/cdh/4/)下载�
 
 	例如在desktop1节点上做如下修改：
 
+```
 	[root@desktop1 ~]# cat /etc/sysconfig/network
 	NETWORKING=yes
 	HOSTNAME=desktop1
+```
 
 2. 在每个节点上修改`/etc/hosts`增加以下内容:
 

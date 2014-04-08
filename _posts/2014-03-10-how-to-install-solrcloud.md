@@ -93,7 +93,7 @@ Mode: follower
 
 # 4. 安装Solr
 
-你可以参考[《Apache Solr介绍及安装》](http://blog.javachen.com/solr/2014/02/26/how-to-install-solr/index.html)
+你可以参考[《Apache Solr介绍及安装》](/2014/02/26/how-to-install-solr/)
 
 简单来说，执行以下命令：
 

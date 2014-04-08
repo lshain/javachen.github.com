@@ -7,7 +7,7 @@ keywords: extjs, xml
 description: Extjs读取xml文件生成动态表格和表单
 ---
 
-很多人向我要【[Extjs读取xml文件生成动态表格和表单](/javascript/2009/10/22/ext_readxml_in_bjsasc_wuzi/)】一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。
+很多人向我要【[Extjs读取xml文件生成动态表格和表单](/2009/10/22/ext_readxml_in_bjsasc_wuzi/)】一文的源代码，故花了些时间将源代码整理出来，并重新编写此文，分享当时的技术思路。
 
 需要的文件有：
 

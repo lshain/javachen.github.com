@@ -124,6 +124,8 @@
   
     
   
+    
+  
 
 
 
@@ -154,6 +156,410 @@
       </header>
 	
 
+
+<article>
+    <h2 class="entry-title under_line"><a href="/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress">使用Octopress将博客从wordpress迁移到GitHub</a></h2>
+    
+		
+		  <h1 id="toc_0">Step1 - 在本机安装Octopress</h1>
+
+<p>首先，必须先在本机安装配置<a href="http://git-scm.com/">Git</a>和<a href="https://rvm.beginrescueend.com/rvm/install/">Ruby</a>,Octopress需要Ruby版本至少为1.9.2。你可以使用<a href="http://rvm.beginrescueend.com/">RVM</a>或<a href="https://github.com/sstephenson/rbenv">rbenv</a>安装ruby，安装方法见Octopress官方文档：<a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></p>
+
+<p>我使用rvm安装：
+    rvm install 1.9.2 &amp;&amp; rvm use 1.9.2
+安装完之后可以查看ruby版本：
+    ruby --version
+结果为：
+    ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]</p>
+
+<p>然后需要从github下载Octopress：
+    git clone git://github.com/imathis/octopress.git octopress</p>
+
+<p>因为我fork了Octopress，并在配置文件上做了一些修改，故我从我的仓库地址下载Octopress，命令如下：
+    git clone <a href="mailto:git@github.com">git@github.com</a>:javachen/octopress.git
+运行上面的代码后，你会看到：
+    Cloning into &#39;octopress&#39;...
+    remote: Counting objects: 6579, done.
+    remote: Compressing objects: 100% (2361/2361), done.
+    remote: Total 6579 (delta 3773), reused 6193 (delta 3610)
+    Receiving objects: 100% (6579/6579), 1.34 MiB | 35 KiB/s, done.
+    Resolving deltas: 100% (3773/3773), done.</p>
+
+<p>接下来进入octopress：
+    cd octopress</p>
+
+<p>接下来安装依赖：
+    gem install bundler
+    rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+    bundle install</p>
+
+<p>安装Octopress默认的主题：
+    rake install</p>
+
+<p>你也可以安装自定义的主题，blog为主题名称：
+    rake install[&#39;blog&#39;]</p>
+
+<p>至此，Octopress所需的环境已经搭建成功。</p>
+
+<h1 id="toc_1">Step2 - 连接GitHub Pages</h1>
+
+<p>首先，你得有一个GitHub的帐号，并且已经创建了一个新的Repository。如果你准备用自己的域名的话，Repository的名称可以随便取，不过正常人在正常情况下，一般都是以域名取名的。如果你没有自己的域名，GitHub是提供二级域名使用的，但是你得把Repository取名为<code class="prettyprint">你的帐号.github.com</code>，并且，部署的时候会占用你的master分支。</p>
+
+<p><em>Tips：</em>
+如果用自己的一级域名，记得把source/CNAME文件内的域名改成你的一级域名，还有在dns管理中把域名的A Record指向IP：207.97.227.245；
+如果用自己的二级域名，记得把source/CNAME文件内的域名改成你的二级域名，还有在dns管理中把域名的CNAME Record指向网址：charlie.github.com；
+    echo &#39;your-domain.com&#39; &gt;&gt; source/CNAME
+如果用GitHub提供的二级域名，记得把source/CNAME删掉。</p>
+
+<p>完成上述准备工作后，运行：
+    rake setup<em>github</em>pages
+它会提示你输入有读写权限的Repository Url，这个在GitHub上可以找到。Url形如：<a href="https://github.com/javachen/javachen.github.com.git%EF%BC%8Cjavachen.github.com%E6%98%AF%E6%88%91%E7%9A%84Repository%E7%9A%84%E5%90%8D%E7%A7%B0%E3%80%82">https://github.com/javachen/javachen.github.com.git，javachen.github.com是我的Repository的名称。</a></p>
+
+<h1 id="toc_2">Step3 - 配置你的博客</h1>
+
+<p>需要配置博客url、名称、作者、rss等信息。
+    url: <a href="http://javachen.github.com">http://javachen.github.com</a>
+    title: JavaChen on Java
+    subtitle: Just some random thoughts about technology,Java and life.
+    author: javachen
+    simple_search: <a href="http://google.com/search">http://google.com/search</a>
+    description:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">date_format: &quot;%Y年%m月%d日&quot;
+
+subscribe_rss: /atom.xml
+subscribe_email:
+email:
+
+# 如果你使用的是一个子目录，如http://site.com/project，则设置为&#39;root: /project&#39;
+root: /
+# 文章标题格式
+permalink: /:year/:month/:day/:title/
+source: source
+destination: public
+plugins: plugins
+code_dir: downloads/code
+# 分类存放路径
+category_dir: categories
+markdown: rdiscount
+pygments: false # default python pygments have been replaced by pygments.rb
+</code></pre></div>
+<h1 id="toc_3">Step4 - 部署</h1>
+
+<p>先把整个项目静态化，然后再部署到GitHub：
+    rake generate
+    rake deploy
+当你看到“Github Pages deploy complete”后，就表示你大功已成。Enjoy!</p>
+
+<p><em>Tips：</em>
+Octopress提供的所有rake方法，可以运行<code class="prettyprint">rake -T</code>查看。
+如果在执行上述命令中ruby报错，则需要一一修复错误，这一步是没有接触过ruby的人比较苦恼的。</p>
+
+<h1 id="toc_4">Step5 - 从Wordpress迁移到Octopress</h1>
+
+<h2 id="toc_5">备份</h2>
+
+<h3 id="toc_6">备份评论内容</h3>
+
+<p>Octopress由于是纯静态，所以没有办法存储用户评论了，我们可以使用DISQUS提供的“云评论”服务。首先安装DISQUS的WordPress插件，在插件设置中我们可以将现有的评论内容导入到DISQUS中。DISQUS处理导入数据的时间比较长，往往需要24小时甚至以上的时间。</p>
+
+<h3 id="toc_7">备份文章内容</h3>
+
+<p>在WordPress后台我们可以将整站数据备份成一个.xml文件下载下来。同时，我原先文章中的图片都是直接在Wordpress后台上传的，所以要把服务器上<code class="prettyprint">wp-content/uploads</code>下的所有文件备份下来。</p>
+
+<h2 id="toc_8">迁移</h2>
+
+<h3 id="toc_9">迁移文章</h3>
+
+<p>jekyll本身提供了一个从WordPress迁移文章的工具，不过对中文实在是不太友好。这里我使用了YORKXIN的修改版本。将上面备份的wordpress.xml放到Octopress根目录，把脚本放到新建的utils目录中，然后运行：
+    ruby -r &quot;./utils/wordpressdotcom.rb&quot; -e &quot;Jekyll::WordpressDotCom.process&quot;
+于是转换好的文章都放进source目录了。</p>
+
+<h3 id="toc_10">迁移URL</h3>
+
+<p>迁移URL，便是要保证以前的文章链接能够自动重定向到新的链接上。这样既能保证搜索引擎的索引不受影响，也是一项对读者负责任的行为是吧。不过这是一项挺麻烦的事情。</p>
+
+<p>幸好我当初建立WordPress的时候就留下了后路。原先网站的链接是这样的：
+    <a href="http://XXXXXXXXX.com/%5Byear%5D/%5Bmonth%5D/%5Bthe-long-long-title%5D.html">http://XXXXXXXXX.com/[year]/[month]/[the-long-long-title].html</a>
+    <a href="http://XXXXXXXXX.com/page/xx/">http://XXXXXXXXX.com/page/xx/</a>
+    <a href="http://XXXXXXXXX.com/category/%5Bcategory-name%5D/">http://XXXXXXXXX.com/category/[category-name]/</a>
+这样的格式是比较容易迁移的。如果原先的文章URL是带有数字ID的话，只能说声抱歉了。到<em>config.yml里面设置一下新站点的文章链接格式，跟原先的格式保持一致：
+    permalink: /:year/:month/:title/
+    category</em>dir: category
+    pagination_dir:  # 留空</p>
+
+<h3 id="toc_11">迁移评论</h3>
+
+<p>既然做好了301，那么迁移评论就显得非常简单了。登录DISQUS后台，进入站点管理后台的“Migrate Threads”栏目，那里有一个“Redirect Crawler”的功能，便是自动跟随301重定向，将评论指向新的网址。点一下那个按钮就大功告成。</p>
+
+<h3 id="toc_12">迁移图片</h3>
+
+<p>可以参考<a href="http://log4d.com/2012/05/image-host/">使用独立图床子域名</a></p>
+
+<h1 id="toc_13">Step6 - 再次部署</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">rake generate
+rake deploy
+</code></pre></div>
+<h1 id="toc_14">参考文章</h1>
+
+<ul>
+<li>Octopress Setup： <a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></li>
+<li>Octopress Deploying：<a href="http://octopress.org/docs/deploying/">http://octopress.org/docs/deploying/</a></li>
+<li>Blog = GitHub + Octopress：<a href="http://mrzhang.me/blog/blog-equals-github-plus-octopress.html">http://mrzhang.me/blog/blog-equals-github-plus-octopress.html</a></li>
+<li>从Wordpress迁移到Octopress：<a href="http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/">http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/</a></li>
+<li>使用独立图床子域名：<a href="http://log4d.com/2012/05/image-host/">http://log4d.com/2012/05/image-host/</a> <a href="http://log4d.com/2012/05/image-host/">http://log4d.com/2012/05/image-host/</a></li>
+</ul>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/06/03/migrate-blog-form-wordpress-to-github-with-octopress"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/2012/04/13/kettle-dependency-management">Kettle dependency management</a></h2>
+    
+		
+		  <p>pentaho的项目使用了ant和ivy解决项目依赖,所以必须编译源码需要ivy工具.直接使用ivy编译pentaho的bi server项目,一直没有编译成功.<br />
+使用ivy编译kettle的源代码却是非常容易的事情.</p>
+
+<p>该篇文章翻译并参考了Will Gorman在pentaho的wiki上添加的<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>,文章标题没作修改.<br />
+编写此文,是为了记录编译kettle源码的方法和过程.</p>
+
+<p><strong>以下是对原文的一个简单翻译.</strong>
+将kettle作为一个产品发行是一个很有趣的事情.有很多来自于pentaho其他项目(其中有一些有依赖于kettle)的jar包被导入到kettle.这些jar包必须在发行的时候构建并且加入到kettle中.如果一个核心的库被更新了,我们必须将其导入到kettle中(如果有必要).bi服务器,pentaho报表以及pentaho元数据编辑器都将kettle作为一个服务/引擎资源而被构建的.自从我们已经将这些jar导入到我们的源码仓库,这些项目必须使用ivy明确列出kettle以及他的依赖.当kettle的依赖变化的时候,我们必须审查libext文件是否需要更新.</p>
+
+<p>pentaho创建了一系列的脚本来自动化的安装ivy,解决jar(或者是artifacts),构建并发行artifacts.kettle已经升级使用subfloor(简单的意味着build.xml继承自subfloor的构建脚本).subfloor使用ivy从pentaho仓库()或者ibiblio maven2仓库来获取跟新jar.ibiblio仓库用于大多数第三方的jar文件(如apache-commons).pentaho仓库用于在线的pentaho项目或者一些比在ibiblio的三方库.为了解决kettle的依赖,我们不得不在ivy.xml里创建一个清单.这个文件明确地列出每一个没有传递依赖的jar文件.这意味着libext文件的映射在ivy.xml中是一对一的.
+<!--more-->
+<strong>关于Ivy</strong>
+<a href="http://ant.apache.org/ivy/" target="_blank">Apache Ivy™</a>是一个流行的致力于灵活性和简单性的依赖管理工具.更多的参考:<a href="http://ant.apache.org/ivy/features.html" target="_blank">enterprise features</a>, <a href="http://ant.apache.org/ivy/testimonials.html" target="_blank">what people say about it</a>, 以及 <a href="http://ant.apache.org/ivy/history/latest-milestone/index.html" target="_blank">how it can improve your build system</a></p>
+
+<p><strong>在kettle中使用ivyIDE</strong>
+首先,从svn上下载kettle的源代码:
+<pre>
+svn://source.pentaho.org/svnkettleroot/Kettle/trunk
+</pre>
+如果你想在Eclipse上使用<a href="http://ant.apache.org/ivy/ivyde/download.cgi" target="_blank">ivyde plugin</a>.<br />
+请参考相关文章安装该插件.</p>
+
+<p>如果你不想使用ivyde,你可以简单快速并且容易的开始并编译代码.<br />
+1.执行<code>ant resolve</code>,这个命令将会创建一个叫做resolved-libs的文件夹.<br />
+2.使用下面命令更新classpath <br />
+  a.手动的添加这些jar文件到你的ide的classpath<br />
+  b.执行ant create-dot-classpath,将会修改你的.classpath文件(注意刷新项目以使改变生效)<br />
+注意:kettle项目中的构建脚本会自动安装ivy插件.</p>
+
+<p><strong>构建Kettle</strong>
+你可以下载kettle源代码然后立即执行<code>ant distrib</code>命令<br />
+或者你可以在ide中导入下载的kettle工程,然后按照你的操作系统(默认的是Windows 32-bit)版本修改依赖的swt.jar文件.</p>
+
+<p><strong>ivy中未完成的</strong>
+<strong>pentaho-database-</strong>这是一个依赖kettle-db的常用项目,但又被kettle-ui使用.这样会导致循环依赖,将来可能会将其引入到kettle项目或是从该项目中去掉对kettle的依赖.
+<strong>swt-</strong>swt文件目前没有包括在ivy.xml文件中
+<strong>library configurations-</strong>每一个kettle库(kettle-db,kettle-core等等)应该在ivy.xml中有他自己的依赖.这些库应该继承一些特定的依赖,而取代继承整个kettle依赖.
+<strong>checked-in plugins-</strong>当前引入的插件如;DummyJob, DummyPlugin, S3CsvInput, ShapeFileReader3,versioncheck应该都移到ivy的plugin配置中.</p>
+
+<p><strong>参考文章</strong>
+<a href="http://wiki.pentaho.com/display/EAI/Kettle+dependency+management" target="_blank">Kettle dependency management</a>
+</p>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/04/13/kettle-dependency-management"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/2012/04/09/getting-started-using-the-cassandra-cli">Getting Started Using the Cassandra CLI</a></h2>
+    
+		
+		  <p>这仅仅是一个Cassandra CLI使用方法的清单。</p>
+
+<p>Cassandra CLI 客户端用于处理集群中基本的数据定义（DDL）和数据维护（DML）。其处于<code>/usr/bin/cassandra-cli</code>，如果是试用包安装，或者是<code>$CASSANDRA_HOME/bin/cassandra-cli</code>，如果使用二进制文件安装。</p>
+
+<h1>Starting the CLI</h1>
+
+<p>使用<code>cassandra-cli</code> <code>-host</code> <code>-port</code> 命令启动 Cassandra CLI，他将会连接<code>cassandra.yaml</code>文件中定义的集群名称，默认为“<em>Test Cluster</em>”。
+如果你有一个但节点的集群，则使用以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host localhost -port 9160
+</code></pre></div>
+<p>如果想连接多节点集群中的一个节点，可以使用以下命令:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli -host 110.123.4.5 -port 9160
+</code></pre></div>
+<p>或者，可以直接执行以下命令：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$ cassandra-cli
+</code></pre></div>
+<p>登录成功之后，可以看到：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">Welcome to cassandra CLI.
+Type &#39;help;&#39; or &#39;?&#39; for help. Type &#39;quit;&#39; or &#39;exit;&#39; to quit.
+</code></pre></div>
+<p>你必须指定连接一个节点：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]connect localhost/9160;
+</code></pre></div>
+<h1>Creating a Keyspace</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo;
+</code></pre></div>
+<p>下面的一个例子，创建一个叫demo的Keyspace,并且复制因子为1，使用<code>SimpleStrategy</code>复制替换策略。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] CREATE KEYSPACE demo with 
+    placement_strategy =&#39;org.apache.cassandra.locator.SimpleStrategy&#39; 
+    and strategy_options = [{replication_factor:1}];
+</code></pre></div>
+<p>你可以使用<code>SHOW KEYSPACES</code>来查看所有系统的和你创建的Keyspace</p>
+
+<h1>Use a keyspace</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] USE demo;
+</code></pre></div>
+<h1>Creating a Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY users
+WITH comparator = UTF8Type
+AND key_validation_class=UTF8Type
+AND column_metadata = [
+{column_name: full_name, validation_class: UTF8Type}
+{column_name: email, validation_class: UTF8Type}
+{column_name: state, validation_class: UTF8Type}
+{column_name: gender, validation_class: UTF8Type}
+{column_name: birth_year, validation_class: LongType}
+];
+</code></pre></div>
+<p>我们使用demo keyspace创建了一个column family，其名称为users，并包括5个静态列：full<em>name，email,state,gender,birth</em>year.comparator, key<em>validation</em>class和validation<em>class，用于设置；列名称，行key的值，列值的编码。comparator还定义了列名称的排序方式。
+下面命令创建一个名称为 blog</em>entry的动态column family，我们不需要定义列，而由应用程序稍后定义。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY blog_entry WITH comparator = TimeUUIDType AND key_validation_class=UTF8Type AND default_validation_class = UTF8Type;
+</code></pre></div>
+<h1>Creating a Counter Column Family</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] CREATE COLUMN FAMILY page_view_counts WITH 
+      default_validation_class=CounterColumnType 
+      AND key_validation_class=UTF8Type AND comparator=UTF8Type;
+</code></pre></div>
+<p>插入一行和计数列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 0;
+</code></pre></div>
+<p>增加计数：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] INCR page_view_counts[&#39;www.datastax.com&#39;][home] BY 1;
+</code></pre></div>
+<h1>Inserting Rows and Columns</h1>
+
+<p>以下命令以一个特点的行key值插入列到users中</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;][&#39;full_name&#39;]=&#39;Robert Jones&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;email&#39;]=&#39;bobjones@gmail.com&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;state&#39;]=&#39;TX&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;gender&#39;]=&#39;M&#39;;
+[default@demo] SET users[&#39;bobbyjo&#39;][&#39;birth_year&#39;]=&#39;1975&#39;;
+</code></pre></div>
+<p>更新数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">set users[&#39;bobbyjo&#39;][&#39;full_name&#39;] = &#39;Jack&#39;;
+</code></pre></div>
+<p>获取数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users[&#39;bobbyjo&#39;];
+</code></pre></div>
+<p>get命令用法参考：<a href="http://wiki.apache.org/cassandra/API#get_slice" target="_blank">API#get_slice</a></p>
+
+<p>查询数据： </p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">get users where gender= &#39;M&#39;;
+</code></pre></div>
+<p>下面命令在 blog_entry中创建了一行，其行key为“yomama”，并指定了一列：timeuuid()的值为 &#39;I love my new shoes!&#39;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET blog_entry[&#39;yomama&#39;][timeuuid()] = &#39;I love my new shoes!&#39;;
+</code></pre></div>
+<h1>Reading Rows and Columns</h1>
+
+<p>使用List命令查询记录，默认查询100条记录</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] LIST users;
+</code></pre></div>
+<p>Cassandra 默认以16进制数组的格式存储数据 为了返回可读的数据格式，可以指定编码：
+<li>ascii</li>
+<li>bytes</li>
+<li>integer (a generic variable-length integer type)</li>
+<li>lexicalUUID</li>
+<li>long</li>
+<li>utf8</li>
+例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users[utf8(&#39;bobby&#39;)][utf8(&#39;full_name&#39;)];
+</code></pre></div>
+<p>你也可以使用<code>ASSUME</code>命令指定编码，例如，指定行key，行名称，行值显示ascii码格式：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] ASSUME users KEYS AS ascii;
+[default@demo] ASSUME users COMPARATOR AS ascii;
+[default@demo] ASSUME users VALIDATOR AS ascii;
+</code></pre></div>
+<h1>Setting an Expiring Column</h1>
+
+<p>例如，假设我们正在跟踪我们的用户，到期后10天的优惠券代码。我们可以定义coupon_code的列和设置该列的过期日期。例如：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] SET users[&#39;bobbyjo&#39;] [utf8(&#39;coupon_code&#39;)] = utf8(&#39;SAVE20&#39;) WITH ttl=864000;
+</code></pre></div>
+<p>自该列被设置值之后，经过10天或864,000秒后，其值将被标记为删除，不再由读操作返回。然而，请注意，直到Cassandra的处理过程完成，该值才会从硬盘中删除。</p>
+
+<h1>Indexing a Column</h1>
+
+<p>给birth_year添加一个二级索引：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] UPDATE COLUMN FAMILY users 
+        WITH comparator = UTF8Type AND column_metadata = 
+        [{column_name: birth_year, validation_class: LongType, index_type: KEYS}];
+</code></pre></div>
+<p>由于该列被索引了，所以可以直接通过该列查询：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] GET users WHERE birth_date = 1969;
+</code></pre></div>
+<h1>Deleting Rows and Columns</h1>
+
+<p>删除yomama索引的coupon_code列：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;][&#39;coupon_code&#39;];
+[default@demo] GET users [&#39;yomama&#39;];
+</code></pre></div>
+<p>或者删除整行：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DEL users [&#39;yomama&#39;];
+</code></pre></div>
+<h1>Dropping Column Families and Keyspaces</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@demo] DROP COLUMN FAMILY users;
+[default@demo] DROP KEYSPACE demo;
+</code></pre></div>
+<h1>For help</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]help;
+</code></pre></div>
+<p>查看某一个命令的详细说明：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown] help SET;
+</code></pre></div>
+<h1>To Quit</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">[default@unknown]quit;
+</code></pre></div>
+<h1>To Execute Script</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">bin/cassandra-cli -host localhost -port 9160 -f script.txt
+</code></pre></div>
+<h1>参考文章</h1>
+
+<ul>
+<li><a href="http://www.datastax.com/docs/0.8/dml/using_cli" target="_blank">Getting Started Using the Cassandra CLI</a></li>
+<li><a href="http://wiki.apache.org/cassandra/CassandraCli" target="_blank">CassandraCli</a></li>
+</ul>
+
+		 
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/04/09/getting-started-using-the-cassandra-cli"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/2012/04/06/install_singlenode-with-datastax-community-editio">使用DataStax Community Edition安装Cassandra单节点</a></h2>
+    
+      本文主要记录使用DataStax Community Edition安装Cassandra单节点的过程.配置单节点的Cassandra,是为了方便快速的了解学习Cassandra.
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/04/06/install_singlenode-with-datastax-community-editio"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
+
+<article>
+    <h2 class="entry-title under_line"><a href="/2012/03/26/hash-and-hash-functions">哈希表</a></h2>
+    
+      一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。
+     
+      <div class="status">
+        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/03/26/hash-and-hash-functions"><span class="readmore">more &raquo; </span></a>-->
+        <div class="clearfix"></div>
+      </div>
+</article>
 
 <article>
     <h2 class="entry-title under_line"><a href="/2012/03/23/how-to-implement-cassandra-input-and-output-in-kettle4-2">如何在kettle4.2上面实现cassandra的输入与输出</a></h2>
@@ -260,61 +666,6 @@
       </div>
 </article>
 
-<article>
-    <h2 class="entry-title under_line"><a href="/2012/02/17/step-error-handling-in-kettle">kettle中定义错误处理</a></h2>
-    
-      在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/02/17/step-error-handling-in-kettle"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/2012/02/14/this-expression-of-jsf-el">JSF中EL表达式之this扩展</a></h2>
-    
-      本篇文章来自以前公司的一套jsf+seam+Hibernate的一套框架，其对jsf进行了一些改进，其中包括:EL表达式中添加this，通过jsf的渲染实现权限控制到按钮等等。JSF表达式中添加this，主要是为了在facelets页面使用this关键字引用（JSF自动查找）到当前页面对应的pojo类，详细说明见下午。因为，本文的文章是公司同事整理的，本文作者仅仅是将其分享出来，供大家参考思路，如果有什么不妥的话，请告知。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/02/14/this-expression-of-jsf-el"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle">使用kettle数据迁移添加主键和索引</a></h2>
-    
-      Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/01/05/add-primary-keys-and-indexes-when-migrating-datas-whith-kettle"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/2012/01/04/some-problems-about-migrating-database-datas-with-kettle">kettle进行数据迁移遇到的问题</a></h2>
-    
-      使用kettle进行oracle或db2数据导入到mysql或postgres数据库过程中遇到以下问题，以下只是一个简单描述，详细的说明以及所做的代码修改没有提及。下面所提到的最新的pdi程序是我修改kettle源码并编译之后的版本。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/2012/01/04/some-problems-about-migrating-database-datas-with-kettle"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
-<article>
-    <h2 class="entry-title under_line"><a href="/2011/12/07/mondrian-and-olap">Mondrian and OLAP</a></h2>
-    
-      Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
-     
-      <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="/2011/12/07/mondrian-and-olap"><span class="readmore">more &raquo; </span></a>-->
-        <div class="clearfix"></div>
-      </div>
-</article>
-
 
 <hr/>
 
@@ -326,10 +677,10 @@
     <a class="btn btn-default btn-sm" href="/page6/">&laquo; Prev</a>
     
   
-  <span><a class="btn btn-default btn-sm disabled">Page: 7 of 9</a></span>
+  <span><a class="btn btn-default btn-sm disabled">Page: 7 of 10</a></span>
   
     <a class="btn btn-default btn-sm" href="/page8/">Next &raquo;</a>
-    <a class="btn btn-default btn-sm" href="/page9/">Last</a>
+    <a class="btn btn-default btn-sm" href="/page10/">Last</a>
   
 </div>
 
@@ -350,6 +701,16 @@
        <div class="category">
          <ul>
            
+           <li><a href="/2014/04/08/a-benchmark-tool-on-postgresql">PostgreSQL测试工具pgbench</a></li>
+           
+           <li><a href="/2014/04/07/some-metrics-in-postgresql">PostgreSQL监控指标</a></li>
+           
+           <li><a href="/2014/04/07/install-postgresql-on-rhel-system">RHEL系统下安装PostgreSQL</a></li>
+           
+           <li><a href="/2014/04/06/mysql-config-for-master-slave-replication">RHEL系统安装MySQL主备环境</a></li>
+           
+           <li><a href="/2014/04/06/install-mysql-on-rhel-system">RHEL系统下安装MySql</a></li>
+           
            <li><a href="/2014/04/04/introduction-to-broadleaf-commerce">BroadleafCommerce介绍</a></li>
            
            <li><a href="/2014/04/01/install-jdk-with-saltstack">使用SaltStack安装JDK1.6</a></li>
@@ -359,16 +720,6 @@
            <li><a href="/2014/03/18/simulate-weibo-login-in-python">Python模拟新浪微博登录</a></li>
            
            <li><a href="/2014/03/15/schema-in-solr">Solr的schema.xml</a></li>
-           
-           <li><a href="/2014/03/14/split-chinese-in-solr">在Solr中使用中文分词</a></li>
-           
-           <li><a href="/2014/03/13/improve-the-search-function-in-broadleaf-project">BroadLeaf项目搜索功能改进</a></li>
-           
-           <li><a href="/2014/03/10/how-to-install-solrcloud">Apache SolrCloud安装</a></li>
-           
-           <li><a href="/2014/03/06/summary-of-the-work-in-2013">2013年度年终总结</a></li>
-           
-           <li><a href="/2014/03/03/solr-query-syntax">Apache Solr查询语法</a></li>
            
          </ul>
        </div>

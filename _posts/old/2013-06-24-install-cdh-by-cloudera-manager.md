@@ -12,8 +12,6 @@ tags: [hadoop, cdh]
 
 因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：[通过cloudera-manager来安装hadoop](http://dreamyue.com/post/41090075449/cloudera-manager-hadoop)。
 
-<!-- more -->
-
 # 2 方法二
 
 这里还有一种方法，就是手动下载`Cloudera Manager`的yum tar包，在虚拟机中搭建一个本地yum源，然后修改hosts文件，使`archive.cloudera.com`域名映射到本地ip。
@@ -76,5 +74,7 @@ tags: [hadoop, cdh]
 
 这时候，请执行如下命令：
 	
+```
 	su -s /bin/bash cloudera-scm -c "touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log"
 	su -s /bin/bash cloudera-scm -c "pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log"
+```

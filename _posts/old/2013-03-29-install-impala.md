@@ -8,7 +8,7 @@ keywords: impala
 
 与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如：那些批量提取，转化，加载（ETL）类型的Job，而Impala主要用于实时查询。
 
-Hadoop集群各节点的环境设置及安装过程见[手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
+Hadoop集群各节点的环境设置及安装过程见[手动安装Cloudera Hadoop CDH](/2013/03/24/manual-install-Cloudera-Hadoop-CDH),参考这篇文章，hadoop各个组件和jdk版本如下：
 
 ```
 	hadoop-2.0.0-cdh4.6.0
@@ -43,8 +43,8 @@ hadoop各组件可以在[这里](http://archive.cloudera.com/cdh4/cdh/4/)下载�
 
 2、先安装好java、hadoop集群以及hive，可以参考我的文章：
 
-* [手动安装Cloudera Hadoop CDH](/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
-* [手动安装Cloudera Hive CDH](/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
+* [手动安装Cloudera Hadoop CDH](/2013/03/24/manual-install-Cloudera-Hadoop-CDH4.2.html)
+* [手动安装Cloudera Hive CDH](/2013/03/24/manual-install-Cloudera-hive-CDH4.2.html)
 
 impala仓库列表如下：
 

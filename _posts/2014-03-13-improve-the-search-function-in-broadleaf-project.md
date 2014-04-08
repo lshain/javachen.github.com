@@ -86,7 +86,7 @@ solr.index.repeat.interval=3600000
 
 1、搭建独立运行的solr服务器
 
-你可以参考：[Apache Solr介绍及安装](/solr/2014/02/26/how-to-install-solr/)
+你可以参考：[Apache Solr介绍及安装](/2014/02/26/how-to-install-solr/)
 
 关键在于solr/home的定义，以及在该目录下创建两个目录，分别为primary和reindex，两个目录下的配置文件都一样，solr/home目录结构如下：
 

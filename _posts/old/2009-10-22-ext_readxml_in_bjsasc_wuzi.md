@@ -577,4 +577,4 @@ xml文件格式：
 
 ![bjsasc](http://jc-resource.qiniudn.com/images/2014/bjsasc.bmp)
 
-如果你想要获取更详细说明，请移步：[Extjs读取xml文件生成动态表格和表单(续)](/javascript/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue/)
+如果你想要获取更详细说明，请移步：[Extjs读取xml文件生成动态表格和表单(续)](/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue/)

@@ -124,6 +124,8 @@
   
     
   
+    
+  
 
 
 
@@ -163,8 +165,6 @@
 <p>该脚本中配置的rhel6的yum源为：<a href="http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/">http://archive.cloudera.com/cm4/redhat/6/x86_64/cm/4/</a>，下载的过程必须连网并且rpm的过程会非常慢，这种方法对虚拟机或者是无法连网的内网机器来说根本无法使用。</p>
 
 <p>因为知道所有的rpm都在上面网址可以下载到，故你可以手动下载这些rpm然后手动安装，详细过程请参考：<a href="http://dreamyue.com/post/41090075449/cloudera-manager-hadoop">通过cloudera-manager来安装hadoop</a>。</p>
-
-<!-- more -->
 
 <h1 id="toc_1">2 方法二</h1>
 
@@ -219,8 +219,8 @@ yum install -y cloudera-manager-server-db
       PostgreSQL and then try again., giving up
 </code></pre></div>
 <p>这时候，请执行如下命令：</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">su -s /bin/bash cloudera-scm -c &quot;touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log&quot;
-su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log&quot;
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    su -s /bin/bash cloudera-scm -c &quot;touch /var/log/cloudera-scm-server/db.log; /usr/share/cmf/bin/initialize_embedded_db.sh /var/lib/cloudera-scm-server-db/data /var/log/cloudera-scm-server/db.log&quot;
+    su -s /bin/bash cloudera-scm -c &quot;pg_ctl start -w -D /var/lib/cloudera-scm-server-db/data -l /var/log/cloudera-scm-server/db.log&quot;
 </code></pre></div>
     </div>
 

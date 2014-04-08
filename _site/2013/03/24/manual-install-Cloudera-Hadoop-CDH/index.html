@@ -124,6 +124,8 @@
   
     
   
+    
+  
 
 
 
@@ -193,12 +195,14 @@
 <ol>
 <li><p>修改每个节点的主机名称</p>
 
-<p>例如在desktop1节点上做如下修改：</p>
-
-<p>[root@desktop1 ~]# cat /etc/sysconfig/network
-NETWORKING=yes
-HOSTNAME=desktop1</p></li>
-<li><p>在每个节点上修改<code class="prettyprint">/etc/hosts</code>增加以下内容:</p></li>
+<p>例如在desktop1节点上做如下修改：</p></li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# cat /etc/sysconfig/network
+    NETWORKING=yes
+    HOSTNAME=desktop1
+</code></pre></div>
+<ol>
+<li>在每个节点上修改<code class="prettyprint">/etc/hosts</code>增加以下内容:</li>
 </ol>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">    [root@desktop1 ~]# cat /etc/hosts
     127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4

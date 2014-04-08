@@ -15,19 +15,19 @@ tags: [hadoop, hive, hbase, mapreduce]
 # hadoop安装文章
 博客中所有关于安装hadoop的文章列出如下：
 
-1. [【笔记】Hadoop安装部署](http://blog.javachen.com/hadoop/2013/03/08/note-about-installing-hadoop-cluster/)
+1. [【笔记】Hadoop安装部署](/2013/03/08/note-about-installing-hadoop-cluster/)
 
-2. [手动安装Cloudera Hive CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/)
+2. [手动安装Cloudera Hive CDH](/2013/03/24/manual-install-Cloudera-hive-CDH/)
 
-3. [手动安装Cloudera HBase CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hbase-CDH/)
+3. [手动安装Cloudera HBase CDH](/2013/03/24/manual-install-Cloudera-hbase-CDH/)
 
-4. [手动安装Cloudera Hadoop CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-Hadoop-CDH/)
+4. [手动安装Cloudera Hadoop CDH](/2013/03/24/manual-install-Cloudera-Hadoop-CDH/)
 
-5. [安装impala过程](http://blog.javachen.com/hadoop/2013/03/29/install-impala/)
+5. [安装impala过程](/2013/03/29/install-impala/)
 
-6. [从yum安装Cloudera CDH集群](http://blog.javachen.com/hadoop/2013/04/06/install-cloudera-cdh-by-yum/)
+6. [从yum安装Cloudera CDH集群](/2013/04/06/install-cloudera-cdh-by-yum/)
 
-7. [通过Cloudera Manager安装CDH](http://blog.javachen.com/hadoop/2013/06/24/install-cdh-by-cloudera-manager/)
+7. [通过Cloudera Manager安装CDH](/2013/06/24/install-cdh-by-cloudera-manager/)
 
 
 # hadoop-install
