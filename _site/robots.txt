@@ -1,6 +1,0 @@
-User-agent: *
-Disallow: /*?*
-Disallow: /page*
-Disallow: /assets
-
-Sitemap: http://blog.javachen.com/sitemap.xml

@@ -5,10 +5,10 @@ JavaChen Blog
 
 博客源码：[http:/blog.javachen.com](http://blog.javachen.com)
 
-使用Github+Jekyll+Markdown。
+使用Github+jekyll-bootstrap-3+Markdown。
 
 # Tanks TO
 
-- [http://havee.me/](http://havee.me/)
+- [jekyll-bootstrap-3](https://github.com/javachen/jekyll-bootstrap-3)
 
 
