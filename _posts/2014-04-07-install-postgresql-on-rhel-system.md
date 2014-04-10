@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RHEL系统下安装PostgreSQL
+title: RHEL系统安装PostgreSQL
 description: 使用yum方式在RHEL系统下安装PostgreSQL据库
 category: database
 tags: 

@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
     jQuery(window).scroll(function() {
         jQuery(this).scrollTop() > 200 ? jQuery("#toTop").fadeIn() : jQuery("#toTop").fadeOut()
     }),
-    jQuery("div.entry-content img").each(function() {
+    jQuery("div.content img").each(function() {
         var a = "<a id='fancyBox' href='" + this.src + "'></a>";
         jQuery(this).wrapAll(a)
     }),
@@ -29,8 +29,10 @@ jQuery(document).ready(function() {
 });
 
 function checkUrl(){
-	var patt = new RegExp("/[a-z]+[-]?[a-z]+/[0-9]+/[0-9]+/[0-9]+/[a-z]+");
-	if(patt.test(location.pathname)){
+	if(location.pathname.substring(0,3)=="/20"){
+		return;
+	}
+	if(new RegExp("/[a-z]+[-]?[a-z]+/[0-9]+/[0-9]+/[0-9]+/[a-z]+").test(location.pathname)){
 		window.location.href = "/"+location.pathname.split("/").slice(2).join("/");
 	}
 }

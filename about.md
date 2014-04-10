@@ -1,13 +1,15 @@
 ---
 title: About
 layout: page
+tagline: 本博客言论仅代表本人思想，与其他任何人或组织无关！
 group: navigation
 comment: true
 ---
 
 # 关于我
 
-- 系统架构师，就职于北京一家做开源解决方案的公司，主要从事Java和Hadoop相关工作
+- 出生于湖北、武汉
+- 系统架构师，工作在北京
 - 关注开源、Java、Hadoop、Pentaho、Cassandra以及数据可视化
 
 # 联系我
@@ -15,11 +17,15 @@ comment: true
 - Email：{{ site.author.email }}
 - Weibo: <a href='http://weibo.com/{{ site.author.weibo }}'>@{{ site.author.name }}</a>
 
+# 工作经历
+
+- 1、北京共致开源信息科技有限公司		架构师		2011/06 - 2014/04
+- 2、北京泰科思得科技有限公司		Java工程师	2010/04 - 2011/04
+- 3、北京神舟航天软件技术有限公司		Java工程师	2009/09 - 2010/04
+
 # 关于版权
 
 本博客采用<a href="http://www.creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh">知识共享署名-非商业性使用-相同方式共享 3.0 Unported License</a>。
-
-意思是:
 
 * 如果您想商用，请先联系博主
 * 如果您想转载，请署名及附上原文链接，转载时不得修改原文

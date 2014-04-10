@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RHEL系统下安装MySql
+title: RHEL系统安装MySql
 description: 使用yum方式在RHEL系统下安装MySql数据库
 category: database
 tags: 
