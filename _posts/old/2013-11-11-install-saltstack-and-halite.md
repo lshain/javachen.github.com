@@ -61,6 +61,7 @@ $ setenforce 0
 # 修改配置文件
 
 修改master配置文件，使其监听`0.0.0.0`地址，并设置自动接受minion的请求。
+
 ```
 $ vim /etc/salt/master
  interface: 0.0.0.0 #去掉对该行的注释

@@ -18,7 +18,6 @@ HAProxy是一款提供高可用性、负载均衡以及基于TCP（第四层）�
 
 HAProxy特别适用于那些负载特大的web站点， 这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。
 
-<!-- more -->
 
 # 安装配置
 
@@ -43,7 +42,7 @@ global
         ulimit-n 65535
 
 defaults
-        mode tcp                        #mode { tcp|http|health }，tcp 表示4层，http表示7层(对我们没用)，health仅作为健康检查使用
+        mode tcp                        #mode { tcp|http|health }，tcp 表示4层，http表示7层，health仅作为健康检查使用
         retries 2                       #尝试2次失败则从集群摘除
         option redispatch               #如果失效则强制转换其他服务器
         option abortonclose          	#连接数过大自动关闭
@@ -90,7 +89,7 @@ haproxy -f conf.cfg
 jdbc:hive2://${haproxy.hostname}:${haproxy.hive.bind.port}/${hive.database}
 ```
 
-上面haproxy.hostname为你安装haproxy的机器名；haproxy.hive.bind.port为conf.cfg中定义的监听hive的端口（上面中定义的为10001）
+上面`haproxy.hostname`为你安装haproxy的机器名；`haproxy.hive.bind.port`为`conf.cfg`中定义的监听hive的端口（上面中定义的为10001）
 
 # 参考资料
 
