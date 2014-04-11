@@ -10,7 +10,7 @@ comment: true
 
 - 出生于湖北、武汉
 - 系统架构师，工作在北京
-- 关注开源、Java、Hadoop、Pentaho、Cassandra以及数据可视化
+- {{ site.description }}
 
 # 联系我
 

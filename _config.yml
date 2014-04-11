@@ -12,8 +12,9 @@ redcarpet:
 
 title : JavaChen Blog
 tagline: Site Tagline
-keywords : pentaho、kettle、hadoop、hdfs、hive、hbase、mapreduce、cassandra、openstack、OpenNebula、Eucalyptus、fedora、linux、vim、extjs、dhtmlx、spring、javascript
-description: 关注开源、Java、Pentaho、Hadoop、Cassandra以及数据可视化
+keywords : java,hadoop,hive,hbase,mapreduce,impala,nosql,solr,solrcloud,linux,python,lua,postgresql,mysql
+description: 关注开源、Java、Hadoop、Pentaho、NoSql以及数据可视化
+version : 0.1
 author :
   name : JavaChen
   email : june.chan@foxmail.com

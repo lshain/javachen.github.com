@@ -19,8 +19,8 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 各个目录说明：
 
 - 所有的程序安装在/opt目录下，你可以依照你的实际情况下修改安装目录。
-- ZooKeeper的数据目录在/data/zookeeper/data
-- solr/home设置在/usr/local/solrhome
+- ZooKeeper的数据目录在:`/data/zookeeper/data`
+- solrhome设置在:`/usr/local/solrhome`
 
 # 2. 规划SolrCloud
 
@@ -42,7 +42,7 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 
 由于需要用到ZooKeeper，故我们先安装好ZooKeeper集群
 
-首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到/opt目录：
+首先，在第一个节点上将zookeeper-3.4.5.tar.gz解压到`/opt`目录：
 
 ```
 $ tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
@@ -112,9 +112,9 @@ $ cp solr-4.4.0/example/resources/log4j.properties apache-tomcat-6.0.36/lib/
 在其他节点上重复以上操作完成所有节点的solr的安装。
 
 
-# 5. ZooKeeper管理配置文件
+# 5. 设置SolrCloud配置文件
 
-安装ZooKeeper集群之前，请确保每台机器上配置hosts文件，使没给节点都能通过机器名访问。
+安装ZooKeeper集群之前，请确保每台机器上配置`/etc/hosts`文件，使每个节点都能通过机器名访问。
 
 1、 创建一个SolrCloud目录，并将solr的lib文件拷贝到这个目录：
 
@@ -195,9 +195,9 @@ JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.1
 
 说明：
 
-- -Djetty.port：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080
-- -Dsolr.solr.home：配置solr/home
-- -zkHost配置zookeeper集群地址，多个地址逗号分隔
+- `-Djetty.port`：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080
+- `-Dsolr.solr.home`：配置solr/home
+- `-zkHost`: 配置zookeeper集群地址，多个地址逗号分隔
 
 最后，在/opt目录下启动tomcat：
 
