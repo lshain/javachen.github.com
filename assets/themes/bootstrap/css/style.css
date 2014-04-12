@@ -8,19 +8,6 @@ a{
 li{
 	line-height:25px
 }
-.post>h3.title{
-	position:relative;
-	padding-top:10px
-}
-.post>h3.title span.date{
-	position:absolute;
-	right:0;
-	font-size:.9em
-}
-.post>.more{
-	margin:10px 0;
-	text-align:left
-}
 .post-full .date{
 	margin-bottom:20px;
 	font-weight:bold
@@ -61,23 +48,19 @@ li{
 	color:#FFF
 }
 h1 h2 h3 h4{
-	font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif
+	font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif,color:#000
 }
 h1{
 	font-size:26.25px;
-	color:#000
 }
 h2{
 	font-size:22.25px;
-	color:#111
 }
 h3{
 	font-size:18.25px;
-	color:#222
 }
 h4{
 	font-size:14.25px;
-	color:#333
 }
 #toTop{
 	width:40px;
@@ -105,14 +88,7 @@ h4{
 #toTop a:hover{
 	background:#3d5998
 }
-.page-header{
-	padding-bottom:0;
-	margin:0
-}
-.under_line{
-	border-bottom:1px solid #e8e8e8;
-	padding-bottom:5px
-}
+
 table{
 	margin-bottom:20px;
 	max-width:100%;

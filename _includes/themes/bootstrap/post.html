@@ -4,8 +4,23 @@
 
 <div class="row post-full">
   <div class="col-md-12">
-    <div class="date">
-      <span>{{ page.date | date: "%Y/%m/%d" }}</span>
+	<div class="panel">
+		<div class="panel-body">
+				<ul class="tag_box list-inline">
+					<li><i class="glyphicon glyphicon-user"></i></li><li><a href="/about.html">{{ site.author.name }}</a></li>
+					<li><i class="glyphicon glyphicon-calendar"></i></li><li>{{ page.date | date: "%Y-%m-%d" }}</li>
+					{% unless page.categories == empty %}
+						<li><i class="glyphicon glyphicon-folder-open"></i></li>
+						{% assign categories_list = page.categories %}
+						{% include JB/categories_list %}
+					{% endunless %}
+					{% unless page.tags == empty %}
+						<li><i class="glyphicon glyphicon-tags"></i></li>
+						{% assign tags_list = page.tags %}
+						{% include JB/tags_list %}
+					{% endunless %}
+				</ul>
+		</div>
     </div>
     <div class="content">
       {{ content }}
@@ -15,22 +30,7 @@
    <hr>
 
    <div class="row status">
-	  <div class="col-md-6">
-		<ul class="tag_box list-inline">
-		{% unless page.categories == empty %}
-		    <li><i class="icon-folder-open"></i></li>
-		    {% assign categories_list = page.categories %}
-		    {% include JB/categories_list %}
-		{% endunless %}
-
-		{% unless page.tags == empty %}
-		    <li><i class="icon-tags"></i></li>
-		    {% assign tags_list = page.tags %}
-		    {% include JB/tags_list %}
-		{% endunless %}
-        </ul>
-      </div>
-      <div class="col-md-3">
+      <div class="col-md-12">
         <div class="btn-group">
           {% if page.previous %}
             <a class="btn btn-default btn-sm" href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}">&laquo; Prev</a>
@@ -43,15 +43,6 @@
           {% else %}
             <a class="btn btn-default btn-sm disabled">Next &raquo;</a>
           {% endif %}
-        </div>
-      </div>
-      <div class="col-md-3 visible-lg visible-md">
-        <div id="bdshare" class="bdshare_t bds_tools_24 get-codes-bdshare btn-group pull-right">
-          <a class="bds_tsina"></a>
-          <a class="bds_tqq"></a>
-          <a class="bds_t163"></a>
-          <a class="bds_renren"></a>
-          <span class="bds_more"></span>
         </div>
       </div>
     </div>

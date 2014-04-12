@@ -1,9 +1,10 @@
 function checkUrl() {
-    if(!new RegExp("/^/20/g").test(location.pathname)) location.href = "/" + location.pathname.split("/").slice(2).join("/");
+    if (!new RegExp("^/20").test(location.pathname)) {
+        location.href = "/" + location.pathname.split("/").slice(2).join("/");
+    }
 }
-
 jQuery.noConflict(), jQuery(document).ready(function() {
-    checkUrl(), jQuery("#toTop").hide(), jQuery("#toTop a:first").click(function() {
+   jQuery("#toTop").hide(), jQuery("#toTop a:first").click(function() {
         jQuery("html,body").animate({
             scrollTop:0
         }, 200);

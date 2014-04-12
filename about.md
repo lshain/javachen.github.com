@@ -9,13 +9,27 @@ comment: true
 # 关于我
 
 - 出生于湖北、武汉
-- 系统架构师，工作在北京
+- 工作在北京，系统架构师
 - {{ site.description }}
 
 # 联系我
 
 - Email：{{ site.author.email }}
-- Weibo: <a href='http://weibo.com/{{ site.author.weibo }}'>@{{ site.author.name }}</a>
+{% if site.author.github %}
+- Github: [@{{ site.author.name }}](https://github.com/{{ site.author.github }})
+{% endif %}
+{% if site.author.googleplus %}
+- GooglePlus: [@{{ site.author.name }}](https://plus.google.com/{{ site.author.googleplus }})
+{% endif %}
+{% if site.author.twitter %}
+- Twitter: [@{{ site.author.name }}](http://twitter.com/{{ site.author.twitter }})
+{% endif %}
+{% if site.author.facebook %}
+- Facebook: [@{{ site.author.name }}](http://facebook.com/{{ site.author.facebook }})
+{% endif %}
+{% if site.author.weibo %}
+- Weibo: [@{{ site.author.name }}](http://weibo.com/{{ site.author.weibo }})
+{% endif %}
 
 # 工作经历
 

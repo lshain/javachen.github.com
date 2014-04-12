@@ -7,24 +7,15 @@ tagline: Life is long, we need java.
 
 {% for post in paginator.posts %}
 <article>
-    <h2 class="entry-title under_line"><a href="{{ post.url }}">{{ post.title }}</a></h2>
-    {% if post.description %}
+    <h2 class="entry-title under_line"><a href="{{ post.url }}/">{{ post.title }}</a></h2>
       {{ post.description }}
-    {% else %}
-		{% if post.content contains "<!-- more -->" %}
-		  {{ post.content | split:'<!-- more -->' |first }}
-		{% else %}
-		  {{ post.content }}
-		{% endif %} 
-    {% endif %} 
       <div class="status">
-        <!--<a class="btn btn-default btn-sm pull-left" href="{{ post.url }}"><span class="readmore">more &raquo; </span></a>-->
+        <a class="btn btn-default btn-xs pull-right" href="{{ post.url }}/"><span class="readmore">more &raquo; </span></a>
         <div class="clearfix"></div>
       </div>
 </article>
-{% endfor %}
-
 <hr/>
+{% endfor %}
 
 <!-- Pagination links -->
 <div class="pull-right">

@@ -14,10 +14,10 @@ title : JavaChen Blog
 tagline: Site Tagline
 keywords : java,hadoop,hive,hbase,mapreduce,impala,nosql,solr,solrcloud,linux,python,lua,postgresql,mysql
 description: 关注开源、Java、Hadoop、Pentaho、NoSql以及数据可视化
-version : 0.2
+version : 0.12
 author :
   name : JavaChen
-  email : june.chan@foxmail.com
+  email : june.chan(a)foxmail.com
   github : javachen
   twitter : 
   feedburner : 
