@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ubuntu系统编译Bigtop
-description: Bigtop是去年apache基金会推出的一个对Hadoop及其周边生态进行打包，分发和测试的工具。本篇文章尝试在linux-mint系统上编译bigtop源代码并生成deb包。
+description: Bigtop是apache基金会推出的一个对Hadoop及其周边生态进行打包、分发和测试的工具。本篇文章尝试在linux-mint系统上编译bigtop源代码并生成hadoop的deb包。
 category: hadoop
 tags: 
  - bigtop
@@ -117,7 +117,7 @@ cd bigtop
 # you can also use a different branch, e.g. git checkout branch-0.7
 ```
 
-为了加快编译速度，你可以修改`Makefile`文件中的`APACHE_MIRROR`和`APACHE_ARCHIVE`为国内的速度叫快的apache镜像地址，例如：[http://mirror.bit.edu.cn/apache](http://mirror.bit.edu.cn/apache)
+为了加快编译速度，你可以修改`Makefile`文件中的`APACHE_MIRROR`和`APACHE_ARCHIVE`为国内的速度较快的apache镜像地址，例如：[http://mirror.bit.edu.cn/apache](http://mirror.bit.edu.cn/apache)
 
 编译源代码：
 
@@ -183,7 +183,7 @@ sudo /etc/init.d/hadoop-hdfs-datanode start
 
 # 5. 排错
 
-1) bigtop-0.7依赖的是`protobuf-2.4.0`而不是`protobuf-2.5.0`	
+1) bigtop-0.7依赖的是`protobuf-2.4.0`而不是`protobuf-2.5.0`，导致编译过程出现protobuf的版本需要2.5.0的提示，请卸载2.4.0版本重新编译protobuf-2.5.0。
 
 2) 运行`make deb`时出现`more change data or trailer`的异常(详细异常信息见下面)，请将操作系统的LANG修改为`en_US`
 
