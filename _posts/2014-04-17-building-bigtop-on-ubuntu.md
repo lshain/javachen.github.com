@@ -26,15 +26,17 @@ sudo apt-get build-dep pkg-config
 
 Sun JDK 6:
 
-先下载jdk-6u31-linux-x64.bin,然后执行以下脚本：
+执行以下脚本：
 
 ```bash
-chmod a+x jdk-6u31-linux-x64.bin
-./jdk-6u31-linux-x64.bin # will prompt to confirm the license agreement
-sudo mv jdk1.6.0_31 /usr/lib/jvm
-sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_31/bin/java" 2
-sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.6.0_31/bin/javac" 2
-sudo update-alternatives --config java # will prompt, and choose the highest possible number
+wget http://archive.cloudera.com/cm4/ubuntu/precise/amd64/cm/pool/contrib/o/oracle-j2sdk1.6/oracle-j2sdk1.6_1.6.0+update31_amd64.deb
+dpkg -i oracle-j2sdk1.6_1.6.0+update31_amd64.deb
+
+sudo rm /usr/lib/jvm/default-java
+sudo ln -s /usr/lib/jvm/j2sdk1.6-oracle /usr/lib/jvm/default-java
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/default-java/bin/java 5
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/default-java/bin/javac 5
+sudo update-alternatives --set java /usr/lib/jvm/default-java/bin/java
 ```
 
 OpenJDK 7:
@@ -43,12 +45,11 @@ OpenJDK 7:
 
 ```bash
 sudo apt-get install openjdk-7-jdk
-sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/java-7-openjdk-amd64/bin/java" 2
-sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/java-7-openjdk-amd64/bin/javac" 2
-sudo update-alternatives --config java # will prompt, and choose the highest possible number
-cd /usr/lib/jvm
-sudo rm default-java
-sudo ln -s java-7-openjdk-amd64 default-java
+sudo rm /usr/lib/jvm/default-java
+sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/lib/jvm/default-java
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/default-java/bin/java 5
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/default-java/bin/javac 5
+sudo update-alternatives --set java /usr/lib/jvm/default-java/bin/java
 ```
 
 ## 安装Maven 3
