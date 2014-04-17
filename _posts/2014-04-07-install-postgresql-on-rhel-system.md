@@ -1,7 +1,7 @@
 ---
 layout: post
 title: RHEL系统安装PostgreSQL
-description: 使用yum方式在RHEL系统下安装PostgreSQL据库
+description: PostgreSQL 是一个开放源码的免费数据库系统。Postgres 最初由加州大学伯克利分校计算机科学系开发，倡导了很多关系对象的观念，这些观念现在已经用在一些商业数据库系统中。它提供了 SQL92/SQL99 语言支持，事务处理，引用集成，存储过程以及类型扩展。PostgreSQL 则是 Postgres 的一个开放源代码的后代。
 category: database
 tags: 
  - linux
