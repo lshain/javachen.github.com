@@ -88,11 +88,11 @@ make check
 make install
 ```
 
-安装完成后，执行 protoc –vresion 验证是否安装成功。
+安装完成后，执行 `protoc --vresion` 验证是否安装成功。
 
 # 2. 设置环境变量
 
-创建/etc/profile.d/bigtop.sh并添加如下内容：
+创建`/etc/profile.d/bigtop.sh`并添加如下内容：
 
 ```bash
 export JAVA_HOME="/usr/lib/jvm/default-java"
@@ -117,23 +117,86 @@ cd bigtop
 # you can also use a different branch, e.g. git checkout branch-0.7
 ```
 
+为了加快编译速度，你可以修改`Makefile`文件中的`APACHE_MIRROR`和`APACHE_ARCHIVE`为国内的速度叫快的apache镜像地址，例如：[http://mirror.bit.edu.cn/apache](http://mirror.bit.edu.cn/apache)
+
 编译源代码：
 
 ```bash
 ./check-env.sh # make sure all the required environment variables are set
 make realclean
 make bigtop-utils-deb # build this project first
+make bigtop-jsvc-deb
+make bigtop-tomcat-deb
 make hadoop-deb # to build just for hadoop first
 make deb # build all the rest
 ```
 
-# 4. 排错
+编译之后deb输出在output目录
+
+
+# 4. 安装和测试
+
+在使用`dpkg`命令安装之前，先关掉自动启动服务。使用root用欢创建`/usr/sbin/policy-rc.d`，该文件内容如下：
+
+```
+#!/bin/sh
+exit 101
+```
+
+添加执行权限：
+
+```
+sudo chmod +x /usr/sbin/policy-rc.d
+```
+
+安装deb文件：
+
+```
+cd output/bigtop-utils
+sudo dpkg --install *.deb
+cd ..
+sudo dpkg --install **/**.deb
+```
+
+最后别忘了删除掉`policy-rc.d`：
+
+```
+sudo rm /usr/sbin/policy-rc.d
+```
+
+初始化hdfs：
+
+```
+sudo -u hdfs hadoop namenode -format
+```
+
+启动服务：
+
+```
+sudo /etc/init.d/hadoop-hdfs-namenode start
+sudo /etc/init.d/hadoop-hdfs-datanode start
+
+#sudo /etc/init.d/hadoop-xxxx start
+```
+
+接下来可以查看日志和web页面是否正常了。访问[http://localhost:50070/](http://localhost:50070/)，你就可以看到hadoop-2.3.0的小清新的管理界面了。
+
+# 5. 排错
 
 1) bigtop-0.7依赖的是`protobuf-2.4.0`而不是`protobuf-2.5.0`	
 
-2) 运行`make bigtop-utils-deb`时出现`more change data or trailer`的异常，请将操作系统的LANG修改为`en_US`
+2) 运行`make deb`时出现`more change data or trailer`的异常(详细异常信息见下面)，请将操作系统的LANG修改为`en_US`
 
-# 5. 参考文章
+```
+parsechangelog/debian: warning:     debian/changelog(l4): badly formatted trailer line
+LINE:  -- Bigtop <dev@bigtop.apache.org>  四, 17 4月 2014 14:30:17 +0800
+parsechangelog/debian: warning:     debian/changelog(l4): found eof where expected more change data or trailer
+dpkg-buildpackage: source package zookeeper
+dpkg-buildpackage: source version 3.4.5-1
+dpkg-buildpackage: error: unable to determine source changed by
+```
+
+# 6. 参考文章
 
 - [1] [Building Bigtop on Ubuntu](https://cwiki.apache.org/confluence/display/BIGTOP/Building+Bigtop+on+Ubuntu)
 
