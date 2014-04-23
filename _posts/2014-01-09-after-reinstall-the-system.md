@@ -40,7 +40,8 @@ ibus-daemon
 
 ```
 wget https://gitorious.org/projets-divers/gedit-markdown/archive/master.zip
-cd master
+unzip master.zip
+cd projets-divers-gedit-markdown
 ./gedit-markdown.sh install
 ```
 
@@ -54,19 +55,29 @@ sudo apt-get install wiznote
 
 # 安装 oh-my-zsh
 
+把默认 Shell 换为 zsh。
+
+```
+chsh -s /bin/zsh
+```
+
+然后用下面的两句（任选其一）可以自动安装 oh-my-zsh：
+
 ```
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+```
+
+```
+wget --no-check-certificate https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh
 ```
 
 编辑`~/.zshrc`：
 
 ```
-echo 'export PATH=$PATH:$HOME/.rvm/bin' >>~/.zshrc
-echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >>~/.zshrc
-
-source ~/.bashrc
-source ~/.bash_profile
+echo 'source ~/.bashrc' >>~/.zshrc
+echo 'source ~/.bash_profile' >>~/.zshrc
 ```
+
 
 # 安装Ruby
 
@@ -82,7 +93,15 @@ rvm --default 1.9.3
 # 安装jekyll
 
 ```
+sudo gem install rdoc
 sudo gem install jekyll redcarpet
+```
+
+设置环境变量：
+
+```
+echo 'export PATH=$PATH:$HOME/.rvm/bin' >> ~/.bash_profile
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
 ```
 
 # 安装 virtualbox
@@ -125,7 +144,6 @@ mv ~/音乐 ~/opt
 mv ~/图片 ~/tmp
 mv ~/视频 ~/workspace
 mv ~/下载 ~/download
-
 ln -s /chan/opt  ~/opt
 ln -s /chan/tmp   ~/tmp
 ln -s /chan/projects  ~/projects
@@ -133,7 +151,9 @@ ln -s /chan/workspace  ~/workspace
 ln -s /chan/download    ~/download
 ```
 
-# 配置ant、maven和ivy仓库
+# 安装开发环境
+
+配置ant、maven和ivy仓库
 
 ```
 chmod +x /chan/opt/apache-maven-3.0.5/bin/mvn
@@ -145,7 +165,7 @@ ln -s /chan/opt/repository/cache/  /home/june/.ivy2/cache
 ln -s /chan/opt/repository/m2/  /home/june/.m2/repository
 ```
 
-# 安装jdk1.6.0_31
+安装jdk1.6
 
 ```
 wget http://archive.cloudera.com/cm4/ubuntu/precise/amd64/cm/pool/contrib/o/oracle-j2sdk1.6/oracle-j2sdk1.6_1.6.0+update31_amd64.deb
@@ -155,20 +175,24 @@ dpkg -i oracle-j2sdk1.6_1.6.0+update31_amd64.deb
 配置环境变量：
 
 ```
+sudo rm /usr/lib/jvm/default-java
+sudo ln -s /usr/lib/jvm/j2sdk1.6-oracle /usr/lib/jvm/default-java
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/default-java/bin/java 5
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/default-java/bin/javac 5
+sudo update-alternatives --set java /usr/lib/jvm/default-java/bin/java
+
+
 if [ -f ~/.bashrc ] ; then
     sed -i '/^export[[:space:]]\{1,\}JAVA_HOME[[:space:]]\{0,\}=/d' ~/.bashrc
     sed -i '/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d' ~/.bashrc
     sed -i '/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d' ~/.bashrc
 fi
-echo "export JAVA_HOME=/usr/java/latest" >> ~/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/default-java" >> ~/.bashrc
 echo "export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar">>~/.bashrc
 echo "export MVN_HOME=/chan/opt/apache-maven-3.0.5" >> ~/.bashrc
 
 echo "export ANT_HOME=/chan/opt/apache-ant-1.9.2" >> ~/.bashrc
 echo "export PATH=\$JAVA_HOME/bin:\$MVN_HOME/bin:\$ANT_HOME/bin:\$PATH" >> ~/.bashrc
-
-update-alternatives --install /usr/bin/java java /usr/java/latest 5
-update-alternatives --set java /usr/java/latest 
 source ~/.bashrc
 ```
 

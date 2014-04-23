@@ -51,6 +51,13 @@ curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | 
 wget --no-check-certificate https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh
 ```
 
+编辑`~/.zshrc`：
+
+```
+echo 'source ~/.bashrc' >>~/.zshrc
+echo 'source ~/.bash_profile' >>~/.zshrc
+```
+
 # 安装Vim插件
 安装pathogen：
 
@@ -68,13 +75,17 @@ git clone https://github.com/scrooloose/nerdtree.git
 ```
 
 更多请参考：[vim配置和插件管理](/2014/01/14/vim-config-and-plugins/)
+
 # 安装Ruby
 
-通过rvm安装ruby：
+先安装依赖(待补充)：
 
 ```
 brew install libksba
+```
+通过rvm安装ruby：
 
+```
 curl -L get.rvm.io | bash -s stable $ source ~/.bash_profile
 sed -i -e 's/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g' ~/.rvm/config/db
 sudo rvm install 1.9.3 --with-gcc=clang
@@ -85,8 +96,14 @@ rvm --default 1.9.3
 
 ```
 sudo gem install rdoc
-
 sudo gem install jekyll redcarpet
+```
+
+设置环境变量：
+
+```
+echo 'export PATH=$PATH:$HOME/.rvm/bin' >> ~/.bash_profile
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
 ```
 
 # 安装开发环境
