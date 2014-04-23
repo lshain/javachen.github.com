@@ -1,13 +1,29 @@
 ---
 layout: post
-title: PostgreSQL测试工具pgbench
-description: PostgreSQL测试工具pgbench
+title: PostgreSQL测试工具PGbench
+description: pgbench 是一个简单的给 PostgreSQL 做性能测试的程序。它反复运行同样的 SQL 命令序列，可能是在多个并发数据库会话上头，然后检查平均的事务速度（每秒的事务数 tps）。缺省的时候，pgbench 测试一个（松散的）接近 TPC-B 的情况，每个事务包括五个 SELECT，UPDATE，和 INSERT命令。不过，我们可以很轻松地使用自己的事务脚本文件来实现其它情况。
 category: database
 tags: 
  - linux
  - postgresql
 published: true
 ---
+
+pgbench 是一个简单的给 PostgreSQL 做性能测试的程序。它反复运行同样的 SQL 命令序列，可能是在多个并发数据库会话上头，然后检查平均的事务速度（每秒的事务数 tps）。缺省的时候，pgbench 测试一个（松散的）接近 TPC-B 的情况，每个事务包括五个 SELECT，UPDATE，和 INSERT命令。不过，我们可以很轻松地使用自己的事务脚本文件来实现其它情况。
+
+典型的输出看上去会是这样：
+
+```
+transaction type: TPC-B (sort of)
+scaling factor: 10
+number of clients: 10
+number of transactions per client: 1000
+number of transactions actually processed: 10000/10000
+tps = 85.184871 (including connections establishing)
+tps = 85.296346 (excluding connections establishing)
+```
+
+头四行只是报告一些最重要的参数设置。跟着的一行报告完成的事务数和期望完成的事务数（后者只是客户端数乘以事务数）；这两个会相等，除非在完成之前运行就失败了。最后两行报告 TPS 速率，分别有计算启动数据库会话时间和不计算启动会话时间的。
 
 **使用环境：**
 
@@ -182,3 +198,7 @@ Total runtime: 48.858 ms
 由上面的执行计划可以看出在`work_mem`大小为1M的时候排序一共需要1.352M空间做排序,所以加大`work_mem`参数排序速度明显增加。
 
 这只是个简单的例子，`work_mem`的大小调节还有很多其他方面要考虑的，比如在高并发的情况下，需要为每个用户分配同样大小的排序空间，会占用大量的内存空间。参数调节在任何时候保持一个均衡才是应该考虑的。
+
+# 参考文章
+
+- [1] [PGbench](http://www.pgsqldb.com:8079/mwiki/index.php/PGbench)

@@ -61,23 +61,28 @@ curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | 
 编辑`~/.zshrc`：
 
 ```
-PATH=$PATH:$HOME/.rvm/bin
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+echo 'export PATH=$PATH:$HOME/.rvm/bin' >>~/.zshrc
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >>~/.zshrc
 
 source ~/.bashrc
 source ~/.bash_profile
 ```
 
-# 安装 RVM & Ruby
+# 安装Ruby
+
+通过rvm安装ruby：
 
 ```
-curl -sSL https://get.rvm.io | bash --ruby=1.9.3
+curl -L get.rvm.io | bash -s stable $ source ~/.bash_profile
+sed -i -e 's/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g' ~/.rvm/config/db
+sudo rvm install 1.9.3 --with-gcc=clang
+rvm --default 1.9.3
 ```
 
 # 安装jekyll
 
 ```
-gem install jekyll redcarpet
+sudo gem install jekyll redcarpet
 ```
 
 # 安装 virtualbox
