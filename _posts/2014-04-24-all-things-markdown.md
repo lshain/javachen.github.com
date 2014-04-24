@@ -380,6 +380,41 @@ _   底线
 !   惊叹号
 ```
 
+## 表格
+
+使用语法解释引擎 Redcarpet(需要开启`tables`选项)，则表格如下定义：
+
+```
+|head1 head1 head1|head2 head2 head2|head3 head3 head3|head4 head4 head4|
+|---|:---|:---:|---:|
+|row1text1|row1text3|row1text3|row1text4|
+|row2text1|row2text3|row2text3|row2text4|
+```
+其中`:`所在位置表示表格的位置对齐
+
+添加 `table thead tobody th tr td` 样式后显示的效果是：
+
+|head1 head1 head1|head2 head2 head2|head3 head3 head3|head4 head4 head4|
+|---|:---|:---:|---:|
+|row1text1|row1text3|row1text3|row1text4|
+|row2text1|row2text3|row2text3|row2text4|
+
+Github中定义表格方式如下：
+
+```
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+```
+
+显示的效果如下：
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+
 # <a id="Editor">编辑器</a>
 
 作为一种小型标记语言，Markdown很容易阅读，也很容易用普通的文本编辑器编辑。另外也有一些编辑器专为Markdown设计，可以直接预览文档的样式。下面有一些编辑器可供参考：

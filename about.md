@@ -1,7 +1,7 @@
 ---
 title: About
 layout: page
-tagline: This blog comments on behalf of my thought, has nothing to do with any other person or organization!
+tagline: 
 group: navigation
 comment: true
 ---
@@ -26,6 +26,8 @@ comment: true
 **Copyright:**
 
 Attribution-NonCommercial-ShareAlike 3.0 Unported (CC [BY-NC-SA 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/))
+
+This blog comments on behalf of my thought, has nothing to do with any other person or organization!
 
 
 
