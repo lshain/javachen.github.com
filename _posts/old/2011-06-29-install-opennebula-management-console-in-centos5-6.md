@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Centos上安装 OpenNebula Management Console
-category: cloud
+category: Cloud
 tags: [openNebula]
-keywords: OpenNebula, centos 
+keywords: OpenNebula 
 description: Centos上安装 OpenNebula Management Console
 
 ---

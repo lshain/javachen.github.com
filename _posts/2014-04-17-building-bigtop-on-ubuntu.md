@@ -2,7 +2,7 @@
 layout: post
 title: Ubuntu系统编译Bigtop
 description: Bigtop是apache基金会推出的一个对Hadoop及其周边生态进行打包、分发和测试的工具。本篇文章尝试在linux-mint系统上编译bigtop源代码并生成hadoop的deb包。
-category: hadoop
+category: Hadoop
 tags: 
  - bigtop
 published: true

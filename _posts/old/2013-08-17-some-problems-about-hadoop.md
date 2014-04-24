@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  使用hadoop中遇到的一些问题
+title:  使用Hadoop中遇到的一些问题
 description: 本文主要记录安装hadoop过程需要注意的一些细节以及使用hadoop过程中发现的一些问题以及对应解决办法，有些地方描述的不是很清楚可能还会不准确，之后会重现问题然后修改完善这篇文章。
-category: hadoop
+category: Hadoop
 tags: [hadoop, hive, hbase, mapreduce]
 ---
 

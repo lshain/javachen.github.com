@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 哈希表
-category: java
-tags: [java, hash, hashmap]
-keywords: java, hash, hashmap
+category: Java
+tags: [java]
+keywords: java
 description: 一般的线性表、树，数据在结构中的相对位置是<code>随机</code>的，即和记录的关键字之间不存在确定的关系，因此，在结构中查找记录时需进行一系列和关键字的比较。这一类查找方法建立在“比较“的基础上，查找的效率依赖于查找过程中所进行的比较次数。 若想能直接找到需要的记录，必须在记录的存储位置和它的关键字之间建立一个确定的对应关系f，使每个关键字和结构中一个唯一的存储位置相对应，这就是哈希表。
 ---
 

@@ -2,8 +2,8 @@
 layout: post
 title: SiteMesh介绍
 description: SiteMesh是由一个基于Web页面布局、装饰以及与现存Web应用整合的框架。它能帮助我们在由大量页面构成的项目中创建一致的页面布局和外观，如一致的导航条，一致的banner，一致的版权等等。它不仅仅能处理动态的内容，如jsp，php，asp等产生的内容，它也能处理静态的内容，如htm的内容，使得它的内容也符合你的页面结构的要求。甚至于它能将HTML文件象include那样将该文件作为一个面板的形式嵌入到别的文件中去。所有的这些，都是GOF的Decorator模式的最生动的实现。尽管它是由java语言来实现的，但它能与其他Web应用很好地集成
-category: java
-tags: [SiteMesh]
+category: Java
+tags: [java]
 ---
 
 # 1. SiteMesh简介

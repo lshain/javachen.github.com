@@ -1,6 +1,6 @@
-      <section>
+    <section>
    	 <h2>About</h2>
-	 <p class="entry-content">
-   	 系统架构师，主要从事Java和Hadoop相关工作。<a href="/about.html">更多信息</a> 
-	</p>
-       </section>
+	 <p>
+   	 <a href="/about.html">{{ site.author.name }}</a> is a system architect and works on (but not limited to) Java, Hadoop, and Pentaho. 
+	 </p>
+    </section>

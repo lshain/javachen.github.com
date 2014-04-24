@@ -2,8 +2,8 @@
 layout: post
 title: All Things OpenTSDB
 description: OpenTSDB用HBase存储所有的时序（无须采样）来构建一个分布式、可伸缩的时间序列数据库。它支持秒级数据采集所有metrics，支持永久存储，可以做容量规划，并很容易的接入到现有的报警系统里。OpenTSDB可以从大规模的集群（包括集群中的网络设备、操作系统、应用程序）中获取相应的metrics并进行存储、索引以及服务，从而使得这些数据更容易让人理解，如web化、图形化等。
-category: linux
-tags: [OpenTSDB , hbase]
+category: DevOps
+tags: [opentsdb , hbase]
 ---
 
 # 1. OpenTSDB介绍

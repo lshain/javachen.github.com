@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 如何创建一个Django网站
-category: python
+category: Python
 tags: [python,django]
 description: 使用django创建一个简单的网站
 ---

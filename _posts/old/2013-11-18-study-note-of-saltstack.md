@@ -1,8 +1,8 @@
 ---
 layout: post
-title: SaltStack学习笔记[未完成]
+title: SaltStack学习笔记
 description: 这份文档如其名，是我自己整理的学习 SaltStack 的过程记录。只是过程记录，没有刻意像教程那样去做。所以呢，从前至后，中间不免有一些概念不清不明的地方。因为事实上，在某个阶段对于一些概念本来就不可能明白。所以，整个过程只求在形式上的能用即可。前面就不要太纠结概念和原理，知道怎么用就好。
-category: linux
+category: DevOps
 tags: saltstack
 ---
 

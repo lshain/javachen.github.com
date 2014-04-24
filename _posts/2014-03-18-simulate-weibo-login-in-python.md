@@ -2,7 +2,7 @@
 layout: post
 title: Python模拟新浪微博登录
 description: Python模拟新浪微博登录
-category: python
+category: Python
 tags: [python]
 ---
 

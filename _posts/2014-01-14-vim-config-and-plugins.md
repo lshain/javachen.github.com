@@ -1,14 +1,14 @@
 ---
 layout: post
-title: vim配置和插件管理
+title: Vim配置和插件管理
 description: 这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。
-category: linux
-tags: [vim , plguin]
+category: DevOps
+tags: [vim , plugin]
 ---
 
 这篇文章主要是记录vim配置中各个配置项的含义并且收藏一些常用的插件及其使用方法。
 
-# 1. vim配置
+# 1. Vim配置
 
 目前我的vimrc配置放置在:[https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc](https://github.com/javachen/snippets/blob/master/dotfiles/.vimrc)，其中大多数用英文注释。
 

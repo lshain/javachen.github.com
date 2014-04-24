@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Pentaho现场支持遇到问题及解决办法
-category: pentaho
+category: Pentaho
 tags: [pentaho]
 description: Pentaho现场支持遇到问题及解决办法
 ---

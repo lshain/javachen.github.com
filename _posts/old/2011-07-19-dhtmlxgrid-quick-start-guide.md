@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DhtmlxGrid Quick Start Guide
-category: java
+category: Web
 tags: [javascript, dhtmlxGrid, xml]
 keywords: dhtmlxGrid, javascript, dhtmlxTree
 description: DhtmlxGrid Quick Start Guide

@@ -2,7 +2,7 @@
 layout: post
 title: 使用SaltStack安装JDK1.6
 description: 使用SaltStack安装JDK1.6
-category: linux
+category: DevOps
 tags: [saltstack]
 ---
 

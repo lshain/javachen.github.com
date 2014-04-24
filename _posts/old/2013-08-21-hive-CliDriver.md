@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  hive cli的入口类
-description: 我的学习笔记，理解hive cli的入口类
-category: hadoop
+title:  Hive CLI的入口类
+description: 我的学习笔记，理解Hive CLI的入口类
+category: Hadoop
 tags: [hadoop, hive]
 ---
 

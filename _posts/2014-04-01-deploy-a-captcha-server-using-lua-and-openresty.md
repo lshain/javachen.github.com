@@ -2,7 +2,7 @@
 layout: post
 title: 使用Lua和OpenResty搭建验证码服务器
 description: 使用Lua和OpenResty搭建验证码服务器
-category: linux
+category: DevOps
 tags: 
  - lua
  - nginx

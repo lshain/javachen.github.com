@@ -1,5 +1,8 @@
 # For more see: http://jekyllrb.com/docs/permalinks
+# permalink: /:year/:title
 permalink: /:year/:month/:day/:title
+
+
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 auto: true
@@ -11,10 +14,10 @@ redcarpet:
   extensions: [ "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
 
 title : JavaChen Blog
-tagline: Site Tagline
-keywords : java,hadoop,hive,hbase,mapreduce,impala,nosql,solr,solrcloud,linux,python,lua,postgresql,mysql
-description: 关注开源、Java、Hadoop、Pentaho、NoSql以及数据可视化
-version : 0.12
+tagline: Sharing Technology, Recording Life
+keywords : java, hadoop, hive, hbase, mapreduce, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
+description: 关注开源、Java、Hadoop、NoSql、Pentaho以及数据可视化
+version : 0.13
 author :
   name : JavaChen
   email : june.chan(a)foxmail.com
@@ -55,7 +58,7 @@ JB :
         avatar : 0
         time: 0
         title : 0
-        admin : 0
+        admin : 1
         length : 14
       visitors :
         num : 15

@@ -2,8 +2,8 @@
 layout: post
 title: CDH4.5.0 新特性
 description: CDH4.5.0 新特性
-category: hadoop
-tags: [hive,cdh]
+category: Hadoop
+tags: [hadoop,cdh]
 ---
 
 # Apache Flume

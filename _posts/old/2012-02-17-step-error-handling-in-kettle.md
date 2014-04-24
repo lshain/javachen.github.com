@@ -1,7 +1,7 @@
 ---
 layout: post
-title: kettle中定义错误处理
-category: pentaho
+title: Kettle中定义错误处理
+category: Pentaho
 tags: [kettle,pentaho]
 keywords: kettle,pentaho
 description: 在kettle执行的过程中，如果遇到错误，kettle会停止运行。在某些时候，并不希望kettle停止运行，这时候可以使用错误处理（Step Error Handling）。错误处理允许你配置一个步骤来取代出现错误时停止运行一个转换，出现错误的记录行将会传递给另一个步骤。在Step error handling settings对话框里，需要设置启用错误处理。

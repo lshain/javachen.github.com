@@ -2,7 +2,7 @@
 layout: post
 title: 做最好的自己
 description: 做最好的自己
-category: work
+category: Work
 tags: [work]
 ---
 

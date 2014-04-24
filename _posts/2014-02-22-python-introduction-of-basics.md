@@ -2,7 +2,7 @@
 layout: post
 title: Python基础入门
 description: 本文介绍python的一些基础知识和语法。Python是一种解释性的面向对象的语言。Python使用C语言编写，不需要事先声明变量的类型（动态类型），但是一旦变量有了值，那么这个变脸是有一个类型的，不同类型的变量之间赋值需要类型转换（强类型）。
-category: python
+category: Python
 tags: [python]
 ---
 

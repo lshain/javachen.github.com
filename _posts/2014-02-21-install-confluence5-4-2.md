@@ -2,7 +2,7 @@
 layout: post
 title: Confluence 5.4.2安装
 description: 本文记录Confluence 5.4.2安装过程。Confluence是Atlassian公司出品的团队协同与知识管理工具。 Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。通过它可以实现团队成员之间的协作和知识共享。
-category: linux
+category: DevOps
 tags: [confluence]
 ---
 

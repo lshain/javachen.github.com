@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  hadoop自动化安装shell脚本
+title:  Hadoop自动化安装shell脚本
 description: 之前写过一些如何安装Cloudera Hadoop的文章，安装hadoop过程中，最开始是手动安装apache版本的hadoop，其次是使用Intel的IDH管理界面安装IDH的hadoop，再然后分别手动和通过cloudera manager安装hadoop，也使用bigtop-util yum方式安装过apache的hadoop。
-category: hadoop
+category: Hadoop
 tags: [hadoop, hive, hbase, mapreduce]
 ---
 

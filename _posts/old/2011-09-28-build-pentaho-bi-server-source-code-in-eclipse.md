@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 在eclipse中构建Pentaho BI Server工程
-category: pentaho
+category: Pentaho
 tags: [pentaho]
 description:  在eclipse中构建Pentaho BI Server工程
 ---

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 安装impala过程
-category: hadoop
-tags: [hadoop, impala, cloudera]
+title: 安装Impala过程
+category: Hadoop
+tags: [hadoop, impala, cdh]
 keywords: impala
 ---
 

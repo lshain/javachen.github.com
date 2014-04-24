@@ -1,7 +1,7 @@
 ---
 layout: post
-title: 使用kettle数据迁移添加主键和索引
-category: pentaho
+title: 使用Kettle数据迁移添加主键和索引
+category: Pentaho
 tags: [kettle,pentaho]
 description: Kettle是一款国外开源的etl工具，纯java编写，绿色无需安装，主要用于<strong>数据抽取、转换、装载</strong>。kettle兼容了市面上几十种数据库，故用kettle来做数据库的迁移视乎是个不错的选择。kettle的数据抽取主要在于抽取数据，而没有考虑数据库的<strong>函数、存储过程、视图、表结构以及索引、约束</strong>等等，而这些东西恰恰都是数据迁移需要考虑的事情。当然，如果在不考虑数据库中的函数、存储过程、视图的情况下，使用kettle进行数据的迁移还算是一个可行的方案。
 ---

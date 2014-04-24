@@ -2,9 +2,8 @@
 layout: post
 title: PostgreSQL监控指标
 description: PostgreSQL监控指标
-category: database
+category: DataBase
 tags: 
- - linux
  - postgresql
 published: true
 ---

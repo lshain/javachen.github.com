@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 安装SaltStack和halite
+title: 安装SaltStack和Halite
 description: 本文记录安装SaltStack和halite过程。
-category: linux
+category: DevOps
 tags: [saltstack,halite]
 ---
 {% include JB/setup %}

@@ -2,7 +2,7 @@
 layout: post
 title: 使用Vagrant创建虚拟机安装Hadoop
 description: Vagrant是一款用来构建虚拟开发环境的工具，非常适合 php/python/ruby/java 这类语言开发 web 应用，使用Vagrant可以快速的搭建虚拟机并安装自己的一些应用。本文主要是使用Vagrant创建3个虚拟机并用来安装hadoop集群。
-category: hadoop
+category: Hadoop
 tags: [hadoop, vagrant]
 ---
 

@@ -1,12 +1,12 @@
 ---
 layout: post
-title: 编译hbase源代码并打补丁
+title: 编译CDH HBase源代码并打补丁
 description: 写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
-category: hadoop
+category: Hadoop
 tags: [hbase]
 ---
 
-写了一篇博客记录编译hbase源代码并打补丁的过程，如有不正确的，欢迎指出！
+写了一篇博客记录编译CDH HBase源代码并打补丁的过程，如有不正确的，欢迎指出！
 
 # 下载源代码
 

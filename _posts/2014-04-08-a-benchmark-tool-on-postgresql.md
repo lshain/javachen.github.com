@@ -2,9 +2,8 @@
 layout: post
 title: PostgreSQL测试工具PGbench
 description: pgbench 是一个简单的给 PostgreSQL 做性能测试的程序。它反复运行同样的 SQL 命令序列，可能是在多个并发数据库会话上头，然后检查平均的事务速度（每秒的事务数 tps）。缺省的时候，pgbench 测试一个（松散的）接近 TPC-B 的情况，每个事务包括五个 SELECT，UPDATE，和 INSERT命令。不过，我们可以很轻松地使用自己的事务脚本文件来实现其它情况。
-category: database
+category: DataBase
 tags: 
- - linux
  - postgresql
 published: true
 ---

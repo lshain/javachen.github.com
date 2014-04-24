@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Getting Started Using the Cassandra CLI
-category: nosql
-tags: [cassandra, cli]
-keywords: cassandra, cli
+category: Cassandra
+tags: [cassandra]
+keywords: Cassandra CLI使用方法
 ---
 
 这仅仅是一个Cassandra CLI使用方法的清单。

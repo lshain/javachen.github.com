@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 自定义dhtmlxGrid表头菜单
-category: java
+category: Web
 tags: [javascript, dhtmlxGrid, xml]
 keywords: dhtmlxGrid, javascript
 description: dhtmlxGrid可以定义表头菜单以及表格右键菜单，表格右键菜单可以自定义，但是表头菜单只能使用其提供的菜单。dhtmlxGrid默认的表头菜单可以决定表格中每一列是否在表格中显示，并没有提供更多的扩展，如果我想自定义表头菜单，该怎么做呢？本文就是基于自定义表格菜单，说说我的实现方式。

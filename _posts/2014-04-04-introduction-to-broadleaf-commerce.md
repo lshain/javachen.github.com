@@ -2,9 +2,8 @@
 layout: post
 title: BroadleafCommerce介绍
 description: BroadleafCommerce是一个Java开源电子商务网站框架。其目标是开发企业级商务网站，它提供健壮的数据和服务模型、富客户端管理平台、已经一些核心电子商务有关的工具
-category: java
+category: Java
 tags: 
- - broadleafcommerce
  - java
 published: true
 ---

@@ -64,7 +64,7 @@ h4{
 	background:#555;
 	background:rgba(85,85,85,0.3);
 	position:fixed;
-	bottom:20px;
+	bottom:80px;
 	right:20px;
 	text-align:center;
 	cursor:pointer;
@@ -110,4 +110,13 @@ table tbody tr td{
 	vertical-align:top;
 	padding:8px
 }
-
+.page-header {
+padding-bottom: 1px;
+margin: 0px 0 10px;
+}
+.panel {
+margin-bottom: 20px;
+}
+.panel-body {
+padding: 5px;
+}

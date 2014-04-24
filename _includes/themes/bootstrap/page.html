@@ -6,4 +6,6 @@
   <div class="col-xs-12">
       {{ content }}
   </div>
+  {% if page.comment %} {% include JB/comments %} {% endif %}
+  
 </div>

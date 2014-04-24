@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  安装RHadoop
-category: hadoop
-tags: [hadoop, R, rhadoop]
+category: Hadoop
+tags: [hadoop, rhadoop]
 ---
 
 # 1. R Language Install

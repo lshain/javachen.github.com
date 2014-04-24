@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Export DhtmlxGrid to PDF in Java
-category: java
+category: Web
 tags: [javascript, dhtmlxGrid, xml]
 keywords: dhtmlxGrid, javascript, pdf, java
 description: Export DhtmlxGrid to PDF in Java

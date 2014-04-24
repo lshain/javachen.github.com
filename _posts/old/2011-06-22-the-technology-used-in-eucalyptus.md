@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Eucalyptus使用的技术
-category: cloud
+category: Cloud
 tags: [eucalyptus]
 keywords: eucalyptus
 description: Eucalyptus使用的技术

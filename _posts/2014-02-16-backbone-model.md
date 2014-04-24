@@ -2,8 +2,8 @@
 layout: post
 title: Backbone中的模型
 description: Backbone中的模型是所有Javascript应用程序的核心，包括交互数据及相关的大量逻辑： 转换、验证、计算属性和访问控制。你可以用特定的方法扩展Backbone.Model，模型也提供了一组基本的管理变化的功能。
-category: java
-tags: [backbone , mvc]
+category: Web
+tags: [backbone]
 ---
 
 # 创建model

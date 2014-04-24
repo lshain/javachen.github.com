@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Kettle运行作业之前的初始化过程
-category: pentaho
+category: Pentaho
 tags: [kettle,pentaho]
 keywords: kettle, pentaho
 description: 本文主要描述Kettle是如何通过GUI调用代码启动线程执行作业的

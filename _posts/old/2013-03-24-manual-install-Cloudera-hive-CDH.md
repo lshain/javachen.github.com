@@ -2,7 +2,7 @@
 layout: post
 title: 手动安装Cloudera Hive CDH
 description: 本文主要记录手动安装CDH Hive过程，环境设置及Hadoop、HBase安装过程见上篇文章。
-category: hadoop
+category: Hadoop
 tags: [hadoop, hive]
 ---
 

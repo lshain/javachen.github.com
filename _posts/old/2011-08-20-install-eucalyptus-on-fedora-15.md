@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 在Fedora 15 上搭建Eucalyptus
-category: cloud
-tags: [eucalyptus, openNebula, openStack]
+category: Cloud
+tags: [eucalyptus, openNebula]
 keywords: eucalyptus, openNebula, openStack, fedora
 description: 在Fedora 15 上搭建Eucalyptus
 ---

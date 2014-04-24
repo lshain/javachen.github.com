@@ -2,7 +2,7 @@
 layout: post
 title: 2013年度年终总结
 description: 2013年度年终总结
-category: work
+category: Work
 tags: [work]
 ---
 

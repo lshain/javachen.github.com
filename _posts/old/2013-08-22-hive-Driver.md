@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  hive Driver类运行过程
+title:  Hive Driver类运行过程
 description: 我的学习笔记，记录hive Driver类运行过程
-category: hadoop
+category: Hadoop
 tags: [hadoop, hive]
 ---
 

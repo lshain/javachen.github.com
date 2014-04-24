@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 网上收集的关于OpenStack的一些资源
-category: cloud
-tags: [eucalyptus, openNebula, openStack]
+category: Cloud
+tags: [eucalyptus, openNebula, openstack]
 keywords: eucalyptus, openNebula, openStack, fedora
 description: 网上收集的关于OpenStack的一些资源
 ---

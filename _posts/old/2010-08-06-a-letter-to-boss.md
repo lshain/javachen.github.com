@@ -2,7 +2,7 @@
 layout: post
 title: 写给领导的一封信
 description: 写给领导的一封信
-category: work
+category: Work
 tags: [work]
 ---
 

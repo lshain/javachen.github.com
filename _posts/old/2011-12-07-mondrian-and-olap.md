@@ -1,9 +1,8 @@
 ---
 layout: post
 title: Mondrian and OLAP
-category: pentaho
-tags: [mondrian, olap]
-keywords: mondrian, olap
+category: Pentaho
+tags: [mondrian]
 description: Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。
 ---
 <p>Mondrian是一个用Java编写的OLAP引擎。他执行用MDX语言编写的查询，从关系数据库（RDBMS）中读取数据并且通过Java API以多维度的格式展示查询结果。</p>

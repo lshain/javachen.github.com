@@ -1,8 +1,6 @@
-      {% include custom/asides/aboutme %}
-
+      {% include custom/asides/aboutme %} 
+	  {% include custom/asides/categories %}
       {% include custom/asides/recently_posts %}
-
       {% include custom/asides/recently_comments %}
-
       {% include custom/asides/blogroll %}
 

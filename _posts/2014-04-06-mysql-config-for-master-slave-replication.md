@@ -2,9 +2,8 @@
 layout: post
 title: RHEL系统安装MySQL主备环境
 description: 本文介绍如何在RHEL系统安装MySQL主备环境
-category: database
+category: DataBase
 tags: 
- - linux
  - mysql
 published: true
 ---

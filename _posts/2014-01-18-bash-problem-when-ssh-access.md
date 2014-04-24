@@ -1,9 +1,9 @@
 ---
 layout: post
-title: ssh连接环境变量问题
+title: SSH远程连接时环境变量问题
 description: SSH (Secure SHell) 是一个加密的终端程序，用于替代类Unix操作系统上传统的 telnet 工具。SSH已经发展成为一组软件系列，除了提供用于远程终端访问的ssh这个主要的程序，还包括其他的工具如 scp (secure copy) 和 sftp (secure file transfer protocol)。最初，SSH并不是免费的。然而，当今最流行并成为实际标准的SSH实现是 OpenBSD 的OpenSSH，它在Gentoo中已预安装。
-category: linux
-tags: [ssh , shell , linux]
+category: DevOps
+tags: [ssh , linux]
 ---
 
 # 1. 问题

@@ -2,7 +2,7 @@
 layout: post
 title: 还未发表的离职申请书
 description: 还未发表的离职申请书
-category: work
+category: Work
 tags: [work]
 ---
 

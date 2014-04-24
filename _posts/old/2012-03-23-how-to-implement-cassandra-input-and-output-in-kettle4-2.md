@@ -1,9 +1,9 @@
 ---
 layout: post
-title: 如何在kettle4.2上面实现cassandra的输入与输出
-category: pentaho
-tags: [kettle, cassandra, pentaho , hadoop]
-keywords: kettle, cassandra, pentaho , hadoop
+title: 如何在Kettle4.2上面实现cassandra的输入与输出
+category: Pentaho
+tags: [kettle, cassandra, pentaho ]
+keywords: kettle, cassandra, pentaho
 description: 这是在QQ群里有人问到的一个问题。如何在pdi-ce-4.2.X-stable上面实现cassandra的输入与输出,或是实现hadoop,hbase,mapreduce,mongondb的输入输出?
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: 在CentOs6系统上安装Ganglia
 description: Ganglia是UC Berkeley发起的一个开源集群监视项目，设计用于测量数以千计的节点。Ganglia的核心包含gmond、gmetad以及一个Web前端。主要是用来监控系统性能，由RRDTool工具处理数据，并生成相应的的图形显示，以Web方式直观的提供给客户端。如：cpu 、mem、硬盘利用率， I/O负载、网络流量情况等，通过曲线很容易见到每个节点的工作状态，对合理调整、分配系统资源，提高系统整体性能起到重要作用。
-category: linux
+category: DevOps
 tags: [ganglia]
 ---
 

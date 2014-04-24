@@ -2,7 +2,7 @@
 layout: post
 title: Solr的schema.xml
 description: schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，以及当文档被加入索引或查询字段时，这些字段是如何被处理的。
-category: search-engine
+category: Search-Engine
 tags: [solr]
 ---
 

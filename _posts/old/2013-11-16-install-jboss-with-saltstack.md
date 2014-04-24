@@ -2,8 +2,8 @@
 layout: post
 title: 使用SaltStack安装JBoss
 description: 使用SaltStack安装jboss。SaltStack是一个具备puppet与func功能为一身的集中化管理平台，其基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
-category: linux
-tags: [saltstack,jboss]
+category: DevOps
+tags: [saltstack]
 ---
 
 {% include JB/setup %}
