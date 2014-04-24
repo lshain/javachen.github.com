@@ -17,7 +17,7 @@ title : JavaChen Blog
 tagline: Sharing Technology, Recording Life
 keywords : java, hadoop, hive, hbase, mapreduce, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
 description: 关注开源、Java、Hadoop、NoSql、Pentaho以及数据可视化
-version : 0.13
+version : 0.15
 author :
   name : JavaChen
   email : june.chan(a)foxmail.com
