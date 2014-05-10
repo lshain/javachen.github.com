@@ -415,7 +415,7 @@ First Header | Second Header
 Content from cell 1 | Content from cell 2
 Content in the first column | Content in the second column
 
-# <a id="Editor">编辑器</a>
+# <a id="Editor">在线编辑器</a>
 
 作为一种小型标记语言，Markdown很容易阅读，也很容易用普通的文本编辑器编辑。另外也有一些编辑器专为Markdown设计，可以直接预览文档的样式。下面有一些编辑器可供参考：
 
@@ -429,6 +429,10 @@ Content in the first column | Content in the second column
 - [IPython Notebook](http://ipython.org/notebook) 以ipython为后台，利用浏览器做IDE，支持MarkDown与LaTex公式。
 - <http://mahua.jser.me/> 一个在线编辑markdown文档的编辑器
 - <http://markable.in/editor/> A remarkable online markdown editor
+- [OsChina](http://tool.oschina.net/markdown) OsChina在线编辑器
+- [Logdown](http://logdown.com/) 是台湾一个博客写手和开发者在一个周末和三位朋友在24小时之内做的一个Hackathon 項目。这是一个支持Markdown的博客写作平台。在国际上也引起关注。它的写作界面是单栏宽屏。
+- <jianshu.io> 这是一个支持Markdown的中文写作社区。
+- [有记 | noteton](http://noteton.com/) 有记提供基于云笔记服务的博客发布平台。
 
 # <a id="BrowserPlugin">浏览器插件</a>
 
@@ -479,6 +483,8 @@ Content in the first column | Content in the second column
   - [Pandoc](http://johnmacfarlane.net/pandoc/), a universal document converter written in Haskell
   - [ReText](http://sourceforge.net/p/retext/home/ReText/), an implementation for Markdown and reStructuredText.
  
+# 其他资料
+- [Markdown+R写作](http://www.yangzhiping.com/tech/r-markdown-knitr.html)
 
 # <a id="Reference">参考资料</a>
 
@@ -486,3 +492,4 @@ Content in the first column | Content in the second column
 - [2] [Markdown 语法说明 (简体中文版)](http://wowubuntu.com/markdown/)
 - [3] [GitHub Guides:Mastering Markdown](https://guides.github.com/features/mastering-markdown)
 - [4] [Daring Fireball](http://daringfireball.net/projects/markdown/syntax)
+- [5] [Markdown在线写作速成](http://joinwee.com/lesson/10/)
