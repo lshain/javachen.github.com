@@ -7,7 +7,7 @@ description: bower是 twitter 推出的一款包管理工具，基于nodejs的�
 
 keywords: bower
 
-category: javascript
+category: web
 
 tags: [javascript,nodejs,bower]
 
@@ -16,6 +16,8 @@ tags: [javascript,nodejs,bower]
 # 1. bower介绍
 
 bower是用于web前端开发的包管理器。对于前端包管理方面的问题，它提供了一套通用、客观的解决方案。它通过一个API暴露包之间的依赖模型，这样更利于使用更合适的构建工具。bower没有系统级的依赖，在不同app之间也不互相依赖，依赖树是扁平的。
+
+![bower-logo](http://sfault-image.b0.upaiyun.com/bc/b4/bcb41307d0c6b3f16013c8abf865fe85)
 
 bower运行在Git之上，它将所有包都视作一个黑盒子。任何类型的资源文件都可以打包为一个模块，并且可以使用任何规范（例如：AMD、CommonJS等）。
 
@@ -28,7 +30,7 @@ bower运行在Git之上，它将所有包都视作一个黑盒子。任何类型
 
 功能介绍，摘自文章：<http://chuo.me/2013/02/twitter-bower.html>
 
-![bower-logo](http://bower.jsbin.cn/img/bower-logo.png)
+
 
 # 2. bower安装
 
