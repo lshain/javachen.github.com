@@ -137,6 +137,12 @@ echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >> ~/.bas
 
 安装软件，包括ant、maven、ivy、forrest、docker等：
 
+设置java_home:
+
+```
+export JAVA_HOME=$(/usr/libexec/java_home)
+```
+
 ```
 brew install https://raw.github.com/Homebrew/homebrew-versions/master/maven30.rb ant ivy apache-forrest docker 
 ```

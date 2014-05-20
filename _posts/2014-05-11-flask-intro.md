@@ -19,7 +19,12 @@ tags: [python,flask]
 
 ![flask-logo](http://flask.pocoo.org/static/logo.png)
 
-Flask 依赖两个外部库： [Jinja2](http://jinja.pocoo.org/2/) 模板引擎和 [Werkzeug](http://werkzeug.pocoo.org/) WSGI 工具集。
+关于Flask值得知道的一些事：
+
+- Flask由Armin Ronacher于2010年创建。
+- Flask的灵感来自Sinatra。（Sinatra是一个极力避免小题大作的创建web应用的Ruby框架。）
+- Flask 依赖两个外部库： [Jinja2](http://jinja.pocoo.org/2/) 模板引擎和 [Werkzeug](http://werkzeug.pocoo.org/) WSGI 工具集。
+- Flask遵循“约定优于配置”以及合理的默认值原则。
 
 默认情况下，Flask 不包含数据库抽象层、表单验证或是任何其它现有库可以胜任的东西。作为替代的是，Flask 支持扩展来给应用添加这些功能，如同是在 Flask 自身中实现。众多的扩展提供了数据库集成、表单验证、上传处理、多种开放认证技术等功能。
 
