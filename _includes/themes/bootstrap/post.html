@@ -6,7 +6,7 @@
   <div class="col-md-12">
 	 <div class="panel">
 		<div class="panel-body">
-			<ul class="tag_box list-inline">
+			<ul class="list-inline">
 				<li><i class="glyphicon glyphicon-user"></i></li><li><a href="/about.html">{{ site.author.name }}</a></li>
 				<li><i class="glyphicon glyphicon-calendar"></i></li><li>{{ page.date | date: "%Y-%m-%d" }}</li>
 				{% unless page.categories == empty %}
@@ -31,7 +31,7 @@
 
     <div class="row status">
 	   <div class="col-md-6">
-       	<ul class="tag_box list-inline">
+       	<ul class="list-inline">
 			<li><i class="glyphicon glyphicon-share"></i></li><li>Share to:</li>
 		    <li><a target="blank" href="http://share.baidu.com/s?type=text&amp;searchPic=0&amp;sign=on&amp;to=tsina&amp;url={{ site.production_url }}{{ page.url }}/&amp;title=「{{ page.title }}」-分享自{{ site.title }}">新浪微博</a></li>
 		    <li><a target="blank" href="http://share.baidu.com/s?type=text&amp;searchPic=0&amp;sign=on&amp;to=tqq&amp;url={{ site.production_url }}{{ page.url }}/&amp;title=「{{ page.title }}」-分享自{{ site.title }}">腾讯微博</a></li>

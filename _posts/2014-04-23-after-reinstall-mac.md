@@ -39,16 +39,15 @@ defaults write com.apple.finder AppleShowAllFiles -bool false #隐藏Mac隐藏�
 - 下载jdk6：<http://support.apple.com/downloads/DL1572/en_US/JavaForOSX2013-05.dmg>
 - 下载VirtualBox：<http://dlc.sun.com.edgesuite.net/virtualbox/4.3.10/VirtualBox-4.3.10-93012-OSX.dmg>
 - 下载vagrant：<https://dl.bintray.com/mitchellh/vagrant/vagrant_1.5.4.dmg>
-- 下载Alfred：<http://cachefly.alfredapp.com/Alfred_2.2_243b.zip>
-
 
 其他常用软件：
 
-- MarkDown编辑器：[Mou](http://mouapp.com/)
 - 文本编辑器：TextWrangler
 - 解压缩：The Unarchiver
 
 # 安装Homebrew
+
+[Brew](http://brew.sh/) 是 Mac 下面的包管理工具，通过 Github 托管适合 Mac 的编译配置以及 Patch，可以方便的安装开发工具。
 
 ```
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
@@ -57,7 +56,48 @@ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 通过brew安装软件：
 
 ```
-brew install git curl wget tmux putty gawk
+brew install git
+brew install git-flow 
+brew install curl 
+brew install wget 
+brew install putty 
+brew install gawk
+brew install tmux
+brew install ack
+brew install source-highlight
+brew install aria2
+brew install dos2unix
+brew install nmap
+brew install iotop
+brew install htop
+brew install tinyproxy
+brew install multitail
+brew install cliclick
+brew install ctags
+brew install readline
+```
+
+# Brew cask
+
+[Brew cask](https://github.com/phinze/homebrew-cask) 是类似 Brew 的管理工具， 直接提供 dmg 级别的二进制包，（Brew 是不带源码，只有对应项目所在的 URL）。
+
+Brew cask 安装：
+
+```
+brew tap phinze/homebrew-cask
+brew install brew-cask
+```
+
+我通过 Brew cask 安装的软件：
+
+```
+brew cask install appcleaner
+brew cask install github
+brew cask install bartender
+brew cask install alfred
+brew cask install bettertouchtool
+brew cask install qq
+brew cask install omnigraffle
 ```
 
 # 安装oh-my-zsh
@@ -143,6 +183,7 @@ echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >> ~/.bas
 export JAVA_HOME=$(/usr/libexec/java_home)
 ```
 
+使用brew来安装
 ```
 brew install https://raw.github.com/Homebrew/homebrew-versions/master/maven30.rb ant ivy apache-forrest docker 
 ```

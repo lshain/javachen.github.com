@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  使用yum在集群上安装CDH
-description: 记录使用yum通过rpm方式安装CDH
+title:  使用yum安装CDH Hadoop集群
+description: 使用yum安装CDH Hadoop集群，包括hdfs、yarn、hive和hbase。
 category: Hadoop
-tags: [hadoop, impala]
+tags: [hadoop, hdfs, yarn, hive ,hbase]
 ---
 
 Update:
@@ -114,6 +114,8 @@ server $LOCAL_SERVER_IP OR HOSTNAME
 
 ## 1.4 安装jdk
 
+以下是手动安装jdk，你也可以通过yum方式安装，见下文。
+
 检查jdk版本
 
 ```
@@ -178,28 +180,104 @@ $ vi /etc/sudoers
 
 ## 1.5 设置本地yum源
 
-你可以从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/) 下载cdh4的仓库，或者从[这里](http://archive.cloudera.com/cdh5/repo-as-tarball/) 下载cdh5的仓库
-压缩包。
+你可以从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/)下载cdh4的仓库，或者从[这里](http://archive.cloudera.com/cdh5/repo-as-tarball/) 下载cdh5的仓库压缩包。
 
+这里我是使用的cdh5的仓库，将其下载之后解压配置cdh的yum源：
+
+```
+[hadoop]
+name=hadoop
+baseurl=file:///vagrant/repo/cdh/5/
+enabled=1
+gpgcheck=0
+```
+
+操作系统的yum是使用的CentOS6-Base-163.repo，其配置如下：
+
+```
+[base]
+name=CentOS-$releasever - Base - 163.com
+baseurl=http://mirrors.163.com/centos/$releasever/os/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+gpgcheck=1
+gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+
+#released updates 
+[updates]
+name=CentOS-$releasever - Updates - 163.com
+baseurl=http://mirrors.163.com/centos/$releasever/updates/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
+gpgcheck=1
+gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras - 163.com
+baseurl=http://mirrors.163.com/centos/$releasever/extras/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras
+gpgcheck=1
+gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus - 163.com
+baseurl=http://mirrors.163.com/centos/$releasever/centosplus/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus
+gpgcheck=1
+enabled=0
+gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-$releasever - Contrib - 163.com
+baseurl=http://mirrors.163.com/centos/$releasever/contrib/$basearch/
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=contrib
+gpgcheck=1
+enabled=0
+gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+```
+
+其实，在配置了CDH的yum之后，可以通过yum来安装jdk：
+
+```
+$ yum install jdk -y
+```
+
+然后，设置JAVA HOME:
+
+```
+$ echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
+$ echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
+$ source /root/.bashrc
+```
+
+验证版本
+
+```
+$ java -version
+	java version "1.6.0_31"
+	Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
+	Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
+```
 
 # 2. 安装和配置HDFS
 
 在NameNode节点安装 hadoop-hdfs-namenode
 
 ```
-$ yum install hadoop-hdfs-namenode
+$ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-namenode
 ```
 
 在NameNode节点中选择一个节点作为secondarynamenode，并安装 hadoop-hdfs-secondarynamenode
 
 ```
-$ yum install hadoop-hdfs-secondarynamenode
+$ yum install hadoop-hdfs-secondarynamenode -y
 ```
 
 在DataNode节点安装 hadoop-hdfs-datanode 
 
 ```
-$ yum install hadoop-hdfs-datanode
+$ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-datanode -y
 ```
 
 > 配置 NameNode HA 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
@@ -209,7 +287,7 @@ $ yum install hadoop-hdfs-datanode
 拷贝默认的配置文件为一个新的文件，并设置新文件为hadoop的默认配置文件：
 
 ```
-$ sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
+$ sudo cp -r /etc/hadoop/conf.empty /etc/hadoop/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 $ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
@@ -262,7 +340,7 @@ hdfs-site.xml on the NameNode:
 ```xml
 <property>
  <name>dfs.namenode.name.dir</name>
- <value>file:///data/1/dfs/nn,file:///nfsmount/dfs/nn</value>
+ <value>file:///data/dfs/nn</value>
 </property>
 ```
 
@@ -271,39 +349,39 @@ hdfs-site.xml on each DataNode:
 ```xml
 <property>
  <name>dfs.datanode.data.dir</name>
-<value><value>file:///data/1/dfs/dn,file:///data/2/dfs/dn</value></value>
+<value>file:///data/dfs/dn</value>
 </property>
 ```
 
 在**NameNode**上手动创建 `dfs.name.dir` 或 `dfs.namenode.name.dir` 的本地目录：
 
 ```
-$ sudo mkdir -p /data/1/dfs/nn /nfsmount/dfs/nn
+$ sudo mkdir -p /data/dfs/nn
 ```
 
 在**DataNode**上手动创建 `dfs.data.dir` 或 `dfs.datanode.data.dir` 的本地目录：
 
 ```
-$ sudo mkdir -p /data/1/dfs/dn /data/2/dfs/dn
+$ sudo mkdir -p /data/dfs/dn
 ```
 
 修改上面目录所有者：
 
 ```
-$ sudo chown -R hdfs:hdfs /data/1/dfs/nn /nfsmount/dfs/nn /data/1/dfs/dn /data/2/dfs/dn 
+$ sudo chown -R hdfs:hdfs /data/dfs/nn /data/dfs/dn
 ```
 > hadoop的进程会自动设置 `dfs.data.dir` 或 `dfs.datanode.data.dir`，但是 `dfs.name.dir` 或 `dfs.namenode.name.dir` 的权限默认为755，需要手动设置为700。
 
 故，修改上面目录权限：
 
 ```
-$ sudo chmod 700 /data/1/dfs/nn /nfsmount/dfs/nn
+$ sudo chmod 700 /data/dfs/nn
 ```
 
 或者：
 
 ```
-$ sudo chmod go-rx /data/1/dfs/nn /nfsmount/dfs/nn
+$ sudo chmod go-rx /data/dfs/nn
 ```
 
 **说明：**
@@ -344,11 +422,11 @@ DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed
 在 `core-site.xml` 中添加如下两个参数：
 
 - `fs.trash.interval`,该参数值为时间间隔，单位为分钟，默认为0，表示回收站功能关闭。该值表示回收站中文件保存多长时间，如果服务端配置了该参数，则忽略客户端的配置；如果服务端关闭了该参数，则检查客户端是否有配置该参数；
-- `fs.trash.checkpoint.interval`,,该参数值为时间间隔，单位为分钟，默认为0。该值表示检查回收站时间间隔，该值要小于`fs.trash.interval`，该值在服务端配置。如果该值设置为0，则使用 `fs.trash.interval` 的值。
+- `fs.trash.checkpoint.interval`，该参数值为时间间隔，单位为分钟，默认为0。该值表示检查回收站时间间隔，该值要小于`fs.trash.interval`，该值在服务端配置。如果该值设置为0，则使用 `fs.trash.interval` 的值。
 
 ## 2.5 (可选)配置DataNode存储的负载均衡
 
-在 `hdfs-site.xml` 中配置以下三个参数（详细说明，请参考：[Optionally configure DataNode storage balancing](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#concept_ncq_nnk_ck_unique_1)）：
+在 `hdfs-site.xml` 中配置以下三个参数（详细说明，请参考 [Optionally configure DataNode storage balancing](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#concept_ncq_nnk_ck_unique_1)）：
 
 - dfs.datanode.fsdataset. volume.choosing.policy
 - dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold
@@ -356,16 +434,16 @@ DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed
 
 ## 2.6 (可选)开启WebHDFS
 
-请参考：[Optionally enable WebHDFS](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#topic_11_2_9_unique_1)
+请参考 [Optionally enable WebHDFS](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#topic_11_2_9_unique_1)
 
 ## 2.7 (可选)配置LZO
 
-下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo)文件到 /etc/yum.repos.d/。
+下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo)文件到 `/etc/yum.repos.d/`。
 
 然后，安装lzo:
 
 ```
-$ sudo yum install hadoop-lzo
+$ sudo yum install hadoop-lzo  -y
 ```
 
 最后，在 `core-site.xml` 中添加如下配置：
@@ -383,12 +461,12 @@ com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</
 
 ## 2.8 (可选)配置Snappy
 
-cdh的rpm中默认已经包含了snappy，可以再不用安装。
+cdh 的 rpm 源中默认已经包含了 snappy ，可以再不用安装。
 
 在每个节点安装Snappy
 
 ```
-$ yum install snappy snappy-devel
+$ yum install snappy snappy-devel  -y
 ```
 
 然后，在 `core-site.xml` 中修改`io.compression.codecs`的值：
@@ -402,19 +480,19 @@ com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</
 </property>
 ```
 
-使snappy对hadoop可用
+使 snappy 对 hadoop 可用：
 
 ```	
 $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 ```
 
-最后，*启动HDFS*：
+## 2.9 启动HDFS
 
 将配置文件同步到每一个节点：
 
 ```
-$ scp -r /etc/hadoop/conf/conf.my_cluster          root@cdh2:/etc/hadoop/conf/conf.my_cluster
-$ scp -r /etc/hadoop/conf/conf.my_cluster root@cdh33:/etc/hadoop/conf/conf.my_cluster
+$ scp -r /etc/hadoop/conf.my_cluster root@cdh2:/etc/hadoop/conf.my_cluster
+$ scp -r /etc/hadoop/conf.my_cluster root@cdh3:/etc/hadoop/conf.my_cluster
 ```
 
 在每个节点上设置默认配置文件：
@@ -427,21 +505,29 @@ $ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 格式化NameNode：
 
 ```
-$ sudo -u hdfs hdfs namenode -format
+$ sudo -u hdfs hadoop namenode -format
 ```	
 	
 在每个节点运行下面命令启动hdfs：
 
-```
+```bash
 $ for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done
 ```
 
-在hdfs运行之后，创建/tmp临时目录，并设置权限为1777：
+在 hdfs 运行之后，创建 `/tmp` 临时目录，并设置权限为 `1777`：
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir /tmp
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 ```
+
+## 2.10 总结
+
+在NameNode上做过的操作：
+
+在DataNode上做过的操作：
+
+在SecondaryNameNode上做过的操作：
 
 # 3. 安装和配置YARN
 
@@ -471,13 +557,12 @@ $ yum install hadoop-mapreduce
 
 - yarn.nodemanager.aux-services ,该值设为`mapreduce_shuffle`
 - yarn.resourcemanager.hostname ,该值设为cdh1
+- yarn.log.aggregation.enable ,该值设为true
 - yarn.application.classpath ,该值设为:
 
 ```
 $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS_HOME/*, $HADOOP_HDFS_HOME/lib/*, $HADOOP_MAPRED_HOME/*, $HADOOP_MAPRED_HOME/lib/*, $HADOOP_YARN_HOME/*, $HADOOP_YARN_HOME/lib/*
 ```
-
-- yarn.log.aggregation.enable ,该值设为true
 
 在hadoop中默认的文件路径以及权限要求如下：
 
@@ -572,7 +657,7 @@ $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
 - mapreduce.jobhistory.address，该值为 `historyserver.company.com:10020`
 - mapreduce.jobhistory.webapp.address，该值为 `historyserver.company.com:19888`
 
-此外，确保mapred用户能够使用代理，在 `core-site.xml` 中添加如下参数：
+此外，确保 mapred 用户能够使用代理，在 `core-site.xml` 中添加如下参数：
 
 - hadoop.proxyuser.mapred.groups，默认值为`*`，Allows the mapreduser to move files belonging to users in these groups
 - hadoop.proxyuser.mapred.hosts，默认值为`*`，Allows the mapreduser to move files belonging to users in these groups
@@ -587,7 +672,7 @@ $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
     <value>/user</value>
 </property>
 
-在HDFS运行之后，你需要手动创建history子目录：
+在 HDFS 运行之后，你需要手动创建 history 子目录：
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir -p /user/history
@@ -604,14 +689,14 @@ $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 
 **创建Log目录**
 
-创建 `/var/log/hadoop-yarn`，因为 `yarn-site.xml` 中配置了`/var/log/hadoop-yarn/apps`,故需要手动创建它的父目录：
+创建 `/var/log/hadoop-yarn` ，因为 `yarn-site.xml` 中配置了 `/var/log/hadoop-yarn/apps` ，故需要手动创建它的父目录：
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir -p /var/log/hadoop-yarn
 $ sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 ```
 
-验证HDFS结构：
+验证 HDFS 结构：
 
 ```
 $ sudo -u hdfs hadoop fs -ls -R /
@@ -636,7 +721,7 @@ $ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/conf
 $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/conf
 ```
 
-启动mapred-historyserver:
+启动 mapred-historyserver :
 
 ```
 $ /etc/init.d/hadoop-mapreduce-historyserver start
@@ -648,14 +733,14 @@ $ /etc/init.d/hadoop-mapreduce-historyserver start
 $ for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 ```
 
-为每个MapReduce用户创建主目录
+为每个 MapReduce 用户创建主目录
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir /user/$USER
 $ sudo -u hdfs hadoop fs -chown $USER /user/$USER
 ```
 
-设置`HADOOP_MAPRED_HOME`,或者把其加入到hadoop的配置文件中
+设置 `HADOOP_MAPRED_HOME` ,或者把其加入到 hadoop 的配置文件中
 
 ```
 $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
@@ -688,6 +773,16 @@ $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 $ yum install zookeeper*
 ```
 
+拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件：
+
+```
+$ sudo cp -r /etc/zookeeper/conf.empty /etc/hadoop/conf.my_cluster
+$ sudo alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
+$ sudo alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
+```
+
+zookeeper 默认使用 `/etc/zookeeper/conf` 路径读取配置文件，经过上述配置之后，`/etc/zookeeper/conf` 会软连接到 `/etc/zookeeper/conf.my_cluster` 目录
+
 设置crontab:
 
 ```	
@@ -698,14 +793,14 @@ $ crontab -e
 	org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
 ```
 
-在每个需要安装zookeeper的节点上创建zookeeper的目录
+在每个需要安装 zookeeper 的节点上创建 zookeeper 的目录
 
 ```
 $ mkdir -p /opt/data/zookeeper
 $ chown -R zookeeper:zookeeper /opt/data/zookeeper
 ```
 
-设置zookeeper配置：/etc/zookeeper/conf/zoo.cfg，并同步到其他机器
+设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` ，并同步到其他机器
 
 ```
 	tickTime=2000
@@ -730,6 +825,16 @@ $ service zookeeper-server restart
 ```
 $ yum install hbase*
 ``` 
+
+拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件：
+
+```
+$ sudo cp -r /etc/hbase/conf.empty /etc/hbase/conf.my_cluster
+$ sudo alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
+$ sudo alternatives --set hbase-conf /etc/hbase/conf.my_cluster
+```
+
+hbase 默认使用 `/etc/hbase/conf` 路径读取配置文件，经过上述配置之后，`/etc/hbase/conf` 会软连接到 `/etc/hbase/conf.my_cluster`目录
 
 在hdfs中创建/hbase
 
@@ -823,11 +928,21 @@ $ service hbase-regionserver start
 
 # 7. 安装hive
 
-在一个节点上安装hive
+在一个节点上安装 hive
 
 ```
 $ sudo yum install hive*
 ```
+
+拷贝默认的配置文件为一个新的文件，并设置新文件为 hive 的默认配置文件：
+
+```
+$ sudo cp -r /etc/hive/conf.empty /etc/hive/conf.my_cluster
+$ sudo alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
+$ sudo alternatives --set hive-conf /etc/hive/conf.my_cluster
+```
+
+hive 默认使用 `/etc/hive/conf` 路径读取配置文件，经过上述配置之后，`/etc/hive/conf` 会软连接到 `/etc/hive/conf.my_cluster`目录
 
 ## 安装postgresql
 
@@ -1034,19 +1149,7 @@ $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.12.0-cdh5.0.1.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
-# 8. 安装Hue
-
-# 9. 安装HCatalog
-
-# 10. 安装Impala
-
-# 11. 安装Oozie
-
-# 12. 安装Pig
-
-# 13. 安装Mahout
-
-# 14. 参考文章
+# 8. 参考文章
 
 * [1] [CDH5-Installation-Guide](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/CDH5-Installation-Guide.html)
 * [2] [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)
