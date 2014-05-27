@@ -144,8 +144,8 @@ $ yum install jdk -y
 创建符号连接
 
 ```
-$ ln -s XXXXX/jdk1.6.0_31 /usr/java/default
-$ ln -s /usr/java/default/bin/java /usr/bin/java
+$ ln -s XXXXX/jdk1.6.0_31 /usr/java/latest
+$ ln -s /usr/java/latest/bin/java /usr/bin/java
 ```
 
 设置环境变量:
