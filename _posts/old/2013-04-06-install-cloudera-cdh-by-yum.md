@@ -180,7 +180,7 @@ $ vi /etc/sudoers
 
 ## 1.5 设置本地yum源
 
-你可以从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/)下载cdh4的仓库，或者从[这里](http://archive.cloudera.com/cdh5/repo-as-tarball/) 下载cdh5的仓库压缩包。
+你可以从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/)下载 cdh4 的仓库压缩包，或者从[这里](http://archive.cloudera.com/cdh5/repo-as-tarball/) 下载 cdh5 的仓库压缩包。
 
 这里我是使用的cdh5的仓库，将其下载之后解压配置cdh的yum源：
 
@@ -261,6 +261,11 @@ $ java -version
 ```
 
 # 2. 安装和配置HDFS
+
+**说明：** 
+
+- 根据文章开头的节点规划，cdh1 为NameNode节点
+- 根据文章开头的节点规划，cdh2 和 cdh3 为DataNode节点
 
 在NameNode节点安装 hadoop-hdfs-namenode
 
@@ -531,6 +536,11 @@ $ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 
 # 3. 安装和配置YARN
 
+**说明：** 
+
+- 根据文章开头的节点规划，cdh1 为resourcemanager节点
+- 根据文章开头的节点规划，cdh2 和 cdh3 为nodemanager节点
+
 在resourcemanager节点安装:
 
 ```
@@ -767,7 +777,7 @@ $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 
 # 5. 安装Zookeeper
 
-安装zookeeper
+在每个节点上安装zookeeper
 
 ```
 $ yum install zookeeper*
@@ -821,6 +831,8 @@ $ service zookeeper-server restart
 ```
 
 # 6. 安装HBase
+
+在每个节点上安装master和regionserver
 
 ```
 $ yum install hbase*
@@ -928,7 +940,7 @@ $ service hbase-regionserver start
 
 # 7. 安装hive
 
-在一个节点上安装 hive
+在一个NameNode节点上安装 hive：
 
 ```
 $ sudo yum install hive*

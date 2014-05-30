@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Getting Started Using the Cassandra CLI
-category: Cassandra
+category: distributed-systems
 tags: [cassandra]
 keywords: Cassandra CLI使用方法
 ---

@@ -193,11 +193,11 @@ brew install https://raw.github.com/Homebrew/homebrew-versions/master/maven30.rb
 ```
 rm -rf ~/.ivy2/cache ~/.m2/repository
 mkdir -p ~/.ivy2 ~/.m2
-ln -s ~/applications/repository/cache/  ~/.ivy2/cache
-ln -s ~/applications/repository/m2/  ~/.m2/repository
+ln -s ~/app/repository/cache/  ~/.ivy2/cache
+ln -s ~/app/repository/m2/  ~/.m2/repository
 ```
 
-注意，这里我在`~/applications/repository`有两个目录，cache用于存放ivy下载的文件，m2用于存放maven的仓库。
+注意，这里我在`~/app/repository`有两个目录，cache用于存放ivy下载的文件，m2用于存放maven的仓库。
 
 # Python开发环境
 TODO
