@@ -35,6 +35,10 @@ published: true
 >
 >CAP的证明很简单，假设两个节点集{G1, G2}，由于网络分片导致G1和G2之间所有的通讯都断开了，如果在G1中写，在G2中读刚写的数据， G2中返回的值不可能G1中的写值。由于A的要求，G2一定要返回这次读请求，由于P的存在，导致C一定是不可满足的。
 
+为什么不能完全保证这个三点了，个人觉得主要是因为一旦进行分区了，就说明了必须节点之间必须进行通信，涉及到通信，就无法确保在有限的时间内完成指定的行文，如果要求两个操作之间要完整的进行，因为涉及到通信，肯定存在某一个时刻只完成一部分的业务操作，在通信完成的这一段时间内，数据就是不一致性的。如果要求保证一致性，那么就必须在通信完成这一段时间内保护数据，使得任何访问这些数据的操作不可用。
+
+如果想保证一致性和可用性，那么数据就不能够分区。一个简单的理解就是所有的数据就必须存放在一个数据库里面，不能进行数据库拆分。这个对于大数据量，高并发的互联网应用来说，是不可接受的。
+
 这里引用 [Brewer’s CAP Theorem][2] 中的图和文字来说明。
 
 ![intro](http://www.julianbrowne.com//attachments/brewers-cap-theorem/images/intro.png)
@@ -79,39 +83,24 @@ BASE理论的核心是：牺牲高一致性，获得可用性或可靠性
 
 - 放弃 Consistency。放弃一致性，你的系统可能返回不太精确的数据，但系统将会变得“最终一致”，即使是网络发生分区的时候也是如此。
 
-满足一致性，可用性的系统，通常在可扩展性上不太强大：
-
-- Traditional RDBMSs like Postgres,MySQL, etc (relational)
-- Vertica (column-oriented)
-- Aster Data (relational)
-- Greenplum (relational)
-
-满足一致性，分区容忍必的系统，通常性能不是特别高:
-
-- BigTable (column-oriented/tabular)
-- Hypertable (column-oriented/tabular)
-- HBase (column-oriented/tabular)
-- MongoDB (document-oriented)
-- Terrastore (document-oriented)
-- Redis (key-value)
-- Scalaris (key-value)
-- MemcacheDB (key-value)
-- Berkeley DB (key-value)
-
-满足可用性，分区容忍性的系统，通常可能对一致性要求低一些:
-
-- Dynamo (key-value)
-- Voldemort (key-value)
-- Kokyo Cabinet (key-value)
-- KAI (key-value)
-- Cassandra (column-oriented/tabular)
-- CouchDB (document-oriented)
-- SimpleDB (document-oriented)
-- Riak (document-oriented)
 
 下面是一个使用CAP理论的生态系统的分布图：
 
 ![](http://hi.csdn.net/attachment/201109/6/0_1315316512jhTH.gif)
+
+>任何架构师在设计分布式的系统的时候，都必须在这三者之间进行取舍。首先就是是否选择分区，由于在一个数据分区内，根据数据库的ACID特性，是可以保证一致性的，不会存在可用性和一致性的问题，唯一需要考虑的就是性能问题。对于可用性和一致性，大多数应用就必须保证可用性，毕竟是互联网应用，牺牲了可用性，相当于间接的影响了用户体验，而唯一可以考虑就是一致性了。
+
+## 牺牲一致性
+
+对于牺牲一致性的情况最多的就是缓存和数据库的数据同步问题，我们把缓存看做一个数据分区节点，数据库看作另外一个节点，这两个节点之间的数据在任何时刻都无法保证一致性的。
+
+## 异常错误检测和补偿
+
+还有一种牺牲一致性的方法就是通过一种错误补偿机制来进行
+
+## 两阶段提交协议
+
+第一阶段和第二阶段之间，数据也可不能是一致性的，也可能出现同样的情况导致异常。
 
 # CAP的反对声音
 
