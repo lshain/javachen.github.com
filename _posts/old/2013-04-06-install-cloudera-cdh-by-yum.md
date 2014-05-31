@@ -20,6 +20,8 @@ Update:
 
 # 1. 准备工作
 
+安装 Hadoop 集群前先做好下面的准备工作，在修改配置文件的时候，建议在一个节点上修改，然后同步到其他节点，例如：对于 hdfs 和 yarn ，在 NameNode 节点上修改然后再同步，对于 HBase，选择一个节点再同步。因为要同步配置文件和在多个节点启动服务，建议配置 ssh 无密码登陆。
+
 ## 1.1 配置hosts
 
 > CDH 要求使用 IPv4，IPv6 不支持。
@@ -88,10 +90,31 @@ $ iptables -F
 
 ## 1.3 时钟同步
 
-在所有节点安装ntp:
+## 搭建时钟同步服务器
+
+这里选择 cdh1 节点为时钟同步服务器，其他节点为客户端同步时间到该节点。、
+
+安装ntp:
 	
 ```
 $ yum install ntp
+```
+
+修改 cdh1 上的配置文件 `/etc/ntp.conf` :
+
+```
+restrict default ignore   //默认不允许修改或者查询ntp,并且不接收特殊封包
+restrict 127.0.0.1        //给于本机所有权限
+restrict 192.168.56.0 mask 255.255.255.0 notrap nomodify  //给于局域网机的机器有同步时间的权限
+server  192.168.56.121     # local clock
+driftfile /var/lib/ntp/drift
+fudge   127.127.1.0 stratum 10
+```
+
+启动 ntp：
+
+```
+service ntpd start
 ```
 
 设置开机启动:
@@ -99,18 +122,45 @@ $ yum install ntp
 ```
 $ chkconfig ntpd on
 ```
-在所有节点启动ntp:
+
+ntpq用来监视ntpd操作，使用标准的NTP模式6控制消息模式，并与NTP服务器通信。
+
+`ntpq -p` 查询网络中的NTP服务器，同时显示客户端和每个服务器的关系。
 
 ```
-$ /etc/init.d/ntpd start
+$ ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+*LOCAL(1)        .LOCL.           5 l    6   64    1    0.000    0.000   0.000
 ```
 
-是client使用local NTP server，修改/etc/ntp.conf，添加以下内容：
+- "* "：响应的NTP服务器和最精确的服务器。
+- "+"：响应这个查询请求的NTP服务器。
+- "blank（空格）"：没有响应的NTP服务器。
+- "remote" ：响应这个请求的NTP服务器的名称。
+- "refid "：NTP服务器使用的更高一级服务器的名称。
+- "st"：正在响应请求的NTP服务器的级别。
+- "when"：上一次成功请求之后到现在的秒数。
+- "poll"：当前的请求的时钟间隔的秒数。
+- "offset"：主机通过NTP时钟同步与所同步时间源的时间偏移量，单位为毫秒（ms）。
+
+## 客户端的配置
+
+在cdh2和cdh3节点上执行下面操作：
 
 ```
-server $LOCAL_SERVER_IP OR HOSTNAME
+$ ntpdate cdh1
 ```
 
+Ntpd启动的时候通常需要一段时间大概5分钟进行时间同步，所以在ntpd刚刚启动的时候还不能正常提供时钟服务，报错"no server suitable for synchronization found"。启动时候需要等待5分钟。
+
+如果想定时进行时间校准，可以使用crond服务来定时执行。
+
+```
+00 1 * * * root /usr/sbin/ntpdate 192.168.56.121 >> /root/ntpdate.log 2>&1 
+```
+
+这样，每天 1:00 Linux 系统就会自动的进行网络时间校准。
 
 ## 1.4 安装jdk
 
@@ -264,16 +314,16 @@ $ java -version
 
 **说明：** 
 
-- 根据文章开头的节点规划，cdh1 为NameNode节点
+- 根据文章开头的节点规划，cdh1 为NameNode节点和SecondaryNameNode
 - 根据文章开头的节点规划，cdh2 和 cdh3 为DataNode节点
 
-在NameNode节点安装 hadoop-hdfs-namenode
+在 NameNode 节点安装 hadoop-hdfs-namenode
 
 ```
 $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-namenode
 ```
 
-在NameNode节点中选择一个节点作为secondarynamenode，并安装 hadoop-hdfs-secondarynamenode
+在 NameNode 节点中选择一个节点作为 secondarynamenode ，并安装 hadoop-hdfs-secondarynamenode
 
 ```
 $ yum install hadoop-hdfs-secondarynamenode -y
@@ -292,7 +342,7 @@ $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoo
 拷贝默认的配置文件为一个新的文件，并设置新文件为hadoop的默认配置文件：
 
 ```
-$ sudo cp -r /etc/hadoop/conf.empty /etc/hadoop/conf.my_cluster
+$ sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 $ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
@@ -306,7 +356,7 @@ hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配�
 1. 在`core-site.xml`中设置`fs.defaultFS`属性值，该属性指定NameNode是哪一个节点以及使用的文件系统是file还是hdfs，格式：`hdfs://<namenode host>:<namenode port>/`，默认的文件系统是`file:///`
 1. 在`hdfs-site.xml`中设置`dfs.permissions.superusergroup`属性，该属性指定hdfs的超级用户，默认为hdfs，你可以修改为hadoop
 
-示例配置如下：
+配置如下：
 
 core-site.xml:
 
@@ -393,7 +443,9 @@ $ sudo chmod go-rx /data/dfs/nn
 
 DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed.volumes.tolerated` 参数的值，表示能够容忍不超过该个数的目录失败。
 
-**SecondaryNameNode**在 `hdfs-site.xml` 中可以配置以下参数：
+## 配置 SecondaryNameNode
+
+在 `hdfs-site.xml` 中可以配置以下参数：
 
 ```
 	dfs.namenode.checkpoint.check.period
@@ -410,11 +462,8 @@ DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed
 
 ```xml
 <property>
-  <name>dfs.namenode.http-address</name>
-  <value>cdh1:50070</value>
-  <description>
-    The address and the base port on which the dfs NameNode Web UI will listen.
-  </description>
+  <name>dfs.secondary.http.address</name>
+  <value>cdh1:50090</value>
 </property>
 ```
 
@@ -439,7 +488,43 @@ DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed
 
 ## 2.6 (可选)开启WebHDFS
 
-请参考 [Optionally enable WebHDFS](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#topic_11_2_9_unique_1)
+这里只在一个NameNode节点（ CDH1 ）上安装：
+
+```
+$ sudo yum install hadoop-httpfs
+```
+
+然后配置代理用户，修改 core-site.xml，添加如下代码：
+
+```
+<property>  
+<name>hadoop.proxyuser.httpfs.hosts</name>  
+<value>*</value>  
+</property>  
+<property>  
+<name>hadoop.proxyuser.httpfs.groups</name>  
+<value>*</value>  
+</property> 
+```
+
+然后重启 Hadoop 使配置生效。
+
+接下来，启动 HttpFS 服务：
+
+```
+$ sudo service hadoop-httpfs start
+```
+
+> By default, HttpFS server runs on port 14000 and its URL is http://<HTTPFS_HOSTNAME>:14000/webhdfs/v1.
+
+简单测试，使用 curl 运行下面命令，并查看执行结果：
+
+```
+$ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
+{"Path":"\/user\/hdfs"}
+```
+
+更多的 API，请参考 [WebHDFS REST API](http://archive.cloudera.com/cdh5/cdh/5/hadoop/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
 
 ## 2.7 (可选)配置LZO
 
@@ -466,22 +551,24 @@ com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</
 
 ## 2.8 (可选)配置Snappy
 
-cdh 的 rpm 源中默认已经包含了 snappy ，可以再不用安装。
+cdh 的 rpm 源中默认已经包含了 snappy ，直接安装即可。
 
-在每个节点安装Snappy
+在每个节点安装Snappy：
 
 ```
 $ yum install snappy snappy-devel  -y
 ```
 
-然后，在 `core-site.xml` 中修改`io.compression.codecs`的值：
+然后，在 `core-site.xml` 中修改`io.compression.codecs`的值，添加 `org.apache.hadoop.io.compress.SnappyCodec` ：
 
 ```xml
 <property>
-  <name>io.compression.codecs</name>
-<value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,
-org.apache.hadoop.io.compress.BZip2Codec,com.hadoop.compression.lzo.LzoCodec,
-com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
+<name>io.compression.codecs</name>
+<value>org.apache.hadoop.io.compress.DefaultCodec,
+org.apache.hadoop.io.compress.GzipCodec,
+org.apache.hadoop.io.compress.BZip2Codec,
+com.hadoop.compression.lzo.LzopCodec,
+org.apache.hadoop.io.compress.SnappyCodec</value>
 </property>
 ```
 
@@ -496,8 +583,8 @@ $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 将配置文件同步到每一个节点：
 
 ```
-$ scp -r /etc/hadoop/conf.my_cluster root@cdh2:/etc/hadoop/conf.my_cluster
-$ scp -r /etc/hadoop/conf.my_cluster root@cdh3:/etc/hadoop/conf.my_cluster
+$ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/
+$ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 ```
 
 在每个节点上设置默认配置文件：
@@ -526,53 +613,118 @@ $ sudo -u hdfs hadoop fs -mkdir /tmp
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 ```
 
-## 2.10 总结
+## 2.10 访问web
 
-在NameNode上做过的操作：
-
-在DataNode上做过的操作：
-
-在SecondaryNameNode上做过的操作：
+通过 <http://cdh1:50070/> 可以访问 NameNode 页面。
 
 # 3. 安装和配置YARN
 
-**说明：** 
+## 节点规划
 
 - 根据文章开头的节点规划，cdh1 为resourcemanager节点
 - 根据文章开头的节点规划，cdh2 和 cdh3 为nodemanager节点
+- 为了简单，historyserver也装在 cdh1 节点上
 
-在resourcemanager节点安装:
+## 安装服务
 
-```
-$ yum install hadoop-yarn-resourcemanager
-$ yum install hadoop-mapreduce-historyserver
-```
-
-在nodemanager节点安装:
+在 resourcemanager 节点安装:
 
 ```
-$ yum install hadoop-yarn-nodemanager
-$ yum install hadoop-mapreduce
+$ yum install hadoop-yarn hadoop-yarn-resourcemanager -y
 ```
+
+在 nodemanager 节点安装:
+
+```
+$ yum install hadoop-yarn hadoop-yarn-nodemanager hadoop-mapreduce -y
+```
+
+安装 historyserver：
+
+```
+$ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
+```
+
+## 修改配置参数
+
 **要想使用YARN**，需要在 `mapred-site.xml` 中做如下配置:
 
-```
+```xml
 <property>
- <name>mapreduce.framework.name</name>
- <value>yarn</value>
+	<name>mapreduce.framework.name</name>
+	<value>yarn</value>
+</property>
+```
+
+**配置resourcemanager的节点名称以及一些服务的端口号：**
+
+```xml
+<property>
+    <name>yarn.resourcemanager.resource-tracker.address</name>
+    <value>cdh1:8031</value>
+</property>
+<property>
+    <name>yarn.resourcemanager.address</name>
+    <value>cdh1:8032</value>
+</property>
+<property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value>cdh1:8030</value>
+</property>
+<property>
+    <name>yarn.resourcemanager.admin.address</name>
+    <value>cdh1:8033</value>
+</property>
+<property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>cdh1:8088</value>
 </property>
 ```
 
 **配置YARN进程：**
 
-- yarn.nodemanager.aux-services ,该值设为`mapreduce_shuffle`
-- yarn.resourcemanager.hostname ,该值设为cdh1
-- yarn.log.aggregation.enable ,该值设为true
-- yarn.application.classpath ,该值设为:
+- `yarn.nodemanager.aux-services`，在CDH4中该值设为 `mapreduce.shuffle`，在CDH5中该值设为 `mapreduce_shuffle`
+- `yarn.nodemanager.aux-services.mapreduce.shuffle.class`，该值设为 `org.apache.hadoop.mapred.ShuffleHandler`
+- `yarn.resourcemanager.hostname`，该值设为 cdh1
+- `yarn.log.aggregation.enable`，该值设为 true
+- `yarn.application.classpath`，该值设为:
 
 ```
 $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS_HOME/*, $HADOOP_HDFS_HOME/lib/*, $HADOOP_MAPRED_HOME/*, $HADOOP_MAPRED_HOME/lib/*, $HADOOP_YARN_HOME/*, $HADOOP_YARN_HOME/lib/*
 ```
+
+即，在 `yarn-site.xml` 中添加如下配置：
+
+```xml
+<property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+</property>
+<property>
+    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+</property>
+<property>
+    <name>yarn.application.classpath</name>
+    <value>
+	$HADOOP_CONF_DIR,
+	$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
+	$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
+	$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
+	$YARN_HOME/*,$YARN_HOME/lib/*
+    </value>
+</property>
+<property>
+	<name>yarn.log.aggregation.enable</name>
+	<value>true</value>
+</property>
+```
+
+**配置文件路径**
 
 在hadoop中默认的文件路径以及权限要求如下：
 
@@ -583,68 +735,24 @@ yarn.nodemanager.log-dirs			yarn:yarn	drwxr-xr-x	${yarn.log.dir}/userlogs
 yarn.nodemanager.remote-app-log-dir							hdfs://var/log/hadoop-yarn/apps
 ```
 
-最后，`yarn-site.xml`文件如下:
+在 `yarn-site.xml`文件中添加如下配置:
 
 ```xml
-	<configuration>
-	<property>
-	    <name>yarn.resourcemanager.resource-tracker.address</name>
-	    <value>cdh1:8031</value>
-	</property>
-	<property>
-	    <name>yarn.resourcemanager.address</name>
-	    <value>cdh1:8032</value>
-	</property>
-	<property>
-	    <name>yarn.resourcemanager.scheduler.address</name>
-	    <value>cdh1:8030</value>
-	</property>
-	<property>
-	    <name>yarn.resourcemanager.admin.address</name>
-	    <value>cdh1:8033</value>
-	</property>
-	<property>
-	    <name>yarn.resourcemanager.webapp.address</name>
-	    <value>cdh1:8088</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.aux-services</name>
-	    <value>mapreduce.shuffle</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
-	    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
-	</property>
-	<property>
-	    <name>yarn.log-aggregation-enable</name>
-	    <value>true</value>
-	</property>
-	<property>
-	    <name>yarn.application.classpath</name>
-	    <value>
-		$HADOOP_CONF_DIR,
-		$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
-		$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
-		$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
-		$YARN_HOME/*,$YARN_HOME/lib/*
-	    </value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.local-dirs</name>
-	    <value>file:///data/yarn/local</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.log-dirs</name>
-	    <value>file:///var/log/hadoop-yarn</value>
-	</property>
-	<property>
-	    <name>yarn.nodemanager.remote-app-log-dir</name>
-	    <value>hdfs://var/log/hadoop-yarn/apps</value>
-	</property>
-	</configuration>
+<property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>file:///data/yarn/local</value>
+</property>
+<property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>file:///var/log/hadoop-yarn</value>
+</property>
+<property>
+    <name>yarn.nodemanager.remote-app-log-dir</name>
+    <value>hdfs://var/log/hadoop-yarn/apps</value>
+</property>
 ```
 
-**创建本地目录：**
+**创建本地目录**
 
 创建 `yarn.nodemanager.local-dirs` 参数对应的目录：
 
@@ -662,25 +770,46 @@ $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
 
 **配置History Server：**
 
-在 `mapred-site.xml` 中添加如下参数：
+在 `mapred-site.xml` 中添加如下：
 
-- mapreduce.jobhistory.address，该值为 `historyserver.company.com:10020`
-- mapreduce.jobhistory.webapp.address，该值为 `historyserver.company.com:19888`
+```xml
+<property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>cdh1:10020</value>
+</property>
+
+<property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>cdh1:19888</value>
+</property>
+```
 
 此外，确保 mapred 用户能够使用代理，在 `core-site.xml` 中添加如下参数：
 
-- hadoop.proxyuser.mapred.groups，默认值为`*`，Allows the mapreduser to move files belonging to users in these groups
-- hadoop.proxyuser.mapred.hosts，默认值为`*`，Allows the mapreduser to move files belonging to users in these groups
+```xml
+<property>
+    <name>hadoop.proxyuser.mapred.groups</name>
+    <value>*</value>
+</property>
 
+<property>
+    <name>hadoop.proxyuser.mapred.hosts</name>
+    <value>*</value>
+</property>
+```
 
 **配置Staging目录：**
 
-在 `mapred-site.xml` 中配置 `yarn.app.mapreduce.am.staging-dir` 参数：
+在 `mapred-site.xml` 中配置如下参数：
 
+```xml
 <property>
     <name>yarn.app.mapreduce.am.staging-dir</name>
     <value>/user</value>
 </property>
+```
+
+**创建 history 子目录**
 
 在 HDFS 运行之后，你需要手动创建 history 子目录：
 
@@ -695,7 +824,7 @@ $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 - mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777
 - mapreduce.jobhistory.done-dir，该目录权限应该为750
 
-如果你设置了上面两个参数，那你可以不用手动去创建history子目录。
+如果你设置了上面两个参数，那你可以不用手动去创建 history 子目录。
 
 **创建Log目录**
 
@@ -706,7 +835,7 @@ $ sudo -u hdfs hadoop fs -mkdir -p /var/log/hadoop-yarn
 $ sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
 ```
 
-验证 HDFS 结构：
+## 验证 HDFS 结构：
 
 ```
 $ sudo -u hdfs hadoop fs -ls -R /
@@ -723,27 +852,32 @@ drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var/log
 drwxr-xr-x   - yarn   mapred        0 2014-04-31 15:31 /var/log/hadoop-yarn
 ```
 
+看到上面的目录结构，你就将NameNode上的配置文件同步到其他节点了，并且启动 yarn 的服务。
+
+## 同步配置文件
 
 同步配置文件到整个集群:
 
 ```
-$ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/conf
-$ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/conf
+$ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/
+$ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 ```
 
-启动 mapred-historyserver :
+## 启动服务
+
+在 cdh1 节点启动 mapred-historyserver :
 
 ```
 $ /etc/init.d/hadoop-mapreduce-historyserver start
 ```
 
-在每个节点启动YARN:
+在每个节点启动 YARN :
 
 ```
 $ for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 ```
 
-为每个 MapReduce 用户创建主目录
+为每个 MapReduce 用户创建主目录，比如说 hive 用户或者当前用户：
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir /user/$USER
@@ -756,180 +890,273 @@ $ sudo -u hdfs hadoop fs -chown $USER /user/$USER
 $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ```
 
-设置开机启动
+## 访问 web
 
-```
-	sudo chkconfig hadoop-hdfs-namenode on
-	sudo chkconfig hadoop-hdfs-datanode on
-	sudo chkconfig hadoop-hdfs-secondarynamenode on
-	sudo chkconfig hadoop-yarn-resourcemanager on
-	sudo chkconfig hadoop-yarn-nodemanager on
-	sudo chkconfig hadoop-mapreduce-historyserver on
-	sudo chkconfig hbase-master on
-	sudo chkconfig hbase-regionserver on
-	sudo chkconfig hive-metastore  on
-	sudo chkconfig hive-server2 on
-	sudo chkconfig zookeeper-server on
-	sudo chkconfig hadoop-httpfs on
-```
+通过 <http://cdh1:8088/> 可以访问 Yarn 的管理页面。
 
-# 4. 安装HttpFS
+通过 <http://cdh1:19888/> 可以访问 JobHistory 的管理页面。
 
-# 5. 安装Zookeeper
+# 4. 安装 Zookeeper
+
+简单说明：
+
+Zookeeper 至少需要3个节点，并且节点数要求是基数，这里在所有节点上都安装 Zookeeper。
+
+## 安装
 
 在每个节点上安装zookeeper
 
 ```
-$ yum install zookeeper*
+$ yum install zookeeper* -y
 ```
 
-拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件：
+## 修改配置文件
+
+拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件（在每个节点执行下面操作）：
 
 ```
-$ sudo cp -r /etc/zookeeper/conf.empty /etc/hadoop/conf.my_cluster
+$ sudo cp -r /etc/zookeeper/conf.dist /etc/zookeeper/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
 $ sudo alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
 ```
 
 zookeeper 默认使用 `/etc/zookeeper/conf` 路径读取配置文件，经过上述配置之后，`/etc/zookeeper/conf` 会软连接到 `/etc/zookeeper/conf.my_cluster` 目录
 
-设置crontab:
-
-```	
-$ crontab -e
-	15 * * * * java -cp $classpath:/usr/lib/zookeeper/lib/log4j-1.2.15.jar:\
-	/usr/lib/zookeeper/lib/jline-0.9.94.jar:\	
-	/usr/lib/zookeeper/zookeeper.jar:/usr/lib/zookeeper/conf\
-	org.apache.zookeeper.server.PurgeTxnLog /var/zookeeper/ -n 5
-```
-
-在每个需要安装 zookeeper 的节点上创建 zookeeper 的目录
+在每个节点上创建 zookeeper 的数据目录，这里我使用的是 `/data/zookeeper` 目录。
 
 ```
-$ mkdir -p /opt/data/zookeeper
-$ chown -R zookeeper:zookeeper /opt/data/zookeeper
+$ mkdir -p /data/zookeeper
+$ chown -R zookeeper:zookeeper /data/zookeeper
 ```
 
-设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` ，并同步到其他机器
+设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` 
 
 ```
+	maxClientCnxns=50
 	tickTime=2000
 	initLimit=10
 	syncLimit=5
-	dataDir=/opt/data/zookeeper
+	dataDir=/data/zookeeper
 	clientPort=2181
-	server.1=node1:2888:3888
-	server.2=node2:2888:3888
-	server.3=node3:2888:3888
+	server.1=cdh1:2888:3888
+	server.2=cdh3:2888:3888
+	server.3=cdh3:2888:3888
 ```
 
-在每个节点上初始化并启动zookeeper，注意修改n值
+## 同步配置文件
+
+将配置文件同步到其他节点：
+
+```
+$ scp -r /etc/zookeeper/conf root@cdh2:/etc/zookeeper/
+$ scp -r /etc/zookeeper/conf root@cdh3:/etc/zookeeper/
+```
+
+## 初始化并启动服务
+
+在每个节点上初始化并启动 zookeeper，注意 n 的值需要和 zoo.cfg 中的编号一致。
  
+在 cdh1 节点运行
 ```
-$ service zookeeper-server init --myid=n
-$ service zookeeper-server restart
+$ service zookeeper-server init --myid=1
+$ service zookeeper-server start
 ```
 
-# 6. 安装HBase
+在 cdh2 节点运行
+```
+$ service zookeeper-server init --myid=2
+$ service zookeeper-server start
+```
 
-在每个节点上安装master和regionserver
+在 cdh3 节点运行
+```
+$ service zookeeper-server init --myid=3
+$ service zookeeper-server start
+```
+
+## 测试
+
+通过下面命令测试是否启动成功：
 
 ```
-$ yum install hbase*
+zookeeper-client -server cdh1:2181
+```
+
+# 5. 安装 HBase
+
+HBase 依赖 ntp 服务，故需要提前安装好 ntp。
+
+## 安装前设置
+
+1）修改系统 ulimit 参数:
+
+在 `/etc/security/limits.conf` 中添加下面两行并使其生效：
+
+```
+hdfs  -       nofile  32768
+hbase -       nofile  32768
+```
+
+2）修改 `dfs.datanode.max.xcievers`
+
+在 `hdfs-site.xml` 中修改该参数值，将该值调整到较大的值：
+
+```xml
+<property>
+  <name>dfs.datanode.max.xcievers</name>
+  <value>4096</value>
+</property>
+```
+
+## 安装
+
+在每个节点上安装 master 和 regionserver
+
+```
+$ yum install hbase hbase-master hbase-regionserver -y
 ``` 
 
-拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件：
+如果需要你可以安装 hbase-rest、hbase-solr-indexer、hbase-thrift
+
+## 修改配置文件
+
+拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件（在每个节点执行）：
 
 ```
-$ sudo cp -r /etc/hbase/conf.empty /etc/hbase/conf.my_cluster
+$ sudo cp -r /etc/hbase/conf.dist /etc/hbase/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
 $ sudo alternatives --set hbase-conf /etc/hbase/conf.my_cluster
 ```
 
 hbase 默认使用 `/etc/hbase/conf` 路径读取配置文件，经过上述配置之后，`/etc/hbase/conf` 会软连接到 `/etc/hbase/conf.my_cluster`目录
 
-在hdfs中创建/hbase
+在 hdfs 中创建 `/hbase` 目录
 
 ```
 $ sudo -u hdfs hadoop fs -mkdir /hbase
 $ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 ```
 
-设置crontab：
+设置crontab 定时删除日志：
 
 ```
 $ crontab -e
-	* 10 * * * cd /var/log/hbase/; rm -rf\
-	`ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
+* 10 * * * cd /var/log/hbase/; rm -rf `ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
 ```
 
-修改配置文件并同步到其他机器：
+修改 `hbase-site.xml`文件，关键几个参数及含义如下：
 
-修改hbase-site.xml文件：
+- hbase.distributed：是否为分布式模式
+- hbase.rootdir：HBase在hdfs上的目录路径
+- hbase.tmp.dir：本地临时目录
+- hbase.zookeeper.quorum：zookeeper集群地址，逗号分隔
+- hbase.hregion.max.filesize：hregion文件最大大小
+- hbase.hregion.memstore.flush.size：memstore文件最大大小
+
+另外，在CDH5中建议`关掉Checksums`（见[Upgrading HBase](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hbase_upgrade.html)）以提高性能，修改为如下：
 
 ```xml
-	<configuration>
-	<property>
-	    <name>hbase.distributed</name>
-	    <value>true</value>
-	</property>
-	<property>
-	    <name>hbase.rootdir</name>
-	    <value>hdfs://cdh1:8020/hbase</value>
-	</property>
-	<property>
-	    <name>hbase.tmp.dir</name>
-	    <value>/opt/data/hbase</value>
-	</property>
-	<property>
-	    <name>hbase.zookeeper.quorum</name>
-	    <value>cdh1,cdh2,cdh3</value>
-	</property>
-	<property>
-	    <name>hbase.hregion.max.filesize</name>
-	    <value>536870912</value>
-	  </property>
-	  <property>
-	    <name>hbase.hregion.memstore.flush.size</name>
-	    <value>67108864</value>
-	  </property>
-	  <property>
-	    <name>hbase.regionserver.lease.period</name>
-	    <value>600000</value>
-	  </property>
-	  <property>
-	    <name>hbase.client.retries.number</name>
-	    <value>3</value>
-	  </property> 
-	  <property>
-	    <name>hbase.regionserver.handler.count</name>
-	    <value>100</value>
-	  </property>
-	  <property>
-	    <name>hbase.zookeeper.property.maxClientCnxns</name>
-	    <value>2000</value>
-	  </property>
-	  <property>
-	    <name>hfile.block.cache.size</name>
-	    <value>0.1</value>
-	  </property>
-	  <property>
-	    <name>hbase.regions.slop</name>
-	    <value>0</value>
-	  </property>
-	  <property>
-	    <name>hbase.hstore.compactionThreshold</name>
-	    <value>10</value>
-	  </property>
-	  <property>
-	    <name>hbase.hstore.blockingStoreFiles</name>
-	    <value>30</value>
-	  </property>
-	</configuration>
+ <property>
+    <name>hbase.regionserver.checksum.verify</name>
+    <value>false</value>
+    <description>
+        If set to  true, HBase will read data and then verify checksums  for
+        hfile blocks. Checksum verification inside HDFS will be switched off.
+        If the hbase-checksum verification fails, then it will  switch back to
+        using HDFS checksums.
+    </description>
+  </property>
+  <property>
+    <name>hbase.hstore.checksum.algorithm</name>
+    <value>NULL</value>
+    <description>
+      Name of an algorithm that is used to compute checksums. Possible values
+      are NULL, CRC32, CRC32C.
+    </description>
+  </property>
 ```
 
-修改regionserver文件
+最后的配置如下，供参考：
 
+```xml
+<configuration>
+<property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+</property>
+<property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://cdh1:8020/hbase</value>
+</property>
+<property>
+    <name>hbase.tmp.dir</name>
+    <value>/data/hbase</value>
+</property>
+<property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>cdh1,cdh2,cdh3</value>
+</property>
+<property>
+  <name>hbase.zookeeper.useMulti</name>
+  <value>true</value>
+</property>
+<property>
+    <name>hbase.hregion.max.filesize</name>
+    <value>536870912</value>
+  </property>
+  <property>
+    <name>hbase.hregion.memstore.flush.size</name>
+    <value>67108864</value>
+  </property>
+  <property>
+    <name>hbase.regionserver.lease.period</name>
+    <value>600000</value>
+  </property>
+  <property>
+    <name>hbase.client.retries.number</name>
+    <value>3</value>
+  </property> 
+  <property>
+    <name>hbase.regionserver.handler.count</name>
+    <value>100</value>
+  </property>
+  <property>
+    <name>hbase.hstore.compactionThreshold</name>
+    <value>10</value>
+  </property>
+  <property>
+    <name>hbase.hstore.blockingStoreFiles</name>
+    <value>30</value>
+  </property>
+
+  <property>
+    <name>hbase.regionserver.checksum.verify</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>hbase.hstore.checksum.algorithm</name>
+    <value>NULL</value>
+  </property>
+</configuration>
+```
+
+## 同步配置文件
+
+将配置文件同步到其他节点：
+
+```
+$ scp -r /etc/hbase/conf root@cdh2:/etc/hbase/
+$ scp -r /etc/hbase/conf root@cdh3:/etc/hbase/
+```
+
+## 创建本地目录
+
+在 hbase-site.xml 配置文件中配置了 `hbase.tmp.dir` 值为 `/data/hbase`，现在需要在每个hbase节点创建该目录并设置权限：
+
+```
+$ mkdir /data/hbase
+$ chown -R hbase:hbase /data/hbase/
+```
 
 ## 启动HBase
 
@@ -938,7 +1165,11 @@ $ service hbase-master start
 $ service hbase-regionserver start
 ```
 
-# 7. 安装hive
+## 访问web
+
+通过 <http://cdh1:60030/> 可以访问 RegionServer 页面，然后通过该页面可以知道哪个节点为 Master，然后再通过60010端口访问 Master管理界面。
+
+# 6. 安装hive
 
 在一个NameNode节点上安装 hive：
 
@@ -949,7 +1180,7 @@ $ sudo yum install hive*
 拷贝默认的配置文件为一个新的文件，并设置新文件为 hive 的默认配置文件：
 
 ```
-$ sudo cp -r /etc/hive/conf.empty /etc/hive/conf.my_cluster
+$ sudo cp -r /etc/hive/conf.dist /etc/hive/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
 $ sudo alternatives --set hive-conf /etc/hive/conf.my_cluster
 ```
@@ -1161,7 +1392,7 @@ $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.12.0-cdh5.0.1.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
-# 8. 参考文章
+# 7. 参考文章
 
 * [1] [CDH5-Installation-Guide](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/CDH5-Installation-Guide.html)
 * [2] [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)
