@@ -62,7 +62,7 @@ eth1      Link encap:Ethernet  HWaddr 08:00:27:75:E0:95
 $ yum install bind-utils -y
 ```
 
-运行`host -v -t A `hostname`` 查看hostname和ip是否匹配:
+运行下面命令查看hostname和ip是否匹配:
 
 ```
 $ host -v -t A `hostname` 
@@ -232,7 +232,7 @@ $ vi /etc/sudoers
 
 你可以从[这里](http://archive.cloudera.com/cdh4/repo-as-tarball/)下载 cdh4 的仓库压缩包，或者从[这里](http://archive.cloudera.com/cdh5/repo-as-tarball/) 下载 cdh5 的仓库压缩包。
 
-这里我是使用的cdh5的仓库，将其下载之后解压配置cdh的yum源：
+因为我是使用的centos操作系统，故这里使用的cdh5的centos6仓库，将其下载之后解压配置cdh的yum源：
 
 ```
 [hadoop]
@@ -448,11 +448,11 @@ DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed
 在 `hdfs-site.xml` 中可以配置以下参数：
 
 ```
-	dfs.namenode.checkpoint.check.period
-	dfs.namenode.checkpoint.txns
-	dfs.namenode.checkpoint.dir
-	dfs.namenode.checkpoint.edits.dir
-	dfs.namenode.num.checkpoints.retained
+dfs.namenode.checkpoint.check.period
+dfs.namenode.checkpoint.txns
+dfs.namenode.checkpoint.dir
+dfs.namenode.checkpoint.edits.dir
+dfs.namenode.num.checkpoints.retained
 ```
 
 如果想配置SecondaryNameNode节点，请从NameNode中单独选择一台机器，然后做以下设置：
@@ -496,7 +496,7 @@ $ sudo yum install hadoop-httpfs
 
 然后配置代理用户，修改 core-site.xml，添加如下代码：
 
-```
+```xml
 <property>  
 <name>hadoop.proxyuser.httpfs.hosts</name>  
 <value>*</value>  
@@ -932,15 +932,15 @@ $ chown -R zookeeper:zookeeper /data/zookeeper
 设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` 
 
 ```
-	maxClientCnxns=50
-	tickTime=2000
-	initLimit=10
-	syncLimit=5
-	dataDir=/data/zookeeper
-	clientPort=2181
-	server.1=cdh1:2888:3888
-	server.2=cdh3:2888:3888
-	server.3=cdh3:2888:3888
+maxClientCnxns=50
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/data/zookeeper
+clientPort=2181
+server.1=cdh1:2888:3888
+server.2=cdh3:2888:3888
+server.3=cdh3:2888:3888
 ```
 
 ## 同步配置文件
