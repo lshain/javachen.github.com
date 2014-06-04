@@ -27,6 +27,11 @@ Cloudera Search 核心部件包括 Hadoop 和 Solr，后者建立在 Lucene 之�
  
 建立的索引存储于 HDFS。这给搜索带来了易于扩展，冗余和容错的好处。此外，我们还可以运行 MapReduce 来对我们所需要检索的数据进行索引，提供给 Solr。
 
+# 环境
+
+- CentOS 6.4 x86_64
+- CDH 5.0.1
+
 # 安装 Hadoop集群
 
 这里使用参考 [通过Cloudera Manager安装CDH](/2013/06/24/install-cdh-by-cloudera-manager/)一文搭建的集群，其中也包括了一个三节点的 ZooKeeper 集群。该集群包括三个节点：
@@ -207,6 +212,33 @@ $ sudo yum install hbase-solr-indexer hbase-solr-doc
 
 > 注意：Lily HBase Indexer和 cdh5 工作的时候，你需要在运行 MapReduce 任务之前运行下面命令：
 > `export HADOOP_CLASSPATH=<Path to hbase-protocol-**.jar>`
+
+# 配置 hbase-solr-indexer
+
+1）开启 HBase replication
+
+Lily HBase Indexer 的实现依赖于 HBase的replication，故需要开启复制。将 `/usr/share/doc/hbase-solr-doc*/demo/hbase-site.xml`文件的内容拷贝到 `hbase-site.xml`，**注意**：删除掉 `replication.replicationsource.implementation` 参数配置。
+
+2）将 hbase-solr-indexer 服务指向 hbase 集群
+
+修改 `/etc/hbase-solr/conf/hbase-indexer-site.xml`，添加如下参数，其值和 `hbase-site.xml` 中的 `hbase.zookeeper.quorum` 属性值保持一致（注意添加上端口）：
+
+```xml
+<property>
+   <name>hbaseindexer.zookeeper.connectstring</name>
+   <value>cdh1:2181,cdh2:2181,cdh3:2181</value>
+</property> 
+```
+
+最后再重启服务：
+
+```
+$ sudo service hbase-solr-indexer restart
+```
+
+# 总结
+
+本文内容主要介绍了如何不使用 Cloudera Manager 来安装 Cloudera Search，下篇文章将介绍如何使用 Cloudera Search。
 
 # 参考资料
 
