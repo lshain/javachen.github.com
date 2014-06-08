@@ -7,7 +7,7 @@ description: 记录一些关于Markdown的知识,所有相关内容来自互联�
 
 keywords: 关于Markdown
 
-category: DevOps
+category: others
 
 tags: [markdown]
 

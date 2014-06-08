@@ -7,7 +7,7 @@ description: Scrapy是Python开发的一个快速、高层次的屏幕抓取和w
 
 keywords: scrapy,python
 
-category: search-engine
+category: python
 
 tags: [scrapy]
 
