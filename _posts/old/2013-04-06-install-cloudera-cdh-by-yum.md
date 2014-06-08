@@ -716,13 +716,7 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
 </property>
 <property>
     <name>yarn.application.classpath</name>
-    <value>
-	$HADOOP_CONF_DIR,
-	$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
-	$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
-	$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
-	$YARN_HOME/*,$YARN_HOME/lib/*
-    </value>
+    <value>$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*</value>
 </property>
 <property>
 	<name>yarn.log.aggregation.enable</name>
@@ -735,10 +729,10 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
 在hadoop中默认的文件路径以及权限要求如下：
 
 ```
-目录									所有者		权限		默认路径
-yarn.nodemanager.local-dirs			yarn:yarn	drwxr-xr-x ${hadoop.tmp.dir}/nm-local-dir
-yarn.nodemanager.log-dirs			yarn:yarn	drwxr-xr-x	${yarn.log.dir}/userlogs
-yarn.nodemanager.remote-app-log-dir							hdfs://var/log/hadoop-yarn/apps
+目录									                   所有者		 权限		        默认路径
+yarn.nodemanager.local-dirs			      yarn:yarn	  drwxr-xr-x    ${hadoop.tmp.dir}/nm-local-dir
+yarn.nodemanager.log-dirs			        yarn:yarn	  drwxr-xr-x	  ${yarn.log.dir}/userlogs
+yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/log/hadoop-yarn/apps
 ```
 
 在 `yarn-site.xml`文件中添加如下配置:
@@ -754,7 +748,7 @@ yarn.nodemanager.remote-app-log-dir							hdfs://var/log/hadoop-yarn/apps
 </property>
 <property>
     <name>yarn.nodemanager.remote-app-log-dir</name>
-    <value>hdfs://var/log/hadoop-yarn/apps</value>
+    <value>/var/log/hadoop-yarn/apps</value>
 </property>
 ```
 
@@ -901,6 +895,14 @@ $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 通过 <http://cdh1:8088/> 可以访问 Yarn 的管理页面。
 
 通过 <http://cdh1:19888/> 可以访问 JobHistory 的管理页面。
+
+查看在线的节点：<http://cdh1:8088/cluster/nodes>。
+
+运行下面的测试程序，看是否报错：
+
+```
+$ sudo -u hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar randomwriter out
+```
 
 # 4. 安装 Zookeeper
 
@@ -1217,10 +1219,10 @@ $ sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_con
 	standard_conforming_strings = off
 ```
 
-修改 pg_hba.conf，添加以下一行内容：
+修改 /var/lib/pgsql/data/pg_hba.conf，添加以下一行内容：
 
 ```
-	host    all         all         0.0.0.0         0.0.0.0               md5
+	host    all         all         0.0.0.0/0                      md5
 ```
 
 启动数据库
@@ -1245,14 +1247,14 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 创建数据库和用户
 
 ```
-	bash# sudo –u postgres psql
+	bash# su postgres
 	bash$ psql
 	postgres=# CREATE USER hiveuser WITH PASSWORD 'redhat';
 	postgres=# CREATE DATABASE metastore owner=hiveuser;
 	postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
 	postgres=# \q;
 	bash$ psql  -U hiveuser -d metastore
-	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.10.0.postgres.sql
+	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.12.0.postgres.sql
 	SET
 	SET
 	..
@@ -1330,7 +1332,7 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	</property>
 	<property>
 	  <name>hive.hwi.war.file</name>
-	  <value>lib/hive-hwi-0.10.0-cdh4.2.0.war</value>
+	  <value>lib/hive-hwi-0.12.0-cdh5.0.1.war</value>
 	</property>
 	<property>
 	  <name>hive.merge.mapredfiles</name>
@@ -1357,6 +1359,9 @@ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 创建目录并设置权限：
 
 ```
+$ sudo -u hdfs hadoop fs -mkdir /user/hive
+$ sudo -u hdfs hadoop fs -chown hive /user/hive
+
 $ sudo -u hdfs hadoop fs -mkdir /user/hive/warehouse
 $ sudo -u hdfs hadoop fs -chmod 1777 /user/hive/warehouse
 $ sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
@@ -1368,6 +1373,14 @@ $ sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 $ service hive-metastore start
 $ service hive-server start
 $ service hive-server2 start
+```
+
+测试：
+
+```
+$ create table t(id int);
+$ select * from t limit 2;
+$ select id from t;
 ```
 
 访问beeline:
