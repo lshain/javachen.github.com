@@ -2,7 +2,7 @@
 layout: post
 title: 重装Linux-Mint系统之后
 description: 重装Linux-Mint系统之后的一些软件安装和环境变量配置。
-category: work
+category: others
 tags: [linux]
 ---
 

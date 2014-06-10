@@ -153,9 +153,10 @@ LinkedList支持多种遍历方式。建议不要采用随机访问的方式去�
 ### 应用场景
 
 如果涉及到“栈”、“队列”、“链表”等操作，应该考虑用List，具体的选择哪个List，根据下面的标准来取舍。
-- (01) 对于需要快速插入，删除元素，应该使用LinkedList。
-- (02) 对于需要快速随机访问元素，应该使用ArrayList。
-- (03) 对于“单线程环境” 或者 “多线程环境，但List仅仅只会被单个线程操作”，此时应该使用非同步的类(如ArrayList)；对于“多线程环境，且List可能同时被多个线程操作”，此时，应该使用同步的类(如Vector)。
+
+- 对于需要快速插入，删除元素，应该使用LinkedList。
+- 对于需要快速随机访问元素，应该使用ArrayList。
+- 对于“单线程环境” 或者 “多线程环境，但List仅仅只会被单个线程操作”，此时应该使用非同步的类(如ArrayList)；对于“多线程环境，且List可能同时被多个线程操作”，此时，应该使用同步的类(如Vector)。
 
 ### Vector和ArrayList
 
@@ -170,7 +171,7 @@ LinkedList支持多种遍历方式。建议不要采用随机访问的方式去�
 
 - ArrayList是非线程安全，而Vector是线程安全的
 - ArrayList支持序列化，而Vector不支持
-- 容量增加方式不同
+- 容量增加方式不同，Vector默认增长为原来一培，而ArrayList却是原来的一半+1
 - Vector支持通过Enumeration去遍历，而List不支持
 
 # 2. Map
@@ -345,3 +346,4 @@ TreeSet的本质是一个"有序的，并且没有重复元素"的集合，它�
 # 4. 参考资料
 
 - [1] [Java 集合系列01之 总体框架](http://www.cnblogs.com/skywang12345/p/3308498.html)
+- [2] [Java里多个Map的性能比较（TreeMap、HashMap、ConcurrentSkipListMap）](http://blog.hongtium.com/java-map-skiplist/)

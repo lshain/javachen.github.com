@@ -7,7 +7,7 @@ description: 重装Mac系统之后的一些软件安装和环境变量配置。
 
 keywords: 重装Mac系统
 
-category: work
+category: others
 
 tags: [mac]
 
