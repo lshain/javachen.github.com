@@ -11,7 +11,7 @@ category: hadoop
 
 tags: [hive,mapreduce]
 
-published: false
+published: true
 
 ---
 

@@ -1,10 +1,14 @@
 ---
 layout: post
-title:  Hive Driver类运行过程
-description: 我的学习笔记，记录hive Driver类运行过程
+title:  Hive0.10.0源码分析：Driver类运行过程
+description: 记录hive Driver类运行过程，本文的源码分析基于hive-0.10.0-cdh4.3.0。
 category: Hadoop
 tags: [hadoop, hive]
 ---
+
+说明：
+
+本文的源码分析基于hive-0.10.0-cdh4.3.0。
 
 # 概括
 
