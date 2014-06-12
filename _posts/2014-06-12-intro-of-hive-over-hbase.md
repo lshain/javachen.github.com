@@ -3,7 +3,7 @@ layout: post
 
 title: Hive Over HBase的介绍
 
-description: Hive over hbase是基于hive支持对hbase表提供直接查询功能，并不是使用hbase外部表通过mapreduce来查询，而是使用HQL语句来直接查询存储在HBase上的数据。
+description: Hive Over HBase是基于Hive的HQL查询引擎支持对hbase表提供及时查询的功能，它并不是将hql语句翻译成mapreduce来运行，其响应时间在秒级别。
 
 keywords: Hive over hbase是基于hive支持对hbase表提供直接查询功能
 
@@ -15,7 +15,7 @@ published: true
 
 ---
 
-Hive over hbase是基于hive支持对hbase表提供直接查询功能，并不是使用hbase外部表通过mapreduce来查询，而是使用HQL语句来直接查询存储在HBase上的数据。
+Hive Over HBase是基于Hive的HQL查询引擎支持对hbase表提供及时查询的功能，它并不是将hql语句翻译成mapreduce来运行，其响应时间在秒级别。
 
 # 特性
 
