@@ -77,7 +77,7 @@ Time taken: 51.496 seconds
 </property>
 ```
 
-该参数默认值为minimal，表示运行“select * ”并带有limit查询时候，会讲其转换为FetchTask；如果参数值为more，则select某一些列并带有limit条件时，也会将其转换为FetchTask任务。当然，还有前天条件：单一数据源，即输入来源一个表或者分区；没有子查询；没有聚合运算和distinct；不能用于视图和join。
+该参数默认值为minimal，表示运行“select * ”并带有limit查询时候，会将其转换为FetchTask；如果参数值为more，则select某一些列并带有limit条件时，也会将其转换为FetchTask任务。当然，还有前天条件：单一数据源，即输入来源一个表或者分区；没有子查询；没有聚合运算和distinct；不能用于视图和join。
 
 测试一下，先讲其参数值设为more，再运行：
 

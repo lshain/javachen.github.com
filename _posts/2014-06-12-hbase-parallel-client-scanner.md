@@ -513,4 +513,4 @@ public class ParallelScannerTest {
 - hbase.parallel.scanner.queue.size
 - hbase.parallel.scanner.thread.count
 
-以上源代码及所做的修改我会提交到 <https://github.com/javachen/hbase/tree/cdh4-0.94.15_4.7.0>。
+以上源代码及所做的修改我已提交到我github仓库上hbase的cdh4-0.94.15_4.7.0分支，见提交日志[add ParallelClientScanner](https://github.com/javachen/hbase/commit/66268c4179f674a7d64f36c91dd4070f1195d169)。

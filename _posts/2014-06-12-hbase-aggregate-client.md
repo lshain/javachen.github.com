@@ -33,7 +33,7 @@ published: true
 
 2、 引入patch
 
-先下载patch，下载链接是：<https://github.com/javachen/hbase/blob/cdh4-0.94.15_4.7.0/hbase-patch/git/0001-add-aggregate-support-in-hbase-shell.patch>，然后打patch：
+基于提交日志[add-aggregate-support-in-hbase-shell](https://github.com/javachen/hbase/commit/94e61f28d60cac40f2b499b8530dd1989adf76d3)生成patch文件，然后打patch，或者也可以使用其他方法：
 
 ```
 $ git apply add-aggregate-in-hbase-shell.patch
@@ -188,4 +188,4 @@ public class AggregateTest {
 
 运行该类并查看输出结果。
 
-以上源代码及所做的修改我会提交到 https://github.com/javachen/hbase/tree/cdh4-0.94.15_4.7.0。
+以上源代码及所做的修改我已提交到我github仓库上hbase的cdh4-0.94.15_4.7.0分支，见提交日志[add-aggregate-support-in-hbase-shell](https://github.com/javachen/hbase/commit/94e61f28d60cac40f2b499b8530dd1989adf76d3)。
