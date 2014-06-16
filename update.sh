@@ -12,7 +12,7 @@ cp -ar _site/* ../javachen.gitcafe.com
 cd ../javachen.gitcafe.com
 git add --all ./*
 git commit -m "updating blog"
-git push origin gitcafe-page
+git push origin gitcafe-pages
 
 
 exit 0
