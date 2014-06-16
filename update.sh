@@ -2,16 +2,17 @@
 
 jekyll build
 
-git add ./*
-git commit -a -m "updating blog"
-gpm
+git add --all ./*
+git commit -m "updating blog"
+git push origin master
 
 rm -rf ../javachen.gitcafe.com/*
 cp -ar _site/* ../javachen.gitcafe.com
 
 cd ../javachen.gitcafe.com
-git add ./*
-git commit -a -m "updating blog"
-gpg
+git add --all ./*
+git commit -m "updating blog"
+git push origin gitcafe-page
+
 
 exit 0
