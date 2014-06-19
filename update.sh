@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo `date`
+rm -rf _site/*
 jekyll build
 
 git add --all ./*
