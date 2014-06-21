@@ -6,4 +6,7 @@ group: navigation
 comment: true
 ---
 
-一个在北京奋斗的JavaChen
+86后，Java程序员，主要关注Java、Hadoop、Python、Solr等技术。
+
+个人微博：<http://weibo.com/chenzhijun> 
+个人Github：<https://github.com/javachen>
