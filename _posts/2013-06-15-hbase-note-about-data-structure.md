@@ -17,9 +17,9 @@ published: true
 
 从HBase的架构图上可以看出，HBase中的存储包括HMaster、HRegionServer、HRegion、Store、MemStore、StoreFile、HFile、HLog等，本篇文章统一介绍他们的作用即存储结构。
 
-以下是网络上流传的HBase存储架构图，**其中存在一个错误**：一个HRegionServer只对应一个HLog，也就是说同个HRegionServer中的HRegion共享一个HLog。
+以下是网络上流传的HBase存储架构图:
 
-![hbase-structure](/assets/images/2014/hbase-structure.jpg)
+![hbase-structure](/assets/images/2013/hbase-structure.jpg)
 
 HBase中的每张表都通过行键按照一定的范围被分割成多个子表（HRegion），默认一个HRegion超过256M就要被分割成两个，这个过程由HRegionServer管理，而HRegion的分配由HMaster管理。
 

@@ -32,9 +32,32 @@ Update:
 
 > CDH 要求使用 IPv4，IPv6 不支持。
 
+**禁用IPv6方法：**
+
+```bash
+$sudo vim /etc/sysctl.conf
+#disable ipv6
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.lo.disable_ipv6=1
+```
+
+使其生效：
+
+```bash
+$sudo sysctl -p
+```
+
+最后确认是否已禁用：
+
+```bash
+$cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+1
+```
+
 1、设置hostname，以cdh1为例
 
-```
+```bash
 $ sudo hostname cdh1
 ```
 
