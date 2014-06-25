@@ -37,6 +37,7 @@ defaults write com.apple.finder AppleShowAllFiles -bool false #隐藏Mac隐藏�
 # 下载常用软件
 
 - 下载jdk6：<http://support.apple.com/downloads/DL1572/en_US/JavaForOSX2013-05.dmg>
+- 下载jdk7：<http://download.oracle.com/otn-pub/java/jdk/7u60-b19/jdk-7u60-macosx-x64.dmg?AuthParam=1403450902_0b8ed262d4128ca82031dcbdc2627aaf>
 - 下载VirtualBox：<http://dlc.sun.com.edgesuite.net/virtualbox/4.3.10/VirtualBox-4.3.10-93012-OSX.dmg>
 - 下载vagrant：<https://dl.bintray.com/mitchellh/vagrant/vagrant_1.5.4.dmg>
 

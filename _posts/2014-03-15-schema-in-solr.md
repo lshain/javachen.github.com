@@ -44,7 +44,7 @@ schema.xml是Solr一个配置文件，它包含了你的文档所有的字段，
 
 分词用的依旧是fieldType，为的是在下面的field中能够用到。有两个analyzer，一个是index，一个是query，index是针对于所有，query是针对于搜索。
 
-tokenizer及诶单当然就是对应分析链中的起点Tokenizer。接下来串联了2个filter，分别是solr.StopFilterFactory，solr.LowerCaseFilterFactory。stop word filter就是把那些the、 of、 on之类的词从token中去除掉，由于这类词在文档中出现的频率非常高，而对文档的特征又没什么影响，所以这类词对查询没什么意义。Lower case filter的作用是将所有的token转换成小写，也就是在最终的index中保存的都是小写
+tokenizer节点当然就是对应分析链中的起点Tokenizer。接下来串联了2个filter，分别是solr.StopFilterFactory，solr.LowerCaseFilterFactory。stop word filter就是把那些the、 of、 on之类的词从token中去除掉，由于这类词在文档中出现的频率非常高，而对文档的特征又没什么影响，所以这类词对查询没什么意义。Lower case filter的作用是将所有的token转换成小写，也就是在最终的index中保存的都是小写
 
 你也可以定义一个analyzer，例如使用mmseg4j进行中文分词：
 
@@ -70,14 +70,22 @@ filed节点用于定义数据源字段所使用的搜索类型与相关设置。
 - termPositions：存储 term vector中的地址信息，会消耗存储开销。
 - termOffsets：存储 term vector 的偏移量，会消耗存储开销。
 - default：如果没有属性需要修改，就可以用这个标识下。
+- docValues：Solr 4.2中加入了该属性
+- docValuesFormat：可选的值为Disk或者Memory
+
+举例：
+
+```xml
+<field name="manu_exact" type="string" indexed="false" stored="false" docValues="true" />
+```
 
 # copyField节点
 
 如果我们的搜索需要搜索多个字段该怎么办呢？这时候，我们就可以使用copyField。代码如下：
 
 ```xml
-<copyField source="name" dest="all" />
-<copyField source="address" dest="all" />
+<copyField source="name" dest="all" maxChars="30000"/>
+<copyField source="address" dest="all" maxChars="30000"/>
 ```
 
 作用：
@@ -86,6 +94,12 @@ filed节点用于定义数据源字段所使用的搜索类型与相关设置。
 - 将一个field的数据拷贝到另一个，可以用2种不同的方式来建立索引
 
 我们将所有的中文分词字段全部拷贝至all中，当我们进行全文检索是，只用搜索all字段就OK了。
+
+其包含属性：
+
+- source：源field字段
+- dest：目标field字段
+- maxChars：最多拷贝多少字符
 
 注意，这里的目标字段必须支持多值，最好不要存储，因为他只是做搜索。indexed为true，stored为false。
 
@@ -129,6 +143,43 @@ solr必须设置一个唯一字段，常设置为id，此唯一一段有uniqueKe
 <solrQueryParser defaultOperator="OR"/> 
 ```
 
+# similarity节点
+
+Similarity式lucene中的一个类，用来在搜索过程中对一个文档进行评分。该类可以做些修改以支持自定义的排序。在Solr4中，你可以为每一个field配置一个不同的similarity，你也可以在schema.xml中使用DefaultSimilarityFactory类配置一个全局的similarity。
+
+你可以使用默认的工厂类来创建一个实例，例如：
+
+```xml
+<similarity class="solr.DefaultSimilarityFactory"/>
+```
+
+你也可以使用其他的工厂类，然后设置一些可选的初始化参数：
+
+```xml
+<similarity class="solr.DFRSimilarityFactory">
+  <str name="basicModel">P</str>
+  <str name="afterEffect">L</str>
+  <str name="normalization">H2</str>
+  <float name="c">7</float>
+</similarity>
+```
+
+在Solr 4中，你可以为每一个field配置：
+
+```xml
+<fieldType name="text_ib">
+   <analyzer/>
+   <similarity class="solr.IBSimilarityFactory">
+      <str name="distribution">SPL</str>
+      <str name="lambda">DF</str>
+      <str name="normalization">H2</str>
+   </similarity>
+</fieldType>
+```
+
+上面例子中，使用了DFRSimilarityFactory和IBSimilarityFactory，这里还有一些其他的实现类。在Solr 4.2中加入了SweetSpotSimilarityFactory。其他还有：BM25SimilarityFactory、SchemaSimilarityFactory等。
+
 # 参考文章
 
 - [1] [Solr配置，schema.xml的配置，以及中文分词](http://www.cnblogs.com/wrt2010/archive/2012/11/14/2769521.html)
+- [2] [Other Schema Elements](https://cwiki.apache.org/confluence/display/solr/Other+Schema+Elements)
