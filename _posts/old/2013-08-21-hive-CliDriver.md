@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Hive0.10.0源码分析：CLI入口类
+title:  Hive源码分析：CLI入口类
 description: 理解Hive CLI的入口类，本文的源码分析基于hive-0.10.0-cdh4.3.0。
 category: Hadoop
 tags: [hadoop, hive]
@@ -27,6 +27,12 @@ tags: [hadoop, hive]
 
 # 入口类
 java中的类如果有main方法就能运行，故直接查找`org.apache.hadoop.hive.cli.CliDriver`中的main方法即可。
+
+CliDriver类中的方法有：
+
+![](/assets/images/2013/Hive-CliDriver-method.jpg)
+
+main方法代码如下：
 
 ```java
 	public static void main(String[] args) throws Exception {
@@ -94,17 +100,13 @@ shell_cmd的内容大概如下：
 
 如果是远程模式运行命令行，则通过HiveClient来运行命令；否则，调用processLocalCmd方法运行本地命令。
 
-以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor。`set/dfs/add/delete`指令交给指定的CommandProcessor处理，其余的交给`org.apache.hadoop.hive.ql.Driver.run()`处理。
-故，CommandProcessor接口的实现类有：
+以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor，CommandProcessor接口的实现类见下图：
 
-	AddResourceProcessor
-	DeleteResourceProcessor
-	DfsProcessor
-	Driver
-	ResetProcessor
-	SetProcessor
+![](/assets/images/2013/CommandProcessor-implements.jpg)
 
-`org.apache.hadoop.hive.ql.Driver`类是查询的起点，run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。
+从上图可以看到指定的命令(`set/dfs/add/delete/reset`)交给指定的CommandProcessor处理，其余的(指hql语句)交给Driver类来处理。
+
+故，`org.apache.hadoop.hive.ql.Driver`类是hql查询的起点，而run()方法会先后调用compile()和execute()两个函数来完成查询，所以一个command的查询分为compile和execute两个阶段。
 
 # 总结
 

@@ -1,14 +1,14 @@
 ---
 layout: post
-title:  Hive0.10.0源码分析：Driver类运行过程
-description: 记录hive Driver类运行过程，本文的源码分析基于hive-0.10.0-cdh4.3.0。
+title:  Hive源码分析：Driver类运行过程
+description: 记录hive Driver类运行过程，本文的源码分析基于hive-0.12.0-cdh5.0.1。
 category: Hadoop
 tags: [hadoop, hive]
 ---
 
 说明：
 
-本文的源码分析基于hive-0.10.0-cdh4.3.0。
+本文的源码分析基于hive-0.12.0-cdh5.0.1。
 
 # 概括
 
@@ -18,115 +18,34 @@ tags: [hadoop, hive]
 （1）set       SetProcessor，设置修改参数,设置到SessionState的HiveConf里。 
 （2）dfs       DfsProcessor，使用hadoop的FsShell运行hadoop的命令。 
 （3）add       AddResourceProcessor，添加到SessionState的resource_map里，运行提交job的时候会写入Hadoop的Distributed Cache。 
-（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。 
-（5）其他       Driver 
+（4）delete    DeleteResourceProcessor，从SessionState的resource_map里删除。
+（5）reset     RestResourceProcessor，重置终端输出
+（6）其他命令   Driver 
 ```
 
-Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑。
+Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑，其时序图如下：
 
-在CliDriver类的`processLocalCmd(String cmd, CommandProcessor proc, CliSessionState ss)`中首先根据proc的类型来做处理，如果proc为Driver的一个实例，则调用`qp.run(cmd).getResponseCode()`,并打印出结果的header和结果；
-否则就仅仅调用`proc.run(cmd_1)`方法：
+![hive-driver](/assets/images/2013/Hive-Driver-sequence.jpg)
 
-```java
-int processLocalCmd(String cmd, CommandProcessor proc, CliSessionState ss) {
-    int tryCount = 0;
-    boolean needRetry;
-    int ret = 0;
+从时序图上可以看出有以下步骤：
 
-    do {
-      try {
-        needRetry = false;
-        if (proc != null) {
-          if (proc instanceof Driver) { #Driver
-            Driver qp = (Driver) proc;
-            PrintStream out = ss.out;
-            long start = System.currentTimeMillis();
-            if (ss.getIsVerbose()) {
-              out.println(cmd);
-            }
+- run方法调用内部方法runInternal
+- 在runInternal方法内部先，调用HiveDriverRunHookContext的preDriverRun方法
+- 调用compileInternal方法
+- compileInternal方法内部调用compile方法
+- compile方法内，先调用HiveSemanticAnalyzerHookContext的preAnalyze方法
+- 再进行语法分析，调用BaseSemanticAnalyzer的analyze方法
+- 调用HiveSemanticAnalyzerHookContext的postAnalyze方法
+- 再进行语法校验，调用BaseSemanticAnalyzer的validate方法
+- compileInternal方法运行完成之后，调用checkConcurrency方法
+- 再来运行execute方法，该方法用于运行任务
+- 最后，调用HiveDriverRunHookContext的postDriverRun方法
 
-            qp.setTryCount(tryCount);
-            ret = qp.run(cmd).getResponseCode();
-            if (ret != 0) {
-              qp.close();
-              return ret;
-            }
-
-            ArrayList<String> res = new ArrayList<String>();
-
-            printHeader(qp, out);
-
-            try {
-              while (qp.getResults(res)) {
-                for (String r : res) {
-                  out.println(r);
-                }
-                res.clear();
-                if (out.checkError()) {
-                  break;
-                }
-              }
-            } catch (IOException e) {
-              console.printError("Failed with exception " + e.getClass().getName() + ":"
-                  + e.getMessage(), "\n"
-                  + org.apache.hadoop.util.StringUtils.stringifyException(e));
-              ret = 1;
-            }
-
-            int cret = qp.close();
-            if (ret == 0) {
-              ret = cret;
-            }
-
-            long end = System.currentTimeMillis();
-            if (end > start) {
-              double timeTaken = (end - start) / 1000.0;
-              console.printInfo("Time taken: " + timeTaken + " seconds", null);
-            }
-
-          } else {
-            String firstToken = tokenizeCmd(cmd.trim())[0];
-            String cmd_1 = getFirstCmd(cmd.trim(), firstToken.length());
-
-            if (ss.getIsVerbose()) {
-              ss.out.println(firstToken + " " + cmd_1);
-            }
-            CommandProcessorResponse res = proc.run(cmd_1);
-            if (res.getResponseCode() != 0) {
-              ss.out.println("Query returned non-zero code: " + res.getResponseCode() +
-                  ", cause: " + res.getErrorMessage());
-            }
-            ret = res.getResponseCode();
-          }
-        }
-      } catch (CommandNeedRetryException e) {
-        console.printInfo("Retry query with a different approach...");
-        tryCount++;
-        needRetry = true;
-      }
-    } while (needRetry);
-
-    return ret;
-  }
- ```
-
- 另外，processLocalCmd方法中，如果运行失败会重新运行一遍，直达运行没有出现异常，然后将运行的结果返回。
-
-# 分析
-
-Driver类入口如下：
-
-```java
-public CommandProcessorResponse run(String command) throws CommandNeedRetryException {
-    return run(command, true);
-}
-```
-
-运行命令之前，先编译命令，然后在运行任务。
+# Driver初始化
 
 在继续分析之前，需要弄清楚Driver类初始化时做了什么事情。
 
-在`processCmd(String cmd)`方法中可以看到proc是在CommandProcessorFactory类中new出来的并调用了init方法。
+在CliDriver的`processCmd(String cmd)`方法中可以看到proc是在CommandProcessorFactory类中new出来的并调用了init方法。
 
 ```java
 } else { // local mode
@@ -134,7 +53,6 @@ public CommandProcessorResponse run(String command) throws CommandNeedRetryExcep
       ret = processLocalCmd(cmd, proc, ss);
 }
 ```
-
 
 CommandProcessorFactory.get方法代码片段：
 
@@ -169,15 +87,17 @@ public Driver() {
 
 ## run方法过程
 
-1、运行HiveDriverRunHook的前置方法preDriverRun
+1、调用runInternal方法，根据该方法返回值判断是否出错。
 
-2、判断是否需要编译，如果需要，则运行`compile(command)`方法，并根据返回值判断是否该释放Hive锁。hive中可以配置`hive.support.concurrency`值为true并设置zookeeper的服务器地址和端口，基于zookeeper实现分布式锁以支持hive的多并发访问。这部分内容不是本文重点故不做介绍。
+2、runInternal方法内，运行HiveDriverRunHook的前置方法preDriverRun
 
-`compile(command)`方法内部代码说明见下文。
+3、判断是否需要编译，如果需要，则运行`compileInternal(command)`方法，并根据返回值判断是否该释放Hive锁。hive中可以配置`hive.support.concurrency`值为true并设置zookeeper的服务器地址和端口，基于zookeeper实现分布式锁以支持hive的多并发访问。这部分内容不是本文重点故不做介绍。
 
-3、判断是否需要对Task加锁。如果需要，则会锁住当前数据库和当前查询计划的输入和输出（表或者分区）。
+> `compileInternal(command)`方法内部代码说明见下文。
 
-4、调用execute()方法执行任务。
+4、判断是否需要对Task加锁。如果需要，则调用checkConcurrency方法。
+
+5、调用execute()方法执行任务。
 
 - 执行计划开始：`plan.setStarted();`
 - 先运行ExecuteWithHookContext的前置hook方法，ExecuteWithHookContext类型有三种：前置、运行失败、后置。
@@ -227,9 +147,9 @@ while (runnable.peek() != null && running.size() < maxthreads) {
 
 - 执行计划完成：`plan.setDone();`
 
-5、运行HiveDriverRunHook的后置方法postDriverRun
+6、运行HiveDriverRunHook的后置方法postDriverRun
 
-## compile方法过程
+## compileInternal方法过程
 
 1、保存当前查询状态
 
@@ -357,7 +277,7 @@ twitter的mapreduce可视化项目监控项目[ambrose](https://github.com/twitt
 
 本文主要介绍了hive运行过程，包括hive语法词法解析以及hook机制，任务的最后运行过程取决于具体的`Task<? extends Serializable>`的实现类的逻辑。关于hive语法词法解析，这一部分没有做详细的解释。
 
-hive Driver类的执行过程如下：
+hive Driver类的执行过程如下（该图是根据hive-0.11版本画出来的）：
 
 ![hive-driver](http://jc-resource.qiniudn.com/images/2013/hive-driver.jpg)
 
