@@ -30,7 +30,7 @@ Thread对象代表一个线程。
 
 # 线程状态图
 
- ![](/assets/images/2014/thread-state.jpg)
+ ![](http://jc-resource.qiniudn.com/images/2014/thread-state.jpg)
 
  说明：
 线程共包括以下5种状态。

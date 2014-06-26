@@ -1,6 +1,6 @@
     <section>
    	 <h2>About</h2>
 	 <p>
-   	 <a href="/about.html">{{ site.author.name }}</a> is a system architect and works on (but not limited to) Java, Hadoop, and Pentaho. 
+   	 <a href="/about.html">{{ site.author.name }}</a>，湖北武汉人，目前工作在北京，主要从事Java、Hadoop、Kettle相关的开发工作。
 	 </p>
     </section>

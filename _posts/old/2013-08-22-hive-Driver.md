@@ -25,7 +25,7 @@ tags: [hadoop, hive]
 
 Driver类的主要作用是用来编译并执行hive命令，然后返回执行结果。这里主要分析Driver类的运行逻辑，其时序图如下：
 
-![hive-driver](/assets/images/2013/Hive-Driver-sequence.jpg)
+![hive-driver](http://jc-resource.qiniudn.com/images/2013/Hive-Driver-sequence.jpg)
 
 从时序图上可以看出有以下步骤：
 

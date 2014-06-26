@@ -1,6 +1,14 @@
 #!/bin/bash
 
 echo `date`
+
+qrsync qiniu-images.conf
+
+cd _posts
+
+grep '/assets/images' */* |sed  's/\/assets\/images/http:\/\/jc\-resource\.qiniudn\.com\/images/g'
+cd ..
+
 rm -rf _site/*
 jekyll build
 

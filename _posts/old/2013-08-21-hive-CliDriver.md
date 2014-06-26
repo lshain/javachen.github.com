@@ -30,7 +30,7 @@ java中的类如果有main方法就能运行，故直接查找`org.apache.hadoop
 
 CliDriver类中的方法有：
 
-![](/assets/images/2013/Hive-CliDriver-method.jpg)
+![](http://jc-resource.qiniudn.com/images/2013/Hive-CliDriver-method.jpg)
 
 main方法代码如下：
 
@@ -102,7 +102,7 @@ shell_cmd的内容大概如下：
 
 以本地模式运行时，会通过CommandProcessorFactory工厂解析输入的语句来获得一个CommandProcessor，CommandProcessor接口的实现类见下图：
 
-![](/assets/images/2013/CommandProcessor-implements.jpg)
+![](http://jc-resource.qiniudn.com/images/2013/CommandProcessor-implements.jpg)
 
 从上图可以看到指定的命令(`set/dfs/add/delete/reset`)交给指定的CommandProcessor处理，其余的(指hql语句)交给Driver类来处理。
 

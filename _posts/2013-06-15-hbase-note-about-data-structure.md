@@ -19,7 +19,7 @@ published: true
 
 以下是网络上流传的HBase存储架构图:
 
-![hbase-structure](/assets/images/2013/hbase-structure.jpg)
+![hbase-structure](http://jc-resource.qiniudn.com/images/2013/hbase-structure.jpg)
 
 HBase中的每张表都通过行键按照一定的范围被分割成多个子表（HRegion），默认一个HRegion超过256M就要被分割成两个，这个过程由HRegionServer管理，而HRegion的分配由HMaster管理。
 
@@ -89,11 +89,11 @@ HBase中KeyValue数据的存储格式，是hadoop的二进制格式文件。
 
 Data Block是hbase io的基本单元，为了提高效率，HRegionServer中又基于LRU的block cache机制。每个Data块的大小可以在创建一个Table的时候通过参数指定（默认块大小64KB），大号的Block有利于顺序Scan，小号的Block利于随机查询。每个Data块除了开头的Magic以外就是一个个KeyValue对拼接而成，Magic内容就是一些随机数字，目的是烦着数据损坏，结构如下。
 
-![](/assets/images/2014/hfile-keyvalue-structure.jpg)
+![](http://jc-resource.qiniudn.com/images/2014/hfile-keyvalue-structure.jpg)
 
 HFile结构图如下：
 
-![](/assets/images/2014/hfile-structure.jpg)
+![](http://jc-resource.qiniudn.com/images/2014/hfile-structure.jpg)
 
 Data Block段用来保存表中的数据，这部分可以被压缩。
 
@@ -107,7 +107,7 @@ Trailer这一段是定长的。保存了每一段的偏移量，读取一个HFil
 
 HFile的Data Block，Meta Block通常采用压缩方式存储，压缩之后可以大大减少网络IO和磁盘IO，随之而来的开销当然是需要花费cpu进行压缩和解压缩。目标HFile的压缩支持两种方式：gzip、lzo。
 
-![](/assets/images/2014/hfile-data-storeage.jpg)
+![](http://jc-resource.qiniudn.com/images/2014/hfile-data-storeage.jpg)
 
 另外，针对目前针对现有HFile的两个主要缺陷：
 
@@ -124,8 +124,19 @@ Sequence File的value是key时HLogKey对象，其中记录了写入数据的归�
 
 Sequence File的value是HBase的KeyValue对象，即对应HFile中的KeyValue。
 
-![](/assets/images/2014/hlog-structure.jpg)
+![](http://jc-resource.qiniudn.com/images/2014/hlog-structure.jpg)
 
 HLog(WAL log)：WAL意为write ahead log，用来做灾难恢复使用，HLog记录数据的所有变更，一旦region server 宕机，就可以从log中进行恢复。
+
+![](http://jc-resource.qiniudn.com/images/2013/hbase-write-hlog-process.jpg)
+
+LogFlusher
+
+前面提到，数据以KeyValue形式到达HRegionServer，将写入WAL，之后，写入一个SequenceFile。看过去没问题，但是因为数据流在写入文件系统时，经常会缓存以提高性能。这样，有些本以为在日志文件中的数据实际在内存中。这里，我们提供了一个LogFlusher的类。它调用HLog.optionalSync(),后者根据 `hbase.regionserver.optionallogflushinterval` (默认是10秒)，定期调用Hlog.sync()。另外，HLog.doWrite()也会根据 `hbase.regionserver.flushlogentries` (默认100秒)定期调用Hlog.sync()。Sync() 本身调用HLog.Writer.sync()，它由SequenceFileLogWriter实现。
+
+LogRoller
+
+Log的大小通过$HBASE_HOME/conf/hbase-site.xml 的 `hbase.regionserver.logroll.period` 限制，默认是一个小时。所以每60分钟，会打开一个新的log文件。久而久之，会有一大堆的文件需要维护。首先，LogRoller调用HLog.rollWriter()，定时滚动日志，之后，利用HLog.cleanOldLogs()可以清除旧的日志。它首先取得存储文件中的最大的sequence number，之后检查是否存在一个log所有的条目的“sequence number”均低于这个值，如果存在，将删除这个log。
+
 
 每个region server维护一个HLog，而不是每一个region一个，这样不同region（来自不同的table）的日志会混在一起，这样做的目的是不断追加单个文件相对于同时写多个文件而言，可以减少磁盘寻址次数，因此可以提高table的写性能。带来麻烦的时，如果一个region server下线，为了恢复其上的region，需要讲region server上的log进行拆分，然后分发到其他region server上进行恢复。
