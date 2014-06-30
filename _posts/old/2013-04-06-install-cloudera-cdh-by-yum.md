@@ -1434,7 +1434,26 @@ $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.12.0-cdh5.0.1.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
-# 7. 参考文章
+# 其他说明
+
+你可以在环境变量中加入以下设置：
+
+```
+export HADOOP_HOME=/usr/lib/hadoop
+export HIVE_HOME=/usr/lib/hive
+export HBASE_HOME=/usr/lib/hbase
+export HADOOP_MAPRED_HOME=${HADOOP_HOME}
+export HADOOP_COMMON_HOME=${HADOOP_HOME}
+export HADOOP_HDFS_HOME=${HADOOP_HOME}
+export HADOOP_LIBEXEC_DIR=${HADOOP_HOME}/libexec
+export YARN_HOME=${HADOOP_HOME}
+export HADOOP_YARN_HOME=${HADOOP_HOME}
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+```
+
+# 8. 参考文章
 
 * [1] [CDH5-Installation-Guide](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/CDH5-Installation-Guide.html)
 * [2] [hadoop cdh 安装笔记](http://roserouge.iteye.com/blog/1558498)

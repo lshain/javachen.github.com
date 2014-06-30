@@ -1,11 +1,11 @@
 ---
 layout: post
 
-title: HBase0.94.6源码：HMaster启动过程
+title: HBase源码：HMaster启动过程
 
-description: 记录HBase0.94.6 中HMaster启动过程
+description: 记录HBase中HMaster启动过程
 
-keywords: HBase0.94.6源码：HMaster启动过程
+keywords: HBase源码：HMaster启动过程
 
 category: hadoop
 
@@ -15,7 +15,7 @@ published: true
 
 ---
 
-版本：HBase 0.94.6-cdh4.3.0
+版本：HBase 0.94.15-cdh4.7.0
 
 # 调试HMaster
 
@@ -106,24 +106,33 @@ startMaster方法中分两种情况：本地模式和分布式模式。如果是
 
 HMaster继承自HasThread类，而HasThread类实现了Runnable接口，故HMaster也是一个线程。
 
+# HMaster类图
+
+HMaster类继承关系如下图：
+
+![](/assets/images/2014/hbase-hmaster-class.jpg)
+
 # HMaster的构造方法
 
 1、构造方法总体过程
 
 创建Configuration并设置和获取一些参数。包括：
 
-- 在master上关掉block cache
+- 在master上禁止block cache
 - 设置服务端重试次数
-- 获取主机名称和master端口号，默认为60000
-- **创建rpcServer**
+- 获取主机名称和master绑定的ip和端口号，端口号默认为60000
+- 设置regionserver的coprocessorhandler线程数为0
+- **创建rpcServer**（见下文分析）
+- 初始化serverName，其值为：`192.168.1.129,60000,1404117936154`
 - zk授权登录和hbase授权
-- 设置当前线程名称
+- 设置当前线程名称：`master + "-" + this.serverName.toString()`
 - 判断是否开启复制：`Replication.decorateMasterConfiguration(this.conf);`
-- 设置`mapred.task.id`
-- **创建ZooKeeperWatcher监听器**
+- 设置`mapred.task.id`，如果其为空，则其值为：`"hb_m_" + this.serverName.toString()`
+- **创建ZooKeeperWatcher监听器**（见下文分析），并在zookeeper上创建一些节点
 - 启动rpcServer中的线程
 - 创建一个MasterMetrics
 - 判断是否进行健康检测：HealthCheckChore
+- 另外还初始化两个参数：shouldSplitMetaSeparately、waitingOnLogSplitting
 
 涉及到的参数有：
 
@@ -143,9 +152,13 @@ hbase.master.kerberos.principal
 hbase.master.logcleaner.plugins
 mapred.task.id
 hbase.node.health.script.frequency
+hbase.regionserver.separate.hlog.for.meta
+hbase.master.wait.for.log.splitting
 ```
 
 2、创建rpcServer并启动其中的线程：
+
+这部分涉及到RPC的使用，包括的知识点有`动态代理`、`Java NIO`等。
 	
 通过反射创建RpcEngine的实现类，实现类可以在配置文件中配置（`hbase.rpc.engine`），默认实现为WritableRpcEngine。
 调用getServer方法，其实也就是new一个HBaseServer类。
@@ -153,7 +166,7 @@ hbase.node.health.script.frequency
 构造方法中：
 
 - 启动一个Listener线程，功能是监听client的请求，将请求放入nio请求队列，逻辑如下：
- - -->创建n个selector，和一个n个线程的readpool，n由"ipc.server.read.threadpool.size"决定，默认为10
+ - -->创建n个selector，和一个n个线程的readpool，n由`ipc.server.read.threadpool.size`决定，默认为10
  - -->读取每个请求的头和内容，将内容放入priorityQueue中
 - 启动一个Responder线程，功能是将响应队列里的数据写给各个client的connection通道，逻辑如下：
  - -->创建nio selector
@@ -186,30 +199,40 @@ hbase.node.health.script.frequency
 
 # run方法
 
+接下来看HMaster的run方法做了哪些事情。
+
 1、总体过程
 
-- 创建MonitoredTask
-- 调用becomeActiveMaster方法，block直至成为active master
-- 当成为了master之后调用finishInitialization
-- loop循环等待，一直到stop发生
+- 创建MonitoredTask，并把HMaster的状态设置为Master startup
+- 启动info server，即Jetty服务器，端口默认为60010，其对外提供两个接口：/master-status和/dump
+- **调用becomeActiveMaster方法**（见下文分析），阻塞等待直至当前master成为active master
+- 当成为了master之后并且当前master进程正在运行，则调用finishInitialization方法（见下文分析），并且调用loop方法循环等待，一直到stop发生
+- 当HMaster停止运行时候，会做以下事情：
+	- 清理startupStatus
+	- 停止balancerChore和catalogJanitorChore
+	- 让RegionServers shutdown 
+	- 停止服务线程：rpcServer、logCleaner、hfileCleaner、infoServer、executorService、healthCheckChore
+	- 停止以下线程：activeMasterManager、catalogTracker、serverManager、assignmentManager、fileSystemManager、snapshotManager、zooKeeper  	 
 
 2、becomeActiveMaster方法：
 
 - 创建ActiveMasterManager
 - ZooKeeperWatcher注册activeMasterManager监听器
-- stallIfBackupMaster：
-	-->先检查配置项 "hbase.master.backup"，自己是否backup机器，如果是则直接block直至检查到系统中的active master挂掉（默认每3分钟检查一次） 
+- 调用stallIfBackupMaster：
+	-->先检查配置项 "hbase.master.backup"，自己是否backup机器，如果是则直接block直至检查到系统中的active master挂掉（`zookeeper.session.timeout`，默认每3分钟检查一次） 
 - 创建clusterStatusTracker并启动
 - 调用activeMasterManager的blockUntilBecomingActiveMaster方法。
-	创建短暂的"/hbase/master"，此节点值为version+ServerName，如果创建成功，则删除备份节点；否则，创建备份节点
-	获得"/hbase/master"节点上的数据，如果不为null，则获得ServerName，并判断是否是在当前节点上创建了"/hbase/master"，如果是则删除该节点，这是因为该节点已经是备份节点了。
+	- 创建短暂的"/hbase/master"，此节点值为version+ServerName，如果创建成功，则删除备份节点；否则，创建备份节点
+	- 获得"/hbase/master"节点上的数据，如果不为null，则获得ServerName，并判断是否是在当前节点上创建了"/hbase/master"，如果是则删除该节点，这是因为该节点已经是备份节点了。
 
 3、finishInitialization方法：
 
 - 创建MasterFileSystem对象，封装了master常用的一些文件系统操作，包括splitlog file、删除region目录、删除table目录、删除cf目录、检查文件系统状态等.
 - 创建FSTableDescriptors对象
 - 设置集群id
-- 如果不是备份master，创建ExecutorService，维护一个ExecutorMap,一种Event对应一个Executor(线程池).可以提交EventHandler来执行异步事件；创建serverManager，管理regionserver信息,维护着onlineregion server 和deadregion server列表，处理regionserver的startups、shutdowns、 deaths，同时也维护着每个regionserver rpc stub.
+- 如果不是备份master：
+	- 创建ExecutorService，维护一个ExecutorMap,一种Event对应一个Executor(线程池).可以提交EventHandler来执行异步事件；
+ 	- 创建serverManager，管理regionserver信息,维护着onlineregion server 和deadregion server列表，处理regionserver的startups、shutdowns、 deaths，同时也维护着每个regionserver rpc stub.
 - 调用initializeZKBasedSystemTrackers，初始化zk文件系统
 	- 创建CatalogTracker, 它包含RootRegionTracker和MetaNodeTracker，对应"/hbase/root-region-server"和/"hbase/unassigned/1028785192"这两个结点(1028785192是.META.的分区名)。如果之前从未启动过hbase，那么在start CatalogTracker时这两个结点不存在。"/hbase/root-region-server"是一个持久结点，在RootLocationEditor中建立
 	- 创建 LoadBalancer，负责region在regionserver之间的移动，关于balancer的策略，可以通过hbase.regions.slop来设置load区间
@@ -218,23 +241,23 @@ hbase.node.health.script.frequency
 	- 创建 DrainingServerTracker: 监控"/hbase/draining"结点
 	- 创建 ClusterStatusTracker，监控"/hbase/shutdown"结点维护集群状态
 	- 创建SnapshotManager
-- 如果不是备份master，初始化MasterCoprocessorHost并执行startServiceThreads()
+- 如果不是备份master，初始化MasterCoprocessorHost并执行startServiceThreads()。说明：`info server的启动移到构造函数了去了，这样可以早点通过Jetty服务器查看HMaster启动状态。`
 	- 创建一些executorService
 	- 创建logCleaner并启动
 	- 创建hfileCleaner并启动
-	- 创建jetty的infoServer并启动，默认端口为60010
 	- 启动healthCheckChore
 	- 打开rpcServer
 - 等待RegionServer注册。满足以下这些条件后返回当前所有region server上的region数后继续： 
     - a 至少等待4.5s，"hbase.master.wait.on.regionservers.timeout"
     - b 成功启动regionserver节点数>=1，"hbase.master.wait.on.regionservers.mintostart"
-    - c 1.5s内没有regionsever死掉或新启动，"hbase.master.wait.on.regionservers.interval")
+    - c 1.5s内没有regionsever死掉或重新启动，`hbase.master.wait.on.regionservers.interval`)
+- serverManager注册新的在线region server
 - 如果不是备份master，启动assignmentManager
-- 然后splitLogAfterStartup，从hlog中恢复数据，这是一个很长的逻辑： 
+- 获取下线的Region server，然后拆分HLog
 	- -->依次检查每一个hlog目录，查看它所属的region server是否online，如果是则不需要做任何动作，region server自己会恢复数据，如果不是，则需要将它分配给其它的region server 
 	- -->split是加锁操作: 
-	- --> 创建一个新的hlogsplitter,遍历每一个server目录下的所有hlog文件，依次做如下操作。（如果遇到文件损坏等无法跳过的错误，配 置"hbase.hlog.split.skip.errors=true"以忽略之） 
-	- -->启动"hbase.regionserver.hlog.splitlog.writer.threads"（默认为3）个线程，共使用128MB内存，启动这些写线程 
+	- --> 创建一个新的hlogsplitter,遍历每一个server目录下的所有hlog文件，依次做如下操作。（如果遇到文件损坏等无法跳过的错误，配 置 `hbase.hlog.split.skip.errors=true` 以忽略之） 
+	- -->启动`hbase.regionserver.hlog.splitlog.writer.threads`（默认为3）个线程，共使用128MB内存，启动这些写线程 
 	- -->先通过lease机制检查文件是否能够append，如果不能则死循环等待 
 	- -->把hlog中的内容全部加载到内存中（内存同时被几个写线程消费)）
 	   - -->把有损坏并且跳过的文件移到`/hbase/.corrupt/`目录中 
@@ -244,15 +267,20 @@ hbase.node.health.script.frequency
 	- 写线程逻辑： 
 	   - -->从内存中读出每一行数据的key和value，然后查询相应的region路径。如果该region路径不存在，说明该region很可能己经被split了，则不处理这部分数据,因为此时忽略它们是安全的。 
 	   - -->如果上一步能查到相应的路径，则到对应路径下创建"recovered.edits"文件夹(如果该文件夹存在则删除后覆盖之)，然后将数据写入该文件夹  
-- 开始分配root和meta表：assignRootAndMeta
+- 调用assignRoot方法，检查是否分配了-ROOT-表，如果没有，则通过assignmentManager.assignRoot()来分配root表，并激活该表
+- 运行this.serverManager.enableSSHForRoot()方法
+- 拆分.META. server上的HLog
+- 分配.META.表
 - enableServerShutdownHandler
+- 处理dead的server
 - assignmentManager.joinCluster();
+- 设置balancer
 - fixupDaughters(status)
 - 如果不是备份master
    - 启动balancerChore线程，运行LoadBalancer
    - 启动startCatalogJanitorChore，周期性扫描`.META.`表上未使用的region并回收
    - registerMBean
-- serverManager.clearDeadServersWithSameHostNameAndPortOfOnlineServer
+- serverManager.clearDeadServersWithSameHostNameAndPortOfOnlineServer，清理dead的server
 - 如果不是备份master，cpHost.postStartMaster
        
 # MasterFileSystem构造方法
@@ -269,7 +297,7 @@ hbase.node.health.script.frequency
    * Override to change master's splitLogAfterStartup. Used testing
    * @param mfs
    */
-  protected void splitLogAfterStartup(final MasterFileSystem mfs) {
+  protected void splitLogAfterStartup(final MasterFileSystem mfs){
     mfs.splitLogAfterStartup();
   }
 ```

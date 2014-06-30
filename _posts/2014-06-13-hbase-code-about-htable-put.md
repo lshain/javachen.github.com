@@ -19,11 +19,15 @@ HBase版本：0.94.15-cdh4.7.0
 
 在 HBase中，大部分的操作都是在RegionServer完成的，Client端想要插入、删除、查询数据都需要先找到相应的 RegionServer。什么叫相应的RegionServer？就是管理你要操作的那个Region的RegionServer。Client本身并 不知道哪个RegionServer管理哪个Region，那么它是如何找到相应的RegionServer的？本文就是在研究源码的基础上了解这个过程。
 
+首先来看看写过程的序列图：
+
+![](/assets/images/2014/hbase-htable-put-sequence.jpg)
+
 # 客户端代码
 
 1、put方法
 
-HBase的put有两个方法：
+HTable的put有两个方法：
 
 ```java
 public void put(final Put put) throws IOException {
@@ -218,29 +222,101 @@ server = HBaseRPC.waitForProxy(this.rpcEngine,
 
 # 服务端
 
-上面客户端调用过程分析完毕，继续跟RegionServer服务端的处理，入口方法就是HRegionServer.multi方法。
+上面客户端调用过程分析完毕，继续跟RegionServer服务端的处理。
 
-该方法主要就是遍历multi并对actionsForRegion按rowid进行排序，然后分类别对action进行处理，put和delete操作放到一起进行处理。这里面包括一些上锁、结果收集等操作，然后调用下面代码批量提交：
+### HRegionServer的multi方法
 
-```java
-OperationStatus[] codes =
-              region.batchMutate(mutationsWithLocks.toArray(new Pair[]{}));
-```
+对于客户端写操作，最终会调用HRegionServer的multi方法。
 
 因为传递到RegionServer都是按regionName分组的，故最后的操作实际上都是调用的HRegion对象的方法。
 
-HRegion的put方法内部会调用internalPut方法，该方法运行过程如下（不考虑读写锁）：
+该方法主要就是遍历multi并对actionsForRegion按rowid进行排序，然后分类别对action进行处理，Put和Delete操作会放到一起然后调用batchMutate方法批量提交：
 
-- 调用协作器的prePut方法
-- 检查列族、时间戳
-- 更新每个KeyValue的时间戳
-- 如果开启WAL，则往log里追加
-- 把put放到memstore里 
-- 判断是否需要flush memstore
-- 调用协作器的postPut方法
-- 如果需要flush，则调用requestFlush方法
-	- 实际是调用MemStoreFlusher的requestFlush方法
-	- flush之前，先要判断是否在拆分和压缩合并
+```java
+OperationStatus[] codes =region.batchMutate(mutationsWithLocks.toArray(new Pair[]{}));
+```
+
+其他的：
+
+- 对于Get，会调用get方法；
+- 对于Exec，会调用execCoprocessor方法；
+- 对于Increment，会调用increment方法；
+- 对于Append，会调用append方法；
+- 对于RowMutations，会调用mutateRow方法；
+
+对于Put和Delete操作（保存在mutations中），在处理之前，先通过cacheFlusher检查memstore大小吃否超过限定值，如果是，则进行flush。
+
+接下来遍历mutations，为每个Mutation添加一个锁lock，然后再调用region的batchMutate方法。
+
+### HRegion的batchMutate
+
+batchMutate方法内部，依次一个个处理：
+
+- 先检查是否只读
+- 检查当前资源是否支持update操作，会比较memstoreSize和blockingMemStoreSize大小，然后会阻塞线程
+- 调用startRegionOperation，给lock.readLock()加锁
+- 调用doPreMutationHook执行协作器里的一些方法
+- 计算其待添加的大小
+- 计算加入memstore之后的memstore大小
+- 写完之后，释放lock.readLock()锁
+- 判断是否需要flush memstore，如果需要，则调用requestFlush方法，其内部实际是通过RegionServerServices中的FlushRequester（其实现类为MemStoreFlusher）来执行flush操作
+
+### MemStoreFlusher flush过程
+
+HRegion中的requestFlush方法：
+
+```java
+private void requestFlush() {
+    if (this.rsServices == null) {
+      return;
+    }
+    synchronized (writestate) {
+      if (this.writestate.isFlushRequested()) {
+        return;
+      }
+      writestate.flushRequested = true;
+    }
+    // Make request outside of synchronize block; HBASE-818.
+    this.rsServices.getFlushRequester().requestFlush(this);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Flush requested on " + this);
+    }
+  }
+```
+
+上面this.rsServices.getFlushRequester()其实际上返回的是MemStoreFlusher类。
+
+![](/assets/images/2014/hbase-MemStoreFlusher-class.jpg)
+
+MemStoreFlusher内部有一个队列和一个Map：
+
+```java
+//保存待flush的对象
+private final BlockingQueue<FlushQueueEntry> flushQueue =
+    new DelayQueue<FlushQueueEntry>();
+//记录队列中存在哪些Region
+private final Map<HRegion, FlushRegionEntry> regionsInQueue =
+    new HashMap<HRegion, FlushRegionEntry>();
+```
+
+MemStoreFlusher构造方法：
+
+- 初始化threadWakeFrequency，该值由hbase.server.thread.wakefrequency设置，默认为10 * 1000
+- 初始化globalMemStoreLimit，该值为最大堆内存乘以hbase.regionserver.global.memstore.upperLimit的值，hbase.regionserver.global.memstore.upperLimit参数默认值为0.4
+- 初始化globalMemStoreLimitLowMark，该值为最大堆内存乘以hbase.regionserver.global.memstore.lowerLimit的值，hbase.regionserver.global.memstore.lowerLimit参数默认值为0.35
+- 初始化blockingWaitTime，该值由hbase.hstore.blockingWaitTime设置，默认为90000
+
+MemStoreFlusher实现了Runnable接口，在RegionServer启动过程中会启动一个线程，其run方法逻辑如下：
+
+- 只要RegionServer一直在运行，该线程就不会停止运行
+- 每隔threadWakeFrequency时间从flushQueue中取出一个对象
+- 如果取出的对象为空或者WakeupFlushThread，则判断：如果当前RegionServer的总大小大于globalMemStoreLimit值，则找到没有太多storefiles（只个数小于hbase.hstore.blockingStoreFiles的，该参数默认值为7）的最大的region和不管有多少storefiles的最大region，比较两个大小找出最大的一个，然后flush该region，并休眠1秒；最后在唤醒flush线程
+	- 先flush region上的memstore，这部分代码通过HRegion的internalFlushcache方法来完成，其内部使用了mvcc
+	- 判断是否该拆分，如果是则拆分
+ 	- 判断是否该压缩合并，如果是则合并
+- 如果如果取出的对象为FlushRegionEntry，则flush该对象。
+	- 如果当前region不是meta region并且当前region的storefiles数大于`hbase.hstore.blockingStoreFiles`，先判断是否要拆分，然后再判断是否需要合并小文件。这个过程会阻塞blockingWaitTime值定义的时间。
+ 	- 否则， 直接flush该region上的memstore（调用HRegion的internalFlushcache方法），然后再判断是否需要拆分和合并
 
 # 总结
 

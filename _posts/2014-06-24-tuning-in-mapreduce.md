@@ -38,6 +38,7 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 
 # 2. Hdfs参数调优
 
+
 ## 2.1 core-default.xml：
 
 `hadoop.tmp.dir`：
@@ -69,6 +70,14 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 
 # 3. MapReduce参数调优
 
+包括以下节点：
+
+- 合理设置槽位数目
+- 调整心跳配置
+- 磁盘块配置
+- 设置RPC和线程数目
+- 启用批量任务调度
+
 ## 3.1 mapred-default.xml：
 
 `mapred.reduce.tasks`（`mapreduce.job.reduces`）：
@@ -79,12 +88,12 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 `mapreduce.task.io.sort.factor`：
 
 - 默认值：10
-- 说明：排序文件的时候一次同时最多可并流的个数，这里设置100。
+- 说明：Reduce Task中合并小文件时，一次合并的文件数据，每次合并的时候选择最小的前10进行合并。
 
 `mapreduce.task.io.sort.mb`：
 
 - 默认值：100
-- 说明： 排序内存使用限制，这里设置200m。
+- 说明： Map Task缓冲区所占内存大小。
 
 `mapred.child.java.opts`：
 
@@ -135,6 +144,22 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 
 - 默认值： 2
 - 说明：一个tasktracker并发执行的reduce数，建议为cpu核数
+
+# 系统优化
+
+## 避免排序
+
+对于一些不需要排序的应用，比如hash join或者limit n，可以将排序变为可选环节，这样可以带来一些好处：
+
+- 在Map Collect阶段，不再需要同时比较partition和key，只需要比较partition，并可以使用更快的计数排序（O(n)）代替快速排序（O(NlgN)）
+- 在Map Combine阶段，不再需要进行归并排序，只需要按照字节合并数据块即可。
+- 去掉排序之后，Shuffle和Reduce可同时进行，这样就消除了Reduce Task的屏障（所有数据拷贝完成之后才能执行reduce()函数）。
+
+## Shuffle阶段内部优化
+
+1. Map端--用Netty代替Jetty
+2. Reduce端--批拷贝
+3. 将Shuffle阶段从Reduce Task中独立出来
 
 # 总结
 
