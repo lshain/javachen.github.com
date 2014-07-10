@@ -123,6 +123,10 @@ mv _package_linux_amd64/* /usr/bin/
 source ~/.bashrc
 ```
 
+## 更新ssh-key
+
+更新github和gitcafe的ssh-key
+
 # 安装 virtualbox
 
 ```
