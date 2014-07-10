@@ -11,7 +11,7 @@ tags: [linux]
 # 安装常用工具
 
 ```
-sudo apt-get install ctags curl vsftpd git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
+sudo apt-get install ctags curl vsftpd git vim tmux meld htop putty subversion  nload  iptraf iftop tree openssh-server gconf-editor gnome-tweak-tool
 ```
 
 # 挂载exfat格式磁盘
