@@ -14,6 +14,12 @@ tags: [linux]
 sudo apt-get install ctags curl vsftpd git vim tmux meld htop putty subversion  nload  iptraf iftop  openssh-server gconf-editor gnome-tweak-tool
 ```
 
+# 挂载exfat格式磁盘
+
+```
+sudo apt-get install exfat-fuse exfat-utils
+```
+
 # 安装ibus
 
 在终端输入命令:
@@ -21,7 +27,7 @@ sudo apt-get install ctags curl vsftpd git vim tmux meld htop putty subversion  
 ```
 sudo add-apt-repository ppa:shawn-p-huang/ppa
 sudo apt-get update
-sudo apt-get install ibus-gtk ibus-pinyin ibus-pinyin-db-open-phrase
+sudo apt-get install ibus-gtk ibus-pinyin
 ```
 
 启用IBus框架:
@@ -55,6 +61,10 @@ sudo apt-get install wiznote
 
 # 安装 oh-my-zsh
 
+```
+sudo apt-get install zsh
+```
+
 把默认 Shell 换为 zsh。
 
 ```
@@ -78,30 +88,39 @@ echo 'source ~/.bashrc' >>~/.zshrc
 echo 'source ~/.bash_profile' >>~/.zshrc
 ```
 
-
-# 安装Ruby
+# 博客相关
+## 安装Ruby
 
 通过rvm安装ruby：
 
 ```
-curl -L get.rvm.io | bash -s stable $ source ~/.bash_profile
+curl -L get.rvm.io | bash -s stable 
+source ~/.bash_profile
 sed -i -e 's/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g' ~/.rvm/config/db
-sudo rvm install 1.9.3 --with-gcc=clang
+```
+
+安装rvm:
+
+```
+sudo apt-get install clang -y
+rvm install 1.9.3 --with-gcc=clang
 rvm --default 1.9.3
 ```
 
-# 安装jekyll
+## 安装jekyll
 
 ```
-sudo gem install rdoc
-sudo gem install jekyll redcarpet
+gem update --system
+gem install rdoc jekyll redcarpet
 ```
 
-设置环境变量：
+## 安装七牛同步脚本
 
 ```
-echo 'export PATH=$PATH:$HOME/.rvm/bin' >> ~/.bash_profile
-echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
+wget http://devtools.qiniudn.com/linux_amd64/qiniu-devtools.zip
+unzip qiniu-devtools.zip
+mv _package_linux_amd64/* /usr/bin/
+source ~/.bashrc
 ```
 
 # 安装 virtualbox
@@ -138,17 +157,25 @@ sudo chown -R june:june /chan
 
 # 重命名home下目录
 
+先手动重命名:
+
 ```
-mv ~/文档 ~/projects
-mv ~/音乐 ~/opt
-mv ~/图片 ~/tmp
-mv ~/视频 ~/workspace
-mv ~/下载 ~/download
-ln -s /chan/opt  ~/opt
-ln -s /chan/tmp   ~/tmp
+文档   --->  projects
+音乐   --->  app
+图片   --->  codes
+视频   --->  workspace
+下载   --->  downloads
+```
+
+然后,删除这些目录,建立软连接:
+
+```
+rm -rf projects app codes workspace downloads
+ln -s /chan/app  ~/app
+ln -s /chan/codes   ~/codes
 ln -s /chan/projects  ~/projects
 ln -s /chan/workspace  ~/workspace
-ln -s /chan/download    ~/download
+ln -s /chan/downloads    ~/downloads
 ```
 
 # 安装开发环境
@@ -156,13 +183,13 @@ ln -s /chan/download    ~/download
 配置ant、maven和ivy仓库
 
 ```
-chmod +x /chan/opt/apache-maven-3.0.5/bin/mvn
-chmod +x /chan/opt/apache-ant-1.9.2/bin/ant
+chmod +x /chan/app/apache/apache-maven-3.0.5/bin/mvn
+chmod +x /chan/app/apache/apache-ant-1.9.4/bin/ant
 
 rm -rf /home/june/.ivy2/cache /home/june/.m2/repository
 mkdir -p /home/june/.ivy2 /home/june/.m2
-ln -s /chan/opt/repository/cache/  /home/june/.ivy2/cache
-ln -s /chan/opt/repository/m2/  /home/june/.m2/repository
+ln -s /chan/app/repository/cache/  /home/june/.ivy2/cache
+ln -s /chan/app/repository/m2/  /home/june/.m2/repository
 ```
 
 安装jdk1.6
@@ -175,11 +202,11 @@ dpkg -i oracle-j2sdk1.6_1.6.0+update31_amd64.deb
 配置环境变量：
 
 ```
-sudo rm /usr/lib/jvm/default-java
-sudo ln -s /usr/lib/jvm/j2sdk1.6-oracle /usr/lib/jvm/default-java
-sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/default-java/bin/java 5
-sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/default-java/bin/javac 5
-sudo update-alternatives --set java /usr/lib/jvm/default-java/bin/java
+sudo mkdir -p /usr/java/
+sudo ln -s /usr/lib/jvm/j2sdk1.6-oracle /usr/java/latest
+sudo update-alternatives --install /usr/bin/java java /usr/java/latest/bin/java 5
+sudo update-alternatives --install /usr/bin/javac javac /usr/java/latest/bin/javac 5
+sudo update-alternatives --set java /usr/java/latest/bin/java
 
 
 if [ -f ~/.bashrc ] ; then
@@ -187,11 +214,11 @@ if [ -f ~/.bashrc ] ; then
     sed -i '/^export[[:space:]]\{1,\}CLASSPATH[[:space:]]\{0,\}=/d' ~/.bashrc
     sed -i '/^export[[:space:]]\{1,\}PATH[[:space:]]\{0,\}=/d' ~/.bashrc
 fi
-echo "export JAVA_HOME=/usr/lib/jvm/default-java" >> ~/.bashrc
+echo "export JAVA_HOME=/usr/java/latest" >> ~/.bashrc
 echo "export CLASSPATH=.:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar">>~/.bashrc
-echo "export MVN_HOME=/chan/opt/apache-maven-3.0.5" >> ~/.bashrc
+echo "export MVN_HOME=/chan/app/apache/apache-maven-3.0.5" >> ~/.bashrc
 
-echo "export ANT_HOME=/chan/opt/apache-ant-1.9.2" >> ~/.bashrc
+echo "export ANT_HOME=/chan/app/apache/apache-ant-1.9.4" >> ~/.bashrc
 echo "export PATH=\$JAVA_HOME/bin:\$MVN_HOME/bin:\$ANT_HOME/bin:\$PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
