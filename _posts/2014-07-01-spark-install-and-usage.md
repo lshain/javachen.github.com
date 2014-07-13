@@ -26,7 +26,7 @@ published: true
 
 选择一个节点来安装spark，首先查看spark相关的包有哪些：
 
-```
+```bash
 $ yum list |grep spark
 spark-core.noarch                        0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
 spark-master.noarch                      0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
@@ -47,7 +47,7 @@ hue-spark.x86_64                         3.5.0+cdh5.0.1+371-1.cdh5.0.1.p0.30.el6
 
 安装脚本如下：
 
-```
+```bash
 $ sudo yum install spark-core spark-master spark-worker spark-python
 ```
 
@@ -96,20 +96,21 @@ spark目前支持三种集群管理模式：
 
 启动脚本：
 
-```
+```bash
 $ sudo service spark-master start
 $ sudo service spark-worker start
 ```
 
 停止脚本：
-```
+
+```bash
 $ sudo service spark-worker stop
 $ sudo service spark-master stop
 ```
 
 当然，你还可以设置开机启动：
 
-```
+```bash
 $ sudo chkconfig spark-worker on
 $ sudo chkconfig spark-master on
 ```
@@ -118,7 +119,7 @@ $ sudo chkconfig spark-master on
 
 当然，你也可以使用spark自带的脚本来启动和停止，这些脚本在/usr/lib/spark/sbin目录下：
 
-```
+```bash
 $ ls /usr/lib/spark/sbin
 slaves.sh        spark-daemons.sh  start-master.sh  stop-all.sh
 spark-config.sh  spark-executor    start-slave.sh   stop-master.sh
@@ -127,9 +128,9 @@ spark-daemon.sh  start-all.sh      start-slaves.sh  stop-slaves.sh
 
 例如，你也可以通过下面脚本启动master：
 
-```
-cd /usr/lib/spark/sbin
-./start-master.sh
+```bash
+$ cd /usr/lib/spark/sbin
+$ ./start-master.sh
 ```
 
 类似地，通过下面命令启动worker：
@@ -140,7 +141,7 @@ cd /usr/lib/spark/sbin
 
 你可以通过spark-shell运行下面的wordcount例子，因为hdfs上的输入和输出文件都涉及到用户的访问权限，故这里使用hive用户来启动spark-shell：
 
-```
+```bash
 $ sudo -u hive spark-shell
 scala> val file = sc.textFile("hdfs://master:8020/user/hive/warehouse/test/test.txt")
 scala> val counts = file.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_ + _)

@@ -771,7 +771,7 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 </property>
 <property>
     <name>yarn.nodemanager.remote-app-log-dir</name>
-    <value>/var/log/hadoop-yarn/apps</value>
+    <value>/yarn/apps</value>
 </property>
 ```
 
@@ -789,6 +789,15 @@ $ sudo chown -R yarn:yarn /data/yarn/local
 ```
 $ sudo mkdir -p /var/log/hadoop-yarn
 $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
+```
+
+**创建Log目录**
+
+在 hdfs 上创建 `yarn.nodemanager.remote-app-log-dir` 对应的目录：
+
+```
+$ sudo -u hdfs hadoop fs -mkdir -p /yarn/apps
+$ sudo -u hdfs hadoop fs -chown yarn:mapred /yarn/apps
 ```
 
 **配置History Server：**
@@ -849,14 +858,7 @@ $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 
 如果你设置了上面两个参数，那你可以不用手动去创建 history 子目录。
 
-**创建Log目录**
 
-创建 `/var/log/hadoop-yarn` ，因为 `yarn-site.xml` 中配置了 `/var/log/hadoop-yarn/apps` ，故需要手动创建它的父目录：
-
-```
-$ sudo -u hdfs hadoop fs -mkdir -p /var/log/hadoop-yarn
-$ sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
-```
 
 ## 验证 HDFS 结构：
 
@@ -872,7 +874,7 @@ drwxr-xr-x   - hdfs hadoop          0 2014-04-31 10:26 /user
 drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred        0 2014-04-31 15:31 /var/log/hadoop-yarn
+drwxr-xr-x   - yarn   mapred        0 2014-04-31 15:31 /yarn/apps
 ```
 
 看到上面的目录结构，你就将NameNode上的配置文件同步到其他节点了，并且启动 yarn 的服务。
