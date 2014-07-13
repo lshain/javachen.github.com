@@ -145,9 +145,9 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 - 默认值： 2
 - 说明：一个tasktracker并发执行的reduce数，建议为cpu核数
 
-# 系统优化
+# 4. 系统优化
 
-## 避免排序
+## 4.1 避免排序
 
 对于一些不需要排序的应用，比如hash join或者limit n，可以将排序变为可选环节，这样可以带来一些好处：
 
@@ -155,13 +155,13 @@ Hadoop的默认配置文件（以cdh5.0.1为例）：
 - 在Map Combine阶段，不再需要进行归并排序，只需要按照字节合并数据块即可。
 - 去掉排序之后，Shuffle和Reduce可同时进行，这样就消除了Reduce Task的屏障（所有数据拷贝完成之后才能执行reduce()函数）。
 
-## Shuffle阶段内部优化
+## 4.2 Shuffle阶段内部优化
 
 1. Map端--用Netty代替Jetty
 2. Reduce端--批拷贝
 3. 将Shuffle阶段从Reduce Task中独立出来
 
-# 总结
+# 5. 总结
 
 在运行mapreduce任务中，经常调整的参数有：
 

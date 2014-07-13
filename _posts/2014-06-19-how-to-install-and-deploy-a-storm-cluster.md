@@ -36,7 +36,7 @@ published: true
 另外，操作系统环境为：Centos6.4，安装用户为：root。
 
 
-# 安装JDK
+# 1. 安装JDK
 
 安装jdk有很多方法，可以参考文博客[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/)中的jdk安装步骤，需要说明的是下面的zookeeper集群安装方法也可以参考此文。
 
@@ -49,11 +49,11 @@ Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
 Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 ```
 
-# 安装Zookeeper集群
+# 2. 安装Zookeeper集群
 
 可以参考文博客[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/)中的Zookeeper集群安装步骤。
 
-# 安装Python及依赖
+# 3. 安装Python及依赖
 
 一般操作系统上都安装了Python，查看当前Python版本：
 
@@ -62,7 +62,7 @@ $ python -V
 Python 2.6.6
 ```
 
-## 下载Zeromq
+## 3.1 下载Zeromq
 
 ```bash
 $ wget http://download.zeromq.org/zeromq-4.0.4.tar.gz
@@ -71,7 +71,7 @@ $ ./configure
 $ make & make install
 ```
 
-##  安装Jzmq
+## 3.2 安装Jzmq
 
 ```bash
 $ git clone git://github.com/nathanmarz/jzmq.git
@@ -81,7 +81,7 @@ $ ./configure
 $ make & make install
 ```
 
-# 安装Storm
+# 4. 安装Storm
 
 下载稳定版本的storm，然后解压将其拷贝到/usr/lib/storm目录：
 

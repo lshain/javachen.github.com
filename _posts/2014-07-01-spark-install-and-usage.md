@@ -22,7 +22,7 @@ published: true
 
 关于yum源的配置以及hadoop的安装，请参考[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
 
-# spark安装
+# Spark安装
 
 选择一个节点来安装spark，首先查看spark相关的包有哪些：
 

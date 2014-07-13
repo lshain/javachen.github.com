@@ -15,7 +15,7 @@ published: true
 
 ---
 
-## 安装HBase集群前需要做的事情：
+# 1. 安装集群前
 
 - 配置SSH无密码登陆
 - DNS。HBase使用本地 hostname 才获得IP地址，正反向的DNS都是可以的。你还可以设置 `hbase.regionserver.dns.interface` 来指定主接口，设置 `hbase.regionserver.dns.nameserver` 来指定nameserver，而不使用系统带的
@@ -23,7 +23,7 @@ published: true
 - 操作系统调优，包括最大文件句柄，nproc hard 和 soft limits等等
 - `conf/hdfs-site.xml`里面的 `dfs.datanode.max.xcievers` 参数，至少要有4096
 
-## HDFS客户端配置
+# 2. HDFS客户端配置
 
 如果你希望Hadoop集群上做HDFS 客户端配置 ，例如你的HDFS客户端的配置和服务端的不一样。按照如下的方法配置，HBase就能看到你的配置信息:
 
@@ -33,7 +33,7 @@ published: true
 
 例如HDFS的配置 `dfs.replication` 你希望复制5份，而不是默认的3份。如果你不照上面的做的话，Hbase只会复制3份。
 
-## 一些配置参数
+# 3. 一些配置参数
 
 以下参数来自apache的hbase版本，如果你使用的其他厂商的hbase，有可能默认值不一样。
 
@@ -50,9 +50,9 @@ published: true
 - `hbase.hstore.compactionThreshold`：当一个HStore含有多于这个值的HStoreFiles(每一个memstore flush产生一个HStoreFile)的时候，会执行一个合并操作，把这HStoreFiles写成一个。这个值越大，需要合并的时间就越长。默认: 3
 - `hbase.hstore.blockingStoreFiles`：当一个HStore含有多于这个值的HStoreFiles(每一个memstore flush产生一个HStoreFile)的时候，会执行一个合并操作，update会阻塞直到合并完成，直到超过了`hbase.hstore.blockingWaitTime`的值。默认: 7
 
-## Shell 技巧
+# 4. Shell 技巧
 
-### irbrc
+## irbrc
 
 可以在你自己的Home目录下创建一个.irbrc文件，在这个文件里加入自定义的命令。有一个有用的命令就是记录命令历史，这样你就可以把你的命令保存起来。
 
@@ -63,7 +63,7 @@ IRB.conf[:SAVE_HISTORY] = 100
 IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
 ```
 
-###  Shell 切换成debug 模式
+##  Shell 切换成debug 模式
 
 你可以将shell切换成debug模式。这样可以看到更多的信息。例如可以看到命令异常的stack trace:
 
@@ -77,13 +77,13 @@ hbase> debug
 $ ./bin/hbase shell -d
 ```
 
-## HBase 和 MapReduce
+# 5. HBase 和 MapReduce
 
 当 MapReduce job的HBase table 使用TableInputFormat为数据源格式的时候,他的splitter会给这个table的每个region一个map。因此，如果一个table有100个region，就有100个map-tasks，不论需要scan多少个column families 。
 
 通常建议关掉针对HBase的MapReduce job的`预测执行`(speculative execution)功能。这个功能也可以用每个Job的配置来完成。对于整个集群，使用预测执行意味着双倍的运算量。这可不是你所希望的。
 
-## HBase 的 Schema 设计
+# 6.HBase 的 Schema 设计
 
 flush和compaction操作是针对一个Region。
 
@@ -91,7 +91,7 @@ Compaction操作现在是根据一个column family下的全部文件的数量触
 
 行的版本的数量是HColumnDescriptor设置的，每个column family可以单独设置，默认是3。
 
-## 性能调优
+# 7. 性能调优
 
 1、长时间GC停顿
 
@@ -108,18 +108,18 @@ Hbase中常见的两种stop-the-world的GC操作：
 
 4、控制split和compaction
 
-## 需要理解一些过程
+# 8. 需要理解一些过程
 
-1、什么时候做split？
+## 8.1 什么时候做split？
 
 答：根据拆分策略算法来定，具体过程见：[HBase笔记：Region拆分策略](/2014/01/16/hbase-region-split-policy/)
 
-2、什么时候做compaction？
+## 8.2 什么时候做compaction？
 
 答：当有3个小文件时候，会进行合并小文件
 
-3、memstore什么时候flush，什么时候阻塞写？
+## 8.3 memstore什么时候flush，什么时候阻塞写？
 
 答：memstore满了64M就会flush，当memstore大小达到128M时候，聚会阻塞update，进行flush。
 
-4、HLog什么时候会阻塞写？
+## 8.4 HLog什么时候会阻塞写？

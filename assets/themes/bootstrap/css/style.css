@@ -1,19 +1,6 @@
-body{margin:0;padding:0}
-table{border-collapse:collapse;border-spacing:0}
-fieldset,img{border:0}
-address,caption,cite,code,dfn,em,var{font-style:normal;font-weight:normal}
-caption,th{text-align:left}
-h1,h2,h3,h4,h5,h6{font-size:100%}
-q:before,q:after{content:''}
-abbr,acronym{border:0;font-variant:normal}
-sup{vertical-align:text-top}
-sub{vertical-align:text-bottom}
-input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit}
-input,textarea,select{*font-size:100%}
-legend{color:#000}
 
-body{color:#141412;font:normal 14px/1.5 "Lucida Grande",helvetica,arial,sans-serif;background:#FFF}
-h1{font-size:28px;margin-bottom:10px;color:black;border-bottom:1px solid #ccc}
+body{color:#333;font:normal 14.5px/1.5 "Lucida Grande",helvetica,arial,sans-serif;background:#FFF}
+h1{font-size:26px;font-weight:bold;margin-bottom:20px;color:black}
 h2{font-size:24px;margin:20px 0 10px;color:black}
 h3{font-size:18px;margin:20px 0 10px}
 h4{font-size:16px;font-weight:bold;margin:20px 0 10px}
@@ -33,16 +20,24 @@ a:visited{color:#ac0404}
 a:focus{outline:thin dotted}
 a:active,a:hover{color:#ea9629;outline:0}
 a:hover{text-decoration:underline}
-li{line-height:25px}
-article h1 a{color:#000}
+li{line-height:23px}
 
-.article-list article { color:#888; padding:15px 0; border-bottom:1px solid #E4E4E4; }
+/** post page **/
+.post article { padding: 30px; border: 1px solid #cacaca; background-color: white; }
+.post article > :first-child { margin-top: 0!important; }
+.post .article__title { margin:10px 0 0px; }
+.post .article__title h1 { padding-bottom:10px; border-bottom:1px dotted #D4D4D4; }
+
+.article-list article { color:#888; padding:10px 0; border-bottom:1px solid #E4E4E4; }
 .article-list .article__title { margin-bottom:10px; font-weight:bold; font-size:18px; }
 .article-list .article__content { color:#888; margin:5px 0; border-radius:3px; font-size:16px; line-height:1.8; }
 
 #toTop{width:40px;height:64px;background:#555;background:rgba(85,85,85,0.3);position:fixed;bottom:80px;right:20px;text-align:center;cursor:pointer;display:none}
 #toTop a{display:block;width:40px;height:32px;font-size:26px;line-height:32px;font-family:verdana,arial;color:#fff;text-decoration:none;background:0}
 #toTop a:hover{background:#3d5998}
+
+/**fix**/
+.page-header {padding-bottom:1px;margin:0px 0 10px;}
 .panel{margin-bottom:20px}
 .panel-body{padding:5px}
 
