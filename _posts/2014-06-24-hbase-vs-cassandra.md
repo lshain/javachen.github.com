@@ -7,7 +7,7 @@ description: 本文对HBase和Cassandra进行了多方面的特点分析，描�
 
 keywords:  
 
-category: distributed-systems
+category: hbase
 
 tags: [hbase,cassandra]
 

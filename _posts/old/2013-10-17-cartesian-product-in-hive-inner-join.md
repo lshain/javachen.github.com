@@ -2,7 +2,7 @@
 layout: post
 title: Hive连接产生笛卡尔集
 description: 工作中遇到一个一场，是关于hive连接产生笛卡尔集
-category: Hadoop
+category: hive
 tags: [hive]
 ---
 

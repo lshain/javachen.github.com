@@ -7,7 +7,7 @@ description: 本文主要记录如何通过打补丁的方式将“hbase中实�
 
 keywords: HBase实现简单聚合计算
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 

@@ -7,7 +7,7 @@ description: CAP原本是一个猜想，2000年PODC大会的时候Brewer提出�
 
 keywords: CAP,最终一致性,可用性,分区容错性
 
-category: distributed-systems
+category: nosql
 
 tags: [CAP,BASE]
 

@@ -35,7 +35,7 @@ Update:
 **禁用IPv6方法：**
 
 ```bash
-$sudo vim /etc/sysctl.conf
+$ sudo vim /etc/sysctl.conf
 #disable ipv6
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
@@ -45,13 +45,13 @@ net.ipv6.conf.lo.disable_ipv6=1
 使其生效：
 
 ```bash
-$sudo sysctl -p
+$ sudo sysctl -p
 ```
 
 最后确认是否已禁用：
 
 ```bash
-$cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+$ cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 1
 ```
 
@@ -69,7 +69,7 @@ $ sudo hostname cdh1
 
 运行`uname -a`查看hostname是否匹配`hostname`命令运行的结果：
 
-```
+```bash
 $ uname -a
 Linux cdh1 2.6.32-358.23.2.el6.x86_64 #1 SMP Wed Oct 16 18:37:12 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux
 $ hostname
@@ -78,7 +78,7 @@ cdh1
 
 运行`/sbin/ifconfig`查看ip:
 
-```
+```bash
 $ ifconfig
 eth1      Link encap:Ethernet  HWaddr 08:00:27:75:E0:95  
           inet addr:192.168.56.121  Bcast:192.168.56.255  Mask:255.255.255.0
@@ -87,13 +87,13 @@ eth1      Link encap:Ethernet  HWaddr 08:00:27:75:E0:95
 
 先安装bind-utils，才能运行host命令：
 
-```
+```bash
 $ yum install bind-utils -y
 ```
 
 运行下面命令查看hostname和ip是否匹配:
 
-```
+```bash
 $ host -v -t A `hostname` 
 Trying "cdh1"
 ...
@@ -106,14 +106,14 @@ cdh1. 60 IN	A	192.168.56.121
 
 ## 1.2 关闭防火墙
 
-```
+```bash
 $ setenforce 0
 $ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 ```
 
 清空iptables 
 
-```
+```bash
 $ iptables -F
 ```
 
@@ -125,7 +125,7 @@ $ iptables -F
 
 安装ntp:
 	
-```
+```bash
 $ yum install ntp
 ```
 
@@ -142,13 +142,13 @@ fudge   127.127.1.0 stratum 10
 
 启动 ntp：
 
-```
-service ntpd start
+```bash
+$ service ntpd start
 ```
 
 设置开机启动:
 
-```
+```bash
 $ chkconfig ntpd on
 ```
 
@@ -177,7 +177,7 @@ $ ntpq -p
 
 在cdh2和cdh3节点上执行下面操作：
 
-```
+```bash
 $ ntpdate cdh1
 ```
 
@@ -197,39 +197,39 @@ Ntpd启动的时候通常需要一段时间大概5分钟进行时间同步，所
 
 检查jdk版本
 
-```
+```bash
 $ java -version
 ```
 
 如果其版本低于v1.6 update 31，则将其卸载
 
-```
+```bash
 $ rpm -qa | grep java
 $ yum remove {java-1.*}
 ```
 
 验证默认的jdk是否被卸载
 
-```
+```bash
 $ which java
 ```
 
 安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：[这里](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR)
 
-```	
+```bash	
 $ yum install jdk -y
 ```
 
 创建符号连接
 
-```
+```bash
 $ ln -s XXXXX/jdk1.6.0_31 /usr/java/latest
 $ ln -s /usr/java/latest/bin/java /usr/bin/java
 ```
 
 设置环境变量:
 
-```
+```bash
 $ echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
 $ echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
 $ source /root/.bashrc
@@ -237,7 +237,7 @@ $ source /root/.bashrc
 
 验证版本
 
-```
+```bash
 $ java -version
 	java version "1.6.0_31"
 	Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
@@ -246,13 +246,13 @@ $ java -version
 
 检查环境变量中是否有设置`JAVA_HOME`
 
-```
+```bash
 $ sudo env | grep JAVA_HOME
 ```
 
 如果env中没有`JAVA_HOM`E变量，则修改`/etc/sudoers`文件
 
-```	
+```bash	
 $ vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 ```
@@ -318,13 +318,13 @@ gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
 
 其实，在配置了CDH的yum之后，可以通过yum来安装jdk：
 
-```
+```bash
 $ yum install jdk -y
 ```
 
 然后，设置JAVA HOME:
 
-```
+```bash
 $ echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
 $ echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
 $ source /root/.bashrc
@@ -332,7 +332,7 @@ $ source /root/.bashrc
 
 验证版本
 
-```
+```bash
 $ java -version
 	java version "1.6.0_31"
 	Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
@@ -348,19 +348,19 @@ $ java -version
 
 在 NameNode 节点安装 hadoop-hdfs-namenode
 
-```
+```bash
 $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-namenode
 ```
 
 在 NameNode 节点中选择一个节点作为 secondarynamenode ，并安装 hadoop-hdfs-secondarynamenode
 
-```
+```bash
 $ yum install hadoop-hdfs-secondarynamenode -y
 ```
 
 在DataNode节点安装 hadoop-hdfs-datanode 
 
-```
+```bash
 $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-datanode -y
 ```
 
@@ -370,7 +370,7 @@ $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoo
 
 拷贝默认的配置文件为一个新的文件，并设置新文件为hadoop的默认配置文件：
 
-```
+```bash
 $ sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 $ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
@@ -417,20 +417,16 @@ dfs.datanode.data.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/data
 dfs.namenode.checkpoint.dir			hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/namesecondary
 ```
 
-示例配置如下：
+说明你可以在hdfs-site.xml中只配置　｀hadoop.tmp.dir`,也可以分别配置上面的路径。
 
-hdfs-site.xml on the NameNode:
+这里使用分别配置的方式，hdfs-site.xml中配置如下：
 
 ```xml
 <property>
  <name>dfs.namenode.name.dir</name>
  <value>file:///data/dfs/nn</value>
 </property>
-```
 
-hdfs-site.xml on each DataNode:
-
-```xml
 <property>
  <name>dfs.datanode.data.dir</name>
 <value>file:///data/dfs/dn</value>
@@ -439,13 +435,13 @@ hdfs-site.xml on each DataNode:
 
 在**NameNode**上手动创建 `dfs.name.dir` 或 `dfs.namenode.name.dir` 的本地目录：
 
-```
+```bash
 $ sudo mkdir -p /data/dfs/nn
 ```
 
 在**DataNode**上手动创建 `dfs.data.dir` 或 `dfs.datanode.data.dir` 的本地目录：
 
-```
+```bash
 $ sudo mkdir -p /data/dfs/dn
 ```
 
@@ -458,13 +454,13 @@ $ sudo chown -R hdfs:hdfs /data/dfs/nn /data/dfs/dn
 
 故，修改上面目录权限：
 
-```
+```bash
 $ sudo chmod 700 /data/dfs/nn
 ```
 
 或者：
 
-```
+```bash
 $ sudo chmod go-rx /data/dfs/nn
 ```
 
@@ -519,7 +515,7 @@ dfs.namenode.num.checkpoints.retained
 
 这里只在一个NameNode节点（ CDH1 ）上安装：
 
-```
+```bash
 $ sudo yum install hadoop-httpfs
 ```
 
@@ -540,7 +536,7 @@ $ sudo yum install hadoop-httpfs
 
 接下来，启动 HttpFS 服务：
 
-```
+```bash
 $ sudo service hadoop-httpfs start
 ```
 
@@ -561,7 +557,7 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 
 然后，安装lzo:
 
-```
+```bash
 $ sudo yum install hadoop-lzo  -y
 ```
 
@@ -584,7 +580,7 @@ cdh 的 rpm 源中默认已经包含了 snappy ，直接安装即可。
 
 在每个节点安装Snappy：
 
-```
+```bash
 $ yum install snappy snappy-devel  -y
 ```
 
@@ -603,7 +599,7 @@ org.apache.hadoop.io.compress.SnappyCodec</value>
 
 使 snappy 对 hadoop 可用：
 
-```	
+```bash	
 $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 ```
 
@@ -611,21 +607,21 @@ $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 
 将配置文件同步到每一个节点：
 
-```
+```bash
 $ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/
 $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 ```
 
 在每个节点上设置默认配置文件：
 
-```
+```bash
 $ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
 $ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
 
 格式化NameNode：
 
-```
+```bash
 $ sudo -u hdfs hadoop namenode -format
 ```	
 	
@@ -637,7 +633,7 @@ $ for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done
 
 在 hdfs 运行之后，创建 `/tmp` 临时目录，并设置权限为 `1777`：
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -mkdir /tmp
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 ```
@@ -658,19 +654,19 @@ $ sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 
 在 resourcemanager 节点安装:
 
-```
+```bash
 $ yum install hadoop-yarn hadoop-yarn-resourcemanager -y
 ```
 
 在 nodemanager 节点安装:
 
-```
+```bash
 $ yum install hadoop-yarn hadoop-yarn-nodemanager hadoop-mapreduce -y
 ```
 
 安装 historyserver：
 
-```
+```bash
 $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 ```
 
@@ -685,7 +681,7 @@ $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 </property>
 ```
 
-**配置resourcemanager的节点名称以及一些服务的端口号：**
+**配置resourcemanager的节点名称以及一些服务的端口号**，修改yarn-site.xml：
 
 ```xml
 <property>
@@ -779,14 +775,14 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 
 创建 `yarn.nodemanager.local-dirs` 参数对应的目录：
 
-```
+```bash
 $ sudo mkdir -p /data/yarn/local 
 $ sudo chown -R yarn:yarn /data/yarn/local
 ```
 
 创建 `yarn.nodemanager.log-dirs` 参数对应的目录：
 
-```
+```bash
 $ sudo mkdir -p /var/log/hadoop-yarn
 $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
 ```
@@ -845,7 +841,7 @@ $ sudo -u hdfs hadoop fs -chown yarn:mapred /yarn/apps
 
 在 HDFS 运行之后，你需要手动创建 history 子目录：
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -mkdir -p /user/history
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
@@ -862,13 +858,13 @@ $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 
 ## 验证 HDFS 结构：
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -ls -R /
 ```
 
 你应该看到如下结构：
 
-```
+```bash
 drwxrwxrwt   - hdfs hadoop          0 2014-04-19 14:31 /tmp
 drwxr-xr-x   - hdfs hadoop          0 2014-04-31 10:26 /user
 drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
@@ -883,7 +879,7 @@ drwxr-xr-x   - yarn   mapred        0 2014-04-31 15:31 /yarn/apps
 
 同步配置文件到整个集群:
 
-```
+```bash
 $ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/
 $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 ```
@@ -892,26 +888,26 @@ $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 
 在 cdh1 节点启动 mapred-historyserver :
 
-```
+```bash
 $ /etc/init.d/hadoop-mapreduce-historyserver start
 ```
 
 在每个节点启动 YARN :
 
-```
+```bash
 $ for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
 ```
 
 为每个 MapReduce 用户创建主目录，比如说 hive 用户或者当前用户：
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -mkdir /user/$USER
 $ sudo -u hdfs hadoop fs -chown $USER /user/$USER
 ```
 
 设置 `HADOOP_MAPRED_HOME` ,或者把其加入到 hadoop 的配置文件中
 
-```
+```bash
 $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ```
 
@@ -939,7 +935,7 @@ Zookeeper 至少需要3个节点，并且节点数要求是基数，这里在所
 
 在每个节点上安装zookeeper
 
-```
+```bash
 $ yum install zookeeper* -y
 ```
 
@@ -947,7 +943,7 @@ $ yum install zookeeper* -y
 
 拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件（在每个节点执行下面操作）：
 
-```
+```bash
 $ sudo cp -r /etc/zookeeper/conf.dist /etc/zookeeper/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
 $ sudo alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
@@ -957,7 +953,7 @@ zookeeper 默认使用 `/etc/zookeeper/conf` 路径读取配置文件，经过�
 
 在每个节点上创建 zookeeper 的数据目录，这里我使用的是 `/data/zookeeper` 目录。
 
-```
+```bash
 $ mkdir -p /data/zookeeper
 $ chown -R zookeeper:zookeeper /data/zookeeper
 ```
@@ -980,7 +976,7 @@ server.3=cdh3:2888:3888
 
 将配置文件同步到其他节点：
 
-```
+```bash
 $ scp -r /etc/zookeeper/conf root@cdh2:/etc/zookeeper/
 $ scp -r /etc/zookeeper/conf root@cdh3:/etc/zookeeper/
 ```
@@ -990,18 +986,21 @@ $ scp -r /etc/zookeeper/conf root@cdh3:/etc/zookeeper/
 在每个节点上初始化并启动 zookeeper，注意 n 的值需要和 zoo.cfg 中的编号一致。
  
 在 cdh1 节点运行
-```
+
+```bash
 $ service zookeeper-server init --myid=1
 $ service zookeeper-server start
 ```
 
 在 cdh2 节点运行
-```
+
+```bash
 $ service zookeeper-server init --myid=2
 $ service zookeeper-server start
 ```
 
 在 cdh3 节点运行
+
 ```
 $ service zookeeper-server init --myid=3
 $ service zookeeper-server start
@@ -1011,8 +1010,8 @@ $ service zookeeper-server start
 
 通过下面命令测试是否启动成功：
 
-```
-zookeeper-client -server cdh1:2181
+```bash
+$ zookeeper-client -server cdh1:2181
 ```
 
 # 5. 安装 HBase
@@ -1045,7 +1044,7 @@ hbase -       nofile  32768
 
 在每个节点上安装 master 和 regionserver
 
-```
+```bash
 $ yum install hbase hbase-master hbase-regionserver -y
 ``` 
 
@@ -1055,7 +1054,7 @@ $ yum install hbase hbase-master hbase-regionserver -y
 
 拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件（在每个节点执行）：
 
-```
+```bash
 $ sudo cp -r /etc/hbase/conf.dist /etc/hbase/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
 $ sudo alternatives --set hbase-conf /etc/hbase/conf.my_cluster
@@ -1065,14 +1064,14 @@ hbase 默认使用 `/etc/hbase/conf` 路径读取配置文件，经过上述配�
 
 在 hdfs 中创建 `/hbase` 目录
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -mkdir /hbase
 $ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 ```
 
 设置crontab 定时删除日志：
 
-```
+```bash
 $ crontab -e
 * 10 * * * cd /var/log/hbase/; rm -rf `ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
 ```
@@ -1177,7 +1176,7 @@ $ crontab -e
 
 将配置文件同步到其他节点：
 
-```
+```bash
 $ scp -r /etc/hbase/conf root@cdh2:/etc/hbase/
 $ scp -r /etc/hbase/conf root@cdh3:/etc/hbase/
 ```
@@ -1186,14 +1185,14 @@ $ scp -r /etc/hbase/conf root@cdh3:/etc/hbase/
 
 在 hbase-site.xml 配置文件中配置了 `hbase.tmp.dir` 值为 `/data/hbase`，现在需要在每个hbase节点创建该目录并设置权限：
 
-```
+```bash
 $ mkdir /data/hbase
 $ chown -R hbase:hbase /data/hbase/
 ```
 
 ## 启动HBase
 
-```
+```bash
 $ service hbase-master start
 $ service hbase-regionserver start
 ```
@@ -1206,13 +1205,13 @@ $ service hbase-regionserver start
 
 在一个NameNode节点上安装 hive：
 
-```
+```bash
 $ sudo yum install hive*
 ```
 
 拷贝默认的配置文件为一个新的文件，并设置新文件为 hive 的默认配置文件：
 
-```
+```bash
 $ sudo cp -r /etc/hive/conf.dist /etc/hive/conf.my_cluster
 $ sudo alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
 $ sudo alternatives --set hive-conf /etc/hive/conf.my_cluster
@@ -1221,6 +1220,8 @@ $ sudo alternatives --set hive-conf /etc/hive/conf.my_cluster
 hive 默认使用 `/etc/hive/conf` 路径读取配置文件，经过上述配置之后，`/etc/hive/conf` 会软连接到 `/etc/hive/conf.my_cluster`目录
 
 ## 安装postgresql
+
+这里使用postgresql数据库来存储元数据，如果你想使用mysql数据库，请参考下文。
 
 手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/)
 
@@ -1232,13 +1233,13 @@ $ sudo yum install postgresql-server
 
 初始化数据库：
 
-```
+```bash
 $ sudo service postgresql initdb
 ```
 
 修改配置文件postgresql.conf，修改完后内容如下：
 
-```
+```bash
 $ sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
 	listen_addresses = '*'
 	standard_conforming_strings = off
@@ -1252,26 +1253,26 @@ $ sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_con
 
 启动数据库
 
-```
+```bash
 $ sudo service postgresql start
 ```
 
 配置开启启动
 
-```
+```bash
 $ chkconfig postgresql on
 ```
 
 安装jdbc驱动
 
-```
+```bash
 $ sudo yum install postgresql-jdbc
 $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
 ```
 
 创建数据库和用户
 
-```
+```bash
 	bash# su postgres
 	bash$ psql
 	postgres=# CREATE USER hiveuser WITH PASSWORD 'redhat';
@@ -1285,9 +1286,68 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	..
 ```
 
-**修改配置文件**
+注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
 
-修改hive-site.xml文件：
+修改hive-site.xml文件中以下内容：
+
+```xml
+	<property>
+	  <name>javax.jdo.option.ConnectionURL</name>
+	  <value>jdbc:mysql://cdh1:3306/metastore?useUnicode=true&amp;characterEncoding=UTF-8</value>
+	</property>
+	<property>
+	  <name>javax.jdo.option.ConnectionDriverName</name>
+	  <value>com.mysql.jdbc.Driver</value>
+	</property>
+```
+
+## 安装mysql
+
+yum方式安装mysql：
+
+```bash
+$ yum install mysql mysql-devel mysql-server mysql-libs -y
+```
+
+启动数据库：
+
+```bash
+$ sudo service mysqld start
+```
+
+配置开启启动：
+
+```bash
+$ chkconfig mysqld on
+```
+
+安装jdbc驱动：
+
+```bash
+$ yum install mysql-connector-java
+$ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connector-java.jar
+```
+
+创建数据库和用户：
+
+```bash
+$ mysql -e "
+	CREATE DATABASE metastore;
+	USE metastore;
+	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.12.0.mysql.sql;
+	CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'redhat';
+	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
+	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
+	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'localhost';
+	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'%';
+	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'localhost';
+	FLUSH PRIVILEGES;
+"
+```
+
+注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
+
+这时候的hive-site.xml文件内容如下：
 
 ```xml
 	<configuration>
@@ -1366,11 +1426,12 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	</configuration>
 ```
 
+## 配置hive
 修改`/etc/hadoop/conf/hadoop-env.sh`:
 
 添加环境变量`HADOOP_MAPRED_HOME`，如果不添加，则当你使用yarn运行mapreduce时候会出现`UNKOWN RPC TYPE`的异常
 
-```
+```bash
 export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ```
 
@@ -1383,7 +1444,7 @@ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 
 创建目录并设置权限：
 
-```
+```bash
 $ sudo -u hdfs hadoop fs -mkdir /user/hive
 $ sudo -u hdfs hadoop fs -chown hive /user/hive
 
@@ -1394,7 +1455,7 @@ $ sudo -u hdfs hadoop fs -chown hive /user/hive/warehouse
 
 启动hive-server和metastore:
 
-```
+```bash
 $ service hive-metastore start
 $ service hive-server start
 $ service hive-server2 start
@@ -1402,7 +1463,7 @@ $ service hive-server2 start
 
 测试：
 
-```
+```bash
 $ create table t(id int);
 $ select * from t limit 2;
 $ select id from t;
@@ -1410,7 +1471,7 @@ $ select id from t;
 
 访问beeline:
 
-```
+```bash
 $ /usr/lib/hive/bin/beeline
 	beeline> !connect jdbc:hive2://localhost:10000 username password org.apache.hive.jdbc.HiveDriver
 	0: jdbc:hive2://localhost:10000> SHOW TABLES;
@@ -1429,7 +1490,7 @@ $ /usr/lib/hive/bin/beeline
 
 需要在hive里添加以下jar包：
 
-```
+```bash
 $ ADD JAR /usr/lib/hive/lib/zookeeper.jar;
 $ ADD JAR /usr/lib/hive/lib/hbase.jar;
 $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.12.0-cdh5.0.1.jar
@@ -1440,7 +1501,7 @@ $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 
 你可以在环境变量中加入以下设置：
 
-```
+```bash
 export HADOOP_HOME=/usr/lib/hadoop
 export HIVE_HOME=/usr/lib/hive
 export HBASE_HOME=/usr/lib/hbase

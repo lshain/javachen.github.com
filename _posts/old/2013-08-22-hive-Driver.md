@@ -2,7 +2,7 @@
 layout: post
 title:  Hive源码分析：Driver类运行过程
 description: 记录hive Driver类运行过程，本文的源码分析基于hive-0.12.0-cdh5.0.1。
-category: Hadoop
+category: hive
 tags: [hadoop, hive]
 ---
 

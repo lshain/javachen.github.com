@@ -7,7 +7,7 @@ description: 测试hive中各种排序语法。
 
 keywords:  
 
-category: hadoop
+category: hive
 
 tags: [hive]
 

@@ -2,7 +2,7 @@
 layout: post
 title:  Hive源码分析：CLI入口类
 description: 理解Hive CLI的入口类，本文的源码分析基于hive-0.10.0-cdh4.3.0。
-category: Hadoop
+category: hive
 tags: [hadoop, hive]
 ---
 
