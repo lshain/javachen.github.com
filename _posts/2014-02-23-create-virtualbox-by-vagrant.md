@@ -4,6 +4,7 @@ title: 使用Vagrant创建虚拟机安装Hadoop
 description: Vagrant是一款用来构建虚拟开发环境的工具，非常适合 php/python/ruby/java 这类语言开发 web 应用，使用Vagrant可以快速的搭建虚拟机并安装自己的一些应用。本文主要是使用Vagrant创建3个虚拟机并用来安装hadoop集群。
 category: Hadoop
 tags: [hadoop, vagrant]
+
 ---
 
 # 安装VirtualBox
@@ -16,13 +17,12 @@ tags: [hadoop, vagrant]
 
 # 下载box
 
-下载适合你的box，地址：[http://www.vagrantbox.es/](http://www.vagrantbox.es/)。
+下载适合你的box，地址：<http://www.vagrantbox.es/>。
 
 例如下载CentOS：
 
 ```
-$ wget https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box
-$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box
+$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box
 ```
 
 # 添加box
@@ -36,7 +36,7 @@ $ vagrant box list
 添加新的box，可以是远程地址也可以是本地文件，建议先下载到本地再进行添加：
 
 ```
-$ vagrant box add centos6.5 ./centos65-x86_64-20131205.box
+$ vagrant box add centos6.4 ./centos64-x86_64-20140116.box
 ```
 
 其语法如下：
@@ -55,11 +55,11 @@ box被安装在`~/.vagrant.d/boxes`目录下面。
 $ mkdir -p /home/june/workspace/vagramt/cdh
 ```
 
-初始化，使用centos6.5 box：
+初始化，使用centos6.4 box：
 
 ```
 $ cd /home/june/workspace/vagramt/cdh
-$ vagrant init centos6.5
+$ vagrant init centos6.4
 ```
 
 输出如下日志：
@@ -91,7 +91,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.vm.provider "virtualbox" do |v|
             v.customize ["modifyvm", :id, "--name", vm_name, "--memory", "2048",'--cpus', 1]
         end
-        config.vm.box = "centos6.5"
+        config.vm.box = "centos6.4"
         config.vm.hostname =vm_name
         config.ssh.username = "vagrant"
         config.vm.network :private_network, ip: "192.168.56.12#{i}"
@@ -181,7 +181,42 @@ yum install vim -y
 - 生成ssh公要文件
 - 配置yum源并安装一些常用软件
 
+以上所有配置可以在[这里找](https://github.com/javachen/snippets/tree/master/vagrant/cdh)找到，其中hadoop.repo内容如下：
+
+```
+[cdh]
+name=cdh
+baseurl=http://192.168.56.1/cdh/5/
+enabled=1
+gpgcheck=0
+
+[cmf]
+name=cmf
+baseurl=http://192.168.56.1/cm/5/
+enabled=0
+gpgcheck=0
+
+[hadoop-repo]
+name=hadoop-repo
+baseurl=http://192.168.56.1/hadoop-repo/
+enabled=1
+gpgcheck=0
+```
+
+上面文件包括 cdh、cmf 和 hadoop 相关的一些依赖，这些需要通过 apache 服务在本机配置好。
+
 # 安装hadoop
 
 可以参考[这些文章](http://blog.javachen.com/categories.html#hadoop-ref)
 
+你可以参考上面的文章手动安装 hadoop，也可以通过我写的 [shell](https://github.com/javachen/hadoop-install/tree/master/shell) 脚本来安装。
+
+步骤：
+
+1.在虚拟机中选择一个节点为管理节点，然后下载仓库
+
+```
+$ git clone https://github.com/javachen/hadoop-install.git
+```
+
+2.进入 hadoop-install/shell 目录，参考 READEME.md 中说明来安装集群。

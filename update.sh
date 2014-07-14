@@ -2,6 +2,12 @@
 
 echo `date`
 
+msg="update blog"
+if [ $# -lt 1 ]; then
+    msg=$1
+fi
+
+
 qrsync qiniu-images.conf
 
 cd _posts
@@ -13,7 +19,7 @@ rm -rf _site/*
 jekyll build
 
 git add --all ./*
-git commit -m "updating blog"
+git commit -m $msg
 git push origin master
 
 rm -rf ../javachen.gitcafe.com/*

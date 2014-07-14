@@ -35,9 +35,9 @@ Map-Reduce的处理过程主要涉及以下四个部分：
 - 进度和状态更新
 - 完成作业
 
-## 1. 提交作业
+# 1. 提交作业
 
-### 运行Shell命令
+## 运行Shell命令
 
 使用hadoop提供的命令行或者通过编程接口提交任务，命令行方式如下：
 
@@ -54,7 +54,7 @@ $ HADOOP_HOME/bin/hadoop jar job.jar \
 
 当用户按上述命令格式提交作业后，命令行脚本会调用JobClient.runJob()方法提交作业
 
-### 作业文件上传
+## 作业文件上传
 
 JobClient将作业提交到JobTracker节点上之前，需要作业写初始化工作。初始化工作由 `JobClient.submitJobInternal(job)` 实现，这些初始化包括获取作业的jobId、创建HDFS目录、上传作业以及生成所有的InputSplit分片的相关信息等。
  
@@ -62,11 +62,11 @@ MapReduce的作业文件的上传和下载都是由DistributedCache透明完成�
 
 JobClient上传文件时可以修改文件副本数（通过参数 `mapred.submit.replication` 指定，默认值为10），这样的话可以分摊负载以避免产生访问热点。
 
-### 产生InputSplit文件
+## 产生InputSplit文件
 
 作业提交后，JobClient会调用InputFormat的getSplits()方法生成相关的split分片信息，该信息包括InputSplit元数据信息和原始的InputSplit信息，其中元数据信息被JobTracker使用，第二部分在Map Task初始化时由Mapper使用来获取自己要处理的数据，这两部分数据被保存到job.split文件和job.splitmetainfo文件中。 
 
-### 作业提交到JobTracker
+## 作业提交到JobTracker
 
 调用JobTracker的submitJob()方法将作业提交。在这一阶段会依次进行如下操作： 
 
@@ -79,7 +79,7 @@ JobTracker采用了观察者模式将“提交新作业”这一事件告诉Task
 
 提交任务后，runJob每隔一秒钟轮询一次job的进度，将进度返回到命令行，直到任务运行完毕。
 
-## 2. 作业初始化
+# 2. 作业初始化
 
 调度器调用JobTracker.initJob()方法来对新作业做初始化的。Hadoop将每个作业分节成4中类型的任务：Setup Task，Map Task，Reduce Task和Cleanup Task，它们的运行时信息由TaskInProgress维护，因此，从某个方面将，创建这些任务就是创建TaskInProgress对象。 
 
@@ -90,7 +90,7 @@ JobTracker采用了观察者模式将“提交新作业”这一事件告诉Task
 
 说明：可以通过参数 `mapred.committer.job.setup.cleanup.needed` 配置是否为作业创建Setup/Cleanup Task，以避免他们拖慢作业执行进度且降低作业的可靠性。
 
-## 3. 任务分配
+# 3. 任务分配
 
 Tasktracker 和 JobTracker 通过心跳通信分配一个任务
 
@@ -98,7 +98,7 @@ TaskTracker 定期发送心跳，告知 JobTracker, tasktracker 是否还存活�
 
 TaskTracker 主动向 JobTracker 询问是否有作业。若自己有空闲的 solt,就可在心跳阶段得到 JobTracker 发送过来的 Map 任务或 Reduce 任务。对于 map 任务和 task 任务，TaskTracker 有固定数量的任务槽，准确数量由 tasktracker 核的个数核内存的大小来确定。默认调度器在处理 reduce 任务槽之前，会填充满空闲的 map 任务槽，因此，如果 tasktracker 至少有一个空闲的 map 任务槽，tasktracker 会为它选择一个 map 任务，否则选择一个 reduce 任务。选择 map 任务时，jobTracker 会考虑数据本地化（任务运行在输入分片所在的节点），而 reduce 任务不考虑数据本地化。任务还可能是机架本地化。
 
-## 4. 执行任务
+# 4. 执行任务
 
 tasktracker 执行任务大致步骤：
 
@@ -106,7 +106,7 @@ tasktracker 执行任务大致步骤：
 - 为任务新建一个本地工作目录
 - 内部类TaskRunner实例启动一个新的jvm运行任务
 
-## 5. 进度和状态更新
+# 5. 进度和状态更新
 
 - 状态包括：作业或认为的状态（成功，失败，运行中）、map 和 reduce 的进度、作业计数器的值、状态消息或描述
 - task 运行时，将自己的状态发送给 TaskTracker,由 TaskTracker 心跳机制向 JobTracker 汇报
@@ -114,16 +114,16 @@ tasktracker 执行任务大致步骤：
 
 ![](http://zhaomingtai.u.qiniudn.com/updateStatusMapredurce.png)
 
-## 6. 完成作业
+# 6. 完成作业
 
 当JobTracker获得最后一个task的运行成功的报告后，将job得状态改为成功。
 
 当JobClient从JobTracker轮询的时候，发现此job已经成功结束，则向用户打印消息，从runJob函数中返回。
 
-## 总结
+# 7. 总结
 
 以上过程通过时序图来表达过程如下：
 
-## 参考资料
+# 8. 参考资料
 
 - [1] [Hadoop MapReduce 工作机制](http://kangfoo.u.qiniudn.com/article/2014/03/hadoop-mapreduce--gong-zuo-ji-zhi/)
