@@ -35,7 +35,7 @@ Update:
 **禁用IPv6方法：**
 
 ```bash
-$sudo vim /etc/sysctl.conf
+$ sudo vim /etc/sysctl.conf
 #disable ipv6
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
@@ -45,13 +45,13 @@ net.ipv6.conf.lo.disable_ipv6=1
 使其生效：
 
 ```bash
-$sudo sysctl -p
+$ sudo sysctl -p
 ```
 
 最后确认是否已禁用：
 
 ```bash
-$cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+$ cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 1
 ```
 
@@ -417,20 +417,16 @@ dfs.datanode.data.dir				hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/data
 dfs.namenode.checkpoint.dir			hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/namesecondary
 ```
 
-示例配置如下：
+说明你可以在hdfs-site.xml中只配置　｀hadoop.tmp.dir`,也可以分别配置上面的路径。
 
-hdfs-site.xml on the NameNode:
+这里使用分别配置的方式，hdfs-site.xml中配置如下：
 
 ```xml
 <property>
  <name>dfs.namenode.name.dir</name>
  <value>file:///data/dfs/nn</value>
 </property>
-```
 
-hdfs-site.xml on each DataNode:
-
-```xml
 <property>
  <name>dfs.datanode.data.dir</name>
 <value>file:///data/dfs/dn</value>
@@ -685,7 +681,7 @@ $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 </property>
 ```
 
-**配置resourcemanager的节点名称以及一些服务的端口号：**
+**配置resourcemanager的节点名称以及一些服务的端口号**，修改yarn-site.xml：
 
 ```xml
 <property>
@@ -988,18 +984,21 @@ $ scp -r /etc/zookeeper/conf root@cdh3:/etc/zookeeper/
 在每个节点上初始化并启动 zookeeper，注意 n 的值需要和 zoo.cfg 中的编号一致。
  
 在 cdh1 节点运行
+
 ```
 $ service zookeeper-server init --myid=1
 $ service zookeeper-server start
 ```
 
 在 cdh2 节点运行
+
 ```
 $ service zookeeper-server init --myid=2
 $ service zookeeper-server start
 ```
 
 在 cdh3 节点运行
+
 ```
 $ service zookeeper-server init --myid=3
 $ service zookeeper-server start
