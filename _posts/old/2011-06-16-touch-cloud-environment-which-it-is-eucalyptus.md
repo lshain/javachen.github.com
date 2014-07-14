@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 接触云服务环境Eucalyptus
-category: Cloud
+category: others
 tags: [eucalyptus]
 keywords: eucalyptus
 description: 最近在接触云计算平台，熟悉了[Eucalyptus](http://www.eucalyptus.com/)，并用其搭建云环境。通过网上的一些例子，逐渐的摸索出用Eucalyptus搭建云计算平台的方法。我所用的Eucalyptus是免费版，缺少很多企业版的功能。

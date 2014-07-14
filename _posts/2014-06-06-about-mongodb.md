@@ -7,7 +7,7 @@ description: MongoDB是一个开源的，高性能，无模式（或者说是模
 
 keywords: MongoDB,开源的,高性能,无模式
 
-category: distributed-systems
+category: nosql
 
 tags: [MongoDB]
 

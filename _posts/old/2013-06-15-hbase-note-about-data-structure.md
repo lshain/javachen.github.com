@@ -7,7 +7,7 @@ description: 从HBase的架构图上可以看出，HBase中的存储包括HMaste
 
 keywords: 
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 

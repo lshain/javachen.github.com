@@ -7,7 +7,7 @@ description: 记录HBase中HRegionServer启动过程
 
 keywords: HBase源码：HRegionServer启动过程
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 

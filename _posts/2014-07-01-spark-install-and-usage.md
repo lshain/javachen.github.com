@@ -7,7 +7,7 @@ description: 本文主要记录Spark的安装过程（包括Standalone模式和�
 
 keywords:  
 
-category: hadoop
+category: spark
 
 tags: [spark]
 

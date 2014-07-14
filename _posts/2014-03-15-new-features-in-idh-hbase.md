@@ -7,7 +7,7 @@ description: IDH HBase中实现的一些特性
 
 keywords: 
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 

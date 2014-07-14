@@ -2,7 +2,7 @@
 layout: post
 title: 在Eclipse中调试运行HBase
 description: 这篇文章记录一下如何在eclipse中调试运行hbase。
-category: Hadoop
+category: hbase
 tags: [hbase]
 ---
 

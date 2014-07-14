@@ -7,7 +7,7 @@ description: Hive Over HBase是基于Hive的HQL查询引擎支持对hbase表提�
 
 keywords: Hive over hbase是基于hive支持对hbase表提供直接查询功能
 
-category: hadoop
+category: hive
 
 tags: [hbase,hive]
 

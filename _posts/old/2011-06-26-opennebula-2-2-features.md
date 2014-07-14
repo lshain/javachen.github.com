@@ -1,7 +1,7 @@
 ---
 layout: post
 title: OpenNebula 2.2的特性
-category: Cloud
+category: others
 tags: [openNebula]
 keywords: OpenNebula
 description: OpenNebula 2.2的特性

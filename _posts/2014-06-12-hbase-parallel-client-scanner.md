@@ -7,7 +7,7 @@ description: HBase中有一个类可以实现客户端扫描数据，叫做Clien
 
 keywords: HBase客户端实现并行扫描
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 

@@ -7,7 +7,7 @@ description: Hive中有各种各样的Task任务，其中FetchTask算是最简�
 
 keywords: Hive中的FetchTask任务
 
-category: hadoop
+category: hive
 
 tags: [hive,mapreduce]
 

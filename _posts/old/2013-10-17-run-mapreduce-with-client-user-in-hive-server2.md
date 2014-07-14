@@ -2,7 +2,7 @@
 layout: post
 title: HiveServer2中使用jdbc客户端用户运行mapreduce
 description: 最近做了个web系统访问hive数据库，类似于官方自带的hwi，但是和他们的实现不一样，查询Hive语句走的不是cli而是通过jdbc连接hive-server2。为了实现mapreduce任务中资源按用户调度，需要hive查询自动绑定当前用户、将该用户传到yarn服务端并使mapreduce程序以该用户运行。本文主要是记录实现该功能过程中遇到的一些问题以及解决方法,如果你有更好的方法和建议，欢迎留言发表您的看法！
-category: Hadoop
+category: hive
 tags: [hive, hiveserver2,]
 ---
 

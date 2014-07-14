@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 安装Impala过程
-category: Hadoop
+category: hadoop
 tags: [hadoop, impala, cdh]
 keywords: impala
 ---

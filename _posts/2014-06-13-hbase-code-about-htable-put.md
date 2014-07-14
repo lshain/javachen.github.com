@@ -7,7 +7,7 @@ description: 在 HBase中，大部分的操作都是在RegionServer完成的，C
 
 keywords: HBase0.94.15源码：HTable put过程
 
-category: hadoop
+category: hbase
 
 tags: [hbase,hive]
 

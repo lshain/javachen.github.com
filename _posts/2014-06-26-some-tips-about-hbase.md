@@ -7,7 +7,7 @@ description: 列举HBase中的一些注意事项
 
 keywords:  
 
-category: hadoop
+category: hbase
 
 tags: [hbase]
 
