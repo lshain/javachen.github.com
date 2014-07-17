@@ -22,7 +22,7 @@ published: true
 
 关于yum源的配置以及hadoop的安装，请参考[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
 
-# Spark安装
+# 1. Spark安装
 
 选择一个节点来安装spark，首先查看spark相关的包有哪些：
 
@@ -43,7 +43,7 @@ hue-spark.x86_64                         3.5.0+cdh5.0.1+371-1.cdh5.0.1.p0.30.el6
 - spark-python: spark的Python客户端
 - hue-spark: spark和hue集成包
 
-## 安装
+## 1.1 安装rpm
 
 安装脚本如下：
 
@@ -51,12 +51,13 @@ hue-spark.x86_64                         3.5.0+cdh5.0.1+371-1.cdh5.0.1.p0.30.el6
 $ sudo yum install spark-core spark-master spark-worker spark-python
 ```
 
-## 配置
+## 1.2 配置
+
 修改配置文件：
 
 可以修改配置文件/etc/spark/conf/spark-env.sh，其内容如下，你可以根据需要做一些修改。
 
-```
+```bash
 export STANDALONE_SPARK_MASTER_HOST=`hostname`
 
 export SPARK_MASTER_IP=$STANDALONE_SPARK_MASTER_HOST
@@ -84,7 +85,7 @@ fi
 
 > 注意：这里使用的是CDH中的spark，其中一些参数的默认值和Apache的spark中的不一致。
 
-## 启动和停止
+## 1.3 启动和停止
 
 spark目前支持三种集群管理模式：
 
@@ -135,9 +136,11 @@ $ ./start-master.sh
 
 类似地，通过下面命令启动worker：
 
+```bash
 ./bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:18080
+```
 
-## 测试
+## 1.4 测试
 
 你可以通过spark-shell运行下面的wordcount例子，因为hdfs上的输入和输出文件都涉及到用户的访问权限，故这里使用hive用户来启动spark-shell：
 
@@ -152,10 +155,10 @@ scala> counts.saveAsTextFile("hdfs://master:8020/user/hive/warehouse/output")
 
 spark-shell后面还可以加上其他参数，例如指定IP和端口、运行核数：
 
-```
-spark-shell --master spark://IP:PORT  --cores <numCores> 
+```bash
+$ spark-shell --master spark://IP:PORT  --cores <numCores> 
 ```
 
-## Spark on Yarn
+# 2. Spark on Yarn
 
 关于Spark on Yarn的运行方式，暂不做介绍，待以后补充。
