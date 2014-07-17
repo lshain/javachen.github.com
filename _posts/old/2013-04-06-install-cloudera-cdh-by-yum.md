@@ -35,7 +35,7 @@ Update:
 **禁用IPv6方法：**
 
 ```bash
-$ sudo vim /etc/sysctl.conf
+$ vim /etc/sysctl.conf
 #disable ipv6
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
@@ -45,7 +45,7 @@ net.ipv6.conf.lo.disable_ipv6=1
 使其生效：
 
 ```bash
-$ sudo sysctl -p
+$ sysctl -p
 ```
 
 最后确认是否已禁用：
@@ -58,7 +58,7 @@ $ cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 1、设置hostname，以cdh1为例
 
 ```bash
-$ sudo hostname cdh1
+$ hostname cdh1
 ```
 
 2、确保`/etc/hosts`中包含ip和FQDN，如果你在使用DNS，保存这些信息到`/etc/hosts`不是必要的，却是最佳实践。
@@ -247,7 +247,7 @@ $ java -version
 检查环境变量中是否有设置`JAVA_HOME`
 
 ```bash
-$ sudo env | grep JAVA_HOME
+$ env | grep JAVA_HOME
 ```
 
 如果env中没有`JAVA_HOM`E变量，则修改`/etc/sudoers`文件
@@ -371,9 +371,9 @@ $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoo
 拷贝默认的配置文件为一个新的文件，并设置新文件为hadoop的默认配置文件：
 
 ```bash
-$ sudo cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
-$ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-$ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+$ cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
+$ alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
+$ alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
 
 hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配置之后，`/etc/hadoop/conf`会软连接到`/etc/hadoop/conf.my_cluster`目录
@@ -436,32 +436,32 @@ dfs.namenode.checkpoint.dir			hdfs:hdfs	drwx------	file://${hadoop.tmp.dir}/dfs/
 在**NameNode**上手动创建 `dfs.name.dir` 或 `dfs.namenode.name.dir` 的本地目录：
 
 ```bash
-$ sudo mkdir -p /data/dfs/nn
+$ mkdir -p /data/dfs/nn
 ```
 
 在**DataNode**上手动创建 `dfs.data.dir` 或 `dfs.datanode.data.dir` 的本地目录：
 
 ```bash
-$ sudo mkdir -p /data/dfs/dn
+$ mkdir -p /data/dfs/dn
 ```
 
 修改上面目录所有者：
 
 ```
-$ sudo chown -R hdfs:hdfs /data/dfs/nn /data/dfs/dn
+$ chown -R hdfs:hdfs /data/dfs/nn /data/dfs/dn
 ```
 > hadoop的进程会自动设置 `dfs.data.dir` 或 `dfs.datanode.data.dir`，但是 `dfs.name.dir` 或 `dfs.namenode.name.dir` 的权限默认为755，需要手动设置为700。
 
 故，修改上面目录权限：
 
 ```bash
-$ sudo chmod 700 /data/dfs/nn
+$ chmod 700 /data/dfs/nn
 ```
 
 或者：
 
 ```bash
-$ sudo chmod go-rx /data/dfs/nn
+$ chmod go-rx /data/dfs/nn
 ```
 
 **说明：**
@@ -516,7 +516,7 @@ dfs.namenode.num.checkpoints.retained
 这里只在一个NameNode节点（ CDH1 ）上安装：
 
 ```bash
-$ sudo yum install hadoop-httpfs
+$ yum install hadoop-httpfs -y
 ```
 
 然后配置代理用户，修改 core-site.xml，添加如下代码：
@@ -537,7 +537,7 @@ $ sudo yum install hadoop-httpfs
 接下来，启动 HttpFS 服务：
 
 ```bash
-$ sudo service hadoop-httpfs start
+$ service hadoop-httpfs start
 ```
 
 > By default, HttpFS server runs on port 14000 and its URL is http://<HTTPFS_HOSTNAME>:14000/webhdfs/v1.
@@ -558,7 +558,7 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 然后，安装lzo:
 
 ```bash
-$ sudo yum install hadoop-lzo  -y
+$ yum install hadoop-lzo* impala-lzo  -y
 ```
 
 最后，在 `core-site.xml` 中添加如下配置：
@@ -615,8 +615,8 @@ $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 在每个节点上设置默认配置文件：
 
 ```bash
-$ sudo alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-$ sudo alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
+$ alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
+$ alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
 
 格式化NameNode：
@@ -628,7 +628,7 @@ $ sudo -u hdfs hadoop namenode -format
 在每个节点运行下面命令启动hdfs：
 
 ```bash
-$ for x in `cd /etc/init.d ; ls hadoop-hdfs-*` ; do sudo service $x start ; done
+$ for x in `ls /etc/init.d/|grep  hadoop-hdfs` ; do service $x start ; done
 ```
 
 在 hdfs 运行之后，创建 `/tmp` 临时目录，并设置权限为 `1777`：
@@ -726,7 +726,7 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
     <value>mapreduce_shuffle</value>
 </property>
 <property>
-    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+    <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
     <value>org.apache.hadoop.mapred.ShuffleHandler</value>
 </property>
 <property>
@@ -735,12 +735,42 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
 </property>
 <property>
     <name>yarn.application.classpath</name>
-    <value>$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*</value>
+   <value>
+    $HADOOP_CONF_DIR,
+    $HADOOP_COMMON_HOME/*,
+    $HADOOP_COMMON_HOME/lib/*,
+    $HADOOP_HDFS_HOME/*,
+    $HADOOP_HDFS_HOME/lib/*,
+    $HADOOP_MAPRED_HOME/*,
+    $HADOOP_MAPRED_HOME/lib/*,
+    $YARN_HOME/*,
+    $YARN_HOME/lib/*
+    </value>
 </property>
 <property>
 	<name>yarn.log.aggregation.enable</name>
 	<value>true</value>
 </property>
+```
+
+**注意：**
+a. `yarn.nodemanager.aux-services`的值在cdh4中应该为`mapreduce.shuffle`，并配置参数`yarn.nodemanager.aux-services.mapreduce.shuffle.class`值为org.apache.hadoop.mapred.ShuffleHandler，在cdh5中为`mapreduce_shuffle`，这时候请配置`yarn.nodemanager.aux-services.mapreduce_shuffle.class`参数
+
+b. 这里配置了 `yarn.application.classpath` ，需要设置一些喜欢环境变量：
+
+```bash
+export HADOOP_HOME=/usr/lib/hadoop
+export HIVE_HOME=/usr/lib/hive
+export HBASE_HOME=/usr/lib/hbase
+export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
+export YARN_HOME=/usr/lib/hadoop-yarn
+export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+export HADOOP_COMMON_HOME=${HADOOP_HOME}
+export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
+export HADOOP_LIBEXEC_DIR=${HADOOP_HOME}/libexec
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 ```
 
 **配置文件路径**
@@ -776,15 +806,15 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 创建 `yarn.nodemanager.local-dirs` 参数对应的目录：
 
 ```bash
-$ sudo mkdir -p /data/yarn/local 
-$ sudo chown -R yarn:yarn /data/yarn/local
+$ mkdir -p /data/yarn/local 
+$ chown -R yarn:yarn /data/yarn/local
 ```
 
 创建 `yarn.nodemanager.log-dirs` 参数对应的目录：
 
 ```bash
-$ sudo mkdir -p /var/log/hadoop-yarn
-$ sudo chown -R yarn:yarn /var/log/hadoop-yarn
+$ mkdir -p /var/log/hadoop-yarn
+$ chown -R yarn:yarn /var/log/hadoop-yarn
 ```
 
 **创建Log目录**
@@ -794,6 +824,7 @@ $ sudo chown -R yarn:yarn /var/log/hadoop-yarn
 ```
 $ sudo -u hdfs hadoop fs -mkdir -p /yarn/apps
 $ sudo -u hdfs hadoop fs -chown yarn:mapred /yarn/apps
+$ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 ```
 
 **配置History Server：**
@@ -870,7 +901,7 @@ drwxr-xr-x   - hdfs hadoop          0 2014-04-31 10:26 /user
 drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var/log
-drwxr-xr-x   - yarn   mapred        0 2014-04-31 15:31 /yarn/apps
+drwxrwxrwt   - yarn   mapred        0 2014-04-31 15:31 /yarn/apps
 ```
 
 看到上面的目录结构，你就将NameNode上的配置文件同步到其他节点了，并且启动 yarn 的服务。
@@ -895,7 +926,7 @@ $ /etc/init.d/hadoop-mapreduce-historyserver start
 在每个节点启动 YARN :
 
 ```bash
-$ for x in `cd /etc/init.d ; ls hadoop-yarn-*` ; do sudo service $x start ; done
+$ for x in `ls /etc/init.d/|grep hadoop-yarn` ; do service $x start ; done
 ```
 
 为每个 MapReduce 用户创建主目录，比如说 hive 用户或者当前用户：
@@ -944,19 +975,12 @@ $ yum install zookeeper* -y
 拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件（在每个节点执行下面操作）：
 
 ```bash
-$ sudo cp -r /etc/zookeeper/conf.dist /etc/zookeeper/conf.my_cluster
-$ sudo alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
-$ sudo alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
+$ cp -r /etc/zookeeper/conf.dist /etc/zookeeper/conf.my_cluster
+$ alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
+$ alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
 ```
 
 zookeeper 默认使用 `/etc/zookeeper/conf` 路径读取配置文件，经过上述配置之后，`/etc/zookeeper/conf` 会软连接到 `/etc/zookeeper/conf.my_cluster` 目录
-
-在每个节点上创建 zookeeper 的数据目录，这里我使用的是 `/data/zookeeper` 目录。
-
-```bash
-$ mkdir -p /data/zookeeper
-$ chown -R zookeeper:zookeeper /data/zookeeper
-```
 
 设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` 
 
@@ -965,7 +989,7 @@ maxClientCnxns=50
 tickTime=2000
 initLimit=10
 syncLimit=5
-dataDir=/data/zookeeper
+dataDir=/var/lib/zookeeper
 clientPort=2181
 server.1=cdh1:2888:3888
 server.2=cdh3:2888:3888
@@ -1036,7 +1060,7 @@ hbase -       nofile  32768
 ```xml
 <property>
   <name>dfs.datanode.max.xcievers</name>
-  <value>4096</value>
+  <value>8192</value>
 </property>
 ```
 
@@ -1055,9 +1079,9 @@ $ yum install hbase hbase-master hbase-regionserver -y
 拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件（在每个节点执行）：
 
 ```bash
-$ sudo cp -r /etc/hbase/conf.dist /etc/hbase/conf.my_cluster
-$ sudo alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
-$ sudo alternatives --set hbase-conf /etc/hbase/conf.my_cluster
+$ cp -r /etc/hbase/conf.dist /etc/hbase/conf.my_cluster
+$ alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
+$ alternatives --set hbase-conf /etc/hbase/conf.my_cluster
 ```
 
 hbase 默认使用 `/etc/hbase/conf` 路径读取配置文件，经过上述配置之后，`/etc/hbase/conf` 会软连接到 `/etc/hbase/conf.my_cluster`目录
@@ -1129,10 +1153,6 @@ $ crontab -e
     <value>cdh1,cdh2,cdh3</value>
 </property>
 <property>
-  <name>hbase.zookeeper.useMulti</name>
-  <value>true</value>
-</property>
-<property>
     <name>hbase.hregion.max.filesize</name>
     <value>536870912</value>
   </property>
@@ -1193,8 +1213,7 @@ $ chown -R hbase:hbase /data/hbase/
 ## 启动HBase
 
 ```bash
-$ service hbase-master start
-$ service hbase-regionserver start
+$ for x in `ls /etc/init.d/|grep hbase` ; do service $x start ; done
 ```
 
 ## 访问web
@@ -1206,15 +1225,21 @@ $ service hbase-regionserver start
 在一个NameNode节点上安装 hive：
 
 ```bash
-$ sudo yum install hive*
+$ yum install hive hive-metastore hive-server2 hive-jdbc hive-hbase  -y
+```
+
+在其他DataNode上安装：
+
+```bash
+$ yum install hive hive-server2 hive-jdbc hive-hbase -y
 ```
 
 拷贝默认的配置文件为一个新的文件，并设置新文件为 hive 的默认配置文件：
 
 ```bash
-$ sudo cp -r /etc/hive/conf.dist /etc/hive/conf.my_cluster
-$ sudo alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
-$ sudo alternatives --set hive-conf /etc/hive/conf.my_cluster
+$ cp -r /etc/hive/conf.dist /etc/hive/conf.my_cluster
+$ alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
+$ alternatives --set hive-conf /etc/hive/conf.my_cluster
 ```
 
 hive 默认使用 `/etc/hive/conf` 路径读取配置文件，经过上述配置之后，`/etc/hive/conf` 会软连接到 `/etc/hive/conf.my_cluster`目录
@@ -1228,19 +1253,19 @@ hive 默认使用 `/etc/hive/conf` 路径读取配置文件，经过上述配置
 yum方式安装：
 
 ```
-$ sudo yum install postgresql-server
+$ yum install postgresql-server -y
 ```
 
 初始化数据库：
 
 ```bash
-$ sudo service postgresql initdb
+$ service postgresql initdb
 ```
 
 修改配置文件postgresql.conf，修改完后内容如下：
 
 ```bash
-$ sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
+$ cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conforming_strings
 	listen_addresses = '*'
 	standard_conforming_strings = off
 ```
@@ -1254,7 +1279,7 @@ $ sudo cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_con
 启动数据库
 
 ```bash
-$ sudo service postgresql start
+$ service postgresql start
 ```
 
 配置开启启动
@@ -1266,7 +1291,7 @@ $ chkconfig postgresql on
 安装jdbc驱动
 
 ```bash
-$ sudo yum install postgresql-jdbc
+$ yum install postgresql-jdbc -y
 $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
 ```
 
@@ -1312,7 +1337,7 @@ $ yum install mysql mysql-devel mysql-server mysql-libs -y
 启动数据库：
 
 ```bash
-$ sudo service mysqld start
+$ service mysqld start
 ```
 
 配置开启启动：
@@ -1464,9 +1489,9 @@ $ service hive-server2 start
 测试：
 
 ```bash
-$ create table t(id int);
-$ select * from t limit 2;
-$ select id from t;
+$ hive -e 'create table t(id int);'
+$ hive -e 'select * from t limit 2;'
+$ hive -e 'select id from t;'
 ```
 
 访问beeline:
@@ -1488,33 +1513,37 @@ $ /usr/lib/hive/bin/beeline
 
 ## 与hbase集成
 
-需要在hive里添加以下jar包：
+先安装hive-hbase:
+
+```bash
+$ yum install hive-hbase -y
+```
+
+如果你是使用的cdh4，则需要在hive shell里执行以下命令添加jar：
 
 ```bash
 $ ADD JAR /usr/lib/hive/lib/zookeeper.jar;
 $ ADD JAR /usr/lib/hive/lib/hbase.jar;
-$ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-0.12.0-cdh5.0.1.jar
+$ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-<hive_version>.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
-# 其他说明
+如果你是使用的cdh5，则需要在hive shell里执行以下命令添加jar：
 
-你可以在环境变量中加入以下设置：
-
-```bash
-export HADOOP_HOME=/usr/lib/hadoop
-export HIVE_HOME=/usr/lib/hive
-export HBASE_HOME=/usr/lib/hbase
-export HADOOP_MAPRED_HOME=${HADOOP_HOME}
-export HADOOP_COMMON_HOME=${HADOOP_HOME}
-export HADOOP_HDFS_HOME=${HADOOP_HOME}
-export HADOOP_LIBEXEC_DIR=${HADOOP_HOME}/libexec
-export YARN_HOME=${HADOOP_HOME}
-export HADOOP_YARN_HOME=${HADOOP_HOME}
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 ```
+ADD JAR /usr/lib/hive/lib/zookeeper.jar;
+ADD JAR /usr/lib/hive/lib/hive-hbase-handler.jar;
+ADD JAR /usr/lib/hbase/lib/guava-12.0.1.jar;
+ADD JAR /usr/lib/hbase/hbase-client.jar;
+ADD JAR /usr/lib/hbase/hbase-common.jar;
+ADD JAR /usr/lib/hbase/hbase-hadoop-compat.jar;
+ADD JAR /usr/lib/hbase/hbase-hadoop2-compat.jar;
+ADD JAR /usr/lib/hbase/hbase-protocol.jar;
+ADD JAR /usr/lib/hbase/hbase-server.jar;
+```
+
+以上你也可以在hive-site.xml中通过 `hive.aux.jars.path` 参数来配置，或者你也可以在hive-env.sh 中通过 `export HIVE_AUX_JARS_PATH=` 来设置。
+
 
 # 8. 参考文章
 
