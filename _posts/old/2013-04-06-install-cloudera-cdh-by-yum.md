@@ -366,28 +366,16 @@ $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoo
 
 > 配置 NameNode HA 请参考[Introduction to HDFS High Availability](https://ccp.cloudera.com/display/CDH4DOC/Introduction+to+HDFS+High+Availability)
 
-## 2.1 自定义hadoop配置文件
-
-拷贝默认的配置文件为一个新的文件，并设置新文件为hadoop的默认配置文件：
-
-```bash
-$ cp -r /etc/hadoop/conf.dist /etc/hadoop/conf.my_cluster
-$ alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-$ alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
-```
-
-hadoop默认使用`/etc/hadoop/conf`路径读取配置文件，经过上述配置之后，`/etc/hadoop/conf`会软连接到`/etc/hadoop/conf.my_cluster`目录
-
-## 2.2 自定义配置
+## 2.1 修改hadoop配置文件
 
 > 更多的配置信息说明，请参考 [Apache Cluster Setup](http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html)
 
-1. 在`core-site.xml`中设置`fs.defaultFS`属性值，该属性指定NameNode是哪一个节点以及使用的文件系统是file还是hdfs，格式：`hdfs://<namenode host>:<namenode port>/`，默认的文件系统是`file:///`
-1. 在`hdfs-site.xml`中设置`dfs.permissions.superusergroup`属性，该属性指定hdfs的超级用户，默认为hdfs，你可以修改为hadoop
+1. 在`/etc/hadoop/conf/core-site.xml`中设置`fs.defaultFS`属性值，该属性指定NameNode是哪一个节点以及使用的文件系统是file还是hdfs，格式：`hdfs://<namenode host>:<namenode port>/`，默认的文件系统是`file:///`
+1. 在`/etc/hadoop/conf/hdfs-site.xml`中设置`dfs.permissions.superusergroup`属性，该属性指定hdfs的超级用户，默认为hdfs，你可以修改为hadoop
 
 配置如下：
 
-core-site.xml:
+/etc/hadoop/conf/core-site.xml:
 
 ```xml
 <property>
@@ -396,7 +384,7 @@ core-site.xml:
 </property>
 ```
 
-hdfs-site.xml:
+/etc/hadoop/conf/hdfs-site.xml:
 
 ```xml
 <property>
@@ -405,7 +393,7 @@ hdfs-site.xml:
 </property>
 ```
 
-## 2.3 指定本地文件目录
+## 2.2 指定本地文件目录
 
 在hadoop中默认的文件路径以及权限要求如下：
 
@@ -468,9 +456,9 @@ $ chmod go-rx /data/dfs/nn
 
 DataNode的本地目录可以设置多个，你可以设置 `dfs.datanode.failed.volumes.tolerated` 参数的值，表示能够容忍不超过该个数的目录失败。
 
-## 配置 SecondaryNameNode
+## 2.3 配置 SecondaryNameNode
 
-在 `hdfs-site.xml` 中可以配置以下参数：
+在 `/etc/hadoop/conf/hdfs-site.xml` 中可以配置以下参数：
 
 ```
 dfs.namenode.checkpoint.check.period
@@ -483,7 +471,7 @@ dfs.namenode.num.checkpoints.retained
 如果想配置SecondaryNameNode节点，请从NameNode中单独选择一台机器，然后做以下设置：
 
 - 将运行SecondaryNameNode的机器名称加入到masters
-- 在 `hdfs-site.xml` 中加入如下配置：
+- 在 `/etc/hadoop/conf/hdfs-site.xml` 中加入如下配置：
 
 ```xml
 <property>
@@ -498,14 +486,14 @@ dfs.namenode.num.checkpoints.retained
 
 > 回收站功能默认是关闭的，建议打开。
 
-在 `core-site.xml` 中添加如下两个参数：
+在 `/etc/hadoop/conf/core-site.xml` 中添加如下两个参数：
 
 - `fs.trash.interval`,该参数值为时间间隔，单位为分钟，默认为0，表示回收站功能关闭。该值表示回收站中文件保存多长时间，如果服务端配置了该参数，则忽略客户端的配置；如果服务端关闭了该参数，则检查客户端是否有配置该参数；
 - `fs.trash.checkpoint.interval`，该参数值为时间间隔，单位为分钟，默认为0。该值表示检查回收站时间间隔，该值要小于`fs.trash.interval`，该值在服务端配置。如果该值设置为0，则使用 `fs.trash.interval` 的值。
 
 ## 2.5 (可选)配置DataNode存储的负载均衡
 
-在 `hdfs-site.xml` 中配置以下三个参数（详细说明，请参考 [Optionally configure DataNode storage balancing](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#concept_ncq_nnk_ck_unique_1)）：
+在 `/etc/hadoop/conf/hdfs-site.xml` 中配置以下三个参数（详细说明，请参考 [Optionally configure DataNode storage balancing](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hdfs_cluster_deploy.html#concept_ncq_nnk_ck_unique_1)）：
 
 - dfs.datanode.fsdataset. volume.choosing.policy
 - dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold
@@ -519,7 +507,7 @@ dfs.namenode.num.checkpoints.retained
 $ yum install hadoop-httpfs -y
 ```
 
-然后配置代理用户，修改 core-site.xml，添加如下代码：
+然后配置代理用户，修改 /etc/hadoop/conf/core-site.xml，添加如下代码：
 
 ```xml
 <property>  
@@ -561,15 +549,20 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 $ yum install hadoop-lzo* impala-lzo  -y
 ```
 
-最后，在 `core-site.xml` 中添加如下配置：
+最后，在 `/etc/hadoop/conf/core-site.xml` 中添加如下配置：
 
 ```xml
-<property>
-  <name>io.compression.codecs</name>
-<value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,
+	<property>
+  		<name>io.compression.codecs</name>
+	<value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,
 org.apache.hadoop.io.compress.BZip2Codec,com.hadoop.compression.lzo.LzoCodec,
 com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
-</property>
+  </property>
+
+  <property> 
+    <name>io.compression.codec.lzo.class</name> 
+    <value>com.hadoop.compression.lzo.LzoCodec</value> 
+  </property>
 ```
 
 更多关于LZO信息，请参考：[Using LZO Compression](http://wiki.apache.org/hadoop/UsingLzoCompression)
@@ -610,13 +603,6 @@ $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 ```bash
 $ scp -r /etc/hadoop/conf root@cdh2:/etc/hadoop/
 $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
-```
-
-在每个节点上设置默认配置文件：
-
-```bash
-$ alternatives --verbose --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.my_cluster 50 
-$ alternatives --set hadoop-conf /etc/hadoop/conf.my_cluster
 ```
 
 格式化NameNode：
@@ -672,7 +658,7 @@ $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 
 ## 修改配置参数
 
-**要想使用YARN**，需要在 `mapred-site.xml` 中做如下配置:
+**要想使用YARN**，需要在 `/etc/hadoop/conf/mapred-site.xml` 中做如下配置:
 
 ```xml
 <property>
@@ -681,7 +667,7 @@ $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 </property>
 ```
 
-**配置resourcemanager的节点名称以及一些服务的端口号**，修改yarn-site.xml：
+**配置resourcemanager的节点名称以及一些服务的端口号**，修改/etc/hadoop/conf/yarn-site.xml：
 
 ```xml
 <property>
@@ -718,7 +704,7 @@ $ yum install hadoop-mapreduce-historyserver hadoop-yarn-proxyserver -y
 $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS_HOME/*, $HADOOP_HDFS_HOME/lib/*, $HADOOP_MAPRED_HOME/*, $HADOOP_MAPRED_HOME/lib/*, $HADOOP_YARN_HOME/*, $HADOOP_YARN_HOME/lib/*
 ```
 
-即，在 `yarn-site.xml` 中添加如下配置：
+即，在 `/etc/hadoop/conf/yarn-site.xml` 中添加如下配置：
 
 ```xml
 <property>
@@ -763,13 +749,13 @@ export HADOOP_HOME=/usr/lib/hadoop
 export HIVE_HOME=/usr/lib/hive
 export HBASE_HOME=/usr/lib/hbase
 export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
-export YARN_HOME=/usr/lib/hadoop-yarn
 export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 export HADOOP_COMMON_HOME=${HADOOP_HOME}
 export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
 export HADOOP_LIBEXEC_DIR=${HADOOP_HOME}/libexec
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export YARN_HOME=/usr/lib/hadoop-yarn
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 ```
 
@@ -784,7 +770,7 @@ yarn.nodemanager.log-dirs			        yarn:yarn	  drwxr-xr-x	  ${yarn.log.dir}/use
 yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/log/hadoop-yarn/apps
 ```
 
-在 `yarn-site.xml`文件中添加如下配置:
+在 `/etc/hadoop/conf/yarn-site.xml`文件中添加如下配置:
 
 ```xml
 <property>
@@ -793,7 +779,7 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 </property>
 <property>
     <name>yarn.nodemanager.log-dirs</name>
-    <value>file:///var/log/hadoop-yarn</value>
+    <value>file:///data/yarn/logs</value>
 </property>
 <property>
     <name>yarn.nodemanager.remote-app-log-dir</name>
@@ -803,18 +789,11 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 
 **创建本地目录**
 
-创建 `yarn.nodemanager.local-dirs` 参数对应的目录：
+创建 `yarn.nodemanager.local-dirs` 和 `yarn.nodemanager.log-dirs` 参数对应的目录：
 
 ```bash
-$ mkdir -p /data/yarn/local 
-$ chown -R yarn:yarn /data/yarn/local
-```
-
-创建 `yarn.nodemanager.log-dirs` 参数对应的目录：
-
-```bash
-$ mkdir -p /var/log/hadoop-yarn
-$ chown -R yarn:yarn /var/log/hadoop-yarn
+$ mkdir -p /data/yarn/{local,logs} 
+$ chown -R yarn:yarn /data/yarn
 ```
 
 **创建Log目录**
@@ -829,7 +808,7 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 
 **配置History Server：**
 
-在 `mapred-site.xml` 中添加如下：
+在 `/etc/hadoop/conf/mapred-site.xml` 中添加如下：
 
 ```xml
 <property>
@@ -843,7 +822,7 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 </property>
 ```
 
-此外，确保 mapred 用户能够使用代理，在 `core-site.xml` 中添加如下参数：
+此外，确保 mapred 用户能够使用代理，在 `/etc/hadoop/conf/core-site.xml` 中添加如下参数：
 
 ```xml
 <property>
@@ -859,7 +838,7 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 
 **配置Staging目录：**
 
-在 `mapred-site.xml` 中配置如下参数：
+在 `/etc/hadoop/conf/mapred-site.xml` 中配置如下参数：
 
 ```xml
 <property>
@@ -873,12 +852,14 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 在 HDFS 运行之后，你需要手动创建 history 子目录：
 
 ```bash
+$ sudo -u hdfs hadoop fs -mkdir -p /user
+$ sudo -u hdfs hadoop fs -chmod 777 /user
 $ sudo -u hdfs hadoop fs -mkdir -p /user/history
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 ```
 
-可选的，你可以在 `mapred-site.xml` 设置以下两个参数：
+可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个参数：
 
 - mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777
 - mapreduce.jobhistory.done-dir，该目录权限应该为750
@@ -897,7 +878,7 @@ $ sudo -u hdfs hadoop fs -ls -R /
 
 ```bash
 drwxrwxrwt   - hdfs hadoop          0 2014-04-19 14:31 /tmp
-drwxr-xr-x   - hdfs hadoop          0 2014-04-31 10:26 /user
+drwxrwxrwx   - hdfs hadoop          0 2014-04-31 10:26 /user
 drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var/log
@@ -971,16 +952,6 @@ $ yum install zookeeper* -y
 ```
 
 ## 修改配置文件
-
-拷贝默认的配置文件为一个新的文件，并设置新文件为 zookeeper 的默认配置文件（在每个节点执行下面操作）：
-
-```bash
-$ cp -r /etc/zookeeper/conf.dist /etc/zookeeper/conf.my_cluster
-$ alternatives --verbose --install /etc/zookeeper/conf zookeeper-conf /etc/zookeeper/conf.my_cluster 50 
-$ alternatives --set zookeeper-conf /etc/zookeeper/conf.my_cluster
-```
-
-zookeeper 默认使用 `/etc/zookeeper/conf` 路径读取配置文件，经过上述配置之后，`/etc/zookeeper/conf` 会软连接到 `/etc/zookeeper/conf.my_cluster` 目录
 
 设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` 
 
@@ -1076,30 +1047,6 @@ $ yum install hbase hbase-master hbase-regionserver -y
 
 ## 修改配置文件
 
-拷贝默认的配置文件为一个新的文件，并设置新文件为 hbase 的默认配置文件（在每个节点执行）：
-
-```bash
-$ cp -r /etc/hbase/conf.dist /etc/hbase/conf.my_cluster
-$ alternatives --verbose --install /etc/hbase/conf hbase-conf /etc/hbase/conf.my_cluster 50 
-$ alternatives --set hbase-conf /etc/hbase/conf.my_cluster
-```
-
-hbase 默认使用 `/etc/hbase/conf` 路径读取配置文件，经过上述配置之后，`/etc/hbase/conf` 会软连接到 `/etc/hbase/conf.my_cluster`目录
-
-在 hdfs 中创建 `/hbase` 目录
-
-```bash
-$ sudo -u hdfs hadoop fs -mkdir /hbase
-$ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
-```
-
-设置crontab 定时删除日志：
-
-```bash
-$ crontab -e
-* 10 * * * cd /var/log/hbase/; rm -rf `ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
-```
-
 修改 `hbase-site.xml`文件，关键几个参数及含义如下：
 
 - hbase.distributed：是否为分布式模式
@@ -1192,6 +1139,20 @@ $ crontab -e
 </configuration>
 ```
 
+在 hdfs 中创建 `/hbase` 目录
+
+```bash
+$ sudo -u hdfs hadoop fs -mkdir /hbase
+$ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
+```
+
+设置crontab 定时删除日志：
+
+```bash
+$ crontab -e
+* 10 * * * cd /var/log/hbase/; rm -rf `ls /var/log/hbase/|grep -P 'hbase\-hbase\-.+\.log\.[0-9]'\`>> /dev/null &
+```
+
 ## 同步配置文件
 
 将配置文件同步到其他节点：
@@ -1233,16 +1194,6 @@ $ yum install hive hive-metastore hive-server2 hive-jdbc hive-hbase  -y
 ```bash
 $ yum install hive hive-server2 hive-jdbc hive-hbase -y
 ```
-
-拷贝默认的配置文件为一个新的文件，并设置新文件为 hive 的默认配置文件：
-
-```bash
-$ cp -r /etc/hive/conf.dist /etc/hive/conf.my_cluster
-$ alternatives --verbose --install /etc/hive/conf hive-conf /etc/hive/conf.my_cluster 50 
-$ alternatives --set hive-conf /etc/hive/conf.my_cluster
-```
-
-hive 默认使用 `/etc/hive/conf` 路径读取配置文件，经过上述配置之后，`/etc/hive/conf` 会软连接到 `/etc/hive/conf.my_cluster`目录
 
 ## 安装postgresql
 

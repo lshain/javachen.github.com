@@ -1,9 +1,9 @@
 ---
 layout: post
 
-title:  手动安装 hadoop 集群的过程
+title:  手动安装 Hadoop 集群的过程
 
-description: 最近又安装 hadoop 集群，由于一些原因没有使用 hadoop 管理工具或者自动化安装脚本来安装集群，而是手动一步步的来安装，本篇文章主要是记录我手动安装 hadoop 集群的过程，给大家做个参考。
+description: 最近又安装 Hadoop 集群，由于一些原因没有使用 Hadoop 管理工具或者自动化安装脚本来安装集群，而是手动一步步的来安装，本篇文章主要是记录我手动安装 Hadoop 集群的过程，给大家做个参考。
 
 keywords:  
 
@@ -15,7 +15,9 @@ published: true
 
 ---
 
-最近又安装 hadoop 集群，由于一些原因没有使用 hadoop 管理工具或者自动化安装脚本来安装集群，而是手动一步步的来安装，本篇文章主要是记录我手动安装 hadoop 集群的过程，给大家做个参考。
+最近又安装 Hadoop 集群，由于一些原因，没有使用 Hadoop 管理工具或者自动化安装脚本来安装集群，而是手动一步步的来安装，本篇文章主要是记录我手动安装 Hadoop 集群的过程，给大家做个参考。
+
+这里所说的手动安装，是指一步步的通过脚本来安装集群，并不是使用一键安装脚本或者一些管理界面来安装。
 
 开始之前，还是说明一下环境：
 
@@ -25,7 +27,7 @@ published: true
 
 在开始之前，你可以看看我以前写的一篇文章 [使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/)，因为有些细节已经为什么这样做我不会在这篇文章中讲述。
 
-### 一些准备工作
+## 一些准备工作
 
 在开始前，先选择一个节点为管理节点或者说是 NameNode 节点，其他节点为普通节点。
 
@@ -71,7 +73,7 @@ source /root/.bashrc
 '
 ```
 
-### 配置 hosts 文件
+## 配置 hosts 文件
 
 在该节点上配置 hosts 文件，我安装的集群节点如下：
 
@@ -87,7 +89,7 @@ source /root/.bashrc
 sh /opt/syn.sh /etc/hosts  /etc/hosts
 ```
 
-### 安装 hadoop-hdfs
+## 安装 hadoop-hdfs
 
 首先，在所有节点上安装一些基本的必须的依赖：
 
@@ -150,7 +152,7 @@ sudo -u hdfs hadoop fs -mkdir /tmp
 sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
 ```
 
-### 安装 yarn
+## 安装 yarn
 
 在 NN 节点上安装 hadoop-yarn-resourcemanager 和 hadoop-mapredice-history，其他节点安装 hadoop-yarn-nodemanager，修改配置文件。
 
@@ -201,7 +203,7 @@ sh /opt/cluster.sh hadoop-yarn start
 sh /opt/cluster.sh hadoop-yarn status
 ```
 
-### 其他
+## 其他
 
 其他服务均可以参考此方法来简化安装，这里不做详述。
 
