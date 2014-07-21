@@ -46,13 +46,12 @@ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hadoop` ; do service $x stop ; d
 
 ```xml
 <configuration>
-<property>
-<name>fs.defaultFS</name>
-<value>hdfs://mycluster:8020</value>
-</property>
+	<property>
+		<name>fs.defaultFS</name>
+		<value>hdfs://mycluster:8020</value>
+	</property>
 	<property>
 		<name>ha.zookeeper.quorum</name>
-		<value>cdh1,cdh2,cdh3</value>
 	</property>
 </configuration>
 ```
@@ -205,14 +204,35 @@ ssh cdh2 'sudo -u hdfs hdfs namenode -bootstrapStandby ; sudo service hadoop-hdf
 先停掉 hbase，然后修改/etc/hbase/conf/hbase-site.xml，做如下修改：
 
 ``` xml
+<!-- Configure HBase to use the HA NameNode nameservice -->
 <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://mycluster:8020/hbase</value>       <!--（注意此处应该更换为nameservices）-->
+    <value>hdfs://mycluster:8020/hbase</value>       
   </property>
 ```
 
-然后启动 hbase
+在 zookeeper 节点上运行/usr/lib/zookeeper/bin/zkCli.sh
+
+```
+ls /hbase/splitlogs
+rmr /hbase/splitlogs
+```
+
+最后启动 hbase 服务。
 
 ## 配置 Hive HA
 
+运行下面命令：
+
+```
+$ metatool -listFSRoot  
+hdfs://cdh1/user/hive/warehouse  
+$ metatool -updateLocation hdfs://mycluster hdfs://cdh1 -tablePropKey avro.schema.url 
+-serdePropKey schema.url  
+$ metatool -listFSRoot 
+hdfs://cdh1/user/hive/warehouse
+```
+
 ## 配置 Impala 
+
+不需要做什么修改，但是一定要记住 core-site.xml 中fs.defaultFS参数值要带上端口号。

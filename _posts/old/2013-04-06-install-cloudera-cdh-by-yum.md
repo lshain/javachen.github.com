@@ -8,6 +8,7 @@ tags: [hadoop, hdfs, yarn, hive ,hbase]
 
 Update:
 
+- `2014.07.21` 添加 lzo 的安装
 - `2014.05.20` 修改cdh4为cdh5进行安装。
 
 # 环境
