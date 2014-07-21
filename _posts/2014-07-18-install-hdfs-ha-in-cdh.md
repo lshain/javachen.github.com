@@ -3,7 +3,7 @@ layout: post
 
 title:  CDH 中配置 HDFS HA
 
-description: 最近又安装 hadoop 集群， 故尝试了一下配置 HDFS 的 HA，这里使用的时 QJM 的 HA 方案。
+description: 最近又安装 hadoop 集群， 故尝试了一下配置 HDFS 的 HA，这里使用的是 QJM 的 HA 方案。
 
 keywords:  
 
@@ -15,7 +15,7 @@ published: true
 
 ---
 
-最近又安装 hadoop 集群， 故尝试了一下配置 HDFS 的 HA，这里使用的时 QJM 的 HA 方案。
+最近又安装 hadoop 集群， 故尝试了一下配置 HDFS 的 HA，这里使用的是 QJM 的 HA 方案。
 
 关于 hadoop 集群的安装部署过程你可以参考 [使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/) 或者 [手动安装 hadoop 集群的过程](/2014/07/17/manual-install-cdh-hadoop/)。
 

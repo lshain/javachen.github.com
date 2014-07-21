@@ -21,13 +21,23 @@ apache的hive版本现在应该是0.13.0，而我使用的hadoop版本是CDH5.0.
 
 因为hive版本会持续升级，故本篇文章不一定会和最新版本保持一致。
 
-# 准备测试数据
+# 1. 准备测试数据
 
-首先创建表：
+首先创建普通表：
 
 ```sql
 create table test(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
 ```
+
+创建分区表：
+
+CREATE EXTERNAL TABLE test_p(
+id int,
+name string 
+)
+partitioned by (date STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\,' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE;
 
 准备数据文件：
 
@@ -39,7 +49,7 @@ create table test(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY
 4,d
 ```
 
-# 加载数据
+# 2.加载数据
 
 语法如下：
 
@@ -66,9 +76,11 @@ LOAD DATA [LOCAL] INPATH 'filepath' [OVERWRITE] INTO TABLE tablename [PARTITION 
 - 如果没有指定 LOCAL，则 filepath 指向目标表或者分区所在的文件系统。
 - 如果需要压缩，则参考 [ CompressedStorage](https://cwiki.apache.org/confluence/display/Hive/CompressedStorage)
 
-测试：
+## 2.1 测试
 
-**1、加载本地文件**
+### 2.1.1 加载本地文件
+
+a) 加载到普通表中
 
 ```sql
 hive> load data local inpath '/tmp/test.txt' into table test;                              
@@ -100,7 +112,29 @@ OK
 Time taken: 0.562 seconds, Fetched: 4 row(s)
 ```
 
-**2、加载hdfs上的文件**
+b) 加载文件到分区表
+
+通常是直接使用 load 命令加载：
+
+```
+LOAD DATA LOCAL INPATH "/tmp/test.txt" INTO TABLE test_p PARTITION (date=20140722)
+```
+
+> 注意：如果没有加上 overwrite 关键字，则加载相同文件最后会存在多个文件
+
+还有一种方法是：创建分区目录，手动上传文件，最后再添加新的分区，代码如下：
+
+```
+hadoop fs -mkdir  /user/hive/warehouse/test/date=20140320
+ALTER TABLE test_p ADD IF NOT EXISTS PARTITION (date=20140320);
+
+hive hadoop fs -rm /user/hive/warehouse/test/date=20140320/test.txt
+hadoop fs -put /tmp/test.txt  /user/hive/warehouse/test/date=20140320
+```
+
+同样，你也可以查看 hdfs 和表中的数据。
+
+### 2.1.2 加载hdfs上的文件
 
 拷贝test.txt为test_1.txt并将其上传到 `/user/hive/warehouse`:
 
@@ -144,7 +178,7 @@ OK
 Time taken: 0.302 seconds, Fetched: 8 row(s)
 ```
 
-## 插入数据
+# 3. 插入数据
 
 标准语法：
 
@@ -203,7 +237,7 @@ INSERT OVERWRITE TABLE page_view PARTITION(dt='2008-06-08', country)
        SELECT pvs.viewTime, pvs.userid, pvs.page_url, pvs.referrer_url, null, null, pvs.ip, pvs.cnt
 ```
 
-# 导出数据
+# 4. 导出数据
 
 标准语法：
 
@@ -236,9 +270,9 @@ DELIMITED [FIELDS TERMINATED BY char [ESCAPED BY char]] [COLLECTION ITEMS TERMIN
 - 输出的数据序列化为 text 格式，分隔符为 `^A`，行于行之间通过换行符连接。如果存在不是基本类型的列，则这些列将被序列化为JSON格式。
 - 在 Hive 0.11.0 可以输出字段的分隔符，之前版本的默认为 `^A`。
 
-测试;
+## 4.1 测试;
 
-1、导出到本地文件系统
+### 4.1.1 导出到本地文件系统
 
 ```
 hive> insert overwrite local directory '/tmp/test' select * from test;
@@ -296,7 +330,7 @@ vim test/000000_3
 4,d
 ```
 
-2、导出到HDFS中
+### 4.1.2 导出到HDFS中
 
 ```
 hive> insert overwrite  directory '/user/hive/tmp' select * from test;
@@ -306,7 +340,7 @@ hive> insert overwrite  directory '/user/hive/tmp' select * from test;
 
 和导出文件到本地文件系统的HQL少一个local，数据的存放路径不一样了。
 
-3、导出到Hive的另一个表中
+### 4.1.3 导出到Hive的另一个表中
 
 在实际情况中，表的输出结果可能太多，不适于显示在控制台上，这时候，将Hive的查询输出结果直接存在一个新的表中是非常方便的，我们称这种情况为CTAS（create table .. as select）如下：
 

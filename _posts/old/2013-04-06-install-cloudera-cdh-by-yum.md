@@ -271,72 +271,12 @@ enabled=1
 gpgcheck=0
 ```
 
-操作系统的yum是使用的CentOS6-Base-163.repo，其配置如下：
+操作系统的yum源，建议你通过下载 centos 的 dvd 然后配置一个本地的 yum 源。
 
-```
-[base]
-name=CentOS-$releasever - Base - 163.com
-baseurl=http://mirrors.163.com/centos/$releasever/os/$basearch/
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
-gpgcheck=1
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
-
-#released updates 
-[updates]
-name=CentOS-$releasever - Updates - 163.com
-baseurl=http://mirrors.163.com/centos/$releasever/updates/$basearch/
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates
-gpgcheck=1
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
-
-#additional packages that may be useful
-[extras]
-name=CentOS-$releasever - Extras - 163.com
-baseurl=http://mirrors.163.com/centos/$releasever/extras/$basearch/
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras
-gpgcheck=1
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
-
-#additional packages that extend functionality of existing packages
-[centosplus]
-name=CentOS-$releasever - Plus - 163.com
-baseurl=http://mirrors.163.com/centos/$releasever/centosplus/$basearch/
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus
-gpgcheck=1
-enabled=0
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
-
-#contrib - packages by Centos Users
-[contrib]
-name=CentOS-$releasever - Contrib - 163.com
-baseurl=http://mirrors.163.com/centos/$releasever/contrib/$basearch/
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=contrib
-gpgcheck=1
-enabled=0
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
-```
-
-其实，在配置了CDH的yum之后，可以通过yum来安装jdk：
+其实，在配置了CDH的yum之后，可以通过yum来安装jdk，然后，设置JAVA HOME：
 
 ```bash
 $ yum install jdk -y
-```
-
-然后，设置JAVA HOME:
-
-```bash
-$ echo "export JAVA_HOME=/usr/java/latest" >>/root/.bashrc
-$ echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /root/.bashrc
-$ source /root/.bashrc
-```
-
-验证版本
-
-```bash
-$ java -version
-	java version "1.6.0_31"
-	Java(TM) SE Runtime Environment (build 1.6.0_31-b04)
-	Java HotSpot(TM) 64-Bit Server VM (build 20.6-b01, mixed mode)
 ```
 
 # 2. 安装和配置HDFS
@@ -541,7 +481,10 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 
 ## 2.7 (可选)配置LZO
 
-下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo)文件到 `/etc/yum.repos.d/`。
+下载repo文件到 `/etc/yum.repos.d/`:
+
+ - 如果你安装的是 CDH4，请下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras/redhat/6/x86_64/gplextras/cloudera-gplextras4.repo)
+ - 如果你安装的是 CDH5，请下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo) 
 
 然后，安装lzo:
 
@@ -552,17 +495,16 @@ $ yum install hadoop-lzo* impala-lzo  -y
 最后，在 `/etc/hadoop/conf/core-site.xml` 中添加如下配置：
 
 ```xml
-	<property>
-  		<name>io.compression.codecs</name>
-	<value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,
+<property>
+  <name>io.compression.codecs</name>
+ <value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,
 org.apache.hadoop.io.compress.BZip2Codec,com.hadoop.compression.lzo.LzoCodec,
 com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
-  </property>
-
-  <property> 
-    <name>io.compression.codec.lzo.class</name> 
-    <value>com.hadoop.compression.lzo.LzoCodec</value> 
-  </property>
+</property>
+<property> 
+  <name>io.compression.codec.lzo.class</name> 
+  <value>com.hadoop.compression.lzo.LzoCodec</value> 
+</property>
 ```
 
 更多关于LZO信息，请参考：[Using LZO Compression](http://wiki.apache.org/hadoop/UsingLzoCompression)
@@ -1264,65 +1206,6 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 
 注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
 
-修改hive-site.xml文件中以下内容：
-
-```xml
-	<property>
-	  <name>javax.jdo.option.ConnectionURL</name>
-	  <value>jdbc:mysql://cdh1:3306/metastore?useUnicode=true&amp;characterEncoding=UTF-8</value>
-	</property>
-	<property>
-	  <name>javax.jdo.option.ConnectionDriverName</name>
-	  <value>com.mysql.jdbc.Driver</value>
-	</property>
-```
-
-## 安装mysql
-
-yum方式安装mysql：
-
-```bash
-$ yum install mysql mysql-devel mysql-server mysql-libs -y
-```
-
-启动数据库：
-
-```bash
-$ service mysqld start
-```
-
-配置开启启动：
-
-```bash
-$ chkconfig mysqld on
-```
-
-安装jdbc驱动：
-
-```bash
-$ yum install mysql-connector-java
-$ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connector-java.jar
-```
-
-创建数据库和用户：
-
-```bash
-$ mysql -e "
-	CREATE DATABASE metastore;
-	USE metastore;
-	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.12.0.mysql.sql;
-	CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'redhat';
-	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
-	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
-	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'localhost';
-	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'%';
-	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'localhost';
-	FLUSH PRIVILEGES;
-"
-```
-
-注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
-
 这时候的hive-site.xml文件内容如下：
 
 ```xml
@@ -1400,6 +1283,65 @@ $ mysql -e "
 	  <value>true</value>
 	</property>
 	</configuration>
+```
+
+## 安装mysql
+
+yum方式安装mysql：
+
+```bash
+$ yum install mysql mysql-devel mysql-server mysql-libs -y
+```
+
+启动数据库：
+
+```bash
+$ service mysqld start
+```
+
+配置开启启动：
+
+```bash
+$ chkconfig mysqld on
+```
+
+安装jdbc驱动：
+
+```bash
+$ yum install mysql-connector-java
+$ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connector-java.jar
+```
+
+创建数据库和用户：
+
+```bash
+$ mysql -e "
+	CREATE DATABASE metastore;
+	USE metastore;
+	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.12.0.mysql.sql;
+	CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'redhat';
+	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
+	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
+	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'localhost';
+	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'%';
+	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'localhost';
+	FLUSH PRIVILEGES;
+"
+```
+
+注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
+
+修改hive-site.xml文件中以下内容：
+
+```xml
+	<property>
+	  <name>javax.jdo.option.ConnectionURL</name>
+	  <value>jdbc:mysql://cdh1:3306/metastore?useUnicode=true&amp;characterEncoding=UTF-8</value>
+	</property>
+	<property>
+	  <name>javax.jdo.option.ConnectionDriverName</name>
+	  <value>com.mysql.jdbc.Driver</value>
+	</property>
 ```
 
 ## 配置hive
