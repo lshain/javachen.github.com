@@ -149,9 +149,10 @@ $ service impala-catalog start
 [Not connected] >connect cdh1
 [cdh1:21000] >invalidate metadata
 [cdh2:21000] >connect cdh2
-[cdh2:21000] >invalidate metadata
 [cdh2:21000] >select * from t
 ```
+
+当在 Hive 中创建表之后，第一次启动 impala-shell 时，请先执行 INVALIDATE METADATA 语句以便 Impala 识别出新创建的表(在 Impala 1.2 及以上版本，你只需要在一个节点上运行 INVALIDATE METADATA ，而不是在所有的 Impala 节点上运行)。
 
 # 6. 参考文章
 * [Impala安装文档完整版](http://yuntai.1kapp.com/?p=904)
