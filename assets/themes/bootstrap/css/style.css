@@ -1,11 +1,10 @@
-
 body{color:#333;font:normal 14.5px/1.5 "Lucida Grande",helvetica,arial,sans-serif;background:#FFF}
 h1{font-size:26px;font-weight:bold;margin-bottom:20px;color:black}
 h2{font-size:24px;margin:20px 0 10px;color:black}
-h3{font-size:18px;margin:20px 0 10px}
-h4{font-size:16px;font-weight:bold;margin:20px 0 10px}
-h5{font-size:14px;font-weight:bold;margin:20px 0 10px}
-h6{color:#777;font-size:14px;font-weight:bold;margin:20px 0 10px}
+h3{font-size:20px;margin:20px 0 10px;color:black}
+h4{font-size:18px;font-weight:bold;margin:20px 0 10px;color:black}
+h5{font-size:16px;font-weight:bold;margin:20px 0 10px;color:black}
+h6{color:#777;font-size:14px;font-weight:bold;margin:20px 0 10px;color:black}
 hr{border:0;height:1px;margin:15px 0;padding:0}
 hr::after{content:'';display:block;height:1px;background-image:-webkit-linear-gradient(left,rgba(119,119,119,0),rgba(119,119,119,0.7),rgba(119,119,119,0))}
 p{margin:10px 0}
