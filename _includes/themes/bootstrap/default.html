@@ -30,9 +30,8 @@
           <a class="navbar-brand" href="{{ HOME_PATH }}" title="{{ site.title }}">{{ site.title }}</a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
-          <ul class="nav navbar-nav">{% assign pages_list = site.pages %} {% assign group = 'navigation' %} {% include JB/pages_list %}
-          </ul>
- 		 <ul class="nav navbar-nav navbar-right">
+ 		      <ul class="nav navbar-nav navbar-right">
+          {% assign pages_list = site.pages %} {% assign group = 'navigation' %} {% include JB/pages_list %}
           <li><a href="/rss.xml" target="_blank" title="RSS"><span class="glyphicon glyphicon-list"></span> RSS</a></li>
           {% if site.author.github %}
             <li><a href="https://github.com/{{ site.author.github }}" target="_blank" title="Github"><span class="icon-github icon-large"></span></a></li>

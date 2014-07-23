@@ -267,14 +267,16 @@ $ vi /etc/sudoers
 ```
 [hadoop]
 name=hadoop
-baseurl=file:///vagrant/repo/cdh/5/
+baseurl=ftp://cdh1/cdh/5/
 enabled=1
 gpgcheck=0
 ```
 
+这里使用的是 ftp 搭建 yum 源，需要安装 ftp 服务，并将解压后的目录拷贝到 ftp 存放文件的目录下。
+
 操作系统的yum源，建议你通过下载 centos 的 dvd 然后配置一个本地的 yum 源。
 
-其实，在配置了CDH的yum之后，可以通过yum来安装jdk，然后，设置JAVA HOME：
+其实，在配置了CDH 的 yum 源之后，可以通过 yum 来安装 jdk，然后，设置 JAVA HOME：
 
 ```bash
 $ yum install jdk -y
@@ -528,6 +530,7 @@ $ yum install snappy snappy-devel  -y
 <value>org.apache.hadoop.io.compress.DefaultCodec,
 org.apache.hadoop.io.compress.GzipCodec,
 org.apache.hadoop.io.compress.BZip2Codec,
+com.hadoop.compression.lzo.LzoCodec,
 com.hadoop.compression.lzo.LzopCodec,
 org.apache.hadoop.io.compress.SnappyCodec</value>
 </property>
