@@ -123,28 +123,6 @@ ssh cdh2 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
 ssh cdh3 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
 ```
 
-### 启动journalnode
-
-```bash
-ssh cdh1 'service hadoop-hdfs-journalnode start'
-ssh cdh2 'service hadoop-hdfs-journalnode start'
-ssh cdh3 'service hadoop-hdfs-journalnode start'
-```
-
-### 格式化集群
-
-```bash
-ssh cdh1 'sudo -u hdfs hdfs namenode -format'
-ssh cdh2 'sudo -u hdfs hdfs namenode -format'
-ssh cdh3 'sudo -u hdfs hdfs namenode -format'
-```
-
-### 初始化Shared Edits directory：
-
-```bash
-sudo -u hdfs hdfs namenode -initializeSharedEdits
-```
-
 ### 配置无密码登陆
 
 在两个NN上配置hdfs用户间无密码登陆：
@@ -167,36 +145,78 @@ ssh-keygen
 ssh-copy-id   cdh1
 ```
 
-### 安装hadoop-hdfs-zkfc
+### 启动journalnode
+
+```bash
+ssh cdh1 'service hadoop-hdfs-journalnode start'
+ssh cdh2 'service hadoop-hdfs-journalnode start'
+ssh cdh3 'service hadoop-hdfs-journalnode start'
+```
+
+### 格式化集群
+
+cdh1作为Active NameNode，先格式化：
+
+```bash
+ssh cdh1 'sudo -u hdfs hdfs namenode -format'
+```
+
+然后启动Active NameNode：
+
+```bash
+service hadoop-hdfs-namenode start
+```
+
+### 同步 Standby NameNode
+
+cdh2作为 Standby NameNode，在该节点运行：
+
+```bash
+sudo -u hdfs hadoop namenode -bootstrapStandby
+```
+
+然后，启动 Standby NameNode：
+
+```bash
+service hadoop-hdfs-namenode start
+```
+
+### 配置自动切换
 
 在两个NameNode上安装hadoop-hdfs-zkfc
 
 ```bash
-ssh cdh1 '
-yum install hadoop-hdfs-zkfc;
-hdfs zkfc -formatZK;
-service hadoop-hdfs-zkfc start
-'
-
-ssh cdh2 '
-yum install hadoop-hdfs-zkfc;
-hdfs zkfc -formatZK;
-service hadoop-hdfs-zkfc start
-'
+ssh cdh1 'yum install hadoop-hdfs-zkfc;'
+ssh cdh2 'yum install hadoop-hdfs-zkfc;'
 ```
 
-### 启动 NameNode
+在任意一个NameNode上下面命令，其会创建一个znode用于自动故障转移。
 
-Start the primary (formatted) NameNode:
-
-```bash
-ssh cdh1 'service hadoop-hdfs-namenode start'
+```
+hdfs zkfc -formatZK
 ```
 
-Start the standby NameNode：
+然后再两个 NameNode 节点上启动zkfc：
 
-```bash
-ssh cdh2 'sudo -u hdfs hdfs namenode -bootstrapStandby ; sudo service hadoop-hdfs-namenode start'
+```
+service hadoop-hdfs-zkfc start
+```
+
+### 其他操作
+
+因为执行格式化操作，故需要在 hdfs 上创建一些目录并设置权限，请参考其他文章。
+
+执行手动切换：
+
+```
+sudo -u hdfs hdfs haadmin -failover nn1 nn2
+```
+
+查看某Namenode的状态：
+
+```
+sudo -u hdfs hdfs haadmin -getServiceState nn2
+sudo -u hdfs hdfs haadmin -getServiceState nn1
 ```
 
 ## 配置HBase HA
