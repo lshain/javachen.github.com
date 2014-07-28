@@ -20,6 +20,7 @@ a:focus{outline:thin dotted}
 a:active,a:hover{color:#ea9629;outline:0}
 a:hover{text-decoration:underline}
 li{line-height:23px}
+b, strong {color: red;}
 
 /** post page **/
 .post article { padding: 30px; border: 1px solid #cacaca; background-color: white; }

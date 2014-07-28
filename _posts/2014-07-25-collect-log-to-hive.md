@@ -173,9 +173,10 @@ LOCATION '/log/dw_srclog/test';
 export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
 ```
 
-**使用 SERDE  时，字段类型只能为 string。**
+**注意：** 
 
-这种方式建表，flume 可以将日志存储为 lzo 并且 hive 能够识别出数据，但是 impala 中却不支持 `SERDE` 的语法，故只能放弃该方法。
+- 使用 SERDE  时，字段类型只能为 string。
+- 这种方式建表，flume 可以将日志存储为 lzo 并且 hive 能够识别出数据，但是 impala 中却不支持 `SERDE` 的语法，故只能放弃该方法。
 
 最后，只能放弃 lzo 压缩文件的想法，改为不做压缩。flume 中 HdfsSink 配置参数 hdfs.fileType 目前只有三种可选值：CompressedStream
 、DataStream、SequenceFile，为了保持向后兼容便于扩展，这里使用了 DataStream 的方式，不做数据压缩。
@@ -321,7 +322,7 @@ if __name__ == '__main__':
     main()
 ```
 
-该脚本会再 crontab中每隔5分钟执行一次。
+该脚本会再 crontab 中每隔5分钟执行一次。
 
 执行该脚本会往 mongodb 中记录一些状态信息，输出日志包括每个日志文件执行结果和提示信息以及最后的统计信息。
 
@@ -334,7 +335,7 @@ Walking to 20140725
 20140725 ,total: 4 ,fail: 3
 ```
 
-暂时没有使用 flume 的原因：
+**暂时没有使用 flume 的原因：**
 
 1. 对 flume 的测试于调研程度还不够
 2. flume 中无法对数据去重

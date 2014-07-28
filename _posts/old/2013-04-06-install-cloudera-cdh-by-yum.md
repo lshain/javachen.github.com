@@ -1316,7 +1316,7 @@ $ yum install mysql-connector-java
 $ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connector-java.jar
 ```
 
-创建数据库和用户：
+我是在 cdh1 节点上创建 mysql 数据库和用户：
 
 ```bash
 $ mysql -e "
@@ -1327,8 +1327,10 @@ $ mysql -e "
 	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
 	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
 	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'localhost';
+	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'cdh1';
 	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'%';
 	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'localhost';
+	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'cdh1';
 	FLUSH PRIVILEGES;
 "
 ```
