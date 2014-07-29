@@ -39,7 +39,7 @@ Impala 目前最新版本为 1.4.0，其下载地址为：<http://archive.cloude
      - `TRUNC()`，用于将一个 date/time 类型的字段裁剪为一个特定格式的值，如年、月、日、小时等等，详细说明参考：[Date and Time Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_datetime_functions.html#datetime_functions)
      - `ADD_MONTHS()`
      - `ROUND()`，对 DECIMAL 类型的值四舍五入，详细说明参考：[Mathematical Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_math_functions.html#math_functions)
-     - [STDDEV, STDDEV_SAMP, STDDEV_POP Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_stddev.html#stddev) 和 [VARIANCE, VARIANCE_SAMP, VARIANCE_POP Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_variance.html#variance)
+     - [  `STDDEV`, `STDDEV_SAMP`, `STDDEV_POP` Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_stddev.html#stddev) 和 [`VARIANCE`, `VARIANCE_SAMP`, `VARIANCE_POP` Functions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_variance.html#variance)
      - `MAX_INT()`、`MIN_SMALLINT()`等，用于判断数组是否超过最大值和最小值。
      - `IS_INF()` 和 `IS_NAN()`，用于判断是否为数值。
 - `SHOW PARTITIONS` 语句用于查看分区情况，详细说明参考：[SHOW Statement](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_show.html#show)
@@ -110,7 +110,7 @@ Impala 目前最新版本为 1.4.0，其下载地址为：<http://archive.cloude
 - 添加[内置函数](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_functions.html#functions)： `least()`, `greatest()`, `initcap()`
 - 添加 `ndv()` 函数来计算 `COUNT(DISTINCT col)`
 - `LIMIT` 语句接受数值表达式作为参数
--  SHOW CREATE TABLE
+-  `SHOW CREATE TABLE`
 - 添加两个参数：`--idle_query_timeout` 和 `--idle_session_timeout`，详细说明参考：[Setting Timeout Periods for Daemons, Queries, and Sessions](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_timeouts.html#timeouts)
 - 支持 UDFs，详细说明参考：[CREATE FUNCTION Statement](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_create_function.html#create_function) 和 [DROP FUNCTION Statement](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_drop_function.html#drop_function)
 - 添加新的同步元数据的机制，详细参考：[The Impala Catalog Service](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_concepts.html#intro_catalogd_unique_2)
