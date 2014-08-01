@@ -181,6 +181,13 @@ export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
 最后，只能放弃 lzo 压缩文件的想法，改为不做压缩。flume 中 HdfsSink 配置参数 hdfs.fileType 目前只有三种可选值：CompressedStream
 、DataStream、SequenceFile，为了保持向后兼容便于扩展，这里使用了 DataStream 的方式，不做数据压缩。
 
+
+## Update
+
+**注意：**
+
+最后又经过测试，发现 impala 不支持 hive 的自定义文件格式，详细说明请参考：[SQL Differences Between Impala and Hive](http://www.cloudera.com/content/cloudera-content/cloudera-docs/Impala/latest/Installing-and-Using-Impala/ciiu_langref_unsupported.html?scroll=langref_unsupported)
+
 # 日志采集
 
 使用 flume 来采集日志，只需要在应用程序服务器上安装一个 agent 就可以监听文件或者目录的改变来搜集日志，但是实际情况你不一定有权限访问应用服务器，更多的方式是应用服务器将日志推送到一个中央的日志集中存储服务器。你只有权限去从该服务器收集数据，并且该服务器对外提供 ftp 的接口供你访问。
@@ -189,151 +196,11 @@ export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
 
 对于当前情况而言，只能从 ftp 服务器轮询文件然后下载文件到本地，最后再将其导入到 hive 中去。以前，使用 kettle 做过这种事情，现在为了简单只是写了个 python 脚本来做这件事情，一个示例代码如下：
 
-```python
-# -*- encoding: utf8 -*-
-import os
-import sys
-import ftplib
-import datetime
-import pymongo
-import hashlib
-
-class FTPSync(object):
-    def __init__(self):
-        self.ftp = ftplib.FTP('XXX', 'XXX', 'XXX')
-        self.connection = pymongo.Connection("localhost", 27017)
-        self.db = self.connection["log"]
-        self.table = self.db["sp_visit_log"]
-        self.fail=0
-        self.total=0
-        os.chdir('/tmp/')        # 本地下载目录
-
-    def walk(self, next_dir):
-        print 'Walking to', next_dir
-
-        try:
-            self.ftp.cwd(next_dir)
-        except Exception:
-            print next_dir, ': :',0,":","dir not found"
-            return
-
-        if not os.path.exists(next_dir):
-            os.makedirs(next_dir)
-            os.chdir(next_dir)
-            ftp_curr_dir = self.ftp.pwd()
-            local_curr_dir = os.getcwd()
-            files, dirs = self.get_dirs_files()
-
-            for f in files:
-                # 先遍历md5文件，然后在去下载对应的原始文件
-                if not f.endswith('md5'):
-                    continue
-
-            self.total+=1
-            ori_file=f[:-4] #原始文件
-            tmp=self.table.find_one({"key_ymd":next_dir,"filename":ori_file})
-
-            #已经下载并load成功，不再下载
-            if tmp is not None and tmp.get("result") == 1:
-                print next_dir, ':', ori_file,":",1,":","file ingored"
-                continue
-
-            self.download(f)
-            try:
-                self.download(ori_file)
-            except:
-                print next_dir, ':', ori_file,":",0,":","file not found"
-                continue
-
-            if self.cmp_md5(ori_file,f):
-                import commands
-                cmds =[]
-                cmds.append("hadoop fs -mkdir -p /log/dw_srclog/test/day=" + next_dir)
-                cmds.append("hadoop fs -put "+local_curr_dir+"/"+ori_file+" /log/dw_srclog/test/day="+next_dir)
-                cmds.append("hive --database dw_srclog -e 'ALTER TABLE test ADD IF NOT EXISTS PARTITION (day="+next_dir+");'")
-                a,b = commands.getstatusoutput(";".join(cmds))
-                
-                if not a==0:
-                    self.fail+=1
-                    print "[ERROR] ",b
-                    self.log(tmp,next_dir,ori_file,0,b)
-                else:
-                    self.log(tmp,next_dir,ori_file,1,"file sucess")
-            else:
-                self.fail+=1
-                self.log(tmp,next_dir,ori_file,0,"md5 not match")
-
-            for d in dirs:
-                os.chdir(local_curr_dir)
-                self.ftp.cwd(ftp_curr_dir)
-                self.walk(d)
-
-    def log(self,tmp,next_dir,ori_file,result,msg):
-        print next_dir, ':', ori_file, ':',result,":",msg
-
-        if tmp is None:
-            self.table.insert({"key_ymd":next_dir,"filename":ori_file,"result":result,"msg":msg})
-        else:
-            self.table.update({"_id":tmp.get("_id")},{"key_ymd":next_dir,"filename":ori_file,"result":result,"msg":msg})
-
-    def cmp_md5(self,ori_file,md5_file):
-        md5_file_handler = open(md5_file, "rb")
-        ori_file_handler = open(ori_file, "rb")
-        try:
-            md5_1=self.hashfile(ori_file_handler, hashlib.md5())
-            md5_2=md5_file_handler.readline().split(" ")[0]
-            return md5_1 == md5_2
-        finally:
-            md5_file_handler.close()
-            ori_file_handler.close()
-
-    def download(self,file):
-        outf = open(file, 'wb')
-        try:
-            self.ftp.retrbinary('RETR %s' % file, outf.write)
-        finally:
-            outf.close()
-
-    def run(self,datestr):
-        self.walk(datestr)
-
-    def hashfile(self,afile, hasher, blocksize=65536):
-        buf = afile.read(blocksize)
-        while len(buf) > 0:
-            hasher.update(buf)
-            buf = afile.read(blocksize)
-        return hasher.hexdigest()
-
-    def get_dirs_files(self):
-        dir_res = []
-        self.ftp.dir('.', dir_res.append)
-        files = [f.split(None, 8)[-1] for f in dir_res if f.startswith('-')]
-        dirs = [f.split(None, 8)[-1] for f in dir_res if f.startswith('d')]
-        return (files, dirs)
-
-def main():
-    f = FTPSync()
-    today=datetime.date.today()
-    datestr=today.strftime("%Y%m%d")
-    f.run(datestr)
-    print datestr,",total:",f.total,",fail:",f.fail
-
-if __name__ == '__main__':
-    main()
-```
+{% gist javachen/6f7d14aae138c7a284e6 %}
 
 该脚本会再 crontab 中每隔5分钟执行一次。
 
-执行该脚本会往 mongodb 中记录一些状态信息，输出日志包括每个日志文件执行结果和提示信息以及最后的统计信息。
-
-```
-Walking to 20140725
-20140725 : audit-1-11.log : 0 : md5 not match
-20140725 : audit-2-11.log : 0 : md5 not match
-20140725 : audit-3-11.log : 1 : file ingored
-20140725 : audit-4-11.log : 0 : md5 not match
-20140725 ,total: 4 ,fail: 3
-```
+执行该脚本会往 mongodb 中记录一些状态信息，并往 logs 目录以天为单位记录日志。
 
 **暂时没有使用 flume 的原因：**
 
