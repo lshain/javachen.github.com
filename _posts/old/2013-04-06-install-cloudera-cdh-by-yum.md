@@ -813,6 +813,12 @@ $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 如果你设置了上面两个参数，那你可以不用手动去创建 history 子目录。
 
 
+另外设置 /tmp/hadoop-yarn 权限
+
+```bash
+sudo -u hdfs hadoop fs -mkdir -p /tmp/hadoop-yarn
+sudo -u hdfs hadoop fs -chmod -R 777 /tmp/hadoop-yarn
+```
 
 ## 验证 HDFS 结构：
 
@@ -824,6 +830,7 @@ $ sudo -u hdfs hadoop fs -ls -R /
 
 ```bash
 drwxrwxrwt   - hdfs hadoop          0 2014-04-19 14:31 /tmp
+drwxrwxrwx   - hdfs hadoop          0 2014-04-19 14:31 /tmp/hadoop-yarn
 drwxrwxrwx   - hdfs hadoop          0 2014-04-31 10:26 /user
 drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
 drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var
