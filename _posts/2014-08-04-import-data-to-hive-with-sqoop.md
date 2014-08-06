@@ -126,26 +126,27 @@ drwxr-xr-x   - root hadoop          0 2014-08-04 14:02 TBLS
 
 参数	|说明|
 |:---|:---|
-|`–append`|	|将数据追加到hdfs中已经存在的dataset中。使用该参数，sqoop将把数据先导入到一个临时目录中，然后重新给文件命名到一个正式的目录中，以避免和该目录中已存在的文件重名。|
-|`–as-avrodatafile`|	将数据导入到一个Avro数据文件中||
-|`–as-sequencefile`|	将数据导入到一个sequence文件中|
-|`–as-textfile`|	将数据导入到一个普通文本文件中，生成该文本文件后，可以在hive中通过sql语句查询出结果。|
-|`–boundary-query <statement>`|	边界查询，也就是在导入前先通过SQL查询得到一个结果集，然后导入的数据就是该结果集内的数据，格式如：`–boundary-query 'select id,creationdate from person where id = 3'`，表示导入的数据为id=3的记录，或者`select min(<split-by>), max(<split-by>) from <table name>`，注意查询的字段中不能有数据类型为字符串的字段，否则会报错|
-|`–columns<col,col,col…>`	|指定要导入的字段值，格式如：`–columns id,username`|
-|`–direct`	|直接导入模式，使用的是关系数据库自带的导入导出工具。官网上是说这样导入会更快|
-|`–direct-split-size`|	在使用上面direct直接导入的基础上，对导入的流按字节数分块，特别是使用直连模式从PostgreSQL导入数据的时候，可以将一个到达设定大小的文件分为几个独立的文件。|
-|`–inline-lob-limit`	|设定大对象数据类型的最大值|
-|`-m,–num-mappers`	|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的节点数|
-|`–query，-e<statement>`|	从查询结果中导入数据，该参数使用时必须指定`–target-dir`、`–hive-table`，在查询语句中一定要有where条件且在where条件中需要包含$CONDITIONS|
-|`–split-by<column-name>`	|表的列名，用来切分工作单元，一般后面跟主键ID|
-|`–table <table-name>`	|关系数据库表名，数据从该表中获取|
-|`–target-dir <dir>`	|指定hdfs路径|
-|`–warehouse-dir <dir>`|	与–target-dir不能同时使用，指定数据导入的存放目录，适用于hdfs导入，不适合导入hive目录|
-|`–where`	|从关系数据库导入数据时的查询条件，示例：`–where "id = 2"`|
-|`-z,–compress`	|压缩参数，默认情况下数据是没被压缩的，通过该参数可以使用gzip压缩算法对数据进行压缩，适用于SequenceFile, text文本文件, 和Avro文件|
-|`–compression-codec`	|Hadoop压缩编码，默认是gzip|
-|`–null-string <null-string>`	|可选参数，如果没有指定，则字符串null将被使用|
-|`–null-non-string<null-string>`	|可选参数，如果没有指定，则字符串null将被使用||
+|`--append`|	|将数据追加到hdfs中已经存在的dataset中。使用该参数，sqoop将把数据先导入到一个临时目录中，然后重新给文件命名到一个正式的目录中，以避免和该目录中已存在的文件重名。|
+|`--as-avrodatafile`|	将数据导入到一个Avro数据文件中||
+|`--as-sequencefile`|	将数据导入到一个sequence文件中|
+|`--as-textfile`|	将数据导入到一个普通文本文件中，生成该文本文件后，可以在hive中通过sql语句查询出结果。|
+|`--boundary-query <statement>`|	边界查询，也就是在导入前先通过SQL查询得到一个结果集，然后导入的数据就是该结果集内的数据，格式如：`--boundary-query 'select id,creationdate from person where id = 3'`，表示导入的数据为id=3的记录，或者 `select min(<split-by>), max(<split-by>) from <table name>`，注意查询的字段中不能有数据类型为字符串的字段，否则会报错|
+|`--columns<col,col,col…>`	|指定要导入的字段值，格式如：`--columns id,username`|
+|`--direct`	|直接导入模式，使用的是关系数据库自带的导入导出工具。官网上是说这样导入会更快|
+|`--direct-split-size`|	在使用上面direct直接导入的基础上，对导入的流按字节数分块，特别是使用直连模式从PostgreSQL导入数据的时候，可以将一个到达设定大小的文件分为几个独立的文件。|
+|`--inline-lob-limit`	|设定大对象数据类型的最大值|
+|`-m,--num-mappers`	|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的节点数|
+|`--query，-e<statement>`|	从查询结果中导入数据，该参数使用时必须指定`–target-dir`、`–hive-table`，在查询语句中一定要有where条件且在where条件中需要包含 `\$CONDITIONS`，示例：`--query 'select * from person where \$CONDITIONS ' --target-dir /user/hive/warehouse/person –hive-table person `|
+|`--split-by<column-name>`	|表的列名，用来切分工作单元，一般后面跟主键ID|
+|`--table <table-name>`	|关系数据库表名，数据从该表中获取|
+|`--delete-target-dir`|删除目标目录|
+|`--target-dir <dir>`	|指定hdfs路径|
+|`--warehouse-dir <dir>`|	与 `--target-dir` 不能同时使用，指定数据导入的存放目录，适用于hdfs导入，不适合导入hive目录|
+|`--where`	|从关系数据库导入数据时的查询条件，示例：`--where "id = 2"`|
+|`-z,--compress`	|压缩参数，默认情况下数据是没被压缩的，通过该参数可以使用gzip压缩算法对数据进行压缩，适用于SequenceFile, text文本文件, 和Avro文件|
+|`--compression-codec`	|Hadoop压缩编码，默认是gzip|
+|`--null-string <null-string>`	|可选参数，如果没有指定，则字符串null将被使用|
+|`--null-non-string<null-string>`	|可选参数，如果没有指定，则字符串null将被使用||
 
 
 示例程序：
@@ -165,7 +166,7 @@ $ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username h
 ### 使用 direct 模式：
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --delete-target-dir --direct -- --default-character-set=UTF-8
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --delete-target-dir --direct --default-character-set UTF-8
 ```
 
 ### 指定文件输出格式：
@@ -197,12 +198,12 @@ $ hadoop fs -cat TBLS/part-m-00002
 
 |参数|说明|
 |:---|:---|
-|`–enclosed-by <char>`	|给字段值前后加上指定的字符，比如双引号，示例：`–enclosed-by '\"'`，显示例子："3","jimsss","dd@dd.com"|
-|`–escaped-by <char>`	|给双引号作转义处理，如字段值为"测试"，经过 `–escaped-by "\\"` 处理后，在hdfs中的显示值为：`\"测试\"`，对单引号无效|
-|`–fields-terminated-by <char>`	|设定每个字段是以什么符号作为结束的，默认是逗号，也可以改为其它符号，如句号`.`，示例如：`–fields-terminated-by`|
-|`–lines-terminated-by <char>`	|设定每条记录行之间的分隔符，默认是换行串，但也可以设定自己所需要的字符串，示例如：`–lines-terminated-by "#"` 以#号分隔|
-|`–mysql-delimiters`|	Mysql默认的分隔符设置，字段之间以`,`隔开，行之间以换行`\n`隔开，默认转义符号是`\`，字段值以单引号`'`包含起来。|
-|`–optionally-enclosed-by <char>`|	enclosed-by是强制给每个字段值前后都加上指定的符号，而`-optionally-enclosed-by`只是给带有双引号或单引号的字段值加上指定的符号，故叫可选的|
+|`--enclosed-by <char>`	|给字段值前后加上指定的字符，比如双引号，示例：`--enclosed-by '\"'`，显示例子："3","jimsss","dd@dd.com"|
+|`--escaped-by <char>`	|给双引号作转义处理，如字段值为"测试"，经过 `--escaped-by "\\"` 处理后，在hdfs中的显示值为：`\"测试\"`，对单引号无效|
+|`--fields-terminated-by <char>`	|设定每个字段是以什么符号作为结束的，默认是逗号，也可以改为其它符号，如句号`.`，示例如：`--fields-terminated-by`|
+|`--lines-terminated-by <char>`	|设定每条记录行之间的分隔符，默认是换行串，但也可以设定自己所需要的字符串，示例如：`--lines-terminated-by "#"` 以#号分隔|
+|`--mysql-delimiters`|	Mysql默认的分隔符设置，字段之间以`,`隔开，行之间以换行`\n`隔开，默认转义符号是`\`，字段值以单引号`'`包含起来。|
+|`--optionally-enclosed-by <char>`|	enclosed-by是强制给每个字段值前后都加上指定的符号，而`--optionally-enclosed-by`只是给带有双引号或单引号的字段值加上指定的符号，故叫可选的|
 
 # 2.3 创建 hive 表
 
@@ -214,18 +215,18 @@ $ sqoop create-hive-table --connect jdbc:mysql://192.168.56.121:3306/metastore -
 
 |参数|说明|
 |:---|:---|
-|`–hive-home <dir>`|Hive的安装目录，可以通过该参数覆盖掉默认的hive目录|
-|`–hive-overwrite`|覆盖掉在hive表中已经存在的数据|
-|`–create-hive-table`|默认是false，如果目标表已经存在了，那么创建任务会失败|
-|`–hive-table`|后面接要创建的hive表|
-|`–table`|指定关系数据库表名|
+|`--hive-home <dir>`|Hive的安装目录，可以通过该参数覆盖掉默认的hive目录|
+|`--hive-overwrite`|覆盖掉在hive表中已经存在的数据|
+|`--create-hive-table`|默认是false，如果目标表已经存在了，那么创建任务会失败|
+|`--hive-table`|后面接要创建的hive表|
+|`--table`|指定关系数据库表名|
 
 # 2.4 导入数据到 hive
 
 执行下面的命令会将 mysql 中的数据导入到 hdfs 中，然后创建一个hive 表，最后再将 hdfs 上的文件移动到 hive 表的目录下面。
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --hive-import --hive-overwrite --create-hive-table --hive-table dw_srclog.TBLS --delete-target-dir
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --hive-import --hive-overwrite --create-hive-table --hive-table dw_srclog.TBLS --delete-target-dir
 ```
 
 说明：
@@ -268,9 +269,9 @@ $ sqoop import  ... --input-null-string '' --input-null-non-string ''
 
 |参数|说明|
 |:---|:---|
-|`–check-column (col)`|用来作为判断的列名，如id|
-|`–incremental (mode)`|append：追加，比如对大于last-value指定的值之后的记录进行追加导入。lastmodified：最后的修改时间，追加last-value指定的日期之后的记录|
-|`–last-value (value)`|指定自从上次导入后列的最大值（大于该指定的值），也可以自己设定某一值|
+|`--check-column (col)`|用来作为判断的列名，如id|
+|`--incremental (mode)`|append：追加，比如对大于last-value指定的值之后的记录进行追加导入。lastmodified：最后的修改时间，追加last-value指定的日期之后的记录|
+|`--last-value (value)`|指定自从上次导入后列的最大值（大于该指定的值），也可以自己设定某一值|
 
 # 2.6 合并 hdfs 文件
 
@@ -284,12 +285,12 @@ sqoop merge –new-data /test/p1/person –onto /test/p2/person –target-dir /t
 
 |参数|	说明|
 |:---|:---|
-|`–new-data <path>`	|Hdfs中存放数据的一个目录，该目录中的数据是希望在合并后能优先保留的，原则上一般是存放越新数据的目录就对应这个参数。|
-|`–onto <path>`	|Hdfs中存放数据的一个目录，该目录中的数据是希望在合并后能被更新数据替换掉的，原则上一般是存放越旧数据的目录就对应这个参数。|
-|`–merge-key <col>`	|合并键，一般是主键ID|
-|`–jar-file <file>`	|合并时引入的jar包，该jar包是通过Codegen工具生成的jar包|
-|`–class-name <class>`|对应的表名或对象名，该class类是包含在jar包中的。|
-|`–target-dir <path>`|合并后的数据在HDFS里的存放目录|
+|`--new-data <path>`	|Hdfs中存放数据的一个目录，该目录中的数据是希望在合并后能优先保留的，原则上一般是存放越新数据的目录就对应这个参数。|
+|`--onto <path>`	|Hdfs中存放数据的一个目录，该目录中的数据是希望在合并后能被更新数据替换掉的，原则上一般是存放越旧数据的目录就对应这个参数。|
+|`--merge-key <col>`	|合并键，一般是主键ID|
+|`--jar-file <file>`	|合并时引入的jar包，该jar包是通过Codegen工具生成的jar包|
+|`--class-name <class>`|对应的表名或对象名，该class类是包含在jar包中的。|
+|`--target-dir <path>`|合并后的数据在HDFS里的存放目录|
 
 # 3. 参考文章
 
