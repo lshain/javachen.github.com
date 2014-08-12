@@ -58,7 +58,7 @@ JB :
         avatar : 0
         time: 0
         title : 0
-        admin : 1
+        admin : 0
         length : 14
       visitors :
         num : 15

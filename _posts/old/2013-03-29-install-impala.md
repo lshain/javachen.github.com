@@ -28,8 +28,8 @@ Hadoop集群各节点的环境设置及安装过程见[使用yum安装CDH Hadoop
 
 目前最新版本为`1.4.0`，下载repo文件到 /etc/yum.repos.d/:
 
- - 如果你安装的是 CDH4，请下载Red Hat/CentOS 6
- - 如果你安装的是 CDH5，请下载Red Hat/CentOS 6
+ - 如果你安装的是 CDH4，请下载 [Red Hat/CentOS 6](http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1.3.1/)
+ - 如果你安装的是 CDH5，请下载 [Red Hat/CentOS 6](http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1.4.0/)
  
 然后，可以执行下面的命令安装所有的 impala 组件。
 
@@ -63,8 +63,8 @@ $ find / -name impala
 impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/usr/lib/impala/conf`，impala 的默认配置在/etc/default/impala，修改该文件中的 `IMPALA_CATALOG_SERVICE_HOST` 和 `IMPALA_STATE_STORE_HOST`
 
 ```
-IMPALA_CATALOG_SERVICE_HOST=desktop1
-IMPALA_STATE_STORE_HOST=desktop1
+IMPALA_CATALOG_SERVICE_HOST=cdh1
+IMPALA_STATE_STORE_HOST=cdh1
 IMPALA_STATE_STORE_PORT=24000
 IMPALA_BACKEND_PORT=22000
 IMPALA_LOG_DIR=/var/log/impala
