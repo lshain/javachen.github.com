@@ -60,7 +60,7 @@ solr.index.start.delay=5000
 solr.index.repeat.interval=3600000
 ```
 
-从上可以看出使用的Solr是嵌入式服务，Solr配置文件（schema.xml和solrconfig.xml）在https://github.com/BroadleafCommerce/DemoSite/tree/master/site/src/main/resources目录下。
+从上可以看出使用的Solr是嵌入式服务，Solr配置文件（schema.xml和solrconfig.xml）在 <https://github.com/BroadleafCommerce/DemoSite/tree/master/site/src/main/resources> 目录下。
 
 从源代码SolrSearchServiceImpl.java中可以看出,一共启动了两个Solr服务，分别对应primary和reindex两个solrcore，primary用于查询，reindex用于重建索引。
 
