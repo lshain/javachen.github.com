@@ -675,8 +675,8 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
     $HADOOP_HDFS_HOME/lib/*,
     $HADOOP_MAPRED_HOME/*,
     $HADOOP_MAPRED_HOME/lib/*,
-    $YARN_HOME/*,
-    $YARN_HOME/lib/*
+    $HADOOP_YARN_HOME/*,
+    $HADOOP_YARN_HOME/lib/*
     </value>
 </property>
 <property>
@@ -686,7 +686,8 @@ $HADOOP_CONF_DIR, $HADOOP_COMMON_HOME/*, $HADOOP_COMMON_HOME/lib/*, $HADOOP_HDFS
 ```
 
 **注意：**
-a. `yarn.nodemanager.aux-services`的值在cdh4中应该为`mapreduce.shuffle`，并配置参数`yarn.nodemanager.aux-services.mapreduce.shuffle.class`值为org.apache.hadoop.mapred.ShuffleHandler，在cdh5中为`mapreduce_shuffle`，这时候请配置`yarn.nodemanager.aux-services.mapreduce_shuffle.class`参数
+
+a. `yarn.nodemanager.aux-services` 的值在 cdh4 中应该为 `mapreduce.shuffle`，并配置参数`yarn.nodemanager.aux-services.mapreduce.shuffle.class`值为 org.apache.hadoop.mapred.ShuffleHandler ，在cdh5中为`mapreduce_shuffle`，这时候请配置`yarn.nodemanager.aux-services.mapreduce_shuffle.class`参数
 
 b. 这里配置了 `yarn.application.classpath` ，需要设置一些喜欢环境变量：
 
@@ -701,7 +702,7 @@ export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
 export HADOOP_LIBEXEC_DIR=${HADOOP_HOME}/libexec
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HDFS_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export YARN_HOME=/usr/lib/hadoop-yarn
+export HADOOP_YARN_HOME=/usr/lib/hadoop-yarn
 export YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 ```
 
@@ -1015,21 +1016,11 @@ $ yum install hbase hbase-master hbase-regionserver -y
  <property>
     <name>hbase.regionserver.checksum.verify</name>
     <value>false</value>
-    <description>
-        If set to  true, HBase will read data and then verify checksums  for
-        hfile blocks. Checksum verification inside HDFS will be switched off.
-        If the hbase-checksum verification fails, then it will  switch back to
-        using HDFS checksums.
-    </description>
-  </property>
+   </property>
   <property>
     <name>hbase.hstore.checksum.algorithm</name>
     <value>NULL</value>
-    <description>
-      Name of an algorithm that is used to compute checksums. Possible values
-      are NULL, CRC32, CRC32C.
-    </description>
-  </property>
+    </property>
 ```
 
 最后的配置如下，供参考：

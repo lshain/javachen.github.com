@@ -210,7 +210,9 @@ $ sudo -u hdfs hadoop dfsadmin -finalizeUpgrade
 $ hbase upgrade -execute
 ```
 
-然后在启动 HBase：
+如果你使用了 phoenix，则请删除 HBase lib 目录下对应的 phoenix 的 jar 包。
+
+启动 HBase：
 
 ```
 $ service hbase-master start
