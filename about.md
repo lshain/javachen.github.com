@@ -1,5 +1,5 @@
 ---
-title: About
+title: About me
 layout: page
 tagline: 
 group: navigation
@@ -10,3 +10,6 @@ comment: true
 
 个人微博：<http://weibo.com/chenzhijun>   
 个人Github：<https://github.com/javachen>
+
+{% include comments.html %}
+

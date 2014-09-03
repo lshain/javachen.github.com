@@ -1,4 +1,0 @@
-      <section>
-        <h2>Recently Visitors</h2>
-          <ul class="ds-recent-visitors" data-num-items="{{ site.JB.comments.duoshuo.visitors.num }}"></ul>
-      </section>

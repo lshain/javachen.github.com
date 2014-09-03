@@ -1,14 +1,11 @@
 JavaChen Blog
 ======
 
-*********
+[http:/blog.javachen.com](http://blog.javachen.com)博客的源码。
 
-博客源码：[http:/blog.javachen.com](http://blog.javachen.com)
-
-使用Github+jekyll-bootstrap-3+Markdown。
+该博客使用 jekyll+bootstrap-3+Markdown 搭建。
 
 # Tanks TO
 
-- [jekyll-bootstrap-3](https://github.com/javachen/jekyll-bootstrap-3)
-
+源码从 <https://gitcafe.com/Havee> 修改而来，感谢原作者！
 

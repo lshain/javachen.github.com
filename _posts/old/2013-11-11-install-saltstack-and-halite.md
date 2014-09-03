@@ -5,7 +5,6 @@ description: 本文记录安装SaltStack和halite过程。
 category: DevOps
 tags: [saltstack,halite]
 ---
-{% include JB/setup %}
 
 本文记录安装SaltStack和halite过程。
 

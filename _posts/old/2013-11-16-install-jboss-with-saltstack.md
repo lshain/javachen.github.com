@@ -6,8 +6,6 @@ category: DevOps
 tags: [saltstack]
 ---
 
-{% include JB/setup %}
-
 SaltStack是一个具备puppet与func功能为一身的集中化管理平台，其基于python实现，功能十分强大，各模块融合度及复用性极高。SaltStack 采用 zeromq 消息队列进行通信，和 Puppet/Chef 比起来，SaltStack 速度快得多。
 
 在开始使用SaltStack之前，首先要对SaltStack的基础进行一系列的学习，这里，强烈推荐官网的[Tutorial](http://docs.saltstack.com/topics/tutorials/walkthrough.html),在完成了整个Tutorial之后，通过Module Index页面，我们能够快速查阅Salt所有模块的功能与用法:[http://docs.saltstack.com/py-modindex.html](http://docs.saltstack.com/py-modindex.html)

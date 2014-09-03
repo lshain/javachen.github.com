@@ -29,9 +29,9 @@ Azkaban 包括三个关键组件：
 
 Azkaban 的下载地址：<http://azkaban.github.io/downloads.html>
 
-# 安装过程
+# 1. 安装过程
 
-## 安装 MySql
+## 1.1 安装 MySql
 
 目前 Azkaban只支持 MySql ，故需安装 MySql 服务器，安装 MySql 的过程这里不作介绍。
 
@@ -63,7 +63,7 @@ $ mysql -uazkaban -pazkaban
 mysql> use azkaban
 mysql> source create-all-sql-2.5.0.sql
 ```
-## 安装 azkaban-web-server
+## 1.2 安装 azkaban-web-server
 
 解压缩 azkaban-web-server-2.5.0.tar.gz。
 
@@ -78,14 +78,14 @@ mysql> source create-all-sql-2.5.0.sql
 - 修改 Jetty 服务器属性，包括 keystore 的相关配置
 - 修改邮件设置（可选）
 
-## 安装 azkaban-executor-server
+## 1.3 安装 azkaban-executor-server
 
 解压缩 azkaban-executor-server-2.5.0.tar.gz，然后修改配置文件，包括：
 
 - 修改时区：`default.timezone.id=America/Los_Angeles`
 - 修改 MySql 数据库配置
 
-## 用户设置
+## 1.4 用户设置
 
 进入 azkaban web 服务器 conf 目录，修改 azkaban-users.xml ，增加管理员用户：
 
@@ -99,7 +99,7 @@ mysql> source create-all-sql-2.5.0.sql
 </azkaban-users>
 ```
 
-## 启动服务
+## 1.5 启动服务
 
 azkaban-web-server，需要在 azkaban-web-server 目录下执行下面命令：
 
@@ -113,7 +113,7 @@ azkaban-executor-server，需要在 azkaban-executor-server 目录下执行下�
 sh bin/azkaban-executor-start.sh
 ```
 
-## 配置插件
+## 1.6 配置插件
 
 下载 [HDFS Browser](https://s3.amazonaws.com/azkaban2/azkaban-plugins/2.5.0/azkaban-hdfs-viewer-2.5.0.tar.gz) 插件，解压然后重命名为 hdfs，然后将其拷贝到 azkaban-web-server/plugins/viewer 目录下。
 

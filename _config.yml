@@ -1,104 +1,53 @@
-# For more see: http://jekyllrb.com/docs/permalinks
-# permalink: /:year/:title
-permalink: /:year/:month/:day/:title
-
-
-
-exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
-auto: true
-pygments: true
-paginate: 10
-
-markdown: redcarpet
-redcarpet:
-  extensions: [ "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
-
-title : JavaChen Blog
+# Site settings
+title : JavaChen's Blog
 tagline: Sharing Technology, Recording Life
 keywords : java, hadoop, hive, hbase, mapreduce, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
 description: 关注开源、Java、Hadoop、NoSql、Pentaho以及数据可视化
-version : 0.16
-author :
-  name : JavaChen
-  email : june.chan(a)foxmail.com
-  github : javachen
-  twitter : 
-  feedburner : 
-  weibo : chenzhijun
+baseurl: ""
+url: "//blog.javachen.com"
+highlighter: pygments
+paginate: 12
+author:
+    name: JavaChen
+    github: javachen
+    email: june.chan(a)foxmail.com
+    gitcafe: javachen
+    twitter:
+    facebook:
+    googleplus:
+    weibo: chenzhijun
+qiniudn: //javachen.qiniudn.com
+atom_path: /atom.xml
+rss_path: /rss.xml
 
-production_url : http://blog.javachen.com
+# Build settings
+markdown: redcarpet
+redcarpet:
+  extensions: [ "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
+permalink: /:year/:month/:day/:title
+exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 
-JB :
-  version : 0.3.0
-  BASE_PATH : false
-  ASSET_PATH : false
-  archive_path: /archive.html
-  categories_path : /categories.html
-  tags_path : /tags.html
-  atom_path : /atom.xml
-  rss_path : /rss.xml
 
-  comments :
-    provider : duoshuo
-    disqus :
-      short_name :
-    livefyre :
-      site_id :
-    intensedebate :
-      account :
-    facebook :
-      appid :
-      num_posts:
-      width: 580
-      colorscheme: light
-    duoshuo :
-      name : javachen
-      comments :
-        num: 5
-        avatar : 0
+# comment
+comments:
+  duoshuo:
+    name: javachen
+    rcomments:
+        num: 10
+        avatar: 0
         time: 0
-        title : 0
-        admin : 0
-        length : 14
-      visitors :
-        num : 15
-
-  analytics :
-    provider : custom
-    google :
-        tracking_id :
-    getclicky :
-      site_id :
-    mixpanel :
-        token : '_MIXPANEL_TOKEN_'
-    piwik :
-        baseURL : 'myserver.tld/piwik' # Piwik installation address (without protocol)
-        idsite : '1'                   # the id of the site on Piwik
-    51la :
-        uid : '12111481'
-       
-  sharing :
-    provider : false
-    
-  posts_collate :
-    provider : "custom"
-
-  tags_list :
-    provider : "custom"
-
-  # Settings for all other include helpers can be defined by creating 
-  # a hash with key named for the given helper. ex:
-  #
-  #   pages_list :
-  #     provider : "custom"
-  #
-  # Setting any helper's provider to 'custom' will bypass the helper code
-  # and include your custom code. Your custom file must be defined at:
-  #   ./_includes/custom/[HELPER]
-  # where [HELPER] is the name of the helper you are overriding.
-
-  blogroll : true
-  brlist :
+        title: 0
+        admin: 0
+        length: 12
+# 网站统计
+analytics:
+    baidu:
+        siteid:         # 百度统计 js 代码后的字符串
+    51la:
+        uid: 12111481
+# blogroll
+blogroll : true
+brlist :
     - text : JavaChen Blog
       url : //blog.javachen.com/
     - text : JavaChen Sitemap

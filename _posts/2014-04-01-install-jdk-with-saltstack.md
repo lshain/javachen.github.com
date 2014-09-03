@@ -6,8 +6,6 @@ category: DevOps
 tags: [saltstack]
 ---
 
-{% include JB/setup %}
-
 # 创建states文件
 
 在`/srv/salt`目录下创建jdk目录，并在jdk目录创建init.sls文件，init.sls文件内容如下：

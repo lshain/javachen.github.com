@@ -17,11 +17,11 @@ published: true
 
 现在的集群安装的是 cdh4.7 并配置了 NameNode HA，现在需要将其升级到 cdh5.1，升级原因这里不做说明。
 
-# 不兼容的变化
+# 1. 不兼容的变化
 
 升级前，需要注意 cdh5 有哪些不兼容的变化，具体请参考：[Apache Hadoop Incompatible Changes](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Release-Notes/cdh5rn_incompatible_changes.html#topic_3)。这里列出一些关键的地方：
 
-## YARN 的变化
+## 1.1 YARN 的变化
 
 - `YARN_HOME` 属性修改为` HADOOP_YARN_HOME`
 - `yarn-site.xml` 中做如下改变：
@@ -31,7 +31,7 @@ published: true
 
 需要特别注意的是 `YARN_HOME` 属性修改为` HADOOP_YARN_HOME`，要不然运行 mapreduce 会出现一些异常，我也是花了很长时间才注意到这一点。
 
-## HBase 的变化
+## 1.2 HBase 的变化
 
 1、CDH 5 Beta 1 (HBase 0.95) 中 `hbase.regionserver.checksum.verify` 默认值修改为 true
 
@@ -75,11 +75,11 @@ HConnection connection = HConnectionManager.createConnection(conf, pool);
 - [HBASE-6170](https://issues.cloudera.org/browse/HBASE-6170) 和 [HBASE-8909](https://issues.cloudera.org/browse/HBASE-8909) ` hbase.regionserver.lease.period`参数过时，使用 `hbase.client.scanner.timeout.period` 替换
 
 
-# 升级过程
+# 2. 升级过程
 
-## 1. 备份数据和停止所有服务
+## 2.1. 备份数据和停止所有服务
 
-### 1）让 namenode 进入安全模式
+### 2.1.1 让 namenode 进入安全模式
 
 在NameNode或者配置了 HA 中的 active NameNode上运行下面命令：
 
@@ -93,7 +93,7 @@ $ sudo -u hdfs hdfs dfsadmin -safemode enter
 $ sudo -u hdfs hdfs dfsadmin -saveNamespace
 ```
 
-### 2）备份配置文件、数据库和其他重要文件
+### 2.1.2 备份配置文件、数据库和其他重要文件
 
 配置文件包括：
 
@@ -106,7 +106,7 @@ $ sudo -u hdfs hdfs dfsadmin -saveNamespace
 /etc/default/impala
 ```
 
-### 3）停止所有服务
+### 2.1.3 停止所有服务
 
 在每个节点上运行：
 
@@ -118,16 +118,16 @@ $ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 $ for x in `cd /etc/init.d ; ls impala-*` ; do sudo service $x stop ; done
 ```
 
-### 4） 在每个节点上查看进程
+### 2.1.4 在每个节点上查看进程
 
 ```
 $ ps -aef | grep java
 ```
-## 2. 备份 hdfs 元数据
+## 2.2. 备份 hdfs 元数据
 
 查找 namenode 数据存放路径，并对其备份
 
-## 3. 卸载 cdh4
+## 2.3. 卸载 cdh4
 
 在每个节点卸载 cdh4 的所有组件：
 
@@ -141,7 +141,7 @@ $ sudo yum remove hadoop* hbase* hive* zookeeper* bigtop-utils bigtop-jsvc bigto
 $ sudo rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
 ```
 
-## 4. 安装 cdh5
+## 2.4. 安装 cdh5
 
 将备份的配置文件拷贝回对应的地方。
 
@@ -154,7 +154,7 @@ $ sudo yum install hadoop-hdfs-journalnode
 $ sudo service hadoop-hdfs-journalnode start 
 ```
 
-## 5. 更新 hdfs 元数据
+## 2.5. 更新 hdfs 元数据
 
 在NameNode或者配置了 HA 中的 active NameNode上运行下面命令：
 
@@ -189,7 +189,7 @@ $ sudo service hadoop-hdfs-datanode start
 $ sudo -u hdfs hadoop dfsadmin -finalizeUpgrade
 ```
 
-## 6. 更新 YARN
+## 2.6. 更新 YARN
 
 更新 YARN 需要注意以下节点：
 
@@ -200,7 +200,7 @@ $ sudo -u hdfs hadoop dfsadmin -finalizeUpgrade
 
 然后在期待 YARN 的相关服务。
 
-## 7. 更新 HBase
+## 2.7. 更新 HBase
 
 升级 HBase 之前，先启动 zookeeper。
 
@@ -219,7 +219,7 @@ $ service hbase-master start
 $ service hbase-regionserver start
 ```
 
-# 参考文章
+# 3. 参考文章
 
 - [Upgrading from CDH 4 to CDH 5](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_cdh4_to_cdh5_upgrade.html)
 - [CDH 5 Incompatible Changes](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Release-Notes/cdh5rn_incompatible_changes.html)
