@@ -258,79 +258,32 @@ Switch 语句的工作原理：switch 语句在做 case 值匹配时，会调用
 ## 3.6 循环
 
 ```groovy
-package com.javachen.groovy.test
+package com.javachen.groovy.loops
 
-// groovy中可以使用传统的while循环或for循环
-n = 0
-while (n < 10) {
-	print n + " "
-	n++
-}
-println ""
-for (i = 0; i < 10; i++) {
-	print i + " " 
-}
-println "\r\n"
+public class LoopTest{
+  public static void main(args){
+  	def list = ["Lars", "Ben", "Jack"]
+    // using a variable assignment
+    list.each{firstName->
+      println firstName
+    }
+    // using the it variable
+    list.each{println it}
 
-// groovy引入新风格的for循环
-for (i in 0 .. 9) {		// (i in 0 .. 9)表示循环从i=0开始，到i<=9时结束
-	print i + " "
-}
-println ""	
+	5.times {println "Times + $it "}
+	1.upto(3) {println "Up + $it "}
+	4.downto(1) {print "Down + $it "}
+	def sum = 0
+	1.upto(100) {sum += 1}
+	print sum
+	
+	(1..6).each {print "Range $it"}
 
-// 利用数值类型可以也可以进行循环
-// 利用整数的upto方法进行循环
-i = 0
-i.upto(9) {				// 整数的upto方法可以启动一个循环, 循环体在一个闭包内执行
-	print it + " "		// 在闭包内部，it关键字表示循环过程的整数值
-}
-println "; at the end of loop, the var i is " + i	// 循环结束后i的值仍是0，不会增加到9
-
-// upto方法可以用在常量上
-10.upto(19) {			// 10.upto(20)表示从10开始循环到19结束
-	print it + " "
-}
-println ""
-
-// upto方法中的整数是循环的起始点，time方法可以将整数作为循环的终止点
-10.times {				// 10.times表示从0开始循环到9结束
-	print it + " "
-}
-println ""
-
-// step方法可以设置循环的步长值
-0.step(11, 2) {			// 0.step(11, 2)表示从0循环到11，每次循环值增加2
-	print it + " "
-}
-println "\r\n"
-
-// 例子，利用groovy新语法输出一个99乘法表
-// 方法1
-for (i in 1 .. 9) {
-	for (j in 1 .. 9) {
-		z = i * j
-		print ((z < 10 ? " " + z : z) + " ")
-	}
-	println ""
-}
-// 方法2
-1.upto(9) {
-	x = it
-	1.upto(9) {
-		z = x * it
-		print ((z < 10 ? " " + z : z) + " ")
-	}
-	println ""
-}
-// 方法3
-9.times {
-	x = it + 1
-	9.times {
-		z = x * (it + 1)
-		print ((z < 10 ? " " + z : z) + " ")
-	}
-	println ""
-}
+	for (i in 0..9) {
+      println ("Hello $i")
+    }
+  }  
+} 
 ```
 
 Groovy对Java循环结构作了如下的修整：
@@ -341,8 +294,11 @@ Groovy对Java循环结构作了如下的修整：
   - times：`n.times` 函数，表示循环 n 次，循环变量 it 从0开始到n结束。
   - step：`n.step(x, y)` 函数，表示循环变量从 n 开始到 x 结束，每次循环后循环变量增加 y，所以整个循环次数为 `(x - n) / y `次；
 
+## 3.7 集合
+
 # 参考文章
 
 - [1] [Groovy基本语法(1)](http://blog.csdn.net/mousebaby808/article/details/7093946)  
 - [2] [Groovy基本语法(2)](http://blog.csdn.net/mousebaby808/article/details/7093950) 
 - [3] [Groovy基本语法(3)](http://blog.csdn.net/mousebaby808/article/details/7097114) 
+- [4] [Groovy with Eclipse - Tutorial](http://www.vogella.com/tutorials/Groovy/article.html)
