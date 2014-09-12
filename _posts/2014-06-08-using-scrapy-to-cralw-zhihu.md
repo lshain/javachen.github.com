@@ -15,7 +15,9 @@ published: true
 
 ---
 
-本文主要记录使用使用Scrapy登录并爬取知乎网站的思路。Scrapy的相关介绍请参考[使用Scrapy抓取数据](/2014/05/24/using-scrapy-to-cralw-data/)。
+本文主要记录使用使用Scrapy登录并爬取知乎网站的思路。Scrapy的相关介绍请参考 [使用Scrapy抓取数据](/2014/05/24/using-scrapy-to-cralw-data/)。
+
+相关代码，见 <https://github.com/javachen/scrapy-zhihu-github> 。
 
 # 使用cookie模拟登陆
 

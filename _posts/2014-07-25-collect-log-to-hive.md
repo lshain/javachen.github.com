@@ -194,9 +194,7 @@ export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
 
 日志采集有 pull 和 push 的两种方式，关于两种方式的一些说明，可以参考这篇文章：[大规模日志收集处理项目的技术总结](http://sdjcw.iteye.com/blog/1814703)。
 
-对于当前情况而言，只能从 ftp 服务器轮询文件然后下载文件到本地，最后再将其导入到 hive 中去。以前，使用 kettle 做过这种事情，现在为了简单只是写了个 python 脚本来做这件事情，一个示例代码如下：
-
-{% gist javachen/6f7d14aae138c7a284e6 %}
+对于当前情况而言，只能从 ftp 服务器轮询文件然后下载文件到本地，最后再将其导入到 hive 中去。以前，使用 kettle 做过这种事情，现在为了简单只是写了个 python 脚本来做这件事情，一个示例代码，请参考 <https://gist.github.com/javachen/6f7d14aae138c7a284e6#file-fetch-py>。
 
 该脚本会再 crontab 中每隔5分钟执行一次。
 

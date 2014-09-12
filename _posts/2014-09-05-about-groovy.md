@@ -50,6 +50,8 @@ Groovy 可以作为 javac 的一种可选编译器来生成标准的 Java 字节
 
 # 2. 使用
 
+使用压缩包安装，下载地址为 <http://groovy.codehaus.org/Download>，下载然后解压配置环境变量。
+
 在 mac 上安装 groovy：
 
 ```
