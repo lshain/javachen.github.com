@@ -133,7 +133,10 @@ if (dir.isDirectory()) {
     dir.eachFileRecurse { file ->  
         println file  
     }  
-}  
+} 
+
+dir.eachFileMatch(~/.*\.txt/) {File it-> println it.name  } //使正则表达式匹配文件名  
+dir.eachFileMatch(FILES, ~/.*\.txt/) { File it-> println it.name  }   
 ```
 
 # 3. 写文件
