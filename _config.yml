@@ -3,10 +3,7 @@ title : JavaChen's Blog
 tagline: Sharing Technology, Recording Life
 keywords : java, hadoop, hive, hbase, mapreduce, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
 description: 关注开源、Java、Hadoop、NoSql、Pentaho以及数据可视化
-baseurl: ""
 url: "//blog.javachen.com"
-highlighter: pygments
-paginate: 12
 author:
     name: JavaChen
     github: javachen
@@ -20,12 +17,50 @@ qiniudn: //javachen.qiniudn.com
 atom_path: /atom.xml
 rss_path: /rss.xml
 
-# Build settings
-markdown: redcarpet
-redcarpet:
-  extensions: [ "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
+# Handling Reading
+safe:         false
+include:      []
+exclude:      [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
+keep_files:   []
+encoding:     "utf-8"
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+textile_ext:  "textile"
+
+# Filtering Content
+show_drafts: null
+limit_posts: 0
+future:      true
+unpublished: false
+
+# Plugins
+whitelist: []
+gems:      []
+
+# Conversion
+markdown:    redcarpet
+highlighter: pygments
+lsi:         false
+excerpt_separator: "\n\n"
+
+# Serving
+detach:  false
+port:    4000
+host:    0.0.0.0
+baseurl: "" # does not include hostname
+
+# Backwards-compatibility
+relative_permalinks: false
+
+# Outputting
 permalink: /:year/:month/:day/:title
-exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
+paginate_path: /page:num
+paginate: 12
+timezone:    Asia/Shanghai
+
+
+# Markdown Processors
+redcarpet:
+  extensions: [ "fenced_code_blocks", "hard_wrap","autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify","no_intra_emphasis"]
 
 
 # comment

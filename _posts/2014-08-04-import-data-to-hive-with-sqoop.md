@@ -107,58 +107,55 @@ redhat
 使用 sqoop-import 命令可以从关系数据库导入数据到 hdfs。
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --target-dir /user/hive/result
 ```
 
 注意：
 
 - mysql jdbc url 请使用 ip 地址
 - 如果重复执行，会提示目录已经存在，可以手动删除
+- 如果不指定 `--target-dir`，导入到用户家目录下的 TBLS 目录
 
-执行上面的命令会当前用户的 home 目录创建一个子目录，其名称为表名：
-
-```bash
-$ hadoop fs -ls .
-drwxr-xr-x   - root hadoop          0 2014-08-04 14:02 TBLS
-```
 
 你还可以指定其他的参数：
 
 参数	|说明|
 |:---|:---|
-|`--append`|	|将数据追加到hdfs中已经存在的dataset中。使用该参数，sqoop将把数据先导入到一个临时目录中，然后重新给文件命名到一个正式的目录中，以避免和该目录中已存在的文件重名。|
-|`--as-avrodatafile`|	将数据导入到一个Avro数据文件中||
-|`--as-sequencefile`|	将数据导入到一个sequence文件中|
-|`--as-textfile`|	将数据导入到一个普通文本文件中，生成该文本文件后，可以在hive中通过sql语句查询出结果。|
-|`--boundary-query <statement>`|	边界查询，也就是在导入前先通过SQL查询得到一个结果集，然后导入的数据就是该结果集内的数据，格式如：`--boundary-query 'select id,creationdate from person where id = 3'`，表示导入的数据为id=3的记录，或者 `select min(<split-by>), max(<split-by>) from <table name>`，注意查询的字段中不能有数据类型为字符串的字段，否则会报错|
-|`--columns<col,col,col…>`	|指定要导入的字段值，格式如：`--columns id,username`|
-|`--direct`	|直接导入模式，使用的是关系数据库自带的导入导出工具。官网上是说这样导入会更快|
-|`--direct-split-size`|	在使用上面direct直接导入的基础上，对导入的流按字节数分块，特别是使用直连模式从PostgreSQL导入数据的时候，可以将一个到达设定大小的文件分为几个独立的文件。|
-|`--inline-lob-limit`	|设定大对象数据类型的最大值|
-|`-m,--num-mappers`	|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的节点数|
-|`--query，-e<statement>`|	从查询结果中导入数据，该参数使用时必须指定`–target-dir`、`–hive-table`，在查询语句中一定要有where条件且在where条件中需要包含 `\$CONDITIONS`，示例：`--query 'select * from person where \$CONDITIONS ' --target-dir /user/hive/warehouse/person –hive-table person `|
-|`--split-by<column-name>`	|表的列名，用来切分工作单元，一般后面跟主键ID|
-|`--table <table-name>`	|关系数据库表名，数据从该表中获取|
-|`--delete-target-dir`|删除目标目录|
-|`--target-dir <dir>`	|指定hdfs路径|
-|`--warehouse-dir <dir>`|	与 `--target-dir` 不能同时使用，指定数据导入的存放目录，适用于hdfs导入，不适合导入hive目录|
-|`--where`	|从关系数据库导入数据时的查询条件，示例：`--where "id = 2"`|
-|`-z,--compress`	|压缩参数，默认情况下数据是没被压缩的，通过该参数可以使用gzip压缩算法对数据进行压缩，适用于SequenceFile, text文本文件, 和Avro文件|
-|`--compression-codec`	|Hadoop压缩编码，默认是gzip|
-|`--null-string <null-string>`	|可选参数，如果没有指定，则字符串null将被使用|
-|`--null-non-string<null-string>`	|可选参数，如果没有指定，则字符串null将被使用||
+| `--append` |将数据追加到hdfs中已经存在的dataset中。使用该参数，sqoop将把数据先导入到一个临时目录中，然后重新给文件命名到一个正式的目录中，以避免和该目录中已存在的文件重名。|
+| `--as-avrodatafile` |	将数据导入到一个Avro数据文件中||
+| `--as-sequencefile` |	将数据导入到一个sequence文件中|
+| `--as-textfile` |	将数据导入到一个普通文本文件中，生成该文本文件后，可以在hive中通过sql语句查询出结果。|
+| `--boundary-query <statement>`|	边界查询，也就是在导入前先通过SQL查询得到一个结果集，然后导入的数据就是该结果集内的数据，格式如：`--boundary-query 'select id,no from t where id = 3'`，表示导入的数据为id=3的记录，或者 `select min(<split-by>), max(<split-by>) from <table name>`，注意查询的字段中不能有数据类型为字符串的字段，否则会报错|
+| `--columns<col,col>`	|指定要导入的字段值，格式如：`--columns id,username`|
+| `--direct`	|直接导入模式，使用的是关系数据库自带的导入导出工具。官网上是说这样导入会更快|
+| `--direct-split-size`|在使用上面direct直接导入的基础上，对导入的流按字节数分块，特别是使用直连模式从PostgreSQL导入数据的时候，可以将一个到达设定大小的文件分为几个独立的文件。|
+| `--inline-lob-limit`	|设定大对象数据类型的最大值|
+| `-m,--num-mappers`	|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的节点数|
+| `--query，-e <sql>`|	从查询结果中导入数据，该参数使用时必须指定`–target-dir`、`–hive-table`，在查询语句中一定要有where条件且在where条件中需要包含 `\$CONDITIONS`，示例：`--query 'select * from t where \$CONDITIONS ' --target-dir /tmp/t –hive-table t `|
+| `--split-by <column>`	|表的列名，用来切分工作单元，一般后面跟主键ID|
+| `--table <table-name>`	|关系数据库表名，数据从该表中获取|
+| `--delete-target-dir`|删除目标目录|
+| `--target-dir <dir>`	|指定hdfs路径|
+| `--warehouse-dir <dir>`|	与 `--target-dir` 不能同时使用，指定数据导入的存放目录，适用于hdfs导入，不适合导入hive目录|
+| `--where`	|从关系数据库导入数据时的查询条件，示例：`--where "id = 2"`|
+| `-z,--compress`	|压缩参数，默认情况下数据是没被压缩的，通过该参数可以使用gzip压缩算法对数据进行压缩，适用于SequenceFile, text文本文件, 和Avro文件|
+| `--compression-codec`	|Hadoop压缩编码，默认是gzip|
+| `--null-string <null-string>`	|可选参数，如果没有指定，则字符串null将被使用|
+| `--null-non-string <null-string>`	|可选参数，如果没有指定，则字符串null将被使用||
 
 
 示例程序：
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --columns "tbl_id,create_time" --where "tbl_id > 1" 
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --columns "tbl_id,create_time" --where "tbl_id > 1" --target-dir /user/hive/result
 ```
 
 ### 使用 sql 语句
 
+参照上表，使用 sql 语句查询时，需要指定 `$CONDITIONS`
+
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --query 'SELECT * from TBLS where tbl_id >1 ' -m 1 --target-dir /user/hive/result
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --query 'SELECT * from TBLS where \$CONDITIONS ' --split-by tbl_id -m 4 --target-dir /user/hive/result
 ```
 
 上面命令通过 `-m 1` 控制并发的 map 数。
@@ -166,32 +163,44 @@ $ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username h
 ### 使用 direct 模式：
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --delete-target-dir --direct --default-character-set UTF-8
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --delete-target-dir --direct --default-character-set UTF-8 --target-dir /user/hive/result
 ```
 
 ### 指定文件输出格式：
 
 ```bash
-$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --delete-target-dir
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --delete-target-dir  --target-dir /user/hive/result
 ```
 
 这时候查看 hdfs 中数据(观察分隔符是否为制表符)：
 
 ```bash
-$ hadoop fs -ls TBLS
+$ hadoop fs -ls result
 Found 5 items
--rw-r--r--   3 root hadoop          0 2014-08-04 16:07 TBLS/_SUCCESS
--rw-r--r--   3 root hadoop         69 2014-08-04 16:07 TBLS/part-m-00000
--rw-r--r--   3 root hadoop          0 2014-08-04 16:07 TBLS/part-m-00001
--rw-r--r--   3 root hadoop        142 2014-08-04 16:07 TBLS/part-m-00002
--rw-r--r--   3 root hadoop         62 2014-08-04 16:07 TBLS/part-m-00003
+-rw-r--r--   3 root hadoop          0 2014-08-04 16:07 result/_SUCCESS
+-rw-r--r--   3 root hadoop         69 2014-08-04 16:07 result/part-m-00000
+-rw-r--r--   3 root hadoop          0 2014-08-04 16:07 result/part-m-00001
+-rw-r--r--   3 root hadoop        142 2014-08-04 16:07 result/part-m-00002
+-rw-r--r--   3 root hadoop         62 2014-08-04 16:07 result/part-m-00003
 
-$ hadoop fs -cat TBLS/part-m-00000
+$ hadoop fs -cat result/part-m-00000
 34	1406784308	8	0	root	0	45	test1	EXTERNAL_TABLE	null	null	null
 
-$ hadoop fs -cat TBLS/part-m-00002
+$ hadoop fs -cat result/part-m-00002
 40	1406797005	9	0	root	0	52	test2	EXTERNAL_TABLE	null	null	null
 42	1407122307	7	0	root	0	59	test3	EXTERNAL_TABLE	null	null	null
+```
+
+指定空字符串：
+
+```bash
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --delete-target-dir --null-string '\\N' --null-non-string '\\N' --target-dir /user/hive/result
+```
+
+如果需要指定压缩：
+
+```bash
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --delete-target-dir --null-string '\\N' --null-non-string '\\N' --compression-codec "com.hadoop.compression.lzo.LzopCodec" --target-dir /user/hive/result
 ```
 
 附：可选的文件参数如下表。
@@ -263,6 +272,12 @@ $ sqoop import  ... --null-string '\\N' --null-non-string '\\N'
 
 ```bash
 $ sqoop import  ... --input-null-string '' --input-null-non-string ''
+```
+
+一个完整的例子如下：
+
+```bash
+$ sqoop import --connect jdbc:mysql://192.168.56.121:3306/metastore --username hiveuser --password redhat --table TBLS --fields-terminated-by "\t" --lines-terminated-by "\n" --hive-import --hive-overwrite --create-hive-table --hive-table dw_srclog.TBLS --null-string '\\N' --null-non-string '\\N' --compression-codec "com.hadoop.compression.lzo.LzopCodec"
 ```
 
 # 2.5 增量导入

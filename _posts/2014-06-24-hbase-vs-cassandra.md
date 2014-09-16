@@ -22,7 +22,7 @@ Cassandra可以看作是Amazon Dynamo的开源实现。和Dynamo不同之处在�
 # HBase vs Cassandra
 
 ||HBase|Cassandra|
-|---|:---|:---|
+|:---|:---|:---|
 |语言|Java|Java|
 |出发点|BigTable|BigTable and Dynamo|
 |License|Apache|Apache|
