@@ -9,7 +9,7 @@ keywords: CAP,最终一致性,可用性,分区容错性
 
 category: nosql
 
-tags: [CAP,BASE]
+tags: [cap]
 
 published: true
 

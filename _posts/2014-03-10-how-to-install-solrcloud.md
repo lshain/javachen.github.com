@@ -3,7 +3,7 @@ layout: post
 title: Apache SolrCloud安装
 description: 本文基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。
 category: Search-Engine
-tags: [solr, solrcloud]
+tags: [solr， solrcloud]
 ---
 
 SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。下面，我们基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。
@@ -48,7 +48,7 @@ SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，�
 $ tar zxvf zookeeper-3.4.5.tar.gz -C /opt/
 ```
 
-创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg,内容如下：
+创建zookeeper配置文件zookeeper-3.4.5/conf/zoo.cfg，内容如下：
 
 ```
 tickTime=2000
@@ -67,13 +67,13 @@ zookeeper的数据目录指定在`/data/zookeeper/data`，你也可以使用其�
 $ mkdir /data/zookeeper/data -p
 ```
 
-然后，初始化myid，三个节点编号依次为`1,2,3`，在其余节点上分别执行命令（注意修改编号）。
+然后，初始化myid，三个节点编号依次为`1，2，3`，在其余节点上分别执行命令（注意修改编号）。
 
 ```
 $ echo "1" >/data/zookeeper/data/myid
 ```
 
-然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1,第二个节点为2,第三个节点为3。
+然后，在第二个和第三个节点上依次重复上面的操作。这样第一个节点中myid内容为1，第二个节点为2，第三个节点为3。
 
 最后，启动ZooKeeper集群，在每个节点上分别启动ZooKeeper服务：
 
@@ -129,7 +129,7 @@ $ cp apache-tomcat-6.0.36/webapps/solr/WEB-INF/lib/* /usr/local/solrcloud/solr-l
 $ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI -zkhost 192.168.56.121:2181,192.168.56.122:2181,192.168.56.123:2181 -cmd bootstrap -solrhome /usr/local/solrhome 
 ```
 
-SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了`-Dbootstrap_confdir`参数, 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息,这样当我们改动配置时就不用一个个机子去更改了。
+SolrCloud集群的所有的配置存储在ZooKeeper。 一旦SolrCloud节点启动时配置了`-Dbootstrap_confdir`参数， 该节点的配置信息将发送到ZooKeeper上存储。基它节点启动时会应用ZooKeeper上的配置信息，这样当我们改动配置时就不用一个个机子去更改了。
 
 3、SolrCloud是通过ZooKeeper集群来保证配置文件的变更及时同步到各个节点上，所以，需要将配置文件上传到ZooKeeper集群中：
 
@@ -161,7 +161,7 @@ $ java -classpath .:/usr/local/solrcloud/solr-lib/* org.apache.solr.cloud.ZkCLI 
 $  zookeeper-3.4.5/bin/zkCli.sh 
 
 [zk: localhost:2181(CONNECTED) 0] ls /
-[configs, zookeeper, clusterstate.json, aliases.json, live_nodes, overseer, collections, overseer_elect]
+[configs,zookeeper,clusterstate.json,aliases.json,live_nodes,overseer,collections,overseer_elect]
 
 [zk: localhost:2181(CONNECTED) 1] ls /configs
 [primaryconf]
@@ -178,7 +178,7 @@ $  zookeeper-3.4.5/bin/zkCli.sh
 
 1、修改每个节点上的tomcat配置文件，在环境变量中添加zkHost变量
 
-编辑`apache-tomcat-6.0.36/bin/catalina.sh`,添加如下代码：
+编辑`apache-tomcat-6.0.36/bin/catalina.sh`，添加如下代码：
 
 ```
 JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.168.56.122:2181,192.168.56.122:2181,192.168.56.123:2181'
@@ -195,7 +195,7 @@ JAVA_OPTS='-Djetty.port=8080 -Dsolr.solr.home=/usr/local/solrhome -DzkHost=192.1
 
 说明：
 
-- `-Djetty.port`：配置solr使用的端口，默认为8983,这里我们使用的是tomcat，端口为8080
+- `-Djetty.port`：配置solr使用的端口，默认为8983，这里我们使用的是tomcat，端口为8080
 - `-Dsolr.solr.home`：配置solr/home
 - `-zkHost`: 配置zookeeper集群地址，多个地址逗号分隔
 
@@ -335,8 +335,8 @@ drwxr-xr-x 3 root root 4096 Mar 10 17:02 primary_shard2_replica1
 updateHandler节点下需要定义updateLog：
 
 ```xml
-    <!-- Enables a transaction log, currently used for real-time get.
-         "dir" - the target directory for transaction logs, defaults to the
+    <!-- Enables a transaction log， currently used for real-time get.
+         "dir" - the target directory for transaction logs， defaults to the
          solr data directory.  -->
     <updateLog>
       <str name="dir">${solr.data.dir:}</str>
