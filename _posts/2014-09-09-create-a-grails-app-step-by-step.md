@@ -328,7 +328,7 @@ static constraints = {
 
 然后在 messages.properties 文件里添加一行：
 
-```
+```properties
 user.activeDate.validator.invalid=Sorry, but the date is the past. 
 ```
 

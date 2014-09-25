@@ -218,7 +218,7 @@ task "create-dirs" << {
 
 然后运行下面命令：
 
-```
+```bash
 $ gradle create-dirs
 ```
 

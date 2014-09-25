@@ -22,7 +22,7 @@ published: true
 
 flume中有个 HdfsSink 组件，其可以压缩日志进行保存，故首先想到我们的日志应该以压缩的方式进行保存，遂选择了 lzo 的压缩格式，HdfsSink 的配置如下:
 
-```
+```properties
 agent-1.sinks.sink_hdfs.channel = ch-1
 agent-1.sinks.sink_hdfs.type = hdfs
 agent-1.sinks.sink_hdfs.hdfs.path = hdfs://cdh1:8020/user/root/events/%Y-%m-%d
@@ -38,10 +38,10 @@ agent-1.sinks.sink_hdfs.hdfs.codeC = lzop
 
 hive 目前是支持 lzo 压缩的，但是要想在 mapreduce 中 lzo 文件可以拆分，需要通过 hadoop 的 api 进行手动创建索引：
 
-```
-lzop a.txt
-hadoop fs -put a.txt.lzo /log/dw_srclog/sp_visit_log/ptd_ymd=20140720
-​hadoop jar /usr/lib/hadoop/lib/hadoop-lzo.jar com.hadoop.compression.lzo.LzoIndexer /log/sp_visit_log/ptd_ymd=20140720/a.txt.lzo
+```bash 
+$ lzop a.txt
+$ hadoop fs -put a.txt.lzo /log/dw_srclog/sp_visit_log/ptd_ymd=20140720
+​$ hadoop jar /usr/lib/hadoop/lib/hadoop-lzo.jar com.hadoop.compression.lzo.LzoIndexer /log/sp_visit_log/ptd_ymd=20140720/a.txt.lzo
 ```
 
 impala 目前也是在支持 lzo 压缩格式的文件的，故采用 lzo 压缩方式存储日志文件似乎是个可行方案。
@@ -169,8 +169,8 @@ LOCATION '/log/dw_srclog/test';
 
 要想使用SERDE，必须添加 hive-contrib-XXXX.jar 到 classpath，在 hive-env.sh 中添加下面代码;
 
-```
-export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
+```bash
+$ export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.10.0-cdh4.7.0.jar
 ```
 
 **注意：** 

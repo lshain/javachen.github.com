@@ -34,10 +34,10 @@ published: true
 ### 停掉集群
 
 ```bash
-​sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep impala` ; do service $x stop ; done'
-sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hive` ; do service $x stop ; done'
-sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hbase` ; do service $x stop ; done'
-sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hadoop` ; do service $x stop ; done'
+​$ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep impala` ; do service $x stop ; done'
+$ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hive` ; do service $x stop ; done'
+$ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hbase` ; do service $x stop ; done'
+$ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hadoop` ; do service $x stop ; done'
 ```
 
 ### 修改配置文件
@@ -111,16 +111,16 @@ sh /opt/cmd.sh ' for x in `ls /etc/init.d/|grep hadoop` ; do service $x stop ; d
 ```
 ### 同步配置文件
 
-```
-sh /opt/syn.sh /etc/hadoop/conf /etc/hadoop/
+```bash
+$ sh /opt/syn.sh /etc/hadoop/conf /etc/hadoop/
 ```
 
 在journalnode的三个节点上创建目录：
 
 ```bash
-ssh cdh1 'mkdir -p /data/dfs/nn /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs'
-ssh cdh2 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
-ssh cdh3 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
+$ ssh cdh1 'mkdir -p /data/dfs/nn /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs'
+$ ssh cdh2 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
+$ ssh cdh3 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
 ```
 
 ### 配置无密码登陆
@@ -130,27 +130,27 @@ ssh cdh3 'mkdir -p /data/dfs/jn ; chown -R hdfs:hdfs /data/dfs/jn'
 对于 cdh1： 
  
 ```bash           
-passwd hdfs
-su - hdfs
-ssh-keygen
-ssh-copy-id  cdh2
+$ passwd hdfs
+$ su - hdfs
+$ ssh-keygen
+$ ssh-copy-id  cdh2
 ```
 
 对于 cdh2： 
 
 ```bash
-passwd hdfs
-su - hdfs
-ssh-keygen
-ssh-copy-id   cdh1
+$ passwd hdfs
+$ su - hdfs
+$ ssh-keygen
+$ ssh-copy-id   cdh1
 ```
 
 ### 启动journalnode
 
 ```bash
-ssh cdh1 'service hadoop-hdfs-journalnode start'
-ssh cdh2 'service hadoop-hdfs-journalnode start'
-ssh cdh3 'service hadoop-hdfs-journalnode start'
+$ ssh cdh1 'service hadoop-hdfs-journalnode start'
+$ ssh cdh2 'service hadoop-hdfs-journalnode start'
+$ ssh cdh3 'service hadoop-hdfs-journalnode start'
 ```
 
 ### 格式化集群
@@ -158,13 +158,13 @@ ssh cdh3 'service hadoop-hdfs-journalnode start'
 cdh1作为Active NameNode，先格式化：
 
 ```bash
-ssh cdh1 'sudo -u hdfs hdfs namenode -format'
+$ ssh cdh1 'sudo -u hdfs hdfs namenode -format'
 ```
 
 然后启动Active NameNode：
 
 ```bash
-service hadoop-hdfs-namenode start
+$ service hadoop-hdfs-namenode start
 ```
 
 ### 同步 Standby NameNode
@@ -172,13 +172,13 @@ service hadoop-hdfs-namenode start
 cdh2作为 Standby NameNode，在该节点运行：
 
 ```bash
-sudo -u hdfs hadoop namenode -bootstrapStandby
+$ sudo -u hdfs hadoop namenode -bootstrapStandby
 ```
 
 然后，启动 Standby NameNode：
 
 ```bash
-service hadoop-hdfs-namenode start
+$ service hadoop-hdfs-namenode start
 ```
 
 ### 配置自动切换
@@ -186,20 +186,20 @@ service hadoop-hdfs-namenode start
 在两个NameNode上安装hadoop-hdfs-zkfc
 
 ```bash
-ssh cdh1 'yum install hadoop-hdfs-zkfc;'
-ssh cdh2 'yum install hadoop-hdfs-zkfc;'
+$ ssh cdh1 'yum install hadoop-hdfs-zkfc;'
+$ ssh cdh2 'yum install hadoop-hdfs-zkfc;'
 ```
 
 在任意一个NameNode上下面命令，其会创建一个znode用于自动故障转移。
 
-```
-hdfs zkfc -formatZK
+```bash
+$ hdfs zkfc -formatZK
 ```
 
 然后再两个 NameNode 节点上启动zkfc：
 
-```
-service hadoop-hdfs-zkfc start
+```bash
+$ service hadoop-hdfs-zkfc start
 ```
 
 ### 其他操作
@@ -208,15 +208,15 @@ service hadoop-hdfs-zkfc start
 
 执行手动切换：
 
-```
-sudo -u hdfs hdfs haadmin -failover nn1 nn2
+```bash
+$ sudo -u hdfs hdfs haadmin -failover nn1 nn2
 ```
 
 查看某Namenode的状态：
 
-```
-sudo -u hdfs hdfs haadmin -getServiceState nn2
-sudo -u hdfs hdfs haadmin -getServiceState nn1
+```bash
+$ sudo -u hdfs hdfs haadmin -getServiceState nn2
+$ sudo -u hdfs hdfs haadmin -getServiceState nn1
 ```
 
 ## 配置HBase HA
@@ -233,9 +233,9 @@ sudo -u hdfs hdfs haadmin -getServiceState nn1
 
 在 zookeeper 节点上运行/usr/lib/zookeeper/bin/zkCli.sh
 
-```
-ls /hbase/splitlogs
-rmr /hbase/splitlogs
+```bash
+$ ls /hbase/splitlogs
+$ rmr /hbase/splitlogs
 ```
 
 最后启动 hbase 服务。
@@ -244,7 +244,7 @@ rmr /hbase/splitlogs
 
 运行下面命令：
 
-```
+```bash
 $ metatool -listFSRoot  
 hdfs://cdh1/user/hive/warehouse  
 $ metatool -updateLocation hdfs://mycluster hdfs://cdh1 -tablePropKey avro.schema.url 
