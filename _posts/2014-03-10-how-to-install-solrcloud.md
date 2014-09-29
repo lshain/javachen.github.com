@@ -3,7 +3,7 @@ layout: post
 title: Apache SolrCloud安装
 description: 本文基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。
 category: Search-Engine
-tags: [solr， solrcloud]
+tags: [solr,solrcloud]
 ---
 
 SolrCloud通过ZooKeeper集群来进行协调，使一个索引进行分片，各个分片可以分布在不同的物理节点上，多个物理分片组成一个完成的索引Collection。SolrCloud自动支持Solr Replication，可以同时对分片进行复制，冗余存储。下面，我们基于Solr最新的4.4.0版本进行安装配置SolrCloud集群。
