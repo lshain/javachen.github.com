@@ -208,18 +208,25 @@ uploadArchives {
 gradle 不像 maven 那样有固定的项目结构，gradle 原声 API 是不支持的，要想做到这一点，我们可以自定义一个 task。
 
 ```groovy
+apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'war' 
 
-task "create-dirs" << {
-   sourceSets*.java.srcDirs*.each { it.mkdirs() }
-   sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-}
+task createJavaProject << { 
+  sourceSets*.java.srcDirs*.each { it.mkdirs() } 
+  sourceSets*.resources.srcDirs*.each { it.mkdirs()} 
+} 
+
+task createWebProject(dependsOn: 'createJavaProject') << { 
+  def webAppDir = file("$webAppDirName") 
+  webAppDir.mkdirs() 
+} 
 ```
 
 然后运行下面命令：
 
 ```bash
-$ gradle create-dirs
+$ gradle createJavaProject
 ```
 
 另外，还可以使用 [gradle templates](http://tellurianring.com/wiki/gradle/templates) 创建项目目录结构，这里不做研究。
@@ -227,9 +234,8 @@ $ gradle create-dirs
 更加标准的方法是使用 gradle 自带的插件创建项目目录结构，例如创建 java 项目结构：
 
 ```bash
-$ gradle init --type java-library.
+$ gradle init --type java-library
 ```
-
 
 这时候的目录结果如下：
 
@@ -253,6 +259,30 @@ $ tree -L 4
             └── LibraryTest.java
 
 7 directories, 8 files
+```
+
+如果想要导入到 idea 中，先执行下面命令：
+
+```bash
+$ gradle idea
+```
+
+这时候的 build.gradle 如下：
+
+```groovy
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'war'
+
+task createJavaProject << {
+      sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.resources.srcDirs*.each { it.mkdirs()}
+}
+
+task createWebProject(dependsOn: 'createJavaProject') << {
+      def webAppDir = file("$webAppDirName")
+        webAppDir.mkdirs()
+}
 ```
 
 # 参考
