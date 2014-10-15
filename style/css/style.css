@@ -1,13 +1,11 @@
-@import url(http://fonts.useso.com/css?family=Galdeano);
-@import url(http://fonts.useso.com/css?family=Electrolize);
-@import url(http://fonts.useso.com/css?family=Cuprum);
+
 body {
-	font-size:15px;
-	word-spacing:1px;
+	font-size:16px;
 	line-height: 1.6;
+	letter-spacing: 0.2px;
 	color:rgba(51,51,51,0.9);
 	background-color:rgba(204,204,204,0.3);
-	font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",Trebuchet,"Trebuchet MS",Tahoma,"Lucida Grande","Lucida Sans Unicode",Verdana,sans-serif;
+	font-family:"Helvetica Neue",Helvetica,微软雅黑,"Microsoft Yahei",sans-serif;
 }
 :hover,:focus {
 	transition:all 0.3s
@@ -15,16 +13,14 @@ body {
 a:hover,a:focus {
 	text-decoration:none
 }
-h1{font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:1.6em;color:rgba(0,153,153,0.8);}
-h2{font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:1.4em;color:rgba(0,153,153,0.8);}
-h3{font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:1.2em;color:rgba(0,153,153,0.8);}
-h4{font-family:"Cuprum","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:1em;color:rgba(0,153,153,0.8);}
+h1{font-size:32px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h2{font-size:26px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h3{font-size:22px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h4{font-size:18px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
 
-.post-header {
-	padding-bottom:10px;
-}
 .post-header h1 {
-	border-bottom:2px solid rgba(0,153,153,0.8)
+	font: bold 32px/48px georgia,"华文楷体",STKaiti,Kaiti,sans-serif;
+	border-bottom: 2px dashed rgba(0,153,153,0.8);
 }
 .post-header h2,.post-header h3 {
 	border-bottom:2px dashed rgba(0,153,153,0.8)
@@ -106,6 +102,7 @@ table tbody tr:hover {
 .wrapper .small {
 	color:rgba(119,119,119,0.8)
 }
+
 .wrapper p li,.wrapper ol li,.wrapper ul li,.wrapper table li {
 	margin:1px 0
 }
@@ -177,7 +174,7 @@ table tbody tr:hover {
 	background:rgba(85,85,85,0.3);
 	position:fixed;
 	bottom:80px;
-	right:10px;
+	right:18px;
 	text-align:center;
 	cursor:pointer;
 	display:none
