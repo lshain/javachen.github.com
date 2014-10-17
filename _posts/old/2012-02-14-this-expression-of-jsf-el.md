@@ -22,7 +22,7 @@ description: 本篇文章来自以前公司的一套jsf+seam+Hibernate的一套�
 
 我们将上述功能处理为“this”表达式。其功能模型为：
 <div class="pic">
-<img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-of-el.jpg" alt="" title="this expression of el"/>
+<img src="http://javachen-rs.qiniudn.com/images/2012/02/this-expression-of-el.jpg" alt="" title="this expression of el"/>
 </div>
 页面A和页面B分别引用了通用功能T,内含this相关的El表达式，通过分析处理，分别映射到对应的页面动作类的属性A.name和B.name。A和B可以从相同的基类C派生而来，只需C类实现了name属性即可，A类和B类也可以毫不相关，但是它们具有相同的属性name。
 
@@ -35,5 +35,5 @@ description: 本篇文章来自以前公司的一套jsf+seam+Hibernate的一套�
 <strong>“this”EL表达式算法</strong>
 算法流程如下图：
 <div class="pic">
-<img src="http://jc-resource.qiniudn.com/images/2012/02/this-expression-flow-of-el.jpg" alt="" title="this expression flow of el"/>
+<img src="http://javachen-rs.qiniudn.com/images/2012/02/this-expression-flow-of-el.jpg" alt="" title="this expression flow of el"/>
 </div>

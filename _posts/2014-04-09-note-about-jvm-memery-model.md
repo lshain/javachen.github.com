@@ -97,7 +97,7 @@ published: true
 
 下图展示了JVM的主要结构：
 
-![Java-Memory.png](http://jc-resource.qiniudn.com/images/2014/Java-Memory.png)
+![Java-Memory.png](http://javachen-rs.qiniudn.com/images/2014/Java-Memory.png)
 
 可以看出，JVM主要由运行时数据区（内存空间）、执行引擎以及与本地库接口等组成。其中运行时数据区又由方法区、堆、虚拟机栈、程序计数器、本地方法栈组成。
 
@@ -218,7 +218,7 @@ JDK1.4中出现了NIO，其引入了一种基于通道(Channel)与缓冲区(Buff
 
 ## 垃圾回收过程
 
-![jvm-heap.png](http://jc-resource.qiniudn.com/images/2014/jvm-heap.png)
+![jvm-heap.png](http://javachen-rs.qiniudn.com/images/2014/jvm-heap.png)
 
 JVM采用一种分代回收 (generational collection) 的策略，用较高的频率对年轻的对象(young generation)进行扫描和回收，这种叫做minor collection，而对老对象(old generation)的检查回收频率要低很多，称为major collection。这样就不需要每次GC都将内存中所有对象都检查一遍。
 

@@ -60,7 +60,7 @@ hive中有一些InputFormat的实现类，如：
 
 HiveInputFormat的子类有：
 
-![HiveInputFormat的子类](http://jc-resource.qiniudn.com/images/2013/implement-of-hiveinputformat.png)
+![HiveInputFormat的子类](http://javachen-rs.qiniudn.com/images/2013/implement-of-hiveinputformat.png)
 
 # HiveInputFormat
 

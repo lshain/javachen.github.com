@@ -24,6 +24,16 @@ published: true
 
 以下操作均以root用户运行，并且以下脚本的当前目录为`/opt`，即所有的下载的文件都会保存在`/opt`目录下。
 
+需要安装的软件如下：
+
+- OpenResty：WEB应用服务器，部署lua代码，提供URL供用户调用和访问
+- LuaJIT：LUA代码解释器，使用OpenResty中集成的版本
+- GD库：C图形库
+- Lua-GD库：Lua绑定的C图形库，使得lua可调用gd
+- Lua-Resty-UUID库：用于生成UUID，保证图片命名唯一性
+- LuaSocket：lua 的 socket 库
+
+
 # 安装lua
 
 安装编译所需软件包:
@@ -45,6 +55,11 @@ $ make linux install
 
 # 安装 gd
 
+GD版本：gd-2.0.33
+
+下载地址: <http://www.boutell.com/gd/http/gd-2.0.33.tar.gz>
+
+
 ```bash
 $ yum install -y libjpeg-devel libpng-devel freetype-devel fontconfig-devel libXpm-devel
 
@@ -56,6 +71,18 @@ $ make && make install
 ```
 
 # 安装 Lua-gd 库
+
+Lua-GD版本：lua-gd-2.0.33r2
+
+下载地址: <http://jaist.dl.sourceforge.net/project/lua-gd/lua-gd/lua-gd-2.0.33r2%20%28for%20Lua%205.1%29/lua-gd-2.0.33r2.tar.gz>
+
+开发手册可参考: <http://ittner.github.io/lua-gd/manual.html>
+
+>说明：
+>
+>须先完成gd的安装，且版本号必须为gd-2.0.33 
+>调用Lua-GD库的lua代码须由OpenResty中集成的LuaJIT解释执行
+
 
 ```bash
 $ wget http://sourceforge.net/projects/lua-gd/files/lua-gd/lua-gd-2.0.33r2%20(for%20Lua%205.1)/lua-gd-2.0.33r2.tar.gz/download?use_mirror=jaist
@@ -97,7 +124,11 @@ $ make && make install
 
 # 安装 Lua-resty-UUID 库 
 
-> 调用系统的UUID模块生成的由32位16进制（0-f）数组成的的串，本模块进一步压缩为62进制。正如你所想，生成的UUID越长，理论冲突率就越小，请根据业务需要自行斟酌。 基本思想为把系统生成的16字节（128bit）的UUID转换为62进制（a-zA-Z0-9），同时根据业务需要进行截断。
+调用系统的UUID模块生成的由32位16进制（0-f）数组成的的串，本模块进一步压缩为62进制。正如你所想，生成的UUID越长，理论冲突率就越小，请根据业务需要自行斟酌。 基本思想为把系统生成的16字节（128bit）的UUID转换为62进制（a-zA-Z0-9），同时根据业务需要进行截断。
+
+
+下载地址: <https://github.com/dcshi/lua-resty-UUID/archive/master.zip>
+
 
 ```bash
 $ yum -y install libuuid-devel
@@ -122,6 +153,14 @@ $ unzip nginx-http-sysguard-master.zip
 >OpenResty（也称为 ngx_openresty）是一个全功能的 Web 应用服务器。它打包了标准的 Nginx 核心，很多的常用的第三方模块，以及它们的大多数依赖项。 
 >OpenResty 中的 LuaJIT 组件默认未激活，需使用 `--with-luajit` 选项在编译 OpenResty 时激活,使用`--add-module`，添加上sysguard模块
 
+安装的版本：1.2.7.6
+
+下载地址：
+
+- <http://openresty.org/#Download>
+- <http://openresty.org/download/ngx_openresty-1.2.7.6.tar.gz>
+
+先安装依赖软件，然后在编译代码，编译时使用`--perfix`选项指定 OpenResty 的安装目录，`--with-luajit` 选项激活 LuaJIT 组件
 ```bash
 $ yum -y install gcc make gmake openssl-devel pcre-devel readline-devel zlib-devel
 
@@ -130,6 +169,11 @@ $ tar zvxf ngx_openresty-1.2.7.6.tar.gz
 $ cd ngx_openresty-1.2.7.6
 $ ./configure --with-luajit --with-http_stub_status_module --add-module=/opt/nginx-http-sysguard-master/
 $ gmake && gmake install
+```
+
+创建软连接：
+
+```
 $ ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 ```
 
@@ -151,6 +195,11 @@ $ cp redis.conf /usr/local/redis/conf/
 
 > LuaSocket是一个Lua扩展库，它能很方便地提供SMTP、HTTP、FTP等网络议访问操作。
 
+LuaSocket版本：luasocket-2.0-beta2
+
+下载地址: <http://files.luaforge.net/releases/luasocket/luasocket/luasocket-2.0-beta2/luasocket-2.0-beta2.tar.gz>
+
+
 ```bash
 $ wget http://files.luaforge.net/releases/luasocket/luasocket/luasocket-2.0.2/luasocket-2.0.2.tar.gz
 $ tar zvxf luasocket-2.0.2.tar.gz
@@ -160,10 +209,23 @@ $ make -f makefile.Linux
 
 # 安装 redis-lua 库
 
+Redis-Lua版本：2.0
+
+下载地址: <https://github.com/nrk/redis-lua/archive/version-2.0.zip>
+
+
 ```bash
 $ wget https://github.com/nrk/redis-lua/archive/version-2.0.zip
 $ unzip redis-lua-version-2.0.zip
 $ cd redis-lua-version-2.0
+```
+
+然后，拷贝redis.lua至所需目录。
+
+lua调用方式如下：
+
+```
+local redis = require(“redis”)
 ```
 
 # 安装 zklua
@@ -209,10 +271,6 @@ mkdir -p /usr/local/openresty/lualib/zklua										#拷贝zklua文件到/usr/lo
 cp cd zklua-master/zklua.so /usr/local/openresty/lualib/zklua/
 ```
 
-最后，`/usr/local/openresty/lualib`目录结构如下：
-
-```
-```
 
 ## 配置nginx
 
@@ -286,6 +344,11 @@ useradd -M -s /sbin/nologin www
 	location /captcha-check {
 	        content_by_lua_file /usr/local/openresty/nginx/luascripts/luajit/captcha-check.lua;
         }
+
+        # 验证码删除	
+	location /captcha-delete {
+		content_by_lua_file /usr/local/openresty/nginx/luascripts/luajit/captcha-delete.lua;
+	}
 	
 	#-----------------------------------------------------------------------------------------
 
@@ -335,6 +398,7 @@ useradd -M -s /sbin/nologin www
 }
 ```
 
+上面将 ngnix 的端口修改为10002。
 
 ## 配置redis
 
@@ -396,8 +460,30 @@ $ vim /etc/ld.so.conf.d/captcha.conf
 /usr/local/openresty/luajit/lib
 ```
 
-
-
-
-
 # 测试
+
+## 生成验证码
+
+URL：http://IP:10002/captcha
+
+然后从响应Header中获取图片的picgid=XXXXX
+
+## 验证码校验
+
+URL：http://IP:10002/captcha-check?image=XXXXX&str=ABCD
+http://IP:10002/captcha-check?image=XXXXX&str=ABCD&delete=true
+或
+http://IP:10002/captcha-check?image=XXXXX&str=ABCD&delete=false
+
+参数说明如下：
+
+- 参数image：要校验的验证码图片的picgid。
+- 参数str：用户输入的验证码字符串。
+- 参数delete：当且仅当传该参数且参数值为false时，校验完成之后该验证码记录不被删除，验证码未过期之前可多次校验，用于异步校验应用中；否则，若不传该参数或者其值为true，校验完成之后该验证码记录删除。
+
+## 验证码删除
+
+URL：http://IP:10002/captcha-delete?image=XXXXX
+
+其中image为要删除的验证码图片的picgid。
+

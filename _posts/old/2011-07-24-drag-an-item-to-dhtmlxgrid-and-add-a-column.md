@@ -94,7 +94,7 @@ tree.dragger.addDragLanding(sinput, new s_control);
 </pre>
 该方法主要做的事情是计算拖拽落脚时候鼠标焦点所在的列，然后在其右边添加一新的列。
 <div class="pic">
-<img class="aligncenter" title="QQ20110724211631" src="http://jc-resource.qiniudn.com/images/2011/07/QQ20110724211631.png" alt="" />
+<img class="aligncenter" title="QQ20110724211631" src="http://javachen-rs.qiniudn.com/images/2011/07/QQ20110724211631.png" alt="" />
 </div>
 
 本例最后的代码：

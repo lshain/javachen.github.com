@@ -247,7 +247,7 @@ row表示格式为： 每个数字对应1 byte
 
 总结一下，`tsdb`表结构如下：
 
-![opentsdb-tsdb-schema](http://jc-resource.qiniudn.com/images/2014/opentsdb-tsdb-schema.png)
+![opentsdb-tsdb-schema](http://javachen-rs.qiniudn.com/images/2014/opentsdb-tsdb-schema.png)
 
 ### 3.3.2 UID Table Schema
 
@@ -296,7 +296,7 @@ cdh1 id:tagv \x00\x00\x01
 
 总结一下，`tsdb-uid`表结构如下：
 
-![opentsdb-tsdb-uid-schema](http://jc-resource.qiniudn.com/images/2014/opentsdb-tsdb-uid-schema.png)
+![opentsdb-tsdb-uid-schema](http://javachen-rs.qiniudn.com/images/2014/opentsdb-tsdb-uid-schema.png)
 
 上图对应的一个datapoint如下：
 

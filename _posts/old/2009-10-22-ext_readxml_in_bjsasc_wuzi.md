@@ -575,6 +575,6 @@ xml文件格式：
 
 最后做成的效果图，如下：
 
-![bjsasc](http://jc-resource.qiniudn.com/images/2014/bjsasc.bmp)
+![bjsasc](http://javachen-rs.qiniudn.com/images/2014/bjsasc.bmp)
 
 如果你想要获取更详细说明，请移步：[Extjs读取xml文件生成动态表格和表单(续)](/2009/10/31/ext_readxml_in_bjsasc_wuzi_continue/)

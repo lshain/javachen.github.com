@@ -12,7 +12,7 @@ qrsync qiniu-images.conf
 
 cd _posts
 
-grep '/style/images' */* |sed  's/\/style\/images/http:\/\/jc\-resource\.qiniudn\.com\/images/g'
+grep '/style/images' */* |sed  's/\/style\/images/http:\/\/javachen\-rs\.qiniudn\.com\/images/g'
 cd ..
 
 rm -rf _site/*
