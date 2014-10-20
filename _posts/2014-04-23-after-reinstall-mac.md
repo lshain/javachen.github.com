@@ -128,10 +128,10 @@ $ git clone https://github.com/scrooloose/nerdtree.git
 
 # 安装Ruby
 
-先安装依赖(待补充)：
+先安装依赖：
 
 ```bash
-$ brew install libksba
+$ brew install libksba autoconf automake libtool gcc46 libyaml readline
 ```
 通过rvm安装ruby：
 

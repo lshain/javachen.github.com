@@ -18,6 +18,10 @@ h2{font-size:26px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷
 h3{font-size:22px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
 h4{font-size:18px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
 
+.post-header {
+	padding-bottom: 20px; 
+}
+
 .post-header h1 {
 	font: bold 32px/48px georgia,"华文楷体",STKaiti,Kaiti,sans-serif;
 	border-bottom: 2px dashed rgba(0,153,153,0.8);
