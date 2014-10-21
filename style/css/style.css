@@ -1,6 +1,6 @@
 
 body {
-	font-size:16px;
+	font-size:14px;
 	line-height: 1.6;
 	letter-spacing: 0.2px;
 	color:rgba(51,51,51,0.9);
@@ -13,21 +13,22 @@ body {
 a:hover,a:focus {
 	text-decoration:none
 }
-h1{font-size:32px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
-h2{font-size:26px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
-h3{font-size:22px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
-h4{font-size:18px;color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h1, h2, h3, h4, h5 {color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h1{font-size:32px;border-bottom: 1px dashed rgba(0,153,153,0.8);}
+h2{font-size:26px;}
+h3{font-size:22px;}
+h4{font-size:18px;}
 
 .post-header {
-	padding-bottom: 20px; 
+	padding-bottom: 10px; 
 }
 
 .post-header h1 {
 	font: bold 32px/48px georgia,"华文楷体",STKaiti,Kaiti,sans-serif;
-	border-bottom: 2px dashed rgba(0,153,153,0.8);
+	border-bottom: 2px solid rgba(0,153,153,0.8);
 }
 .post-header h2,.post-header h3 {
-	border-bottom:2px dashed rgba(0,153,153,0.8)
+	border-bottom:1px dashed rgba(0,153,153,0.8)
 }
 blockquote{display:block;text-align:justify;font-size: 15.5px;border-left: 5px solid rgba(0,153,153,0.8)}
 blockquote p{margin:0;padding:.5em 0;}
@@ -119,12 +120,12 @@ table tbody tr:hover {
 	line-height:1.429
 }
 .wrapper p code,.wrapper ol code,.wrapper ul code,.wrapper table code {
-	background-color:rgba(255,204,204,0.3);
+	background-color:#fefbf3;
 	box-shadow:0 0 1px rgba(0,0,0,0.167);
 	border:1px solid rgba(102,102,102,0.167);
 }
 .wrapper .highlight pre {
-	background-color:rgba(255,204,204,0.3);
+	background-color:#fefbf3;
 	box-shadow:0 0 3px rgba(0,0,0,0.267);
 	border:1px solid rgba(102,102,102,0.35);
 	max-width:98%;
@@ -150,7 +151,7 @@ table tbody tr:hover {
 }
 .wrapper .tag-box li a {
 	padding:2px 4px;
-	background-color:rgba(255,204,204,0.3);
+	background-color:#fefbf3;
 	border-radius:4px
 }
 .raw .col-md-9 {

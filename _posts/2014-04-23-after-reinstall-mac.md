@@ -74,7 +74,7 @@ $ brew install brew-cask
 我通过 Brew cask 安装的软件：
 
 ```bash
-$ brew cask install  alfred bettertouchtool qq omnigraffle
+$ brew cask install qq omnigraffle xtrafinder
 ```
 
 # 安装oh-my-zsh
