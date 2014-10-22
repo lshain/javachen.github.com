@@ -54,7 +54,7 @@ relative_permalinks: false
 # Outputting
 permalink: /:year/:month/:day/:title
 paginate_path: /page:num
-paginate: 12
+paginate: 15
 timezone:    Asia/Shanghai
 
 
@@ -68,7 +68,7 @@ comments:
   duoshuo:
     name: javachen
     rcomments:
-        num: 10
+        num: 8
         avatar: 0
         time: 0
         title: 0

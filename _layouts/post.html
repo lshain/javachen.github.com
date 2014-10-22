@@ -2,11 +2,17 @@
 layout: default
 ---
 <time class="small">{{ page.date | date: "%Y.%m.%d" }}</time>
-<div class="post-header"><h1> {{ page.title }}  {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1></div>
+<div class="post-title"><h1> {{ page.title }}  {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1></div>
 
 <div>{{ content }}</div>
 
-<hr/>
+<br/>
+
+<div id="pay" style="text-align:center;">
+  ----EOF-----
+  <br>
+  {% include support.html %}
+</div>
 
 <ul class="list-inline">
   <li><i class="glyphicon glyphicon-share"></i></li><li>Share to:</li>
