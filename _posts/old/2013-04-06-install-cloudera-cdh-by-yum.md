@@ -10,6 +10,9 @@ Update:
 
 - `2014.07.21` 添加 lzo 的安装
 - `2014.05.20` 修改cdh4为cdh5进行安装。
+- `2014.10.22` 添加安装 cdh5.2 注意事项。
+ - 1、[cdh5.2](http://blog.javachen.com/2014/10/20/cdh5.2-release/) 发布了，其中 YARN 的一些配置参数做了修改，需要特别注意。
+ - 2、Hive 的元数据如果使用 PostgreSql9.X，需要设置 `standard_conforming_strings` 为 off
 
 # 环境
 

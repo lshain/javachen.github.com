@@ -17,7 +17,7 @@ tags: [mac]
 本文主要记录重装Mac系统之后的一些软件安装和环境变量配置。
 
 
-# 系统设置
+# 系统偏好配置
 
 设置主机名：
 
@@ -33,6 +33,18 @@ $ sudo scutil --set HostName june－mac
 defaults write com.apple.finder AppleShowAllFiles -bool true  #显示Mac隐藏文件的命令
 defaults write com.apple.finder AppleShowAllFiles -bool false #隐藏Mac隐藏文件的命令
 ```
+
+- 触控板
+ - 光标与点按 > 三指移动 ：这样就可以三指拖动文件了
+ - 光标与点按 > 轻拍来点按 ：习惯了轻点完成实际按击
+ - 光标与点按 > 跟踪速度 ：默认的指针滑动速度有点慢，设置成刻度7差不多了 
+- 键盘
+ - 快捷键 > 服务 > 新建位于文件夹位置的终端标签：勾选这设置并设置了快捷键（control+cmt+c），以后在Finder中选择一个目录按下快捷键就可以打开终端并来到当前当前目录，功能很实用啊！注意：在Finder中文件列表使用分栏方式显示时快捷键是无效的。
+- 网络
+ -高级... > DNS ：公共DNS是必须添加的
+  - 223.6.6.6 阿里提供的
+  - 8.8.4.4 google提供的
+  - 114.114.114.114 114服务提供的
 
 # 下载常用软件
 
@@ -102,11 +114,21 @@ echo 'source ~/.bashrc' >>~/.zshrc
 echo 'source ~/.bash_profile' >>~/.zshrc
 ```
 
-使用ctrl+r查找历史命令，在 `~/.zshrc` 中添加：
+使用 `ctrl+r` 查找历史命令，在 `~/.zshrc` 中添加：
 
 ```
 bindkey "^R" history-incremental-search-backward
 ```
+
+使用上默认加了很多快捷映射，如：
+
+- `~`: 进入用户根目录，可以少打cd三个字符了
+- `l`: 相当于ls -lah
+- `..`: 返回上层目录
+- `...`: 返回上上层目录
+- `-`: 打开上次所在目录
+
+具体的可以查看其[配置文件](https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/aliases.zsh)。
 
 # 安装Vim插件
 安装pathogen：
@@ -185,3 +207,7 @@ $ ln -s ~/app/repository/m2/  ~/.m2/repository
 
 # Python开发环境
 TODO
+
+# 参考文章
+
+- [MacBook Pro 配置](http://nootn.com/blog/archives/87/)

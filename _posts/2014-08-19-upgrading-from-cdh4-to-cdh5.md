@@ -219,6 +219,21 @@ $ service hbase-master start
 $ service hbase-regionserver start
 ```
 
+## 2.8. 更新 hive
+
+在启动hive之前，进入 `/usr/lib/hive/bin` 执行下面命令升级元数据：
+
+`
+./schematool -dbType 数据库类型 -upgradeSchemaFrom 版本号
+`
+
+然后启动 hive 服务：
+
+```
+$ service hive-metastore start
+$ service hive-server2 start
+```
+
 # 3. 参考文章
 
 - [Upgrading from CDH 4 to CDH 5](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_cdh4_to_cdh5_upgrade.html)

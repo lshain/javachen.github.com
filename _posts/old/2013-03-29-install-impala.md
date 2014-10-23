@@ -8,7 +8,7 @@ keywords: impala
 
 与Hive类似，Impala也可以直接与HDFS和HBase库直接交互。只不过Hive和其它建立在MapReduce上的框架适合需要长时间运行的批处理任务。例如：那些批量提取，转化，加载（ETL）类型的Job，而Impala主要用于实时查询。
 
-Hadoop集群各节点的环境设置及安装过程见[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/),参考这篇文章。
+Hadoop集群各节点的环境设置及安装过程见 [使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/)，参考这篇文章。
 
 # 1. 环境
 
@@ -26,14 +26,14 @@ Hadoop集群各节点的环境设置及安装过程见[使用yum安装CDH Hadoop
 
 # 2. 安装
 
-目前最新版本为`1.4.0`，下载repo文件到 /etc/yum.repos.d/:
+目前，CDH 5.0.1中 impala 版本为`1.4.0`，下载repo文件到 /etc/yum.repos.d/:
 
  - 如果你安装的是 CDH4，请下载 [Red Hat/CentOS 6](http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1.3.1/)
  - 如果你安装的是 CDH5，请下载 [Red Hat/CentOS 6](http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1.4.0/)
  
 然后，可以执行下面的命令安装所有的 impala 组件。
 
-```
+```bash
 $ sudo yum install impala impala-server impala-state-store impala-catalog impala-shell -y
 ```
 
@@ -62,7 +62,7 @@ $ find / -name impala
 
 impalad的配置文件路径由环境变量`IMPALA_CONF_DIR`指定，默认为`/usr/lib/impala/conf`，impala 的默认配置在/etc/default/impala，修改该文件中的 `IMPALA_CATALOG_SERVICE_HOST` 和 `IMPALA_STATE_STORE_HOST`
 
-```
+```bash
 IMPALA_CATALOG_SERVICE_HOST=cdh1
 IMPALA_STATE_STORE_HOST=cdh1
 IMPALA_STATE_STORE_PORT=24000
@@ -93,23 +93,27 @@ ENABLE_CORE_DUMPS=false
 # HBASE_CONF_DIR=/etc/impala/conf
 ```
 
+设置 impala 可以使用的最大内存：在上面的 `IMPALA_SERVER_ARGS` 参数值后面添加 `-mem_limit=70%` 即可。
+
+如果需要设置 impala 中每一个队列的最大请求数，需要在上面的 `IMPALA_SERVER_ARGS` 参数值后面添加 `-default_pool_max_requests=-1` ，该参数设置每一个队列的最大请求数，如果为-1，则表示不做限制。
+
 在节点cdh1上拷贝`hive-site.xml`、`core-site.xml`、`hdfs-site.xml`至`/usr/lib/impala/conf`目录并作下面修改在`hdfs-site.xml`文件中添加如下内容：
 
 ```xml
-	<property>
-	    <name>dfs.client.read.shortcircuit</name>
-	    <value>true</value>
-	</property>
-	 
-	<property>
-	    <name>dfs.domain.socket.path</name>
-	    <value>/var/run/hadoop-hdfs/dn._PORT</value>
-	</property>
+<property>
+    <name>dfs.client.read.shortcircuit</name>
+    <value>true</value>
+</property>
+ 
+<property>
+    <name>dfs.domain.socket.path</name>
+    <value>/var/run/hadoop-hdfs/dn._PORT</value>
+</property>
 
-	<property>
-	  <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
-	  <value>true</value>
-	</property>
+<property>
+  <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
+  <value>true</value>
+</property>
 ```
 
 同步以上文件到其他节点。
@@ -119,13 +123,13 @@ ENABLE_CORE_DUMPS=false
 
 在每个节点上创建/var/run/hadoop-hdfs:
 
-```
+```bash
 $ mkdir -p /var/run/hadoop-hdfs
 ```
 
 拷贝postgres jdbc jar：
 
-```
+```bash
 $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/impala/lib/
 ```
 
@@ -133,7 +137,7 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/impala/lib/
 
 在 cdh1节点启动：
 
-```
+```bash
 $ service impala-state-store start
 $ service impala-catalog start
 ```
@@ -144,7 +148,7 @@ $ service impala-catalog start
 
 使用`impala-shell`启动Impala Shell，连接 cdh1，并刷新元数据
 
-```
+```bash
 >impala-shell
 [Not connected] >connect cdh1
 [cdh1:21000] >invalidate metadata
@@ -152,9 +156,76 @@ $ service impala-catalog start
 [cdh2:21000] >select * from t
 ```
 
-当在 Hive 中创建表之后，第一次启动 impala-shell 时，请先执行 INVALIDATE METADATA 语句以便 Impala 识别出新创建的表(在 Impala 1.2 及以上版本，你只需要在一个节点上运行 INVALIDATE METADATA ，而不是在所有的 Impala 节点上运行)。
+当在 Hive 中创建表之后，第一次启动 impala-shell 时，请先执行 `INVALIDATE METADATA` 语句以便 Impala 识别出新创建的表(在 Impala 1.2 及以上版本，你只需要在一个节点上运行 `INVALIDATE METADATA` ，而不是在所有的 Impala 节点上运行)。
+
+你也可以添加一些其他参数，查看有哪些参数：
+
+```bash
+# impala-shell -h
+Usage: impala_shell.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -i IMPALAD, --impalad=IMPALAD
+                        <host:port> of impalad to connect to
+  -q QUERY, --query=QUERY
+                        Execute a query without the shell
+  -f QUERY_FILE, --query_file=QUERY_FILE
+                        Execute the queries in the query file, delimited by ;
+  -k, --kerberos        Connect to a kerberized impalad
+  -o OUTPUT_FILE, --output_file=OUTPUT_FILE
+                        If set, query results will written to the given file.
+                        Results from multiple semicolon-terminated queries
+                        will be appended to the same file
+  -B, --delimited       Output rows in delimited mode
+  --print_header        Print column names in delimited mode, true by default
+                        when pretty-printed.
+  --output_delimiter=OUTPUT_DELIMITER
+                        Field delimiter to use for output in delimited mode
+  -s KERBEROS_SERVICE_NAME, --kerberos_service_name=KERBEROS_SERVICE_NAME
+                        Service name of a kerberized impalad, default is
+                        'impala'
+  -V, --verbose         Enable verbose output
+  -p, --show_profiles   Always display query profiles after execution
+  --quiet               Disable verbose output
+  -v, --version         Print version information
+  -c, --ignore_query_failure
+                        Continue on query failure
+  -r, --refresh_after_connect
+                        Refresh Impala catalog after connecting
+  -d DEFAULT_DB, --database=DEFAULT_DB
+                        Issue a use database command on startup.
+```
+   
+
+例如，你可以在连接时候字段刷新：
+
+```bash
+$ impala-shell -r
+Starting Impala Shell in unsecure mode
+Connected to 192.168.56.121:21000
+Server version: impalad version 1.1.1 RELEASE (build 83d5868f005966883a918a819a449f636a5b3d5f)
+Invalidating Metadata
+Welcome to the Impala shell. Press TAB twice to see a list of available commands.
+
+Copyright (c) 2012 Cloudera, Inc. All rights reserved.
+
+(Shell build version: Impala Shell v1.1.1 (83d5868) built on Fri Aug 23 17:28:05 PDT 2013)
+Query: invalidate metadata
+Query finished, fetching results ...
+
+Returned 0 row(s) in 5.13s
+[192.168.56.121:21000] >                  
+```
+
+使用 impala 导出数据：
+
+```bash
+$ impala-shell -i '192.168.56.121:21000' -r -q "select * from test" -B --output_delimiter="\t" -o result.txt
+```
 
 # 6. 参考文章
-* [Impala安装文档完整版](http://yuntai.1kapp.com/?p=904)
-* [Impala入门笔记](http://tech.uc.cn/?p=817)
-* [Installing and Using Cloudera Impala](https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala)
+
+- [Impala安装文档完整版](http://yuntai.1kapp.com/?p=904)
+- [Impala入门笔记](http://tech.uc.cn/?p=817)
+- [Installing and Using Cloudera Impala](https://ccp.cloudera.com/display/IMPALA10BETADOC/Installing+and+Using+Cloudera+Impala)
