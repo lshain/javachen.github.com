@@ -133,6 +133,32 @@ $ mkdir -p /var/run/hadoop-hdfs
 $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/impala/lib/
 ```
 
+## 3.3 用户要求
+
+impala 安装过程中会创建名为 impala 的用户和组，不要删除该用户和组。
+
+如果想要 impala 和 YARN 和 Llama 合作，需要把 impala 用户加入 hdfs 组。
+
+impala 在执行 DROP TABLE 操作时，需要把文件移到到 hdfs 的回收站，所以你需要创建一个 hdfs 的目录 /user/impala，并将其设置为impala 用户可写。同样的，impala 需要读取 hive 数据仓库下的数据，故需要把 impala 用户加入 hive 组。
+
+impala 不能以 root 用户运行，因为 root 用户不允许直接读。
+
+创建 impala 用户家目录并设置权限：
+
+```bash
+sudo -u hdfs hadoop fs -mkdir /user/impala
+sudo -u hdfs hadoop fs -chown impala /user/impala
+```
+
+查看 impala 用户所属的组：
+
+```bash
+$ groups impala
+impala : impala hadoop hdfs hive
+```
+
+由上可知，impala 用户是属于 imapal、hadoop、hdfs、hive 用户组的
+
 # 4. 启动服务
 
 在 cdh1节点启动：

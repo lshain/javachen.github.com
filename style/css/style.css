@@ -14,10 +14,10 @@ a:hover,a:focus {
 	text-decoration:none
 }
 h1, h2, h3, h4, h5 {color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
-h1{font-size:32px;border-bottom: 1px dashed rgba(0,153,153,0.8);}
-h2{font-size:26px;}
-h3{font-size:22px;}
-h4{font-size:18px;}
+h1{font-size:28px;border-bottom: 1px dashed rgba(0,153,153,0.8);}
+h2{font-size:24px;}
+h3{font-size:20px;}
+h4{font-size:16px;}
 
 .post-title{
 	padding-bottom: 25px; 
