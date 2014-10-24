@@ -1,9 +1,9 @@
 ---
 layout: post
 
-title:  Spark安装和使用
+title:  Spark 安装和使用
 
-description: 本文主要记录Spark的安装过程（包括Standalone模式和基于yarn的部署模式）以及一些基本使用方法。
+description: 本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。
 
 keywords:  
 
@@ -15,24 +15,27 @@ published: true
 
 ---
 
-为了方便，这里使用CDH的yum源方式来安装spark。
+本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.0。
 
 - 操作系统：centos6.4
-- CDH版本：5.0.1
+- CDH 版本：5.1.0
+- Spark 版本：1.0
 
-关于yum源的配置以及hadoop的安装，请参考[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
+关于 yum 源的配置以及 hadoop 的安装，请参考[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
 
-# 1. Spark安装
+# 1. Spark 安装
 
-选择一个节点来安装spark，首先查看spark相关的包有哪些：
+选择一个节点来安装 Spark ，首先查看 Spark 相关的包有哪些：
 
 ```bash
 $ yum list |grep spark
-spark-core.noarch                        0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
-spark-master.noarch                      0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
-spark-python.noarch                      0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
-spark-worker.noarch                      0.9.0+cdh5.0.1+33-1.cdh5.0.1.p0.25.el6
-hue-spark.x86_64                         3.5.0+cdh5.0.1+371-1.cdh5.0.1.p0.30.el6
+hue-spark.x86_64                          3.6.0+cdh5.1.0+86-1.cdh5.1.0.p0.36.el6
+python-sparklines.noarch                  0.9-2.el6                      epel
+spark-core.noarch                         1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
+spark-history-server.noarch               1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
+spark-master.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
+spark-python.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
+spark-worker.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
 ```
 
 以上包作用如下：
@@ -42,20 +45,25 @@ hue-spark.x86_64                         3.5.0+cdh5.0.1+371-1.cdh5.0.1.p0.30.el6
 - spark-master: spark-master初始化脚本
 - spark-python: spark的Python客户端
 - hue-spark: spark和hue集成包
-
-## 1.1 安装rpm
+- spark-history-server
 
 安装脚本如下：
 
 ```bash
-$ sudo yum install spark-core spark-master spark-worker spark-python
+$ sudo yum install spark-core spark-master spark-worker spark-python spark-history-server
 ```
 
-## 1.2 配置
+# 2. 配置 
 
-修改配置文件：
+## 修改配置文件
 
-可以修改配置文件/etc/spark/conf/spark-env.sh，其内容如下，你可以根据需要做一些修改。
+设置环境变量，在 `.bashrc` 中加入下面一行，并使其生效：
+
+```properties
+export SPARK_HOME=/usr/lib/spark
+```
+
+可以修改配置文件 `/etc/spark/conf/spark-env.sh`，其内容如下，你可以根据需要做一些修改。
 
 ```bash
 export STANDALONE_SPARK_MASTER_HOST=`hostname`
@@ -83,17 +91,38 @@ fi
 #export PATH=$PATH:$SCALA_HOME/bin
 ```
 
-> 注意：这里使用的是CDH中的spark，其中一些参数的默认值和Apache的spark中的不一致。
+> 注意：这里使用的是 CDH 中的 Spark ，其中一些参数的默认值和 Apache 的 Spark 中的不一致。
 
-## 1.3 启动和停止
+## 配置 Spark History Server
 
-spark目前支持三种集群管理模式：
+执行下面命令：
 
-- Standalone
-- Apache Mesos 
-- Hadoop YARN
+```bash
+$ sudo -u hdfs hadoop fs -mkdir /user/spark 
+$ sudo -u hdfs hadoop fs -mkdir /user/spark/applicationHistory 
+$ sudo -u hdfs hadoop fs -chown -R spark:spark /user/spark
+$ sudo -u hdfs hadoop fs -chmod 1777 /user/spark/applicationHistory
+```
+在 Spark 客户端创建 `/etc/spark/conf/spark-defaults.conf`：
 
-这里只是部署了一个节点，即使用的Standalone模式。
+```bash
+cp /etc/spark/conf/spark-defaults.conf.template /etc/spark/conf/spark-defaults.conf
+```
+
+在 `/etc/spark/conf/spark-defaults.conf` 添加两行：
+
+```properties
+spark.eventLog.dir=/user/spark/applicationHistory
+spark.eventLog.enabled=true
+```
+
+如果想 YARN ResourceManager 访问 Spark History Server ，则添加一行：
+
+```properties
+spark.yarn.historyServer.address=http://HISTORY_HOST:HISTORY_PORT
+```
+
+# 3. 启动和停止
 
 启动脚本：
 
@@ -116,9 +145,9 @@ $ sudo chkconfig spark-worker on
 $ sudo chkconfig spark-master on
 ```
 
-运行日志保存在/var/log/spark，你可以通过<http://master:18080/>（我这里master为cdh1）访问spark master的web界面
+运行日志保存在 `/var/log/spark`，你可以通过`<http://IP:18080/>`（我这里 IP 为 cdh1）访问 spark master 的 web 界面
 
-当然，你也可以使用spark自带的脚本来启动和停止，这些脚本在/usr/lib/spark/sbin目录下：
+当然，你也可以使用 spark 自带的脚本来启动和停止，这些脚本在 `/usr/lib/spark/sbin` 目录下：
 
 ```bash
 $ ls /usr/lib/spark/sbin
@@ -137,28 +166,92 @@ $ ./start-master.sh
 类似地，通过下面命令启动worker：
 
 ```bash
-./bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:18080
+./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IP:18080
 ```
 
-## 1.4 测试
+# 4. 测试
 
-你可以通过spark-shell运行下面的wordcount例子，因为hdfs上的输入和输出文件都涉及到用户的访问权限，故这里使用hive用户来启动spark-shell：
+Spark 目前支持三种集群管理模式：
+
+- Standalone
+- Apache Mesos 
+- Hadoop YARN
+
+## Standalone 模式
+
+你可以通过 spark-shel l运行下面的 wordcount 例子，因为 hdfs 上的输入和输出文件都涉及到用户的访问权限，故这里使用 hive 用户来启动 spark-shell：
 
 ```bash
 $ sudo -u hive spark-shell
-scala> val file = sc.textFile("hdfs://master:8020/user/hive/warehouse/test/test.txt")
+scala> val file = sc.textFile("hdfs://IP:8020/user/hive/warehouse/test/test.txt")
 scala> val counts = file.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_ + _)
-scala> counts.saveAsTextFile("hdfs://master:8020/user/hive/warehouse/output")
+scala> counts.saveAsTextFile("hdfs://IP:8020/user/hive/warehouse/output")
 ```
 
-运行完成之后，你可以查看hdfs://master:8020/user/hive/warehouse/output目录下的文件内容。
+如果出现下面的错误：
 
-spark-shell后面还可以加上其他参数，例如指定IP和端口、运行核数：
+```
+14/10/24 14:51:40 WARN hdfs.BlockReaderLocal: The short-circuit local reads feature cannot be used because libhadoop cannot be loaded.
+14/10/24 14:51:40 ERROR lzo.GPLNativeCodeLoader: Could not load native gpl library
+java.lang.UnsatisfiedLinkError: no gplcompression in java.library.path
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1738)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:823)
+	at java.lang.System.loadLibrary(System.java:1028)
+	at com.hadoop.compression.lzo.GPLNativeCodeLoader.<clinit>(GPLNativeCodeLoader.java:32)
+	at com.hadoop.compression.lzo.LzoCodec.<clinit>(LzoCodec.java:71)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:249)
+	at org.apache.hadoop.conf.Configuration.getClassByNameOrNull(Configuration.java:1836)
+	at org.apache.hadoop.conf.Configuration.getClassByName(Configuration.java:1801)
+	at org.apache.hadoop.io.compress.CompressionCodecFactory.getCodecClasses(CompressionCodecFactory.java:128)
+```
+
+> 注意： 该异常目前只在 Standalone 模式下会出现，尚未找到合适的解决办法。
+
+首先检查 hadoop 的目录下是否有相关库文件：
+
+```bash
+$ ls /usr/lib/hadoop/lib/native/
+libgplcompression.a    libgplcompression.so.0      libhadoop.so        libsnappy.so
+libgplcompression.la   libgplcompression.so.0.0.0  libhadoop.so.1.0.0  libsnappy.so.1
+libgplcompression.lai  libhadoop.a                 libhadooputils.a    libsnappy.so.1.1.3
+libgplcompression.so   libhadooppipes.a            libhdfs.a
+```
+
+运行完成之后，你可以查看 `hdfs://IP:8020/user/hive/warehouse/output` 目录下的文件内容。
+
+spark-shell 后面还可以加上其他参数，例如指定 IP 和端口、运行核数：
 
 ```bash
 $ spark-shell --master spark://IP:PORT  --cores <numCores> 
 ```
 
-# 2. Spark on Yarn
+另外，也可以使用 spark-submit 以 Standalone 模式运行 SparkPi 程序：
 
-关于Spark on Yarn的运行方式，暂不做介绍，待以后补充。
+```bash
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://IP:PORT /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+```
+
+## Spark on Yarn
+
+以 YARN 客户端方式运行 SparkPi 程序：
+
+```bash
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master yarn /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+```
+
+以 YARN 集群方式运行 SparkPi 程序：
+
+```bash
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode cluster --master yarn /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+```
+
+运行在 YARN 集群之上的时候，可以手动把 spark-assembly 相关的 jar 包拷贝到 hdfs 上去，然后设置 `SPARK_JAR` 环境变量：
+
+```bash
+$ hdfs dfs -mkdir -p /user/spark/share/lib
+$ hdfs dfs -put $SPARK_HOME/assembly/lib/spark-assembly_*.jar  /user/spark/share/lib/spark-assembly.jar 
+
+$ SPARK_JAR=hdfs://<nn>:<port>/user/spark/share/lib/spark-assembly.jar
+```
+
