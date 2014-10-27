@@ -17,7 +17,7 @@ published: true
 
 本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.0。
 
-- 操作系统：centos6.4
+- 操作系统：CentOs 6.4
 - CDH 版本：5.1.0
 - Spark 版本：1.0
 
@@ -255,3 +255,47 @@ $ hdfs dfs -put $SPARK_HOME/assembly/lib/spark-assembly_*.jar  /user/spark/share
 $ SPARK_JAR=hdfs://<nn>:<port>/user/spark/share/lib/spark-assembly.jar
 ```
 
+# 5. Spark-SQL
+
+Spark 安装包中包括了 Spark-SQL ，运行 spark-sql 命令，出现下面异常：
+
+```bash
+$ cd /usr/lib/spark/bin
+$ ./spark-sql
+java.lang.ClassNotFoundException: org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:202)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:190)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:306)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:247)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:247)
+	at org.apache.spark.deploy.SparkSubmit$.launch(SparkSubmit.scala:319)
+	at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:75)
+	at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+
+Failed to load Spark SQL CLI main class org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver.
+You need to build Spark with -Phive.
+```
+
+从上可以知道  Spark-SQL 编译时没有集成 Hive，故需要重新编译。
+
+## 编译 Spark-SQL
+
+下载代码：
+
+```bash
+$ git clone git@github.com:cloudera/spark.git
+$ cd spark
+$ git checkout -b origin/cdh5-1.1.0_5.2.0
+```
+
+编译代码，集成 yarn 和 hive：
+
+```bash
+$ sbt/sbt -Dhadoop.version=2.5.0-cdh5.2.0 -Pyarn -Phive assembly
+```
+
+等很长很长一段时间，就编译成功了。
+
+## 测试
