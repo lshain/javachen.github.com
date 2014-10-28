@@ -171,13 +171,46 @@ $ ./start-master.sh
 
 # 4. 测试
 
+## 运行测试例子
+
+运行 Spark 自带的 Example，在 spark home 目录运行：
+
+```bash
+$ ./bin/run-example SparkPi 10
+ls: cannot access /usr/lib/spark/lib/spark-examples-*hadoop*.jar: No such file or directory
+Failed to find Spark examples assembly in /usr/lib/spark/lib or /usr/lib/spark/examples/target
+You need to build Spark before running this program
+```
+
+出现上面异常，需要把 examples/lib 目录报考到 /usr/lib/spark 目录下，然后再运行。
+
+你还可以运行 spark shell 的交互模式：
+
+```bash
+$ ./bin/spark-shell --master local[2]
+```
+
+通过 Python API 来运行交互模式：
+
+```bash
+$ ./bin/pyspark --master local[2]
+```
+
+你也可以运行 Python 编写的应用：
+
+```bash
+$ ./bin/spark-submit examples/src/main/python/pi.py 10
+```
+
+## 在集群上运行
+
 Spark 目前支持三种集群管理模式：
 
 - Standalone
 - Apache Mesos 
 - Hadoop YARN
 
-## Standalone 模式
+### Standalone 模式
 
 你可以通过 spark-shel l运行下面的 wordcount 例子，因为 hdfs 上的输入和输出文件都涉及到用户的访问权限，故这里使用 hive 用户来启动 spark-shell：
 
@@ -232,7 +265,7 @@ $ spark-shell --master spark://IP:PORT  --cores <numCores>
 $ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://IP:PORT /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
 ```
 
-## Spark on Yarn
+### Spark on Yarn
 
 以 YARN 客户端方式运行 SparkPi 程序：
 
@@ -290,12 +323,53 @@ $ cd spark
 $ git checkout -b origin/cdh5-1.1.0_5.2.0
 ```
 
-编译代码，集成 yarn 和 hive：
+编译代码，集成 yarn 和 hive，有三种方式：
 
 ```bash
 $ sbt/sbt -Dhadoop.version=2.5.0-cdh5.2.0 -Pyarn -Phive assembly
 ```
 
-等很长很长一段时间，就编译成功了。
+等很长很长一段时间，会提示错误。
+
+改为 maven 编译：
+
+修改根目录下的 pom.xml，添加一行 `<module>sql/hive-thriftserver</module>`：
+
+```xml
+<modules>
+    <module>core</module>
+    <module>bagel</module>
+    <module>graphx</module>
+    <module>mllib</module>
+    <module>tools</module>
+    <module>streaming</module>
+    <module>sql/catalyst</module>
+    <module>sql/core</module>
+    <module>sql/hive</module>
+    <module>sql/hive-thriftserver</module>
+    <module>repl</module>
+    <module>assembly</module>
+    <module>external/twitter</module>
+    <module>external/kafka</module>
+    <module>external/flume</module>
+    <module>external/flume-sink</module>
+    <module>external/zeromq</module>
+    <module>external/mqtt</module>
+    <module>examples</module>
+  </modules>
+```
+
+然后运行：
+
+```bash
+$ export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
+$ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.2.0 -Phive -DskipTests clean package
+```
+
+如果编译成功之后， 会在 assembly/target/scala-2.10 目次下生成：spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar，在 examples/target/scala-2.10 目次下生成：spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar
+
+> 但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，故最后无法编译成功。
 
 ## 测试
+
+如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql
