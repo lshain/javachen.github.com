@@ -15,11 +15,11 @@ published: true
 
 ---
 
-本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.0。
+本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.1。
 
 - 操作系统：CentOs 6.4
-- CDH 版本：5.1.0
-- Spark 版本：1.0
+- CDH 版本：5.2.0
+- Spark 版本：1.1
 
 关于 yum 源的配置以及 hadoop 的安装，请参考[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
 
@@ -29,22 +29,21 @@ published: true
 
 ```bash
 $ yum list |grep spark
-hue-spark.x86_64                          3.6.0+cdh5.1.0+86-1.cdh5.1.0.p0.36.el6
-python-sparklines.noarch                  0.9-2.el6                      epel
-spark-core.noarch                         1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
-spark-history-server.noarch               1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
-spark-master.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
-spark-python.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
-spark-worker.noarch                       1.0.0+cdh5.1.0+41-1.cdh5.1.0.p0.27.el6
+spark-core.noarch                 1.1.0+cdh5.2.0+56-1.cdh5.2.0.p0.35.el6 @cdh
+spark-history-server.noarch       1.1.0+cdh5.2.0+56-1.cdh5.2.0.p0.35.el6 @cdh
+spark-master.noarch               1.1.0+cdh5.2.0+56-1.cdh5.2.0.p0.35.el6 @cdh
+spark-python.noarch               1.1.0+cdh5.2.0+56-1.cdh5.2.0.p0.35.el6 @cdh
+spark-worker.noarch               1.1.0+cdh5.2.0+56-1.cdh5.2.0.p0.35.el6 @cdh
+hue-spark.x86_64                  3.6.0+cdh5.2.0+509-1.cdh5.2.0.p0.37.el6
 ```
 
 以上包作用如下：
 
-- spark-core: spark核心功能
-- spark-worker: spark-worker初始化脚本
-- spark-master: spark-master初始化脚本
-- spark-python: spark的Python客户端
-- hue-spark: spark和hue集成包
+- spark-core: spark 核心功能
+- spark-worker: spark-worker 初始化脚本
+- spark-master: spark-master 初始化脚本
+- spark-python: spark 的 Python 客户端
+- hue-spark: spark 和 hue 集成包
 - spark-history-server
 
 安装脚本如下：
@@ -262,7 +261,7 @@ $ spark-shell --master spark://IP:PORT  --cores <numCores>
 另外，也可以使用 spark-submit 以 Standalone 模式运行 SparkPi 程序：
 
 ```bash
-$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://IP:PORT /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://IP:PORT /usr/lib/spark/examples/lib/spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 10
 ```
 
 ### Spark on Yarn
@@ -270,13 +269,13 @@ $ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --
 以 YARN 客户端方式运行 SparkPi 程序：
 
 ```bash
-$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master yarn /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master yarn /usr/lib/spark/examples/lib/spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 10
 ```
 
 以 YARN 集群方式运行 SparkPi 程序：
 
 ```bash
-$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode cluster --master yarn /usr/lib/spark/examples/lib/spark-examples_2.10-1.0.0-cdh5.1.0.jar 10
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode cluster --master yarn /usr/lib/spark/examples/lib/spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 10
 ```
 
 运行在 YARN 集群之上的时候，可以手动把 spark-assembly 相关的 jar 包拷贝到 hdfs 上去，然后设置 `SPARK_JAR` 环境变量：
