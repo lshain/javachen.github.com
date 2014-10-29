@@ -83,10 +83,12 @@ analytics:
 # blogroll
 blogroll : true
 brlist :
-    - text : JavaChen Blog
+    - text : JavaChen's Blog
       url : //blog.javachen.com/
     - text : JavaChen Sitemap
       url : /sitemap.xml
+    - text : Eagle's Blog
+      url : //blog.jassassin.com/
     - text : 圆木菠萝罐
       url : //blog.boluotou.com/
     - text : Log4D
