@@ -3,9 +3,9 @@ layout: post
 
 title: Mac上使用homebrew安装PostgreSql
 
-category: Python
+category: Database
 
-tags: [python,django]
+tags: [postgresql]
 
 description: 记录 Mac OSX 系统上使用 homebrew 安装和卸载 PostgreSql 的过程。
 ---
