@@ -55,8 +55,11 @@ defaults write com.apple.finder AppleShowAllFiles -bool false #隐藏Mac隐藏�
 
 其他常用软件：
 
-- 文本编辑器：TextWrangler
-- 解压缩：The Unarchiver
+- Unarchiver: 支持多种格式（包括 windows下的格式）的压缩/解压缩工具
+- Spectacle : 让窗口成比例的显示，在写代码调试的时候很方便
+- OminiFocus ：时间管理工具
+- Mou：Markdown 编辑器，国人出品
+- CheatSheet : 长按 command ，将能查看当前程序的快捷键
 
 # 安装Homebrew
 
