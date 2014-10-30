@@ -10,18 +10,18 @@ description: 本文演示如何创建一个简单的 django 网站，使用的 d
 
 # 1. 创建工程
 
-运行下面命令就可以创建一个django工程，工程名字叫todo：
+运行下面命令就可以创建一个 django 工程，工程名字叫 todo_site ：
 
 ```bash
-$ django-admin.py startproject todo
+$ django-admin.py startproject todo_site
 ```
 
 创建后的工程目录如下：
 
 ```
-todo
+todo_site
 ├── manage.py
-└── todo
+└── todo_site
     ├── __init__.py
     ├── settings.py
     ├── templates
@@ -51,7 +51,7 @@ Performing system checks...
 
 System check identified no issues (0 silenced).
 October 28, 2014 - 09:10:27
-Django version 1.7.1, using settings 'todo.settings'
+Django version 1.7.1, using settings 'todo_site.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
@@ -80,28 +80,28 @@ $ python manage.py syncdb
 
 注意：提示需要创建超级用户，是因为 settings.py 中默认安装了 `django.contrib.admin`、`django.contrib.auth`、`django.contrib.sessions` 等应用模块。
 
-# 3. 创建 blog app
+# 3. 创建 todo app
 
 在终端输入：
 
 ```bash	
 $ cd todo
-$ python manage.py startapp todoapp
+$ python manage.py startapp todo
 ```
 
-如果操作成功，你会在 todo 文件夹下看到已经多了一个叫 blog 的文件夹，目录结构如下：
+如果操作成功，你会在 todo_site 文件夹下看到已经多了一个叫 todo 的文件夹，目录结构如下：
 
 ```
 .
 ├── manage.py
-├── todo
+├── todo_site
 │   ├── __init__.py
 │   ├── __init__.pyc
 │   ├── settings.py
 │   ├── settings.pyc
 │   ├── urls.py
 │   └── wsgi.py
-└── todoapp
+└── todo
     ├── __init__.py
     ├── admin.py
     ├── migrations
@@ -115,11 +115,11 @@ $ python manage.py startapp todoapp
 
 # 4. 模型
 
-打开 todoapp 文件夹下的 models.py 文件。创建两个模型以及注册后台的管理：
+打开 todo 文件夹下的 models.py 文件。创建两个模型以及注册后台的管理：
 
 ```python
 from django.db import models
-from todoapp.models import *
+from todo.models import *
 from django.contrib import admin
 
 import datetime
@@ -180,7 +180,7 @@ class Comment(models.Model):
 
 ```
 from django.contrib import admin
-from todoapp.models import Item, List, Comment
+from todo.models import Item, List, Comment
 
 # Register your models here.
 
@@ -205,7 +205,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'todoapp',
+    'todo',
 )
 ```
 
@@ -222,13 +222,13 @@ validate 命令检查你的模型的语法和逻辑是否正确。 如果一切�
 模型确认没问题了，运行下面的命令来生成 CREATE TABLE 语句：
 
 ```bash
-$ python manage.py sqlall todoapp
+$ python manage.py sqlall todo
 ```
 
-在这个命令行中，todoapp 是 app 的名称。 和你运行 `manage.py startapp` 中的一样。执行之后，如果输出如下：
+在这个命令行中，todo 是 app 的名称。 和你运行 `manage.py startapp` 中的一样。执行之后，如果输出如下：
 
 ```
-CommandError: App 'todoapp' has migrations. Only the sqlmigrate and sqlflush commands can be used when an app has migrations.
+CommandError: App 'todo' has migrations. Only the sqlmigrate and sqlflush commands can be used when an app has migrations.
 ```
 
 则，执行数据迁移：
@@ -312,7 +312,7 @@ ROOT_URLCONF = 'todo.urls'
 
 ## 动态内容
 
-接下来创建动态内容，修改 todpapp/views.py 内容如下：
+接下来创建动态内容，修改 todo/views.py 内容如下：
 
 ```python
 from django.http import HttpResponse
@@ -342,11 +342,11 @@ def hours_ahead(request, offset):
 
 这个方法接收一个整数型参数，将当期时间加上指定参数的小时数，返回到前台页面。
 
-增加了两个方法后，todo/urls.py 修改成如下：
+增加了两个方法后，todo_site/urls.py 修改成如下：
 
 ```python
 from django.conf.urls.defaults import *
-from todoapp.views import hello, current_datetime, hours_ahead
+from todo.views import hello, current_datetime, hours_ahead
 
 urlpatterns = patterns(
     '',
@@ -361,7 +361,7 @@ urlpatterns = patterns(
 
 另外你访问 <http://localhost:8000/time/plus/2/> ，会发现时区似乎设置不对。解决办法是修改 settings.py 中的 `TIME_ZONE` 值为 `Asia/Shanghai` 即可。
 
-接下来创建一个页面展示所有的 Item，名称为 item-list.html 该页面保存在 templates/todoapp 目录下，内容如下：
+接下来创建一个页面展示所有的 Item，名称为 item-list.html 该页面保存在 todo_site/todo/templates/ 目录下，内容如下：
 
 ```html
 <h2>todo</h2>
@@ -374,7 +374,7 @@ urlpatterns = patterns(
 {% endfor %}
 ```
 
-然后在 todpapp/views.py 中增加一个方法：
+然后在 todo/views.py 中增加一个方法：
 
 ```python
 from django.shortcuts import render
@@ -404,7 +404,7 @@ def hours_ahead(request, offset):
 
 def list_item(request):
     items = Item.objects.all()
-    return render_to_response('todoapp/item-list.html', {'items': items})
+    return render_to_response('item-list.html', {'items': items})
 ```
 
 
@@ -415,7 +415,15 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/Users/june/workspace/pythonProjects/todo/templates',
+    '/Users/june/workspace/pythonProjects/todo_site/todo/templates',
+)
+```
+
+或者，使用编码的方式：
+
+```
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR,'templates'),
 )
 ```
 
@@ -424,7 +432,7 @@ TEMPLATE_DIRS = (
 ```python
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from todoapp.views import hello, current_datetime, hours_ahead, list_item
+from todo.views import hello, current_datetime, hours_ahead, list_item
 
 urlpatterns = patterns('',
     # Examples:
@@ -440,6 +448,8 @@ urlpatterns = patterns('',
 
 )
 ```
+
+在浏览器里访问 <http://127.0.0.1:8000/item/list/>
 
 # 6. 总结
 

@@ -23,5 +23,4 @@ title : {{ page.title | xml_escape }}
     <content type="html">{{ post.content | strip_html | truncate:300 | xml_escape }}</content>
   </entry>
   {% endfor %}
-
 </feed>
