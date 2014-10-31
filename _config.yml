@@ -78,8 +78,10 @@ comments:
 analytics:
     baidu:
         siteid:         # 百度统计 js 代码后的字符串
-    51la:
-        uid: 12111481
+#    51la:
+#        uid: 12111481
+    cnzz:
+        uid: 1253501761
 # blogroll
 blogroll : true
 brlist :
