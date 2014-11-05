@@ -1,15 +1,21 @@
 ---
 layout: post
 
-title: HDFS配置kerberos认证
+title: HDFS配置Kerberos认证
 
 category: hadoop
 
 tags: [hadoop,kerberos,cdh]
 
-description: 记录 HDFS 上配置 kerberos 的过程。
+description: 记录 CDH Hadoop 集群上配置 HDFS 集成 Kerberos 的过程，包括 Kerberos 的安装和 Hadoop 相关配置修改说明。
 
 ---
+
+本文主要记录 CDH Hadoop 集群上配置 HDFS 集成 Kerberos 的过程，包括 Kerberos 的安装和 Hadoop 相关配置修改说明。
+
+> 注意：
+>
+> 下面第一、二部分内容，摘抄自《[Hadoop的kerberos的实践部署](https://github.com/zouhc/MyHadoop/blob/master/doc/Hadoop%E7%9A%84kerberos%E7%9A%84%E5%AE%9E%E8%B7%B5%E9%83%A8%E7%BD%B2.md)》，主要是为了对 Hadoop 的认证机制和 Kerberos 认证协议做个简单介绍。在此，对原作者表示感谢。
 
 # 1. Hadoop 的认证机制
 
