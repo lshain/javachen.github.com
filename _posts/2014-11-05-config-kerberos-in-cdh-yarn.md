@@ -11,7 +11,7 @@ description: 记录 CDH Hadoop 集群上配置 YARN 集成 Kerberos 的过程，
 
 ---
 
-关于 Kerberos 的安装和 HDFS 配置 kerberos 认证，请参考 [HDFS配置kerberos认证](/2014/11/04/config-kerberos-in-hdfs/)。
+关于 Kerberos 的安装和 HDFS 配置 kerberos 认证，请参考 [HDFS配置kerberos认证](/2014/11/04/config-kerberos-in-cdh-hdfs/)。
 
 > 请先完成 HDFS 配置 Kerberos 认证，再来配置 YARN 集成 Kerberos 认证 ！
 
@@ -25,7 +25,7 @@ description: 记录 CDH Hadoop 集群上配置 YARN 集成 Kerberos 的过程，
 
 # 1. 生成 keytab
 
-在 cdh1节点的 `/etc/hadoop/conf` 目录，即 KDC server 节点上运行 kadmin.local ，然后执行下面命令：
+在 cdh1节点的 `/etc/hadoop/conf` 目录，即 KDC server 节点上运行 `kadmin.local`，然后执行下面命令：
 
 ```
 addprinc -randkey yarn/cdh1@JAVACHEN.COM
@@ -160,7 +160,7 @@ banned.users=hfds,yarn,mapred,hive,impala
 #Prevent other super-users
 min.user.id=0
 #comma separated list of system users who CAN run applications
-allowed.system.users=root
+allowed.system.users=root,nobody,impala,hive
 ```
 
 设置该文件权限：
@@ -273,6 +273,8 @@ $ sh manager_cluster.sh mapred start #启动 mapred 用户管理的服务
 
 $ sh manager_cluster.sh hdfs status #查看 hdfs 用户管理的服务的运行状态
 ```
+
+上面的代码是在 `/etc/hadoop/conf/` 目录下找对应的 keytab，如果是其他服务或者角色，如 hive、hbase，则该脚本不适用，故最好是把所有生成的 keytab 放到一个统一的路径，如 `/etc/hadoop` 目录下（这样做的话，需要修改所有相关的 xml 文件中的 keytab 路径）。
 
 # 4. 测试
 
