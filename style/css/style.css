@@ -13,22 +13,20 @@ body {
 a:hover,a:focus {
 	text-decoration:none
 }
-h1, h2, h3, h4, h5 {color:rgba(0,153,153,0.8);font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
+h1, h2, h3, h4, h5 {color:rgba(0,153,153,0.8);font-weight: 600;font-family: bold georgia,"华文楷体",STKaiti,Kaiti,sans-serif;}
 h1{font-size:28px;border-bottom: 1px dashed rgba(0,153,153,0.8);}
 h2{font-size:24px;}
 h3{font-size:20px;}
-h4{font-size:16px;}
+h4{font-size:18px;}
 
 .post-title{
-	padding-bottom: 25px; 
+	padding-bottom: 5px; 
 }
 .post-title h1 {
 	font: bold 32px/48px georgia,"华文楷体",STKaiti,Kaiti,sans-serif;
 	border-bottom: 2px solid rgba(0,153,153,0.8);
 }
-.index-title{
-	padding-bottom: 10px; 
-}
+
 .index-title h2,.index-title h3 {
 	border-bottom:1px dashed rgba(0,153,153,0.8)
 }
@@ -111,7 +109,7 @@ table tbody tr:hover {
 }
 
 .wrapper p li,.wrapper ol li,.wrapper ul li,.wrapper table li {
-	margin:1px 0
+	margin:3px 0
 }
 .wrapper p img,.wrapper ol img,.wrapper ul img,.wrapper table img {
 	max-width:85%;
@@ -137,7 +135,7 @@ table tbody tr:hover {
 	font-family:Menlo,"Andale Mono",Consolas,"Courier New",Monaco,monospace;
 }
 .wrapper ul,ol {
-	margin-bottom:1px;
+	margin-bottom:10px;
 }
 .wrapper hr {
 	border-color:rgba(102,102,102,0.8)
