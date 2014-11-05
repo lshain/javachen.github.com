@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  Mahout 推荐引擎介绍
+title:  Mahout推荐引擎介绍
 
 description:  Mahout 是一个来自 Apache 的、开源的机器学习软件库，他主要关注于推荐引擎（协同过滤）、聚类和分类。
 

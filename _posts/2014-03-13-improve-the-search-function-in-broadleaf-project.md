@@ -3,7 +3,7 @@ layout: post
 title: BroadLeaf项目搜索功能改进
 description: 如果你在用BroadLeaf开源项目定制开发自己的电子商务网站并使用了其自带的Solr搜索引起功能，那么这篇文章会对你有所帮助。
 category: Search-Engine
-tags: [solr, solrcloud]
+tags: [solr, solrcloud, broadleaf]
 ---
 
 Broadleaf Commerce 是一个开源的Java电子商务平台，基于Spring框架开发，提供一个可靠、可扩展的架构，可进行深度的定制和快速开发。
@@ -84,7 +84,7 @@ solr.index.repeat.interval=3600000
 
 ## 实现方法
 
-1、搭建独立运行的solr服务器
+### 1、搭建独立运行的solr服务器
 
 你可以参考：[Apache Solr介绍及安装](/2014/02/26/how-to-install-solr/)
 
@@ -181,7 +181,7 @@ solrconfig.xml内容如下：
 </config>
 ```
 
-2、扩展SolrSearchServiceImpl类
+### 2、扩展SolrSearchServiceImpl类
 
 在core模块创建org.broadleafcommerce.core.search.service.solr.ExtSolrSearchService接口，该接口定义如下：
 
@@ -307,7 +307,7 @@ public class ExtSolrSearchServiceImpl extends SolrSearchServiceImpl implements
 }
 ```
 
-3、 修改solr相关配置文件
+### 3、 修改solr相关配置文件
 
 a. 删除web模块中/web/src/main/webapp/WEB-INF/applicationContext.xml的以下代码：
 
@@ -350,7 +350,7 @@ solr.source=solrServer
 solr.source.reindex=solrReindexServer
 ```
 
-4、 修改LLCatalogServiceImpl类
+### 4、 修改LLCatalogServiceImpl类
 
 添加如下代码：
 
@@ -379,7 +379,7 @@ public Product saveProduct(Product product) {
 }
 ```
 
-5、 修改定时任务
+### 5、 修改定时任务
 
 a. web系统启动时候，会查询数据库中商品，然后重建索引。该功能在applicationContext.xml中已经定义了定时任务，建议取消该定时任务。去掉以下代码：
 
@@ -412,5 +412,50 @@ private SearchService extSolrSearchService;
 public void doRebuild(){
     extSolrSearchService.rebuildIndex();
 }
+```
+
+### 6、单节点集成创建索引问题
+
+a、创建索引异常
+如果单节点Solr安装过程中有多个core，则创建索引的过程使用的是reindex的core，如果没有reindex这个core可能在启动项目时抛出如下异常：
+
+```
+Caused by: org.apache.solr.client.solrj.impl.HttpSolrServer$RemoteSolrException: Server at http://localhost:8780/solr/reindex returned non ok status:404, message:Not Found
+```
+
+解决办法：
+
+修改Solrhome中的配置文件solr.xml，确保配置solr中的core包含reindex，并且在solrhome目录下有reindex的目录以及配置文件，如下所示：
+
+```xml
+<core name="reindex" instanceDir="reindex" />
+```
+
+b、solr查询异常
+
+如果单节点solr中多个core，默认的core为primary，查询使用的是primary，而创建索引使用的是reindex，此时访问web查询到的还是原来primary的数据，而不是创建的索引数据。
+
+解决办法：将创建索引的core作为默认使用的，修改solrhome/solr.xml如下：
+
+```xml
+<cores defaultCoreName="reindex" adminPath="/admin/cores">
+```
+
+c、启动项目创建索引，solr中查询不到
+
+完成单节点集成，启动项目进行测试，启动完成，索引创建完成后，在solr的单节点中进行query，发现docs中没有添加索引。
+
+解决办法：
+
+经过debug调试添加索引的过程，发现如下代码导致添加索引的docs被删除。原因是solr中配置的core是多个，则执行deleteAllDocuments方法，所以添加的索引都被删除，在solr中多个core的情况下，要屏蔽如下代码。
+
+```java
+//      // Swap the active and the reindex cores
+//      shs.swapActiveCores();
+//      // If we are not in single core mode, we delete the documents for the
+//      // unused core after swapping
+//      if (!SolrContext.isSingleCoreMode()) {
+//        deleteAllDocuments();
+//      }
 ```
 

@@ -15,11 +15,11 @@ published: true
 
 ---
 
-关于Hive DML语法，你可以参考apache官方文档的说明:[Hive Data Manipulation Language](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML)。
+关于 Hive DML 语法，你可以参考 apache 官方文档的说明:[Hive Data Manipulation Language](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML)。
 
-apache的hive版本现在应该是0.13.0，而我使用的hadoop版本是CDH5.0.1，其对应的hive版本是0.12.0。故只能参考apache官方文档来看cdh5.0.1实现了哪些特性。
+apache的hive版本现在应该是 0.13.0，而我使用的 hadoop 版本是 CDH5.0.1，其对应的 hive 版本是 0.12.0。故只能参考apache官方文档来看 cdh5.0.1 实现了哪些特性。
 
-因为hive版本会持续升级，故本篇文章不一定会和最新版本保持一致。
+因为 hive 版本会持续升级，故本篇文章不一定会和最新版本保持一致。
 
 # 1. 准备测试数据
 
@@ -31,6 +31,7 @@ create table test(id int, name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY
 
 创建分区表：
 
+```sql
 CREATE EXTERNAL TABLE test_p(
 id int,
 name string 
@@ -38,6 +39,7 @@ name string
 partitioned by (date STRING)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\,' LINES TERMINATED BY '\n' 
 STORED AS TEXTFILE;
+```
 
 准备数据文件：
 
@@ -65,15 +67,15 @@ LOAD DATA [LOCAL] INPATH 'filepath' [OVERWRITE] INTO TABLE tablename [PARTITION 
  - 一个url地址，可选的可以带上授权信息，例如：`hdfs://namenode:9000/user/hive/project/data1` 
 - 目标可能是一个表或者分区，如果该表是分区，则必须制定分区列。
 - filepath 可以是一个文件也可以是目录
-- 如果指定了 LOCAL，则：
- - load 命令会在本地查找filepath。如果filepath是相对路径，则相对于当前路径，也可以指定一个url或者本地文件，例如：file:///user/hive/project/data1
-- 如果没有指定 LOCAL ，则hive会使用全路径的url，url中如果没有制定schema，则默认使用 `fs.default.name`的值；如果该路径不是绝对路径，则会相对于 `/user/<username> `
-- 如果使用 OVERWRITE ，则会删除原来的数据，然后导入新的数据，否则，就是追加数据。
+- 如果指定了 `LOCAL`，则：
+ - `load` 命令会在本地查找 filepath。如果 filepath 是相对路径，则相对于当前路径，也可以指定一个 url 或者本地文件，例如：`file:///user/hive/project/data1`
+- 如果没有指定 `LOCAL` ，则hive会使用全路径的url，url 中如果没有制定 schema，则默认使用 `fs.default.name`的值；如果该路径不是绝对路径，则会相对于 `/user/<username> `
+- 如果使用 `OVERWRITE` ，则会删除原来的数据，然后导入新的数据，否则，就是追加数据。
 
 需要注意的：
  
-- filepath中不能包括子目录
-- 如果没有指定 LOCAL，则 filepath 指向目标表或者分区所在的文件系统。
+- `filepath` 中不能包括子目录
+- 如果没有指定 `LOCAL`，则 `filepath` 指向目标表或者分区所在的文件系统。
 - 如果需要压缩，则参考 [ CompressedStorage](https://cwiki.apache.org/confluence/display/Hive/CompressedStorage)
 
 ## 2.1 测试
@@ -120,7 +122,7 @@ b) 加载文件到分区表
 LOAD DATA LOCAL INPATH "/tmp/test.txt" INTO TABLE test_p PARTITION (date=20140722)
 ```
 
-> 注意：如果没有加上 overwrite 关键字，则加载相同文件最后会存在多个文件
+> 注意：如果没有加上 `overwrite` 关键字，则加载相同文件最后会存在多个文件
 
 还有一种方法是：创建分区目录，手动上传文件，最后再添加新的分区，代码如下：
 
@@ -136,7 +138,7 @@ hadoop fs -put /tmp/test.txt  /user/hive/warehouse/test/date=20140320
 
 ### 2.1.2 加载hdfs上的文件
 
-拷贝test.txt为test_1.txt并将其上传到 `/user/hive/warehouse`:
+拷贝 test.txt 为test_1.txt 并将其上传到 `/user/hive/warehouse`:
 
 ```
 $ cp test.txt test_1.txt
@@ -265,9 +267,9 @@ DELIMITED [FIELDS TERMINATED BY char [ESCAPED BY char]] [COLLECTION ITEMS TERMIN
 
 说明：
 
-- Directory可以是一个全路径的url。
-- 如果指定LOCAL，则会将数据写到本地文件系统。
-- 输出的数据序列化为 text 格式，分隔符为 `^A`，行于行之间通过换行符连接。如果存在不是基本类型的列，则这些列将被序列化为JSON格式。
+- Directory 可以是一个全路径的 url。
+- 如果指定 `LOCAL`，则会将数据写到本地文件系统。
+- 输出的数据序列化为 text 格式，分隔符为 `^A`，行于行之间通过换行符连接。如果存在不是基本类型的列，则这些列将被序列化为 JSON 格式。
 - 在 Hive 0.11.0 可以输出字段的分隔符，之前版本的默认为 `^A`。
 
 ## 4.1 测试;
@@ -310,7 +312,7 @@ Time taken: 18.438 seconds
 4^Ad
 ```
 
-可以看到数据中的列与列之间的分隔符是`^A`(ascii码是\00001)，如果想修改分隔符，可以做如下修改：
+可以看到数据中的列与列之间的分隔符是`^A`(ascii码是`\00001`)，如果想修改分隔符，可以做如下修改：
 
 ```sql
 hive> insert overwrite local directory '/tmp/test' row format delimited fields terminated by ',' select * from test;
@@ -330,7 +332,7 @@ vim test/000000_3
 4,d
 ```
 
-### 4.1.2 导出到HDFS中
+### 4.1.2 导出到 HDFS 中
 
 ```
 hive> insert overwrite  directory '/user/hive/tmp' select * from test;
@@ -342,7 +344,7 @@ hive> insert overwrite  directory '/user/hive/tmp' select * from test;
 
 ### 4.1.3 导出到Hive的另一个表中
 
-在实际情况中，表的输出结果可能太多，不适于显示在控制台上，这时候，将Hive的查询输出结果直接存在一个新的表中是非常方便的，我们称这种情况为CTAS（create table .. as select）如下：
+在实际情况中，表的输出结果可能太多，不适于显示在控制台上，这时候，将Hive的查询输出结果直接存在一个新的表中是非常方便的，我们称这种情况为CTAS（ `create table .. as select`）如下：
 
 ```
 hive> create table test2 as select * from test;

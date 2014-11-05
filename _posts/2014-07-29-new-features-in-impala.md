@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  Impala 新特性
+title:  Impala新特性
 
 description: 本文主要整理一下 Impala 每个版本的新特性，方便了解 Impala 做了哪些改进、修复了哪些 bug。
 

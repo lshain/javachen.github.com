@@ -7,7 +7,7 @@ category: Python
 
 tags: [python,django]
 
-description: 主要介绍 Django 中模板相关的知识点，报考模板标签、模板过滤器，以及如何在试图中使用模板等等。
+description: 主要介绍 Django 中模板相关的知识点，包括模板标签、模板过滤器，以及如何在试图中使用模板等等。
 ---
 
 

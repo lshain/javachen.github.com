@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  升级 cdh4 到 cdh5
+title:  升级cdh4到cdh5
 
 description: 现在的集群安装的是 cdh4.7 并配置了 NameNode HA，现在需要将其升级到 cdh5.1，本文主要记录升级过程和遇到的问题。
 

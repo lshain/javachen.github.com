@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  采集日志到 hive
+title:  采集日志到Hive
 
 description: 我们现在的需求是需要将线上的日志以小时为单位采集并存储到 hive 数据库中，方便以后使用  mapreduce 或者 impala 做数据分析。为了实现这个目标调研了 flume 如何采集数据到 hive，其他的日志采集框架尚未做调研。
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  Spark 安装和使用
+title:  Spark安装和使用
 
 description: 本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。
 

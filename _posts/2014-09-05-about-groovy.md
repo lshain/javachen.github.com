@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  Groovy 语法介绍
+title:  Groovy语法介绍
 
 description: 本文主要整理一下 Groovy 的一些基本语法。Groovy 是基于 JRE 的脚本语言，和Perl，Python等等脚本语言一样，它能以快速简洁的方式来完成一些工作：如访问数据库，编写单元测试用例，快速实现产品原型等等。
 

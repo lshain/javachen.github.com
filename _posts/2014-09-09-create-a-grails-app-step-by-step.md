@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  从零开始创建 Grails 应用
+title:  从零开始创建Grails应用
 
 description: 本篇文章主要介绍如何从零开始一步一步创建一个 Grails 应用程序。整个过程中，你将学到如何改变 Grails 运行的端口，了解 Grails 应用的基础组成部分(领域类、控制器和 视图)、指定字段的缺省值，以及其他许多内容。
 

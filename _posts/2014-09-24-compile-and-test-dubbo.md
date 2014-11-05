@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  编译 Dubbo 源码并测试
+title:  编译Dubbo源码并测试
 
 description:  Dubbo 是阿里巴巴内部的 SOA 服务化治理方案的核心框架，本文主要记录编译 Dubbo 源码和测试的过程。
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  使用 Gradle 构建项目
+title:  使用Gradle构建项目
 
 description:  Gradle 是一款基于 Groovy 语言、免费开源的构建工具，它既保持了 Maven 的优点，又通过使用 Groovy 定义的 DSL 克服了 Maven 中使用 XML 繁冗以及不灵活的缺点。
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  手动安装 Hadoop 集群的过程
+title:  手动安装Hadoop集群的过程
 
 description: 最近又安装 Hadoop 集群，由于一些原因没有使用 Hadoop 管理工具或者自动化安装脚本来安装集群，而是手动一步步的来安装，本篇文章主要是记录我手动安装 Hadoop 集群的过程，给大家做个参考。
 
@@ -21,7 +21,7 @@ published: true
 
 开始之前，还是说明一下环境：
 
-- 操作系统：centos6.4
+- 操作系统：CentOs6.4
 - CDH版本：4.7.0
 - 节点数：4个
 

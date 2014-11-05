@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  CDH 中配置 HDFS HA
+title:  CDH中配置HDFS HA
 
 description: 最近又安装 hadoop 集群， 故尝试了一下配置 HDFS 的 HA，这里使用的是 QJM 的 HA 方案。
 

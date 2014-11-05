@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  Spring 源码整体架构
+title:  Spring源码整体架构
 
 description:  从这篇文章开始，我讲开始阅读并介绍 Spring 源码的设计思想，希望能改对 Spring 框架有一个初步的全面的认识，并且学习其架构设计方面的一些理念和方法。
 

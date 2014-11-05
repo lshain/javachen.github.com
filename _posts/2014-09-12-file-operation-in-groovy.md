@@ -1,7 +1,7 @@
 ---
 layout: post
 
-title:  使用 Groovy 操作文件
+title:  使用Groovy操作文件
 
 description: Java 读写文件比较麻烦，那 Groovy 操作文件又如何呢？
 
