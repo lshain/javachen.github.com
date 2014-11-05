@@ -610,7 +610,7 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 
 ## 4.5 检查集群上的 HDFS 和本地文件的权限
 
-请参考 [Verify User Accounts and Groups in CDH 5 Due to Security](http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_sg_users_groups_verify.html)。
+请参考 [Verify User Accounts and Groups in CDH 5 Due to Security](http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_sg_users_groups_verify.html) 或者 [Hadoop in Secure Mode](http://hadoop.apache.org/docs/r2.5.0/hadoop-project-dist/hadoop-common/SecureMode.html)。
 
 ## 4.6 启动 NameNode
 
