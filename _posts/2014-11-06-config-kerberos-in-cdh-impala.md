@@ -28,87 +28,59 @@ description: 记录 CDH Hadoop 集群上配置 Impala 集成 Kerberos 的过程�
 192.168.56.123        cdh3     DataNode、HBase、NodeManager、impala-server
 ```
 
-# 1. 生成 keytab
+# 1. 安装必须的依赖
 
-在 cdh1 节点的 `/etc/hive/conf` 目录，即 KDC server 节点上运行 `kadmin.local` ，然后执行下面命令：
+yum install python-devel openssl-devel python-pip
+pip-python install ssl
+
+# 2. 生成 keytab
+
+在 cdh1 节点的 `/etc/impala/conf` 目录，即 KDC server 节点上运行 `kadmin.local` ，然后执行下面命令：
 
 ```
-addprinc -randkey hive/cdh1@JAVACHEN.COM
-addprinc -randkey hive/cdh2@JAVACHEN.COM
-addprinc -randkey hive/cdh3@JAVACHEN.COM
+addprinc -randkey impala/cdh1@JAVACHEN.COM
+addprinc -randkey impala/cdh2@JAVACHEN.COM
+addprinc -randkey impala/cdh3@JAVACHEN.COM
 
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
+xst  -k impala-unmerged.keytab  impala/cdh1@JAVACHEN.COM
+xst  -k impala-unmerged.keytab  impala/cdh2@JAVACHEN.COM
+xst  -k impala-unmerged.keytab  impala/cdh3@JAVACHEN.COM
 ```
 
 然后，使用 `ktutil` 合并前面创建的 keytab ：
 
 ```bash
-$ cd /etc/hive/conf
+$ cd /etc/impala/conf
 
 $ ktutil
-ktutil: rkt hive-unmerged.keytab
+ktutil: rkt impala-unmerged.keytab
 ktutil: rkt HTTP.keytab
-ktutil: wkt hive.keytab
+ktutil: wkt impala.keytab
 ```
 
-这样会在 `/etc/hive/conf` 目录下生成 hive.keytab。
+这样会在 `/etc/impala/conf` 目录下生成 impala.keytab。
 
-拷贝 hive.keytab 文件到其他节点的 `/etc/hive/conf` 目录
+拷贝 impala.keytab 文件到其他节点的 `/etc/impala/conf` 目录
 
 ```bash
-$ scp hive.keytab cdh2:/etc/hive/conf
-$ scp hive.keytab cdh3:/etc/hive/conf
+$ scp impala.keytab cdh2:/etc/impala/conf
+$ scp impala.keytab cdh3:/etc/impala/conf
 ```
 
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown hive:hadoop /etc/hive/conf/hive.keytab
-$ chmod 600 /etc/hive/conf/hive.keytab
+$ chown impala:impala /etc/impala/conf/impala.keytab
+$ chmod 400 /etc/impala/conf/impala.keytab
 ```
 
-# 2. 修改 hive 配置文件
+# 3. 修改 impala 配置文件
 
-修改 hive-site.xml，添加下面配置：
+修改 impala-site.xml，添加下面配置：
 
 ```xml
-<property>
-  <name>hive.server2.authentication</name>
-  <value>KERBEROS</value>
-</property>
-<property>
-  <name>hive.server2.authentication.kerberos.principal</name>
-  <value>hive/_HOST@JAVACHEN.COM</value>
-</property>
-<property>
-  <name>hive.server2.authentication.kerberos.keytab</name>
-  <value>/etc/hive/conf/hive.keytab</value>
-</property>
-
-<property>
-  <name>hive.metastore.sasl.enabled</name>
-  <value>true</value>
-</property>
-<property>
-  <name>hive.metastore.kerberos.keytab.file</name>
-  <value>/etc/hive/conf/hive.keytab</value>
-</property>
-<property>
-  <name>hive.metastore.kerberos.principal</name>
-  <value>hive/_HOST@JAVACHEN.COM</value>
-</property>
 ```
 
-开启 HiveServer2 impersonation，在 hive-site.xml 中添加：
-
-```xml
-<property>
-  <name>hive.server2.enable.impersonation</name>
-  <value>true</value>
-</property>
-```
 
 在 core-site.xml 中添加：
 
@@ -139,93 +111,36 @@ $ chmod 600 /etc/hive/conf/hive.keytab
 </property>
 ```
 
-记住将修改的上面文件同步到其他节点：cdh2、cdh3，并再次一一检查权限是否正确。
+修改 /etc/default/impala，在 `IMPALA_SERVER_ARGS` 和 `IMPALA_STATE_STORE_ARGS` 中添加下面参数：
 
-# 3. 启动服务
+```
+-kerberos_reinit_interval=60
+-principal=impala/cdh1@JAVACHEN.COM
+-keytab_file=/etc/impala/conf/impala.keytab
+```
 
-## 启动 Hive MetaStore
+记住将修改的上面文件同步到其他节点：cdh2、cdh3，并修改 -principal后面 hostname 名称。
 
-hive-metastore 是通过 hive 用户启动的，故在 cdh1 上先获取 hive 用户的 ticket 再启动服务：
+# 4. 启动服务
+
+## 启动 impala-state-store
+
+impala-state-store 是通过 impala 用户启动的，故在 cdh1 上先获取 impala 用户的 ticket 再启动服务：
 
 ```bash
-$ kinit -k -t /etc/hive/conf/hive.keytab hive/cdh1@JAVACHEN.COM
-$ service hive-metastore start
+$ kinit -k -t /etc/impala/conf/impala.keytab impala/cdh1@JAVACHEN.COM
+$ service impala-state-store start
 ```
 
 然后查看日志，确认是否启动成功。
 
-## 启动 Hive Server2
+## 启动 impala-catalog
 
-hive-server2 是通过 hive 用户启动的，故在 cdh2 和 cdh3 上先获取 hive 用户的 ticket 再启动服务：
+impala-catalog 是通过 impala 用户启动的，故在 cdh1 上先获取 impala 用户的 ticket 再启动服务：
 
 ```bash
-$ kinit -k -t /etc/hive/conf/hive.keytab hive/cdh1@JAVACHEN.COM
-$ service hive-server2 start
+$ kinit -k -t /etc/impala/conf/impala.keytab impala/cdh1@JAVACHEN.COM
+$ service impala-catalog start
 ```
 
 然后查看日志，确认是否启动成功。
-
-# 4. 测试
-
-## Hive CLI 
-
-在没有配置 kerberos 之前，想要通过 hive 用户运行 hive 命令需要执行下面的命令：
-
-```bash
-sudo -u hive hive
-```
-
-现在配置了 kerberos 之后，不再需要 `sudo` 了，hive 会通过 ticket 中的用户去执行该命令：
-
-```bash
-$ klist
-Ticket cache: FILE:/tmp/krb5cc_0
-Default principal: hdfs/dn5.h.lashou-inc.com@lashou_hadoop
-
-Valid starting     Expires            Service principal
-11/06/14 11:39:09  11/07/14 11:39:09  krbtgt/lashou_hadoop@lashou_hadoop
-  renew until 11/08/14 11:39:09
-
-
-Kerberos 4 ticket cache: /tmp/tkt0
-klist: You have no tickets cached
-
-$ hive
-hive> set system:user.name;
-system:user.name=root
-hive> show tables;
-OK
-t
-Time taken: 1.349 seconds
-hive> select * from t;
-OK
-Time taken: 1.116 seconds
-```
-
-可以看到在获取了 hdfs 用户的 ticket 之后，进入 hive cli 可以执行查看表、查询数据等命令。当然，你也可以获取 hive 的 ticket 之后再来运行 hive 命令。
-
-## JDBC 客户端
-
-客户端通过 jdbc 代码连结 hive-server2：
-
-```java
-String url = "jdbc:hive2://cdh1:10000/default;principal=hive/cdh1@JAVACHEN.COM"
-Connection con = DriverManager.getConnection(url);
-```
-
-## Beeline
-
-Beeline 连结 hive-server2：
-
-```bash
-$ beeline
-beeline> !connect jdbc:hive2://cdh1:10000/default;principal=hive/cdh1@JAVACHEN.COM
-scan complete in 4ms
-Connecting to jdbc:hive2://localhost:10000/default;principal=hive/cdh1@JAVACHEN.COM;
-Enter username for jdbc:hive2://localhost:10000/default;principal=hive/cdh1@JAVACHEN.COM;:
-Enter password for jdbc:hive2://localhost:10000/default;principal=hive/cdh1@JAVACHEN.COM;:
-Connected to: Apache Hive (version 0.13.1)
-Driver: Hive (version 0.13.1-cdh5.2.0)
-Transaction isolation: TRANSACTION_REPEATABLE_READ
-```
-

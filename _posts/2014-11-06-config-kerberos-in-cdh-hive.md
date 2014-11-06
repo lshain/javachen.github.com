@@ -36,8 +36,8 @@ addprinc -randkey hive/cdh2@JAVACHEN.COM
 addprinc -randkey hive/cdh3@JAVACHEN.COM
 
 xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
+xst  -k hive-unmerged.keytab  hive/cdh2@JAVACHEN.COM
+xst  -k hive-unmerged.keytab  hive/cdh3@JAVACHEN.COM
 ```
 
 然后，使用 `ktutil` 合并前面创建的 keytab ：
@@ -63,8 +63,8 @@ $ scp hive.keytab cdh3:/etc/hive/conf
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown hive:hadoop /etc/hive/conf/hive.keytab
-$ chmod 600 /etc/hive/conf/hive.keytab
+$ chown hive:hive /etc/hive/conf/hive.keytab
+$ chmod 400 /etc/hive/conf/hive.keytab
 ```
 
 # 2. 修改 hive 配置文件
