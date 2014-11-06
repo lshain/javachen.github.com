@@ -117,11 +117,15 @@ profile=/var/kerberos/krb5kdc/kdc.conf
 
 ### 说明：
 
-- `JAVACHEN.COM`： 是设定的 realms。名字随意。Kerberos 可以支持多个 realms，会增加复杂度。大小写敏感，一般为了识别使用全部大写。这个 realms 跟机器的 host 没有大关系。
-- `master_key_type`：和 `supported_enctypes` 默认使用 `aes256-cts`。由于，JAVA 使用 `aes256-cts` 验证方式需要安装额外的 jar 包（后面再做说明）。推荐不使用。
-- `acl_file`：标注了 admin 的用户权限，需要用户自己创建。文件格式是：`Kerberos_principal permissions [target_principal]  [restrictions]`
-- `supported_enctypes`：支持的校验方式。
-- `admin_keytab`：KDC 进行校验的 keytab。
+- `[logging]`：表示 server 端的日志的打印位置
+- `[libdefaults]`：每种连接的默认配置，需要注意以下几个关键的小配置
+   - `default_realm = JAVACHEN.COM`：默认的 realm，必须跟要配置的 realm 的名称一致。
+   - `udp_preference_limit= 1`：禁止使用 udp 可以防止一个Hadoop中的错误
+- `[realms]`：列举使用的 realm。
+   - `kdc`：代表要 kdc 的位置。格式是 `机器:端口`
+   - `admin_server`：代表 admin 的位置。格式是 `机器:端口`
+   - `default_domain`：代表默认的域名
+- `[appdefaults]`：可以设定一些针对特定应用的配置，覆盖默认配置。
 
 > **关于AES-256加密**：
 > 
@@ -138,27 +142,24 @@ profile=/var/kerberos/krb5kdc/kdc.conf
 
 [realms]
  JAVACHEN.COM = {
-  master_key_type = aes256-cts
+  master_key_type = aes128-cts
   max_life = 25h
   max_renewable_life = 10d
   acl_file = /var/kerberos/krb5kdc/kadm5.acl
   dict_file = /usr/share/dict/words
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal des-cbc-crc:v4 des-cbc-crc:afs3
+  supported_enctypes = aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal des-cbc-crc:v4 des-cbc-crc:afs3
  }
  ```
 
 ### 说明：
 
-- `[logging]`：表示 server 端的日志的打印位置
-- `[libdefaults]`：每种连接的默认配置，需要注意以下几个关键的小配置
-   - `default_realm = JAVACHEN.COM`：默认的 realm，必须跟要配置的 realm 的名称一致。
-   - `udp_preference_limit= 1`：禁止使用 udp 可以防止一个Hadoop中的错误
-- `[realms]`：列举使用的 realm。
-   - `kdc`：代表要 kdc 的位置。格式是 `机器:端口`
-   - `admin_server`：代表 admin 的位置。格式是 `机器:端口`
-   - `default_domain`：代表默认的域名
-- `[appdefaults]`：可以设定一些针对特定应用的配置，覆盖默认配置。
+- `JAVACHEN.COM`： 是设定的 realms。名字随意。Kerberos 可以支持多个 realms，会增加复杂度。大小写敏感，一般为了识别使用全部大写。这个 realms 跟机器的 host 没有大关系。
+- `master_key_type`：和 `supported_enctypes` 默认使用 `aes256-cts`。由于，JAVA 使用 `aes256-cts` 验证方式需要安装额外的 jar 包（后面再做说明）。推荐不使用，并且删除 aes256-cts。
+- `acl_file`：标注了 admin 的用户权限，需要用户自己创建。文件格式是：`Kerberos_principal permissions [target_principal]  [restrictions]`
+- `supported_enctypes`：支持的校验方式。
+- `admin_keytab`：KDC 进行校验的 keytab。
+
 
 修改 `/var/kerberos/krb5kdc/kadm5.acl` 如下：
 
@@ -249,6 +250,8 @@ $ kinit root/admin
 $ kadmin 
 ```
 
+这里我输入两次的 root 账号的密码为 root，后面会用到这个密码。
+
 2、增删改查账户
 
 在管理员的状态下使用 addprinc、delprinc、modprinc、listprincs 命令。使用 `?` 可以列出所有的命令。
@@ -291,13 +294,11 @@ $ klist -ket
 Keytab name: FILE:/etc/krb5.keytab
 KVNO Timestamp         Principal
 ---- ----------------- --------------------------------------------------------
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (ArcFour with HMAC/md5)
    7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (DES with HMAC/sha1)
    7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (ArcFour with HMAC/md5)
@@ -410,37 +411,31 @@ $ klist -ket  hdfs.keytab
 Keytab name: FILE:hdfs.keytab
 KVNO Timestamp         Principal
 ---- ----------------- --------------------------------------------------------
-   3 11/04/14 16:40:56 hdfs/cdh1@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (ArcFour with HMAC/md5)
    3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (DES with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (ArcFour with HMAC/md5)
    3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (DES with HMAC/sha1)
    3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:56 hdfs/cdh2@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (ArcFour with HMAC/md5)
    3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (DES with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (ArcFour with HMAC/md5)
    3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (DES with HMAC/sha1)
    3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:56 hdfs/cdh3@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (ArcFour with HMAC/md5)
    3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (DES with HMAC/sha1)
    3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (AES-256 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
    3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
    3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (ArcFour with HMAC/md5)
@@ -619,8 +614,10 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 在 cdh1（安装了 NameNode 的节点）上先使用 `kinit` 的方式登陆，如果可以登陆，检查是否使用了正确的 JCE jar 包，然后就是检查 keytab 的路径及权限。
 
 ```bash
-$ kinit root/admin
+$ echo root|kinit root/admin
 ```
+
+这里 root 为之前创建的 root/admin 的密码。
 
 获取 cdh1的 ticket：
 
@@ -683,9 +680,13 @@ export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
 export JSVC_HOME=/usr/lib/bigtop-utils
 ```
 
-分别在 cdh2、cdh3 启动服务：
+分别在 cdh2、cdh3 获取 ticket 然后启动服务：
 
 ```bash
+$ echo root|kinit root/admin  #root 为 root/admin 的密码
+
+$ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
+
 $ service hadoop-hdfs-datanode start
 ```
 
