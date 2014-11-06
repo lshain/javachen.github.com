@@ -1,13 +1,13 @@
 ---
 layout: post
 
-title: Hive配置Kerberos认证
+title: Impala配置Kerberos认证
 
 category: hadoop
 
-tags: [hadoop,kerberos,cdh,hive]
+tags: [hadoop,kerberos,cdh,impala]
 
-description: 记录 CDH Hadoop 集群上配置 Hive 集成 Kerberos 的过程，包括 Kerberos 的安装和 Hive 相关配置修改说明。
+description: 记录 CDH Hadoop 集群上配置 Impala 集成 Kerberos 的过程，包括 Kerberos 的安装和 Impala 相关配置修改说明。
 
 ---
 
@@ -15,15 +15,17 @@ description: 记录 CDH Hadoop 集群上配置 Hive 集成 Kerberos 的过程，
 
 关于 Kerberos 的安装和 YARN 配置 kerberos 认证，请参考 [YARN配置kerberos认证](/2014/11/04/config-kerberos-in-cdh-yarn/)。
 
+关于 Kerberos 的安装和 Hive 配置 kerberos 认证，请参考 [Hive配置kerberos认证](/2014/11/04/config-kerberos-in-cdh-hive/)。
 
-> 请先完成 HDFS 和 YARN 配置 Kerberos 认证，再来配置 Hive 集成 Kerberos 认证 ！
+
+> 请先完成 HDFS 、YARN、Hive 配置 Kerberos 认证，再来配置 Impala 集成 Kerberos 认证 ！
 
 参考 [使用yum安装CDH Hadoop集群](http://blog.javachen.com/2013/04/06/install-cloudera-cdh-by-yum/) 安装 hadoop 集群，集群包括三个节点，每个节点的ip、主机名和部署的组件分配如下：
 
 ```
-192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase
-192.168.56.122        cdh2     DataNode、SSNameNode、NodeManager、HBase
-192.168.56.123        cdh3     DataNode、HBase、NodeManager
+192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase、impala-state-store、impala-catalog
+192.168.56.122        cdh2     DataNode、SSNameNode、NodeManager、HBase、impala-server
+192.168.56.123        cdh3     DataNode、HBase、NodeManager、impala-server
 ```
 
 # 1. 生成 keytab
