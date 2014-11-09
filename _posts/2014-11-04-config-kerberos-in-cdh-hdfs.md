@@ -65,16 +65,16 @@ $ cat /etc/hosts
 
 ### 3.2.2 安装 kdc server
 
-在 cdh1 机器上安装 kdc server：
+在 cdh1 机器上安装 krb5-libs、krb5-server 和 krb5-workstation：
 
 ```bash
-$ yum install krb5-server krb5-devel -y
+$ yum install yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
 ```
 
-在其他节点（cdh2、cdh3）安装：
+在其他节点（cdh2、cdh3）安装 krb5-devel、krb5-workstation ：
 
 ```bash
-$ yum install krb5-devel -y
+$ yum install krb5-devel krb5-workstation -y
 ```
 
 ### 3.2.3 修改配置文件
@@ -91,28 +91,37 @@ hadoop 集群中其他服务器涉及到的 kerberos 配置文件：`/etc/krb5.c
 
 修改 `/etc/krb5.conf`，该文件包括KDC的配置信息。默认放在 `/usr/local/var/krb5kdc`。
 
-```ini
-[logging]
-default = FILE:/var/log/krb5libs.log
-kdc = FILE:/var/log/krb5kdc.log
-admin_server = FILE:/var/log/kadmind.log
-[libdefaults]
-default_realm = JAVACHEN.COM
-dns_lookup_realm = false
-dns_lookup_kdc = false
-ticket_lifetime = 24h
-renew_lifetime = 2d
-forwardable = true
-renewable = true
-[realms]
- JAVACHEN.COM = {
-  kdc = cdh1:88
-  admin_server = cdh1:749
- }
-[domain_realm]
+```
+$ cat /etc/krb5.conf 
+  [logging]
+   default = FILE:/var/log/krb5libs.log
+   kdc = FILE:/var/log/krb5kdc.log
+   admin_server = FILE:/var/log/kadmind.log
 
-[kdc]
-profile=/var/kerberos/krb5kdc/kdc.conf
+  [libdefaults]
+   default_realm = JAVACHEN.COM
+   dns_lookup_realm = false
+   dns_lookup_kdc = false
+   ticket_lifetime = 24h
+   renew_lifetime = 7d
+   forwardable = true
+   renewable = true
+   udp_preference_limit = 1
+   default_tgs_enctypes = arcfour-hmac
+   default_tkt_enctypes = arcfour-hmac 
+
+  [realms]
+   JAVACHEN.COM = {
+    kdc = cdh1:88
+    admin_server = cdh1:749
+   }
+
+  [domain_realm]
+    .javachen.com = JAVACHEN.COM
+    javachen.com = JAVACHEN.COM
+
+  [kdc]
+  profile=/var/kerberos/krb5kdc/kdc.conf
 ```
 
 ### 说明：
@@ -127,28 +136,25 @@ profile=/var/kerberos/krb5kdc/kdc.conf
    - `default_domain`：代表默认的域名
 - `[appdefaults]`：可以设定一些针对特定应用的配置，覆盖默认配置。
 
-> **关于AES-256加密**：
-> 
-> 对于使用centos5.6及以上的系统，默认使用AES-256来加密的。这就需要集群中的所有节点上安装 [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)。
->
-> 下载的文件是一个zip包，解开后，将里面的两个文件放到下面的目录中：`$JAVA_HOME/jre/lib/security`
-
 修改 `/var/kerberos/krb5kdc/kdc.conf` ，该文件包含 Kerberos 的配置信息。例如，KDC 的位置，Kerbero 的 admin 的realms 等。需要所有使用的 Kerberos 的机器上的配置文件都同步。这里仅列举需要的基本配置。详细介绍参考：[krb5conf](http://web.mit.edu/~kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html)
 
-```ini
+```bash
+$ cat /var/kerberos/krb5kdc/kdc.conf
 [kdcdefaults]
  v4_mode = nopreauth
+ kdc_ports = 88
  kdc_tcp_ports = 88
 
 [realms]
  JAVACHEN.COM = {
-  master_key_type = aes128-cts
-  max_life = 25h
-  max_renewable_life = 10d
+  #master_key_type = aes256-cts
   acl_file = /var/kerberos/krb5kdc/kadm5.acl
   dict_file = /usr/share/dict/words
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-  supported_enctypes = aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal des-cbc-crc:v4 des-cbc-crc:afs3
+  supported_enctypes =  des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal des-cbc-crc:v4 des-cbc-crc:afs3
+  max_life = 24h
+  max_renewable_life = 10d
+  default_principal_flags = +renewable, +forwardable
  }
  ```
 
@@ -160,19 +166,32 @@ profile=/var/kerberos/krb5kdc/kdc.conf
 - `supported_enctypes`：支持的校验方式。
 - `admin_keytab`：KDC 进行校验的 keytab。
 
+> **关于AES-256加密**：
+> 
+> 对于使用centos5.6及以上的系统，默认使用AES-256来加密的。这就需要集群中的所有节点上安装 [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)。
+>
+> 下载的文件是一个zip包，解开后，将里面的两个文件放到下面的目录中：`$JAVA_HOME/jre/lib/security`
 
 修改 `/var/kerberos/krb5kdc/kadm5.acl` 如下：
 
-```
-*/admin@JAVACHEN.COM *
+```bash
+$ cat /var/kerberos/krb5kdc/kadm5.acl 
+  */admin@JAVACHEN.COM *
 ```
 
 ### 3.2.4 同步配置文件
 
-将 kdc 中的 `/etc/krb5.conf` 拷贝到集群中其他服务器即可。集群如果开启 selinux 了，拷贝后可能需要执行:
+将 kdc 中的 `/etc/krb5.conf` 拷贝到集群中其他服务器即可。
 
 ```bash
-restorecon -R -v /etc/krb5.conf
+$ scp /etc/krb5.conf cdh2:/etc/krb5.conf
+$ scp /etc/krb5.conf cdh3:/etc/krb5.conf
+```
+
+集群如果开启 selinux 了，拷贝后可能需要执行:
+
+```bash
+$ restorecon -R -v /etc/krb5.conf
 ```
 
 ### 3.2.5 创建数据库
@@ -180,7 +199,7 @@ restorecon -R -v /etc/krb5.conf
 在 cdh1 上运行初始化数据库命令。其中 `-r` 指定对应 realm。
 
 ```bash
-kdb5_util create -r JAVACHEN.COM -s
+$ kdb5_util create -r JAVACHEN.COM -s
 ```
 
 该命令会在 `/var/kerberos/krb5kdc/` 目录下创建 principal 数据库。
@@ -206,8 +225,12 @@ $ service kadmin start
 创建远程管理的管理员：
 
 ```bash
-$ kadmin.local
-admin.local: addprinc root/admin@JAVACHEN.COM
+$ kadmin.local -q "addprinc root/admin"
+    Authenticating as principal root/admin@JAVACHEN.COM with password.
+    WARNING: no policy specified for root/admin@GJAVACHEN.COM; defaulting to no policy
+    Enter password for principal "root/admin@JAVACHEN.COM": 
+    Re-enter password for principal "root/admin@JAVACHEN.COM": 
+    Principal "root/admin@JAVACHEN.COM" created.
 ```
 
 密码不能为空，且需妥善保存。
@@ -215,8 +238,18 @@ admin.local: addprinc root/admin@JAVACHEN.COM
 在 cdh2 或者 cdh3 节点上测试创建的账户：
 
 ```bash
+# log in with the root/admin principal -- works
 $ kinit root/admin
-Password for root/admin@JAVACHEN.COM:
+    Authenticating as principal root/admin with password.
+    Password for root/admin@JAVACHEN.COM:
+    kadmin:
+    kadmin: exit
+
+# log in with kadmin.local as root -- works
+[root]$ kadmin.local
+    Authenticating as principal root/admin@JAVACHEN.COM with password.
+    kadmin.local: 
+    kadmin.local: exit
 ```
 
 输入管理员密码后，没有报错即可。
@@ -224,98 +257,107 @@ Password for root/admin@JAVACHEN.COM:
 然后，查看当前的认证用户：
 
 ```bash
-$ klist
+$ kadmin -p root/admin
+    Authenticating as principal root/admin with password.
+    Password for root/admin@JAVACHEN.COM:
+
+    # 查看principals
+    kadmin: list_principals
+
+    # 添加一个新的 principal
+    kadmin:  addprinc user1
+      WARNING: no policy specified for user1@JAVACHEN.COM; defaulting to no policy
+      Enter password for principal "user1@JAVACHEN.COM":
+      Re-enter password for principal "user1@JAVACHEN.COM":
+      Principal "user1@JAVACHEN.COM" created.
+
+    # 删除 principal
+    kadmin:  delprinc user1
+      Are you sure you want to delete the principal "user1@JAVACHEN.COM"? (yes/no): yes
+      Principal "user1@JAVACHEN.COM" deleted.
+      Make sure that you have removed this principal from all ACLs before reusing.
+
+    kadmin: exit
+```
+
+也可以直接通过下面的命令来执行：
+
+```bash
+# 提示需要输入密码
+$ kadmin -p root/admin -q "list_principals"
+$ kadmin -p root/admin -q "addprinc user2"
+$ kadmin -p root/admin -q "delprinc user2"
+
+# 不用输入密码
+$ kadmin.local -q "list_principals"
+$ kadmin.local -q "addprinc user2"
+$ kadmin.local -q "delprinc user2"
+```
+
+获取 test 用户的 ticket：
+
+```bash
+# 通过用户名和密码进行登录
+$ kinit test
+Password for test@JAVACHEN.COM:
+
+$ klist  -e
 Ticket cache: FILE:/tmp/krb5cc_0
-Default principal: root/admin@JAVACHEN.COM
+Default principal: test@JAVACHEN.COM
 
 Valid starting     Expires            Service principal
-11/04/14 18:00:04  11/05/14 18:00:04  krbtgt/JAVACHEN.COM@JAVACHEN.COM
-	renew until 11/06/14 18:00:04
+11/07/14 15:29:02  11/08/14 15:29:02  krbtgt/JAVACHEN.COM@JAVACHEN.COM
+  renew until 11/17/14 15:29:02, Etype (skey, tkt): AES-128 CTS mode with 96-bit SHA-1 HMAC, AES-128 CTS mode with 96-bit SHA-1 HMAC
 
 
 Kerberos 4 ticket cache: /tmp/tkt0
 klist: You have no tickets cached
 ```
 
-### 3.2.8 kerberos 常见命令
-
-#### 管理员操作
-
-1、登录到管理员账户
-
-如果在本机上，可以通过 `kadmin.local` 直接登录。其它机器的，先使用 kinit 进行验证。
-
-```bash
-$ kinit root/admin
-$ kadmin 
-```
-
-这里我输入两次的 root 账号的密码为 root，后面会用到这个密码。
-
-2、增删改查账户
-
-在管理员的状态下使用 addprinc、delprinc、modprinc、listprincs 命令。使用 `?` 可以列出所有的命令。
-
-```bash
-$ kadmin.local 
- Authenticating as principal root/admin@JAVACHEN.COM with password.
-kamdin: addprinc -randkey hdfs/cdh1
- WARNING: no policy specified for hdfs/cdh1@JAVACHEN.COM; defaulting to no policy
- Principal "hdfs/cdh1@JAVACHEN.COM" created.
-kamdin: delprinc hdfs/cdh1
- Are you sure you want to delete the principal "hdfs/cdh1@JAVACHEN.COM"? (yes/no): yes
- Principal "hdfs/cdh1@JAVACHEN.COM" deleted.
- Make sure that you have removed this principal from all ACLs before reusing.
-kamdin: listprincs
- K/M@JAVACHEN.COM
- admin/admin@JAVACHEN.COM
- kadmin/admin@JAVACHEN.COM
- kadmin/changepw@JAVACHEN.COM
- kadmin/history@JAVACHEN.COM
- krbtgt/JAVACHEN.COM@JAVACHEN.COM
- root/admin@JAVACHEN.COM
-```
-
-生成 keytab，使用 `xst` 命令或者 `ktadd` 命令：
-
-```bash
-$ cd /etc/hadoop/conf/
-
-$ kadmin.local
-kadmin:xst -k hdfs.keytab hdfs/cdh1@JAVACHEN.COM
-```
-
-#### 用户操作
-
-查看当前的认证用户：
-
-```bash
-$ klist -ket
-Keytab name: FILE:/etc/krb5.keytab
-KVNO Timestamp         Principal
----- ----------------- --------------------------------------------------------
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (ArcFour with HMAC/md5)
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (DES with HMAC/sha1)
-   7 11/04/14 15:32:14 kadmin/admin@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 15:41:47 kadmin/admin@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-```
-
-认证用户：
-
-```bash
-$ kinit -kt /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
-```
-
-删除当前的认证的缓存：
+销毁该 ticket：
 
 ```bash
 $ kdestroy
+
+$ klist
+klist: No credentials cache found (ticket cache FILE:/tmp/krb5cc_0)
+
+
+Kerberos 4 ticket cache: /tmp/tkt0
+klist: You have no tickets cached
+```
+
+更新 ticket：
+
+```bash
+$ kinit root/admin
+  Password for root/admin@JAVACHEN.COM:
+
+$  klist
+  Ticket cache: FILE:/tmp/krb5cc_0
+  Default principal: root/admin@JAVACHEN.COM
+
+  Valid starting     Expires            Service principal
+  11/07/14 15:33:57  11/08/14 15:33:57  krbtgt/JAVACHEN.COM@JAVACHEN.COM
+    renew until 11/17/14 15:33:57
+
+
+  Kerberos 4 ticket cache: /tmp/tkt0
+  klist: You have no tickets cached
+
+$ kinit -R
+
+$ klist
+  Ticket cache: FILE:/tmp/krb5cc_0
+  Default principal: root/admin@JAVACHEN.COM
+
+  Valid starting     Expires            Service principal
+  11/07/14 15:34:05  11/08/14 15:34:05  krbtgt/JAVACHEN.COM@JAVACHEN.COM
+    renew until 11/17/14 15:33:57
+
+
+  Kerberos 4 ticket cache: /tmp/tkt0
+  klist: You have no tickets cached
 ```
 
 # 4. hdfs 上配置 kerberos
@@ -714,3 +756,5 @@ Login successful for user hdfs/cdh2@JAVACHEN.COM using keytab file /etc/hadoop/c
 - [Hadoop的kerberos的实践部署](https://github.com/zouhc/MyHadoop/blob/master/doc/Hadoop%E7%9A%84kerberos%E7%9A%84%E5%AE%9E%E8%B7%B5%E9%83%A8%E7%BD%B2.md)
 - [hadoop 添加kerberos认证](http://blog.chinaunix.net/uid-1838361-id-3243243.html)
 - [YARN & HDFS2 安装和配置Kerberos](http://blog.csdn.net/lalaguozhe/article/details/11570009)
+- [Kerberos basics and installing a KDC](http://blog.godatadriven.com/kerberos_kdc_install.html)
+- [Hadoop, Hbase, Zookeeper安全实践](http://www.wuzesheng.com/?p=2345)
