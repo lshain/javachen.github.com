@@ -156,11 +156,11 @@ $ chmod 400 /etc/hadoop/conf/mapred.keytab
 #configured value of yarn.nodemanager.linux-container-executor.group
 yarn.nodemanager.linux-container-executor.group=yarn
 #comma separated list of users who can not run applications
-banned.users=hfds,yarn,mapred,hive,impala
+banned.users=bin
 #Prevent other super-users
 min.user.id=0
 #comma separated list of system users who CAN run applications
-allowed.system.users=root,nobody,impala,hive
+allowed.system.users=root,nobody,impala,hive,hdfs,yarn
 ```
 
 设置该文件权限：
@@ -299,6 +299,18 @@ $ sh manager_cluster.sh hdfs status #查看 hdfs 用户管理的服务的运行�
 运行一个 mapreduce 的例子：
 
 ```bash
+$ klist
+  Ticket cache: FILE:/tmp/krb5cc_1002
+  Default principal: testUser/cdh1@JAVACHEN.COM
+
+  Valid starting     Expires            Service principal
+  11/10/14 11:18:55  11/11/14 11:18:55  krbtgt/cdh1@JAVACHEN.COM
+    renew until 11/17/14 11:18:55
+
+
+  Kerberos 4 ticket cache: /tmp/tkt1002
+  klist: You have no tickets cached
+
 $ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 10000
 ```
 
