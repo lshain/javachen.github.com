@@ -23,7 +23,7 @@ description: 记录 CDH Hadoop 集群上配置 Impala 集成 Kerberos 的过程�
 参考 [使用yum安装CDH Hadoop集群](http://blog.javachen.com/2013/04/06/install-cloudera-cdh-by-yum/) 安装 hadoop 集群，集群包括三个节点，每个节点的ip、主机名和部署的组件分配如下：
 
 ```
-192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase、impala-state-store、impala-catalog
+192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase、impala-state-store、impala-catalog、Kerberos Server
 192.168.56.122        cdh2     DataNode、SSNameNode、NodeManager、HBase、impala-server
 192.168.56.123        cdh3     DataNode、HBase、NodeManager、impala-server
 ```
@@ -33,7 +33,7 @@ description: 记录 CDH Hadoop 集群上配置 Impala 集成 Kerberos 的过程�
 在每个节点上运行下面的命令：
 
 ```bash
-$ yum install python-devel openssl-devel python-pip cyrus-sasl cyrus-sasl-gssapi -y
+$ yum install python-devel openssl-devel python-pip cyrus-sasl cyrus-sasl-gssapi cyrus-sasl-devel -y
 $ pip-python install ssl
 ```
 
@@ -41,32 +41,33 @@ $ pip-python install ssl
 
 在 cdh1 节点的 `/etc/impala/conf` 目录，即 KDC server 节点上运行 `kadmin.local` ，然后执行下面命令：
 
-```
-addprinc -randkey impala/cdh1@JAVACHEN.COM
-addprinc -randkey impala/cdh2@JAVACHEN.COM
-addprinc -randkey impala/cdh3@JAVACHEN.COM
+```bash
+$ cd /var/kerberos/krb5kdc/
 
-xst  -k impala-unmerged.keytab  impala/cdh1@JAVACHEN.COM
-xst  -k impala-unmerged.keytab  impala/cdh2@JAVACHEN.COM
-xst  -k impala-unmerged.keytab  impala/cdh3@JAVACHEN.COM
+kadmin.local -q "addprinc -randkey impala/cdh1@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey impala/cdh2@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey impala/cdh3@JAVACHEN.COM "
+
+kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh3@JAVACHEN.COM "
 ```
 
-然后，使用 `ktutil` 合并前面创建的 keytab ：
+然后，使用 ktutil 合并前面创建的 keytab 生成 impala.keytab
 
 ```bash
-$ cd /etc/impala/conf
+$ cd /var/kerberos/krb5kdc/
 
 $ ktutil
 ktutil: rkt impala-unmerged.keytab
-ktutil: rkt HTTP.keytab
+ktutil: rkt HTTP-unmerged.keytab
 ktutil: wkt impala.keytab
 ```
 
-这样会在 `/etc/impala/conf` 目录下生成 impala.keytab。
-
-拷贝 impala.keytab 文件到其他节点的 `/etc/impala/conf` 目录
+拷贝 impala.keytab 文件到其他节点的 /etc/impala/conf 目录
 
 ```bash
+$ scp impala.keytab cdh1:/etc/impala/conf
 $ scp impala.keytab cdh2:/etc/impala/conf
 $ scp impala.keytab cdh3:/etc/impala/conf
 ```
@@ -74,52 +75,20 @@ $ scp impala.keytab cdh3:/etc/impala/conf
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown impala:impala /etc/impala/conf/impala.keytab
-$ chmod 400 /etc/impala/conf/impala.keytab
+$ ssh cdh1 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
+$ ssh cdh2 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
+$ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
 ```
+
+由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)
 
 # 3. 修改 impala 配置文件
 
-修改 impala-site.xml，添加下面配置：
-
-```xml
-```
-
-
-在 core-site.xml 中添加：
-
-```xml
-<property>
-  <name>hadoop.proxyuser.hive.hosts</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.hive.groups</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.hdfs.hosts</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.hdfs.groups</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.HTTP.hosts</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.HTTP.groups</name>
-  <value>*</value>
-</property>
-```
-
-修改 /etc/default/impala，在 `IMPALA_CATALOG_ARGS` 、`IMPALA_SERVER_ARGS` 和 `IMPALA_STATE_STORE_ARGS` 中添加下面参数：
+修改 cdh1 节点上的 /etc/default/impala，在 `IMPALA_CATALOG_ARGS` 、`IMPALA_SERVER_ARGS` 和 `IMPALA_STATE_STORE_ARGS` 中添加下面参数：
 
 ```
 -kerberos_reinit_interval=60
--principal=impala/cdh1@JAVACHEN.COM
+-principal=impala/_HOST@JAVACHEN.COM
 -keytab_file=/etc/impala/conf/impala.keytab
 ```
 
@@ -138,19 +107,18 @@ IMPALA_STATE_STORE_PORT=24000
 IMPALA_BACKEND_PORT=22000
 IMPALA_LOG_DIR=/var/log/impala
 
-HOSTNAME=`hostname -f`
 IMPALA_MEM_DEF=$(free -m |awk 'NR==2{print $2-5120}')
 
-IMPALA_CATALOG_ARGS=" -log_dir=${IMPALA_LOG_DIR} -kerberos_reinit_interval=60\
-    -state_store_host=${IMPALA_STATE_STORE_HOST} \
-    -principal=impala/${HOSTNAME}@JAVACHEN.COM \
+IMPALA_CATALOG_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_host=${IMPALA_STATE_STORE_HOST} \
+    -kerberos_reinit_interval=60\
+    -principal=impala/_HOST@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab
 "
 
 IMPALA_STATE_STORE_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_port=${IMPALA_STATE_STORE_PORT}\
     -statestore_subscriber_timeout_seconds=15 \
     -kerberos_reinit_interval=60 \
-    -principal=impala/${HOSTNAME}@JAVACHEN.COM \
+    -principal=impala/_HOST@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab
 "
 IMPALA_SERVER_ARGS=" \
@@ -161,12 +129,30 @@ IMPALA_SERVER_ARGS=" \
     -state_store_host=${IMPALA_STATE_STORE_HOST} \
     -be_port=${IMPALA_BACKEND_PORT} \
     -kerberos_reinit_interval=60 \
-    -principal=impala/${HOSTNAME}@JAVACHEN.COM \
+    -principal=impala/_HOST@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab \
     -mem_limit=${IMPALA_MEM_DEF}m
 "
 
 ENABLE_CORE_DUMPS=false
+```
+
+将修改的上面文件同步到其他节点：cdh2、cdh3：
+
+```bash
+$ scp /etc/default/impala cdh2:/etc/default/impala
+$ scp /etc/default/impala cdh3:/etc/default/impala
+```
+
+更新 impala 配置文件下的文件并同步到其他节点：
+
+```bash
+cp /etc/hadoop/conf/core-site.xml /etc/impala/conf/
+cp /etc/hadoop/conf/hdfs-site.xml /etc/impala/conf/
+cp /etc/hive/conf/hive-site.xml /etc/impala/conf/
+
+scp -r /etc/impala/conf cdh2:/etc/impala
+scp -r /etc/impala/conf cdh3:/etc/impala
 ```
 
 # 4. 启动服务
@@ -182,6 +168,10 @@ $ service impala-state-store start
 
 然后查看日志，确认是否启动成功。
 
+```bash
+$ tailf /var/log/impala/statestored.INFO
+```
+
 ## 启动 impala-catalog
 
 impala-catalog 是通过 impala 用户启动的，故在 cdh1 上先获取 impala 用户的 ticket 再启动服务：
@@ -192,6 +182,25 @@ $ service impala-catalog start
 ```
 
 然后查看日志，确认是否启动成功。
+
+```bash
+$ tailf /var/log/impala/catalogd.INFO
+```
+
+## 启动 impala-server
+
+impala-server 是通过 impala 用户启动的，故在 cdh1 上先获取 impala 用户的 ticket 再启动服务：
+
+```bash
+$ kinit -k -t /etc/impala/conf/impala.keytab impala/cdh1@JAVACHEN.COM
+$ service impala-server start
+```
+
+然后查看日志，确认是否启动成功。
+
+```bash
+$ tailf /var/log/impala/impalad.INFO
+```
 
 # 5. 测试
 

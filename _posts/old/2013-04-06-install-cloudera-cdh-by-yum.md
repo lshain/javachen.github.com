@@ -1260,10 +1260,6 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	    <value>thrift://cdh1:9083</value>
 	</property>
 	<property>
-	    <name>hive.metastore.local</name>
-	    <value>false</value>
-	</property>
-	<property>
 	  <name>hive.support.concurrency</name>
 	  <value>true</value>
 	</property>

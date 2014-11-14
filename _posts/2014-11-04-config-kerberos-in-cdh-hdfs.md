@@ -45,7 +45,7 @@ Kerberos 是一种网络认证协议，其设计目标是通过密钥系统为�
 
 我们在三个节点的服务器上安装 Kerberos，这三个节点上安装了 hadoop 集群，安装 hadoop 过程见：[使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum/)。这三个节点机器分布为：cdh1、cdh2、cdh3。
 
-- **操作系统**：CentOs 5.10
+- **操作系统**：CentOs 6.6
 - **运行用户**：root
 
 ## 3.2 安装过程
@@ -65,21 +65,22 @@ $ cat /etc/hosts
 
 ### 3.2.2 安装 kdc server
 
-在 cdh1 机器上安装 krb5-libs、krb5-server 和 krb5-workstation：
+在 KDC (这里是 cdh1 ) 上安装包 krb5、krb5-server 和 krb5-client。
 
 ```bash
-$ yum install yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
+$ yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
 ```
 
 在其他节点（cdh2、cdh3）安装 krb5-devel、krb5-workstation ：
 
 ```bash
-$ yum install krb5-devel krb5-workstation -y
+$ ssh cdh2 "yum install krb5-devel krb5-workstation -y"
+$ ssh cdh3 "yum install krb5-devel krb5-workstation -y"
 ```
 
 ### 3.2.3 修改配置文件
 
-kdc 服务器（这里是安装在 cdh1 上的）涉及到三个配置文件：
+kdc 服务器涉及到三个配置文件：
 
 ```
 /etc/krb5.conf
@@ -87,9 +88,7 @@ kdc 服务器（这里是安装在 cdh1 上的）涉及到三个配置文件：
 /var/kerberos/krb5kdc/kadm5.acl
 ```
 
-hadoop 集群中其他服务器涉及到的 kerberos 配置文件：`/etc/krb5.conf`。
-
-修改 `/etc/krb5.conf`，该文件包括KDC的配置信息。默认放在 `/usr/local/var/krb5kdc`。
+配置 Kerberos 的一种方法是编辑配置文件 /etc/krb5.conf。默认安装的文件中包含多个示例项。
 
 ```
 $ cat /etc/krb5.conf 
@@ -102,6 +101,7 @@ $ cat /etc/krb5.conf
    default_realm = JAVACHEN.COM
    dns_lookup_realm = false
    dns_lookup_kdc = false
+   clockskew = 120
    ticket_lifetime = 24h
    renew_lifetime = 7d
    forwardable = true
@@ -118,7 +118,7 @@ $ cat /etc/krb5.conf
 
   [domain_realm]
     .javachen.com = JAVACHEN.COM
-    javachen.com = JAVACHEN.COM
+    www.javachen.com = JAVACHEN.COM
 
   [kdc]
   profile=/var/kerberos/krb5kdc/kdc.conf
@@ -128,8 +128,9 @@ $ cat /etc/krb5.conf
 
 - `[logging]`：表示 server 端的日志的打印位置
 - `[libdefaults]`：每种连接的默认配置，需要注意以下几个关键的小配置
-   - `default_realm = JAVACHEN.COM`：默认的 realm，必须跟要配置的 realm 的名称一致。
+   - `default_realm = JAVACHEN.COM`：设置 Kerberos 应用程序的默认领域。如果您有多个领域，只需向 [realms] 节添加其他的语句。
    - `udp_preference_limit= 1`：禁止使用 udp 可以防止一个Hadoop中的错误
+   - `clockskew`：时钟偏差是不完全符合主机系统时钟的票据时戳的容差，超过此容差将不接受此票据。通常，将时钟扭斜设置为 300 秒（5 分钟）。这意味着从服务器的角度看，票证的时间戳与它的偏差可以是在前后 5 分钟内。
 - `[realms]`：列举使用的 realm。
    - `kdc`：代表要 kdc 的位置。格式是 `机器:端口`
    - `admin_server`：代表 admin 的位置。格式是 `机器:端口`
@@ -168,11 +169,11 @@ $ cat /var/kerberos/krb5kdc/kdc.conf
 
 > **关于AES-256加密**：
 > 
-> 对于使用centos5.6及以上的系统，默认使用AES-256来加密的。这就需要集群中的所有节点上安装 [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)。
+> 对于使用 centos5. 6及以上的系统，默认使用 AES-256 来加密的。这就需要集群中的所有节点上安装 [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)。
 >
-> 下载的文件是一个zip包，解开后，将里面的两个文件放到下面的目录中：`$JAVA_HOME/jre/lib/security`
+> 下载的文件是一个 zip 包，解开后，将里面的两个文件放到下面的目录中：`$JAVA_HOME/jre/lib/security`
 
-修改 `/var/kerberos/krb5kdc/kadm5.acl` 如下：
+为了能够不直接访问 KDC 控制台而从 Kerberos 数据库添加和删除主体，请对 Kerberos 管理服务器指示允许哪些主体执行哪些操作。通过编辑文件 /var/lib/kerberos/krb5kdc/kadm5.acl 完成此操作。ACL（访问控制列表）允许您精确指定特权。
 
 ```bash
 $ cat /var/kerberos/krb5kdc/kadm5.acl 
@@ -202,11 +203,15 @@ $ restorecon -R -v /etc/krb5.conf
 $ kdb5_util create -r JAVACHEN.COM -s
 ```
 
+出现 `Loading random data` 的时候另开个终端执行点消耗CPU的命令如 `for x in $(seq 10000000);do s=$((s+x));done;echo $s` 可以加快随机数采集。
+
 该命令会在 `/var/kerberos/krb5kdc/` 目录下创建 principal 数据库。
 
 如果遇到数据库已经存在的提示，可以把 `/var/kerberos/krb5kdc/` 目录下的 principal 的相关文件都删除掉。默认的数据库名字都是 principal。可以使用 `-d` 指定数据库名字。
 
 ### 3.2.6 启动服务
+
+在 cdh1 节点上运行：
 
 ```bash
 $ hkconfig --level 35 krb5kdc on
@@ -222,7 +227,7 @@ $ service kadmin start
 - 如果有访问 kdc 服务器的 root 权限，但是没有 kerberos admin 账户，使用 `kadmin.local`
 - 如果没有访问 kdc 服务器的 root 权限，但是用 kerberos admin 账户，使用 `kadmin`
 
-创建远程管理的管理员：
+在 cdh1 上创建远程管理的管理员：
 
 ```bash
 $ kadmin.local -q "addprinc root/admin"
@@ -233,26 +238,7 @@ $ kadmin.local -q "addprinc root/admin"
     Principal "root/admin@JAVACHEN.COM" created.
 ```
 
-密码不能为空，且需妥善保存。
-
-在 cdh2 或者 cdh3 节点上测试创建的账户：
-
-```bash
-# log in with the root/admin principal -- works
-$ kinit root/admin
-    Authenticating as principal root/admin with password.
-    Password for root/admin@JAVACHEN.COM:
-    kadmin:
-    kadmin: exit
-
-# log in with kadmin.local as root -- works
-[root]$ kadmin.local
-    Authenticating as principal root/admin@JAVACHEN.COM with password.
-    kadmin.local: 
-    kadmin.local: exit
-```
-
-输入管理员密码后，没有报错即可。
+系统会提示输入密码，密码不能为空，且需妥善保存。请注意密码本身并不是key。这里只是为了人类使用的方便而使用密码。真正的key是算法作用在密码上产生的一串byte序列。
 
 然后，查看当前的认证用户：
 
@@ -294,6 +280,12 @@ $ kadmin.local -q "addprinc user2"
 $ kadmin.local -q "delprinc user2"
 ```
 
+创建一个测试用户 test，密码设置为 test：
+
+```bash
+$ kadmin.local -q "addprinc test"
+```
+
 获取 test 用户的 ticket：
 
 ```bash
@@ -314,7 +306,7 @@ Kerberos 4 ticket cache: /tmp/tkt0
 klist: You have no tickets cached
 ```
 
-销毁该 ticket：
+销毁该 test 用户的 ticket：
 
 ```bash
 $ kdestroy
@@ -360,11 +352,31 @@ $ klist
   klist: You have no tickets cached
 ```
 
-# 4. hdfs 上配置 kerberos
+抽取密钥并将其储存在本地 keytab 文件 /etc/krb5.keytab 中。这个文件由超级用户拥有，所以您必须是 root 用户才能在 kadmin shell 中执行以下命令：
+
+```bash
+$ kadmin.local -q "ktadd kadmin/admin"
+
+$ klist -k /etc/krb5.keytab
+  Keytab name: FILE:/etc/krb5.keytab
+  KVNO Principal
+  ---- --------------------------------------------------------------------------
+     3 kadmin/admin@LASHOU-INC.COM
+     3 kadmin/admin@LASHOU-INC.COM
+     3 kadmin/admin@LASHOU-INC.COM
+     3 kadmin/admin@LASHOU-INC.COM
+     3 kadmin/admin@LASHOU-INC.COM
+```
+
+# 4. HDFS 上配置 kerberos
 
 ## 4.1 创建认证规则
 
-Kerberos principal 用于在 kerberos 加密系统中标记一个唯一的身份。kerberos 为 kerberos principal 分配 tickets 使其可以访问由 kerberos 加密的 hadoop 服务。
+在 Kerberos 安全机制里，一个 principal 就是 realm 里的一个对象，一个 principal 总是和一个密钥（secret key）成对出现的。
+
+这个 principal 的对应物可以是 service，可以是 host，也可以是 user，对于 Kerberos 来说，都没有区别。
+
+Kdc(Key distribute center) 知道所有 principal 的 secret key，但每个 principal 对应的对象只知道自己的那个 secret key 。这也是“共享密钥“的由来。
 
 对于 hadoop，principals 的格式为 `username/fully.qualified.domain.name@YOUR-REALM.COM`。
 
@@ -373,23 +385,26 @@ Kerberos principal 用于在 kerberos 加密系统中标记一个唯一的身份
 在 KCD server 上（这里是 cdh1）创建 hdfs principal：
 
 ```bash
-addprinc -randkey hdfs/cdh1@JAVACHEN.COM
-addprinc -randkey hdfs/cdh2@JAVACHEN.COM
-addprinc -randkey hdfs/cdh3@JAVACHEN.COM
+kadmin.local -q "addprinc -randkey hdfs/cdh1@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey hdfs/cdh2@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey hdfs/cdh3@JAVACHEN.COM"
+
 ```
+
+`-randkey` 标志没有为新 principal 设置密码，而是指示 kadmin 生成一个随机密钥。之所以在这里使用这个标志，是因为此 principal 不需要用户交互。它是计算机的一个服务器帐户。
 
 创建 HTTP principal：
 
 ```bash
-addprinc -randkey HTTP/cdh1@JAVACHEN.COM
-addprinc -randkey HTTP/cdh2@JAVACHEN.COM
-addprinc -randkey HTTP/cdh3@JAVACHEN.COM
+kadmin.local -q "addprinc -randkey HTTP/cdh1@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey HTTP/cdh2@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey HTTP/cdh3@JAVACHEN.COM"
 ```
 
 创建完成后，查看：
 
 ```bash
-listprincs
+kadmin.local -q "listprincs"
 ```
 
 ## 4.2 创建keytab文件
@@ -417,34 +432,31 @@ xst -norandkey -k mapred.keytab mapred/fully.qualified.domain.name host/fully.qu
 > 上面的方法使用了xst的norandkey参数，有些kerberos不支持该参数。
 > 当不支持该参数时有这样的提示：`Principal -norandkey does not exist.`，需要使用下面的方法来生成keytab文件。
 
-先在 KCD server 上（这里是 cdh1）生成独立key：
+先在 cdh1 即 kdc server 上生成独立 keytab：
 
 ```bash
-$ cd /etc/hadoop/conf
+$ cd /var/kerberos/krb5kdc/
 
-$ kadmin.local
-kadmin: xst  -k hdfs-unmerged.keytab  hdfs/cdh1@JAVACHEN.COM
-kadmin: xst  -k hdfs-unmerged.keytab  hdfs/cdh2@JAVACHEN.COM
-kadmin: xst  -k hdfs-unmerged.keytab  hdfs/cdh3@JAVACHEN.COM
+$ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh1@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh2@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh3@JAVACHEN.COM"
 
-kadmin: xst  -k HTTP.keytab  hdfs/cdh1@JAVACHEN.COM
-kadmin: xst  -k HTTP.keytab  hdfs/cdh2@JAVACHEN.COM
-kadmin: xst  -k HTTP.keytab  hdfs/cdh3@JAVACHEN.COM
+$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh1@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh2@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh3@JAVACHEN.COM"
 ```
 
-这样，就会在 `/etc/hadoop/conf` 目录下生成 `hdfs-unmerged.keytab` 和 `HTTP.keytab` 两个文件，接下来合并者两个文件为 `hdfs.keytab`。
+这样，就会在 `/var/kerberos/krb5kdc/` 目录下生成 `hdfs-unmerged.keytab` 和 `HTTP-unmerged.keytab` 两个文件，接下来使用 `ktutil` 合并者两个文件为 `hdfs.keytab`。
 
-使用 `ktutil` 合并前面创建的 keytab ：
 
 ```bash
-$ cd /etc/hadoop/conf
+$ cd /var/kerberos/krb5kdc/
 
 $ ktutil
 ktutil: rkt hdfs-unmerged.keytab
-ktutil: rkt HTTP.keytab
+ktutil: rkt HTTP-unmerged.keytab
 ktutil: wkt hdfs.keytab
 ```
-同样，会在 /etc/hadoop/conf 目录下生成 hdfs.keytab。
 
 使用 klist 显示 hdfs.keytab 文件列表：
 
@@ -453,43 +465,37 @@ $ klist -ket  hdfs.keytab
 Keytab name: FILE:hdfs.keytab
 KVNO Timestamp         Principal
 ---- ----------------- --------------------------------------------------------
-   3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh1@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh1@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh2@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh2@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 hdfs/cdh3@JAVACHEN.COM (DES cbc mode with RSA-MD5)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (AES-128 CTS mode with 96-bit SHA-1 HMAC)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (Triple DES cbc mode with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (ArcFour with HMAC/md5)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (DES with HMAC/sha1)
-   3 11/04/14 16:40:57 HTTP/cdh3@JAVACHEN.COM (DES cbc mode with RSA-MD5)
+   2 11/13/14 10:40:18 hdfs/cdh1@JAVACHEN.COM (des3-cbc-sha1)
+   2 11/13/14 10:40:18 hdfs/cdh1@JAVACHEN.COM (arcfour-hmac)
+   2 11/13/14 10:40:18 hdfs/cdh1@JAVACHEN.COM (des-hmac-sha1)
+   2 11/13/14 10:40:18 hdfs/cdh1@JAVACHEN.COM (des-cbc-md5)
+   4 11/13/14 10:40:18 hdfs/cdh2@JAVACHEN.COM (des3-cbc-sha1)
+   4 11/13/14 10:40:18 hdfs/cdh2@JAVACHEN.COM (arcfour-hmac)
+   4 11/13/14 10:40:18 hdfs/cdh2@JAVACHEN.COM (des-hmac-sha1)
+   4 11/13/14 10:40:18 hdfs/cdh2@JAVACHEN.COM (des-cbc-md5)
+   4 11/13/14 10:40:18 hdfs/cdh3@JAVACHEN.COM (des3-cbc-sha1)
+   4 11/13/14 10:40:18 hdfs/cdh3@JAVACHEN.COM (arcfour-hmac)
+   4 11/13/14 10:40:18 hdfs/cdh3@JAVACHEN.COM (des-hmac-sha1)
+   4 11/13/14 10:40:18 hdfs/cdh3@JAVACHEN.COM (des-cbc-md5)
+   3 11/13/14 10:40:18 HTTP/cdh1@JAVACHEN.COM (des3-cbc-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh1@JAVACHEN.COM (arcfour-hmac)
+   3 11/13/14 10:40:18 HTTP/cdh1@JAVACHEN.COM (des-hmac-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh1@JAVACHEN.COM (des-cbc-md5)
+   3 11/13/14 10:40:18 HTTP/cdh2@JAVACHEN.COM (des3-cbc-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh2@JAVACHEN.COM (arcfour-hmac)
+   3 11/13/14 10:40:18 HTTP/cdh2@JAVACHEN.COM (des-hmac-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh2@JAVACHEN.COM (des-cbc-md5)
+   3 11/13/14 10:40:18 HTTP/cdh3@JAVACHEN.COM (des3-cbc-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh3@JAVACHEN.COM (arcfour-hmac)
+   3 11/13/14 10:40:18 HTTP/cdh3@JAVACHEN.COM (des-hmac-sha1)
+   3 11/13/14 10:40:18 HTTP/cdh3@JAVACHEN.COM (des-cbc-md5)
 ```
 
 验证是否正确合并了key，使用合并后的keytab，分别使用hdfs和host principals来获取证书。
 
 ```bash
-$ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh3@JAVACHEN.COM
-$ kinit -k -t /etc/hadoop/conf/hdfs.keytab HTTP/cdh3@JAVACHEN.COM
+$ kinit -k -t hdfs.keytab hdfs/cdh1@JAVACHEN.COM
+$ kinit -k -t hdfs.keytab HTTP/cdh1@JAVACHEN.COM
 ```
 
 如果出现错误：`kinit: Key table entry not found while getting initial credentials`，
@@ -500,6 +506,7 @@ $ kinit -k -t /etc/hadoop/conf/hdfs.keytab HTTP/cdh3@JAVACHEN.COM
 拷贝 hdfs.keytab 文件到其他节点的 /etc/hadoop/conf 目录
 
 ```bash
+$ scp hdfs.keytab cdh1:/etc/hadoop/conf
 $ scp hdfs.keytab cdh2:/etc/hadoop/conf
 $ scp hdfs.keytab cdh3:/etc/hadoop/conf
 ```
@@ -507,8 +514,9 @@ $ scp hdfs.keytab cdh3:/etc/hadoop/conf
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown hdfs:hadoop /etc/hadoop/conf/hdfs.keytab
-$ chmod 400 /etc/hadoop/conf/hdfs.keytab
+$ ssh cdh1 "chown hdfs:hadoop /etc/hadoop/conf/hdfs.keytab ;chmod 400 /etc/hadoop/conf/hdfs.keytab"
+$ ssh cdh2 "chown hdfs:hadoop /etc/hadoop/conf/hdfs.keytab ;chmod 400 /etc/hadoop/conf/hdfs.keytab"
+$ ssh cdh3 "chown hdfs:hadoop /etc/hadoop/conf/hdfs.keytab ;chmod 400 /etc/hadoop/conf/hdfs.keytab"
 ```
 
 由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改kdc中的principal的密码，则该keytab就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)
@@ -661,10 +669,16 @@ $ echo root|kinit root/admin
 
 这里 root 为之前创建的 root/admin 的密码。
 
+
 获取 cdh1的 ticket：
 
 ```bash
 $ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
+```
+
+如果出现下面异常，则重新导出 keytab 再试试：
+```
+kinit: Password incorrect while getting initial credentials
 ```
 
 然后启动服务，观察日志：
@@ -684,9 +698,7 @@ drwxr-xr-x   - hdfs hadoop          0 2014-08-10 10:53 /user
 drwxr-xr-x   - hdfs hadoop          0 2013-05-20 22:52 /var
 ```
 
-如果在你的凭据缓存中没有有效的kerberos ticket，执行上面命令将会失败，可以使用klist来查看是否有有有效的ticket。
-
-需要通过 kinit 来获取ticket。如果没有有效的ticket，将会出现下面的错误：
+如果在你的凭据缓存中没有有效的kerberos ticket，执行上面命令将会失败，将会出现下面的错误：
 
 ```
 14/11/04 12:08:12 WARN ipc.Client: Exception encountered while connecting to the server : javax.security.sasl.SaslException:
@@ -706,33 +718,33 @@ $ ls /usr/lib/bigtop-utils/
 bigtop-detect-classpath  bigtop-detect-javahome  bigtop-detect-javalibs  jsvc
 ```
 
-然后编辑 `/etc/default/hadoop-hdfs-datanode`，取消注释并设置 `JSVC_HOME`，修改如下：
+然后编辑 `/etc/default/hadoop-hdfs-datanode`，取消对下面的注释并添加一行设置 `JSVC_HOME`，修改如下：
 
 ```bash
-export HADOOP_PID_DIR=/var/run/hadoop-hdfs
-export HADOOP_LOG_DIR=/var/log/hadoop-hdfs
-export HADOOP_NAMENODE_USER=hdfs
-export HADOOP_SECONDARYNAMENODE_USER=hdfs
-export HADOOP_DATANODE_USER=hdfs
-export HADOOP_IDENT_STRING=hdfs
-
 export HADOOP_SECURE_DN_USER=hdfs
 export HADOOP_SECURE_DN_PID_DIR=/var/run/hadoop-hdfs
 export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
+
 export JSVC_HOME=/usr/lib/bigtop-utils
+```
+
+将该文件同步到其他节点：
+
+```bash
+$ scp /etc/default/hadoop-hdfs-datanode cdh2:/etc/default/hadoop-hdfs-datanode
+$ scp /etc/default/hadoop-hdfs-datanode cdh3:/etc/default/hadoop-hdfs-datanode
 ```
 
 分别在 cdh2、cdh3 获取 ticket 然后启动服务：
 
 ```bash
-$ echo root|kinit root/admin  #root 为 root/admin 的密码
+#root 为 root/admin 的密码
+$ ssh cdh2 "echo root|kinit root/admin; kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh2@JAVACHEN.COM; service hadoop-hdfs-datanode start"
 
-$ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
-
-$ service hadoop-hdfs-datanode start
+$ ssh cdh3 "echo root|kinit root/admin; kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh3@JAVACHEN.COM; service hadoop-hdfs-datanode start"
 ```
 
-观看 cdh1 上 NameNode 日志，出现下面日志表示启动成功：
+观看 cdh1 上 NameNode 日志，出现下面日志表示 DataNode 启动成功：
 
 ```
 14/11/04 17:21:41 INFO security.UserGroupInformation: 

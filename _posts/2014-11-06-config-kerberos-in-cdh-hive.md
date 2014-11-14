@@ -21,41 +21,43 @@ description: 记录 CDH Hadoop 集群上配置 Hive 集成 Kerberos 的过程，
 参考 [使用yum安装CDH Hadoop集群](http://blog.javachen.com/2013/04/06/install-cloudera-cdh-by-yum/) 安装 hadoop 集群，集群包括三个节点，每个节点的ip、主机名和部署的组件分配如下：
 
 ```
-192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase
+192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase、Kerberos Server
 192.168.56.122        cdh2     DataNode、SSNameNode、NodeManager、HBase
 192.168.56.123        cdh3     DataNode、HBase、NodeManager
 ```
 
 # 1. 生成 keytab
 
-在 cdh1 节点的 `/etc/hive/conf` 目录，即 KDC server 节点上运行 `kadmin.local` ，然后执行下面命令：
-
-```
-addprinc -randkey hive/cdh1@JAVACHEN.COM
-addprinc -randkey hive/cdh2@JAVACHEN.COM
-addprinc -randkey hive/cdh3@JAVACHEN.COM
-
-xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh2@JAVACHEN.COM
-xst  -k hive-unmerged.keytab  hive/cdh3@JAVACHEN.COM
-```
-
-然后，使用 `ktutil` 合并前面创建的 keytab ：
+cdh1 为 KDC Server，在该节点上生成 hive 服务的 principal 并导出为 ticket：
 
 ```bash
-$ cd /etc/hive/conf
+$ cd /var/kerberos/krb5kdc/
 
+kadmin.local -q "addprinc -randkey hive/cdh1@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey hive/cdh2@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey hive/cdh3@JAVACHEN.COM "
+
+kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh3@JAVACHEN.COM "
+```
+
+然后，使用 ktutil 合并前面创建的 keytab 生成 hive.keytab
+
+```bash
+$ cd /var/kerberos/krb5kdc/
+
+# 进入到 ktutil
 $ ktutil
 ktutil: rkt hive-unmerged.keytab
-ktutil: rkt HTTP.keytab
+ktutil: rkt HTTP-unmerged.keytab
 ktutil: wkt hive.keytab
 ```
 
-这样会在 `/etc/hive/conf` 目录下生成 hive.keytab。
-
-拷贝 hive.keytab 文件到其他节点的 `/etc/hive/conf` 目录
+拷贝 hive.keytab 文件到其他节点的 /etc/hive/conf 目录
 
 ```bash
+$ scp hive.keytab cdh1:/etc/hive/conf
 $ scp hive.keytab cdh2:/etc/hive/conf
 $ scp hive.keytab cdh3:/etc/hive/conf
 ```
@@ -63,9 +65,12 @@ $ scp hive.keytab cdh3:/etc/hive/conf
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown hive:hive /etc/hive/conf/hive.keytab
-$ chmod 400 /etc/hive/conf/hive.keytab
+$ ssh cdh1 "cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab"
+$ ssh cdh2 "cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab"
+$ ssh cdh3 "cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab"
 ```
+
+由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)
 
 # 2. 修改 hive 配置文件
 
@@ -139,6 +144,11 @@ $ chmod 400 /etc/hive/conf/hive.keytab
 
 记住将修改的上面文件同步到其他节点：cdh2、cdh3，并再次一一检查权限是否正确。
 
+```bash
+$ scp /etc/hive/conf/hive-site.xml cdh2:/etc/hive/conf/
+$ scp /etc/hive/conf/hive-site.xml cdh3:/etc/hive/conf/
+```
+
 # 3. 启动服务
 
 ## 启动 Hive MetaStore
@@ -167,13 +177,7 @@ $ service hive-server2 start
 
 ## Hive CLI 
 
-在没有配置 kerberos 之前，想要通过 hive 用户运行 hive 命令需要执行下面的命令：
-
-```bash
-sudo -u hive hive
-```
-
-现在配置了 kerberos 之后，不再需要 `sudo` 了，hive 会通过 ticket 中的用户去执行该命令：
+在没有配置 kerberos 之前，想要通过 hive 用户运行 hive 命令需要执行sudo，现在配置了 kerberos 之后，不再需要 `sudo` 了，hive 会通过 ticket 中的用户去执行该命令：
 
 ```bash
 $ klist
@@ -191,6 +195,9 @@ klist: You have no tickets cached
 $ hive
 hive> set system:user.name;
 system:user.name=root
+hive> create table t(id int);
+OK
+Time taken: 2.183 seconds
 hive> show tables;
 OK
 t
@@ -225,5 +232,18 @@ Enter password for jdbc:hive2://localhost:10000/default;principal=hive/cdh1@JAVA
 Connected to: Apache Hive (version 0.13.1)
 Driver: Hive (version 0.13.1-cdh5.2.0)
 Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://cdh1:10000/default> select * from t;
++-------+--+
+| t.id  |
++-------+--+
++-------+--+
+No rows selected (1.575 seconds)
+0: jdbc:hive2://cdh1:10000/default> desc t;
++-----------+------------+----------+--+
+| col_name  | data_type  | comment  |
++-----------+------------+----------+--+
+| id        | int        |          |
++-----------+------------+----------+--+
+1 row selected (0.24 seconds)
 ```
 

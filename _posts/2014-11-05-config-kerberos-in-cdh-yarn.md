@@ -18,71 +18,67 @@ description: 记录 CDH Hadoop 集群上配置 YARN 集成 Kerberos 的过程，
 参考 [使用yum安装CDH Hadoop集群](http://blog.javachen.com/2013/04/06/install-cloudera-cdh-by-yum/) 安装 hadoop 集群，集群包括三个节点，每个节点的ip、主机名和部署的组件分配如下：
 
 ```
-192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase
+192.168.56.121        cdh1     NameNode、Hive、ResourceManager、HBase、Kerberos Server
 192.168.56.122        cdh2     DataNode、SSNameNode、NodeManager、HBase
 192.168.56.123        cdh3     DataNode、HBase、NodeManager
 ```
 
 # 1. 生成 keytab
 
-在 cdh1节点的 `/etc/hadoop/conf` 目录，即 KDC server 节点上运行 `kadmin.local`，然后执行下面命令：
-
-```
-addprinc -randkey yarn/cdh1@JAVACHEN.COM
-addprinc -randkey yarn/cdh2@JAVACHEN.COM
-addprinc -randkey yarn/cdh3@JAVACHEN.COM
-
-addprinc -randkey mapred/cdh1@JAVACHEN.COM
-addprinc -randkey mapred/cdh2@JAVACHEN.COM
-addprinc -randkey mapred/cdh3@JAVACHEN.COM
-
-xst  -k yarn-unmerged.keytab  yarn/cdh1@JAVACHEN.COM
-xst  -k yarn-unmerged.keytab  yarn/cdh1@JAVACHEN.COM
-xst  -k yarn-unmerged.keytab  yarn/cdh1@JAVACHEN.COM
-
-xst  -k mapred-unmerged.keytab  mapred/cdh1@JAVACHEN.COM
-xst  -k mapred-unmerged.keytab  mapred/cdh1@JAVACHEN.COM
-xst  -k mapred-unmerged.keytab  mapred/cdh1@JAVACHEN.COM
-```
-
-上面是将 yarn 用户和 mapred 用户规则的都添加到 yarn-unmerged.keytab 中了。
-
-然后，使用 `ktutil` 合并前面创建的 keytab ：
+cdh1 为 KDC Server，在该节点上生成 yarn、mapred服务的 principal 并导出为 ticket：
 
 ```bash
-$ cd /etc/hadoop/conf
+cd /var/kerberos/krb5kdc/
 
+kadmin.local -q "addprinc -randkey yarn/cdh1@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey yarn/cdh2@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey yarn/cdh3@JAVACHEN.COM "
+
+kadmin.local -q "addprinc -randkey mapred/cdh1@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey mapred/cdh2@JAVACHEN.COM "
+kadmin.local -q "addprinc -randkey mapred/cdh3@JAVACHEN.COM "
+
+kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh3@JAVACHEN.COM "
+
+kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh3@JAVACHEN.COM "
+```
+
+然后，使用 `ktutil` 合并前面创建的 keytab 生成 yarn.keytab 和 mapred.keytab ：
+
+```bash
+$ cd /var/kerberos/krb5kdc/
+
+# 进入到 ktutil
 $ ktutil
 ktutil: rkt yarn-unmerged.keytab
-ktutil: rkt HTTP.keytab
+ktutil: rkt HTTP-unmerged.keytab
 ktutil: wkt yarn.keytab
 
 ktutil: clear
+
 ktutil: rkt mapred-unmerged.keytab
-ktutil: rkt HTTP.keytab
+ktutil: rkt HTTP-unmerged.keytab
 ktutil: wkt mapred.keytab
 ```
-
-这样会在 `/etc/hadoop/conf` 目录下生成 yarn.keytab 和 mapred.keytab。
 
 拷贝 yarn.keytab 和 mapred.keytab 文件到其他节点的 `/etc/hadoop/conf` 目录
 
 ```bash
-$ scp yarn.keytab cdh2:/etc/hadoop/conf
-$ scp yarn.keytab cdh3:/etc/hadoop/conf
-
-$ scp mapred.keytab cdh2:/etc/hadoop/conf
-$ scp mapred.keytab cdh3:/etc/hadoop/conf
+$ scp yarn.keytab mapred.keytab cdh1:/etc/hadoop/conf
+$ scp yarn.keytab mapred.keytab cdh2:/etc/hadoop/conf
+$ scp yarn.keytab mapred.keytab cdh3:/etc/hadoop/conf
 ```
 
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ chown yarn:hadoop /etc/hadoop/conf/yarn.keytab
-$ chmod 400 /etc/hadoop/conf/yarn.keytab
-
-$ chown mapred:hadoop /etc/hadoop/conf/mapred.keytab
-$ chmod 400 /etc/hadoop/conf/mapred.keytab
+$ ssh cdh1 "cd /etc/hadoop/conf/;chown yarn:hadoop yarn.keytab;chown mapred:hadoop mapred.keytab ;chmod 400 *.keytab"
+$ ssh cdh2 "cd /etc/hadoop/conf/;chown yarn:hadoop yarn.keytab;chown mapred:hadoop mapred.keytab ;chmod 400 *.keytab"
+$ ssh cdh3 "cd /etc/hadoop/conf/;chown yarn:hadoop yarn.keytab;chown mapred:hadoop mapred.keytab ;chmod 400 *.keytab"
 ```
 
 由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(`0400`)
@@ -203,6 +199,16 @@ $ /usr/lib/hadoop-yarn/bin/container-executor --checksetup
 
 记住将修改的上面文件同步到其他节点：cdh2、cdh3，并再次一一检查权限是否正确。
 
+```bash
+$ cd /etc/hadoop/conf/
+
+$ scp yarn-site.xml mapred-site.xml container-executor.cfg  cdh2:/etc/hadoop/conf/
+$ scp yarn-site.xml mapred-site.xml container-executor.cfg  cdh3:/etc/hadoop/conf/
+
+$ ssh cdh2 "cd /etc/hadoop/conf/; chown root:yarn container-executor.cfg ; chmod 400 container-executor.cfg"
+$ ssh cdh3 "cd /etc/hadoop/conf/; chown root:yarn container-executor.cfg ; chmod 400 container-executor.cfg"
+```
+
 # 3. 启动服务
 
 ## 启动 ResourceManager
@@ -221,8 +227,8 @@ $ service hadoop-yarn-resourcemanager start
 resourcemanager 是通过 yarn 用户启动的，故在 cdh2 和 cdh3 上先获取 yarn 用户的 ticket 再启动服务：
 
 ```bash
-$ kinit -k -t /etc/hadoop/conf/yarn.keytab yarn/cdh2@JAVACHEN.COM
-$ service hadoop-yarn-nodemanager start
+$ ssh cdh2 "kinit -k -t /etc/hadoop/conf/yarn.keytab yarn/cdh2@JAVACHEN.COM ;service hadoop-yarn-nodemanager start"
+$ ssh cdh3 "kinit -k -t /etc/hadoop/conf/yarn.keytab yarn/cdh3@JAVACHEN.COM ;service hadoop-yarn-nodemanager start"
 ```
 
 ## 启动 MapReduce Job History Server
@@ -232,6 +238,93 @@ resourcemanager 是通过 mapred 用户启动的，故在 cdh1 上先获取 mapr
 ```bash
 $ kinit -k -t /etc/hadoop/conf/mapred.keytab mapred/cdh1@JAVACHEN.COM
 $ service hadoop-mapreduce-historyserver start
+```
+
+# 4. 测试
+
+检查 web 页面是否可以访问：http://cdh1:8088/cluster
+
+运行一个 mapreduce 的例子：
+
+```bash
+$ klist
+  Ticket cache: FILE:/tmp/krb5cc_1002
+  Default principal: yarn/cdh1@JAVACHEN.COM
+
+  Valid starting     Expires            Service principal
+  11/10/14 11:18:55  11/11/14 11:18:55  krbtgt/cdh1@JAVACHEN.COM
+    renew until 11/17/14 11:18:55
+
+
+  Kerberos 4 ticket cache: /tmp/tkt1002
+  klist: You have no tickets cached
+
+$ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 10000
+```
+
+如果没有报错，则说明配置成功。最后运行的结果为：
+
+```
+Job Finished in 54.56 seconds
+Estimated value of Pi is 3.14120000000000000000
+```
+
+如果出现下面错误，请检查环境变量中 `HADOOP_YARN_HOME` 是否设置正确，并和 `yarn.application.classpath` 中的保持一致。
+
+```
+14/11/13 11:41:02 INFO mapreduce.Job: Job job_1415849491982_0003 failed with state FAILED due to: Application application_1415849491982_0003 failed 2 times due to AM Container for appattempt_1415849491982_0003_000002 exited with  exitCode: 1 due to: Exception from container-launch.
+Container id: container_1415849491982_0003_02_000001
+Exit code: 1
+Stack trace: ExitCodeException exitCode=1:
+  at org.apache.hadoop.util.Shell.runCommand(Shell.java:538)
+  at org.apache.hadoop.util.Shell.run(Shell.java:455)
+  at org.apache.hadoop.util.Shell$ShellCommandExecutor.execute(Shell.java:702)
+  at org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor.launchContainer(LinuxContainerExecutor.java:281)
+  at org.apache.hadoop.yarn.server.nodemanager.containermanager.launcher.ContainerLaunch.call(ContainerLaunch.java:299)
+  at org.apache.hadoop.yarn.server.nodemanager.containermanager.launcher.ContainerLaunch.call(ContainerLaunch.java:81)
+  at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+  at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+  at java.lang.Thread.run(Thread.java:662)
+
+Shell output: main : command provided 1
+main : user is yarn
+main : requested yarn user is yarn
+
+
+Container exited with a non-zero exit code 1
+.Failing this attempt.. Failing the application.
+14/11/13 11:41:02 INFO mapreduce.Job: Counters: 0
+Job Finished in 13.428 seconds
+java.io.FileNotFoundException: File does not exist: hdfs://cdh1:8020/user/yarn/QuasiMonteCarlo_1415850045475_708291630/out/reduce-out
+```
+# 5. 其他
+
+为了方便批量生成 keytab，写了一个脚本，如下：
+
+```bash
+#!/bin/bash
+
+DNS=JAVACHEN.COM
+
+for host in  `cat /etc/hosts|grep 192.168|awk '{print $2}'` ;do
+  for user in hdfs HTTP yarn mapred hive impala ; do
+    kadmin.local -q "addprinc -randkey $user/$host@$DNS"
+    kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user-unmerged.keytab $user/$host@$DNS"
+  done
+done
+```
+
+以下脚本用于在每个客户端上获得 root/admin 的 ticket，其密码为 root：
+
+```bash
+#!/bin/sh
+
+for node in 56.121 56.122 56.123 ;do
+  echo "========10.168.$node========"
+  ssh 192.168.$node 'echo root|kinit root/admin'
+done
 ```
 
 另外，为了方便管理集群，在 cdh1 上创建一个 shell 脚本用于批量管理集群，脚本如下（保存为 `manager_cluster.sh`）：
@@ -259,6 +352,8 @@ fi
 for node in 56.121 56.122 56.123 ;do
   echo "========192.168.$node========"
   ssh 192.168.$node '
+    #先获取 root/admin 的凭证
+    echo root|kinit root/admin
     host=`hostname -f`
     path="'$role'/$host"
     #echo $path
@@ -292,32 +387,4 @@ $ sh manager_cluster.sh mapred start #启动 mapred 用户管理的服务
 $ sh manager_cluster.sh hdfs status #查看 hdfs 用户管理的服务的运行状态
 ```
 
-# 4. 测试
-
-检查 web 页面是否可以访问：http://cdh1:8088/cluster
-
-运行一个 mapreduce 的例子：
-
-```bash
-$ klist
-  Ticket cache: FILE:/tmp/krb5cc_1002
-  Default principal: testUser/cdh1@JAVACHEN.COM
-
-  Valid starting     Expires            Service principal
-  11/10/14 11:18:55  11/11/14 11:18:55  krbtgt/cdh1@JAVACHEN.COM
-    renew until 11/17/14 11:18:55
-
-
-  Kerberos 4 ticket cache: /tmp/tkt1002
-  klist: You have no tickets cached
-
-$ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 10000
-```
-
-如果没有报错，则说明配置成功。最后运行的结果为：
-
-```
-Job Finished in 54.56 seconds
-Estimated value of Pi is 3.14120000000000000000
-```
 
