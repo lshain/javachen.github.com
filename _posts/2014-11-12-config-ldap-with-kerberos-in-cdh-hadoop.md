@@ -332,7 +332,7 @@ $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/b
 ```bash
 # 查找系统上的 user1 用户
 $ grep test1 /etc/passwd  >/opt/passwd.txt
-$ /usr/share/openldap/migration/migrate_passwd.pl /opt/passwd.txt /opt/passwd.ldif
+$ /usr/share/migrationtools/migrate_passwd.pl /opt/passwd.txt /opt/passwd.ldif
 
 $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/passwd.ldif
 ```
@@ -342,7 +342,7 @@ $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/p
 ```bash
 # 生成 test1 用户的 ldif 文件，然后导入到 ldap
 $ grep test1 /etc/group  >/opt/group.txt
-$ /usr/share/openldap/migration/migrate_group.pl /opt/group.txt /opt/group.ldif
+$ /usr/share/migrationtools/migrate_group.pl /opt/group.txt /opt/group.ldif
 
 $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/group.ldif
 ```
