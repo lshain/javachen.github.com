@@ -15,7 +15,7 @@ published: true
 
 ---
 
-现在的集群安装的是 cdh4.7 并配置了 NameNode HA，现在需要将其升级到 cdh5.1，升级原因这里不做说明。
+现在的集群安装的是 cdh4.7 并配置了 NameNode HA，现在需要将其升级到 cdh5.2，升级原因这里不做说明。
 
 # 1. 不兼容的变化
 
@@ -127,31 +127,31 @@ $ ps -aef | grep java
 
 查找 namenode 数据存放路径，并对其备份
 
-## 2.3. 卸载 cdh4
+## 2.3. 更新 yum 源
 
-在每个节点卸载 cdh4 的所有组件：
+更新 cdh5 仓库（或者使用本地仓库）：
 
-```
-$ sudo yum remove hadoop* hbase* hive* zookeeper* bigtop-utils bigtop-jsvc bigtop-tomcat impala*
-```
-
-更新 cdh5仓库（或者使用本地仓库）：
-
-```
+```bash
 $ sudo rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
 ```
 
-## 2.4. 安装 cdh5
-
-将备份的配置文件拷贝回对应的地方。
-
-先安装ZooKeeper，请参考其他文档，然后安装 hdfs、yarn、hive、hbase、impala 等组件，安装你原来集群的规划在每个节点上装上需要的组件。
-
-在原来的所有 Journal Nodes 上安装 hadoop-hdfs-journalnode并启动：
+## 2.4. 升级组件
 
 ```
-$ sudo yum install hadoop-hdfs-journalnode
-$ sudo service hadoop-hdfs-journalnode start 
+$ sudo yum update hadoop* hbase* hive* zookeeper* bigtop* impala* spark* llama* lzo* sqoop* parquet* sentry* avro* mahout* -y
+```
+
+启动ZooKeeper集群，然后在原来的所有 Journal Nodes 上安装 hadoop-hdfs-journalnode并启动：
+
+```bash
+# 在安装zookeeper-server的节点上运行
+$ /etc/init.d/zookeeper-server start
+
+# 在安装zkfc的节点上运行
+$ /etc/init.d/hadoop-hdfs-zkfc
+
+# 在安装journalnode的节点上运行
+$ /etc/init.d/hadoop-hdfs-journalnode start 
 ```
 
 ## 2.5. 更新 hdfs 元数据
@@ -170,14 +170,15 @@ $ sudo tail -f /var/log/hadoop-hdfs/hadoop-hdfs-namenode-<hostname>.log
 
 如果配置了 HA，在另一个 NameNode 节点上运行：
 
-```
+```bash
+# 输入 Y
 $ sudo -u hdfs hdfs namenode -bootstrapStandby
 $ sudo service hadoop-hdfs-namenode start
 ```
 
-启动 DataNode：
+启动所有的 DataNode：
 
-```
+```bash
 $ sudo service hadoop-hdfs-datanode start
 ```
 
@@ -207,7 +208,7 @@ $ sudo -u hdfs hadoop dfsadmin -finalizeUpgrade
 在启动hbase-master进程和hbase-regionserver进程之前，更新 HBase：
 
 ```
-$ hbase upgrade -execute
+$ sudo -u hdfs hbase upgrade -execute
 ```
 
 如果你使用了 phoenix，则请删除 HBase lib 目录下对应的 phoenix 的 jar 包。
@@ -223,13 +224,24 @@ $ service hbase-regionserver start
 
 在启动hive之前，进入 `/usr/lib/hive/bin` 执行下面命令升级元数据：
 
-`
-./schematool -dbType 数据库类型 -upgradeSchemaFrom 版本号
-`
+```bash
+# ./schematool -dbType 数据库类型 -upgradeSchemaFrom 版本号
+# 升级之前 hive 版本为 0.12.0，下面命令会运行  /usr/lib/hive/scripts/metastore/upgrade/mysql/upgrade-0.12.0-to-0.13.0.mysql.sql
+$ ./schematool -dbType mysql -upgradeSchemaFrom 0.12.0
+```
+
+确认 /etc/hive/conf/hive-site.xml 和 /etc/hive/conf/hive-env.sh 是否需要修改，例如 /etc/hive/conf/hive-env.sh 配置了如下参数，需要修改到 cdh-5.2 对应的版本：
+
+```bash
+# 请修改到 cdh5.2对应的 jar 包
+export HIVE_AUX_JARS_PATH=/usr/lib/hive/lib/hive-contrib-0.12.0-cdh5.1.0.jar
+```
+
+修改完之后，请同步到其他节点。
 
 然后启动 hive 服务：
 
-```
+```bash
 $ service hive-metastore start
 $ service hive-server2 start
 ```
