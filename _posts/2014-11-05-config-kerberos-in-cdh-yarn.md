@@ -25,7 +25,7 @@ description: 记录 CDH Hadoop 集群上配置 YARN 集成 Kerberos 的过程，
 
 # 1. 生成 keytab
 
-cdh1 为 KDC Server，在该节点上生成 yarn、mapred服务的 principal 并导出为 ticket：
+在 cdh1 节点，即 KDC server 节点上执行下面命令：
 
 ```bash
 cd /var/kerberos/krb5kdc/
@@ -309,7 +309,7 @@ java.io.FileNotFoundException: File does not exist: hdfs://cdh1:8020/user/yarn/Q
 DNS=JAVACHEN.COM
 
 for host in  `cat /etc/hosts|grep 192.168|awk '{print $2}'` ;do
-  for user in hdfs HTTP yarn mapred hive impala ; do
+  for user in hdfs HTTP yarn mapred hive impala sentry zookeeper zkcli ; do
     kadmin.local -q "addprinc -randkey $user/$host@$DNS"
     kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user-unmerged.keytab $user/$host@$DNS"
   done
@@ -366,7 +366,7 @@ for node in 56.121 56.122 56.123 ;do
             exit 1
       fi
       fi
-      kinit -kt /etc/'$dir'/conf/'$role'.keytab $principal
+      kinit -r 24l -kt /etc/'$dir'/conf/'$role'.keytab $principal
       if [ $? -ne 0 ]; then
           echo "Failed to login as hdfs by kinit command"
           exit 1

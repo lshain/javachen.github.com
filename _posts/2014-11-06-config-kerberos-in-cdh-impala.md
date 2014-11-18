@@ -39,7 +39,7 @@ $ pip-python install ssl
 
 # 2. 生成 keytab
 
-在 cdh1 节点的 `/etc/impala/conf` 目录，即 KDC server 节点上运行 `kadmin.local` ，然后执行下面命令：
+在 cdh1 节点，即 KDC server 节点上执行下面命令：
 
 ```bash
 $ cd /var/kerberos/krb5kdc/

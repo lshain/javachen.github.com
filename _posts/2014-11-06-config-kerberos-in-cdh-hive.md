@@ -28,7 +28,7 @@ description: 记录 CDH Hadoop 集群上配置 Hive 集成 Kerberos 的过程，
 
 # 1. 生成 keytab
 
-cdh1 为 KDC Server，在该节点上生成 hive 服务的 principal 并导出为 ticket：
+在 cdh1 节点，即 KDC server 节点上执行下面命令：
 
 ```bash
 $ cd /var/kerberos/krb5kdc/

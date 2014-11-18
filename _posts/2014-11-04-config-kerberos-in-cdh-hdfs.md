@@ -131,6 +131,8 @@ $ cat /etc/krb5.conf
    - `default_realm = JAVACHEN.COM`：设置 Kerberos 应用程序的默认领域。如果您有多个领域，只需向 [realms] 节添加其他的语句。
    - `udp_preference_limit= 1`：禁止使用 udp 可以防止一个Hadoop中的错误
    - `clockskew`：时钟偏差是不完全符合主机系统时钟的票据时戳的容差，超过此容差将不接受此票据。通常，将时钟扭斜设置为 300 秒（5 分钟）。这意味着从服务器的角度看，票证的时间戳与它的偏差可以是在前后 5 分钟内。
+   - `ticket_lifetime`： 表明凭证生效的时限，一般为24小时。
+   - `renew_lifetime`： 表明凭证最长可以被延期的时限，一般为一个礼拜。当凭证过期之后，对安全认证的服务的后续访问则会失败。
 - `[realms]`：列举使用的 realm。
    - `kdc`：代表要 kdc 的位置。格式是 `机器:端口`
    - `admin_server`：代表 admin 的位置。格式是 `机器:端口`
@@ -432,7 +434,7 @@ xst -norandkey -k mapred.keytab mapred/fully.qualified.domain.name host/fully.qu
 > 上面的方法使用了xst的norandkey参数，有些kerberos不支持该参数。
 > 当不支持该参数时有这样的提示：`Principal -norandkey does not exist.`，需要使用下面的方法来生成keytab文件。
 
-先在 cdh1 即 kdc server 上生成独立 keytab：
+在 cdh1 节点，即 KDC server 节点上执行下面命令：
 
 ```bash
 $ cd /var/kerberos/krb5kdc/
@@ -617,7 +619,7 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 </property>
 ```
 
-如果 HDFS 配置了 QJM HA，则添加：
+如果 HDFS 配置了 QJM HA，则需要添加（另外，你还要在 zookeeper 上配置 kerberos）：
 
 ```xml
 <property>
