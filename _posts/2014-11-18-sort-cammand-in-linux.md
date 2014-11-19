@@ -9,7 +9,7 @@ tags: [ linux]
 
 description: 
 
-public: false
+published: false 
 
 ---
 
