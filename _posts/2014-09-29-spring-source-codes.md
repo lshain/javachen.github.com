@@ -93,6 +93,32 @@ Spring 4.0.x对比Spring3.2.x的系统架构变化（以下文字摘抄于[SPRIN
 > 
 > 如果去看源代码的话，还可以发现还有一个新增的包，加强了 beans 模块，就是 spring-beans-groovy。应用可以部分或完全使用 Groovy 编写。借助于 Spring 4.0，能够使用 Groovy DSL 定义外部的 Bean 配置，这类似于 XML Bean 声明，但是语法更为简洁。使用Groovy还能够在启动代码中直接嵌入Bean的声明。
 
+还有一些：
+
+- 删除过时的包和方法。具体API变动可以参考[变动报告](http://docs.spring.io/spring-framework/docs/3.2.4.RELEASE_to_4.0.0.RELEASE/)，第三方类库至少使用2010/2011年发布的版本，尤其是Hibernate 3.6+, EhCache 2.1+, Quartz 1.8+, Groovy 1.8+, and Joda-Time 2.0+。Hibernate Validator要求使用4.3+，Jackson 2.0+。
+- Java 8支持。当然也支持Java6和Java7，但最好在使用Spring框架3.X或4.X时，将JDK升级到Java7，因为有些版本至少需要Java7。
+- Java EE 6和7。使用Spring4.x时Java EE版本至少要6或以上，且需要JPA 2.0和Servlet 3.0 的支持，所以服务器，web容器需要做相应的升级。一个更具前瞻性的注意是，Spring4.0支持J2EE 7的适用级规范，比如JMS 2.0， JTA 1.2， JPA 2.1， Bean Validation 1.1和JSR-236并发工具包，在选择这些jar包时需要注意版本。
+- 使用Groovy DSL定义外部Bean。
+- 核心容器提升。
+ - 1、支持Bean的泛型注入，比如：`@Autowired Repository<Customer> customerRepository`
+ - 2、使用元注解开发暴露指定内部属性的自定义注解。
+ - 3、通过 `@Ordered` 注解或`Ordered` 接口对注入集合或数组的 Bean 进行排序。
+ - 4、`@Lazy` 注解可以用在注入点或 `@Bean` 定义上。
+ - 5、为开发者引入 `@Description` 注解。
+ - 6、引入 `@Conditional` 注解进行有条件的 Bea n过滤。
+ - 7、基于 CGLIB 的代理类不需要提供默认构造器，因为 Spring 框架将 CGLIB 整合到内部了。
+ - 8、框架支持时区管理，比如 LocalContext。
+- Web提升。
+ - 1、增加新的 `@RestController` 注解，这样就不需要在每个 `@RequestMapping` 方法中添加 `@ResponseBody` 注解。
+ - 2、添加 AsyncRestTemplate，在开发 REST 客户端时允许非阻塞异步支持。
+ - 3、为 Spring MVC 应用程序开发提供全面的时区支持。
+- WebSocket，SockJS 和 STOMP 消息。
+- 测试提升。
+ - 1、spring-test 模块里的几乎所有注解都能被用做元注解去创建自定义注解，来减少跨测试集时的重复配置。
+ - 2、活跃的 bean 定义配置文件可以编程方式解析。
+ - 3、spring-core 模块里引入一个新的 SocketUtils 类，用于扫描本地可使用的 TCP 和 UDP 服务端口。一般用于测试需要 socket 的情况，比如测试开启内存 SMTP 服务，FTP 服务，Servlet 容器等。
+ - 4、由于 Spring4.0 的原因，org.springframework.mock.web 包现在基于 Servlet 3.0 API。
+
 # 阅读过程
 
 因为 Spring 是分模块的，所以阅读 Spring 3.2.11 版本的源码过程打算先从最底层的模块开始，然后再由下向上分析每一个模块的实现过程。在阅读过程中，随着对代码的理解加深，也会重新阅读已经读过的代码。

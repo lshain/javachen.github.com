@@ -98,6 +98,8 @@ cp -rf /etc/openldap/slapd.d /etc/openldap/slapd.d.bak
 添加一些基本配置，并引入 kerberos 和 openldap 的 schema：
 
 ```bash
+$ cp /usr/share/doc/krb5-server-ldap-1.10.3/kerberos.schema /etc/openldap/schema/
+
 $ touch /etc/openldap/slapd.conf
 
 $ echo "include /etc/openldap/schema/corba.schema
@@ -129,7 +131,7 @@ $ chown -R ldap:ldap /etc/openldap/slapd.d && chmod -R 700 /etc/openldap/slapd.d
 chkconfig --add slapd
 chkconfig --level 345 slapd on
 
-/etc/init.d/sldap start
+/etc/init.d/slapd start
 ```
 
 查看状态，验证服务端口：
@@ -177,7 +179,7 @@ kinit ldapadmin
 
 系统会提示输入密码，如果一切正常，那么会安静的返回。实际上，你已经通过了kerberos的身份验证，且获得了一个Service TGT(Ticket-Granting Ticket). Service TGT的意义是， 在一段时间内，你都可以用此TGT去请求某些service，比如ldap service，而不需要再次通过kerberos的认证。
 
-确保 LDAP 启动时使用上一步中创建的keytab文件，在 `/etc/sysconfig/lapd` 增加 `KRB5_KTNAME` 配置：
+确保 LDAP 启动时使用上一步中创建的keytab文件，在 `/etc/sysconfig/ldap` 增加 `KRB5_KTNAME` 配置：
 
 ```bash
 export KRB5_KTNAME=/etc/openldap/ldap.keytab

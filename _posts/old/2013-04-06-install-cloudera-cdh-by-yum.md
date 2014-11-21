@@ -890,7 +890,17 @@ $ export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 
 运行下面的测试程序，看是否报错：
 
-```
+```bash
+# Find how many jars name ending with examples you have inside location /usr/lib/
+$ find /usr/lib/ -name "*hadoop*examples*.jar"
+
+# To list all the class name inside jar
+$ find /usr/lib/ -name "hadoop-examples.jar" | xargs -0 -I '{}' sh -c 'jar tf {}'
+
+# To search for specific class name inside jar
+$ find /usr/lib/ -name "hadoop-examples.jar" | xargs -0 -I '{}' sh -c 'jar tf {}' | grep -i wordcount.class
+
+# 运行 randomwriter 例子
 $ sudo -u hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar randomwriter out
 ```
 

@@ -216,7 +216,7 @@ $ kdb5_util create -r JAVACHEN.COM -s
 在 cdh1 节点上运行：
 
 ```bash
-$ hkconfig --level 35 krb5kdc on
+$ chkconfig --level 35 krb5kdc on
 $ chkconfig --level 35 kadmin on
 $ service krb5kdc start
 $ service kadmin start
