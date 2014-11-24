@@ -205,7 +205,7 @@ $ restorecon -R -v /etc/krb5.conf
 $ kdb5_util create -r JAVACHEN.COM -s
 ```
 
-出现 `Loading random data` 的时候另开个终端执行点消耗CPU的命令如 `for x in $(seq 10000000);do s=$((s+x));done;echo $s` 可以加快随机数采集。
+出现 `Loading random data` 的时候另开个终端执行点消耗CPU的命令如 `cat /dev/sda > /dev/urandom` 可以加快随机数采集。
 
 该命令会在 `/var/kerberos/krb5kdc/` 目录下创建 principal 数据库。
 
@@ -245,27 +245,26 @@ $ kadmin.local -q "addprinc root/admin"
 然后，查看当前的认证用户：
 
 ```bash
-$ kadmin -p root/admin
-    Authenticating as principal root/admin with password.
-    Password for root/admin@JAVACHEN.COM:
+# 添加root/admin用户
+$ echo -e "root\nroot" | kadmin.local -q "addprinc root/admin"
 
-    # 查看principals
-    kadmin: list_principals
+# 查看principals
+$ kadmin: list_principals
 
-    # 添加一个新的 principal
-    kadmin:  addprinc user1
-      WARNING: no policy specified for user1@JAVACHEN.COM; defaulting to no policy
-      Enter password for principal "user1@JAVACHEN.COM":
-      Re-enter password for principal "user1@JAVACHEN.COM":
-      Principal "user1@JAVACHEN.COM" created.
+  # 添加一个新的 principal
+  kadmin:  addprinc user1
+    WARNING: no policy specified for user1@JAVACHEN.COM; defaulting to no policy
+    Enter password for principal "user1@JAVACHEN.COM":
+    Re-enter password for principal "user1@JAVACHEN.COM":
+    Principal "user1@JAVACHEN.COM" created.
 
-    # 删除 principal
-    kadmin:  delprinc user1
-      Are you sure you want to delete the principal "user1@JAVACHEN.COM"? (yes/no): yes
-      Principal "user1@JAVACHEN.COM" deleted.
-      Make sure that you have removed this principal from all ACLs before reusing.
+  # 删除 principal
+  kadmin:  delprinc user1
+    Are you sure you want to delete the principal "user1@JAVACHEN.COM"? (yes/no): yes
+    Principal "user1@JAVACHEN.COM" deleted.
+    Make sure that you have removed this principal from all ACLs before reusing.
 
-    kadmin: exit
+  kadmin: exit
 ```
 
 也可以直接通过下面的命令来执行：
@@ -285,7 +284,7 @@ $ kadmin.local -q "delprinc user2"
 创建一个测试用户 test，密码设置为 test：
 
 ```bash
-$ kadmin.local -q "addprinc test"
+$ echo -e "test\ntest" | kadmin.local -q "addprinc test"
 ```
 
 获取 test 用户的 ticket：
@@ -335,7 +334,6 @@ $  klist
   11/07/14 15:33:57  11/08/14 15:33:57  krbtgt/JAVACHEN.COM@JAVACHEN.COM
     renew until 11/17/14 15:33:57
 
-
   Kerberos 4 ticket cache: /tmp/tkt0
   klist: You have no tickets cached
 
@@ -348,7 +346,6 @@ $ klist
   Valid starting     Expires            Service principal
   11/07/14 15:34:05  11/08/14 15:34:05  krbtgt/JAVACHEN.COM@JAVACHEN.COM
     renew until 11/17/14 15:33:57
-
 
   Kerberos 4 ticket cache: /tmp/tkt0
   klist: You have no tickets cached
@@ -390,7 +387,6 @@ Kdc(Key distribute center) 知道所有 principal 的 secret key，但每个 pri
 kadmin.local -q "addprinc -randkey hdfs/cdh1@JAVACHEN.COM"
 kadmin.local -q "addprinc -randkey hdfs/cdh2@JAVACHEN.COM"
 kadmin.local -q "addprinc -randkey hdfs/cdh3@JAVACHEN.COM"
-
 ```
 
 `-randkey` 标志没有为新 principal 设置密码，而是指示 kadmin 生成一个随机密钥。之所以在这里使用这个标志，是因为此 principal 不需要用户交互。它是计算机的一个服务器帐户。
@@ -406,7 +402,7 @@ kadmin.local -q "addprinc -randkey HTTP/cdh3@JAVACHEN.COM"
 创建完成后，查看：
 
 ```bash
-kadmin.local -q "listprincs"
+$ kadmin.local -q "listprincs"
 ```
 
 ## 4.2 创建keytab文件
@@ -679,6 +675,7 @@ $ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
 ```
 
 如果出现下面异常，则重新导出 keytab 再试试：
+
 ```
 kinit: Password incorrect while getting initial credentials
 ```
@@ -753,11 +750,206 @@ $ ssh cdh3 "echo root|kinit root/admin; kinit -k -t /etc/hadoop/conf/hdfs.keytab
 Login successful for user hdfs/cdh2@JAVACHEN.COM using keytab file /etc/hadoop/conf/hdfs.keytab
 ```
 
-# 5. 总结
+# 5. 其他
+
+## 5.1 批量生成 keytab
+
+为了方便批量生成 keytab，写了一个脚本，如下：
+
+```bash
+#!/bin/bash
+
+DNS=LASHOU.COM
+hostname=`hostname -i`
+
+for host in  `cat /etc/hosts|grep 10|grep -v $hostname|awk '{print $2}'` ;do
+  kadmin.local -q "addprinc -randkey HTTP/$host@$DNS"
+  for user in hdfs yarn mapred hive impala zookeeper sentry llama zkcli ; do
+    kadmin.local -q "addprinc -randkey $user/$host@$DNS"
+    kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user.keytab $user/$host@$DNS"
+  done
+  for user in hdfs yarn mapred; do
+                kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user.keytab HTTP/$host@$DNS"
+        done
+done
+```
+
+以下脚本用于在每个客户端上获得 root/admin 的 ticket，其密码为 root：
+
+```bash
+#!/bin/sh
+
+for node in 56.121 56.122 56.123 ;do
+  echo "========10.168.$node========"
+  ssh 192.168.$node 'echo root|kinit root/admin'
+done
+```
+
+## 5.2 管理集群脚本
+
+另外，为了方便管理集群，在 cdh1 上创建一个 shell 脚本用于批量管理集群，脚本如下（保存为 `manager_cluster.sh`）：
+
+```bash
+#!/bin/bash
+
+role=$1
+command=$2
+
+dir=$role
+
+if [ X"$role" == X"hdfs" ];then
+  dir=hadoop
+fi
+
+if [ X"$role" == X"yarn" ];then
+        dir=hadoop
+fi
+
+if [ X"$role" == X"mapred" ];then
+        dir=hadoop
+fi
+
+for node in 56.121 56.122 56.123 ;do
+  echo "========192.168.$node========"
+  ssh 192.168.$node '
+    #先获取 root/admin 的凭证
+    echo root|kinit root/admin
+    host=`hostname -f`
+    path="'$role'/$host"
+    #echo $path
+    principal=`klist -k /etc/'$dir'/conf/'$role'.keytab | grep $path | head -n1 | cut -d " " -f5`
+    #echo $principal
+    if [ X"$principal" == X ]; then
+      principal=`klist -k /etc/'$dir'/conf/'$role'.keytab | grep $path | head -n1 | cut -d " " -f4`
+      if [ X"$principal" == X ]; then
+            echo "Failed to get hdfs Kerberos principal"
+            exit 1
+      fi
+      fi
+      kinit -r 24l -kt /etc/'$dir'/conf/'$role'.keytab $principal
+      if [ $? -ne 0 ]; then
+          echo "Failed to login as hdfs by kinit command"
+          exit 1
+      fi
+    kinit -R
+    for src in `ls /etc/init.d|grep '$role'`;do service $src '$command'; done
+  '
+done
+```
+
+使用方法为：
+
+```bash
+$ sh manager_cluster.sh hdfs start #启动 hdfs 用户管理的服务
+$ sh manager_cluster.sh yarn start #启动 yarn 用户管理的服务 
+$ sh manager_cluster.sh mapred start #启动 mapred 用户管理的服务
+
+$ sh manager_cluster.sh hdfs status #查看 hdfs 用户管理的服务的运行状态
+```
+
+## 5.3 使用 java 代码测试 kerberos
+
+在 hdfs 中集成 kerberos 之前，可以先使用下面代码(Krb.java)进行测试：
+
+```java
+import com.sun.security.auth.module.Krb5LoginModule;
+
+import javax.security.auth.Subject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+public class Krb {
+    private void loginImpl(final String propertiesFileName) throws Exception {
+        System.out.println("NB: system property to specify the krb5 config: [java.security.krb5.conf]");
+        //System.setProperty("java.security.krb5.conf", "/etc/krb5.conf");
+
+        System.out.println(System.getProperty("java.version"));
+
+        System.setProperty("sun.security.krb5.debug", "true");
+
+        final Subject subject = new Subject();
+
+        final Krb5LoginModule krb5LoginModule = new Krb5LoginModule();
+        final Map<String,String> optionMap = new HashMap<String,String>();
+
+        if (propertiesFileName == null) {
+            //optionMap.put("ticketCache", "/tmp/krb5cc_1000");
+            optionMap.put("keyTab", "/etc/krb5.keytab");
+            optionMap.put("principal", "foo"); // default realm
+
+            optionMap.put("doNotPrompt", "true");
+            optionMap.put("refreshKrb5Config", "true");
+            optionMap.put("useTicketCache", "true");
+            optionMap.put("renewTGT", "true");
+            optionMap.put("useKeyTab", "true");
+            optionMap.put("storeKey", "true");
+            optionMap.put("isInitiator", "true");
+        } else {
+            File f = new File(propertiesFileName);
+            System.out.println("======= loading property file ["+f.getAbsolutePath()+"]");
+            Properties p = new Properties();
+            InputStream is = new FileInputStream(f);
+            try {
+                p.load(is);
+            } finally {
+                is.close();
+            }
+            optionMap.putAll((Map)p);
+        }
+        optionMap.put("debug", "true"); // switch on debug of the Java implementation
+
+        krb5LoginModule.initialize(subject, null, new HashMap<String,String>(), optionMap);
+
+        boolean loginOk = krb5LoginModule.login();
+        System.out.println("======= login:  " + loginOk);
+
+        boolean commitOk = krb5LoginModule.commit();
+        System.out.println("======= commit: " + commitOk);
+
+        System.out.println("======= Subject: " + subject);
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("A property file with the login context can be specified as the 1st and the only paramater.");
+        final Krb krb = new Krb();
+        krb.loginImpl(args.length == 0 ? null : args[0]);
+    }
+}
+```
+
+创建一个配置文件krb5.properties：
+
+```properties
+keyTab=/etc/hadoop/conf/hdfs.keytab
+principal=hdfs/cdh1@JAVACHEN.COM
+
+doNotPrompt=true
+refreshKrb5Config=true
+useTicketCache=true
+renewTGT=true
+useKeyTab=true
+storeKey=true
+isInitiator=true
+```
+
+编译 java 代码并运行：
+
+```bash
+javac Krb.java
+
+java -cp . Krb ./krb5.properties
+```
+
+
+# 6. 总结
 
 本文介绍了 CDH Hadoop 集成 kerberos 认证的过程，其中主要需要注意以下几点：
 
-- 1. 配置 hosts
+- 1. 配置 hosts，hostname 请使用小写。
 - 2. 确保 kerberos 客户端和服务端连通
 - 3. 替换 JRE 自带的 JCE jar 包
 - 4. 为 DataNode 设置运行用户并配置 `JSVC_HOME`
@@ -765,7 +957,7 @@ Login successful for user hdfs/cdh2@JAVACHEN.COM using keytab file /etc/hadoop/c
 
 接下来就是配置 Hadoop 集群中其他服务以集成 kerberos 认证，由于篇幅原因，后面再做说明。
 
-# 6. 参考文章
+# 7. 参考文章
 
 - [Hadoop的kerberos的实践部署](https://github.com/zouhc/MyHadoop/blob/master/doc/Hadoop%E7%9A%84kerberos%E7%9A%84%E5%AE%9E%E8%B7%B5%E9%83%A8%E7%BD%B2.md)
 - [hadoop 添加kerberos认证](http://blog.chinaunix.net/uid-1838361-id-3243243.html)
