@@ -23,6 +23,8 @@ description: 本文主要记录 cdh hadoop 集群配置 LDAP 集成 Kerberos 的
 192.168.56.123        cdh3     kerberos client、ldap client
 ```
 
+> 注意：hostname 请使用小写，要不然在集成 kerberos 时会出现一些错误。
+
 环境说明：
 
 - 操作系统：Centos6.6
@@ -52,6 +54,8 @@ krb5-server-ldap-1.10.3-33.el6.x86_64
 ```
 
 ## 1.2 OpenSSL
+
+如果，你不配置
 
 OpenLDAP 默认使用 Mozilla NSS，安装后已经生成了一份证书，可使用 `certutil -d /etc/openldap/certs/ -L -n 'OpenLDAP Server'` 命令查看。使用如下命令生成RFC格式CA证书并分发到客户机待用。
 
@@ -260,18 +264,6 @@ dn: ou=group,dc=javachen,dc=com
 objectClass: organizationalUnit
 ou: group
 
-dn: uid=test,ou=people,dc=javachen,dc=com
-objectclass: inetOrgPerson
-objectclass: posixAccount
-objectclass: shadowAccount
-cn: test account
-sn: test
-uid: test
-uidNumber: 1001
-gidNumber: 100
-homeDirectory: /home/test
-loginShell: /bin/bash
-
 dn: uid=ldapadmin,ou=people,dc=javachen,dc=com
 objectClass: inetOrgPerson
 objectClass: posixAccount
@@ -279,7 +271,7 @@ objectClass: shadowAccount
 cn: LDAP admin account
 uid: ldapadmin
 sn: ldapadmin
-uidNumber: 1002
+uidNumber: 1001
 gidNumber: 100
 homeDirectory: /home/ldap
 loginShell: /bin/bash
@@ -296,7 +288,13 @@ $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f setup.
  - `-w` 指定密码
  - `-x` 是使用一个匿名的绑定
 
-## 1.7 导入系统其他用户和组
+## 1.7 LDAP 的使用
+
+### 添加
+
+如上面示例
+
+## 导入系统用户
 
 接下来你可以从 /etc/passwd, /etc/shadow, /etc/groups 中生成 ldif 更新 ldap 数据库，这需要用到 migrationtools 工具。
 
@@ -332,26 +330,22 @@ $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/b
 将当前节点上的用户导入到 ldap 中，可以有选择的导入指定的用户：
 
 ```bash
-# 查找系统上的 user1 用户
-$ grep test1 /etc/passwd  >/opt/passwd.txt
+# 先添加用户
+$ useradd test hive
+# 查找系统上的 test、hive 等用户
+$ grep -E "test|hive" /etc/passwd  >/opt/passwd.txt
 $ /usr/share/migrationtools/migrate_passwd.pl /opt/passwd.txt /opt/passwd.ldif
-
 $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/passwd.ldif
 ```
 
 将用户组导入到 ldap 中：
 
 ```bash
-# 生成 test1 用户的 ldif 文件，然后导入到 ldap
-$ grep test1 /etc/group  >/opt/group.txt
+# 生成用户组的 ldif 文件，然后导入到 ldap
+$ grep -E "test|hive" /etc/group  >/opt/group.txt
 $ /usr/share/migrationtools/migrate_group.pl /opt/group.txt /opt/group.ldif
-
 $ ldapadd -x -D "uid=ldapadmin,ou=people,dc=javachen,dc=com" -w secret -f /opt/group.ldif
 ```
-
-## 1.8 LDAP 的使用
-
-### 添加
 
 ### 查询
 
@@ -404,12 +398,6 @@ $ yum install openldap-clients -y
 ```
 BASE    dc=javachen,dc=com
 URI     ldap://cdh1
-```
-
-导入 cdh1 生成的证书：
-
-```bash
-$ certutil -d /etc/openldap/certs/ -A -a -n 'OpenLDAP Server' -t 'CT' -f /etc/openldap/certs/password -i /tmp/ldapCA.rfc
 ```
 
 然后，运行下面命令测试：
@@ -467,6 +455,8 @@ $ ldapsearch
 
 为什么这样配置，可以参考 [LdapAuthenticationProviderImpl.java](https://svn.apache.org/repos/asf/hive/trunk/service/src/java/org/apache/hive/service/auth/LdapAuthenticationProviderImpl.java) 源码。
 
+>注意： hive 同时集成 kerberos 和 ldap，测试失败，故放弃集成 ldap。
+
 ## 测试
 
 重启服务：
@@ -491,8 +481,7 @@ beeline> !connect jdbc:hive2://cdh1:10000/default;user=test;password=test
 ```bash
 -enable_ldap_auth=true \
 -ldap_uri=ldaps://cdh1 \
--ldap_baseDN=ou=people,dc=javachen,dc=com \
--ldap_passwords_in_clear_ok=true \
+-ldap_baseDN=ou=people,dc=javachen,dc=com 
 ```
 
 注意：

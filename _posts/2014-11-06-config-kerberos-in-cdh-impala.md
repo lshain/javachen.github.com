@@ -28,6 +28,8 @@ description: 记录 CDH Hadoop 集群上配置 Impala 集成 Kerberos 的过程�
 192.168.56.123        cdh3     DataNode、HBase、NodeManager、impala-server
 ```
 
+> 注意：hostname 请使用小写，要不然在集成 kerberos 时会出现一些错误。
+
 # 1. 安装必须的依赖
 
 在每个节点上运行下面的命令：
@@ -48,20 +50,9 @@ kadmin.local -q "addprinc -randkey impala/cdh1@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey impala/cdh2@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey impala/cdh3@JAVACHEN.COM "
 
-kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh1@JAVACHEN.COM "
-kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh2@JAVACHEN.COM "
-kadmin.local -q "xst  -k impala-unmerged.keytab  impala/cdh3@JAVACHEN.COM "
-```
-
-然后，使用 ktutil 合并前面创建的 keytab 生成 impala.keytab
-
-```bash
-$ cd /var/kerberos/krb5kdc/
-
-$ ktutil
-ktutil: rkt impala-unmerged.keytab
-ktutil: rkt HTTP-unmerged.keytab
-ktutil: wkt impala.keytab
+kadmin.local -q "xst  -k impala.keytab  impala/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala.keytab  impala/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala.keytab  impala/cdh3@JAVACHEN.COM "
 ```
 
 拷贝 impala.keytab 文件到其他节点的 /etc/impala/conf 目录
@@ -86,7 +77,7 @@ $ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.
 
 修改 cdh1 节点上的 /etc/default/impala，在 `IMPALA_CATALOG_ARGS` 、`IMPALA_SERVER_ARGS` 和 `IMPALA_STATE_STORE_ARGS` 中添加下面参数：
 
-```
+```bash
 -kerberos_reinit_interval=60
 -principal=impala/_HOST@JAVACHEN.COM
 -keytab_file=/etc/impala/conf/impala.keytab
@@ -98,7 +89,7 @@ $ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.
 -state_store_host=${IMPALA_STATE_STORE_HOST} \
 ```
 
-将修改的上面文件同步到其他节点。最后，/etc/default/impala 文件如下：
+将修改的上面文件同步到其他节点。最后，/etc/default/impala 文件如下，这里，为了避免 hostname 存在大写的情况，使用 `hostname` 变量替换 `_HOST`：
 
 ```bash
 IMPALA_CATALOG_SERVICE_HOST=cdh1
@@ -108,17 +99,18 @@ IMPALA_BACKEND_PORT=22000
 IMPALA_LOG_DIR=/var/log/impala
 
 IMPALA_MEM_DEF=$(free -m |awk 'NR==2{print $2-5120}')
+hostname=`hostname -f |tr "[:upper:]" "[:lower:]"`
 
 IMPALA_CATALOG_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_host=${IMPALA_STATE_STORE_HOST} \
     -kerberos_reinit_interval=60\
-    -principal=impala/_HOST@JAVACHEN.COM \
+    -principal=impala/${hostname}@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab
 "
 
 IMPALA_STATE_STORE_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_port=${IMPALA_STATE_STORE_PORT}\
     -statestore_subscriber_timeout_seconds=15 \
     -kerberos_reinit_interval=60 \
-    -principal=impala/_HOST@JAVACHEN.COM \
+    -principal=impala/${hostname}@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab
 "
 IMPALA_SERVER_ARGS=" \
@@ -129,7 +121,7 @@ IMPALA_SERVER_ARGS=" \
     -state_store_host=${IMPALA_STATE_STORE_HOST} \
     -be_port=${IMPALA_BACKEND_PORT} \
     -kerberos_reinit_interval=60 \
-    -principal=impala/_HOST@JAVACHEN.COM \
+    -principal=impala/${hostname}@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab \
     -mem_limit=${IMPALA_MEM_DEF}m
 "

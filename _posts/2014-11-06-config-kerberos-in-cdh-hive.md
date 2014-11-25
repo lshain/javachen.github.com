@@ -26,6 +26,8 @@ description: 记录 CDH Hadoop 集群上配置 Hive 集成 Kerberos 的过程，
 192.168.56.123        cdh3     DataNode、HBase、NodeManager
 ```
 
+> 注意：hostname 请使用小写，要不然在集成 kerberos 时会出现一些错误。
+
 # 1. 生成 keytab
 
 在 cdh1 节点，即 KDC server 节点上执行下面命令：
@@ -37,21 +39,9 @@ kadmin.local -q "addprinc -randkey hive/cdh1@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey hive/cdh2@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey hive/cdh3@JAVACHEN.COM "
 
-kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh1@JAVACHEN.COM "
-kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh2@JAVACHEN.COM "
-kadmin.local -q "xst  -k hive-unmerged.keytab  hive/cdh3@JAVACHEN.COM "
-```
-
-然后，使用 ktutil 合并前面创建的 keytab 生成 hive.keytab
-
-```bash
-$ cd /var/kerberos/krb5kdc/
-
-# 进入到 ktutil
-$ ktutil
-ktutil: rkt hive-unmerged.keytab
-ktutil: rkt HTTP-unmerged.keytab
-ktutil: wkt hive.keytab
+kadmin.local -q "xst  -k hive.keytab  hive/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k hive.keytab  hive/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k hive.keytab  hive/cdh3@JAVACHEN.COM "
 ```
 
 拷贝 hive.keytab 文件到其他节点的 /etc/hive/conf 目录
@@ -101,15 +91,6 @@ $ ssh cdh3 "cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab
 <property>
   <name>hive.metastore.kerberos.principal</name>
   <value>hive/_HOST@JAVACHEN.COM</value>
-</property>
-```
-
-开启 HiveServer2 impersonation，在 hive-site.xml 中添加：
-
-```xml
-<property>
-  <name>hive.server2.enable.impersonation</name>
-  <value>true</value>
 </property>
 ```
 
@@ -246,4 +227,3 @@ No rows selected (1.575 seconds)
 +-----------+------------+----------+--+
 1 row selected (0.24 seconds)
 ```
-

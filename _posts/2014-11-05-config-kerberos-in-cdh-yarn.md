@@ -23,6 +23,8 @@ description: 记录 CDH Hadoop 集群上配置 YARN 集成 Kerberos 的过程，
 192.168.56.123        cdh3     DataNode、HBase、NodeManager
 ```
 
+> 注意：hostname 请使用小写，要不然在集成 kerberos 时会出现一些错误。
+
 # 1. 生成 keytab
 
 在 cdh1 节点，即 KDC server 节点上执行下面命令：
@@ -38,31 +40,13 @@ kadmin.local -q "addprinc -randkey mapred/cdh1@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey mapred/cdh2@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey mapred/cdh3@JAVACHEN.COM "
 
-kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh1@JAVACHEN.COM "
-kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh2@JAVACHEN.COM "
-kadmin.local -q "xst  -k yarn-unmerged.keytab  yarn/cdh3@JAVACHEN.COM "
+kadmin.local -q "xst  -k yarn.keytab  yarn/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k yarn.keytab  yarn/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k yarn.keytab  yarn/cdh3@JAVACHEN.COM "
 
-kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh1@JAVACHEN.COM "
-kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh2@JAVACHEN.COM "
-kadmin.local -q "xst  -k mapred-unmerged.keytab  mapred/cdh3@JAVACHEN.COM "
-```
-
-然后，使用 `ktutil` 合并前面创建的 keytab 生成 yarn.keytab 和 mapred.keytab ：
-
-```bash
-$ cd /var/kerberos/krb5kdc/
-
-# 进入到 ktutil
-$ ktutil
-ktutil: rkt yarn-unmerged.keytab
-ktutil: rkt HTTP-unmerged.keytab
-ktutil: wkt yarn.keytab
-
-ktutil: clear
-
-ktutil: rkt mapred-unmerged.keytab
-ktutil: rkt HTTP-unmerged.keytab
-ktutil: wkt mapred.keytab
+kadmin.local -q "xst  -k mapred.keytab  mapred/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k mapred.keytab  mapred/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k mapred.keytab  mapred/cdh3@JAVACHEN.COM "
 ```
 
 拷贝 yarn.keytab 和 mapred.keytab 文件到其他节点的 `/etc/hadoop/conf` 目录
@@ -299,6 +283,3 @@ Container exited with a non-zero exit code 1
 Job Finished in 13.428 seconds
 java.io.FileNotFoundException: File does not exist: hdfs://cdh1:8020/user/yarn/QuasiMonteCarlo_1415850045475_708291630/out/reduce-out
 ```
-
-
-

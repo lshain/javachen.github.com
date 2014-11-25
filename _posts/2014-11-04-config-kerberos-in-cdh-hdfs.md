@@ -63,6 +63,8 @@ $ cat /etc/hosts
 192.168.56.123 cdh3
 ```
 
+> 注意：hostname 请使用小写，要不然在集成 kerberos 时会出现一些错误。
+
 ### 3.2.2 安装 kdc server
 
 在 KDC (这里是 cdh1 ) 上安装包 krb5、krb5-server 和 krb5-client。
@@ -71,9 +73,10 @@ $ cat /etc/hosts
 $ yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
 ```
 
-在其他节点（cdh2、cdh3）安装 krb5-devel、krb5-workstation ：
+在其他节点（cdh1、cdh2、cdh3）安装 krb5-devel、krb5-workstation ：
 
 ```bash
+$ ssh cdh1 "yum install krb5-devel krb5-workstation -y"
 $ ssh cdh2 "yum install krb5-devel krb5-workstation -y"
 $ ssh cdh3 "yum install krb5-devel krb5-workstation -y"
 ```
@@ -191,11 +194,7 @@ $ scp /etc/krb5.conf cdh2:/etc/krb5.conf
 $ scp /etc/krb5.conf cdh3:/etc/krb5.conf
 ```
 
-集群如果开启 selinux 了，拷贝后可能需要执行:
-
-```bash
-$ restorecon -R -v /etc/krb5.conf
-```
+请确认集群如果关闭了 selinux。
 
 ### 3.2.5 创建数据库
 
@@ -222,7 +221,7 @@ $ service krb5kdc start
 $ service kadmin start
 ```
 
-### 3.2.7 测试kerberos
+### 3.2.7 创建 kerberos 管理员
 
 关于 kerberos 的管理，可以使用 `kadmin.local` 或 `kadmin`，至于使用哪个，取决于账户和访问权限：
 
@@ -232,22 +231,22 @@ $ service kadmin start
 在 cdh1 上创建远程管理的管理员：
 
 ```bash
+#手动输入两次密码，这里密码为 root
 $ kadmin.local -q "addprinc root/admin"
-    Authenticating as principal root/admin@JAVACHEN.COM with password.
-    WARNING: no policy specified for root/admin@GJAVACHEN.COM; defaulting to no policy
-    Enter password for principal "root/admin@JAVACHEN.COM": 
-    Re-enter password for principal "root/admin@JAVACHEN.COM": 
-    Principal "root/admin@JAVACHEN.COM" created.
+
+# 也可以不用手动输入密码
+$ echo -e "root\nroot" | kadmin.local -q "addprinc root/admin"
 ```
 
-系统会提示输入密码，密码不能为空，且需妥善保存。请注意密码本身并不是key。这里只是为了人类使用的方便而使用密码。真正的key是算法作用在密码上产生的一串byte序列。
+系统会提示输入密码，密码不能为空，且需妥善保存。
 
-然后，查看当前的认证用户：
+### 3.2.8 测试 kerberos
+
+> 以下内容仅仅是为了测试，你可以直接跳到下部分内容。
+
+查看当前的认证用户：
 
 ```bash
-# 添加root/admin用户
-$ echo -e "root\nroot" | kadmin.local -q "addprinc root/admin"
-
 # 查看principals
 $ kadmin: list_principals
 
@@ -439,12 +438,12 @@ $ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh1@JAVACHEN.COM"
 $ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh2@JAVACHEN.COM"
 $ kadmin.local -q "xst  -k hdfs-unmerged.keytab  hdfs/cdh3@JAVACHEN.COM"
 
-$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh1@JAVACHEN.COM"
-$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh2@JAVACHEN.COM"
-$ kadmin.local -q "xst  -k HTTP-unmerged.keytab  HTTP/cdh3@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k HTTP.keytab  HTTP/cdh1@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k HTTP.keytab  HTTP/cdh2@JAVACHEN.COM"
+$ kadmin.local -q "xst  -k HTTP.keytab  HTTP/cdh3@JAVACHEN.COM"
 ```
 
-这样，就会在 `/var/kerberos/krb5kdc/` 目录下生成 `hdfs-unmerged.keytab` 和 `HTTP-unmerged.keytab` 两个文件，接下来使用 `ktutil` 合并者两个文件为 `hdfs.keytab`。
+这样，就会在 `/var/kerberos/krb5kdc/` 目录下生成 `hdfs-unmerged.keytab` 和 `HTTP.keytab` 两个文件，接下来使用 `ktutil` 合并者两个文件为 `hdfs.keytab`。
 
 
 ```bash
@@ -452,7 +451,7 @@ $ cd /var/kerberos/krb5kdc/
 
 $ ktutil
 ktutil: rkt hdfs-unmerged.keytab
-ktutil: rkt HTTP-unmerged.keytab
+ktutil: rkt HTTP.keytab
 ktutil: wkt hdfs.keytab
 ```
 
@@ -504,6 +503,8 @@ $ kinit -k -t hdfs.keytab HTTP/cdh1@JAVACHEN.COM
 拷贝 hdfs.keytab 文件到其他节点的 /etc/hadoop/conf 目录
 
 ```bash
+$ cd /var/kerberos/krb5kdc/
+
 $ scp hdfs.keytab cdh1:/etc/hadoop/conf
 $ scp hdfs.keytab cdh2:/etc/hadoop/conf
 $ scp hdfs.keytab cdh3:/etc/hadoop/conf
@@ -524,7 +525,10 @@ $ ssh cdh3 "chown hdfs:hadoop /etc/hadoop/conf/hdfs.keytab ;chmod 400 /etc/hadoo
 先停止集群：
 
 ```bash
-for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
+$ for x in `cd /etc/init.d ; ls hive-*` ; do sudo service $x stop ; done
+$ for x in `cd /etc/init.d ; ls impala-*` ; do sudo service $x stop ; done
+$ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
+$ for x in `cd /etc/init.d ; ls zookeeper-*` ; do sudo service $x stop ; done
 ```
 
 在集群中所有节点的 core-site.xml 文件中添加下面的配置:
@@ -540,8 +544,6 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
   <value>true</value>
 </property>
 ```
-
-`hadoop.security.authentication` 默认是 `simple` 方式，也就是基于 linux 操作系统的验证方式，用户端调用 whoami 命令，然后 RPC call 给服务端，恶意用户很容易在其他 host 伪造一个相同的用户。这里我们改为 `kerberos`。
 
 在集群中所有节点的 hdfs-site.xml 文件中添加下面的配置：
 
@@ -567,18 +569,6 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
   <value>HTTP/_HOST@JAVACHEN.COM</value>
 </property>
 <property>
-  <name>dfs.secondary.namenode.keytab.file</name>
-  <value>/etc/hadoop/conf/hdfs.keytab</value>
-</property>
-<property>
-  <name>dfs.secondary.namenode.kerberos.principal</name>
-  <value>hdfs/_HOST@JAVACHEN.COM</value>
-</property>
-<property>
-  <name>dfs.secondary.namenode.kerberos.https.principal</name>
-  <value>HTTP/_HOST@JAVACHEN.COM</value>
-</property>
-<property>
   <name>dfs.datanode.address</name>
   <value>0.0.0.0:1004</value>
 </property>
@@ -599,12 +589,6 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
   <value>HTTP/_HOST@JAVACHEN.COM</value>
 </property>
 ```
-
-配置中有几点要注意的：
-
-- 1. `dfs.datanode.address`表示 data transceiver RPC server 所绑定的 hostname 或 IP 地址，如果开启 security，端口号必须小于 `1024`(privileged port)，否则的话启动 datanode 时候会报 `Cannot start secure cluster without privileged resources` 错误
-- 2. principal 中的 instance 部分可以使用 `_HOST` 标记，系统会自动替换它为全称域名
-- 3. 如果开启了 security, hadoop 会对 hdfs block data(由 `dfs.data.dir` 指定)做 permission check，方式用户的代码不是调用hdfs api而是直接本地读block data，这样就绕过了kerberos和文件权限验证，管理员可以通过设置 `dfs.datanode.data.dir.perm` 来修改 datanode 文件权限，这里我们设置为700
 
 如果你像开启 SSL，请添加：
 
@@ -627,7 +611,7 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
   <value>hdfs/_HOST@JAVACHEN.COM</value>
 </property>
 <property>
-  <name>dfs.journalnode.kerberos.https.principal</name>
+  <name>dfs.journalnode.kerberos.internal.spnego.principal</name>
   <value>HTTP/_HOST@JAVACHEN.COM</value>
 </property>
 ```
@@ -651,6 +635,12 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 </property>
 ```
 
+配置中有几点要注意的：
+
+- 1. `dfs.datanode.address`表示 data transceiver RPC server 所绑定的 hostname 或 IP 地址，如果开启 security，端口号必须小于 `1024`(privileged port)，否则的话启动 datanode 时候会报 `Cannot start secure cluster without privileged resources` 错误
+- 2. principal 中的 instance 部分可以使用 `_HOST` 标记，系统会自动替换它为全称域名
+- 3. 如果开启了 security, hadoop 会对 hdfs block data(由 `dfs.data.dir` 指定)做 permission check，方式用户的代码不是调用hdfs api而是直接本地读block data，这样就绕过了kerberos和文件权限验证，管理员可以通过设置 `dfs.datanode.data.dir.perm` 来修改 datanode 文件权限，这里我们设置为700
+
 ## 4.5 检查集群上的 HDFS 和本地文件的权限
 
 请参考 [Verify User Accounts and Groups in CDH 5 Due to Security](http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_sg_users_groups_verify.html) 或者 [Hadoop in Secure Mode](http://hadoop.apache.org/docs/r2.5.0/hadoop-project-dist/hadoop-common/SecureMode.html)。
@@ -659,14 +649,13 @@ for x in `cd /etc/init.d ; ls hadoop-*` ; do sudo service $x stop ; done
 
 启动之前，请确认 JCE jar 已经替换，请参考前面的说明。
 
-在 cdh1（安装了 NameNode 的节点）上先使用 `kinit` 的方式登陆，如果可以登陆，检查是否使用了正确的 JCE jar 包，然后就是检查 keytab 的路径及权限。
+在每个节点上获取 root 用户的 ticket，这里 root 为之前创建的 root/admin 的密码。
 
 ```bash
-$ echo root|kinit root/admin
+$ ssh cdh1 "echo root|kinit root/admin"
+$ ssh cdh1 "echo root|kinit root/admin"
+$ ssh cdh1 "echo root|kinit root/admin"
 ```
-
-这里 root 为之前创建的 root/admin 的密码。
-
 
 获取 cdh1的 ticket：
 
@@ -674,11 +663,8 @@ $ echo root|kinit root/admin
 $ kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM
 ```
 
-如果出现下面异常，则重新导出 keytab 再试试：
-
-```
-kinit: Password incorrect while getting initial credentials
-```
+如果出现下面异常 `kinit: Password incorrect while getting initial credentials
+`，则重新导出 keytab 再试试。
 
 然后启动服务，观察日志：
 
@@ -697,7 +683,7 @@ drwxr-xr-x   - hdfs hadoop          0 2014-08-10 10:53 /user
 drwxr-xr-x   - hdfs hadoop          0 2013-05-20 22:52 /var
 ```
 
-如果在你的凭据缓存中没有有效的kerberos ticket，执行上面命令将会失败，将会出现下面的错误：
+如果在你的凭据缓存中没有有效的 kerberos ticket，执行上面命令将会失败，将会出现下面的错误：
 
 ```
 14/11/04 12:08:12 WARN ipc.Client: Exception encountered while connecting to the server : javax.security.sasl.SaslException:
@@ -710,7 +696,7 @@ javax.security.sasl.SaslException: GSS initiate failed [Caused by GS***ception: 
 
 DataNode 需要通过 JSVC 启动。首先检查是否安装了 JSVC 命令，然后配置环境变量。
 
-查看是否安装了 JSVC：
+在 cdh1 节点查看是否安装了 JSVC：
 
 ```bash
 $ ls /usr/lib/bigtop-utils/
@@ -738,9 +724,9 @@ $ scp /etc/default/hadoop-hdfs-datanode cdh3:/etc/default/hadoop-hdfs-datanode
 
 ```bash
 #root 为 root/admin 的密码
-$ ssh cdh2 "echo root|kinit root/admin; kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh2@JAVACHEN.COM; service hadoop-hdfs-datanode start"
-
-$ ssh cdh3 "echo root|kinit root/admin; kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh3@JAVACHEN.COM; service hadoop-hdfs-datanode start"
+$ ssh cdh1 "kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh1@JAVACHEN.COM; service hadoop-hdfs-datanode start"
+$ ssh cdh2 "kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh2@JAVACHEN.COM; service hadoop-hdfs-datanode start"
+$ ssh cdh3 "kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh3@JAVACHEN.COM; service hadoop-hdfs-datanode start"
 ```
 
 观看 cdh1 上 NameNode 日志，出现下面日志表示 DataNode 启动成功：
@@ -762,16 +748,32 @@ Login successful for user hdfs/cdh2@JAVACHEN.COM using keytab file /etc/hadoop/c
 DNS=LASHOU.COM
 hostname=`hostname -i`
 
+yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
+rm -rf /var/kerberos/krb5kdc/*.keytab /var/kerberos/krb5kdc/prin*
+
+kdb5_util create -r LASHOU.COM -s
+
+chkconfig --level 35 krb5kdc on
+chkconfig --level 35 kadmin on
+service krb5kdc restart
+service kadmin restart
+
+echo -e "root\nroot" | kadmin.local -q "addprinc root/admin"
+
 for host in  `cat /etc/hosts|grep 10|grep -v $hostname|awk '{print $2}'` ;do
-  kadmin.local -q "addprinc -randkey HTTP/$host@$DNS"
-  for user in hdfs yarn mapred hive impala zookeeper sentry llama zkcli ; do
+  for user in hdfs hive; do
+    kadmin.local -q "addprinc -randkey $user/$host@$DNS"
+    kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user-un.keytab $user/$host@$DNS"
+  done
+  for user in HTTP lashou yarn mapred impala zookeeper sentry llama zkcli ; do
     kadmin.local -q "addprinc -randkey $user/$host@$DNS"
     kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user.keytab $user/$host@$DNS"
   done
-  for user in hdfs yarn mapred; do
-                kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user.keytab HTTP/$host@$DNS"
-        done
 done
+
+cd /var/kerberos/krb5kdc/
+echo -e "rkt lashou.keytab\nrkt hdfs-un.keytab\nrkt HTTP.keytab\nwkt hdfs.keytab" | ktutil
+echo -e "rkt lashou.keytab\nrkt hive-un.keytab\nwkt hive.keytab" | ktutil
 ```
 
 以下脚本用于在每个客户端上获得 root/admin 的 ticket，其密码为 root：
@@ -814,7 +816,7 @@ for node in 56.121 56.122 56.123 ;do
   ssh 192.168.$node '
     #先获取 root/admin 的凭证
     echo root|kinit root/admin
-    host=`hostname -f`
+    host=`hostname -f| tr "[:upper:]" "[:lower:]"`
     path="'$role'/$host"
     #echo $path
     principal=`klist -k /etc/'$dir'/conf/'$role'.keytab | grep $path | head -n1 | cut -d " " -f5`
@@ -825,12 +827,12 @@ for node in 56.121 56.122 56.123 ;do
             echo "Failed to get hdfs Kerberos principal"
             exit 1
       fi
-      fi
-      kinit -r 24l -kt /etc/'$dir'/conf/'$role'.keytab $principal
-      if [ $? -ne 0 ]; then
-          echo "Failed to login as hdfs by kinit command"
-          exit 1
-      fi
+    fi
+    kinit -r 24l -kt /etc/'$dir'/conf/'$role'.keytab $principal
+    if [ $? -ne 0 ]; then
+        echo "Failed to login as hdfs by kinit command"
+        exit 1
+    fi
     kinit -R
     for src in `ls /etc/init.d|grep '$role'`;do service $src '$command'; done
   '
@@ -844,7 +846,7 @@ $ sh manager_cluster.sh hdfs start #启动 hdfs 用户管理的服务
 $ sh manager_cluster.sh yarn start #启动 yarn 用户管理的服务 
 $ sh manager_cluster.sh mapred start #启动 mapred 用户管理的服务
 
-$ sh manager_cluster.sh hdfs status #查看 hdfs 用户管理的服务的运行状态
+$ sh manager_cluster.sh hdfs status # 在每个节点上获取 hdfs 的 ticket，然后可以执行其他操作，如批量启动 datanode 等等
 ```
 
 ## 5.3 使用 java 代码测试 kerberos
@@ -909,7 +911,6 @@ public class Krb {
 
         boolean commitOk = krb5LoginModule.commit();
         System.out.println("======= commit: " + commitOk);
-
         System.out.println("======= Subject: " + subject);
     }
 
@@ -943,13 +944,11 @@ javac Krb.java
 
 java -cp . Krb ./krb5.properties
 ```
-
-
 # 6. 总结
 
 本文介绍了 CDH Hadoop 集成 kerberos 认证的过程，其中主要需要注意以下几点：
 
-- 1. 配置 hosts，hostname 请使用小写。
+- 1. 配置 hosts，`hostname` 请使用小写。
 - 2. 确保 kerberos 客户端和服务端连通
 - 3. 替换 JRE 自带的 JCE jar 包
 - 4. 为 DataNode 设置运行用户并配置 `JSVC_HOME`
