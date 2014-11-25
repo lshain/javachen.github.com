@@ -183,6 +183,7 @@ hive> create view filtered.events_usonly as
 
 ## 1.3 Hive-server2 集成 sentry
 
+### 要求
 在使用 Sentry 时，有如下要求：
 
 1、需要修改 `/user/hive/warehouse` 权限：
@@ -195,6 +196,8 @@ hdfs dfs -chown -R hive:hive /user/hive/warehouse
 2、修改 hive-site.xml 文件，关掉 `HiveServer2 impersonation`
 
 3、taskcontroller.cfg 文件中确保 `min.user.id=0`。
+
+### 修改配置文件
 
 修改 hive-site.xml，添加如下：
 
@@ -265,6 +268,8 @@ hdfs dfs -chown -R hive:hive /user/hive/warehouse
 </configuration>
 ```
 
+### sentry-store 中创建角色和组
+
 在 beeline 中通过 hive（注意，在 sentry 中 hive 为管理员用户）的 ticket 连接 hive-server2，创建 role、group 等等，执行下面语句：
 
 ```sql
@@ -279,7 +284,17 @@ GRANT ALL ON DATABASE default TO ROLE test_role;
 GRANT ROLE test_role TO GROUP test;
 ```
 
+### 在 ldap 创建测试用户
+
+TODO
+
+### 测试
+
+TODO
+
 ## 1.4 Impala 集成 Sentry
+
+### 修改配置
 
 修改 /etc/default/impala 文件中的 `IMPALA_SERVER_ARGS` 参数，添加：
 
@@ -348,9 +363,15 @@ IMPALA_SERVER_ARGS=" \
 </configuration>
 ```
 
+### 测试
+
+
+
 # 2. 基于文件存储方式
 
 ## 2.1 hive 集成 sentry
+
+### 修改配置文件
 
 在 hive 的 /etc/hive/conf 目录下创建 sentry-site.xml 文件，内容如下：
 
@@ -423,7 +444,11 @@ $ hdfs dfs -chmod 640 /user/hive/sentry/sentry-provider.ini
 </property>
 ```
 
-将配置文件同步到其他节点，并重启 hive-server2 服务，然后进行测试。这里，我集群中 hive-server2 开启了 kerberos 认证，故通过 hive 用户来连接 hive-server2。
+将配置文件同步到其他节点，并重启 hive-server2 服务。
+
+### 测试
+
+这里，我集群中 hive-server2 开启了 kerberos 认证，故通过 hive 用户来连接 hive-server2。
 
 ```bash
 $ kinit -k -t /etc/hive/conf/hive.keytab hive/cdh1@JAVACHEN.COM
@@ -472,6 +497,8 @@ $ beeline -u "jdbc:hive2://cdh1:10000/default;principal=hive/cdh1@JAVACHEN.COM"
 
 ## 2.3  impala 集成 sentry
 
+### 修改配置文件
+
 修改 /etc/default/impala 文件中的 `IMPALA_SERVER_ARGS` 参数，添加：
 
 ```bash
@@ -503,6 +530,8 @@ IMPALA_SERVER_ARGS=" \
     -keytab_file=/etc/impala/conf/impala.keytab \
 "
 ```
+
+### 测试
 
 重启 impala-server 服务，然后进行测试。因为我这里 impala-server 集成了 kerberos 和 ldap，现在通过 ldap 来进行测试。
 
@@ -608,7 +637,7 @@ $ impala-shell -l -u hive
     Fetched 5 row(s) in 0.76s
 ```
 
-同样，你还可以使用 analyst1 和 analyst2 用户来测试，这里不做说明。
+同样，你还可以使用其他用户来测试，待续。
 
 
 # 3. 参考文章
