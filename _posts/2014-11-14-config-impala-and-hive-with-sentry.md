@@ -45,7 +45,7 @@ Sentry 的使用有两种方式，一是基于文件的存储方式（SimpleFile
 yum install sentry sentry-store -y
 ```
 
-修改 Sentry 的配置文件 `/etc/sentry/conf/sentry-store-site.xml`：
+修改 Sentry 的配置文件 `/etc/sentry/conf/sentry-store-site.xml`，下面的配置参考了 [Sentry源码中的配置例子](https://github.com/cloudera/sentry/tree/cdh5-1.4.0_5.2.0/conf)：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -615,5 +615,6 @@ $ impala-shell -l -u hive
 
 - [Securing Impala for analysts](http://blog.evernote.com/tech/2014/06/09/securing-impala-for-analysts/)  
 - [Setting Up Hive Authorization with Sentry](http://www.cloudera.com/content/cloudera/en/documentation/cloudera-manager/v4-8-0/Cloudera-Manager-Managing-Clusters/cmmc_sentry_config.html)
+- [Sentry源码中的配置例子](https://github.com/cloudera/sentry/tree/cdh5-1.4.0_5.2.0/conf)
 
 
