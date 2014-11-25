@@ -106,7 +106,7 @@ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.jar
 ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/sentry/lib/postgresql-jdbc.jar
 
 su -c "cd ; /usr/bin/pg_ctl start -w -m fast -D /var/lib/pgsql/data" postgres
-su -c "cd ; /usr/bin/psql --command \"create user sentry with password 'sentry'; \" " postgres
+su -c "cd ; /usr/bin/psql --command \"create user sentry with password 'redhat'; \" " postgres
 su -c "cd ; /usr/bin/psql --command \"CREATE DATABASE sentry owner=sentry;\" " postgres
 su -c "cd ; /usr/bin/psql --command \"GRANT ALL privileges ON DATABASE sentry TO sentry;\" " postgres
 su -c "cd ; /usr/bin/psql -U sentry -d sentry -f /usr/lib/sentry/scripts/sentrystore/upgrade/sentry-postgres-1.4.0-cdh5.sql" postgres
