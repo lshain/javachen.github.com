@@ -50,12 +50,31 @@ kadmin.local -q "addprinc -randkey impala/cdh1@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey impala/cdh2@JAVACHEN.COM "
 kadmin.local -q "addprinc -randkey impala/cdh3@JAVACHEN.COM "
 
-kadmin.local -q "xst  -k impala.keytab  impala/cdh1@JAVACHEN.COM "
-kadmin.local -q "xst  -k impala.keytab  impala/cdh2@JAVACHEN.COM "
-kadmin.local -q "xst  -k impala.keytab  impala/cdh3@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala-unmerge.keytab  impala/cdh1@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala-unmerge.keytab  impala/cdh2@JAVACHEN.COM "
+kadmin.local -q "xst  -k impala-unmerge.keytab  impala/cdh3@JAVACHEN.COM "
 ```
 
-拷贝 impala.keytab 文件到其他节点的 /etc/impala/conf 目录
+另外，如果你使用了haproxy来做负载均衡，参考官方文档[Using Impala through a Proxy for High Availability](http://www.cloudera.com/content/cloudera/en/documentation/cloudera-impala/latest/topics/impala_proxy.html)，还需生成 proxy.keytab：
+
+```bash
+$ cd /var/kerberos/krb5kdc/
+
+# proxy 为安装了 haproxy 的机器
+kadmin.local -q "addprinc -randkey impala/proxy@JAVACHEN.COM "
+
+kadmin.local -q "xst  -k proxy.keytab impala/proxy@JAVACHEN.COM "
+```
+
+合并 proxy.keytab 和 impala-unmerge.keytab 生成 impala.keytab：
+
+$ ktutil
+ktutil: rkt proxy.keytab
+ktutil: rkt impala-unmerge.keytab
+ktutil: wkt impala.keytab
+ktutil: quit
+
+拷贝 impala.keytab 和 proxy_impala.keytab 文件到其他节点的 /etc/impala/conf 目录
 
 ```bash
 $ scp impala.keytab cdh1:/etc/impala/conf
@@ -66,9 +85,9 @@ $ scp impala.keytab cdh3:/etc/impala/conf
 并设置权限，分别在 cdh1、cdh2、cdh3 上执行：
 
 ```bash
-$ ssh cdh1 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
-$ ssh cdh2 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
-$ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.keytab"
+$ ssh cdh1 "cd /etc/impala/conf/;chown impala:hadoop *.keytab ;chmod 400 *.keytab"
+$ ssh cdh2 "cd /etc/impala/conf/;chown impala:hadoop *.keytab ;chmod 400 *.keytab"
+$ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop *.keytab ;chmod 400 *.keytab"
 ```
 
 由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)
@@ -80,6 +99,15 @@ $ ssh cdh3 "cd /etc/impala/conf/;chown impala:hadoop impala.keytab ;chmod 400 *.
 ```bash
 -kerberos_reinit_interval=60
 -principal=impala/_HOST@JAVACHEN.COM
+-keytab_file=/etc/impala/conf/impala.keytab
+```
+
+如果使用了 HAProxy（关于 HAProxy 的配置请参考 [Hive使用HAProxy配置HA](/2014/01/08/hive-ha-by-haproxy/)），则 `IMPALA_SERVER_ARGS` 参数需要修改为（proxy为 HAProxy 机器的名称，这里我是将 HAProxy 安装在 cdh1 节点上）：
+
+```bash
+-kerberos_reinit_interval=60
+-be_principal=impala/_HOST@JAVACHEN.COM
+-principal=impala/proxy@JAVACHEN.COM
 -keytab_file=/etc/impala/conf/impala.keytab
 ```
 
@@ -121,7 +149,8 @@ IMPALA_SERVER_ARGS=" \
     -state_store_host=${IMPALA_STATE_STORE_HOST} \
     -be_port=${IMPALA_BACKEND_PORT} \
     -kerberos_reinit_interval=60 \
-    -principal=impala/${hostname}@JAVACHEN.COM \
+    -be_principal=impala/${hostname}@JAVACHEN.COM \
+    -principal=impala/cdh1@JAVACHEN.COM \
     -keytab_file=/etc/impala/conf/impala.keytab \
     -mem_limit=${IMPALA_MEM_DEF}m
 "

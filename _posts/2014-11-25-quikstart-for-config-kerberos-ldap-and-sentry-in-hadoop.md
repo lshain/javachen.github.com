@@ -9,7 +9,7 @@ tags: [ hadoop,kerberos,ldap,sentry ]
 
 description:  这是一篇总结的文章，主要介绍 Hadoop 集群快速部署权限的步骤以及一些注意事项，包括 Hadoop 各个组件集成 kerberos、openldap 和 sentry 的过程。如果你想了解详细的过程，请参考本博客中其他的文章。
 
-published: true 
+published: true
 
 ---
 
@@ -19,7 +19,7 @@ published: true
 
 hadoop 集群一共有三个节点，每个节点的 ip、hostname、角色如下：
 
-```
+```bash
 192.168.56.121 cdh1 NameNode、kerberos-server、ldap-server、sentry-store
 192.168.56.122 cdh2 DataNode、yarn、hive、impala
 192.168.56.123 cdh3 DataNode、yarn、hive、impala
@@ -27,10 +27,12 @@ hadoop 集群一共有三个节点，每个节点的 ip、hostname、角色如�
 
 一些注意事项：
 
- - hostname 请使用小写，因为 kerberos 中区分大小写，而 hadoop 中会使用 hostname 的小写替换 `_HOST`，impala 直接使用 hostname 替换 `_HOST`。
+ - 操作系统为 CentOs6.2
+ - Hadoop 版本为 CDH5.2
+ - **hostname 请使用小写**，因为 kerberos 中区分大小写，而 hadoop 中会使用 hostname 的小写替换 `_HOST`，impala 直接使用 hostname 替换 `_HOST`。
  - 开始之前，请确认 hadoop 集群部署安装成功，不管是否配置 HA，请规划好每个节点的角色。我这里为了简单，以三个节点的集群为例做说明，你可以参考本文并结合你的实际情况做调整。
- - 请确认防火墙关闭，以及集群内和 kerberos 以及 ldap 服务器保持时钟同步。
- - cdh1 为管理节点，故需要做好 cdh1 到集群所有节点的无密码登陆，包括其本身。
+ - 请确认防火墙关闭，以及集群内和 kerberos 以及 ldap 服务器保持**时钟同步**。
+ - cdh1 为管理节点，故需要做好 cdh1 到集群所有节点的**无密码登陆**，包括其本身。
 
 集群中每个节点的 hosts 如下：
 
@@ -101,7 +103,7 @@ forwardable = true
 renewable = true
 udp_preference_limit = 1
 default_tgs_enctypes = arcfour-hmac
-default_tkt_enctypes = arcfour-hmac 
+default_tkt_enctypes = arcfour-hmac
 
 [realms]
 JAVACHEN.COM = {
@@ -111,7 +113,7 @@ JAVACHEN.COM = {
 
 [domain_realm]
 .javachen.com = JAVACHEN.COM
-h.javachen.com = JAVACHEN.COM
+javachen.com = JAVACHEN.COM
 
 [kdc]
 profile=/var/kerberos/krb5kdc/kdc.conf
@@ -150,7 +152,7 @@ profile=/var/kerberos/krb5kdc/kdc.conf
 sh /opt/shell/syn.sh /etc/krb5.conf /etc/krb5.conf
 ```
 
-使用下面脚本初始化 kerberos：
+在 kerberos 服务器节点上使用下面脚本初始化 kerberos：
 
 ```bash
 yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation  -y
@@ -169,8 +171,9 @@ echo -e "root\nroot" | kadmin.local -q "addprinc root/admin"
 DNS=JAVACHEN.COM
 hostname=`hostname -i`
 
-for host in  `cat /etc/hosts|grep 10|grep -v $hostname|awk '{print $2}'` ;do
-	for user in hdfs hive; do
+#读取/etc/host文件中ip为 192.168.56 开头的机器名称并排除自己（kerberos 服务器）
+for host in  `cat /etc/hosts|grep 192.168.56|grep -v $hostname|awk '{print $2}'` ;do
+	for user in hdfs; do
 		kadmin.local -q "addprinc -randkey $user/$host@$DNS"
 		kadmin.local -q "xst -k /var/kerberos/krb5kdc/$user-un.keytab $user/$host@$DNS"
 	done
@@ -501,7 +504,7 @@ ldappasswd -x -D 'uid=ldapadmin,ou=people,dc=javachen,dc=com' -w secret "uid=hiv
 
 详细的配置，请参考 [Impala和Hive集成Sentry](/2014/11/14/config-impala-and-hive-with-sentry/)
 
-通过 beeline 使用 hive/cdh1@JAVACHEN.COM 连接 hive-server2 创建一些角色和组：
+通过 beeline 使用 `hive/cdh1@JAVACHEN.COM` 连接 hive-server2 创建一些角色和组：
 
 ```sql
 create role admin_role;
@@ -518,5 +521,9 @@ GRANT ROLE test_role TO GROUP test;
 上面 amdin 和 hive 组具有所有数据库的管理员权限，而 test 组只有 testdb 和 default 库的读写权限。
 
 在 impala-shell 中通过 ldap 的方式传入不同的用户，可以测试读写权限。
+
+# 5. 如何添加新用户并设置权限？
+
+TODO
 
 Enjoy it !

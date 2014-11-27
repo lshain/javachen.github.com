@@ -25,7 +25,7 @@ published: true
 
 - `YARN_HOME` 属性修改为` HADOOP_YARN_HOME`
 - `yarn-site.xml` 中做如下改变：
-  - `mapreduce.shuffle to mapreduce_shuffle` 修改为 `yarn.nodemanager.aux-services` 
+  - `mapreduce.shuffle to mapreduce_shuffle` 修改为 `yarn.nodemanager.aux-services`
   - `yarn.nodemanager.aux-services.mapreduce.shuffle.class` 改名为 `yarn.nodemanager.aux-services.mapreduce_shuffle.class`
   - `yarn.application.classpath` 中的环境变量 `YARN_HOME` 属性修改为` HADOOP_YARN_HOME`
 
@@ -123,9 +123,29 @@ $ for x in `cd /etc/init.d ; ls impala-*` ; do sudo service $x stop ; done
 ```
 $ ps -aef | grep java
 ```
-## 2.2. 备份 hdfs 元数据
+## 2.2. 备份 hdfs 元数据（可选，防止在操作过程中对数据的误操作）
 
-查找 namenode 数据存放路径，并对其备份
+ a，查找本地配置的文件目录（属性名为 `dfs.name.dir` 或者 `dfs.namenode.name.dir或者hadoop.tmp.dir` ）
+
+```bash
+grep -C1 hadoop.tmp.dir /etc/hadoop/conf/hdfs-site.xml
+```
+
+通过上面的命令，可以看到一下信息
+
+```
+<property>
+<name>hadoop.tmp.dir</name>
+<value>/data/dfs/nn</value>
+</property>
+```
+
+b，对hdfs数据进行备份
+
+```bash
+cd /data/dfs/nn
+tar -cvf /root/nn_backup_data.tar .
+```
 
 ## 2.3. 更新 yum 源
 
@@ -151,7 +171,7 @@ $ /etc/init.d/zookeeper-server start
 $ /etc/init.d/hadoop-hdfs-zkfc
 
 # 在安装journalnode的节点上运行
-$ /etc/init.d/hadoop-hdfs-journalnode start 
+$ /etc/init.d/hadoop-hdfs-journalnode start
 ```
 
 ## 2.5. 更新 hdfs 元数据
@@ -165,7 +185,7 @@ $ sudo service hadoop-hdfs-namenode upgrade
 查看日志，检查是否完成升级，例如查看日志中是否出现`/var/lib/hadoop-hdfs/cache/hadoop/dfs/<name> is complete`
 
 ```
-$ sudo tail -f /var/log/hadoop-hdfs/hadoop-hdfs-namenode-<hostname>.log 
+$ sudo tail -f /var/log/hadoop-hdfs/hadoop-hdfs-namenode-<hostname>.log
 ```
 
 如果配置了 HA，在另一个 NameNode 节点上运行：
@@ -195,7 +215,7 @@ $ sudo -u hdfs hadoop dfsadmin -finalizeUpgrade
 更新 YARN 需要注意以下节点：
 
 - `yarn-site.xml` 中做如下改变：
-  - `mapreduce.shuffle to mapreduce_shuffle` 修改为 `yarn.nodemanager.aux-services` 
+  - `mapreduce.shuffle to mapreduce_shuffle` 修改为 `yarn.nodemanager.aux-services`
   - `yarn.nodemanager.aux-services.mapreduce.shuffle.class` 改名为 `yarn.nodemanager.aux-services.mapreduce_shuffle.class`
   - `yarn.application.classpath` 中的环境变量 `YARN_HOME` 属性修改为` HADOOP_YARN_HOME`
 

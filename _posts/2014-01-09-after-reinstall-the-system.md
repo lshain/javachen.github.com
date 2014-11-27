@@ -94,7 +94,7 @@ echo 'source ~/.bash_profile' >>~/.zshrc
 通过rvm安装ruby：
 
 ```
-curl -L get.rvm.io | bash -s stable 
+curl -L get.rvm.io | bash -s stable
 source ~/.bash_profile
 sed -i -e 's/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g' ~/.rvm/config/db
 ```
@@ -141,9 +141,9 @@ sudo apt-get install virtualbox-4.3
 sudo apt-get install fortune-zh
 ```
 
-`/usr/bin/mint-fortune`中调用语句改为:
+`/usr/bin/mint-fortune` 中调用语句改为:
 
-```
+```bash
 /usr/games/fortune 70% tang300 30% song100 | $command -f $cow -n
 ```
 
@@ -226,4 +226,3 @@ echo "export ANT_HOME=/chan/app/apache/apache-ant-1.9.4" >> ~/.bashrc
 echo "export PATH=\$JAVA_HOME/bin:\$MVN_HOME/bin:\$ANT_HOME/bin:\$PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
-
