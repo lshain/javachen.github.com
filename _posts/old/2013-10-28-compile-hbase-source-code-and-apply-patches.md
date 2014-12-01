@@ -29,7 +29,7 @@ $ git clone git@github.com:cloudera/hbase.git -b cdh4-0.94.6_4.4.0 cdh4-0.94.6_4
 $ svn checkout http://snappy.googlecode.com/svn/trunk/ snappy
 $ cd snappy
 $ sh autogen.sh
-$ ./configure 
+$ ./configure
 $ sudo make install
 ```
 
@@ -48,7 +48,7 @@ $ ln -s /usr/bin/gcc-4.4 /usr/bin/gcc
 ```
 $ sudo ln -s /usr/java/latest/jre/lib/amd64/server/libjvm.so  /usr/local/lib/
 ```
- 
+
 <!-- more -->
 
 下载并编译hadoop-snappy
@@ -189,7 +189,7 @@ $ git format-patch -1
 git diff <file>   # 比较当前文件和暂存区文件差异
 git diff
 git diff <$id1> <$id2>    # 比较两次提交之间的差异
-git diff <branch1>..<branch2>    # 在两个分支之间比较 
+git diff <branch1>..<branch2>    # 在两个分支之间比较
 git diff --staged   # 比较暂存区和版本库差异
 git diff --cached   # 比较暂存区和版本库差异
 git diff --stat     # 仅仅比较统计信息
@@ -275,16 +275,25 @@ $ git fetch cdh
 $ git branch -r
 ```
 
-下载cdh上的分支：
+下载cdh上的cdh4-0.94.6_4.4.0分支：
 
 ```bash
-$ git checkout cdh/cdh4-0.94.6_4.4.0
+$ git checkout -b cdh/cdh4-0.94.6_4.4.0
 ```
 
 将其提交到自己的远程仓库：
 
 ```bash
-$ git push origin cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+$ git push origin cdh/cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+```
+
+然后下载远程的cdh4-0.94.6_4.4.0分支：
+
+```bash
+$ git checkout -b origin/cdh4-0.94.6_4.4.0:cdh4-0.94.6_4.4.0
+
+# 重命名
+$ git branch -m origin/cdh4-0.94.6_4.4.0 cdh4-0.94.6_4.4.0
 ```
 
 # 排错

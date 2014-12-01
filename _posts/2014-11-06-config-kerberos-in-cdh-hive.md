@@ -156,7 +156,7 @@ $ service hive-server2 start
 
 # 4. 测试
 
-## Hive CLI 
+## Hive CLI
 
 在没有配置 kerberos 之前，想要通过 hive 用户运行 hive 命令需要执行sudo，现在配置了 kerberos 之后，不再需要 `sudo` 了，hive 会通过 ticket 中的用户去执行该命令：
 
@@ -189,6 +189,8 @@ Time taken: 1.116 seconds
 ```
 
 可以看到在获取了 hdfs 用户的 ticket 之后，进入 hive cli 可以执行查看表、查询数据等命令。当然，你也可以获取 hive 的 ticket 之后再来运行 hive 命令。
+
+另外，如果你想通过普通用户来访问 hive，则需要 kerberos 创建规则和导出 ticket，然后把这个 ticket 拷贝到普通用户所在的家目录，在获取 ticket 了之后，再运行 hive 命令即可。
 
 ## JDBC 客户端
 

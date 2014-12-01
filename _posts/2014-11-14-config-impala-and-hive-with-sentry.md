@@ -188,7 +188,7 @@ hive> create view filtered.events_usonly as
 
 1、需要修改 `/user/hive/warehouse` 权限：
 
-```bash 
+```bash
 hdfs dfs -chmod -R 770 /user/hive/warehouse
 hdfs dfs -chown -R hive:hive /user/hive/warehouse
 ```
@@ -218,7 +218,7 @@ hdfs dfs -chown -R hive:hive /user/hive/warehouse
 
 在 /etc/hive/conf/ 目录创建 sentry-site.xml：
 
-```xml 
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 <property>
@@ -279,18 +279,48 @@ GRANT ROLE admin_role TO GROUP admin;
 GRANT ROLE admin_role TO GROUP hive;
 
 create role test_role;
-GRANT ALL ON DATABASE testdb TO ROLE test_role;
-GRANT ALL ON DATABASE default TO ROLE test_role;
+GRANT ALL ON DATABASE filtered TO ROLE test_role;
+GRANT ALL ON DATABASE sensitive TO ROLE test_role;
 GRANT ROLE test_role TO GROUP test;
 ```
 
+上面创建了两个角色，一个是 admin_role，具有管理员权限，可以读写所有数据库，并授权给 admin 和 hive 组（对应操作系统上的组）；一个是 test_role，只能读写 filtered 和 sensitive 数据库，并授权给 test 组
+
 ### 在 ldap 创建测试用户
 
-TODO
+在 ldap 服务器上创建系统用户 yy_test，并使用 migrationtools 工具将该用户导入 ldap，最后设置 ldap 中该用户密码。
+
+```bash
+# 创建 yy_test用户
+useradd yy_test
+
+grep -E "yy_test" /etc/passwd  >/opt/passwd.txt
+/usr/share/migrationtools/migrate_passwd.pl /opt/passwd.txt /opt/passwd.ldif
+ldapadd -x -D "uid=ldapadmin,ou=people,dc=lashou,dc=com" -w secret -f /opt/passwd.ldif
+
+#使用下面语句修改密码，填入上面生成的密码，输入两次：
+
+ldappasswd -x -D 'uid=ldapadmin,ou=people,dc=lashou,dc=com' -w secret "uid=yy_test,ou=people,dc=lashou,dc=com" -S
+```
+
+在每台 datanode 机器上创建 test 分组，并将 yy_test 用户加入到 test 分组：
+
+```bash
+groupadd test ; useradd yy_test; usermod -G test,yy_test yy_test
+```
 
 ### 测试
 
-TODO
+通过 beeline 连接 hive-server2，进行测试：
+
+```bash
+# 切换到 test 用户进行测试
+$ su test
+
+$ kinit -k -t test.keytab test/cdh1@JAVACHEN.COM
+
+$ beeline -u "jdbc:hive2://cdh1:10000/default;principal=test/cdh1@JAVACHEN.COM"
+```
 
 ## 1.4 Impala 集成 Sentry
 
@@ -299,7 +329,7 @@ TODO
 修改 /etc/default/impala 文件中的 `IMPALA_SERVER_ARGS` 参数，添加：
 
 ```bash
--server_name=server1 
+-server_name=server1
 -sentry_config=/etc/impala/conf/sentry-site.xml
 ```
 
@@ -365,7 +395,7 @@ IMPALA_SERVER_ARGS=" \
 
 ### 测试
 
-
+请参考下午基于文件存储方式中 impala 的测试。
 
 # 2. 基于文件存储方式
 
@@ -502,8 +532,8 @@ $ beeline -u "jdbc:hive2://cdh1:10000/default;principal=hive/cdh1@JAVACHEN.COM"
 修改 /etc/default/impala 文件中的 `IMPALA_SERVER_ARGS` 参数，添加：
 
 ```bash
--server_name=server1 
--authorization_policy_file=/user/hive/sentry/sentry-provider.ini 
+-server_name=server1
+-authorization_policy_file=/user/hive/sentry/sentry-provider.ini
 -authorization_policy_provider_class=org.apache.sentry.provider.file.LocalGroupResourceAuthorizationProvider
 ```
 
@@ -645,5 +675,3 @@ $ impala-shell -l -u hive
 - [Securing Impala for analysts](http://blog.evernote.com/tech/2014/06/09/securing-impala-for-analysts/)  
 - [Setting Up Hive Authorization with Sentry](http://www.cloudera.com/content/cloudera/en/documentation/cloudera-manager/v4-8-0/Cloudera-Manager-Managing-Clusters/cmmc_sentry_config.html)
 - [Sentry源码中的配置例子](https://github.com/cloudera/sentry/tree/cdh5-1.4.0_5.2.0/conf)
-
-
