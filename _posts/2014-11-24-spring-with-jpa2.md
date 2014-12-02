@@ -7,15 +7,15 @@ category: java
 
 tags: [ java,spring,jpa ]
 
-description: 
+description: JPA 全称 Java Persistence API，是Java EE 5标准之一，是一个 ORM 规范，由厂商来实现该规范。本文主要记录 Spring 框架中集成 JPA 的过程
 
-published: false 
+published: true
 
 ---
 
 JPA 全称 Java Persistence API，是Java EE 5标准之一，是一个 ORM 规范，由厂商来实现该规范，目前有 Hibernate、OpenJPA、TopLink、EclipseJPA 等实现。Spring目前提供集成Hibernate、OpenJPA、TopLink、EclipseJPA四个JPA标准实现。
 
-# 集成方式
+# 1. 集成方式
 
 Spring提供三种方法集成JPA：
 
@@ -23,7 +23,7 @@ Spring提供三种方法集成JPA：
 - 2. 从JNDI中获取：用于从Java EE服务器中获取指定的EntityManagerFactory，这种方式在Spring事务管理时一般要使用JTA事务管理。
 - 3. LocalContainerEntityManagerFactoryBean：适用于所有环境的FactoryBean，能全面控制EntityManagerFactory配置，非常适合那种需要细粒度定制的环境。
 
-## LocalEntityManagerFactoryBean
+## 1.1 LocalEntityManagerFactoryBean
 
 仅在简单部署环境中只使用这种方式，比如独立的应用程序和集成测试。该 FactoryBean 根据 JPA PersistenceProvider自动检测配置文件进行工作，一般从 `META-INF/persistence.xml` 读取配置信息。这种方式最简单，但是不能设置 Spring 中定义的 DataSource，且不支持 Spring 管理的全局事务，甚至，持久化类的织入（字节码转换）也是特定于提供者的，经常需要在启动时指定一个特定的JVM代理。**这种方法实际上只适用于独立的应用程序和测试环境，不建议使用此方式。**
 
@@ -36,7 +36,7 @@ Spring提供三种方法集成JPA：
 persistenceUnit 对应 META-INF/persistence.xml 中 persistence-unit 节点的 name 属性值。
 
 
-## JNDI中获取
+## 1.2 JNDI中获取
 
 Spring 中的配置：
 
@@ -65,7 +65,7 @@ Spring 中的配置：
 
 在部署到 Java EE 5 服务器时使用该方法。关于如何将自定义 JPA 提供者部署到服务器，以及允许使用服务器提供的缺省提供者之外的 JPA 提供者，请查看服务器文档的相关说明。
 
-## LocalContainerEntityManagerFactoryBean
+## 1.3 LocalContainerEntityManagerFactoryBean
 
 LocalContainerEntityManagerFactoryBean 提供了对JPA EntityManagerFactory 的全面控制，非常适合那种需要细粒度定制的环境。LocalContainerEntityManagerFactoryBean 将基于 persistence.xml 文件创建 PersistenceUnitInfo 类，并提供 dataSourceLookup 策略和 loadTimeWeaver。 因此它可以在JNDI之外的用户定义的数据源之上工作，并控制织入流程。
 
@@ -79,7 +79,7 @@ Spring 中的配置：
 </bean>
 ```
 
-这是最为强大的JPA配置方式，允许在应用程序中灵活进行本地配置。它支持连接现有JDBC DataSource ， 支持本地事务和全局事务等等。然而，它也将需求强加到了运行时环境中，例如，如果持久化提供者需要字节码转换，则必须有织入ClassLoader的能力。 
+这是最为强大的JPA配置方式，允许在应用程序中灵活进行本地配置。它支持连接现有JDBC DataSource ， 支持本地事务和全局事务等等。然而，它也将需求强加到了运行时环境中，例如，如果持久化提供者需要字节码转换，则必须有织入ClassLoader的能力。
 
 注意，这个选项可能与 Java EE 5 服务器内建的 JPA 功能相冲突。因此，当运行在完全 Java EE 5 环境中时， 要考虑从 JNDI 获取 EntityManagerFactory。另一种可以替代的方法是，在 LocalContainerEntityManagerFactoryBean 定义中通过 `persistenceXmlLocation` 指定相关位置， 例如 `META-INF/my-persistence.xml`，并且只将包含该名称的描述符放在应用程序包文件中。因为 Java EE 5 服务器将只 查找默认的 `META-INF/persistence.xml` 文件，它会忽略这种定制的持久化单元，因而避免与前面 Spring 驱动的 JPA 配置冲突。
 
@@ -131,30 +131,30 @@ Spring 中的配置：
  - `jpaDialect`：如果指定 jpaVendorAdapter 此属性可选，此处为 HibernateJpaDialect；
  - `jpaPropertyMap`：此处指定一些属性。
 
-### 处理多持久化单元 
+### 处理多持久化单元
 
 对于那些依靠多个持久化单元位置(例如存放在 classpath 中的多个 jar 中)的应用程序， Spring 提供了作为中央仓库的 PersistenceUnitManager， 避免了持久化单元查找过程。缺省实现允许指定多个位置 (默认情况下 classpath 会搜索 META-INF/persistence.xml 文件)，它们会被解析然后通过持久化单元名称被获取：
 
 ```xml
-<bean id="persistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager"> 
-	<property name="persistenceXmlLocation"> 
-	    <list> 
-	     <value>org/springframework/orm/jpa/domain/persistence-multi.xml</value> 
-	     <value>classpath:/my/package/**/custom-persistence.xml</value> 
-	     <value>classpath*:META-INF/persistence.xml</value> 
-	    </list> 
-	</property> 
-	<property name="dataSources"> 
-	   <map> 
-	    <entry key="localDataSource" value-ref="local-db"/> 
-	    <entry key="remoteDataSource" value-ref="remote-db"/> 
-	   </map> 
-	</property> 
-	<!-- if no datasource is specified, use this one --> 
-	<property name="defaultDataSource" ref="remoteDataSource"/> 
-</bean> 
+<bean id="persistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+	<property name="persistenceXmlLocation">
+	    <list>
+	     <value>org/springframework/orm/jpa/domain/persistence-multi.xml</value>
+	     <value>classpath:/my/package/**/custom-persistence.xml</value>
+	     <value>classpath*:META-INF/persistence.xml</value>
+	    </list>
+	</property>
+	<property name="dataSources">
+	   <map>
+	    <entry key="localDataSource" value-ref="local-db"/>
+	    <entry key="remoteDataSource" value-ref="remote-db"/>
+	   </map>
+	</property>
+	<!-- if no datasource is specified, use this one -->
+	<property name="defaultDataSource" ref="remoteDataSource"/>
+</bean>
 
-<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
-	<property name="persistenceUnitManager" ref="persistenceUnitManager"/> 
-</bean> 
+<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<property name="persistenceUnitManager" ref="persistenceUnitManager"/>
+</bean>
 ```

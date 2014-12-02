@@ -94,7 +94,7 @@ kdc 服务器涉及到三个配置文件：
 配置 Kerberos 的一种方法是编辑配置文件 /etc/krb5.conf。默认安装的文件中包含多个示例项。
 
 ```
-$ cat /etc/krb5.conf 
+$ cat /etc/krb5.conf
   [logging]
    default = FILE:/var/log/krb5libs.log
    kdc = FILE:/var/log/krb5kdc.log
@@ -111,7 +111,7 @@ $ cat /etc/krb5.conf
    renewable = true
    udp_preference_limit = 1
    default_tgs_enctypes = arcfour-hmac
-   default_tkt_enctypes = arcfour-hmac 
+   default_tkt_enctypes = arcfour-hmac
 
   [realms]
    JAVACHEN.COM = {
@@ -173,7 +173,7 @@ $ cat /var/kerberos/krb5kdc/kdc.conf
 - `admin_keytab`：KDC 进行校验的 keytab。
 
 > **关于AES-256加密**：
-> 
+>
 > 对于使用 centos5. 6及以上的系统，默认使用 AES-256 来加密的。这就需要集群中的所有节点上安装 [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy File](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)。
 >
 > 下载的文件是一个 zip 包，解开后，将里面的两个文件放到下面的目录中：`$JAVA_HOME/jre/lib/security`
@@ -181,7 +181,7 @@ $ cat /var/kerberos/krb5kdc/kdc.conf
 为了能够不直接访问 KDC 控制台而从 Kerberos 数据库添加和删除主体，请对 Kerberos 管理服务器指示允许哪些主体执行哪些操作。通过编辑文件 /var/lib/kerberos/krb5kdc/kadm5.acl 完成此操作。ACL（访问控制列表）允许您精确指定特权。
 
 ```bash
-$ cat /var/kerberos/krb5kdc/kadm5.acl 
+$ cat /var/kerberos/krb5kdc/kadm5.acl
   */admin@JAVACHEN.COM *
 ```
 
@@ -538,7 +538,7 @@ $ for x in `cd /etc/init.d ; ls zookeeper-*` ; do sudo service $x stop ; done
   <name>hadoop.security.authentication</name>
   <value>kerberos</value>
 </property>
- 
+
 <property>
   <name>hadoop.security.authorization</name>
   <value>true</value>
@@ -732,7 +732,7 @@ $ ssh cdh3 "kinit -k -t /etc/hadoop/conf/hdfs.keytab hdfs/cdh3@JAVACHEN.COM; ser
 观看 cdh1 上 NameNode 日志，出现下面日志表示 DataNode 启动成功：
 
 ```
-14/11/04 17:21:41 INFO security.UserGroupInformation: 
+14/11/04 17:21:41 INFO security.UserGroupInformation:
 Login successful for user hdfs/cdh2@JAVACHEN.COM using keytab file /etc/hadoop/conf/hdfs.keytab
 ```
 
@@ -843,7 +843,7 @@ done
 
 ```bash
 $ sh manager_cluster.sh hdfs start #启动 hdfs 用户管理的服务
-$ sh manager_cluster.sh yarn start #启动 yarn 用户管理的服务 
+$ sh manager_cluster.sh yarn start #启动 yarn 用户管理的服务
 $ sh manager_cluster.sh mapred start #启动 mapred 用户管理的服务
 
 $ sh manager_cluster.sh hdfs status # 在每个节点上获取 hdfs 的 ticket，然后可以执行其他操作，如批量启动 datanode 等等
@@ -940,9 +940,14 @@ isInitiator=true
 编译 java 代码并运行：
 
 ```bash
-javac Krb.java
 
-java -cp . Krb ./krb5.properties
+# 先销毁当前 ticket
+
+$ kdestroy
+
+$ javac Krb.java
+
+$ java -cp . Krb ./krb5.properties
 ```
 # 6. 总结
 
