@@ -68,11 +68,13 @@ kadmin.local -q "xst  -k proxy.keytab impala/proxy@JAVACHEN.COM "
 
 合并 proxy.keytab 和 impala-unmerge.keytab 生成 impala.keytab：
 
+```bash
 $ ktutil
 ktutil: rkt proxy.keytab
 ktutil: rkt impala-unmerge.keytab
 ktutil: wkt impala.keytab
 ktutil: quit
+```
 
 拷贝 impala.keytab 和 proxy_impala.keytab 文件到其他节点的 /etc/impala/conf 目录
 

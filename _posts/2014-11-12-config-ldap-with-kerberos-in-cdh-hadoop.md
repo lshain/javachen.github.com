@@ -55,7 +55,7 @@ krb5-server-ldap-1.10.3-33.el6.x86_64
 
 ## 1.2 OpenSSL
 
-如果，你不配置
+> 如果，你不配置ssl，这部分内容可以略过，实际安装过程中，我也没有详细去操作这部分内容。
 
 OpenLDAP 默认使用 Mozilla NSS，安装后已经生成了一份证书，可使用 `certutil -d /etc/openldap/certs/ -L -n 'OpenLDAP Server'` 命令查看。使用如下命令生成RFC格式CA证书并分发到客户机待用。
 
@@ -193,7 +193,7 @@ export KRB5_KTNAME=/etc/openldap/ldap.keytab
 
 ## 1.6 创建数据库
 
-进入到 /etc/openldap/slapd.d 目录，查看 `etc/openldap/slapd.d/cn\=config` 可以看到一些默认的配置，例如：
+进入到 /etc/openldap/slapd.d 目录，查看 `etc/openldap/slapd.d/cn\=config/olcDatabase={2}bdb.ldif` 可以看到一些默认的配置，例如：
 
 ```
 olcRootDN: cn=Manager,dc=my-domain,dc=com  
@@ -366,7 +366,7 @@ $ ldapsearch -LLL -x -D 'uid=ldapadmin,ou=people,dc=javachen,dc=com' -w secret -
   loginShell: /bin/bash
 ```
 
-可以看到，通过指定 'uid=test'，我们只查询这个用户的数据，这个查询条件叫做filter。有关 filter 的使用可以查看 ldapsearch 的 manpage。 
+可以看到，通过指定 'uid=test'，我们只查询这个用户的数据，这个查询条件叫做filter。有关 filter 的使用可以查看 ldapsearch 的 manpage。
 
 ### 修改
 
@@ -481,7 +481,7 @@ beeline> !connect jdbc:hive2://cdh1:10000/default;user=test;password=test
 ```bash
 -enable_ldap_auth=true \
 -ldap_uri=ldaps://cdh1 \
--ldap_baseDN=ou=people,dc=javachen,dc=com 
+-ldap_baseDN=ou=people,dc=javachen,dc=com
 ```
 
 注意：
@@ -527,4 +527,3 @@ $ impala-shell -l -u test
 - [centos下yum安装配置openldap 2.4.23-32外送svn的apache下配置](http://kinggoo.com/openldapinstallconf.htm)
 - [Integrating LDAP and Kerberos: Part Two (LDAP)](http://www.linux-mag.com/id/4765/)
 - [Debian GNU and Ubuntu: Setting up MIT Kerberos](http://techpubs.spinlocksolutions.com/dklar/kerberos.html)
-
