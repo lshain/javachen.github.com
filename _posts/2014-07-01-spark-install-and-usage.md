@@ -52,7 +52,7 @@ hue-spark.x86_64                  3.6.0+cdh5.2.0+509-1.cdh5.2.0.p0.37.el6
 $ sudo yum install spark-core spark-master spark-worker spark-python spark-history-server
 ```
 
-# 2. 配置 
+# 2. 配置
 
 ## 修改配置文件
 
@@ -97,8 +97,8 @@ fi
 执行下面命令：
 
 ```bash
-$ sudo -u hdfs hadoop fs -mkdir /user/spark 
-$ sudo -u hdfs hadoop fs -mkdir /user/spark/applicationHistory 
+$ sudo -u hdfs hadoop fs -mkdir /user/spark
+$ sudo -u hdfs hadoop fs -mkdir /user/spark/applicationHistory
 $ sudo -u hdfs hadoop fs -chown -R spark:spark /user/spark
 $ sudo -u hdfs hadoop fs -chmod 1777 /user/spark/applicationHistory
 ```
@@ -183,19 +183,50 @@ You need to build Spark before running this program
 
 出现上面异常，需要把 examples/lib 目录报考到 /usr/lib/spark 目录下，然后再运行。
 
+```bash
+cd /usr/lib/spark
+cp -r examples/lib .
+```
+
 你还可以运行 spark shell 的交互模式：
 
 ```bash
 $ ./bin/spark-shell --master local[2]
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ / __/  _/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.1.0
+      /_/
+
+Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.6.0_45)
+Type in expressions to have them evaluated.
+
+Spark context available as sc.
+
+scala>
+
 ```
 
 通过 Python API 来运行交互模式：
 
 ```bash
 $ ./bin/pyspark --master local[2]
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ / __/  _/
+   /__ / .__/\_,_/_/ /_/\_\   version 1.1.0
+      /_/
+
+Using Python version 2.6.6 (r266:84292, Jan 22 2014 09:42:36)
+SparkContext available as sc.
+>>>
 ```
 
-你也可以运行 Python 编写的应用：
+你也可以运行 Python 编写的应用(注意：**使用 yum 安装 cdh5.2后，spark 的 home 目录下不存在 examples/src/ 目录**)：
 
 ```bash
 $ ./bin/spark-submit examples/src/main/python/pi.py 10
@@ -206,7 +237,7 @@ $ ./bin/spark-submit examples/src/main/python/pi.py 10
 Spark 目前支持三种集群管理模式：
 
 - Standalone
-- Apache Mesos 
+- Apache Mesos
 - Hadoop YARN
 
 ### Standalone 模式
@@ -220,7 +251,9 @@ scala> val counts = file.flatMap(line => line.split(" ")).map(word => (word, 1))
 scala> counts.saveAsTextFile("hdfs://IP:8020/user/hive/warehouse/output")
 ```
 
-如果出现下面的错误：
+运行完成之后，你可以查看 `hdfs://IP:8020/user/hive/warehouse/output` 目录下的文件内容。
+
+运行过程中，可能会出现下面的错误：
 
 ```
 14/10/24 14:51:40 WARN hdfs.BlockReaderLocal: The short-circuit local reads feature cannot be used because libhadoop cannot be loaded.
@@ -238,24 +271,12 @@ java.lang.UnsatisfiedLinkError: no gplcompression in java.library.path
 	at org.apache.hadoop.io.compress.CompressionCodecFactory.getCodecClasses(CompressionCodecFactory.java:128)
 ```
 
-> 注意： 该异常目前只在 Standalone 模式下会出现，尚未找到合适的解决办法。
+该异常目前只在 Standalone 模式下会出现，**尚未找到合适的解决办法**。
 
-首先检查 hadoop 的目录下是否有相关库文件：
-
-```bash
-$ ls /usr/lib/hadoop/lib/native/
-libgplcompression.a    libgplcompression.so.0      libhadoop.so        libsnappy.so
-libgplcompression.la   libgplcompression.so.0.0.0  libhadoop.so.1.0.0  libsnappy.so.1
-libgplcompression.lai  libhadoop.a                 libhadooputils.a    libsnappy.so.1.1.3
-libgplcompression.so   libhadooppipes.a            libhdfs.a
-```
-
-运行完成之后，你可以查看 `hdfs://IP:8020/user/hive/warehouse/output` 目录下的文件内容。
-
-spark-shell 后面还可以加上其他参数，例如指定 IP 和端口、运行核数：
+另外，spark-shell 后面还可以加上其他参数，例如指定 IP 和端口、运行核数：
 
 ```bash
-$ spark-shell --master spark://IP:PORT  --cores <numCores> 
+$ spark-shell --master spark://IP:PORT  --cores <numCores>
 ```
 
 另外，也可以使用 spark-submit 以 Standalone 模式运行 SparkPi 程序：
@@ -282,7 +303,7 @@ $ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode cluster -
 
 ```bash
 $ hdfs dfs -mkdir -p /user/spark/share/lib
-$ hdfs dfs -put $SPARK_HOME/assembly/lib/spark-assembly_*.jar  /user/spark/share/lib/spark-assembly.jar 
+$ hdfs dfs -put $SPARK_HOME/assembly/lib/spark-assembly_*.jar  /user/spark/share/lib/spark-assembly.jar
 
 $ SPARK_JAR=hdfs://<nn>:<port>/user/spark/share/lib/spark-assembly.jar
 ```
@@ -310,7 +331,7 @@ Failed to load Spark SQL CLI main class org.apache.spark.sql.hive.thriftserver.S
 You need to build Spark with -Phive.
 ```
 
-从上可以知道  Spark-SQL 编译时没有集成 Hive，故需要重新编译。
+从上可以知道  Spark-SQL 编译时没有集成 Hive，故需要重新编译 spark 源代码。
 
 ## 编译 Spark-SQL
 
@@ -345,7 +366,7 @@ $ sbt/sbt -Dhadoop.version=2.5.0-cdh5.2.0 -Pyarn -Phive assembly
     <module>sql/catalyst</module>
     <module>sql/core</module>
     <module>sql/hive</module>
-    <module>sql/hive-thriftserver</module>
+    <module>sql/hive-thriftserver</module> <!--添加的一行-->
     <module>repl</module>
     <module>assembly</module>
     <module>external/twitter</module>
@@ -367,8 +388,10 @@ $ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.2.0 -Phive -DskipTests clean package
 
 如果编译成功之后， 会在 assembly/target/scala-2.10 目次下生成：spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar，在 examples/target/scala-2.10 目次下生成：spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar
 
-> 但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，故最后无法编译成功。
+但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，故最后无法编译成功，需要等到 cloudera 官方更新源代码或者等待下一个 cdh 版本集成 spark-sql。
 
 ## 测试
 
-如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql
+如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql。
+
+这部分内容省略，待以后补充。
