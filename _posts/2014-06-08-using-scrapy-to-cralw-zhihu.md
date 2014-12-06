@@ -15,9 +15,9 @@ published: true
 
 ---
 
-本文主要记录使用使用Scrapy登录并爬取知乎网站的思路。Scrapy的相关介绍请参考 [使用Scrapy抓取数据](/2014/05/24/using-scrapy-to-cralw-data/)。
+本文主要记录使用使用 Scrapy 登录并爬取知乎网站的思路。Scrapy的相关介绍请参考 [使用Scrapy抓取数据](/2014/05/24/using-scrapy-to-cralw-data/)。
 
-相关代码，见 <https://github.com/javachen/scrapy-zhihu-github> 。
+相关代码，见 <https://github.com/javachen/scrapy-zhihu-github> ，在阅读这部分代码之前，请先了解 Scrapy 的一些基本用法。
 
 # 使用cookie模拟登陆
 
@@ -50,14 +50,14 @@ class ZhihuLoginSpider(CrawlSpider):
     def __init__(self):
         self.headers =HEADER
         self.cookies =COOKIES
-    
+
     def start_requests(self):
         for i, url in enumerate(self.start_urls):
             yield FormRequest(url, meta = {'cookiejar': i}, \
                               headers = self.headers, \
                               cookies =self.cookies,
                               callback = self.parse_item)#jump to login page
-    
+
     def parse_item(self, response):
         selector = Selector(response)
 
@@ -67,7 +67,9 @@ class ZhihuLoginSpider(CrawlSpider):
         print urls
 ```
 
-上面是一个简单的示例，重写了 `start_requests` 方法，针对 `start_urls` 中的每一个url，重新创建FormRequest请求，并设置 headers 和 cookies 两个参数。
+上面是一个简单的示例，重写了 `start_requests` 方法，针对 `start_urls` 中的每一个url，这里为 <http://www.zhihu.com/lookup/class/>，重新创建 FormRequest 请求该 url，并设置 headers 和 cookies 两个参数，这样可以通过 cookies 伪造登陆。
+
+FormRequest 请求中有一个回调函数 parse_item 用于解析页面内容。
 
 HEADER 和 COOKIES 在 settings.py 中定义如下：
 
@@ -84,11 +86,22 @@ HEADER={
     }
 
 COOKIES={
-   ...
+    'checkcode':r'"$2a$10$9FVE.1nXJKq/F.nH62OhCevrCqs4skby2bC4IO6VPJITlc7Sh.NZa"',
+    'c_c':r'a153f80493f411e3801452540a3121f7',
+    '_ga':r'GA1.2.1063404131.1384259893',
+    'zata':r'zhihu.com.021715f934634a988abbd3f1f7f31f37.470330',
+    'q_c1':r'59c45c60a48d4a5f9a12a52028a9aee7|1400081868000|1400081868000',
+    '_xsrf':r'2a7cf7208bf24dbda3f70d953e948135',
+    'q_c0':r'"NmE0NzBjZTdmZGI4Yzg3ZWE0NjhkNjkwZGNiZTNiN2F8V2FhRTQ1QklrRjNjNGhMdQ==|1400082425|a801fc83ab07cb92236a75c87de58dcf3fa15cff"',
+    '__utma':r'51854390.1063404131.1384259893.1400518549.1400522270.5',
+    '__utmb':r'51854390.4.10.1400522270',
+    '__utmc':r'51854390',
+    '__utmz':r'51854390.1400513283.3.3.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/people/hallson',
+    '__utmv':r'51854390.100-1|2=registration_date=20121016=1^3=entry_date=20121016=1'
 }
 ```
 
-这两个参数你都可以通过浏览器的一些开发工具查看到。
+这两个参数你都可以通过浏览器的一些开发工具查看到，特别是 COOKIES 中的信息。
 
 # 通过账号登陆
 
@@ -144,6 +157,16 @@ class ZhihuUserSpider(CrawlSpider):
 
     def parse_user(self, response):
         selector = Selector(response)
+        user = ZhihuUserItem()
+        user['_id']=user['username']=response.url.split('/')[-2]
+        user['url']= response.url
+        user['nickname'] = ''.join(selector.xpath("//div[@class='title-section ellipsis']/a[@class='name']/text()").extract())
+        user['location'] = ''.join(selector.xpath("//span[@class='location item']/@title").extract())
+        user['industry'] = ''.join(selector.xpath("//span[@class='business item']/@title").extract())
+        user['sex'] = ''.join(selector.xpath('//div[@class="item editable-group"]/span/span[@class="item"]/i/@class').extract()).replace("zg-icon gender ","")
+        user['description'] = ''.join(selector.xpath("//span[@class='description unfold-item']/span/text()").extract()).strip().replace("\n",'')
+        user['view_num'] = ''.join(selector.xpath("//span[@class='zg-gray-normal']/strong/text()").extract())
+        user['update_time'] = str(datetime.now())
         #抓取用户信息，此处省略代码
 ```
 
@@ -188,7 +211,7 @@ def parse_follow_url(self, response):
 
 获取粉丝列表的代码和上面代码类似。
 
-有了用户数据之后，你可以再编写一个爬虫根据用户去爬取问题和答案了，这部分代码略去。
+有了用户数据之后，你可以再编写一个爬虫根据用户去爬取问题和答案了，这部分代码略去，详细内容请参考 <https://github.com/javachen/scrapy-zhihu-github>。其中，还有抓取 github 用户等的相关代码。
 
 # 其他一些技巧
 

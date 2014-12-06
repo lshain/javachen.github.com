@@ -256,6 +256,31 @@ Query: show tables
 Returned 4 row(s) in 0.08s
 ```
 
+## 测试 beeline 连接 jdbc
+
+使用 beeline 来连接 jdbc 来进行测试，这里是使用 ldap 的方式：
+
+```bash
+$ beeline -u "jdbc:hive2://cdh1:21050/default;" -n test -p test
+  scan complete in 2ms
+  Connecting to jdbc:hive2://cdh1:21050/default;
+  Connected to: Impala (version 2.0.0-cdh5)
+  Driver: Hive JDBC (version 0.13.1-cdh5.2.0)
+  Transaction isolation: TRANSACTION_REPEATABLE_READ
+  Beeline version 0.13.1-cdh5.2.0 by Apache Hive
+
+  0: jdbc:hive2://cdh1:21050/default>show tables;
+  +-----------------------------+--+
+  |            name             |
+  +-----------------------------+--+
+  | t1                          |
+  | tab1                        |
+  | tab2                        |
+  | tab3                        |
+  +-----------------------------+--+
+  4 rows selected (0.325 seconds)
+```
+
 # 6. 排除
 
 如果出现下面异常：

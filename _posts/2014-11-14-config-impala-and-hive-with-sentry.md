@@ -667,8 +667,20 @@ $ impala-shell -l -u hive
     Fetched 5 row(s) in 0.76s
 ```
 
-同样，你还可以使用其他用户来测试，待续。
+同样，你还可以使用其他用户来测试。
 
+也可以使用 beeline 来连接 impala-server 来进行测试：
+
+```bash
+$ beeline -u "jdbc:hive2://cdh1:21050/default;" -n test -p test
+  scan complete in 2ms
+  Connecting to jdbc:hive2://cdh1:21050/default;
+  Connected to: Impala (version 2.0.0-cdh5)
+  Driver: Hive JDBC (version 0.13.1-cdh5.2.0)
+  Transaction isolation: TRANSACTION_REPEATABLE_READ
+  Beeline version 0.13.1-cdh5.2.0 by Apache Hive
+  0: jdbc:hive2://cdh1:21050/default>
+```
 
 # 3. 参考文章
 

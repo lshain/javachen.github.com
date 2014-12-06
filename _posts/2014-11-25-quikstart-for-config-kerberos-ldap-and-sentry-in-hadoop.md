@@ -185,6 +185,17 @@ done
 
 cd /var/kerberos/krb5kdc/
 echo -e "rkt hdfs-un.keytab\nrkt HTTP.keytab\nwkt hdfs.keytab" | ktutil
+
+#kerberos 重新初始化之后，还需要添加下面代码用于集成 ldap
+
+kadmin.local -q "addprinc ldapadmin@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey ldap/cdh1@JAVACHEN.COM"
+kadmin.local -q "ktadd -k /etc/openldap/ldap.keytab ldap/cdh1@JAVACHEN.COM"
+
+/etc/init.d/slapd restart
+
+#测试 ldap 是否可以正常使用
+ldapsearch -x -b 'dc=javachen,dc=com'
 ```
 
 将其保存为 /root/init_kerberos.sh，然后运行：
