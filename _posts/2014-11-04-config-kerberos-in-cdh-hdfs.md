@@ -774,6 +774,18 @@ done
 cd /var/kerberos/krb5kdc/
 echo -e "rkt lashou.keytab\nrkt hdfs-un.keytab\nrkt HTTP.keytab\nwkt hdfs.keytab" | ktutil
 echo -e "rkt lashou.keytab\nrkt hive-un.keytab\nwkt hive.keytab" | ktutil
+
+#kerberos 重新初始化之后，还需要添加下面代码用于集成 ldap
+
+kadmin.local -q "addprinc ldapadmin@JAVACHEN.COM"
+kadmin.local -q "addprinc -randkey ldap/cdh1@JAVACHEN.COM"
+kadmin.local -q "ktadd -k /etc/openldap/ldap.keytab ldap/cdh1@JAVACHEN.COM"
+
+#如果安装了 openldap ，重启 slapd
+/etc/init.d/slapd restart
+
+#测试 ldap 是否可以正常使用
+ldapsearch -x -b 'dc=javachen,dc=com'
 ```
 
 以下脚本用于在每个客户端上获得 root/admin 的 ticket，其密码为 root：
