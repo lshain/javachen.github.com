@@ -149,11 +149,13 @@ $ netstat -tunlp  | grep :389
   tcp        0      0 :::389                      :::*                        LISTEN      8510/slapd
 ```
 
-如果启动失败，运行下面命令查看日志：
+如果启动失败，则运行下面命令来启动 slapd 服务并查看日志：
 
 ```bash
 $ slapd -h ldap://127.0.0.1 -d 481
 ```
+
+待查明原因之后，停止该进程使用正常方式启动 slapd 服务。
 
 ## 1.5 LDAP 和 Kerberos
 
@@ -406,7 +408,7 @@ URI     ldap://cdh1
 #先删除 ticket
 $ kdestroy
 
-$ ldapsearch -x -b 'dc=javachen,dc=com'
+$ ldapsearch -b 'dc=javachen,dc=com'
   SASL/GSSAPI authentication started
   ldap_sasl_interactive_bind_s: Local error (-2)
     additional info: SASL(-1): generic failure: GSSAPI Error: Unspecified GSS failure.  Minor code may provide more information (No credentials cache found)
@@ -416,7 +418,7 @@ $ ldapsearch -x -b 'dc=javachen,dc=com'
 
 ```bash
 $ kinit root/admin
-$ ldapsearch -x -b 'dc=javachen,dc=com'
+$ ldapsearch -b 'dc=javachen,dc=com'
  # 没有报错了
 $ ldapwhoami
   SASL/GSSAPI authentication started
