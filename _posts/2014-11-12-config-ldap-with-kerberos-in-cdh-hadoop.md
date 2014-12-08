@@ -545,6 +545,7 @@ $ impala-shell -l -u test
 
 使用 beeline 通过 ldap 方式来连接 jdbc 进行测试：
 
+```bash
 $ beeline -u "jdbc:hive2://cdh1:21050/default;" -n test -p test
   scan complete in 2ms
   Connecting to jdbc:hive2://cdh1:21050/default;
@@ -563,6 +564,7 @@ $ beeline -u "jdbc:hive2://cdh1:21050/default;" -n test -p test
   | tab3                        |
   +-----------------------------+--+
   4 rows selected (0.325 seconds)
+```
 
 # 5. 参考文章
 
