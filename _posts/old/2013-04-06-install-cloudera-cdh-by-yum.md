@@ -797,22 +797,29 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 </property>
 ```
 
-**创建 history 子目录**
-
-在 HDFS 运行之后，你需要在 Staging 目录下手动创建 history 子目录：
+并在 hdfs 上创建相应的目录：
 
 ```bash
 $ sudo -u hdfs hadoop fs -mkdir -p /user
 $ sudo -u hdfs hadoop fs -chmod 777 /user
+```
+
+
+**创建 history 子目录**
+
+可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个参数：
+
+- mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate`
+- mapreduce.jobhistory.done-dir，该目录权限应该为750，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done`
+
+
+在 hdfs 上创建目录并设置权限：
+
+```bash
 $ sudo -u hdfs hadoop fs -mkdir -p /user/history
 $ sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 ```
-
-hadoop 会自动在 /user/history 下创建 done 和 done_intermediate 目录。可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个目录的读写权限：
-
-- mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777
-- mapreduce.jobhistory.done-dir，该目录权限应该为750
 
 ## 验证 HDFS 结构：
 
@@ -823,13 +830,13 @@ $ sudo -u hdfs hadoop fs -ls -R /
 你应该看到如下结构：
 
 ```bash
-drwxrwxrwt   - hdfs hadoop          0 2014-04-19 14:31 /tmp
-drwxrwxrwx   - hdfs hadoop          0 2014-04-19 14:31 /tmp/hadoop-yarn
-drwxrwxrwx   - hdfs hadoop          0 2014-04-31 10:26 /user
-drwxrwxrwt   - yarn hadoop          0 2014-04-19 14:31 /user/history
-drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var
-drwxr-xr-x   - hdfs   hadoop        0 2014-04-31 15:31 /var/log
-drwxrwxrwt   - yarn   mapred        0 2014-04-31 15:31 /yarn/apps
+drwxrwxrwt   - hdfs hadoop          0 2014-04-19 14:21 /tmp
+drwxrwxrwx   - hdfs hadoop          0 2014-04-19 14:26 /user
+drwxrwxrwt   - mapred hadoop        0 2014-04-19 14:31 /user/history
+drwxr-x---   - mapred hadoop        0 2014-04-19 14:38 /user/history/done
+drwxrwxrwt   - mapred hadoop        0 2014-04-19 14:48 /user/history/done_intermediate
+drwxr-xr-x   - hdfs   hadoop        0 2014-04-19 15:31 /yarn
+drwxrwxrwt   - yarn   mapred        0 2014-04-19 15:31 /yarn/apps
 ```
 
 看到上面的目录结构，你就将NameNode上的配置文件同步到其他节点了，并且启动 yarn 的服务。
