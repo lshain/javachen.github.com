@@ -98,7 +98,7 @@ $ yum install bind-utils -y
 运行下面命令查看hostname和ip是否匹配:
 
 ```bash
-$ host -v -t A `hostname` 
+$ host -v -t A `hostname`
 Trying "cdh1"
 ...
 ;; ANSWER SECTION:
@@ -115,7 +115,7 @@ $ setenforce 0
 $ vim /etc/sysconfig/selinux #修改SELINUX=disabled
 ```
 
-清空iptables 
+清空iptables
 
 ```bash
 $ iptables -F
@@ -128,7 +128,7 @@ $ iptables -F
 这里选择 cdh1 节点为时钟同步服务器，其他节点为客户端同步时间到该节点。、
 
 安装ntp:
-	
+
 ```bash
 $ yum install ntp
 ```
@@ -190,7 +190,7 @@ Ntpd启动的时候通常需要一段时间大概5分钟进行时间同步，所
 如果想定时进行时间校准，可以使用crond服务来定时执行。
 
 ```
-00 1 * * * root /usr/sbin/ntpdate 192.168.56.121 >> /root/ntpdate.log 2>&1 
+00 1 * * * root /usr/sbin/ntpdate 192.168.56.121 >> /root/ntpdate.log 2>&1
 ```
 
 这样，每天 1:00 Linux 系统就会自动的进行网络时间校准。
@@ -220,7 +220,7 @@ $ which java
 
 安装jdk，使用yum安装或者手动下载安装jdk-6u31-linux-x64.bin，下载地址：[这里](http://www.oracle.com/technetwork/java/javasebusiness/downloads/java-archive-downloads-javase6-419409.html#jdk-6u31-oth-JPR)
 
-```bash	
+```bash
 $ yum install jdk -y
 ```
 
@@ -256,7 +256,7 @@ $ env | grep JAVA_HOME
 
 如果env中没有`JAVA_HOM`E变量，则修改`/etc/sudoers`文件
 
-```bash	
+```bash
 $ vi /etc/sudoers
 	Defaults env_keep+=JAVA_HOME
 ```
@@ -287,7 +287,7 @@ $ yum install jdk -y
 
 # 2. 安装和配置HDFS
 
-**说明：** 
+**说明：**
 
 - 根据文章开头的节点规划，cdh1 为NameNode节点和SecondaryNameNode
 - 根据文章开头的节点规划，cdh2 和 cdh3 为DataNode节点
@@ -304,7 +304,7 @@ $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoo
 $ yum install hadoop-hdfs-secondarynamenode -y
 ```
 
-在DataNode节点安装 hadoop-hdfs-datanode 
+在DataNode节点安装 hadoop-hdfs-datanode
 
 ```bash
 $ yum install hadoop hadoop-hdfs hadoop-client hadoop-doc hadoop-debuginfo hadoop-hdfs-datanode -y
@@ -463,7 +463,7 @@ $ yum install hadoop-httpfs -y
 <property>  
 <name>hadoop.proxyuser.httpfs.groups</name>  
 <value>*</value>  
-</property> 
+</property>
 ```
 
 然后重启 Hadoop 使配置生效。
@@ -490,7 +490,7 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 下载repo文件到 `/etc/yum.repos.d/`:
 
  - 如果你安装的是 CDH4，请下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras/redhat/6/x86_64/gplextras/cloudera-gplextras4.repo)
- - 如果你安装的是 CDH5，请下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo) 
+ - 如果你安装的是 CDH5，请下载[Red Hat/CentOS 6](http://archive.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo)
 
 然后，安装lzo:
 
@@ -507,9 +507,9 @@ $ yum install hadoop-lzo* impala-lzo  -y
 org.apache.hadoop.io.compress.BZip2Codec,com.hadoop.compression.lzo.LzoCodec,
 com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
 </property>
-<property> 
-  <name>io.compression.codec.lzo.class</name> 
-  <value>com.hadoop.compression.lzo.LzoCodec</value> 
+<property>
+  <name>io.compression.codec.lzo.class</name>
+  <value>com.hadoop.compression.lzo.LzoCodec</value>
 </property>
 ```
 
@@ -541,7 +541,7 @@ org.apache.hadoop.io.compress.SnappyCodec</value>
 
 使 snappy 对 hadoop 可用：
 
-```bash	
+```bash
 $ ln -sf /usr/lib64/libsnappy.so /usr/lib/hadoop/lib/native/
 ```
 
@@ -558,8 +558,8 @@ $ scp -r /etc/hadoop/conf root@cdh3:/etc/hadoop/
 
 ```bash
 $ sudo -u hdfs hadoop namenode -format
-```	
-	
+```
+
 在每个节点运行下面命令启动hdfs：
 
 ```bash
@@ -742,7 +742,7 @@ yarn.nodemanager.remote-app-log-dir							                hdfs://cdh1:8020/var/l
 创建 `yarn.nodemanager.local-dirs` 和 `yarn.nodemanager.log-dirs` 参数对应的目录：
 
 ```bash
-$ mkdir -p /data/yarn/{local,logs} 
+$ mkdir -p /data/yarn/{local,logs}
 $ chown -R yarn:yarn /data/yarn
 ```
 
@@ -786,9 +786,9 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 </property>
 ```
 
-**配置Staging目录：**
+**配置 Staging 目录：**
 
-在 `/etc/hadoop/conf/mapred-site.xml` 中配置如下参数：
+在 `/etc/hadoop/conf/mapred-site.xml` 中配置参数 `yarn.app.mapreduce.am.staging-dir`（该值默认为：`/tmp/hadoop-yarn/staging`，请参见 [mapred-default.xml](http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml)）：
 
 ```xml
 <property>
@@ -799,7 +799,7 @@ $ sudo -u hdfs hadoop fs -chmod 1777 /yarn/apps
 
 **创建 history 子目录**
 
-在 HDFS 运行之后，你需要手动创建 history 子目录：
+在 HDFS 运行之后，你需要在 Staging 目录下手动创建 history 子目录：
 
 ```bash
 $ sudo -u hdfs hadoop fs -mkdir -p /user
@@ -809,20 +809,10 @@ $ sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
 $ sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
 ```
 
-可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个参数：
+hadoop 会自动在 /user/history 下创建 done 和 done_intermediate 目录。可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个目录的读写权限：
 
 - mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777
 - mapreduce.jobhistory.done-dir，该目录权限应该为750
-
-如果你设置了上面两个参数，那你可以不用手动去创建 history 子目录。
-
-
-另外设置 /tmp/hadoop-yarn 权限
-
-```bash
-sudo -u hdfs hadoop fs -mkdir -p /tmp/hadoop-yarn
-sudo -u hdfs hadoop fs -chmod -R 777 /tmp/hadoop-yarn
-```
 
 ## 验证 HDFS 结构：
 
@@ -920,7 +910,7 @@ $ yum install zookeeper* -y
 
 ## 修改配置文件
 
-设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg` 
+设置 zookeeper 配置 `/etc/zookeeper/conf/zoo.cfg`
 
 ```
 maxClientCnxns=50
@@ -946,7 +936,7 @@ $ scp -r /etc/zookeeper/conf root@cdh3:/etc/zookeeper/
 ## 初始化并启动服务
 
 在每个节点上初始化并启动 zookeeper，注意 n 的值需要和 zoo.cfg 中的编号一致。
- 
+
 在 cdh1 节点运行
 
 ```bash
@@ -1008,7 +998,7 @@ hbase -       nofile  32768
 
 ```bash
 $ yum install hbase hbase-master hbase-regionserver -y
-``` 
+```
 
 如果需要你可以安装 hbase-rest、hbase-solr-indexer、hbase-thrift
 
@@ -1071,7 +1061,7 @@ $ yum install hbase hbase-master hbase-regionserver -y
   <property>
     <name>hbase.client.retries.number</name>
     <value>3</value>
-  </property> 
+  </property>
   <property>
     <name>hbase.regionserver.handler.count</name>
     <value>100</value>
@@ -1412,7 +1402,7 @@ $ /usr/lib/hive/bin/beeline
 	+-----------+
 	+-----------+
 	No rows selected (0.238 seconds)
-	0: jdbc:hive2://localhost:10000> 
+	0: jdbc:hive2://localhost:10000>
 ```
 
 其 sql语法参考[SQLLine CLI](http://sqlline.sourceforge.net/)，在这里，你不能使用HiveServer的sql语句

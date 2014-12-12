@@ -386,12 +386,12 @@ $ export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
 $ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.2.0 -Phive -DskipTests clean package
 ```
 
-如果编译成功之后， 会在 assembly/target/scala-2.10 目次下生成：spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar，在 examples/target/scala-2.10 目次下生成：spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar
+如果编译成功之后， 会在 assembly/target/scala-2.10 目次下生成：spark-assembly-1.1.0-cdh5.2.0.jar，在 examples/target/scala-2.10 目次下生成：spark-examples-1.1.0-cdh5.2.0.jar
 
 但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，故最后无法编译成功，需要等到 cloudera 官方更新源代码或者等待下一个 cdh 版本集成 spark-sql。
 
 ## 测试
 
-如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql。
+如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql。
 
 这部分内容省略，待以后补充。
