@@ -17,7 +17,7 @@ Update:
 # 环境
 
 - CentOS 6.4 x86_64
-- CDH 5.0.1
+- CDH 5.2.0
 - jdk1.6.0_31
 
 集群规划为3个节点，每个节点的ip、主机名和部署的组件分配如下：
@@ -1013,12 +1013,12 @@ $ yum install hbase hbase-master hbase-regionserver -y
 
 修改 `hbase-site.xml`文件，关键几个参数及含义如下：
 
-- hbase.distributed：是否为分布式模式
-- hbase.rootdir：HBase在hdfs上的目录路径
-- hbase.tmp.dir：本地临时目录
-- hbase.zookeeper.quorum：zookeeper集群地址，逗号分隔
-- hbase.hregion.max.filesize：hregion文件最大大小
-- hbase.hregion.memstore.flush.size：memstore文件最大大小
+- `hbase.distributed`：是否为分布式模式
+- `hbase.rootdir`：HBase在hdfs上的目录路径
+- `hbase.tmp.dir`：本地临时目录
+- `hbase.zookeeper.quorum`：zookeeper集群地址，逗号分隔
+- `hbase.hregion.max.filesize`：hregion文件最大大小
+- `hbase.hregion.memstore.flush.size`：memstore文件最大大小
 
 另外，在CDH5中建议`关掉Checksums`（见[Upgrading HBase](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_hbase_upgrade.html)）以提高性能，修改为如下：
 
@@ -1100,7 +1100,7 @@ $ sudo -u hdfs hadoop fs -mkdir /hbase
 $ sudo -u hdfs hadoop fs -chown hbase:hbase /hbase
 ```
 
-设置crontab 定时删除日志：
+设置 crontab 定时删除日志：
 
 ```bash
 $ crontab -e
@@ -1118,7 +1118,7 @@ $ scp -r /etc/hbase/conf root@cdh3:/etc/hbase/
 
 ## 创建本地目录
 
-在 hbase-site.xml 配置文件中配置了 `hbase.tmp.dir` 值为 `/data/hbase`，现在需要在每个hbase节点创建该目录并设置权限：
+在 hbase-site.xml 配置文件中配置了 `hbase.tmp.dir` 值为 `/data/hbase`，现在需要在每个 hbase 节点创建该目录并设置权限：
 
 ```bash
 $ mkdir /data/hbase
@@ -1133,17 +1133,17 @@ $ for x in `ls /etc/init.d/|grep hbase` ; do service $x start ; done
 
 ## 访问web
 
-通过 <http://cdh1:60030/> 可以访问 RegionServer 页面，然后通过该页面可以知道哪个节点为 Master，然后再通过60010端口访问 Master管理界面。
+通过 <http://cdh1:60030/> 可以访问 RegionServer 页面，然后通过该页面可以知道哪个节点为 Master，然后再通过 60010 端口访问 Master 管理界面。
 
 # 6. 安装hive
 
-在一个NameNode节点上安装 hive：
+在一个 NameNode 节点上安装 hive：
 
 ```bash
 $ yum install hive hive-metastore hive-server2 hive-jdbc hive-hbase  -y
 ```
 
-在其他DataNode上安装：
+在其他 DataNode 上安装：
 
 ```bash
 $ yum install hive hive-server2 hive-jdbc hive-hbase -y
@@ -1151,11 +1151,11 @@ $ yum install hive hive-server2 hive-jdbc hive-hbase -y
 
 ## 安装postgresql
 
-这里使用postgresql数据库来存储元数据，如果你想使用mysql数据库，请参考下文。
+这里使用 postgresq l数据库来存储元数据，如果你想使用 mysql 数据库，请参考下文。
 
-手动安装、配置postgresql数据库，请参考[手动安装Cloudera Hive CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/)
+手动安装、配置 postgresql 数据库，请参考 [手动安装Cloudera Hive CDH](http://blog.javachen.com/hadoop/2013/03/24/manual-install-Cloudera-hive-CDH/)
 
-yum方式安装：
+yum 方式安装：
 
 ```
 $ yum install postgresql-server -y
@@ -1210,46 +1210,46 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	postgres=# GRANT ALL privileges ON DATABASE metastore TO hiveuser;
 	postgres=# \q;
 	bash$ psql  -U hiveuser -d metastore
-	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.12.0.postgres.sql
+	postgres=# \i /usr/lib/hive/scripts/metastore/upgrade/postgres/hive-schema-0.13.0.postgres.sql
 	SET
 	SET
 	..
 ```
 
-注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
+> 注意：
+> 创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
+> 初始化数据库的 sql 文件请根据 cdh 版本进行修改，这里我的 cdh 版本是5.2.0，对应的文件是 ive-schema-0.13.0.postgres.sql
 
 这时候的hive-site.xml文件内容如下：
 
 ```xml
 	<configuration>
 	<property>
-	    <name>fs.defaultFS</name>
-	    <value>hdfs://cdh1:8020</value>
+	    <name>javax.jdo.option.ConnectionURL</name>
+	    <value>jdbc:postgresql://cdh1/metastore</value>
 	</property>
 	<property>
-	  <name>javax.jdo.option.ConnectionURL</name>
-	  <value>jdbc:postgresql://cdh1/metastore</value>
+	    <name>javax.jdo.option.ConnectionDriverName</name>
+	    <value>org.postgresql.Driver</value>
 	</property>
 	<property>
-	  <name>javax.jdo.option.ConnectionDriverName</name>
-	  <value>org.postgresql.Driver</value>
+	    <name>javax.jdo.option.ConnectionUserName</name>
+	    <value>hiveuser</value>
 	</property>
 	<property>
-	  <name>javax.jdo.option.ConnectionUserName</name>
-	  <value>hiveuser</value>
+	    <name>javax.jdo.option.ConnectionPassword</name>
+	    <value>redhat</value>
 	</property>
+
+  <property>
+      <name>yarn.resourcemanager.resource-tracker.address</name>
+      <value>cdh1:8031</value>
+  </property>
 	<property>
-	  <name>javax.jdo.option.ConnectionPassword</name>
-	  <value>redhat</value>
+	    <name>mapreduce.framework.name</name>
+	    <value>yarn</value>
 	</property>
-	<property>
-	 <name>mapred.job.tracker</name>
-	 <value>cdh1:8031</value>
-	</property>
-	<property>
-	 <name>mapreduce.framework.name</name>
-	 <value>yarn</value>
-	</property>
+
 	<property>
 	    <name>datanucleus.autoCreateSchema</name>
 	    <value>false</value>
@@ -1258,6 +1258,20 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	    <name>datanucleus.fixedDatastore</name>
 	    <value>true</value>
 	</property>
+  <property>
+      <name>hive.metastore.schema.verification</name>
+      <value>true</value>
+  </property>
+  <property>
+      <name>hive.warehouse.subdir.inherit.perms</name>
+      <value>true</value>
+  </property>
+
+  <property>
+      <name>hive.metastore.client.socket.timeout</name>
+      <value>3600</value>
+  </property>
+
 	<property>
 	    <name>hive.metastore.warehouse.dir</name>
 	    <value>/user/hive/warehouse</value>
@@ -1266,31 +1280,16 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 	    <name>hive.metastore.uris</name>
 	    <value>thrift://cdh1:9083</value>
 	</property>
+
 	<property>
-	  <name>hive.support.concurrency</name>
-	  <value>true</value>
+	    <name>hive.support.concurrency</name>
+	    <value>true</value>
 	</property>
 	<property>
-	  <name>hive.zookeeper.quorum</name>
-	  <value>cdh1,cdh2,cdh3</value>
+	    <name>hive.zookeeper.quorum</name>
+	    <value>cdh1,cdh2,cdh3</value>
 	</property>
-	<property>
-	  <name>hive.hwi.listen.host</name>
-	  <value>cdh1</value>
-	</property>
-	<property>
-	  <name>hive.hwi.listen.port</name>
-	  <value>9999</value>
-	</property>
-	<property>
-	  <name>hive.hwi.war.file</name>
-	  <value>lib/hive-hwi-0.12.0-cdh5.0.1.war</value>
-	</property>
-	<property>
-	  <name>hive.merge.mapredfiles</name>
-	  <value>true</value>
-	</property>
-	</configuration>
+</configuration>
 ```
 
 ## 安装mysql
@@ -1326,7 +1325,7 @@ $ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connect
 $ mysql -e "
 	CREATE DATABASE metastore;
 	USE metastore;
-	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.12.0.mysql.sql;
+	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.1230.mysql.sql;
 	CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'redhat';
 	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
 	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
@@ -1339,9 +1338,9 @@ $ mysql -e "
 "
 ```
 
-注意：创建的用户为hiveuser，密码为redhat，你可以按自己需要进行修改。
+注意：创建的用户为 hiveuser，密码为 redhat ，你可以按自己需要进行修改。
 
-修改hive-site.xml文件中以下内容：
+修改 hive-site.xml 文件中以下内容：
 
 ```xml
 	<property>
@@ -1357,18 +1356,18 @@ $ mysql -e "
 ## 配置hive
 修改`/etc/hadoop/conf/hadoop-env.sh`:
 
-添加环境变量`HADOOP_MAPRED_HOME`，如果不添加，则当你使用yarn运行mapreduce时候会出现`UNKOWN RPC TYPE`的异常
+添加环境变量 `HADOOP_MAPRED_HOME`，如果不添加，则当你使用 yarn 运行 mapreduce 时候会出现 `UNKOWN RPC TYPE` 的异常
 
 ```bash
 export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
 ```
 
 
-在hdfs中创建hive数据仓库目录:
+在 hdfs 中创建 hive 数据仓库目录:
 
-- hive的数据仓库在hdfs中默认为`/user/hive/warehouse`,建议修改其访问权限为1777，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。
-- 每一个查询hive的用户都必须有一个hdfs的home目录(`/user`目录下，如root用户的为`/user/root`)
-- hive所在节点的 `/tmp`必须是world-writable权限的。
+- hive 的数据仓库在 hdfs 中默认为 `/user/hive/warehouse`,建议修改其访问权限为 `1777`，以便其他所有用户都可以创建、访问表，但不能删除不属于他的表。
+- 每一个查询 hive 的用户都必须有一个 hdfs 的 home 目录( `/user` 目录下，如 root 用户的为 `/user/root`)
+- hive 所在节点的 `/tmp` 必须是 world-writable 权限的。
 
 创建目录并设置权限：
 
@@ -1416,13 +1415,13 @@ $ /usr/lib/hive/bin/beeline
 
 ## 与hbase集成
 
-先安装hive-hbase:
+先安装 hive-hbase:
 
 ```bash
 $ yum install hive-hbase -y
 ```
 
-如果你是使用的cdh4，则需要在hive shell里执行以下命令添加jar：
+如果你是使用的 cdh4，则需要在 hive shell 里执行以下命令添加 jar：
 
 ```bash
 $ ADD JAR /usr/lib/hive/lib/zookeeper.jar;
@@ -1431,7 +1430,7 @@ $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-<hive_version>.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
 
-如果你是使用的cdh5，则需要在hive shell里执行以下命令添加jar：
+如果你是使用的 cdh5，则需要在 hive shell 里执行以下命令添加 jar：
 
 ```
 ADD JAR /usr/lib/hive/lib/zookeeper.jar;
@@ -1445,7 +1444,7 @@ ADD JAR /usr/lib/hbase/hbase-protocol.jar;
 ADD JAR /usr/lib/hbase/hbase-server.jar;
 ```
 
-以上你也可以在hive-site.xml中通过 `hive.aux.jars.path` 参数来配置，或者你也可以在hive-env.sh 中通过 `export HIVE_AUX_JARS_PATH=` 来设置。
+以上你也可以在 hive-site.xml 中通过 `hive.aux.jars.path` 参数来配置，或者你也可以在 hive-env.sh 中通过 `export HIVE_AUX_JARS_PATH=` 来设置。
 
 
 # 8. 参考文章
