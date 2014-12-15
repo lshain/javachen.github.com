@@ -809,8 +809,8 @@ $ sudo -u hdfs hadoop fs -chmod 777 /user
 
 可选的，你可以在 `/etc/hadoop/conf/mapred-site.xml` 设置以下两个参数：
 
-- mapreduce.jobhistory.intermediate-done-dir，该目录权限应该为1777，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate`
-- mapreduce.jobhistory.done-dir，该目录权限应该为750，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done`
+- `mapreduce.jobhistory.intermediate-done-dir`，该目录权限应该为1777，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate`
+- `mapreduce.jobhistory.done-dir`，该目录权限应该为750，默认值为 `${yarn.app.mapreduce.am.staging-dir}/history/done`
 
 
 在 hdfs 上创建目录并设置权限：
@@ -1037,23 +1037,23 @@ $ yum install hbase hbase-master hbase-regionserver -y
 
 ```xml
 <configuration>
-<property>
-    <name>hbase.cluster.distributed</name>
-    <value>true</value>
-</property>
-<property>
-    <name>hbase.rootdir</name>
-    <value>hdfs://cdh1:8020/hbase</value>
-</property>
-<property>
-    <name>hbase.tmp.dir</name>
-    <value>/data/hbase</value>
-</property>
-<property>
-    <name>hbase.zookeeper.quorum</name>
-    <value>cdh1,cdh2,cdh3</value>
-</property>
-<property>
+  <property>
+      <name>hbase.cluster.distributed</name>
+      <value>true</value>
+  </property>
+  <property>
+      <name>hbase.rootdir</name>
+      <value>hdfs://cdh1:8020/hbase</value>
+  </property>
+  <property>
+      <name>hbase.tmp.dir</name>
+      <value>/data/hbase</value>
+  </property>
+  <property>
+      <name>hbase.zookeeper.quorum</name>
+      <value>cdh1,cdh2,cdh3</value>
+  </property>
+  <property>
     <name>hbase.hregion.max.filesize</name>
     <value>536870912</value>
   </property>
@@ -1178,19 +1178,16 @@ $ cat /var/lib/pgsql/data/postgresql.conf  | grep -e listen -e standard_conformi
 修改 /var/lib/pgsql/data/pg_hba.conf，添加以下一行内容：
 
 ```
-	host    all         all         0.0.0.0/0                      md5
+	host    all         all         0.0.0.0/0                     trust
 ```
 
 启动数据库
 
 ```bash
-$ service postgresql start
-```
-
-配置开启启动
-
-```bash
+#配置开启启动
 $ chkconfig postgresql on
+
+$ service postgresql start
 ```
 
 安装jdbc驱动
@@ -1303,13 +1300,10 @@ $ yum install mysql mysql-devel mysql-server mysql-libs -y
 启动数据库：
 
 ```bash
-$ service mysqld start
-```
-
-配置开启启动：
-
-```bash
+#配置开启启动
 $ chkconfig mysqld on
+
+$ service mysqld start
 ```
 
 安装jdbc驱动：
@@ -1325,15 +1319,10 @@ $ ln -s /usr/share/java/mysql-connector-java.jar /usr/lib/hive/lib/mysql-connect
 $ mysql -e "
 	CREATE DATABASE metastore;
 	USE metastore;
-	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.1230.mysql.sql;
-	CREATE USER 'hiveuser'@'%' IDENTIFIED BY 'redhat';
+	SOURCE /usr/lib/hive/scripts/metastore/upgrade/mysql/hive-schema-0.13.0.mysql.sql;
 	CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY 'redhat';
-	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'%';
-	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'localhost';
-	REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'hiveuser'@'cdh1';
-	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'%';
-	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'localhost';
-	GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES,EXECUTE ON metastore.* TO 'hiveuser'@'cdh1';
+	GRANT ALL PRIVILEGES ON metastore.* TO 'hiveuser'@'localhost';
+	GRANT ALL PRIVILEGES ON metastore.* TO 'hiveuser'@'cdh1';
 	FLUSH PRIVILEGES;
 "
 ```
@@ -1354,9 +1343,8 @@ $ mysql -e "
 ```
 
 ## 配置hive
-修改`/etc/hadoop/conf/hadoop-env.sh`:
 
-添加环境变量 `HADOOP_MAPRED_HOME`，如果不添加，则当你使用 yarn 运行 mapreduce 时候会出现 `UNKOWN RPC TYPE` 的异常
+修改`/etc/hadoop/conf/hadoop-env.sh`，添加环境变量 `HADOOP_MAPRED_HOME`，如果不添加，则当你使用 yarn 运行 mapreduce 时候会出现 `UNKOWN RPC TYPE` 的异常
 
 ```bash
 export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce

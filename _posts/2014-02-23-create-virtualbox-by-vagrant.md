@@ -19,47 +19,47 @@ tags: [hadoop, vagrant]
 
 下载适合你的box，地址：<http://www.vagrantbox.es/>。
 
-例如下载CentOS：
+例如下载 CentOS6.5：
 
 ```
-$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box
+$ wget https://github.com/2creatives/vagrant-centos/releases/download/v6.5.3/centos65-x86_64-20140116.box
 ```
 
 # 添加box
 
 首先查看已经添加的box：
 
-```
+```bash
 $ vagrant box list
 ```
 
 添加新的box，可以是远程地址也可以是本地文件，建议先下载到本地再进行添加：
 
-```
-$ vagrant box add centos6.4 ./centos64-x86_64-20140116.box
+```bash
+$ vagrant box add centos6.5 ./centos65-x86_64-20140116.box
 ```
 
 其语法如下：
 
-```
+```bash
 vagrant box add {title} {url}
 ```
 
-box被安装在`~/.vagrant.d/boxes`目录下面。
+box 被安装在 `~/.vagrant.d/boxes` 目录下面。
 
 # 创建虚拟机
 
 先创建一个目录：
 
-```
-$ mkdir -p /home/june/workspace/vagramt/cdh
+```bash
+$ mkdir -p ~/workspace/vagrant/cdh
 ```
 
-初始化，使用centos6.4 box：
+初始化，使用 centos6.5 box：
 
-```
-$ cd /home/june/workspace/vagramt/cdh
-$ vagrant init centos6.4
+```bash
+$ cd ~/workspace/vagrant/cdh
+$ vagrant init centos6.5
 ```
 
 输出如下日志：
@@ -71,7 +71,7 @@ the comments in the Vagrantfile as well as documentation on
 `vagrantup.com` for more information on using Vagrant.
 ```
 
-在当前目录生成了Vagrantfile文件。
+在当前目录生成了 Vagrantfile 文件。
 
 # 修改Vagrantfile
 
@@ -91,49 +91,50 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.vm.provider "virtualbox" do |v|
             v.customize ["modifyvm", :id, "--name", vm_name, "--memory", "2048",'--cpus', 1]
         end
-        config.vm.box = "centos6.4"
+        config.vm.box = "centos6.5"
         config.vm.hostname =vm_name
         config.ssh.username = "vagrant"
         config.vm.network :private_network, ip: "192.168.56.12#{i}"
-	  	config.vm.provision :shell, :path => "boot.sh"
+	  	config.vm.provision :shell, :path => "bootstrap.sh"
     end
   end
 end
 ```
 
-上面的文件中定义了三个虚拟机，三个虚拟机的名字和hostname分别为cdh1、cdh2、cdh3，网络使用的是host-only网络。
+上面的文件中定义了三个虚拟机，三个虚拟机的名字和 hostname 分别为cdh1、cdh2、cdh3，网络使用的是 `host-only` 网络。
 
-在启动成功之后，会运行boot.sh脚本，你可以编写你自己的脚本。
+在启动成功之后，会运行 bootstrap.sh 脚本，你可以编写你自己的脚本。
 
 # 启动虚拟机
 
 执行以下命令会依次启动三个虚拟机：
 
-```
-vagrant up
+```bash
+$ vagrant up
 ```
 
-启动成功之后，就可以通过ssh命令登陆到虚拟机，例如：
+启动成功之后，就可以通过 ssh 登陆到虚拟机：
 
-```
-vagrant ssh cdh1
+```bash
+$ vagrant ssh cdh1
 ```
 
 # 虚拟机的初始化设置
 
-创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为boot.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：
+创建好的虚拟机有很多地方没有设置，有一些软件没有安装，可以编写一个shell脚本（例如，命名为 bootstrap.sh）进行手动执行,也可以通过provision启动之后自动运行。该脚本内容如下：
 
 ```bash
 #!/usr/bin/env bash
 
-### Set default permissions. ###
-umask 0022
+# The output of all these installation steps is noisy. With this utility
+# the progress report is nice and concise.
+function install {
+    echo Installing $1
+    shift
+    yum -y install "$@" >/dev/null 2>&1
+}
 
-# Setup sudo to allow no-password sudo for "admin". Additionally,
-# make "admin" an exempt group so that the PATH is inherited.
-cp /etc/sudoers /etc/sudoers.orig
-echo "root            ALL=(ALL)               NOPASSWD: ALL" >> /etc/sudoers
-
+echo "Update /etc/hosts"
 cat > /etc/hosts <<EOF
 127.0.0.1       localhost
 
@@ -142,33 +143,48 @@ cat > /etc/hosts <<EOF
 192.168.56.123 cdh3
 EOF
 
-# Set up nameservers.
+echo "Remove unused logs"
+sudo rm -rf /root/anaconda-ks.cfg /root/install.log /root/install.log.syslog /root/install-post.log
+
+echo "Disable iptables"
+setenforce 0 >/dev/null 2>&1 && iptables -F
+
+### Set env ###
+echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+echo "Setup yum repos"
+rm -rf /etc/yum.repos.d/*
+cp /vagrant/*.repo /etc/yum.repos.d/
+yum clean all >/dev/null 2>&1
+
+echo "Setup root account"
+# Setup sudo to allow no-password sudo for "admin". Additionally,
+# make "admin" an exempt group so that the PATH is inherited.
+cp /etc/sudoers /etc/sudoers.orig
+echo "root            ALL=(ALL)               NOPASSWD: ALL" >> /etc/sudoers
+echo 'redhat'|passwd root --stdin >/dev/null 2>&1
+
+echo "Setup nameservers"
 # http://ithelpblog.com/os/linux/redhat/centos-redhat/howto-fix-couldnt-resolve-host-on-centos-redhat-rhel-fedora/
 # http://stackoverflow.com/a/850731/1486325
 echo "nameserver 8.8.8.8" | tee -a /etc/resolv.conf
 echo "nameserver 8.8.4.4" | tee -a /etc/resolv.conf
 
-### iptables ###
-setenforce 0
-iptables -F
+echo "Setup ssh"
+[ ! -d /root/.ssh ] && ( mkdir /root/.ssh ) && ( chmod 600 /root/.ssh  ) && yes|ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ""
 
-### Set env ###
-echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile 
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+install Git git
+install "Base tools" vim wget curl
+install "Hadoop dependencies" expect rsync pssh
 
-### Update passwod for vagrant ###
-echo 'redhat'|passwd root --stdin
+install PostgreSQL postgresql-server postgresql-jdbc
+sudo -u postgres createuser --superuser vagrant
+sudo -u postgres createdb -O vagrant test1
+sudo -u postgres createdb -O vagrant test2
 
-### ssh ###
-[ ! -d /root/.ssh ] && ( mkdir /root/.ssh ) && ( chmod -r 600 /root/.ssh  )
-yes|ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ""
 
-### yum ###
-
-rm -rf /etc/yum.repos.d/*
-cp /vagrant/*.repo /etc/yum.repos.d/
-
-yum install vim -y
+echo 'All set, rock on!'
 ```
 
 以上脚本主要做了以下几件事：
@@ -181,19 +197,13 @@ yum install vim -y
 - 生成ssh公要文件
 - 配置yum源并安装一些常用软件
 
-以上所有配置可以在[这里找](https://github.com/javachen/snippets/tree/master/vagrant/cdh)找到，其中hadoop.repo内容如下：
+以上所有配置可以在 [这里找](https://github.com/javachen/snippets/tree/master/vagrant/cdh) 找到，其中 cdh.repo 内容如下：
 
 ```
 [cdh]
 name=cdh
-baseurl=http://192.168.56.1/cdh/5/
+baseurl=http://192.168.56.1/cdh/5.2.0/
 enabled=1
-gpgcheck=0
-
-[cmf]
-name=cmf
-baseurl=http://192.168.56.1/cm/5/
-enabled=0
 gpgcheck=0
 
 [hadoop-repo]
@@ -203,7 +213,7 @@ enabled=1
 gpgcheck=0
 ```
 
-上面文件包括 cdh、cmf 和 hadoop 相关的一些依赖，这些需要通过 apache 服务在本机配置好。
+上面文件包括 cdh 和 hadoop 相关的一些依赖，这些需要通过 apache 服务在宿主机上配置好。
 
 # 安装hadoop
 
@@ -215,7 +225,7 @@ gpgcheck=0
 
 1.在虚拟机中选择一个节点为管理节点，然后下载仓库
 
-```
+```bash
 $ git clone https://github.com/javachen/hadoop-install.git
 ```
 
