@@ -84,13 +84,16 @@ if [ -n "$HADOOP_HOME" ]; then
   export SPARK_LIBRARY_PATH=$SPARK_LIBRARY_PATH:${HADOOP_HOME}/lib/native
 fi
 
+
+export HIVE_CONF_DIR=${HIVE_CONF_DIR:-etc/hive/conf}
+export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-etc/hadoop/conf}
+
+
 ### Comment above 2 lines and uncomment the following if
 ### you want to run with scala version, that is included with the package
 #export SCALA_HOME=${SCALA_HOME:-/usr/lib/spark/scala}
 #export PATH=$PATH:$SCALA_HOME/bin
 ```
-
-> 注意：这里使用的是 CDH 中的 Spark ，其中一些参数的默认值和 Apache 的 Spark 中的不一致。
 
 ## 配置 Spark History Server
 
@@ -244,14 +247,25 @@ Spark 目前支持三种集群管理模式：
 
 你可以通过 spark-shel l运行下面的 wordcount 例子，因为 hdfs 上的输入和输出文件都涉及到用户的访问权限，故这里使用 hive 用户来启动 spark-shell：
 
+读取 hdfs 的一个例子：
+
 ```bash
-$ sudo -u hive spark-shell
-scala> val file = sc.textFile("hdfs://IP:8020/user/hive/warehouse/test/test.txt")
-scala> val counts = file.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_ + _)
-scala> counts.saveAsTextFile("hdfs://IP:8020/user/hive/warehouse/output")
+$ echo "hello world" >test.txt
+$ hadoop fs -put test.txt /tmp
+
+$ spark-shell
+scala> val file = sc.textFile("hdfs://cdh1:8020/tmp/test.txt")
+scala> file.count()
 ```
 
-运行完成之后，你可以查看 `hdfs://IP:8020/user/hive/warehouse/output` 目录下的文件内容。
+更复杂的一个例子，运行 mapreduce 统计单词数：
+
+```bash
+$ spark-shell
+scala> val file = sc.textFile("hdfs://cdh1:8020/tmp/test.txt")
+scala> val counts = file.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_ + _)
+scala> counts.saveAsTextFile("hdfs://cdh1:8020/tmp/output")
+```
 
 运行过程中，可能会出现下面的错误：
 
@@ -271,18 +285,35 @@ java.lang.UnsatisfiedLinkError: no gplcompression in java.library.path
 	at org.apache.hadoop.io.compress.CompressionCodecFactory.getCodecClasses(CompressionCodecFactory.java:128)
 ```
 
-该异常目前只在 Standalone 模式下会出现，**尚未找到合适的解决办法**。
+该异常的解决方法可以参考 [Spark连接Hadoop读取HDFS问题小结](http://blog.csdn.net/pelick/article/details/11599391) 这篇文章。
+
+解决方法：
+
+```bash
+cp /usr/lib/hadoop/lib/native/libgplcompression.so $JAVA_HOME/jre/lib/amd64/
+cp /usr/lib/hadoop/lib/native/libhadoop.so $JAVA_HOME/jre/lib/amd64/
+cp /usr/lib/hadoop/lib/native/libsnappy.so $JAVA_HOME/jre/lib/amd64/
+```
+
+运行完成之后，你可以查看 `hdfs://cdh1:8020/tmp/output` 目录下的文件内容。
+
+```bash
+$ hadoop fs -cat /tmp/output/part-00000
+(hello,1)
+(world,1)
+```
 
 另外，spark-shell 后面还可以加上其他参数，例如指定 IP 和端口、运行核数：
 
 ```bash
-$ spark-shell --master spark://IP:PORT  --cores <numCores>
+$ spark-shell --master spark://cdh1:7077 --cores 2
+scala>
 ```
 
 另外，也可以使用 spark-submit 以 Standalone 模式运行 SparkPi 程序：
 
 ```bash
-$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://IP:PORT /usr/lib/spark/examples/lib/spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 10
+$ spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://cdh1:7077 /usr/lib/spark/examples/lib/spark-examples-1.1.0-cdh5.2.0-hadoop2.5.0-cdh5.2.0.jar 10
 ```
 
 ### Spark on Yarn
@@ -390,8 +421,4 @@ $ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.2.0 -Phive -DskipTests clean package
 
 但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，故最后无法编译成功，需要等到 cloudera 官方更新源代码或者等待下一个 cdh 版本集成 spark-sql。
 
-## 测试
-
 如果编译成功了，则将 spark-assembly-1.1.0-cdh5.2.0.jar 拷贝到 /usr/lib/spark/assembly/lib 目录，然后再来运行 spark-sql。
-
-这部分内容省略，待以后补充。
