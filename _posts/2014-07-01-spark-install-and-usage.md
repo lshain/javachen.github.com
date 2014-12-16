@@ -85,8 +85,8 @@ if [ -n "$HADOOP_HOME" ]; then
 fi
 
 
-export HIVE_CONF_DIR=${HIVE_CONF_DIR:-etc/hive/conf}
-export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-etc/hadoop/conf}
+export HIVE_CONF_DIR=${HIVE_CONF_DIR:-/etc/hive/conf}
+export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-/etc/hadoop/conf}
 
 
 ### Comment above 2 lines and uncomment the following if
@@ -184,7 +184,7 @@ Failed to find Spark examples assembly in /usr/lib/spark/lib or /usr/lib/spark/e
 You need to build Spark before running this program
 ```
 
-出现上面异常，需要把 examples/lib 目录报考到 /usr/lib/spark 目录下，然后再运行。
+出现上面异常，需要把 examples/lib 目录拷贝到 /usr/lib/spark 目录下，然后再运行。
 
 ```bash
 cd /usr/lib/spark
