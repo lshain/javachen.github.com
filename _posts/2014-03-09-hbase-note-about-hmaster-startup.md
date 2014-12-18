@@ -110,7 +110,7 @@ HMaster继承自HasThread类，而HasThread类实现了Runnable接口，故HMast
 
 HMaster类继承关系如下图：
 
-![](/assets/images/2014/hbase-hmaster-class.jpg)
+![](http://javachen-rs.qiniudn.com/images/2014/hbase-hmaster-class.jpg)
 
 # HMaster的构造方法
 

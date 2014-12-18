@@ -31,7 +31,7 @@ JPA 的底层实现是一些流行的开源 ORM 框架，因此JPA其实也就�
 
 下图显示了JPA核心类和JPA接口。
 
-![](/style/images/jpa/JPA-01.png)
+![](http://javachen-rs.qiniudn.com/images/jpa/JPA-01.png)
 
 
 |类或接口|	描述|
@@ -45,7 +45,7 @@ JPA 的底层实现是一些流行的开源 ORM 框架，因此JPA其实也就�
 
 在上述体系结构中，类和接口之间的关系属于javax.persistence包。下图显示了它们之间的关系。
 
-![](/style/images/jpa/JPA-02.png)
+![](http://javachen-rs.qiniudn.com/images/jpa/JPA-02.png)
 
  - EntityManagerFactory 和 EntityManager 的关系是1对多。这是一个工厂类 EntityManager 实例。
  - EntityManager 和 EntityTransaction 之间的关系是1对1。对于每个 EntityManager 操作，只有一个 EntityTransaction 实例。

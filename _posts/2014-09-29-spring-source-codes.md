@@ -30,7 +30,7 @@ Spring 源码地址：<https://github.com/spring-projects/spring-framework>
 
 Spring 总共有十几个组件，其中核心组件只有三个：Core、Context 和 Beans。以下是 Spring3的总体架构图。
 
-![](/style/images/spring/spring3-modules.png)
+![](http://javachen-rs.qiniudn.com/images/spring/spring3-modules.png)
 
 组成 Spring 框架的每个模块（或组件）都可以单独存在，或者与其他一个或多个模块联合实现。每个模块的功能如下：
 
@@ -44,7 +44,7 @@ Spring 总共有十几个组件，其中核心组件只有三个：Core、Contex
 
 从下图（该图来自[SPRING 3.2.X 源代码分析之二: SPRING源码的包结构](http://www.javastar.org/?p=847)）可以看出 Spring 各个模块之间的依赖关系。
 
-![](/style/images/spring/spring-packages.jpg)
+![](http://javachen-rs.qiniudn.com/images/spring/spring-packages.jpg)
 
 从图中可以看出，IOC 的实现包 spring-beans 和 AOP 的实现包 spring-aop 也是整个框架的基础，而 spring-core 是整个框架的核心，基础的功能都在这里。
 
@@ -81,7 +81,7 @@ bean 工厂的概念是 Spring 作为 IOC 容器的基础。IOC 将处理事情�
 
 ## Spring4 的系统架构图
 
-![](/style/images/spring/spring4-modules.png)
+![](http://javachen-rs.qiniudn.com/images/spring/spring4-modules.png)
 
 Spring 4.0.x对比Spring3.2.x的系统架构变化（以下文字摘抄于[SPRING 3.2.X 源代码分析之三: SPRING源码的整体架构分析](http://www.javastar.org/?p=872)）:
 
