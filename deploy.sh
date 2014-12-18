@@ -12,7 +12,7 @@ qrsync qiniu-images.conf
 
 cd _posts
 
-grep '/style/images' */* |sed  's/\/style\/images/http:\/\/javachen\-rs\.qiniudn\.com\/images/g'
+grep '/style/images' */* |sed  's/\/static\/images/http:\/\/javachen\-rs\.qiniudn\.com\/images/g'
 cd ..
 
 rm -rf _site/*
@@ -22,10 +22,10 @@ git add --all ./*
 git commit -m "$msg"
 git push origin master
 
-rm -rf ../javachen.gitcafe.io/{20*,page*,*.html,*.xml,*.txt,*.sh}
-cp -r _site/* ../javachen.gitcafe.io/
+rm -rf ../javachen.gitcafe.com/{20*,page*,*.html,*.xml,*.txt,*.sh}
+cp -r _site/* ../javachen.gitcafe.com/
 
-cd ../javachen.gitcafe.io
+cd ../javachen.gitcafe.com
 git add --all ./*
 git commit -m "$msg"
 git push origin gitcafe-pages

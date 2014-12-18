@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
-<div class="post-header">
-	<h2>{{ page.title }}</h2>
-</div>
 
-{{ content }}
+<div class="col-md-12">
+		<h3 class="news-item"> {{ page.title }}  {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}
+		</h3>
+		{{ content }}
+</div>
