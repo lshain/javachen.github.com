@@ -22,10 +22,10 @@ git add --all ./*
 git commit -m "$msg"
 git push origin master
 
-rm -rf ../javachen.gitcafe.com/{20*,page*,*.html,*.xml,*.txt,*.sh}
-cp -r _site/* ../javachen.gitcafe.com/
+rm -rf ../javachen.gitcafe.io/{20*,page*,*.html,*.xml,*.txt,*.sh}
+cp -r _site/* ../javachen.gitcafe.io/
 
-cd ../javachen.gitcafe.com
+cd ../javachen.gitcafe.io
 git add --all ./*
 git commit -m "$msg"
 git push origin gitcafe-pages
