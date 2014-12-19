@@ -19,10 +19,18 @@ layout: default
         {% include support.html %}
       </div>
 
-      <p class="meta">Tags:
+      <p class="meta">
+      	{% unless page.category == empty %}
+            Categories:
+      	    {% for cat in page.category %}
+          	<a class="btn btn-default btn-primary btn-sm" href="{{ BASE_PATH }}/categories.html#{{ cat|downcase}}">{{ cat |downcase}}</a>
+          {% endfor %}
+      	{% endunless %}
+
       	{% unless page.tags == empty %}
+            Tags:
       	    {% for tag in page.tags %}
-          	<a class="btn btn-default btn-primary btn-sm" href="{{ BASE_PATH }}/tags.html#{{ tag }}-ref">{{ tag }}</a>
+          	<a class="btn btn-default btn-primary btn-sm" href="{{ BASE_PATH }}/tags.html#{{ tag }}">{{ tag }}</a>
           {% endfor %}
       	{% endunless %}
       </p>

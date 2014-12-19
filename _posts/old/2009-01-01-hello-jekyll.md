@@ -120,3 +120,8 @@ int main(int argc, char **argv)
 ```
 ***
 ```
+
+# 6. 其他资料
+
+- [Jekyll 扩展的 Liquid 设计](http://havee.me/internet/2013-11/jekyll-liquid-designers.html)
+- [Jekyll 扩展的 Liquid 模板](http://havee.me/internet/2013-07/jekyll-liquid-extensions.html)
