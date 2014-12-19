@@ -68,9 +68,7 @@
       return new Date(utcDate);
     }
     function formatDate(date) {
-      var monthNames = [ "January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December" ];
-      return date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+      return date.getFullYear()+"-"+ (date.getMonth()+1)+ '-' + date.getDate();
     }
     function findEntries(q) {
       var matches = [];
@@ -88,16 +86,16 @@
           matches.push({'title': title, 'link': link, 'date': updated, 'content': content});
         }
       }
-      var html = '<h2>Search Result:</h2>';
+      var html = '<h3>Search Result:</h3>';
       for (var i = 0; i < matches.length; i++) {
         var match = matches[i];
-        html += '<h3><a href="' + match.link + '">' + htmlEscape(match.title) + '</a></h3>';
+        html += '<article class="news-item"><h4><a href="' + match.link + '">' + htmlEscape(match.title) + '</a></h4>';
         html += '<section><p>' + htmlEscape(match.content) + '</p></section>';
-        html += '<footer><p>Update: ' + match.date + '</p></footer>';
+        html += '<footer><p>Update: ' + match.date + '</p></footer></article>';
       }
-      $('.raw').html(html);
+      $('.row').html(html);
       $('#search-loader').hide();
-      $('.raw').show();
+      $('.row').show();
       }
       $('#search-form').submit(function() {
         var query = $('#query').val();

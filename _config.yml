@@ -55,7 +55,7 @@ relative_permalinks: false
 permalink: /:year/:month/:day/:title
 paginate_path: /page:num
 paginate: 15
-timezone:    Asia/Shanghai
+timezone: Asia/Shanghai
 
 
 # Markdown Processors
@@ -78,8 +78,6 @@ comments:
 analytics:
     baidu:
         siteid:         # 百度统计 js 代码后的字符串
-#    51la:
-#        uid: 12111481
     cnzz:
         uid: 1253501761
 # blogroll

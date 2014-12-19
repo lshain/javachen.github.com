@@ -16,6 +16,8 @@ comment: true
 
 #### Social Participation
 
+Email：{{ site.author.email }}
+
 {% if site.author.weibo %}
 Weibo：<http://weibo.com/{{ site.author.weibo }}>
 {% endif %}
