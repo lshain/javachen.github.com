@@ -17,11 +17,11 @@ comment: true
 #### Social Participation
 
 {% if site.author.weibo %}
-  - Weibo：<http://weibo.com/{{ site.author.weibo }}>
+Weibo：<http://weibo.com/{{ site.author.weibo }}>
 {% endif %}
 
-{% if site.author.weibo %}
-	- Github：<https://github.com/{{ site.author.github }}>
+{% if site.author.github %}
+Github：<https://github.com/{{ site.author.github }}>
 {% endif %}
 
 
