@@ -8,9 +8,7 @@ comment: true
 
 #### Who I am
 
-- 86后，工作在北京
-- Java程序员、Hadoop工程师
-- 主要关注Java、Hadoop、Kettle、Python、搜索引擎等技术。
+{{ site.aboutme }}
 
 #### Employment
 
@@ -18,7 +16,13 @@ comment: true
 
 #### Social Participation
 
-- 个人微博：<http://weibo.com/chenzhijun>
-- 个人Github：<https://github.com/javachen>
+{% if site.author.weibo %}
+  - Weibo：<http://weibo.com/{{ site.author.weibo }}>
+{% endif %}
+
+{% if site.author.weibo %}
+	- Github：<https://github.com/{{ site.author.github }}>
+{% endif %}
+
 
 {% include comments.html %}
