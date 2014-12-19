@@ -8,7 +8,7 @@ comment: true
 
 #### Who I am
 
-{{ site.aboutme }}
+{{ site.description }}
 
 #### Employment
 

@@ -1,9 +1,8 @@
 # Site settings
 title : JavaChen's Blog
-tagline: Sharing Technology, Recording Life
-keywords : java, hadoop, hive, hbase, mapreduce, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
-description: Java Application Developer · Project Consultant · Hadoop Engineer
-aboutme: 86后，工作在北京;Java程序员、Hadoop工程师;主要关注Java、Hadoop、Kettle、Python、搜索引擎等技术。
+tagline: Java Application Developer · Project Consultant · Hadoop Engineer
+keywords : java, hadoop, hive, hbase, spark, nosql, solr, solrcloud, linux, python, lua, postgresql, mysql
+description: 86后，工作在北京;Java程序员、Hadoop工程师;主要关注Java、Hadoop、Kettle、Python、搜索引擎等技术。
 
 url: "//blog.javachen.com"
 author:
