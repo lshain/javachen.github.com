@@ -434,6 +434,8 @@ $ ldapsearch
 
 # 3. 配置 Hive 集成 LDAP
 
+> 说明： CDH5.2 之前 hive-server2 支不支持集成 ldap，故需要升级 cdh 版本到高版本，如 cdh5.3，该版本支持 ldap。
+
 ## 修改配置文件
 
 这部分内容参考自[Using LDAP Username/Password Authentication with HiveServer2](http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_sg_hiveserver2_security.html#topic_9_1_3_unique_1)。
@@ -474,35 +476,7 @@ beeline> !connect jdbc:hive2://cdh1:10000/default
 Connecting to jdbc:hive2://cdh1:10000/default;
 Enter username for jdbc:hive2://cdh1:10000/default;: hive
 Enter password for jdbc:hive2://cdh1:10000/default;: ****
-Error: Invalid URL: jdbc:hive2://cdh1:10000/default; (state=08S01,code=0)
-java.sql.SQLException: Invalid URL: jdbc:hive2://cdh1:10000/default;
-	at org.apache.hadoop.hive.jdbc.HiveConnection.<init>(HiveConnection.java:86)
-	at org.apache.hadoop.hive.jdbc.HiveDriver.connect(HiveDriver.java:106)
-	at java.sql.DriverManager.getConnection(DriverManager.java:582)
-	at java.sql.DriverManager.getConnection(DriverManager.java:154)
-	at org.apache.hive.beeline.DatabaseConnection.connect(DatabaseConnection.java:138)
-	at org.apache.hive.beeline.DatabaseConnection.getConnection(DatabaseConnection.java:179)
-	at org.apache.hive.beeline.Commands.connect(Commands.java:959)
-	at org.apache.hive.beeline.Commands.connect(Commands.java:880)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.hive.beeline.ReflectiveCommandHandler.execute(ReflectiveCommandHandler.java:44)
-	at org.apache.hive.beeline.BeeLine.dispatch(BeeLine.java:905)
-	at org.apache.hive.beeline.BeeLine.execute(BeeLine.java:770)
-	at org.apache.hive.beeline.BeeLine.begin(BeeLine.java:732)
-	at org.apache.hive.beeline.BeeLine.mainWithInputRedirection(BeeLine.java:467)
-	at org.apache.hive.beeline.BeeLine.main(BeeLine.java:450)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.hadoop.util.RunJar.main(RunJar.java:212)
-1: jdbc:hive2://cdh1:10000/default (closed)>
 ```
-
->注意：CDH5.2.0 中 hive 同时集成 kerberos 和 ldap，测试失败，故放弃集成 ldap。另外，可以升级到 CDH5.2.1 在进行测试。
 
 # 4. 配置 Impala 集成 LDAP
 

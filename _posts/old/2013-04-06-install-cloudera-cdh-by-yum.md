@@ -428,7 +428,7 @@ dfs.namenode.num.checkpoints.retained
 
 设置多个secondarynamenode，请参考[multi-host-secondarynamenode-configuration](http://blog.cloudera.com/blog/2009/02/multi-host-secondarynamenode-configuration/).
 
-## 2.4 (可选)开启回收站功能
+## 2.4 开启回收站功能
 
 > 回收站功能默认是关闭的，建议打开。
 
@@ -445,7 +445,7 @@ dfs.namenode.num.checkpoints.retained
 - dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold
 - dfs.datanode.available-space-volume-choosing-policy.balanced-space-preference-fraction
 
-## 2.6 (可选)开启WebHDFS
+## 2.6 开启WebHDFS
 
 这里只在一个NameNode节点（ CDH1 ）上安装：
 
@@ -485,7 +485,7 @@ $ curl "http://localhost:14000/webhdfs/v1?op=gethomedirectory&user.name=hdfs"
 
 更多的 API，请参考 [WebHDFS REST API](http://archive.cloudera.com/cdh5/cdh/5/hadoop/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
 
-## 2.7 (可选)配置LZO
+## 2.7 配置LZO
 
 下载repo文件到 `/etc/yum.repos.d/`:
 
@@ -1220,73 +1220,127 @@ $ ln -s /usr/share/java/postgresql-jdbc.jar /usr/lib/hive/lib/postgresql-jdbc.ja
 这时候的hive-site.xml文件内容如下：
 
 ```xml
-	<configuration>
-	<property>
-	    <name>javax.jdo.option.ConnectionURL</name>
-	    <value>jdbc:postgresql://cdh1/metastore</value>
-	</property>
-	<property>
-	    <name>javax.jdo.option.ConnectionDriverName</name>
-	    <value>org.postgresql.Driver</value>
-	</property>
-	<property>
-	    <name>javax.jdo.option.ConnectionUserName</name>
-	    <value>hiveuser</value>
-	</property>
-	<property>
-	    <name>javax.jdo.option.ConnectionPassword</name>
-	    <value>redhat</value>
-	</property>
+<configuration>
+	    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:postgresql://localhost/metastore</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>org.postgresql.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>hiveuser</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>redhat</value>
+    </property>
+    <property>
+        <name>datanucleus.autoCreateSchema</name>
+        <value>false</value>
+    </property>
 
-  <property>
-      <name>yarn.resourcemanager.resource-tracker.address</name>
-      <value>cdh1:8031</value>
-  </property>
-	<property>
-	    <name>mapreduce.framework.name</name>
-	    <value>yarn</value>
-	</property>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>cdh1:8031</value>
+    </property>
 
-	<property>
-	    <name>datanucleus.autoCreateSchema</name>
-	    <value>false</value>
-	</property>
-	<property>
-	    <name>datanucleus.fixedDatastore</name>
-	    <value>true</value>
-	</property>
-  <property>
-      <name>hive.metastore.schema.verification</name>
-      <value>true</value>
-  </property>
-  <property>
-      <name>hive.warehouse.subdir.inherit.perms</name>
-      <value>true</value>
-  </property>
+    <property>
+        <name>hive.files.umask.value</name>
+        <value>0002</value>
+    </property>
+    <property>
+        <name>hive.exec.reducers.max</name>
+        <value>999</value>
+    </property>
+    <property>
+        <name>hive.auto.convert.join</name>
+        <value>true</value>
+    </property>
 
-  <property>
-      <name>hive.metastore.client.socket.timeout</name>
-      <value>3600</value>
-  </property>
+    <property>
+        <name>hive.metastore.schema.verification</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+    </property>
+    <property>
+        <name>hive.warehouse.subdir.inherit.perms</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hive.metastore.uris</name>
+        <value>thrift://cdh1:9083</value>
+    </property>
+    <property>
+        <name>hive.metastore.server.min.threads</name>
+        <value>200</value>
+    </property>
+    <property>
+        <name>hive.metastore.server.max.threads</name>
+        <value>100000</value>
+    </property>
+    <property>
+        <name>hive.metastore.client.socket.timeout</name>
+        <value>3600</value>
+    </property>
 
-	<property>
-	    <name>hive.metastore.warehouse.dir</name>
-	    <value>/user/hive/warehouse</value>
-	</property>
-	<property>
-	    <name>hive.metastore.uris</name>
-	    <value>thrift://cdh1:9083</value>
-	</property>
-
-	<property>
-	    <name>hive.support.concurrency</name>
-	    <value>true</value>
-	</property>
-	<property>
-	    <name>hive.zookeeper.quorum</name>
-	    <value>cdh1,cdh2,cdh3</value>
-	</property>
+    <property>
+        <name>hive.support.concurrency</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hive.zookeeper.quorum</name>
+        <value>cdh1,cdh2,cdh3</value>
+    </property>
+    <property>
+        <name>hive.server2.thrift.min.worker.threads</name>
+        <value>5</value>
+    </property>
+    <property>
+        <name>hive.server2.thrift.max.worker.threads</name>
+        <value>100</value>
+    </property>
 </configuration>
+```
+
+默认情况下，hive-server和 hive-server2 的 thrift 端口都未10000，如果要修改 hive-server2 thrift 端口，请添加：
+
+```xml
+<property>
+    <name>hive.server2.thrift.port</name>
+      <value>10001</value>
+</property>
+```
+
+如果要设置运行 hive 的用户为连接的用户而不是启动用户，则添加：
+
+```xml
+<property>
+    <name>hive.server2.enable.impersonation</name>
+    <value>true</value>
+</property>
+```
+
+并在 core-site.xml 中添加：
+
+```xml
+<property>
+  <name>hadoop.proxyuser.hive.hosts</name>
+  <value>*</value>
+</property>
+<property>
+  <name>hadoop.proxyuser.hive.groups</name>
+  <value>*</value>
+</property>
 ```
 
 ## 安装mysql
@@ -1417,6 +1471,8 @@ $ ADD JAR /usr/lib/hive/lib/hbase.jar;
 $ ADD JAR /usr/lib/hive/lib/hive-hbase-handler-<hive_version>.jar
 $ ADD JAR /usr/lib/hive/lib/guava-11.0.2.jar;
 ```
+
+**说明：** guava 包的版本以实际版本为准。
 
 如果你是使用的 cdh5，则需要在 hive shell 里执行以下命令添加 jar：
 

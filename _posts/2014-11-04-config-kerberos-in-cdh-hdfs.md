@@ -590,7 +590,7 @@ $ for x in `cd /etc/init.d ; ls zookeeper-*` ; do sudo service $x stop ; done
 </property>
 ```
 
-如果你像开启 SSL，请添加：
+如果想开启 SSL，请添加（本文不对这部分做说明）：
 
 ```xml
 <property>
@@ -616,7 +616,7 @@ $ for x in `cd /etc/init.d ; ls zookeeper-*` ; do sudo service $x stop ; done
 </property>
 ```
 
-如果想配置 WebHDFS 启用授权验证，则添加：
+如果配置了 WebHDFS，则添加：
 
 ```xml
 <property>

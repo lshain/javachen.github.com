@@ -149,19 +149,33 @@ tar -cvf /root/nn_backup_data.tar .
 
 ## 2.3. 更新 yum 源
 
-更新 cdh5 仓库（或者使用本地仓库）：
+更新 cdh5 仓库，我这里使用的是本地 ftp yum 仓库，故需要下载 cdh5 yum 仓库的压缩包，以 cdh5.3 为例，yum 源配置在 cdh1 节点上：
 
 ```bash
-$ sudo rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
+# 更新 cdh5.3 仓库
+cd /var/ftp/pub
+rm -rf cdh
+wget http://archive-primary.cloudera.com/cdh5/repo-as-tarball/5.3.0/cdh5.3.0-centos6.tar.gz
+tar zxvf cdh5.3.0-centos6.tar.gz
+
+# 更新 lzo 仓库
+rm -rf cloudera-gplextras5
+wget http://archive-primary.cloudera.com/gplextras5/redhat/6/x86_64/gplextras/cloudera-gplextras5.repo -P /etc/yum.repos.d
+
+reposync --repoid=cloudera-gplextras5
 ```
 
+这样就可以通过 <ftp://cdh1/cdh> 升级 cdh 组件，通过 <ftp://cdh1/cloudera-gplextras5> 升级 lzo 相关依赖。
+
 ## 2.4. 升级组件
+
+在所有节点上运行：
 
 ```
 $ sudo yum update hadoop* hbase* hive* zookeeper* bigtop* impala* spark* llama* lzo* sqoop* parquet* sentry* avro* mahout* -y
 ```
 
-启动ZooKeeper集群，然后在原来的所有 Journal Nodes 上安装 hadoop-hdfs-journalnode并启动：
+启动ZooKeeper集群，如果配置了 HA，则在原来的所有 Journal Nodes 上启动 hadoop-hdfs-journalnode：
 
 ```bash
 # 在安装zookeeper-server的节点上运行
