@@ -67,7 +67,7 @@ apply plugin: 'java'
 ```
 
 这就是你定义一个Java项目所需要做的一切。这就会在你项目里使用Java插件，该插件会给你的项目增加很多任务。
- 
+
 Gradle 期望在 src/main/java 路径下找到你项目的源代码，并且测试在 src/test/java 路径下的代码。同时，在src/main/resources 路径下的文件也会作为资源文件包含在JAR包中，并且 src/test/resources 下的所有文件会包含在 classpath 下以运行测试程序。所有的输出文件都生成在 build 目录下，JAR 包生成在 build/libs 目录下。
 
 运行下面命令即可生成 jar 包：
@@ -81,7 +81,7 @@ $ gradle jar
 
 ```groovy
 apply plugin: 'java'
- 
+
 jar {
     manifest {
         attributes 'Main-Class': 'com.javachen.gradle.HelloWorld'
@@ -122,14 +122,14 @@ repositories {
 apply plugin: 'java'
 dependencies {
     compile 'org.springframework:spring-context:3.2.6.RELEASE'
-    testCompile group: 'junit', name: 'junit', version: '4.+' 
+    testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 ```
 
 gradle 便会自动地到 maven 服务器下载 spring-context-3.2.6.RELEASE.jar，以及它所依赖的 jar 包。
 
 常用的依赖：
- 
+
 - （1）compile：编译生产代码的依赖环境，即src/main/下
 - （2）runtime：生产代码运行时的依赖（包含编译生产代码时的依赖）
 - （3）testCompile：编译测试代码的依赖环境，即src/test下
@@ -177,7 +177,7 @@ repositories {
 
 dependencies {
     compile 'org.springframework:spring-context:3.2.6.RELEASE'
-    testCompile group: 'junit', name: 'junit', version: '4.+' 
+    testCompile group: 'junit', name: 'junit', version: '4.+'
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
@@ -196,7 +196,7 @@ uploadArchives {
     repositories {
         flatDir {
             dirs 'repos'
-        } 
+        }
     }
 }
 ```
@@ -210,17 +210,17 @@ gradle 不像 maven 那样有固定的项目结构，gradle 原声 API 是不支
 ```groovy
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'war' 
+apply plugin: 'war'
 
-task createJavaProject << { 
-  sourceSets*.java.srcDirs*.each { it.mkdirs() } 
-  sourceSets*.resources.srcDirs*.each { it.mkdirs()} 
-} 
+task createJavaProject << {
+  sourceSets*.java.srcDirs*.each { it.mkdirs() }
+  sourceSets*.resources.srcDirs*.each { it.mkdirs()}
+}
 
-task createWebProject(dependsOn: 'createJavaProject') << { 
-  def webAppDir = file("$webAppDirName") 
-  webAppDir.mkdirs() 
-} 
+task createWebProject(dependsOn: 'createJavaProject') << {
+  def webAppDir = file("$webAppDirName")
+  webAppDir.mkdirs()
+}
 ```
 
 然后运行下面命令：
@@ -284,6 +284,19 @@ task createWebProject(dependsOn: 'createJavaProject') << {
         webAppDir.mkdirs()
 }
 ```
+
+## 将Java项目从maven迁移到gradle
+
+如何将一个 java 项目从maven迁移到 gradle 呢？gradle 集成了一个很方便的插件：`Build Init Plugin`，使用这个插件可以很方便地创建一个新的 gradle 项目，或者将其它类型的项目转换为 gradle 项目。
+
+要将 maven 项目转换为 gradle 项目，只需要在项目的 pom 文件所在的目录下执行以下命令：
+
+```bash
+$ gradle init --type pom
+```
+
+上面的命令会根据 pom 文件自动生成 gradle 项目所需的文件和配置，然后以 gradle 项目重新导入即可。
+
 
 # 参考
 

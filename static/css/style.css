@@ -19,6 +19,7 @@ body {
 a:hover,a:focus {
 	text-decoration:none
 }
+
 h1, h2, h3, h4, h5 {color:rgba(0,153,153,0.8);}
 
 
@@ -29,7 +30,7 @@ blockquote p{margin:0;padding:.5em 0;}
 	display:inline
 }
 .header .title {
-	font-size:36px;
+	font-size:32px;
 	display:inline;
 	text-shadow:0 1px 0 #fff,0 1px 1px rgba(170,170,170,0.8)
 }
@@ -65,6 +66,9 @@ blockquote p{margin:0;padding:.5em 0;}
 	background:rgba(253,253,253,0.9);
 	padding:20px 20px 20px 20px;
 	margin:20px 0;
+}
+.wrapper a:visited {
+	color: #F69;
 }
 .wrapper .small {
 	color:rgba(119,119,119,0.8)

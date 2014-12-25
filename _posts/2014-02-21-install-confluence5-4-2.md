@@ -20,17 +20,18 @@ $ wget www.atlassian.com/software/confluence/downloads/binary/atlassian-confluen
 
 # 2、安装
 
-解压
+解压：
 
 ```
 $ tar -zxvf atlassian-confluence-5.4.2.tar.gz
 ```
 
-进入目录
+进入目录：
 
 ```
 $ cd atlassian-confluence-5.4.2
 ```
+
 配置confluence安装目录：
 
 ```
@@ -87,19 +88,20 @@ $ sh bin/stop-confluence.sh
 <Connector className="org.apache.coyote.tomcat4.CoyoteConnector" port="8090" minProcessors="5"
 ```
 
-修改port 为需要
+修改 port 为需要的端口。
 
 # 5、更换默认的数据库
 
-在完成之前的步骤后，数据库使用的是一个confluence默认的hsql数据库，此数据库缺陷较多，例如：不支持事务管理。因此需要将数据库迁移为指定的数据库类型。进入confluence-data目录，修改`confluence-cfg.xml`文件中数据库相关的连接信息。
+在完成之前的步骤后，数据库使用的是一个 confluence 默认的 hsql 数据库，此数据库缺陷较多，例如：不支持事务管理。因此需要将数据库迁移为指定的数据库类型。
+
+进入 confluence-data 目录，修改 `confluence-cfg.xml` 文件中数据库相关的连接信息。
 
 # 6、安装中文字体：
 
-默认情况下Confluence导出PDF不支持中文，需要修改如下：
+默认情况下 Confluence 导出 PDF 不支持中文，需要修改如下：
 
-管理员登录"Confluence Admin"，选择左边菜单"CONFIGURATION"-"PDF Export Language Support"，选择安装中文字体，例如：simsun.ttc
+管理员登录 "Confluence Admin"，选择左边菜单 "CONFIGURATION"-"PDF Export Language Support"，选择安装中文字体，例如：simsun.ttc
 
 # 7、破解
 
 请参考：[http://582033.vicp.net/?p=1085](http://582033.vicp.net/?p=1085)
-
