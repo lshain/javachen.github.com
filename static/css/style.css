@@ -68,7 +68,7 @@ blockquote p{margin:0;padding:.5em 0;}
 	margin:20px 0;
 }
 .wrapper a:visited {
-	color: #F69;
+	color: rgba(0, 153, 153, 0.8);
 }
 .wrapper .small {
 	color:rgba(119,119,119,0.8)
