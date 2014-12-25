@@ -10,11 +10,7 @@ comment: true
 
 {{ site.description }}
 
-#### Employment
-
-当前正在从事 hadoop 相关的工作，所以，你懂的！
-
-#### Social Participation
+#### Contact me
 
 Email：{{ site.author.email }}
 
@@ -26,5 +22,8 @@ Weibo：<http://weibo.com/{{ site.author.weibo }}>
 Github：<https://github.com/{{ site.author.github }}>
 {% endif %}
 
+RSS：[http:{{ site.url }}{{ '/rss.xml' }}](/rss.xml)
+
+{% include support.html %}
 
 {% include comments.html %}
