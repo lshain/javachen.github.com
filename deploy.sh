@@ -2,10 +2,7 @@
 
 echo `date`
 
-msg="update blog"
-if [ $# -lt 1 ]; then
-    msg=$1
-fi
+msg="update:$*"
 
 
 qrsync qiniu-images.conf
