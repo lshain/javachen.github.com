@@ -142,7 +142,7 @@ sequence(序列)是一组有顺序的元素的集合。
   [None,None,Noe]
 
 #判断一个元素是否存在于序列中
->>> permissions='rw'  
+>>> permissions='rw'
 >>> 'w' in permissions
   True
 
@@ -153,7 +153,7 @@ sequence(序列)是一组有顺序的元素的集合。
 >>> database=[
   ['a','1234'],
   ['b','2344']
-]  
+]
 >>> ['c','1234'] in database
   False
 ```
@@ -391,13 +391,27 @@ Python 中的普通字符串在内部是以8位的 ascii 码形式存储的，�
 函数定义示例如下：
 
 ```python
-def arithmetic(x,y,operator):
-   result={
+def function_arithmetic(x,y,operator):
+    '''
+    usage: function for arithmetic
+    '''
+    result = {
       "+":x+y,
       "-":x-y,
       "*":x*y,
       "/":x/y
-   }
+    }
+    return result
+
+# 函数名称
+func_name = function_arithmetic.__name__
+name = '%s' % func_name.replace('_', '-').strip('-')
+# 函数doc 文档
+help_ = function_arithmetic.__doc__.strip()
+
+print func_name
+print name
+print help_
 ```
 
 ## 3.2 函数的参数
@@ -533,7 +547,7 @@ a = 1 b = 2 c = 3 args = (4,) kw = {'x': 99}
 
 >>> d = {"voltage": "four million", "state": "bleedin' demised", "action": "VOOM"}
 >>> parrot(**d)
--- This parrot wouldn't VOOM if you put four million volts through it. E's bleedin' demised !
+ This parrot wouldn't VOOM if you put four million volts through it. E's bleedin' demised
 ```
 
 # 4. 流程控制

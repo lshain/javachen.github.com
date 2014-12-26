@@ -25,7 +25,7 @@ description: Extjs读取xml文件生成动态表格和表单
 
 在这里，前台会读取该xml生成ext界面，后天会从xml文件读取sql语句等信息，详细信息见java代码。
 
-进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用`getForwardXmlUrl(getQsValue('xmlFile'))）`，得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见`SASC.extjs.search.MtrUse.js`文件内的initStoreData(xmlObj) 方法。
+进入SASC.search.MtrUse.html页面，执行ext的初始化方法时，会先通过当前页面的url中获取xmlFile参数的值（调用 `getForwardXmlUrl(getQsValue('xmlFile'))）`，得到xml文件的服务器路径，然后通过javascript的解析该xml文件，渲染出ext界面,这部分代码见`SASC.extjs.search.MtrUse.js`文件内的initStoreData(xmlObj) 方法。
 
 需要说明的是，xml文件是按照一定规律编写的，详细的参考xml文件内容，以及解析xml文件的相关方法。你可以重新定义该xml的结构，然后修改解析xml文件的方法。
 

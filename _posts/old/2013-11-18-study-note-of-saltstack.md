@@ -25,7 +25,7 @@ SaltStack是开源的管理基础设置的轻量级工具，容易搭建，为�
 ###  简单
 
 兼顾大规模部署与更小的系统的同时提供多功能性是很困难的，Salt是非常简单配置和维护，不管项目的大小。Salt可以胜任管理任意的数量的服务器，不管是本地网络，还是跨数据中心。架构采用C/S模式，在一个后台程序中集成必要功能。默认不需要复杂的配置就可以工作，同时可以定制用于特殊的需求。
- 
+
 ### 并行执行
 
 Salt的核心功能：
@@ -35,25 +35,25 @@ Salt的核心功能：
 - 最小化使用网络和负载
 - 提供简单的程序接口
 - Salt引入了更细粒度的控制，允许不通过目标名字，二是通过系统属性分类
- 
+
 ### 构建在成熟技术之上
 
 Salt采用了很多技术和技巧。网络层采用优秀的ZeroMQ库，所以守护进程里面包含AMQ代理。Salt采用公钥和主控通讯，同时使用更快的AES加密通信，验证和加密都已经集成在Salt里面。Salt使用msgpack通讯，所以更快速和更轻量网络交换。
- 
+
 ### Python 客户端接口
 
 为了实现简单的扩展，Salt执行例程可以写成简单的Python模块。客户端程序收集的数据可以发送回主控端，可以是其他任意程序。可以通过Python API调用Salt程序，或者命令行，因此，Salt可以用来执行一次性命令，或者大型应用程序中的一部分模块。
- 
+
 ###  快速，灵活，可扩展
 
 结果是一个系统可以高速在一台或者一组服务器执行命令。Salt速度很快，配置简单，扩展性好，提供了一个远程执行架构，可以管理多样化需求的任何数量的服务器。整合了世界上最好的远程执行方法，增强处理能力，扩展使用范围，使得可以适用任何多样化复杂的网络。
- 
+
 ### 开源
 
 Salt基于Apache 2.0 licence开发，可以用于开源或者自有项目。请反馈你的扩展给项目组，以便更多人受益，共同促进Salt发展。请在你的系统部署 系统，让运维更便捷。
- 
+
 开发语言：Python
- 
+
 ## 2.3. 支持的系统
 
 常见的系统包可以直接下载安装使用：
@@ -113,7 +113,7 @@ wget -O - http://bootstrap.saltstack.org | sudo sh
 
 ### 3.3.1. 下载EPEL yum源：
 
-RHEL 5系统: 
+RHEL 5系统:
 
 ```
 rpm -Uvh http://mirror.pnl.gov/epel/5/i386/epel-release-5-4.noarch.rpm
@@ -509,7 +509,7 @@ top.sls可以这样定义：
 一旦创建完states并修改完top.sls之后，你可以在master上执行下面命令：
 
 ```
-[root@sk1 salt]# salt '*' state.highstate 
+[root@sk1 salt]# salt '*' state.highstate
 sk2:
 ----------
     State: - pkg
@@ -517,21 +517,21 @@ sk2:
     Function:  installed
         Result:    True
         Comment:   The following packages were installed/updated: httpd.
-        Changes:   
+        Changes:
                    ----------
                    httpd:
                        ----------
                        new:
                            2.2.15-29.el6.centos
                        old:
-                           
+
 ----------
     State: - service
     Name:      httpd
     Function:  running
         Result:    True
         Comment:   Service httpd has been enabled, and is running
-        Changes:   
+        Changes:
                    ----------
                    httpd:
                        True
@@ -562,7 +562,7 @@ salt '<target>' <function> [arguments]
 
 - target: 执行salt命令的目标，可以使用正则表达式
 - function： 方法，由module提供
-- arguments：function的参数 
+- arguments：function的参数
 
 target可以使用正则表达式匹配：
 
@@ -610,13 +610,6 @@ salt.states.cmd.run(name, onlyif=None, unless=None, cwd=None, user=None, group=N
 ## TARGETING
 ## Returners
 ## Mine
-
-
-# 权限管理
-
-# 作业管理
-
-# Logging
 
 # 参考文章
 

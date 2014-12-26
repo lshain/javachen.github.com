@@ -38,13 +38,13 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 	y表示启动的JVM是被调试者。如果为n，则表示启动的JVM是调试器。
 	suspend=y
 	y表示启动的JVM会暂停等待，直到调试器连接上才继续执行。suspend=n，则JVM不会暂停等待。
- 
+
 
 # 配置hbase远程调试
 
 打开`/etc/hbase/conf/hbase-env.sh`，找到以下内容：
 
-	# Enable remote JDWP debugging of major HBase processes. Meant for Core Developers 
+	# Enable remote JDWP debugging of major HBase processes. Meant for Core Developers
 	# export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8070"
 	# export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071"
 	# export HBASE_THRIFT_OPTS="$HBASE_THRIFT_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8072"
@@ -54,17 +54,22 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 
 ---
 ## 注意（20130817更新）：
+
 如果启动hbase时提示` check your java command line for duplicate jdwp options`，请把上面参数加到/usr/lib/hbase/bin/hbase中if else对应分支中去。
 
 例如，如果你想调试regionserver，请把下面代码加到`elif [ "$COMMAND" = "regionserver" ] ; then`中去：
 
+```
 	export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8071"
+```
 
 # 配置hive远程调试
 
 停止hive-server2进程，然后以下面命令启动hive-server2
 
+```
 	hive --service hiveserver --debug
+```
 
 进程会监听在8000端口等待调试连接。如果想更改监听端口，可以修改配置文件:`${HIVE_HOME}bin/ext/debug.sh`
 
@@ -132,9 +137,9 @@ JVM本身就支持远程调试，Eclipse也支持JDWP，只需要在各模块的
 
 此时需要修改mapred-site.xml
 
-	<property> 
-		<name>mapred.child.java.opts</name> 
-		<value>-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</value> 
+	<property>
+		<name>mapred.child.java.opts</name>
+		<value>-Xmx800m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</value>
 	</property
 
 在一个TaskTracker上，只能启动一个Map Task或一个Reduce Task，否则启动时会有端口冲突。因此要修改所有TaskTracker上的`conf/hadoop-site.xml`中的配置项：
