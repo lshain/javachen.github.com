@@ -60,7 +60,26 @@ Gradle 已经自带了很多 pugins，可以满足大部分的常见构建任务
 
 Gradle 的默认构建脚本文件为工程根目录下的 build.gradle。
 
-作为测试，创建一个 test 目录，然后创建 build.gradle 文件。接下来在该文件中添加下面代码，可以支持生成 jar 包：
+## 创建项目
+
+作为测试，创建一个 test 目录，然后通过下面命令来初始化一个项目：
+
+```bash
+$ mkdir test
+$ cd test
+$ gradle init
+:wrapper
+:init
+
+BUILD SUCCESSFUL
+
+Total time: 3.058 secs
+
+$ ls
+build.gradle    gradle          gradlew         gradlew.bat     settings.gradle
+```
+
+可以看到生成了 gradle 的一些配置文件。接下来在 build.gradle 文件中添加下面代码，可以支持生成 jar 包：
 
 ```groovy
 apply plugin: 'java'

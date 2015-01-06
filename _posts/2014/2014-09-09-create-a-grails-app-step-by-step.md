@@ -59,6 +59,30 @@ $ grails run-app
 - 修改用户的默认设置。修改 `~/.grails/settings.groovy`，添加 `grails.server.port.http = 9000`
 - 修改Grails程序的默认设置。在 `$GRAILS_HOME/scripts/_GrailsSettings.groovy` 中添加：`serverPort = getPropertyValue("server.port", 9000).toInteger()`
 
+测试应用：
+
+```bash
+grails test-app
+```
+
+如果想部署应用：
+
+```bash
+grails war
+```
+
+上面命令默认使用的是 production 环境，也可以添加参数使用 dev 环境：
+
+```bash
+grails dev war
+```
+
+当部署应用时候，最后是设置 jvm 内存：
+
+```bash
+-server -Xmx512M -XX:MaxPermSize=256m
+```
+
 在 blog 目录查看应用目录结构：
 
 ```bash
