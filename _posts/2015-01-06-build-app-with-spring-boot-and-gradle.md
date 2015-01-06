@@ -27,17 +27,17 @@ published: true
 
 你可以通过 [Spring Initializr](http://start.spring.io/) 来创建一个空的项目，也可以手动创建，这里我使用的是手动创建 gradle 项目。
 
-参考 [使用Gradle构建项目](/2014/09/15/build-project-with-gradle/) 创建一个 helloworld 项目，执行的命令如下：
+参考 [使用Gradle构建项目](/2014/09/15/build-project-with-gradle/) 创建一个 spring-boot-examples 项目，执行的命令如下：
 
 ```bash
-$ mkdir helloworld && cd helloworld
+$ mkdir spring-boot-examples && cd spring-boot-examples
 $ gradle init
 ```
 
-helloworld 目录结构如下：
+spring-boot-examples 目录结构如下：
 
 ```
-➜  helloworld  tree
+➜  spring-boot-examples  tree
 .
 ├── build.gradle
 ├── gradle
@@ -51,7 +51,7 @@ helloworld 目录结构如下：
 2 directories, 6 files
 ```
 
-然后修改build.gradle文件：
+然后修改 build.gradle文件：
 
 ```groovy
 buildscript {
@@ -71,7 +71,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'helloworld'
+    baseName = 'spring-boot-examples'
     version =  '0.1.0'
 }
 
@@ -145,6 +145,11 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
+    @RequestMapping("/index")
+    public @ResponseBody String index() {
+        return "Greetings from Spring Boot!";
+    }
+
     @RequestMapping("/greeting")
     public @ResponseBody Greeting greeting(
             @RequestParam(value="name", required=false, defaultValue="World") String name) {
@@ -173,6 +178,11 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
+    @RequestMapping("/index")
+    public String index() {
+        return "Greetings from Spring Boot!";
+    }
+
     @RequestMapping("/greeting")
     public Greeting greeting(@RequestParam(value="name", required=false, defaultValue="World") String name) {
         return new Greeting(counter.incrementAndGet(),
@@ -192,17 +202,21 @@ public class GreetingController {
 ```java
 package hello;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import java.util.Arrays;
+
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan
 @EnableAutoConfiguration
+@ComponentScan
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        ApplicationContext ctx = SpringApplication.run(Application.class, args);
 
         System.out.println("Let's inspect the beans provided by Spring Boot:");
 
@@ -212,6 +226,7 @@ public class Application {
             System.out.println(beanName);
         }
     }
+
 }
 ```
 
@@ -236,10 +251,10 @@ main 方法使用了 SpringApplication 工具类。这将告诉Spring去读取 A
 也可以先 build 生成一个 jar 文件，然后执行该 jar 文件：
 
 ```bash
-./gradlew build && java -jar build/libs/helloworld-0.1.0.jar
+./gradlew build && java -jar build/libs/spring-boot-examples-0.1.0.jar
 ```
 
-启动过程中你回看到如下内容：
+启动过程中你会看到如下内容：
 
 ```
 Let's inspect the beans provided by Spring Boot:
@@ -279,7 +294,79 @@ tomcatEmbeddedServletContainerFactory
 viewControllerHandlerMapping
 ```
 
-### 测试
+### 创建单元测试
+
+在 build.gradle 中添加依赖：
+
+```groovy
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+```
+
+创建 maven 的 test source 目录 src/test/java/hello：
+
+```
+mkdir -p src/test/java/hello
+```
+
+创建测试类 src/test/java/hello/GreetingControllerTest：
+
+```java
+package hello;
+
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = MockServletContext.class)
+@WebAppConfiguration
+public class GreetingControllerTest {
+
+    private MockMvc mvc;
+
+    @Before
+    public void setUp() throws Exception {
+        mvc = MockMvcBuilders.standaloneSetup(new GreetingController()).build();
+    }
+
+    @Test
+    public void getHello() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/index").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(is("Greetings from Spring Boot!")));
+    }
+```
+
+运行该测试用例：
+
+```bash
+$ gradle test
+```
+
+并且你也可以通过下面命令检查服务运行状态：
+
+```bash
+$ curl localhost:8080/health
+ok
+```
+
+### 通过浏览器测试
 
 打开浏览器访问 <http://localhost:8080/greeting>，可以看到页面输出下面内容：
 
@@ -315,7 +402,7 @@ $(document).ready(function() {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hello jQuery</title>
+        <title>Hello World</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="hello.js"></script>
     </head>
@@ -354,6 +441,8 @@ spring run app.groovy -- --server.port=9000
 ### 总结
 
 本文主要参考 Sping 官方例子来了解和熟悉使用 Gradle 创建 Spring Boot 项目的过程，希望能对你有所帮助。
+
+文中相关的源码在 [spring-boot-examples](https://github.com/javachen/spring-boot-examples)。
 
 ### 参考文章
 - [Building a RESTful Web Service](http://spring.io/guides/gs/rest-service/)
