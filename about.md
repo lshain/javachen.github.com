@@ -24,6 +24,8 @@ Github：<https://github.com/{{ site.author.github }}>
 
 RSS：[http:{{ site.url }}{{ '/rss.xml' }}](/rss.xml)
 
+QQ交流群：142824963
+
 {% include support.html %}
 
 {% include comments.html %}
