@@ -122,6 +122,9 @@ ng-class用来给元素绑定类名，其表达式的返回值可以是以下三
 ng-style 用来绑定元素的 css 样式，其表达式的返回值为一个 js 对象，键为 css 样式名，值为该样式对应的合法取值。用法比较简单：
 
 ```html
+$scope.style = {color:'red'};　
+
+<div ng-style="{color:'red'}">ng-style测试</div>
 <div ng-style="style">ng-style测试</div>
 ```
 
@@ -172,6 +175,11 @@ ng-style 用来绑定元素的 css 样式，其表达式的返回值为一个 js
 ```html
 <p ng-click="click($event)">点击</p>
 <p ng-click="click($event.target)">点击</p>
+
+$scope.click = function($event){
+         alert($event.target);
+         //……………………
+}　　
 ```
 
 ## 表单指令
@@ -372,6 +380,8 @@ currency(货币)、date(日期)、filter(子串匹配)、json(格式化json对�
 
 // 参数用来指定所要的格式，y M d h m s E 分别表示 年 月 日 时 分 秒 星期，你可以自由组合它们。也可以使用不同的个数来限制格式化的位数。另外参数也可以使用特定的描述性字符串，例如“shortTime”将会把时间格式为12:05 pm这样的。
 {{date | date : 'yyyy-MM-dd hh:mm:ss EEEE'}}
+
+$scope.func = function(e){return e.age>4;}{{ childrenArray | filter : 'a' }}
 
 // filter 过滤器从数组中选择一个子集：
 {{ childrenArray | filter : 'a' }} //匹配属性值中含有a的
