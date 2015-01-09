@@ -13,6 +13,7 @@ published: true
 
 ---
 
+废话不多说，直接进入主题。
 
 ### 创建项目
 
@@ -105,6 +106,7 @@ subprojects {
     // java编译的时候缺省状态下会因为中文字符而失败
     [compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
     
+    //定义版本号
     ext {  
         springVersion = '3.2.11.RELEASE'  
         hibernateVersion='4.3.1.Final'  
@@ -142,7 +144,7 @@ subprojects {
                 "com.fasterxml.jackson.core:jackson-databind:2.3.1"  
         )
 
-        // 依赖mave中不存在的jar
+        // 依赖maven中不存在的jar
         ext.jarTree = fileTree(dir: 'libs', include: '**/*.jar')
         ext.rootProjectLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
         ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
@@ -168,6 +170,8 @@ subprojects {
 ```groovy
 // jar包的名字
 archivesBaseName = 'core'
+
+// 还可以定义其他配置，这里直接继承父模块中的配置
 ```
 
 web 模块需要依赖 core 模块，故定义 web/build.gradle 如下：
@@ -344,7 +348,7 @@ version = '1.0'
 #### 7. 在执行 Gradle 命令时如何指定参数
 
 ```
-gradle task -Pprofile=development
+gradle task -P profile=development
 ```
 
 #### 8. Gradle 和 idea 集成时如何不自动下载依赖源码和javadoc

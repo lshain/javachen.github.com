@@ -21,7 +21,7 @@ published: true
 
 > **说明：**
 >
-> 这部分参考和使用了<https://github.com/codefollower/HBase-Research>上的代码，包括该作者自己写的一些[测试类](https://github.com/codefollower/HBase-Research/tree/0.94/src/test/java/my/test)和[文档](https://github.com/codefollower/HBase-Research/blob/0.94/my-docs)。
+> 这部分参考和使用了<https://github.com/codefollower/HBase-Research>上的代码（注意：原仓库已经被作者删除了），包括该作者自己写的一些[测试类](https://github.com/codefollower/HBase-Research/tree/0.94/src/test/java/my/test)和[文档](https://github.com/codefollower/HBase-Research/blob/0.94/my-docs)。
 
 首先，在IDE里启动HMaster和HRegionServer：
 
