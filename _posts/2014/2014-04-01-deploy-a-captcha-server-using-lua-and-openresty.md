@@ -160,7 +160,8 @@ $ unzip nginx-http-sysguard-master.zip
 - <http://openresty.org/#Download>
 - <http://openresty.org/download/ngx_openresty-1.2.7.6.tar.gz>
 
-先安装依赖软件，然后在编译代码，编译时使用`--perfix`选项指定 OpenResty 的安装目录，`--with-luajit` 选项激活 LuaJIT 组件
+先安装依赖软件，然后在编译代码，编译时使用`--perfix`选项指定 OpenResty 的安装目录，`--with-luajit` 选项激活 LuaJIT 组件。
+
 ```bash
 $ yum -y install gcc make gmake openssl-devel pcre-devel readline-devel zlib-devel
 
@@ -399,6 +400,198 @@ useradd -M -s /sbin/nologin www
 ```
 
 上面将 ngnix 的端口修改为10002。
+
+/usr/local/openresty/nginx/luascripts/luajit/captcha.lua 是用于生成验证码，内容如下：
+
+```lua
+--中控脚本
+--
+--部分应用预先生成
+--部分应用实时生成，并且随机选择生成样式
+--
+
+----------------------------------------------------------------------------------------------
+package.path = "/usr/local/openresty/lualib/?.lua;/usr/local/openresty/lualib/captcha/?.lua;"
+package.cpath = "/usr/local/openresty/lualib/?.so;/usr/local/openresty/lualib/captcha/?.so;"
+----------------------------------------------------------------------------------------------
+
+--设置随机种子
+local resty_uuid=require("resty.uuid")
+math.randomseed(tonumber(resty_uuid.gennum20()))
+
+-----------------------------------------------------------------------------------------
+--
+--[[ 预先生成 ]]
+--
+if math.random(1,99)<tonumber(ngx.var.percent) then
+        
+    --在redis的预先生成key中随机选择keyid
+    local kid=math.random(1,ngx.var.pregencount)
+        local res = ngx.location.capture('/redisGetImg',{ args = { key = kid } })
+        
+    if res.status==200 then
+            local parser=require("redis.parser")
+                local pic=parser.parse_reply(res.body)
+                ngx.header.content_type="application/octet-stream"
+        
+        --在header中返回用于去redis中查找记录的key
+                ngx.header.picgid=kid
+        
+        --在body中返回captcha
+                ngx.say(pic)
+
+                ngx.exit(200)
+        end
+end
+
+-----------------------------------------------------------------------------------------
+--
+--[[ 实时生成 ]]
+--
+
+--随机选择captcha模式X
+local mode=math.random(1,ngx.var.modecount)
+
+--调用modeX.lua，生成captcha
+local res = ngx.location.capture("/mode"..mode)
+if res.status==200 then
+    ngx.header.content_type="application/octet-stream"
+
+    --在header中返回用于去redis中查找记录的key
+    ngx.header.picgid=res.header.picgid
+        
+    --在body中返回captcha
+    ngx.say(res.body)
+
+        ngx.exit(200)
+end
+```
+
+/usr/local/openresty/nginx/luascripts/luajit/captcha-check.lua 用于校验验证码：
+
+```lua
+--[[captcha check]]
+
+----------------------------------------------------------------------------------------------
+package.path = "/usr/local/openresty/lualib/?.lua;/usr/local/openresty/lualib/captcha/?.lua;"
+package.cpath = "/usr/local/openresty/lualib/?.so;/usr/local/openresty/lualib/captcha/?.so;"
+----------------------------------------------------------------------------------------------
+
+--获取请求中参数
+local uriargs = ngx.req.get_uri_args()
+local picgid = uriargs["image"]
+local ustr=string.lower(uriargs["str"])
+
+--查找redis中key为picgid的记录
+local res = ngx.location.capture('/redisGetStr',{ args = { key = picgid } })
+if res.status==200 then
+    local parser=require("redis.parser")
+    local reply=parser.parse_reply(res.body)
+    local rstr=string.lower(reply)
+    
+    --匹配用户输入字符串与redis中记录的字符串，一致返回True，否则返回False
+    ngx.header.content_type="text/plain"
+    if ustr == rstr then
+        ngx.say("True")
+    else
+        ngx.say("False")
+    end
+    
+    --匹配操作后删除redis中该key记录
+    local redis = require('redis')
+    local client = redis.connect('127.0.0.1', 10005)
+    client:del(picgid)
+end
+```
+
+/usr/local/openresty/nginx/luascripts/luajit/mode/mode1.lua 是生成静态验证码图片：
+
+```lua
+--静态图片
+
+------------------------------------------------------------------------------------------------
+package.path = "/usr/local/openresty/lualib/?.lua;/usr/local/openresty/lualib/captcha/?.lua;"
+package.cpath = "/usr/local/openresty/lualib/?.so;/usr/local/openresty/lualib/captcha/?.so;"
+------------------------------------------------------------------------------------------------
+
+--Redis中插入记录方法
+function setRedis(skey, sval)
+        local res = ngx.location.capture('/redisSetQueue', {args= {key=skey,val=sval}})
+        if res.status == 200 then
+                return true
+        else
+                return false
+        end
+end
+
+--设置随机种子
+local resty_uuid=require("resty.uuid")
+math.randomseed(tonumber(resty_uuid.gennum20()))
+
+--在32个备选字符中随机筛选4个作为captcha字符串
+local dict={'A','B','C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X','Y','Z','2','3','4','5','6','7','8','9'}
+local stringmark=""
+for i=1,4 do
+       stringmark=stringmark..dict[math.random(1,32)]
+end
+
+--图片基本info
+--picgid
+local filename= "1"..resty_uuid.gen20()..".png"
+--图片78x26
+local xsize = 78
+local ysize = 26
+--字体大小
+local wsize = 17.5
+--干扰线(yes/no)
+local line = "yes"
+
+--加载模块
+local gd=require('gd')
+--创建面板
+local im = gd.createTrueColor(xsize, ysize)
+--定义颜色
+local black = im:colorAllocate(0, 0, 0)
+local grey = im:colorAllocate(202,202,202)
+local color={}
+for c=1,100 do
+        color[c] = im:colorAllocate(math.random(100),math.random(100),math.random(100))
+end
+--画背景
+x, y = im:sizeXY()
+im:filledRectangle(0, 0, x, y, grey)
+--画字符
+gd.useFontConfig(true)
+for i=1,4 do
+    k=(i-1)*16+3
+    im:stringFT(color[math.random(100)],"Arial:bold",wsize,math.rad(math.random(-10,10)),k,22,string.sub(stringmark,i,i))
+end
+--干扰线点
+if line=="yes" then
+    for j=1,math.random(3) do
+        im:line(math.random(xsize),math.random(ysize),math.random(xsize),math.random(ysize),color[math.random(100)])
+    end
+    for p=1,20 do
+            im:setPixel(math.random(xsize),math.random(ysize),color[math.random(100)])
+    end
+
+end
+--流输出
+local fp=im:pngStr(75)
+
+--redis中添加picgid为key,string为value的记录
+setRedis(filename,stringmark)
+
+--response header中传参picgid
+ngx.header.content_type="text/plain"
+ngx.header.picgid=filename
+
+--页面返回pic
+ngx.say(fp)
+
+--nginx退出
+ngx.exit(200)
+```
 
 ## 配置redis
 
