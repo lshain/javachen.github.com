@@ -203,7 +203,7 @@ public class GreetingController {
 
 尽管你可以将这个服务打包成传统的 WAR 文件部署到应用服务器，但下面将会创建一个独立的应用，使用 main 方法可以将所有东西打包到一个可执行的jar文件。并且，你将使用 Sping 对内嵌 Tomcat servlet 容器的支持，作为 HTPP 运行时环境，没必要部署成一个 tomcat 外部实例。
 
-创建一个包含 main 方法的类 com.javachen.examples.springboot/Application.java：
+创建一个包含 main 方法的类 src/main/java/com/javachen/examples/springboot/Application.java：
 
 ```java
 package com.javachen.examples.springboot;
@@ -341,7 +341,7 @@ dependencies {
 }
 ```
 
-创建 maven 的 test source 目录 src/test/java/hello：
+创建 maven 的 test source 目录 src/test/java/com/javachen/examples/springboot：
 
 ```
 mkdir -p src/test/java/com/javachen/examples/springboot
