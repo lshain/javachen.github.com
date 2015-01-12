@@ -115,6 +115,10 @@ $ python manage.py startapp todo
 
 # 4. 模型
 
+- 每一个 Django Model 都继承自 django.db.models.Model
+- 在 Model 当中每一个属性 attribute 都代表一个 database field
+- 通过 Django Model API 可以执行数据库的增删改查, 而不需要写一些数据库的查询语句
+
 打开 todo 文件夹下的 models.py 文件。创建两个模型以及注册后台的管理：
 
 ```python
@@ -125,7 +129,6 @@ from django.contrib import admin
 import datetime
  
 # Create your models here.
-
 class List(models.Model):
     name = models.CharField(max_length=60)
     slug = models.SlugField(max_length=60, editable=False)
@@ -174,25 +177,6 @@ class Comment(models.Model):
             self.author,
             self.date,
         )                
-```
-
-编辑 todoapp/admin.py，将三个 model 注册到 admin 应用中去，todoapp/admin.py 修改成如下：
-
-```
-from django.contrib import admin
-from todo.models import Item, List, Comment
-
-# Register your models here.
-
-class ItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'list', 'priority', 'due_date')
-    list_filter = ('list',)
-    ordering = ('priority',)
-    search_fields = ('name',)
-
-admin.site.register(List)
-admin.site.register(Comment)
-admin.site.register(Item, ItemAdmin)
 ```
 
 然后在 settings.py 中安装模型：
@@ -244,10 +228,9 @@ $ python manage.py migrate
 python manage.py syncdb
 ```
 
-然后打开后台页面，看看效果。
-
-
 # 5. 视图和URL配置
+
+Django 中 views 里面的代码就是一个一个函数逻辑，处理客户端(浏览器)发送的HTTPRequest，然后返回HTTPResponse。
 
 创建 `view.py` 文件并添加如下内容：
 
@@ -304,7 +287,7 @@ Django 在检查 URL 模式前，移除每一个申请的URL开头的斜杠(`/`)
 
 打开文件 `settings.py` 你将看到如下：
 
-```
+```python
 ROOT_URLCONF = 'todo.urls'
 ```
 
@@ -410,7 +393,7 @@ def list_item(request):
 
 因为用到了模板，需要设置模板位置，在 settings.py 中添加下面代码：
 
-```
+```python
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -421,7 +404,7 @@ TEMPLATE_DIRS = (
 
 或者，使用编码的方式：
 
-```
+```python
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,'templates'),
 )
@@ -451,12 +434,101 @@ urlpatterns = patterns('',
 
 在浏览器里访问 <http://127.0.0.1:8000/item/list/>
 
-# 6. 总结
+# 6. Admin
+
+Django有一个优秀的特性, 内置了Django admin后台管理界面, 方便管理者进行添加和删除网站的内容.
+
+新建的项目系统已经为我们设置好了后台管理功能，见 todo/settings.py：
+
+```python
+INSTALLED_APPS = (
+    'django.contrib.admin', #默认添加后台管理功能
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'todo',
+)
+```
+
+同时也已经添加了进入后台管理的 url, 可以在  todo/urls.py 中查看：
+
+```python
+url(r'^admin/', include(admin.site.urls)), #可以使用设置好的url进入网站后台
+```
+
+使用如下命令账号创建超级用户(如果使用了 `python manage.py syncdb` 会要求你创建一个超级用户)
+
+```python
+$ python manage.py createsuperuser
+Username (leave blank to use 'root'): root
+Email address:
+Password:
+Password (again):
+Superuser created successfully.
+```
+
+输入用户名, 邮箱, 密码就能够创建一个超级用户 现在可以在浏览器中输入 <http://127.0.0.1:8000/admin> ，然后输入账户和密码进入后台管理
+
+但是你会发现并没有数据库信息的增加和删除, 现在我们编辑 todoapp/admin.py，将三个 model 注册到 admin 应用中去，todoapp/admin.py 修改成如下：
+
+```python
+from django.contrib import admin
+from todo.models import Item, List, Comment
+
+# Register your models here.
+
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'list', 'priority', 'due_date')
+    list_filter = ('list',)
+    ordering = ('priority',)
+    search_fields = ('name',)
+
+admin.site.register(List)
+admin.site.register(Comment)
+admin.site.register(Item, ItemAdmin)
+```
+
+## 使用第三方插件
+
+Django现在已经相对成熟, 已经有许多不错的可以使用的第三方插件可以使用, 这些插件各种各样, 现在我们使用一个第三方插件使后台管理界面更加美观, 目前大部分第三方插件可以在 [Django Packages](https://www.djangopackages.com/) 中查看，尝试使用 [django-admin-bootstrap](https://github.com/douglasmiranda/django-admin-bootstrap) 美化后台管理界面。
+
+安装：
+
+```bash
+$ pip install bootstrap-admin
+```
+
+然后在 todo/settings.py 中修改 INSTALLED_APPS：
+
+```python
+INSTALLED_APPS = (
+    'bootstrap_admin',  #一定要放在`django.contrib.admin`前面
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'todo',
+)
+
+from django.conf import global_settings
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    'django.core.context_processors.request',
+)
+BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
+```
+
+保存后，再次刷新页面，访问 <http://127.0.0.1:8000/admin>。
+
+# 7. 总结
 
 通过上面的介绍，对 django 的安装、运行以及如何创建视图和模型有了一个清晰的认识，接下来就可以深入的学习 django 的模板、持久化、中间件、国际化等知识。
 
-# 7. 参考文章
+# 8. 参考文章
 
 - [django实例教程–blog(1)](http://markchen.me/django-instance-tutorial-blog-1/)
 - [The Django book 2.0](http://djangobook.py3k.cn/2.0/)
-
+- [Django搭建简易博客](http://andrew-liu.gitbooks.io/django-blog/content/)

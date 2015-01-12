@@ -51,9 +51,10 @@ spring-boot-examples 目录结构如下：
 2 directories, 6 files
 ```
 
-然后修改 build.gradle文件：
+然后修改 build.gradle 文件：
 
 ```groovy
+//spring-boot-gradle-plugin插件构建脚本
 buildscript {
     repositories {
         maven { url "https://repo.spring.io/libs-release" }
@@ -61,13 +62,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.10.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.2.BUILD-SNAPSHOT")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
+//spring-boot-gradle-plugin插件
 apply plugin: 'spring-boot'
 
 jar {
@@ -91,19 +94,20 @@ task wrapper(type: Wrapper) {
 }
 ```
 
+使用 spring-boot-gradle-plugin 插件可以提供一些创建可执行 jar 和从源码运行项目的任务，它还提供了 `ResolutionStrategy` 以方便依赖中不用写版本号。
 
 ### 创建一个实体类
 
-新建一个符合Maven规范的目录结构， src/main/java/hello：
+新建一个符合Maven规范的目录结构， src/main/java/com/javachen/examples/springboot：
 
 ```bash
-$ mkdir -p src/main/java/hello
+$ mkdir -p src/main/java/com/javachen/examples/springboot
 ```
 
-创建一个实体类 src/main/java/hello/Greeting.java：
+创建一个实体类 src/main/java/com/javachen/examples/springboot/domain/Greeting.java：
 
 ```java
-package hello;
+package com.javachen.examples.springboot.domain;
 
 public class Greeting {
 
@@ -127,10 +131,10 @@ public class Greeting {
 
 ### 创建控制类
 
-创建一个标准的控制类 src/main/java/hello/GreetingController.java：
+创建一个标准的控制类 src/main/java/com/javachen/examples/springboot/web/GreetingController.java：
 
 ```java
-package hello;
+package com.javachen.examples.springboot.web;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -165,7 +169,9 @@ Greeting 对象会被转换成 JSON 字符串，这得益于 Spring 的 HTTP 消
 上面的代码还可以这样写：
 
 ```java
-package hello;
+package com.javachen.examples.springboot.web;
+
+import com.javachen.examples.springboot.domain.Greeting;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -197,12 +203,14 @@ public class GreetingController {
 
 尽管你可以将这个服务打包成传统的 WAR 文件部署到应用服务器，但下面将会创建一个独立的应用，使用 main 方法可以将所有东西打包到一个可执行的jar文件。并且，你将使用 Sping 对内嵌 Tomcat servlet 容器的支持，作为 HTPP 运行时环境，没必要部署成一个 tomcat 外部实例。
 
-创建一个包含 main 方法的类 src/main/java/hello/Application.java：
+创建一个包含 main 方法的类 com.javachen.examples.springboot/Application.java：
 
 ```java
-package hello;
+package com.javachen.examples.springboot;
 
 import java.util.Arrays;
+
+import com.javachen.examples.springboot.domain.Greeting;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -238,20 +246,38 @@ main 方法使用了 SpringApplication 工具类。这将告诉Spring去读取 A
 
 `@EnableAutoConfiguration` 注解会基于你的类加载路径的内容切换合理的默认行为。比如，因为应用要依赖内嵌版本的 tomcat，所以一个tomcat服务器会被启动并代替你进行合理的配置。再比如，因为应用要依赖 Spring 的 MVC 框架,一个 Spring MVC 的 DispatcherServlet 将被配置并注册，并且不再需要 web.xml 文件。
 
-你还可以添加 `@EnableWebMvc` 注解配置 Spring Mvc。
+上面三个注解还可以用 @SpringBootApplication 代替：
+
+```java
+package com.javachen.examples.springboot;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+另外，你还可以添加 `@EnableWebMvc` 注解配置 Spring Mvc。
 
 ### 运行项目
 
 可以在项目根路径直接运行下面命令：
 
 ```bash
-./gradlew bootRun
+$ export JAVA_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/./urandom
+
+$ gradlew bootRun
 ```
 
 也可以先 build 生成一个 jar 文件，然后执行该 jar 文件：
 
 ```bash
-./gradlew build && java -jar build/libs/spring-boot-examples-0.1.0.jar
+$ gradlew build && java -jar build/libs/spring-boot-examples-0.1.0.jar
 ```
 
 启动过程中你会看到如下内容：
@@ -294,6 +320,15 @@ tomcatEmbeddedServletContainerFactory
 viewControllerHandlerMapping
 ```
 
+你也可以启动远程调试：
+
+```bash
+$ gradlew build 
+
+$ java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n \
+       -jar build/libs/spring-boot-examples-0.1.0.jar
+```
+
 ### 创建单元测试
 
 在 build.gradle 中添加依赖：
@@ -309,13 +344,13 @@ dependencies {
 创建 maven 的 test source 目录 src/test/java/hello：
 
 ```
-mkdir -p src/test/java/hello
+mkdir -p src/test/java/com/javachen/examples/springboot
 ```
 
-创建测试类 src/test/java/hello/GreetingControllerTest：
+创建测试类 src/test/java/com/javachen/examples/springboot/web/GreetingControllerTest：
 
 ```java
-package hello;
+package com.javachen.examples.springboot.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -332,6 +367,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.javachen.examples.springboot.web.GreetingController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MockServletContext.class)
