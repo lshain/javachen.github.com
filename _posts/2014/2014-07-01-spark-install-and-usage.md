@@ -146,6 +146,8 @@ spark.yarn.historyServer.address=http://HISTORY_HOST:HISTORY_PORT
 
 # 3. 启动和停止
 
+### 使用系统服务管理集群
+
 启动脚本：
 
 ```bash
@@ -174,6 +176,7 @@ $ sudo chkconfig spark-master on
 
 ![spark-master-web-ui](http://javachen-rs.qiniudn.com/images/spark/spark-master-web-ui.jpg)
 
+### 使用 spark 自带脚本管理集群
 
 另外，你也可以使用 spark 自带的脚本来启动和停止，这些脚本在 `/usr/lib/spark/sbin` 目录下：
 
