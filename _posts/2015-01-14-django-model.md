@@ -148,6 +148,19 @@ $ python manage.py sqlindexes todo
 $ python manage.py sqlreset todo  
 ```
 
+manage.py参数列表
+
+- `syncdb`：创建所有应用所需的数据表
+- `sql `：显示CREATETABLE调用
+- `sqlall` 如同上面的sql一样，从sql文件中初始化数据载入语句
+- `sqlindexs`：显示对主键创建索引的调用
+- `sqlclear`：显示DROP TABLE的调用
+- `sqlcustom`：显示指定.sql文件里的自定义SQL语句
+- `loaddata`：载入初始数据
+- `dumpdata`：把原有的数据库里的数据输出伟JSON，XML等格式
+
+sql、sqlall、sql、sqlindexs、sqlclear、sqlcustom不更新数据库，只打印SQL语句以作检验之用。
+
 # 模型之间的关系
 
 ## 多对一
@@ -281,61 +294,133 @@ class SmithBook(models.Model):
 
 # 模型继承
 
-Django目前支持2种不同的继承方式，每种都有自身的优缺点：
+Django目前支持几种不同的继承方式：
 
-- 抽象基础类 -- 纯Python的继承
-- 多表继承
+- 使用单个表。整个继承树共用一张表。使用唯一的表，包含所有基类和子类的字段。
+- 每个具体类一张表，这种方式下，每张表都包含具体类和继承树上所有父类的字段。因为多个表中有重复字段，从整个继承树上来说，字段是冗余的。
+- 每个类一张表，继承关系通过表的JOIN操作来表示。这种方式下，每个表只包含类中定义的字段，不存在字段冗余，但是要同时操作子类和所有父类所对应的表。
 
-第一种方式的例子：
+方式一：每个类一张表
 
 ```python
-class Author(models.Model):
-  name = models.CharField(max_length=100)
+from django.db import models
+ 
+class Person(models.Model):
+  name = models.CharField(max_length=20)
+  sex = models.BooleanField(default=True)
+ 
+class teacher(Person):
+  subject = models.CharField(max_length=20)
+ 
+class student(Person):
+  course = models.CharField(max_length=20)
+```
 
-class Book(models.Model):
-  title = models.CharField(max_length=100)
-  genre = models.CharField(max_length=100)
-  num_pages = models.IntergerField()
-  authors = models.ManyToManyField(Author)
+执行 `python manage.py sqlall`：
 
-  def __unicode__(self):
-    return self.title
+```sql
+BEGIN;
+CREATE TABLE "blog_person" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(20) NOT NULL,
+    "sex" bool NOT NULL
+)
+;
+CREATE TABLE "blog_teacher" (
+    "person_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "blog_person" ("id"),
+    "subject" varchar(20) NOT NULL
+)
+;
+CREATE TABLE "blog_student" (
+    "person_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "blog_person" ("id"),
+    "course" varchar(20) NOT NULL
+)
+;
+ 
+COMMIT;
+```
 
+
+方式二：每个具体类一张表，父类不需要创建表
+
+```python
+from django.db import models
+ 
+class Person(models.Model):
+  name = models.CharField(max_length=20)
+  sex = models.BooleanField(default=True)
+ 
   class Meta:
     abstract = True
-
-class SmithBook(Book):
-  authors = models.ManyToManyField(Author, limit_choices_to = {
-    'name_endswith': 'Smith'
-  })
+ 
+class teacher(Person):
+  subject = models.CharField(max_length=20)
+ 
+class student(Person):
+  course = models.CharField(max_length=20)
 ```
 
-这里代码的关键是 `abstract = True` 设置， 指明了 Book 是一个抽象基础类，只是用来为它实际的模型子类提供属性而存在的。
+执行 `python manage.py sqlall`：
 
-再说说多表继承， 同样还是会用到 Python的类继承， 但是不再需要 `abstract = True` 这个 Meta 类选项了。
+```sql
+BEGIN;
+CREATE TABLE "blog_teacher" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(20) NOT NULL,
+    "sex" bool NOT NULL,
+    "subject" varchar(20) NOT NULL
+)
+;
+CREATE TABLE "blog_student" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(20) NOT NULL,
+    "sex" bool NOT NULL,
+    "course" varchar(20) NOT NULL
+)
+;
+ 
+COMMIT;
+```
+
+可以通过 Meta 嵌套类自定义每个子类的表名：
 
 ```python
-class Author(models.Model):
-  name = models.CharField(max_length=100)
+from django.db import models
+ 
+class Person(models.Model):
+  name = models.CharField(max_length=20)
+  sex = models.BooleanField(default=True)
+ 
+  class Meta:
+    abstract = True
+ 
+class teacher(Person):
+  subject = models.CharField(max_length=20)
+ 
+  class Meta:
+    db_table = "Teacher"
+ 
+class student(Person):
+  course = models.CharField(max_length=20)
+ 
+  class Meta:
+    db_table = "Student"
+ ```   
 
-class Book(models.Model):
-  title = models.CharField(max_length=100)
-  genre = models.CharField(max_length=100)
-  num_pages = models.IntegerField()
-  authors = models.ManyToManyField(Author)
+方式三：代理模型，为子类增加方法，但不能增加属性
 
-  def __unicode__(Book):
-    return self.title
+ ``` python  
+from django.db import models
+ 
+class Person(User):
+  class Meta:
+    proxy = True
+ 
+  def some_function(self):
+    ……
+ ```   
 
-class SmithBook(Book):
-  authors = models.ManyToManyField(Author, limit_choices_to={
-    'name_endswith':'Smith'
-  })
-```
-
-在检查模型实例或是查询的时候，多表继承和前面看到的一样，子类会从父类中继承所有的属性和方法。多表继承其实就是对普通的 `has-a` 关系（或者说 对象组合 ）的一个方便的包装。
-
->多表继承和抽象类继承不同之处在于，在一个空数据库和这个 models.py 文件上运行 `manage.py syncdb` 会**创建三张表 Author, Book, SmithBook**，而抽象基础类的情况下，**只创建了 Author, SmithBook 两张表**。
+这样的方式不会改变数据存储结构，但可以纵向的扩展子类Person的方法，并且基础User父类的所有属性和方法。
 
 # Meta 嵌套类
 
@@ -369,3 +454,4 @@ Meta类有以下属性：
 - [Django 数据模型的字段列表整理](http://www.c77cc.cn/article-64.html)
 - [跟我一起Django - 04 定义和使用模型](http://www.tuicool.com/articles/vU7vIz)
 - [django的模型总结](http://iluoxuan.iteye.com/blog/1703061)
+- [django ORM数据模型的定义](http://blog.coocla.org/414.html)

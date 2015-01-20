@@ -73,15 +73,14 @@ sql_var=" -r -quick --default-character-set=utf8  --skip-column"
 
 mysql $sql_var -h${db_host} -u${db_user} -p${db_pass} -P${db_port} -D${db_name} -e "$sql" | sed "s/NULL/\\\\N/g"> $file 2>&1
 
-lzop $file
+lzop -U $file
 hadoop fs -mkdir -p /logroot/$table
 hadoop fs -ls /logroot/$table |grep lzo|awk '{print $8}'|xargs -i hadoop fs -rm {} 
-hadoop fs -put $file.lzo /logroot/$table/
+hadoop fs -moveFromLocal $file.lzo /logroot/$table/
 hadoop jar /usr/lib/hadoop/lib/hadoop-lzo.jar com.hadoop.compression.lzo.LzoIndexer  /logroot/$table/$file.lzo 2>&1
 
 echo "create table if not exists"
 hive -v -e "$hql;" 2>&1 
-rm -rf $file $file.lzo*
 ```
 
 上面 bash 代码逻辑如下：
@@ -124,15 +123,13 @@ sql_var=" -r -quick --default-character-set=utf8  --skip-column"
 
 mysql $sql_var -h${db_host} -u${db_user} -p${db_pass} -P${db_port} -D${db_name} -e "$sql" | sed "s/NULL/\\\\N/g"> $file 2>&1
 
-lzop $file
+lzop -U $file
 hadoop fs -mkdir -p /logroot/$table/key_ym=$logmonth/key_ymd=$logday
 hadoop fs -ls /logroot/$table/key_ym=$logmonth/key_ymd=$logday/ |grep lzo|awk '{print $8}'|xargs -i hadoop fs -rm {} 2>&1
-hadoop fs -put $file.lzo /logroot/$table/key_ym=$logmonth/key_ymd=$logday/
+hadoop fs -moveFromLocal $file.lzo /logroot/$table/key_ym=$logmonth/key_ymd=$logday/
 hadoop jar /usr/lib/hadoop/lib/hadoop-lzo.jar com.hadoop.compression.lzo.LzoIndexer  /logroot/$table/key_ym=$logmonth/key_ymd=$logday/$file.lzo 2>&1
 
 hive -v -e "$hql;ALTER TABLE $table ADD IF NOT EXISTS PARTITION(key_ym=$logmonth,key_ymd=$logday) location '/logroot/$table/key_ym=$logmonth/key_ymd=$logday' " 2>&1
-
-rm -rf $file $file.lzo*
 ```
 
 通过上面的两个命令就可以实现将 mysql 中的数据导入到 hdfs 中。
@@ -229,6 +226,7 @@ command=sh test.sh ${DAY}
 failure.emails=XXX@163.com
 dependencies=xxx
 ```
+
 - 最后，将 bi_etl 目录打包成 zip 文件，然后上传到 azkaban 管理界面上去，就可以运行或者是设置调度任务了。
 
 
@@ -241,54 +239,56 @@ dependencies=xxx
 
 目前是将 hive 或者 impala 的处理结果推送到关系数据库中，由传统的 BI 报表工具展示数据或者直接通过 impala 查询数据生成报表并发送邮件。
 
-为了保证报表的正常发送，需要监控任务的正常运行，当任务失败的时候能够发送邮件，这部分通过 azkaban 可以做到。另外，还需要监控每天运行的任务同步的记录数，一个简单的统计脚本如下：
+为了保证报表的正常发送，需要监控任务的正常运行，当任务失败的时候能够发送邮件，这部分通过 azkaban 可以做到。另外，还需要监控每天运行的任务同步的记录数，下面脚本是统计记录数为0的任务：
 
 ```bash
 #!/bin/bash
 
-if [ "$1" ]; then 
+if [ "$1" ]; then
   DAY="$1"
-else 
+else
   DAY="yesterday"
 fi
-  
+
+echo "DAY=$DAY"
+
 datestr=`date +%Y-%m-%d -d"$DAY"`;
 logday=`date +%Y%m%d -d"$DAY"`;
 logmonth=`date +%Y%m -d"$DAY"`
+datemod=`date +%w -d "yesterday"`
 
 rm -rf /tmp/stat_table_day_count_$logday
 touch /tmp/stat_table_day_count_$logday
-for db in `hadoop fs -ls /user/hive/warehouse|grep -v testdb|grep '.db'|awk '{print $8}'|awk -F '/' '{print $5}' |awk -F '.' '{print $1}'`;do
+for db in `hadoop fs -ls /user/hive/warehouse|grep -vE 'testdb|dw_etl'|grep '.db'|awk '{print $8}'|awk -F '/' '{print $5}' |awk -F '.' '{print $1}'`;do
     for table in `hive -S -e "set hive.cli.print.header=false; use $db;show tables" ` ;do
         count_new=""
         result=`hive -S -e "set hive.cli.print.header=false; use $db;show create table $table;"  2>&1 | grep PARTITIONED`
         if [ ${#result} -gt 0 ];then
-          is_part=1
-          count_new=`impala-shell -i 192.168.56.121 --quiet -B --output_delimiter="\t" -q "select count(1) from ${db}.$table where key_ymd=$logday "`
+      is_part=1
+      count_new=`impala-shell -k -i 10.168.35.127:21089 --quiet -B --output_delimiter="\t" -q "select count(1) from ${db}.$table where key_ymd=$logday "`
         else
-          is_part=0
-          count_new=`impala-shell -i 192.168.56.121 --quiet -B --output_delimiter="\t" -q "select count(1) from ${db}.$table; "`
+      is_part=0
+      count_new=`impala-shell -k -i 10.168.35.127:21089 --quiet -B --output_delimiter="\t" -q "select count(1) from ${db}.$table; "`
         fi
-        echo "$db,$table,$is_part,$count_new"
         echo "$db,$table,$is_part,$count_new" >> /tmp/stat_table_day_count_$logday
     done
 done
 
-# 处理 impala 导出的文件中的特殊字符
+#mail -s "The count of the table between old and new cluster in $datestr" -c $mails < /tmp/stat_table_day_count_$logday
+
 sed -i 's/1034h//g' /tmp/stat_table_day_count_$logday
 sed -i 's/\[//g' /tmp/stat_table_day_count_$logday
 sed -i 's/\?//g' /tmp/stat_table_day_count_$logday
 sed -i 's/\x1B//g' /tmp/stat_table_day_count_$logday
 
-res=`cat /tmp/stat_table_day_count_$logday`
+res=`cat /tmp/stat_table_day_count_$logday|grep -E '1,0|0,0'|grep -v stat_table_day_count`
 
 echo $res
 
 hive -e "use dw_default;
 LOAD DATA LOCAL INPATH '/tmp/stat_table_day_count_$logday' overwrite INTO TABLE stat_table_day_count  PARTITION (key_ym=$logmonth,key_ymd=$logday)
 "
-
-python mail.py "Table count in $datestr" "$res"
+python mail.py "Count is 0 in $datestr" "$res"
 ```
 
 # 4. 总结

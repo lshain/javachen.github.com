@@ -62,13 +62,13 @@ tags: [zookeeper]
 
 ZooKeeper服务器集群存储配置信息,在服务器上创建一个保存数据的节点(创建节点操作);配置管理程序提供一个配置管理的UI界面或者命令行方式,用户通过配置界面修改ZooKeeper服务器节点上配置信息(设置节点数据操作);分布式应用连接到ZooKeeper集群上(创建ZooKeeper客户端操作),监听配置信息的变化(使用获取节点数据操作,并注册一个watcher)。
 
-当配置信息发生变化时,分布式应用会更新程序中使用配置信息。
+当配置信息发生变化时，分布式应用会更新程序中使用配置信息。
 
 ![修改配置的时许图](http://javachen-rs.qiniudn.com/images/2013/zookeeper-02.jpg)
 
 # 源代码
 
-找到一个淘宝工程师写的实现方式，待整理下之后，提交到github上去。
+找到一个淘宝工程师写的实现方式， 代码见：[zkpublisher](https://github.com/javachen/learning-hadoop/tree/master/zkpublisher)
 
 # 优点
 
