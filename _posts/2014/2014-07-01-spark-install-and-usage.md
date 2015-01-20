@@ -56,12 +56,12 @@ $ sudo yum install spark-core spark-master spark-python spark-history-server
 $ sudo yum install spark-core spark-worker spark-python
 ```
 
-安装成功后集群部署如下：
+安装成功后，我的集群部署如下：
 
 ```
-cdh1: spark-master spark-history-server
-cdh1: spark-worker 
-cdh1: spark-worker 
+cdh1节点:  spark-master spark-history-server
+cdh2节点:  spark-worker 
+cdh3节点:  spark-worker 
 ```
 
 # 2. 配置
