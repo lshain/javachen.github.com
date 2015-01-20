@@ -52,9 +52,9 @@ hue-spark.x86_64                  3.7.0+cdh5.3.0+134-1.cdh5.3.0.p0.24.el6 cdh
 
 ```bash
 # 在 cdh1 节点上运行
-$ sudo yum install spark-core spark-master spark-python spark-history-server -y
+$ sudo yum install spark-core spark-master spark-worker spark-python spark-history-server -y
 
-# 在 cdh1、cdh2、cdh3 上运行
+# 在 cdh2、cdh3 上运行
 $ sudo yum install spark-core spark-worker spark-python -y
 ```
 
