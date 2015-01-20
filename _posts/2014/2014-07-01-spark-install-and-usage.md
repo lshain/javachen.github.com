@@ -66,7 +66,7 @@ cdh3节点:  spark-worker
 
 # 2. 配置
 
-## 修改配置文件
+## 2.1 修改配置文件
 
 设置环境变量，在 `.bashrc` 中加入下面一行，并使其生效：
 
@@ -111,7 +111,7 @@ export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-/etc/hadoop/conf}
 export SPARK_DAEMON_MEMORY=256m
 ```
 
-## 配置 Spark History Server
+## 2.2 配置 Spark History Server
 
 执行下面命令：
 
@@ -190,7 +190,7 @@ $ ./start-master.sh
 
 # 4. 测试
 
-## 运行测试例子
+## 4.1 运行测试例子
 
 你可以在官方站点查看官方的[例子](http://spark.apache.org/examples.html)。 除此之外，Spark 在发布包的 examples 的文件夹中包含了几个例子( [Scala](https://github.com/apache/spark/tree/master/examples/src/main/scala/org/apache/spark/examples)、[Java](https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples)、Python)。运行 Java 和 Scala 例子时你可以传递类名给 Spark 的 bin/run-example脚本， 例如：
 
@@ -256,7 +256,7 @@ scala> val totalLength = lineLengths.reduce((a, b) => a + b)
 
 上面是一个 RDD 的示例程序，从一个外部文件创建了一个基本的 RDD对象。如果想运行这段程序，请确保 data.txt 文件在当前目录中存在。
 
-## 在集群上运行
+## 4.2 在集群上运行
 
 Spark 目前支持三种集群管理模式：
 
@@ -423,7 +423,7 @@ Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.hive.cli.CliDrive
   
 从上可以知道  Spark-SQL 编译时没有集成 Hive，故需要重新编译 spark 源代码。
 
-## 编译 Spark-SQL
+### 编译 Spark-SQL
 
 下载代码：
 
