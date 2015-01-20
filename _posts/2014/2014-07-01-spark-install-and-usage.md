@@ -15,17 +15,19 @@ published: true
 
 ---
 
-本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.1。
+本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。
+
+安装环境如下：
 
 - 操作系统：CentOs 6.5
-- CDH 版本：5.3.0
+- Hadoop 版本：CDH-5.3.0
 - Spark 版本：1.2
 
-关于 yum 源的配置以及 hadoop 的安装，请参考 [使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
+关于 yum 源的配置以及 Hadoop 集群的安装，请参考 [使用yum安装CDH Hadoop集群](/2013/04/06/install-cloudera-cdh-by-yum)。
 
 # 1. Spark 安装
 
-选择一个节点来安装 Spark ，首先查看 Spark 相关的包有哪些：
+选择一个节点 cdh1 来安装 Spark ，首先查看 Spark 相关的包有哪些：
 
 ```bash
 $ yum list |grep spark
@@ -46,14 +48,14 @@ hue-spark.x86_64                  3.7.0+cdh5.3.0+134-1.cdh5.3.0.p0.24.el6 cdh
 - hue-spark: spark 和 hue 集成包
 - spark-history-server
 
-你可以根据你的集群部署规划来安装组件：
+你可以根据你的集群部署规划来安装组件，在 cdh1 上安装 master，在 cdh1、cdh2、cdh3 上安装 worker：
 
 ```bash
-#master 节点
-$ sudo yum install spark-core spark-master spark-python spark-history-server
+# 在 cdh1 节点上运行
+$ sudo yum install spark-core spark-master spark-python spark-history-server -y
 
-#work 节点
-$ sudo yum install spark-core spark-worker spark-python
+# 在 cdh1、cdh2、cdh3 上运行
+$ sudo yum install spark-core spark-worker spark-python -y
 ```
 
 安装成功后，我的集群部署如下：
@@ -74,10 +76,11 @@ cdh3节点:  spark-worker
 export SPARK_HOME=/usr/lib/spark
 ```
 
-可以修改配置文件 `/etc/spark/conf/spark-env.sh`，其内容如下，你可以根据需要做一些修改。
+可以修改配置文件 `/etc/spark/conf/spark-env.sh`，其内容如下，你可以根据需要做一些修改：修改 master 的主机名称。
 
 ```bash
-export STANDALONE_SPARK_MASTER_HOST=`hostname`
+# 设置 master 主机名称
+export STANDALONE_SPARK_MASTER_HOST=cdh1
 
 export SPARK_MASTER_IP=$STANDALONE_SPARK_MASTER_HOST
 
@@ -146,7 +149,10 @@ spark.yarn.historyServer.address=http://HISTORY_HOST:HISTORY_PORT
 启动脚本：
 
 ```bash
+# 在 cdh1 节点上运行
 $ sudo service spark-master start
+
+# 在 cdh1、cdh2、cdh3 节点上运行
 $ sudo service spark-worker start
 ```
 
@@ -164,9 +170,12 @@ $ sudo chkconfig spark-worker on
 $ sudo chkconfig spark-master on
 ```
 
-运行日志保存在 `/var/log/spark`，你可以通过 `<http://IP:18080/>` 访问 spark master 的 web 界面
+运行日志保存在 `/var/log/spark`，你可以通过 <http://cdh1:18080/> 访问 spark master 的 web 界面。
 
-当然，你也可以使用 spark 自带的脚本来启动和停止，这些脚本在 `/usr/lib/spark/sbin` 目录下：
+![spark-master-web-ui](http://javachen-rs.qiniudn.com/images/spark/spark-master-web-ui.jpg)
+
+
+另外，你也可以使用 spark 自带的脚本来启动和停止，这些脚本在 `/usr/lib/spark/sbin` 目录下：
 
 ```bash
 $ ls /usr/lib/spark/sbin
@@ -175,17 +184,32 @@ spark-config.sh  spark-executor    start-slave.sh   stop-master.sh
 spark-daemon.sh  start-all.sh      start-slaves.sh  stop-slaves.sh
 ```
 
-例如，你也可以通过下面脚本启动master：
+这时候，还需要修改 /etc/spark/conf/slaves 文件：
+
+```
+# A Spark Worker will be started on each of the machines listed below.
+cdh1
+cdh2
+cdh3
+```
+
+然后，你也可以通过下面脚本启动 master：
 
 ```bash
 $ cd /usr/lib/spark/sbin
 $ ./start-master.sh
 ```
 
-类似地，通过下面命令启动worker：
+通过下面命令启动所有节点上的 worker：
 
 ```bash
-./bin/spark-class org.apache.spark.deploy.worker.Worker spark://IP:18080
+$ ./start-slaves.sh
+```
+
+当然，你也可以通过下面方式启动：
+
+```bash
+$ ./bin/spark-class org.apache.spark.deploy.worker.Worker spark://cdh1:18080
 ```
 
 # 4. 测试
@@ -211,7 +235,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
-    _\ \/ _ \/ _ `/ __/  '_/
+    _\ \/ _ \/ _ `/ __/  `_/
    /__ / .__/\_,_/_/ /_/\_\   version 1.2.0
       /_/
 
@@ -238,7 +262,7 @@ $ ./bin/spark-shell --master local[2]
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
-    _\ \/ _ \/ _ `/ __/  '_/
+    _\ \/ _ \/ _ `/ __/  `_/
    /___/ .__/\_,_/_/ /_/\_\   version 1.2.0
       /_/
 
@@ -482,7 +506,7 @@ $ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.3.0 -Phive -DskipTests clean package
 
 # 6. 总结
 
-本文主要介绍了Spark 的安装过程以及集群运行模式，关于 Spark 的更多介绍可以参考官网或者一些[中文翻译的文章](http://colobu.com/tags/Spark/)
+本文主要介绍了Spark 的安装过程以及集群运行模式，关于 Spark 的更多介绍可以参考官网或者一些[中文翻译的文章](http://colobu.com/tags/Spark/)。
 
 # 7. 参考文章
 
