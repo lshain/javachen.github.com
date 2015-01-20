@@ -17,7 +17,7 @@ published: true
 
 本文主要记录 Spark 的安装过程配置过程并测试 Spark 的一些基本使用方法。为了方便，这里使用 CDH 的 yum 源方式来安装 Spark，注意本文安装的 Spark 版本为 1.1。
 
-- 操作系统：CentOs 6.4
+- 操作系统：CentOs 6.5
 - CDH 版本：5.3.0
 - Spark 版本：1.2
 
@@ -476,11 +476,9 @@ $ export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
 $ mvn -Pyarn -Dhadoop.version=2.5.0-cdh5.3.0 -Phive -DskipTests clean package
 ```
 
-如果编译成功之后， 会在 assembly/target/scala-2.10 目录下生成：spark-assembly-1.2.0-cdh5.3.0.jar，在 examples/target/scala-2.10 目录下生成：spark-examples-1.2.0-cdh5.3.0.jar
+如果编译成功之后， 会在 assembly/target/scala-2.10 目录下生成：spark-assembly-1.2.0-cdh5.3.0.jar，在 examples/target/scala-2.10 目录下生成：spark-examples-1.2.0-cdh5.3.0.jar，然后将 spark-assembly-1.2.0-cdh5.3.0.jar 拷贝到 /usr/lib/spark/lib 目录，然后再来运行 spark-sql。
 
-但是，经测试 cdh5.2.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，最后无法编译成功，故需要等到 cloudera 官方更新源代码或者等待下一个 cdh 版本集成 spark-sql。
-
-如果编译成功了，则将 spark-assembly-1.2.0-cdh5.3.0.jar 拷贝到 /usr/lib/spark/lib 目录，然后再来运行 spark-sql。
+>但是，经测试 cdh5.3.0 版本中的 spark 的 sql/hive-thriftserver 模块存在编译错误，最后无法编译成功，故需要等到 cloudera 官方更新源代码或者等待下一个 cdh 版本集成 spark-sql。
 
 # 6. 总结
 
