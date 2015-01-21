@@ -22,7 +22,7 @@ Weibo：<http://weibo.com/{{ site.author.weibo }}>
 Github：<https://github.com/{{ site.author.github }}>
 {% endif %}
 
-RSS：[http:{{ site.url }}{{ '/rss.xml' }}](/rss.xml)
+RSS：[{{ site.url }}{{ '/rss.xml' }}](/rss.xml)
 
 QQ交流群：142824963
 
