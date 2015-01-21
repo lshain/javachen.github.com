@@ -114,6 +114,13 @@ export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-/etc/hadoop/conf}
 export SPARK_DAEMON_MEMORY=256m
 ```
 
+修改完 cdh1 节点上的配置文件之后，需要同步到其他节点：
+
+```bash
+scp -r /etc/spark/conf  cdh2:/etc/spark
+scp -r /etc/spark/conf  cdh3:/etc/spark
+```
+
 ## 2.2 配置 Spark History Server
 
 执行下面命令：
