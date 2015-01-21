@@ -462,7 +462,8 @@ Github 上已经有人或多或少的实现了对知乎数据的爬取，我搜�
 - <https://github.com/owengbs/deeplearning> 实现分页获取话题。
 - <https://github.com/gnemoug/distribute_crawler> 使用scrapy、redis、mongodb、graphite实现的一个分布式网络爬虫,底层存储mongodb集群,分布式使用redis实现,爬虫状态显示使用graphite实现
 - <https://github.com/weizetao/spider-roach> 一个分布式定向抓取集群的简单实现。
-
+- <https://github.com/scrapinghub/portia> 这是一个可视化爬虫，基于Scrapy。它提供了可视化操作的Web页面，你只需点击页面上你要抽取的数据就行
+- <https://github.com/binux/pyspider> 你如果不喜欢 Scrapy，可以试试 pyspider ，他让你在 WEB 界面编写调试脚本，监控执行状态，查看历史和结果 ，你可以在线试下 demo：[Dashboard - pyspider](http://demo.pyspider.org/)
 
 其他资料：
 
