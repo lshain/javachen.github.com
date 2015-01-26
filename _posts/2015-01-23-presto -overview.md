@@ -17,11 +17,11 @@ published: true
 
 Presto 是一个运行在集群之上的分布式系统。一个完全的安装报考一个 coordinator  进程和多个 workers 进程。查询通过一个客户端例如 Presto CLI 提交到 coordinator 进程。这个 coordinator 进程解析、分析并且生成查询的执行计划，然后将执行过程分发到 workers 进程。
 
-下面是一个架构图：
+下面是一个架构图（图来自 <http://www.dw4e.com/?p=141>，此图将官网的架构图稍微修改了一下，增加了 Discovery 的服务，这样可能看起来会更清楚一些）：
 
-![](http://prestodb.io/static/presto-overview.png)
+![](http://www.dw4e.com/wp-content/uploads/2013/11/presto.png)
 
-Presto查询引擎是一个Master-Slave的架构，由一个Coordinator节点，一个Discovery Server节点，多个Worker节点组成，Discovery Server通常内嵌于Coordinator节点中。Coordinator负责解析SQL语句，生成执行计划，分发执行任务给Worker节点执行。Worker节点负责实际执行查询任务。Worker节点启动后向Discovery Server服务注册，Coordinator从Discovery Server获得可以正常工作的Worker节点。如果配置了Hive Connector，需要配置一个Hive MetaStore服务为Presto提供Hive元信息，Worker节点与HDFS交互读取数据。
+Presto 查询引擎是一个 Master-Slave 的架构，由一个 Coordinato r节点，一个 Discovery Server 节点，多个 Worker 节点组成，Discovery Server 通常内嵌于 Coordinator 节点中。Coordinator 负责解析 SQL 语句，生成执行计划，分发执行任务给 Worker 节点执行。Worker 节点负责实际执行查询任务。Worker 节点启动后向 Discovery Server 服务注册，Coordinator 从 Discovery Server 获得可以正常工作的 Worker 节点。如果配置了 Hive Connector，需要配置一个 Hive MetaStore 服务为 Presto 提供 Hive 元信息，Worker 节点与 HDFS 交互读取数据。
 
 # 要求
 
@@ -39,10 +39,10 @@ Presto 支持可插拔的连接器用于提供数据查询。不同连接器的�
 
 Presto 支持读以下版本的 hive 数据：
 
-- Apache Hadoop 1.x
-- Apache Hadoop 2.x
-- Cloudera CDH 4
-- Cloudera CDH 5
+- Apache Hadoop 1.x，使用 `hive-hadoop1` 连接器
+- Apache Hadoop 2.x，使用 `hive-hadoop2 连接器
+- Cloudera CDH 4，`使用 hive-cdh4` 连接器
+- Cloudera CDH 5，`使用 hive-cdh5` 连接器
 
 支持以下格式：Text, SequenceFile, RCFile, ORC。
 
@@ -92,6 +92,7 @@ Presto 被设计为处理数据仓库和分析：分析数据，聚合大量的�
 以下是一些资料，希望对你了解 Presto 有所帮助：
 
 - Presto官方文档：<http://prestodb.io/>
+- [Shib](https://github.com/tagomoris/shib)：Shib is a web-client written in Node.js designed to query Presto and Hive. 
 
 - Facebook Presto团队介绍Presto的文章： <https://www.facebook.com/notes/facebook-engineering/presto-interacting-with-petabytes-of-data-at-facebook/10151786197628920>
 
