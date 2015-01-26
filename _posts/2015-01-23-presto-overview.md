@@ -40,11 +40,11 @@ Presto 支持可插拔的连接器用于提供数据查询。不同连接器的�
 Presto 支持读以下版本的 hive 数据：
 
 - Apache Hadoop 1.x，使用 `hive-hadoop1` 连接器
-- Apache Hadoop 2.x，使用 `hive-hadoop2 连接器
+- Apache Hadoop 2.x，使用 `hive-hadoop2` 连接器
 - Cloudera CDH 4，`使用 hive-cdh4` 连接器
 - Cloudera CDH 5，`使用 hive-cdh5` 连接器
 
-支持以下格式：Text, SequenceFile, RCFile, ORC。
+支持以下格式：Text、SequenceFile、RCFile、ORC。
 
 另外，还需要一个远程的 Hive metastore 服务。本地的或者嵌入式模式是不支持的。Presto 不使用 MapReduce 并且只需要 HDFS。
 
