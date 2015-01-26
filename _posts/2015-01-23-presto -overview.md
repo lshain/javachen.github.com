@@ -13,7 +13,7 @@ published: true
 
 ---
 
-# 简介
+# 1. 简介
 
 Presto 是一个运行在集群之上的分布式系统。一个完全的安装报考一个 coordinator  进程和多个 workers 进程。查询通过一个客户端例如 Presto CLI 提交到 coordinator 进程。这个 coordinator 进程解析、分析并且生成查询的执行计划，然后将执行过程分发到 workers 进程。
 
@@ -23,7 +23,7 @@ Presto 是一个运行在集群之上的分布式系统。一个完全的安装�
 
 Presto 查询引擎是一个 Master-Slave 的架构，由一个 Coordinato r节点，一个 Discovery Server 节点，多个 Worker 节点组成，Discovery Server 通常内嵌于 Coordinator 节点中。Coordinator 负责解析 SQL 语句，生成执行计划，分发执行任务给 Worker 节点执行。Worker 节点负责实际执行查询任务。Worker 节点启动后向 Discovery Server 服务注册，Coordinator 从 Discovery Server 获得可以正常工作的 Worker 节点。如果配置了 Hive Connector，需要配置一个 Hive MetaStore 服务为 Presto 提供 Hive 元信息，Worker 节点与 HDFS 交互读取数据。
 
-# 要求
+# 2. 要求
 
 Presto 有以下几个基本要求：
 
@@ -31,7 +31,7 @@ Presto 有以下几个基本要求：
 - Java 8，64位
 - Python 2.4++
 
-## 连接器
+## 2.1 连接器
 
 Presto 支持可插拔的连接器用于提供数据查询。不同连接器的要求不一样。
 
@@ -63,19 +63,19 @@ TPC-H 连接器动态地生成数据用于实验和测试 Presto。这个连接�
 - MySQL
 - PostgreSQL
 
-# 使用场景
+# 3. 使用场景
 
-## What Presto Is Not
+## 3.1 What Presto Is Not
 
 Presto 支持 SQL 并提供了一个标准数据库的语法特性，但其不是一个通常意义上的关系数据库，他不是关系数据库，如 MySQL、PostgreSQL 或者 Oracle 的替代品。Presto 不是设计用来解决在线事物处理（OLTP）。
 
-## What Presto Is
+## 3.2 What Presto Is
 
 Presto 是一个工具，被用来通过分布式查询来有效的查询大量的数据。Presto 是一个可选的工具，可以用来查询 HDFS，通过使用 MapReduce 的作业的流水线，例如 hive，pig，但是又不限于查询 HDFS 数据，它还能查询其他的不同数据源的数据，包括关系数据库以及其他的数据源，比如 cassandra。
 
 Presto 被设计为处理数据仓库和分析：分析数据，聚合大量的数据并产生报表，这些场景通常被定义为 OLAP。
 
-## Who uses Presto?
+## 3.3 Who uses Presto?
 
 国外：
 
@@ -87,7 +87,7 @@ Presto 被设计为处理数据仓库和分析：分析数据，聚合大量的�
 - 美团，[Presto实现原理和美团的使用实践](http://tech.meituan.com/presto.html)
 - 窝窝团，[#数据技术选型#即席查询Shib+Presto，集群任务调度HUE+Oozie](http://www.cnblogs.com/zhengyun_ustc/p/55solution7.html)
 
-# 资料
+# 4. 资料
 
 以下是一些资料，希望对你了解 Presto 有所帮助：
 

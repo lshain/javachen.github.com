@@ -13,7 +13,7 @@ published: true
 
 ---
 
-## 1. 安装环境
+# 1. 安装环境
 
 - 操作系统：CentOs6.5
 - Hadoop 集群：CDH5.3
@@ -21,7 +21,7 @@ published: true
 
 为了测试简单，我是将 Presto 的 coordinator 和 worker 都部署在 `cdh1` 节点上，并且该节点上部署了 hive-metastore 服务。下面的安装和部署过程参考自 <http://prestodb.io/docs/current/installation.html>。
 
-## 2. 安装 Presto
+# 2. 安装 Presto
 
 下载 Presto 的压缩包，目前最新版本为 [presto-server-0.90](https://repo1.maven.org/maven2/com/facebook/presto/presto-server/0.90/presto-server-0.90.tar.gz)，然后解压为 presto-server-0.90 。
 
@@ -60,7 +60,7 @@ tar zxvf presto-server-0.90.tar.gz
 
 从 plugin 目录可以看到所有 Presto 支持的插件有哪些，这里我主要使用 hive-cdh5 插件，也成为连接器。
 
-## 3. 配置 Presto
+# 3. 配置 Presto
 
 在 presto-server-0.90 目录创建 etc 目录，并创建以下文件：
 
@@ -163,7 +163,7 @@ hive.config.resources=/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.
 
 更多关于连接器的说明，请参考 [Connectors ](http://prestodb.io/docs/current/connector.html)。
 
-## 4. 允许 Presto
+# 4. 运行 Presto
 
 你可以使用下面命令后台启动：
 
@@ -234,7 +234,7 @@ Options:
 - `server.log`：Presto Server 输出日志
 - `http-request.log`：HTTP 请求日志
 
-## 5. 测试 Presto CLI 
+# 5. 测试 Presto CLI 
 
 下载 [presto-cli-0.90-executable.jar](https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.90/presto-cli-0.90-executable.jar) 并将其重命名为 presto-cli（你也可以重命名为 presto），然后添加执行权限。
 
@@ -268,7 +268,7 @@ Splits: 2 total, 2 done (100.00%)
 
 默认情况下，Presto 的查询结果是使用 `less` 程序分页输出的，你可以通过修改环境变量 `PRESTO_PAGER` 的值将其改为其他命令，如 `more`，或者将其置为空以禁止分页输出。
 
-## 6. 测试 jdbc
+# 6. 测试 jdbc
 
 使用 jdbc 连接 Presto，需要下载 jdbc 驱动 [presto-jdbc-0.90](https://repo1.maven.org/maven2/com/facebook/presto/presto-jdbc/0.90/presto-jdbc-0.90.jar) 并将其加到你的应用程序的 classpath 中。
 
@@ -286,6 +286,6 @@ jdbc:presto://host:port/catalog/schema
 jdbc:presto://cdh1:8080/hive/sales
 ```
 
-## 7. 总结
+# 7. 总结
 
 本文主要记录 Presto 的安装部署过程，并使用 hive-cdh5 连接器进行简单测试。下一步，需要基于一些生产数据做一些功能测试以及和 impala 做一些对比测试。

@@ -17,13 +17,13 @@ published: true
 
 本文主要是记录使用 Spring Boot 和 Gradle 创建项目的过程，其中会包括 Spring Boot 的安装及使用方法，希望通过这篇文章能够快速搭建一个项目。
 
-### 开发环境
+# 1. 开发环境
 
 - 操作系统: mac
 - JDK：1.7.0_60
 - Gradle：2.2.1
 
-### 创建项目
+# 2. 创建项目
 
 你可以通过 [Spring Initializr](http://start.spring.io/) 来创建一个空的项目，也可以手动创建，这里我使用的是手动创建 gradle 项目。
 
@@ -96,7 +96,7 @@ task wrapper(type: Wrapper) {
 
 使用 spring-boot-gradle-plugin 插件可以提供一些创建可执行 jar 和从源码运行项目的任务，它还提供了 `ResolutionStrategy` 以方便依赖中不用写版本号。
 
-### 创建一个实体类
+# 3. 创建一个实体类
 
 新建一个符合Maven规范的目录结构， src/main/java/com/javachen/examples/springboot：
 
@@ -129,7 +129,7 @@ public class Greeting {
 }
 ```
 
-### 创建控制类
+# 4. 创建控制类
 
 创建一个标准的控制类 src/main/java/com/javachen/examples/springboot/web/GreetingController.java：
 
@@ -199,7 +199,7 @@ public class GreetingController {
 
 这段代码使用 Spring4 新的注解：`@RestController`，表明该类的每个方法返回对象而不是视图。它实际就是 `@Controller` 和 `@ResponseBody` 混合使用的简写方法。
 
-### 创建一个可执行的类
+# 5. 创建一个可执行的类
 
 尽管你可以将这个服务打包成传统的 WAR 文件部署到应用服务器，但下面将会创建一个独立的应用，使用 main 方法可以将所有东西打包到一个可执行的jar文件。并且，你将使用 Sping 对内嵌 Tomcat servlet 容器的支持，作为 HTPP 运行时环境，没必要部署成一个 tomcat 外部实例。
 
@@ -264,7 +264,7 @@ public class Application {
 
 另外，你还可以添加 `@EnableWebMvc` 注解配置 Spring Mvc。
 
-### 运行项目
+# 6. 运行项目
 
 可以在项目根路径直接运行下面命令：
 
@@ -329,7 +329,7 @@ $ java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n \
        -jar build/libs/spring-boot-examples-0.1.0.jar
 ```
 
-### 创建单元测试
+# 7. 创建单元测试
 
 在 build.gradle 中添加依赖：
 
@@ -403,7 +403,7 @@ $ curl localhost:8080/health
 ok
 ```
 
-### 通过浏览器测试
+# 8. 通过浏览器测试
 
 打开浏览器访问 <http://localhost:8080/greeting>，可以看到页面输出下面内容：
 
@@ -417,7 +417,7 @@ ok
 {"id":2,"content":"Hello, User!"}
 ```
 
-### 创建静态页面
+# 9. 创建静态页面
 
 创建 public/hello.js：
 
@@ -475,13 +475,13 @@ brew install springboot
 spring run app.groovy -- --server.port=9000
 ```
 
-### 总结
+# 10. 总结
 
 本文主要参考 Sping 官方例子来了解和熟悉使用 Gradle 创建 Spring Boot 项目的过程，希望能对你有所帮助。
 
 文中相关的源码在 [spring-boot-examples](https://github.com/javachen/spring-boot-examples)。
 
-### 参考文章
+# 11. 参考文章
 - [Building a RESTful Web Service](http://spring.io/guides/gs/rest-service/)
 - [Enabling Cross Origin Requests for a RESTful Web Service](http://spring.io/guides/gs/rest-service-cors)
 - [Building an Application with Spring Boot](http://spring.io/guides/gs/spring-boot/)

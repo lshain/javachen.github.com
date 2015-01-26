@@ -15,7 +15,7 @@ published: true
 
 废话不多说，直接进入主题。
 
-### 创建项目
+# 1. 创建项目
 
 首先创建项目，名称为 test：
 
@@ -79,7 +79,7 @@ mkdir -p web/src/test/java
 14 directories, 6 files
 ```
 
-### 修改配置
+# 2. 修改配置
 
 接下来修改根目录下的 settings.gradle 文件，引入子模块：
 
@@ -216,7 +216,7 @@ task('jarPath')<<{
 }  
 ```
 
-### 如何编译项目
+# 3. 编译项目
 
 查看所有 jar：
 
@@ -282,21 +282,21 @@ $ gradle build
 23 directories, 13 files
 ```
 
-### 一些小技巧
+# 4. 一些小技巧
 
-#### 1. 善用 gradle dependencies
+## 1. 善用 gradle dependencies
 
 ```bash
 gradle dependencies > depend.log
 ```
 
-#### 2. java 编译时候报编码错误
+## 2. java 编译时候报编码错误
 
 ```groovy
 [compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
 ```
 
-#### 3. 忽略掉 .gradle 目录
+## 3. 忽略掉 .gradle 目录
 
 修改 .gitignore 忽略该目录：
 
@@ -320,7 +320,7 @@ README.html
 *.iml
 ```
 
-#### 4. Maven 库中没有的 jar 该怎么管理
+## 4. Maven 库中没有的 jar 该怎么管理
 
 在顶级目录增加一个 libs 文件夹，这个文件夹里面的 jar 是对所有项目都起作用的。
 
@@ -334,24 +334,24 @@ ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
 compile jarTree
 ```
 
-#### 5. jar 包定义外移
+## 5. jar 包定义外移
 
 暂时还没有这样的需求，详细说明请参考 [jar 包定义外移](https://github.com/someok/gradle-multi-project-example/blob/master/readme.md#jar-%E5%8C%85%E5%AE%9A%E4%B9%89%E5%A4%96%E7%A7%BB)
 
-#### 6. 如何指定 build 输出目录和版本号
+## 6. 如何指定 build 输出目录和版本号
 
 ```
 buildDir = "target"
 version = '1.0'
 ```
 
-#### 7. 在执行 Gradle 命令时如何指定参数
+## 7. 在执行 Gradle 命令时如何指定参数
 
 ```
 gradle task -P profile=development
 ```
 
-#### 8. Gradle 和 idea 集成时如何不自动下载依赖源码和javadoc
+## 8. Gradle 和 idea 集成时如何不自动下载依赖源码和javadoc
 
 ```groovy
 idea {
@@ -362,7 +362,7 @@ idea {
 }
 ```
 
-### 参考文章
+# 5. 参考文章
 
 - [gradle多模块开发](http://blog.csdn.net/xiejx618/article/details/38469865)
 - [Gradle 多项目管理示例](https://github.com/someok/gradle-multi-project-example/blob/master/readme.md)

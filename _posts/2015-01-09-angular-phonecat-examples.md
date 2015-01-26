@@ -23,7 +23,7 @@ AngularJS 官方网站提供了一个用于学习的示例项目：PhoneCat。�
 
 **以下内容如有理解不正确，欢迎指正！**
 
-# 环境搭建
+# 1. 环境搭建
 
 对于 PhoneCat 项目的开发环境和测试环境的搭建，官方网站上提供了详细的指导：<http://docs.angularjs.org/tutorial>，你可以找到一些中文的翻译。
 
@@ -66,7 +66,7 @@ $ npm start
 
 然后通过 <http://localhost:8000/app/index.html> 访问。
 
-# 依赖包介绍
+# 2. 依赖包介绍
 
 在克隆项目之后，目录如下：
 
@@ -282,7 +282,7 @@ if (exec('git commit -am "Auto-commit"').code !== 0) {
 "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\""
 ```
 
-# 测试
+# 3. 测试
 
 ## 运行单元测试
 
@@ -311,7 +311,7 @@ $ npm start
 $ npm run protractor
 ```
 
-# 代码分析
+# 4. 代码分析
 
 在介绍了 PhoneCat 的运行和测试环境后，来看看 PhoneCat 的页面和 js 是怎么组织起来的。
 
@@ -413,7 +413,7 @@ phonecatServices.factory('Phone', ['$resource',
   }]);
 ```
 
-# 参考文章
+# 5. 参考文章
 
 - [AngularJS初探：搭建PhoneCat项目的开发与测试环境](http://www.lifelaf.com/blog/?p=1206)
 - [Angular 实例项目 angular-phonecat 的一些问题](http://www.cnblogs.com/ElvinLong/p/3939938.html)

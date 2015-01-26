@@ -36,7 +36,7 @@ Impala，是基于 Apache Hadoop 的一个开源的分析数据库，使用 Kerb
 
 在这篇文章中，我将解释为何以及如何使用 LDAP 和 Kerberos 的组合来建立 Impala 认证。
 
-## Kerberos
+# 1. Kerberos
 
 Kerberos 仍然是 Apache Hadoop 的主要认证机制。下面是 Kerberos 的一些术语将会帮助你理解这篇文章讨论的内容。
 
@@ -68,7 +68,7 @@ Basic support for Kerberos in impala for this process is straightforward: Supply
 
 第一个参数 `--principal` 定义 Impalad 服务外部查询时使用哪一个主体，`--be_principal` 参数定义 Impalad 进程之间通信时使用哪一个主体。两个主体的 key 必须存在于相同的 keytab 文件中。
 
-### 调试 Kerberos
+## 调试 Kerberos
 
 Kerberos是一个优雅的协议，但是当出现错误的时候实际的实现不是非常有帮助的。下面主要有两件事情需要检查，在出现认证失败的时候：
 
@@ -80,13 +80,13 @@ Kerberos是一个优雅的协议，但是当出现错误的时候实际的实现
 - `KRB5_TRACE=/full/path/to/trace/output.log`：该环境变量指定调试日志输出路径。
 - `JAVA_TOOL_OPTIONS=-Dsun.security.krb5.debug=true`：该环境变量会传给 Impala 守护进程，并传递给内部的 java 组件。
 
-### Kerberos Flags
+## Kerberos Flags
 
 [Cloudera documentation for Kerberos and Impala](http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/Impala/Installing-and-Using-Impala/ciiu_kerberos.html) 给出了详细的说明，这里只做简要介绍：
 
 ![](http://blog.cloudera.com/wp-content/uploads/2014/10/impala-auth-tab2.png)
 
-## LDAP
+# 2. LDAP
 
 Kerberos 是伟大的，但它确实需要最终用户有一个有效的 Kerberos 证书，这在许多环境中是不实际的，因为每个与 Impala 和Hadoop集群交互的用户都必须配置 Kerberos 主体。对于使用 Active Directory 来管理用户帐户的组织，可能需要在 MIT Kerberos 领域频繁的创建每个用户对应的用户帐户。取而代之的时许多企业环境使用 LDAP 协议，在客户使用自己的用户名和密码进行身份验证自己。
 
@@ -94,7 +94,7 @@ Kerberos 是伟大的，但它确实需要最终用户有一个有效的 Kerbero
 
 LDAP只用于验证外部客户，如Impala shell，ODBC，JDBC，和 hue。所有其他后端认证由 Kerberos 的处理。
 
-### LDAP 配置
+## LDAP 配置
 
 LDAP 是复杂的（而且强大的），因为它非常灵活；有许多方式来配置 LDAP 实体和验证这些实体。在一般情况下，每个人都在 LDAP 具有专有名称或DN，可被认为是 LDAP 中的用户名或主体。
 
@@ -133,7 +133,7 @@ homeDirectory: /home/myoder
 - Netbios domain name + "\" + the sAMAccountName
 - 其他的一些机制，请看上面的链接里的内容。
 
-### LDAP 和 Impalad
+## LDAP 和 Impalad
 
 考虑所有这些的不同点，幸运的是 Impala 进程提供了几个机制去标识 LDAP 的配置。首先，使用简单的配置：
 
@@ -150,11 +150,11 @@ homeDirectory: /home/myoder
 
 为了获得最大的灵活性，也可以通过 `--ldap_bind_pattern` 参数将指定用户名任意映射到一个DN。这个想法是，该参数中必须有一个名称为 #UID 的占位符，并且 `#UID` 会被用户名替代。例如你可以通过指定 `--ldap_bind_pattern=uid=#UID,ou=People,dc=cloudera,dc=com` 来定义 `--ldap_baseDN`。当 myoder 这个用户进来时，其将会替换 `#UID`，并且我们将得到和上面一直的字符串。这个参数应该在需要对 DN 有更多控制的时候才使用。
 
-### LDAP 和 TLS
+## LDAP 和 TLS
 
 当使用 LDAP 时，传递个 LDAP 服务器的用户名和密码都是明文的。这意味着没有任何的保护，任何人都可以看到传输中的密码。为了阻止这一点，你必须使用 TLS（Transport Layer Security，更为人熟知的是 SSL） 来保护连接。 这里有两种不同的连接需要保护：客户端和 impalad 进程之间以及 impalad 进程和 LDAP 服务器之间。
 
-#### 客户端和 impalad 之间
+### 客户端和 impalad 之间
 
 TLS 连接的认证需要使用证书来完成，所以 impalad 进程（作为 TLS server）需要他自己的证书。Impalad 呈现该证书给客户端以证明他的确是 impalad 进程。为了提供该证书，impalad 进程需要设置下面两个参数：
 
@@ -167,7 +167,7 @@ TLS 连接的认证需要使用证书来完成，所以 impalad 进程（作为 
 
 坦白地说，在 impala 客户端和 impalad 进程之间使用 TLS 是一个很好的想法，不管是否使用 LDAP。然而，你的查询，以及这些查询的结果都是通过明文传输的。
 
-#### Impalad 和 LDAP 服务器之间
+### Impalad 和 LDAP 服务器之间
 
 这里有两种方法开启和 LDAP 服务器之间的 TLS ：
 
@@ -182,7 +182,7 @@ TLS 连接的认证需要使用证书来完成，所以 impalad 进程（作为 
 
 ![](http://blog.cloudera.com/wp-content/uploads/2014/10/impala-auth-tab3.png)
 
-## 一起使用
+# 3. 一起使用
 
 如果我们想同事使用 Kerberos 和 LDAP 认证，则需要如下配置：
 
@@ -214,7 +214,6 @@ impala-shell.sh --ssl \
 ```
 
 原文作者为 Michael Yoder，Cloudera 软件工程师。
-
 
 
 

@@ -13,7 +13,7 @@ published: false
 
 ---
 
-### 文件管理
+# 1. 文件管理
 
 使用 glob 模块可以用通配符的方式搜索某个目录下的特定文件，返回结果是一个 list：
 
@@ -34,12 +34,12 @@ shutil.copyfile('data.db', 'archive.db')
 shutil.move('/build/executables', 'installdir')
 ```
 
-### 集合相关
+# 2. 集合相关
 
 collections 是 Python 内建的一个集合模块，提供了许多有用的集合类。
 
 
-#### namedtuple类
+## namedtuple类
 
 namedtuple 是一个函数，它用来创建一个自定义的 tuple 对象，并且规定了 tuple 元素的个数，并可以用属性而不是索引来引用 tuple 的某个元素。
 
@@ -67,7 +67,7 @@ from collections import namedtuple
 Circle = namedtuple('Circle', ['x', 'y', 'r'])
 ```
 
-#### deque类
+## deque类
 
 deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈：
 
@@ -82,7 +82,7 @@ deque(['y', 'a', 'b', 'c', 'x'])
 
 deque 除了实现 list 的 append() 和 pop() 外，还支持 appendleft() 和 popleft()，这样就可以非常高效地往头部添加或删除元素。
 
-#### defaultdict 类
+## defaultdict 类
 
 使用 dict 时，如果引用的 Key 不存在，就会抛出 KeyError。如果希望 key 不存在时，返回一个默认值，就可以用 defaultdict：
 
@@ -101,13 +101,13 @@ deque 除了实现 list 的 append() 和 pop() 外，还支持 appendleft() 和 
 除了在 Key 不存在时返回默认值，defaultdict 的其他行为跟 dict 是完全一样的。
 
 
-#### OrderedDict 类
+## OrderedDict 类
 
 使用 dict 时，Key 是无序的。在对 dict 做迭代时，我们无法确定 Key 的顺序。如果要保持 Key 的顺序，可以用 OrderedDict，OrderedDict 的 Key 会按照插入的顺序排列，不是Key本身排序
 
 OrderedDict 可以实现一个 FIFO（先进先出）的 dict，当容量超出限制时，先删除最早添加的 Key。
 
-#### Counter 类
+## Counter 类
 
 Counter 是一个简单的计数器，例如，统计字符出现的个数：
 
@@ -124,6 +124,6 @@ Counter({'g': 2, 'm': 2, 'r': 2, 'a': 1, 'i': 1, 'o': 1, 'n': 1, 'p': 1})
 Counter 实际上也是 dict 的一个子类。
 
 
-### 参考文章
+# 3. 参考文章
 
 - [廖雪峰的Python教程-collections](http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001411031239400f7181f65f33a4623bc42276a605debf6000)

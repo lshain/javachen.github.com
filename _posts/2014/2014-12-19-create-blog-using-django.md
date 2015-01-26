@@ -21,7 +21,7 @@ published: true
  - 前端使用 bootstrap3，并修改了页面的一些内容
  - 【TODO】代码中关键的地方添加注释，帮助理解
 
-### 安装依赖
+# 1. 安装依赖
 
 ```bash
 pip install markdown pygments django-pagedown
@@ -29,7 +29,7 @@ pip install markdown pygments django-pagedown
 
 **说明：**我使用的 django 版本为 `1.7`。
 
-### 创建项目
+# 2. 创建项目
 
 创建项目 django_blog 和 blog app：
 
@@ -94,7 +94,7 @@ TEMPLATE_LOADERS = (
 )
 ```
 
-### 创建模型
+# 3. 创建模型
 
 在 blog/models.py 中创建模型 Category 和 Article：
 
@@ -221,7 +221,7 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Article, ArticleAdmin)
 ```
 
-### 创建 url 路由
+# 4. 创建 url 路由
 
 修改 django_blog/urls.py：
 
@@ -242,7 +242,7 @@ urlpatterns = patterns('',
 )
 ```
 
-### 创建视图
+# 5. 创建视图
 
 创建 blog/views.py：
 
@@ -365,7 +365,7 @@ def category_archive(request, slug):
     )
 ```
 
-### 创建模板
+# 6. 创建模板
 
 创建 templates/blog/base.html：
 
@@ -437,7 +437,7 @@ def category_archive(request, slug):
 
 其他 html 文件见[源代码](https://github.com/javachen/django_blog)。
 
-### 运行项目
+# 7. 运行项目
 
 ```bash
 python manage.py makemigrations
@@ -449,7 +449,7 @@ python manage.py runserver
 打开浏览器访问后台页面 <http://localhost:8000/admin> 添加分类和文章，然后再访问前台页面 <http://localhost:8000/>。
 
 
-### 参考文章
+# 8. 参考文章
 
 - [Part 1: Creating a blog system using django + markdown](http://www.yaconiello.com/blog/part-1-creating-blog-system-using-django-markdown/)
 - [Part 2: Creating a blog system using django + markdown](http://www.yaconiello.com/blog/part-2-creating-blog-system-using-django-markdown/)

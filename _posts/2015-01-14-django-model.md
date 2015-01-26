@@ -15,7 +15,7 @@ published: true
 
 通过《[如何创建一个Django网站](/2014/01/11/how-to-create-a-django-site/)》大概清楚了如何创建一个简单的 Django 网站，这篇文章主要是在此基础上介绍 Django 中模型的定义方法以及模型之间存在的几种映射关系。
 
-# 模型的定义
+# 1. 模型的定义
 
 - Django 中每一个 Model 都继承自 `django.db.models.Model`。
 - 在 Model 当中每一个属性 attribute 都代表一个数据库字段。
@@ -161,9 +161,9 @@ manage.py参数列表
 
 sql、sqlall、sql、sqlindexs、sqlclear、sqlcustom不更新数据库，只打印SQL语句以作检验之用。
 
-# 模型之间的关系
+# 2. 模型之间的关系
 
-## 多对一
+## 2.1 多对一
 
 ```python
 class Author(models.Model):
@@ -214,7 +214,7 @@ books = author.books.all()
 
 对简单的对象层次来说， `related_name` 不是必需的，但是更复杂的关系里，比如当有多个 ForeignKey 的时候就一定要指定了。
 
-## 多对多
+## 2.2 多对多
 
 上面的例子假设的是一本书只有一个作者，一个作者有多本书，所以是多对一的关系；但是如果一本书也有多个作者呢？这就是多对多的关系；由于SQL没有定义这种关系，必须通过外键用它能理解的方式实现多对多
 
@@ -267,7 +267,7 @@ chan_essay_compilations = Book.objects.filter(
 )
 ```
 
-## 一对一
+## 2.3 一对一
 
 类似的，Django 提供了 OneToOneField 属性，几乎和 ForeignKey 一样，接受一个参数（要关联的类或者"self"），同样也接受一个可选参数 related_name ，这样就可以在两个相同的类里区分出多个这样的关系来。
 
@@ -292,7 +292,7 @@ class SmithBook(models.Model):
 
 这个例子中，Book 模型就只能和姓 Smith 的 Authors 类一起工作。当然这个问题最好用另一种解决方案-------ModelChoiceField,ModelMultipleChoiceField
 
-# 模型继承
+# 3. 模型继承
 
 Django目前支持几种不同的继承方式：
 
@@ -422,7 +422,7 @@ class Person(User):
 
 这样的方式不会改变数据存储结构，但可以纵向的扩展子类Person的方法，并且基础User父类的所有属性和方法。
 
-# Meta 嵌套类
+# 4. Meta 嵌套类
 
 模型里定义的变量 fields 和关系 relationships 提供了数据库的布局以及稍后查询模型时要用的变量名--经常你还需要添加__unicode__ 和 get_absolute_url 方法或是重写 内置的 save 和 delete方法。
 
@@ -449,7 +449,7 @@ Meta类有以下属性：
 - `verbose_name`：给你的模型类起一个更可读的名字
 - `verbose_name_plural`：这个选项是指定模型的复数形式是什么
 
-# 参考文章
+# 5. 参考文章
 
 - [Django 数据模型的字段列表整理](http://www.c77cc.cn/article-64.html)
 - [跟我一起Django - 04 定义和使用模型](http://www.tuicool.com/articles/vU7vIz)

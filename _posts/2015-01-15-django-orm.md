@@ -17,7 +17,7 @@ published: true
 
 Django 中查询数据库需要 Manager 和 QuerySet 两个对象。从数据库里检索对象，可以通过模型的 Manage 来建立 QuerySet,一个 QuerySet 表现为一个数据库中对象的结合，他可以有0个一个或多个过滤条件，在 SQL里 QuerySet 相当于 select 语句用 where 或 limit 过滤。你通过模型的 Manage 来获取 QuerySet。
 
-### Manager 类
+# 1. Manager 类
 Manager 对象附在模型类里，如果没有特指定，每个模型类都会有一个 objects 属性，它构成了这个模型在数据库所有基本查询。
 
 Manager 的几个常用方法：
@@ -92,7 +92,7 @@ books = Book.objects.filter(title__startswith="Python")
 books = Book.objects.filter(title__startswith="Python").exclude(pub_date__gte=datetime.now()).filter(pub_date__gte=datetime(2014, 1, 1))
 ```
 
-### QuerySet 类
+# 2. QuerySet 类
 
 QuerySet 接受动态的关键字参数，然后转换成合适的 SQL 语句在数据库上执行。
 
@@ -105,7 +105,7 @@ QuerySet 的几个常用方法：
 - `filter`：返回一个包含符合指定条件的模型记录的 QuerySet
 - `extra`：增加结果集以外的字段
 
-#### 延时查询
+## 2.1 延时查询
 
 每次你完成一个 QuerySet，你获得一个全新的结果集，不包括前面的。每次完成的结果集是可以贮存，使用或复用：
 
@@ -146,7 +146,7 @@ Book.objects.order_by('title')[0]
 Book.objects.order_by('title')[0:1].get()
 ```
 
-#### 字段过滤
+## 2.2 字段过滤
 
 字段查找是指定 SQL 语句的 WHERE 条件从句，通过 QuerySet 的方法 `filter()`, `exclude()` 和 `get()` 指定查询关键字。
 
@@ -229,7 +229,7 @@ d、in 查询
 Book.objects.filter(pk__in=[1,4,7])
 ```
 
-#### 跨关系查询
+## 2.3 跨关系查询
 
 跨关系查询是针对有主外键依赖关系的对象而言的，例如上面的 Author 和 Entry 对象是多对多的映射，可以通过 Entry 对象来过滤 Author的 name：
 
@@ -254,7 +254,7 @@ entry__author__name__isnull=True);
 ```
 
 
-#### 使用 Extra 调整 SQL
+## 2.4 使用 Extra 调整 SQL
 
 用extra可以修复QuerySet生成的原始SQL的各个部分，它接受四个关键字参数。如下：
 
@@ -288,7 +288,7 @@ queryset.extra(tables=['myapp_person'])
 matches = Author.objects.all().extra(where=["first = '%s' "], params= [unknown-input ( ) ]
 ```
 
-#### F 关键字参数
+## 2.5 F 关键字参数
 
 前面给的例子里，我们建立了过滤，比照模型字段值和一个固定的值，但是如果我们想比较同一个模型里的一个字段和另一个字段的值，django 提供 `F()`——专门取对象中某列值的操作。
 
@@ -304,7 +304,7 @@ Book.objects.filter(view_num__lt=F('comment_num'))
 Book.objects.filter(view_num__lt=F('comment_num') * 2) 
 ```
 
-#### Q 关键字参数
+## 2.6 Q 关键字参数
 
 QuerySet 可以通过一个叫 Q 的关键字参数封装类进一步参数化，允许使用更复杂的逻辑查询。其结果 Q对 象可以作为 filter 或 exclude 方法的关键字参数。
 
@@ -319,13 +319,13 @@ specific_does = Person.objects.filter(last='Doe').exclude(Q(first='John') | Q(mi
 Person.objects.filter(Q(last='Doe') | (Q(last='Smith')&Q(first='John')&~Q(middle_startwith='W')))  
 ```
 
-### 关系对象
+# 3. 关系对象
 
 当对象之间存在映射关系或者关联时，该如何查询呢？
 
 当你在模型里定义一个关系时，模型实例会有一个方便的 API 来访问关系对象。以下分几种映射关系分别描述。
 
-#### One-to-many关系
+## 3.1 One-to-many关系
 
 如果一个对象有ForeignKey，这个模型实例访问关系对象通过简单的属性:
 
@@ -352,7 +352,7 @@ b.entry_set.all() # 返回所有book的关联对象.
 b.entry_set.count()
 ```
 
-#### Many-to-many关系
+## 3.2 Many-to-many关系
 
 ```python
 e = Entry.objects.get(id=3)
@@ -364,7 +364,7 @@ a = Author.objects.get(id=5)
 a.entry_set.all()  # 返回Author所有entry .
 ```
 
-#### One-to-one关系
+## 3.3 One-to-one关系
 
 ```python
 class EntryDetail(models.Model):
@@ -375,7 +375,7 @@ ed = EntryDetail.objects.get(id=2)
 ed.entry # 返回 Entry 对象.
 ```
 
-### 参考资料
+# 4. 参考资料
 
 - [Eclipse的django开发学习笔记（2）--模型（M）](http://my.oschina.net/u/877170/blog/288334)
 - [Django：模型的使用](http://www.pythontip.com/blog/post/6358/)
