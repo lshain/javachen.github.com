@@ -19,33 +19,26 @@ description: 主要介绍 Django 中模板相关的知识点，包括模板标�
 
 ```python
 from django.http import HttpResponse
-import datetime
+from django.template import RequestContext, loader
 
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)
+from polls.models import Question
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = RequestContext(request, {
+        'latest_question_list': latest_question_list,
+    })
+    return HttpResponse(template.render(context))
 ```
 
-可以修改为使用 Django 模板系统：
+代码说明：
 
-```python
-from django.template import Template, Context
-from django.http import HttpResponse
-import datetime
+- 通过 loader 来加载模板页面，如前面提到的，这里是相对 polls/templates 目录
+- 创建上下文，将需要传递到页面的变量放入上下文变量 context
+- 使用 template 通过上下文来渲染页面
 
-def current_datetime(request):
-    now = datetime.datetime.now()
-    t = Template("<html><body>It is now {{ current_date }}.</body></html>")
-    html = t.render(Context({'current_date': now}))
-    return HttpResponse(html)
-```
-
-还可以将模板内容保存到一个文件中，这需要使用 Django 模板加载的技巧。
-
-## 模板加载
-
-首先，配置模板目录，编辑 settings.py 文件：
+在 settings.py 中有一个 TEMPLATE_LOADERS 属性，并且有一个默认值 django.template.loaders.app_directories.Loader，该值定义了从每一个安装的 app 的 templates 目录下寻找模板。当然，你也可以编辑 settings.py 文件中的 TEMPLATE_DIRS属性手动指定模板路径：
 
 ```python
 TEMPLATE_DIRS = (
@@ -70,7 +63,9 @@ TEMPLATE_DIRS = (
 
 > 这个例子使用了神奇的 Python 内部变量 `__file__` ，该变量被自动设置为代码所在的 Python 模块文件名。 `os.path.dirname(__file__)`将会获取自身所在的文件，然后由 `os.path.join` 这个方法将这目录与 templates 进行连接。如果在 windows下，它会智能地选择正确的后向斜杠'/'进行连接，而不是前向斜杠'/'。
 
-完成 `TEMPLATE_DIRS` 设置后，下一步就是修改视图代码，让它使用 Django 模板加载功能而不是对模板路径硬编码。 返回 current_datetime 视图，进行如下修改：
+完成 `TEMPLATE_DIRS` 设置后，下一步就是修改视图代码，让它使用 Django 模板加载功能而不是对模板路径硬编码。 
+
+举例如下：
 
 ```python
 from django.template.loader import get_template
@@ -104,7 +99,7 @@ def current_datetime(request):
     return render_to_response('current_datetime.html', locals())
 ```
 
-使用 `locals()` 时要注意是它将包括 所有 的局部变量，它们可能比你想让模板访问的要多。 在前例中，`locals()` 还包含了 request。
+使用 `locals()` 时要注意是它将包括所有的局部变量，它们可能比你想让模板访问的要多。 在前例中，`locals()` 还包含了 request。
 
 # 模板标签
 

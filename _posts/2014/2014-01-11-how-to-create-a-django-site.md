@@ -50,7 +50,7 @@ TIME_ZONE = 'Asia/Shanghai'
 USE_TZ = True 
 ```
 
-上面开启了 `[Time zone](https://docs.djangoproject.com/en/1.7/topics/i18n/timezones/)` 特性，需要安装 pytz：
+上面开启了 [Time zone](https://docs.djangoproject.com/en/1.7/topics/i18n/timezones/) 特性，需要安装 pytz：
 
 ```bash
 $ sudo pip install pytz
@@ -391,7 +391,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mysite',
+    'polls',
 )
 ```
 
