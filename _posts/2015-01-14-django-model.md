@@ -7,50 +7,103 @@ category: python
 
 tags: [ python,django ]
 
-description: 这篇文章主要介绍 Django 中模型的定义方法以及模型之间存在的几种映射关系。
+description:  Django 中的模型主要用于定义数据的来源信息，其包括一些必要的字段和一些对存储的数据的操作。通常，一个模型对应着数据库中的一个表。
 
 published: true
 
 ---
 
-通过《[如何创建一个Django网站](/2014/01/11/how-to-create-a-django-site/)》大概清楚了如何创建一个简单的 Django 网站，这篇文章主要是在此基础上介绍 Django 中模型的定义方法以及模型之间存在的几种映射关系。
+Django 中的模型主要用于定义数据的来源信息，其包括一些必要的字段和一些对存储的数据的操作。通常，一个模型对应着数据库中的一个表。
 
-# 1. 模型的定义
+简单的概念：
 
 - Django 中每一个 Model 都继承自 `django.db.models.Model`。
 - 在 Model 当中每一个属性 attribute 都代表一个数据库字段。
 - 通过 Django Model API 可以执行数据库的增删改查, 而不需要写一些数据库的查询语句。
 
-在 [如何创建一个Django网站](/2014/01/11/how-to-create-a-django-site/) 中创建的 List 模型定义如下：
+# 1. 模型
+
+## 1.1 一个示例
+
+下面在 myapp 应用种定义了一个 Person 模型，包括两个字段：first_name 和 last_name。
 
 ```python
 from django.db import models
-from todo.models import *
-from django.contrib import admin
 
-import datetime
-
-#模型继承django.db.models.Model
-class List(models.Model):
-    #定义字段，每个字段都是 Field 类的子类
-    name = models.CharField(max_length=60)
-    slug = models.SlugField(max_length=60, editable=False)
-    group = models.ForeignKey(Group)
-
-    #返回对一个对象的字符串表示
-    def __unicode__(self):
-        return self.name
-
-    #内部类，定义模型类元数据
-    class Meta:
-        ordering = ["name"]
-        verbose_name_plural = "Lists"
-
-        # Prevents (at the database level) creation of two lists with the same name in the same group
-        unique_together = ("group", "slug")
+class Person(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
 ```
 
-模型的字段可能的类型如下：
+first_name 和 last_name 是模型的字段，每一个字段对应着一个类的属性，并且每一个属性对应数据库表中的一个列。
+
+上面的 Person 模型对应数据库中的表如下：
+
+```sql
+CREATE TABLE myapp_person (
+    "id" serial NOT NULL PRIMARY KEY,
+    "first_name" varchar(30) NOT NULL,
+    "last_name" varchar(30) NOT NULL
+);
+```
+
+说明：
+
+- 表名 `myapp_person` 是由模型的元数据自动生成的，格式为 `应用_模型`，你可以设置元数据覆盖该值。
+- id 字段在模型中是自动添加的，同样该字段名称也可以通过元数据覆盖。
+- 上面的 sql 语法是 PostgreSQL 中的语法，你可以通过设置数据库类型，生成不同数据库对应的 sql。
+
+## 1.2 使用模型
+
+使用模型之前，你需要先创建应用，然后将其加入 `INSTALLED_APPS`，然后编写该应用中的 models.py 文件，最后运行 `manage.py makemigrations` 和 `manage.py migrate` 在数据库中创建该实体对应的表。
+
+```python
+INSTALLED_APPS = (
+    #...
+    'myapp',
+    #...
+)
+```
+
+manage.py 参数列表
+
+- `syncdb`：创建所有应用所需的数据表
+- `sql `：显示CREATETABLE调用
+- `sqlall` 如同上面的sql一样，从sql文件中初始化数据载入语句
+- `sqlindexs`：显示对主键创建索引的调用
+- `sqlclear`：显示DROP TABLE的调用
+- `sqlcustom`：显示指定.sql文件里的自定义SQL语句
+- `loaddata`：载入初始数据
+- `dumpdata`：把原有的数据库里的数据输出伟JSON，XML等格式
+
+sql、sqlall、sql、sqlindexs、sqlclear、sqlcustom 不更新数据库，只打印SQL语句以作检验之用。
+
+## 1.3 模型属性
+
+每个模型有一个默认的属性  `Manager`，他是模型访问数据库的接口。如果没有自定义的 Manager，则其默认名称为 `objects`。
+
+## 1.4 模型字段
+
+字段名称不能和 clean、save 或者 delete 冲突。一个示例：
+
+```python
+from django.db import models
+
+class Musician(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    instrument = models.CharField(max_length=100)
+
+class Album(models.Model):
+    artist = models.ForeignKey(Musician)
+    name = models.CharField(max_length=100)
+    release_date = models.DateField()
+    num_stars = models.IntegerField()
+```
+
+模型中的每一个字段都必须为  `Field` 类的一个实例，Django 使用该类型来决定数据库中对应的列的类型，并且每一个字段都有一些可选的参数。
+
+模型的字段可能的类型及参数如下：
 
 |字段名| 参数|  意义|
 |:---|:---|:---|
@@ -99,71 +152,145 @@ IPAddressField   | |   一个IP地址，以字符串格式表示（例如： "24
 |unique_for_year |和 unique_for_date 及 unique_for_month 类似，只是时间范围变成了一年。|
 |verbose_name  |  除 ForeignKey 、 ManyToManyField 和 OneToOneField 之外的字段都接受一个详细名称作为第一个位置参数。|
 
-**主键和唯一性**：
+举例1，一个 choices 类型的例子如下：
 
-如果你没有明确指定，Django会自动生成主键 id（AutoField，自增整数，如果你希望有更多的控制主键，只需要在某个变量上指定 `primary_key = True`，这个变量会取代 id 成为这个表的主键。类似于 SQL 中的 UNIQUE 索引，Django 也提供了 `unique=True` 的参数
+```python
+from django.db import models
 
-定义了模型之后，可以用下面校验模型：
-
-```bash
-$ python manage.py validate
-    System check identified no issues (0 silenced).
+class Person(models.Model):
+    SHIRT_SIZES = (
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+    )
+    name = models.CharField(max_length=60)
+    shirt_size = models.CharField(max_length=1, choices=SHIRT_SIZES)
 ```
 
-validate 命令检查你的模型的语法和逻辑是否正确。 如果一切正常，你会看到 `System check identified no issues (0 silenced). `消息。如果出错，请检查你输入的模型代码。 错误输出会给出非常有用的错误信息来帮助你修正你的模型。
+你可以通过 `get_FOO_display` 来访问 choices 字段显示的名称：
 
-模型确认没问题了，运行下面的命令来生成建表语句：
-
-```bash
-# 在 django1.7之后先执行这个命令
-$ python manage.py migrate
-$ python manage.py makemigrations
-
-$ python manage.py  sql todo
-    CommandError: App 'todo' has migrations. Only the sqlmigrate and sqlflush commands can be used when an app has migrations.
-
-# 出现上面错误，则删除 todo/migrations
-$ rm -rf todo/migrations
-
-# 再次执行，可以看到建表语句
-$ python manage.py sql todo
+```python
+>>> p = Person(name="Fred Flintstone", shirt_size="L")
+>>> p.save()
+>>> p.shirt_size
+u'L'
+>>> p.get_shirt_size_display()
+u'Large'
 ```
 
-当然，你也可以执行下面的命令：
+举例2，自定义主键：
 
-```bash
-# 显示 CREATE TABLE 语句
-$ python manage.py sql todo  
+```python
+from django.db import models
 
-#输出为应用定义的任何 custom SQL statements ( 例如表或约束的修改 )
-$ python manage.py sqlcustom todo
-
-#为应用输出必要的 DROP TABLE 
-$ python manage.py sqlclear todo    
-
-#为应用输出 CREATE INDEX 语句
-$ python manage.py sqlindexes todo   
-
-# sqlclear和sql的组合 
-$ python manage.py sqlreset todo  
+class Fruit(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
 ```
 
-manage.py参数列表
+使用 primary_key 可以指定某一个字段为主键。
 
-- `syncdb`：创建所有应用所需的数据表
-- `sql `：显示CREATETABLE调用
-- `sqlall` 如同上面的sql一样，从sql文件中初始化数据载入语句
-- `sqlindexs`：显示对主键创建索引的调用
-- `sqlclear`：显示DROP TABLE的调用
-- `sqlcustom`：显示指定.sql文件里的自定义SQL语句
-- `loaddata`：载入初始数据
-- `dumpdata`：把原有的数据库里的数据输出伟JSON，XML等格式
+```python
+>>> fruit = Fruit.objects.create(name='Apple')
+>>> fruit.name = 'Pear'
+>>> fruit.save()
+>>> Fruit.objects.values_list('name', flat=True)
+['Apple', 'Pear']
+```
 
-sql、sqlall、sql、sqlindexs、sqlclear、sqlcustom不更新数据库，只打印SQL语句以作检验之用。
+>说明：
+> values_list 函数
+
+## 1.5 Meta 元数据类
+
+模型里定义的变量 fields 和关系 relationships 提供了数据库的布局以及稍后查询模型时要用的变量名--经常你还需要添加__unicode__ 和 get_absolute_url 方法或是重写 内置的 save 和 delete方法。
+
+然而，模型的定义还有第三个方面--告知Django关于这个模型的各种元数据信息的嵌套类 Meta，Meta 类处理的是模型的各种元数据的使用和显示：
+
+- 比如在一个对象对多个对象是，它的名字应该怎么显示
+- 查询数据表示默认的排序顺序是什么
+- 数据表的名字是什么
+- 多变量唯一性 （这种限制没有办法在每个单独的变量声明上定义）
+
+Meta类有以下属性：
+
+- `abstract`：定义当前的模型类是不是一个抽象类。
+- `app_label`：这个选项只在一种情况下使用，就是你的模型类不在默认的应用程序包下的 models.py 文件中，这时候你需要指定你这个模型类是那个应用程序的
+- `db_table`：指定自定义数据库表名
+- `db_tablespace`：指定这个模型对应的数据库表放在哪个数据库表空间
+- `get_latest_by`：由于 Django 的管理方法中有个 `lastest()`方法，就是得到最近一行记录。如果你的数据模型中有 DateField 或 DateTimeField 类型的字段，你可以通过这个选项来指定 `lastest()` 是按照哪个字段进行选取的。
+- `managed`：由于 Django 会自动根据模型类生成映射的数据库表，如果你不希望 Django 这么做，可以把 managed 的值设置为 False。
+- `order_with_respect_to`：这个选项一般用于多对多的关系中，它指向一个关联对象。就是说关联对象找到这个对象后它是经过排序的。指定这个属性后你会得到一个 `get_XXX_order()` 和 `set_XXX_order()` 的方法,通过它们你可以设置或者返回排序的对象。
+- `ordering`：定义排序字段
+- `permissions`：为了在 Django Admin 管理模块下使用的，如果你设置了这个属性可以让指定的方法权限描述更清晰可读
+- `proxy`：为了实现代理模型使用的
+- `unique_together`：定义多个字段保证数据的唯一性
+- `verbose_name`：给你的模型类起一个更可读的名字
+- `verbose_name_plural`：这个选项是指定模型的复数形式是什么
+
+## 1.6 模型方法
+
+Manager 提供的是表级别的方法，模型中还可以定义字段级别的方法。例如：
+
+```python
+from django.db import models
+
+class Person(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    birth_date = models.DateField()
+
+    def baby_boomer_status(self):
+        "Returns the person's baby-boomer status."
+        import datetime
+        if self.birth_date < datetime.date(1945, 8, 1):
+            return "Pre-boomer"
+        elif self.birth_date < datetime.date(1965, 1, 1):
+            return "Baby boomer"
+        else:
+            return "Post-boomer"
+
+    def _get_full_name(self):
+        "Returns the person's full name."
+        return '%s %s' % (self.first_name, self.last_name)
+    full_name = property(_get_full_name)
+```
+
+最后一个方法是 `property` 的一个示例。
+
+每一个模型有一些 Django 自动添加的方法，你也可以在模型的定义中覆盖这些方法：
+
+- `__str__()` (Python 3)
+- `__unicode__()` (Python 2)
+- `get_absolute_url()`
+
+你也可以覆盖模型中和数据库相关的方法，通常是  `save()` 和 `delete()` 两个方法。例如：
+
+```python
+from django.db import models
+
+class Blog(models.Model):
+    name = models.CharField(max_length=100)
+    tagline = models.TextField()
+
+    def save(self, *args, **kwargs):
+        do_something()
+        super(Blog, self).save(*args, **kwargs) # Call the "real" save() method.
+        do_something_else()
+```
+
+## 1.7 执行自定义的 sql
+
+这部分内容请参考：[Django中SQL查询](/2015-01-30-raw-sql-query-in-django/)
 
 # 2. 模型之间的关系
 
+Django 提供了三种模型之间的关联关系： `many-to-one`、`many-to-many` 和 `one-to-one`。
+
 ## 2.1 多对一
+
+定义多对一的关系，需要使用 `django.db.models.ForeignKey` 来引用被关联的模型。
+
+例如，一本书有多个作者：
 
 ```python
 class Author(models.Model):
@@ -174,7 +301,7 @@ class Book(models.Model):
     author = models.ForeignKey(Author)
 ```
 
-Django 的外键表现很直观，其主要参数就是它要引用的模型类；但是注意要把被引用的类放在前面。不过，如果不想留意顺序，也可以用字符串代替。
+Django 的外键表现很直观，其主要参数就是它要引用的模型类；但是注意要把被引用的模型放在前面。不过，如果不想留意顺序，也可以用字符串代替。
 
 ```python
 class Book(models.Model):
@@ -218,7 +345,7 @@ books = author.books.all()
 
 上面的例子假设的是一本书只有一个作者，一个作者有多本书，所以是多对一的关系；但是如果一本书也有多个作者呢？这就是多对多的关系；由于SQL没有定义这种关系，必须通过外键用它能理解的方式实现多对多
 
-这里 Django 提供了第二种关系对象映射变量 `ManyToManyField`，语法上来讲， 这和 ForeignKey 是一模一样的，你在关系的一端定义，把要关联的类传递进来，ORM 会自动为另一端生成使用这个关系必要的方法和属性
+这里 Django 提供了第二种关系对象映射变量 `ManyToManyField`，语法上来讲， 这和 ForeignKey 是一模一样的，你在关系的一端定义，把要关联的类传递进来，ORM 会自动为另一端生成使用这个关系必要的方法和属性。
 
 不过由于 ManyToManyField 的特性，在哪一端定义它通常都没有关系，因为这个关系是对称的。
 
@@ -242,7 +369,7 @@ books = authors[2].book_set.all()
 
 ManyToManyField 的秘密在于它在背后创建了一张新的表来满足这类关系的查询的需要，而这张表用的则是 SQL 外键，其中每一行都代表了两个对象的一个关系，同时包含了两端的外键
 
-这张查询表在 Django ORM 中一般是隐藏的，不可以单独查询，只能通过关系的某一端查询；不过可以在 MTMField 上指定一个特殊的选项 through 来指向一个显式的中间模型类，更方便你的手动管理关系的两端
+这张查询表在 Django ORM 中一般是隐藏的，不可以单独查询，只能通过关系的某一端查询；不过可以在 ManyToManyField 上指定一个特殊的选项 through 来指向一个显式的中间模型类，更方便你的手动管理关系的两端
 
 ```python
 class Author(models.Model):
@@ -269,28 +396,154 @@ chan_essay_compilations = Book.objects.filter(
 
 ## 2.3 一对一
 
-类似的，Django 提供了 OneToOneField 属性，几乎和 ForeignKey 一样，接受一个参数（要关联的类或者"self"），同样也接受一个可选参数 related_name ，这样就可以在两个相同的类里区分出多个这样的关系来。
+定义一个一对一的关系，需要使用 `OneToOneField` 类。
 
-不同的是，OTOField 没有在反向关系中添加 `reverse manager `，而只是增加了一个普通属性而已，因为关系的另一端一定只有一个对象。
-
-这种关系最常用的是用来支持对象组合或者是拥有关系，所以相比现实世界，它更加面向对象一点。
-
-在 Django直接支持模型继承之前，OTOField 主要是用来实现模型继承，而现在，则是转向对这个特性的幕后支持了。
-
-关于定义关系的最后一点，ForeignKey 和 MTMField 都可以指定一个 `limit_choices_to `参数，这个参数接受一个字典，键值对是查询的关键字和值
+例如，Restaurant 和 Place 为一对一：
 
 ```python
-class Author(models.Model):
-  name = models.CharField(max_length=100)
+from django.db import models
 
-class SmithBook(models.Model):
-  title = models.CharField(max_length=100)
-  authors = models.ManyToManyField(Author, limit_choices_to={
-    'name__endswith' : 'Smith'
-  })
+class Place(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=80)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return "%s the place" % self.name
+
+class Restaurant(models.Model):
+    place = models.OneToOneField(Place, primary_key=True)
+    serves_hot_dogs = models.BooleanField(default=False)
+    serves_pizza = models.BooleanField(default=False)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return "%s the restaurant" % self.place.name
+
+class Waiter(models.Model):
+    restaurant = models.ForeignKey(Restaurant)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return "%s the waiter at %s" % (self.name, self.restaurant)
 ```
 
-这个例子中，Book 模型就只能和姓 Smith 的 Authors 类一起工作。当然这个问题最好用另一种解决方案-------ModelChoiceField,ModelMultipleChoiceField
+一个 Restaurant 都会有一个 Place，实际上你也可以使用继承的方式来定义。
+
+下面是一些操作的例子。
+
+创建 Place：
+
+```python
+>>> p1 = Place(name='Demon Dogs', address='944 W. Fullerton')
+>>> p1.save()
+>>> p2 = Place(name='Ace Hardware', address='1013 N. Ashland')
+>>> p2.save()
+```
+
+创建 Restaurant 并关联到 Place：
+
+```python
+>>> r = Restaurant(place=p1, serves_hot_dogs=True, serves_pizza=False)
+>>> r.save()
+```
+
+然后，可以这样访问：
+
+```python
+>>> r.place
+<Place: Demon Dogs the place>
+>>> p1.restaurant
+<Restaurant: Demon Dogs the restaurant>
+```
+
+这时候，p2 没有与之关联的 Restaurant，如果通过 p2 访问 Restaurant 就会提示异常：
+
+```python
+>>> from django.core.exceptions import ObjectDoesNotExist
+>>> try:
+>>>     p2.restaurant
+>>> except ObjectDoesNotExist:
+>>>     print("There is no restaurant here.")
+There is no restaurant here.
+```
+
+你可以通过下面的方式来避免出现异常：
+
+```python
+>>> hasattr(p2, 'restaurant')
+False
+```
+
+下面可以做一些赋值操作：
+
+```python
+>>> r.place = p2
+>>> r.save()
+>>> p2.restaurant
+<Restaurant: Ace Hardware the restaurant>
+>>> r.place
+<Place: Ace Hardware the place>
+```
+
+也可以反向赋值：
+
+```python
+>>> p1.restaurant = r
+>>> p1.restaurant
+<Restaurant: Demon Dogs the restaurant>
+```
+
+查询所有的 Restaurant 和 Place：
+
+```python
+>>> Restaurant.objects.all()
+[<Restaurant: Demon Dogs the restaurant>, <Restaurant: Ace Hardware the restaurant>]
+>>> Place.objects.order_by('name')
+[<Place: Ace Hardware the place>, <Place: Demon Dogs the place>]
+```
+
+当然，也可以使用跨关系查找：
+
+```python
+>>> Restaurant.objects.get(place=p1)
+<Restaurant: Demon Dogs the restaurant>
+>>> Restaurant.objects.get(place__pk=1)
+<Restaurant: Demon Dogs the restaurant>
+>>> Restaurant.objects.filter(place__name__startswith="Demon")
+[<Restaurant: Demon Dogs the restaurant>]
+>>> Restaurant.objects.exclude(place__address__contains="Ashland")
+[<Restaurant: Demon Dogs the restaurant>]
+```
+
+反向查找：
+
+```python
+>>> Place.objects.get(pk=1)
+<Place: Demon Dogs the place>
+>>> Place.objects.get(restaurant__place=p1)
+<Place: Demon Dogs the place>
+>>> Place.objects.get(restaurant=r)
+<Place: Demon Dogs the place>
+>>> Place.objects.get(restaurant__place__name__startswith="Demon")
+<Place: Demon Dogs the place>
+```
+
+创建一个 Waiter：
+
+```python
+>>> w = r.waiter_set.create(name='Joe')
+>>> w.save()
+>>> w
+<Waiter: Joe the waiter at Demon Dogs the restaurant>
+```
+
+然后，查询：
+
+```python
+>>> Waiter.objects.filter(restaurant__place=p1)
+[<Waiter: Joe the waiter at Demon Dogs the restaurant>]
+>>> Waiter.objects.filter(restaurant__place__name__startswith="Demon")
+[<Waiter: Joe the waiter at Demon Dogs the restaurant>]
+```
 
 # 3. 模型继承
 
@@ -339,7 +592,6 @@ CREATE TABLE "blog_student" (
  
 COMMIT;
 ```
-
 
 方式二：每个具体类一张表，父类不需要创建表
 
@@ -417,39 +669,12 @@ class Person(User):
     proxy = True
  
   def some_function(self):
-    ……
- ```   
+    pass
+```
 
 这样的方式不会改变数据存储结构，但可以纵向的扩展子类Person的方法，并且基础User父类的所有属性和方法。
 
-# 4. Meta 嵌套类
-
-模型里定义的变量 fields 和关系 relationships 提供了数据库的布局以及稍后查询模型时要用的变量名--经常你还需要添加__unicode__ 和 get_absolute_url 方法或是重写 内置的 save 和 delete方法。
-
-然而，模型的定义还有第三个方面--告知Django关于这个模型的各种元数据信息的嵌套类 Meta，Meta 类处理的是模型的各种元数据的使用和显示：
-
-- 比如在一个对象对多个对象是，它的名字应该怎么显示
-- 查询数据表示默认的排序顺序是什么
-- 数据表的名字是什么
-- 多变量唯一性 （这种限制没有办法在每个单独的变量声明上定义）
-
-Meta类有以下属性：
-
-- `abstract`：定义当前的模型类是不是一个抽象类。
-- `app_label`：这个选项只在一种情况下使用，就是你的模型类不在默认的应用程序包下的 models.py 文件中，这时候你需要指定你这个模型类是那个应用程序的
-- `db_table`：指定自定义数据库表名
-- `db_tablespace`：指定这个模型对应的数据库表放在哪个数据库表空间
-- `get_latest_by`：由于 Django 的管理方法中有个 `lastest()`方法，就是得到最近一行记录。如果你的数据模型中有 DateField 或 DateTimeField 类型的字段，你可以通过这个选项来指定 `lastest()` 是按照哪个字段进行选取的。
-- `managed`：由于 Django 会自动根据模型类生成映射的数据库表，如果你不希望 Django 这么做，可以把 managed 的值设置为 False。
-- `order_with_respect_to`：这个选项一般用于多对多的关系中，它指向一个关联对象。就是说关联对象找到这个对象后它是经过排序的。指定这个属性后你会得到一个 `get_XXX_order()` 和 `set_XXX_order()` 的方法,通过它们你可以设置或者返回排序的对象。
-- `ordering`：定义排序字段
-- `permissions`：为了在 Django Admin 管理模块下使用的，如果你设置了这个属性可以让指定的方法权限描述更清晰可读
-- `proxy`：为了实现代理模型使用的
-- `unique_together`：定义多个字段保证数据的唯一性
-- `verbose_name`：给你的模型类起一个更可读的名字
-- `verbose_name_plural`：这个选项是指定模型的复数形式是什么
-
-# 5. 参考文章
+# 4. 参考文章
 
 - [Django 数据模型的字段列表整理](http://www.c77cc.cn/article-64.html)
 - [跟我一起Django - 04 定义和使用模型](http://www.tuicool.com/articles/vU7vIz)

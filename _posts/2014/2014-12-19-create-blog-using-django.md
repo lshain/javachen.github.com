@@ -40,11 +40,16 @@ python manage.py startapp blog
 
 ### 修改 settings.py
 
-设置 SITE_ID 并修改时区：
+设置 SITE_ID 并修改时区等：
 
 ```python
 SITE_ID = 1
+
+LANGUAGE_CODE = 'zh_CN'
+
 TIME_ZONE = 'Asia/Shanghai'
+
+USE_TZ = True 
 ```
 
 添加 app:
