@@ -22,6 +22,10 @@ Weibo：<http://weibo.com/{{ site.author.weibo }}>
 Github：<https://github.com/{{ site.author.github }}>
 {% endif %}
 
+{% if site.author.twitter %}
+Twitter：<https://twitter.com/{{ site.author.twitter }}>
+{% endif %}
+
 RSS：[{{ site.url }}{{ '/rss.xml' }}](/rss.xml)
 
 QQ交流群：142824963
